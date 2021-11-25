@@ -1,10 +1,21 @@
 var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
+
+  // TODO: Use some public method instead
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
-  fv_flowplayer_browser_assets_loaders = {};
+  fv_flowplayer_browser_assets_loaders = {},
+
+  // TODO: Use some public method instead
+  // the following will contain file patterns which will be checked when determining whether we can automatically find
+  // a splash screen for a video file in any given browser
+  //
+  // ... for example, Coconut uses m3u8 files with the same file name as its encoded file names for thumbnails,
+  //     so it will need to create an inclusion rule like so:
+  //        fv_flowplayer_browser_splash_file_lookup_rules['fv_player_coconut_browser_media_tab']['include'] = ['\.(m3u8)$']
+  fv_flowplayer_browser_splash_file_lookup_rules = {};
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
@@ -18,6 +29,10 @@ function fv_flowplayer_media_browser_setColumns() {
       .closest( '.media-frame-content' )
       .attr( 'data-columns', columns );
   }
+}
+
+function fv_player_get_active_tab() {
+  return jQuery( '.media-menu-item.active:visible' );
 }
 
 function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
@@ -162,12 +177,25 @@ function fv_flowplayer_browser_browse(data, options) {
           }
         }
 
+        var progress = '';
+        // prepend processing progress DIVs, if needed
+        if ( f.extra && ( f.extra.percentage || f.extra.encoding_job_status == 'error' ) ) {
+          if ( f.extra.percentage ) {
+            var percentage = f.extra.percentage;
+            if( parseInt(percentage) < 5 ) percentage = 5+'%';
+            progress += '<div class="thumbnail-status">' + ( f.extra.encoding_job_status == 'playable' ? 'Playable' : 'Processing' ) + '</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
+          } else {
+            progress += '<div class="thumbnail-status-error">Error</div>';
+          }
+        }
+
         file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
           + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
           + '</div>'
+          + progress
           + '</div>'
           + '</div>' +
           '<button type="button" class="check" tabindex="0">' +
@@ -224,7 +252,9 @@ function fv_flowplayer_browser_browse(data, options) {
 
 // adds new tab on top of the Media Library popup
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
-  if (!jQuery('#' + tabId).length) {
+  var $tab = jQuery('#' + tabId);
+
+  if (!$tab.length) {
     var
       $router = jQuery('.media-router:visible'),
       $nativeTabs = $router.find('.media-menu-item:not(.artificial)'),
@@ -253,6 +283,10 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       if (!$e.hasClass('clickbaited')) {
         $e.addClass('clickbaited');
         $e.on('click', function() {
+          fv_flowplayer_media_browser_disable_drag_drop(false);
+
+          fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
           if (!switchClicking) {
             switchClicking = true;
             // find a tab that is native and is not our clicked tab and click on it
@@ -280,6 +314,9 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
         $router.find('.media-menu-item.active').removeClass('active');
         jQuery(this).addClass('active');
 
+        fv_flowplayer_media_browser_disable_drag_drop(true);
+        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
         // execute tab click function
         if (typeof(tabClickEventCallback) == 'function' && !switchClicking) {
           tabClickEventCallback();
@@ -292,6 +329,12 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
           }
         } catch(e) {}
 
+        // hide the Drop files to upload modal initially
+        jQuery('.media-modal .uploader-window').css({
+          'display' : 'none',
+          'opacity' : 0,
+        });
+
         return tabOnClickCallback();
       });
 
@@ -303,6 +346,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       tabAddedCallback($item);
     }
 
+    $tab = $item;
   }
   
   // if this tab was the last active, make it active again
@@ -315,7 +359,62 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       }, 500);
     }
   } catch(e) {}
+
+  return $tab;
 };
+
+/*
+ * Disable/enable core WordPress drag&drop uploader
+ */
+function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
+  var
+    overlay = jQuery('.media-frame-uploader')
+    overlay_content = jQuery('.media-modal .uploader-window'),
+    drop_targets = jQuery('[id^=__wp-uploader-id-'),
+    upload_supported = fv_player_get_active_tab().hasClass( 'upload_supported' );
+
+  if( disable ) {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+    drop_targets.on('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    if ( !upload_supported ) {
+      overlay.css('opacity', 0 );
+    } else {
+      overlay.css('opacity', 1 );
+    }
+
+  } else {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    if ( !upload_supported ) {
+      overlay.css('opacity', '' );
+
+      // We need to hide this now as WordPress did make it visible at some point
+      overlay_content.css({
+        'display' : 'none',
+        'opacity' : 0,
+      });
+    } else {
+      overlay.css('opacity', 1 );
+      overlay_content.css({
+        'display' : 'block',
+        'opacity' : 1,
+      });
+    }
+  }
+}
+
+function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
+  // forward this event via a custom trigger which gets intercepted by our browsers that support file uploads
+  // ... if we just returned false here without the custom trigger, we're basically prevent any drop event anywhere on the Media Browser dialog
+  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
+  return false;
+}
+
+function fv_flowplayer_media_browser_show_upload( id ) {
+  jQuery('.media-toolbar-secondary > .upload_buttons').hide();
+  jQuery('.media-toolbar-secondary > .upload_buttons[data-tab-id='+id+']').show();
+}
 
 function renderBrowserPlaceholderHTML(options) {
   var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
@@ -390,8 +489,18 @@ jQuery( function($) {
     return link;
   }
 
-  function getSplashImageForMediaFileHref(href, strip_signature) {
+  /**
+   * Iterates over all of the loaded files for the current browser
+   * and tries to find a file object that has the same base name as our given
+   * video HREF parameter and can therefore be used as its splash.
+   *
+   * @param href The video file we're trying to find a splash image for.
+   * @returns {boolean|Object} Returns either false, if splash image for the given HREF is not found,
+   *                           otherwise returns the splash image object itself.
+   */
+  function locateSplashFileObjectForMediaFileHref(href) {
     var find = [ fileGetBase(href) ];
+
     if( window.fv_player_shortcode_editor_qualities ) {
       Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
         var re = new RegExp(prefix+'$');
@@ -401,20 +510,88 @@ jQuery( function($) {
       });
     }
 
-    var splash = false;
+    var
+      splash = false,
+      activeTabId = jQuery( '.media-router:visible .media-menu-item.active' ).attr('id');
+
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
-        var f = fv_flowplayer_scannedFiles[j];
-        if( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href ) {
-          splash = (f.splash ? f.splash : f.link);
+        var
+          f = fv_flowplayer_scannedFiles[j],
+          // check for image splash files with the same base name that are not poining to the same actual file
+          // as the one we're checking them against (classic splash files)
+          splashCheck = ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href );
 
-          // remove signature if we're updating the Editor field, otherwise leave it in,
-          // so we can actually preview the splash
-          if (strip_signature && splash.indexOf('?') > -1) {
-            splash = splash.substring(0, splash.indexOf('?'));
+        // check for any additional inclusions and exclusions in splash checks
+        if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ] ) {
+          // see if we have additional files to include as splash images
+          if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['include'] ) {
+            // check for each of these file names against current file name
+            for ( var value of fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['include'] ) {
+              var regexCheck = new RegExp( value );
+              if ( f && f.link && f.link.match( regexCheck ) && fileGetBase(f.link) == find[i] ) {
+                // file pattern found, simply set splashCheck to true and bail out to continue with exclusion checks
+                splashCheck = true;
+                break;
+              }
+            }
+          }
+
+          // see if we have additional files to exclude as splash images
+          if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['exclude'] ) {
+            // check for each of these file names against current file name
+            for ( var value of fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['exclude'] ) {
+              var regexCheck = new RegExp( value );
+              if ( f && f.link && !f.link.match( regexCheck ) && fileGetBase(f.link) == find[i] ) {
+                // file pattern found, simply set splashCheck to false and bail out, as we must exclude this file as splash
+                splashCheck = false;
+                break;
+              }
+            }
           }
         }
+
+        if ( splashCheck ) {
+          splash = f;
+        }
       }
+    }
+
+    return splash;
+  }
+
+  /**
+   * Returns the actual splash image file to be used as a thumbnail or splash screen,
+   * with or without a valid signature (with = for preview purposes, without = for inserting it
+   * into the splash input field in the editor).
+   *
+   * @param file The actual file object, or false if a relevant splash file object was not previously found
+   *             by using the locateSplashFileObjectForMediaFileHref() function.
+   * @param strip_signature Whether to leave the image signature in or strip it out.
+   * @param splash_name The actual file object key to look up as a splash image. Defaults to "splash".
+   * @returns {boolean|Object} Returns the actual splash file image or false if none was found.
+   */
+  function getFileSplashImage( file, strip_signature, splash_name ) {
+    if ( !file ) {
+      return false;
+    }
+
+    var splash = false;
+
+    // default name for splash in the file object is "splash"
+    // but we might want to set it to a different one, if we for example
+    // have a Coconut large splash image file, which is stored under "splash_large"
+    if ( typeof( splash_name ) == 'undefined' ) {
+      splash_name = 'splash';
+    }
+
+    // Perhaps it's a older encoding job without splash_large, so check carfully
+    splash = file[splash_name] ? file[splash_name] : file['splash']
+
+    // we remove the signature when we're updating the Editor field, otherwise we leave it in,
+    // so we can actually preview the splash
+    if ( splash && typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
+      splash = splash.substring(0, splash.indexOf('?'));
     }
 
     return splash;
@@ -424,7 +601,11 @@ jQuery( function($) {
     var
       $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = getSplashImageForMediaFileHref(href, true);
+      splash = locateSplashFileObjectForMediaFileHref(href);
+
+    if ( splash ) {
+      splash = getFileSplashImage( splash, true, 'splash_large' );
+    }
 
     $url_input
       .val(href)
@@ -474,9 +655,6 @@ jQuery( function($) {
     }
 
     $popup_close_btn.click();
-
-    // refresh preview
-    jQuery('#fv-player-shortcode-editor-preview-iframe-refresh').click();
 
     return false;
   }
@@ -529,7 +707,9 @@ jQuery( function($) {
             fSize = parseInt($filenameDiv.data('size')),
             fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
-            sizeSuffix = 'bytes';
+            sizeSuffix = 'bytes',
+            fExtraDisplayData = $filenameDiv.data('extra');
+            fExtraDisplayData = fExtraDisplayData.displayData;
 
           if (!fSizeTextual) {
             // if filesize is too small, show it in KBytes
@@ -582,7 +762,7 @@ jQuery( function($) {
           // load splash image
           var
             isPicture = $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/),
-            splashValue = getSplashImageForMediaFileHref($filenameDiv.data('link')),
+            splashValue = getFileSplashImage( locateSplashFileObjectForMediaFileHref( $filenameDiv.data('link') ) ),
             splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" />');
 
           // if we didn't find a splash image for a media file,
@@ -605,8 +785,9 @@ jQuery( function($) {
             '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
             '\n' +
             '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
+            (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
             '\t\t\t</div>\n' +
-            (splashValue ? '<div><i>Found matching splash screen image</i></div>' : '') +
+            ( ( splashValue && $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/) ) ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
             '\n' +
             '\t\t\n' +
@@ -618,8 +799,13 @@ jQuery( function($) {
             '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
-          // enable Choose button
-          jQuery('.media-button-select').removeAttr('disabled');
+          // if this item is unselectable (i.e. a Coconut job that errored-out or encoding job that's still being processed externally), disable the Choose button
+          if ( $filenameDiv.data('extra') && $filenameDiv.data('extra').disabled ) {
+            jQuery('.media-button-select').prop('disabled', 'disabled');
+          } else {
+            // enable Choose button
+            jQuery('.media-button-select').removeAttr('disabled');
+          }
         } else {
           // disable Choose button
           jQuery('.media-button-select').prop('disabled', 'disabled');
@@ -667,6 +853,17 @@ jQuery( function($) {
     }
 
     return false;
+  });
+
+  // listen to a drop event on one of our browser tabs and hide the drop overlay
+  // since WP does not do this for us apart from in its own upload tab
+  $( document ).on( "media_browser_drop_event", function() {
+    if ( fv_player_get_active_tab().hasClass('upload_supported') ) {
+      $( '.media-modal .uploader-window' ).css({
+        'display' : 'none',
+        'opacity' : 0,
+      });
+    }
   });
 
 });

@@ -61,7 +61,7 @@ function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
 	global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
 	
 	if( $fv_wp_flowplayer_support_mail_from_name ) {
-		$phpmailer->FromName = trim( $fv_filled_in_phpmailer_init_from_name );
+		$phpmailer->FromName = trim( $fv_wp_flowplayer_support_mail_from_name );
 	}
 	if( $fv_wp_flowplayer_support_mail_from ) {
 		if( strcmp( trim($phpmailer->From), trim($fv_wp_flowplayer_support_mail_from) ) != 0 && !trim($phpmailer->Sender) ) {
@@ -197,12 +197,12 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	}
 	
 	global $fv_wp_flowplayer_ver;
-	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
+	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
   }
 
   // when using Google PageSpeed module
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-flowplayer.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-player.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
     return 1;
   }
 
@@ -253,7 +253,9 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
 
 function fv_wp_flowplayer_check_files() {
   global $wpdb;
-  define('VIDEO_DIR', '/videos/');
+  if( !defined('VIDEO_DIR') ) {
+    define('VIDEO_DIR', '/videos/');
+  }
   
   $bNotDone = false;
   $tStart = microtime(true);
@@ -382,6 +384,8 @@ function fv_player_admin_update() {
   
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
+    do_action( 'fv_player_update' );
+
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
    if(!empty($aOptions['version']) ) {
       $aOptions['chromecast'] = true;
@@ -457,6 +461,14 @@ function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
 add_action('admin_init', 'fv_player_lchecks');
 
 function fv_player_lchecks() {
+  // Do not run if it's WP Ajax
+  if( defined('DOING_AJAX') && DOING_AJAX ) {
+    // And it's not related to anythin FV
+    if( empty($_REQUEST['action']) || stripos($_REQUEST['action'], 'fv' ) === false ) {
+      return;
+    }
+  }
+
 	if( isset($_GET['fv-licensing']) && $_GET['fv-licensing'] == "check" ){
     delete_option("fv_wordpress_flowplayer_persistent_notices");
     
@@ -549,7 +561,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
     return $data;
   
   } else if( is_wp_error($resp) ) {
-    $args = array( 'sslverify' => false );
+    $args['sslverify'] = false;
     $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
   
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
@@ -670,37 +682,28 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
 
 
 
-function fv_player_disable_object_cache($value=null){
-    global $_wp_using_ext_object_cache, $fv_player_wp_using_ext_object_cache_prev;
-    $fv_player_wp_using_ext_object_cache_prev = $_wp_using_ext_object_cache;
-    $_wp_using_ext_object_cache = false;
-    return $value;
-}
-
-function fv_player_enable_object_cache($value=null){
-    global $_wp_using_ext_object_cache, $fv_player_wp_using_ext_object_cache_prev;
-    $_wp_using_ext_object_cache = $fv_player_wp_using_ext_object_cache_prev;
-    return $value;
-}
-
-add_filter( 'pre_set_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
-add_filter( 'pre_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
-add_action( 'delete_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
-add_action( 'set_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
-add_filter( 'transient_fv_flowplayer_license', 'fv_player_enable_object_cache' );
-add_action( 'deleted_transient_fv_flowplayer_license', 'fv_player_disable_object_cache' );
-
-
-
-
 function flowplayer_deactivate() {
-  if( flowplayer::is_licensed() ) {  
+  if ( WP_Filesystem() ) {
+    global $wp_filesystem;
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-player-tracking/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-player-tracking/', true );
+    }
+
+    if( $wp_filesystem->exists( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/' ) ) {
+      $wp_filesystem->rmdir( $wp_filesystem->wp_content_dir().'fv-flowplayer-custom/', true );
+    }
+  }
+  
+  if( flowplayer::is_licensed() ) {
     delete_transient( 'fv_flowplayer_license' );
   }
-  delete_option( 'fv_flowplayer_extension_install' );
-  wp_clear_scheduled_hook('fv_flowplayer_checker_event');
-}
 
+  delete_option( 'fv_flowplayer_extension_install' );
+
+  wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
+  wp_clear_scheduled_hook( 'fv_player_stats' );
+}
 
 
 
@@ -797,7 +800,7 @@ function fv_player_rollback_message( $val ) {
 add_action( 'admin_notices', 'fv_player_pro_version_check' );
 
 function fv_player_pro_version_check() {
-  $version = '7.4.47.727';
+  $version = '7.5.0.727';
   
   global $FV_Player_Pro;
   
@@ -808,4 +811,44 @@ function fv_player_pro_version_check() {
   </div>
   <?php
   endif;
+}
+
+add_action( 'admin_notices', 'fv_player_pay_per_view_version_check' );
+
+function fv_player_pay_per_view_version_check() {
+  $version = '7.5.3.727';
+  
+  global $FV_Player_PayPerView;
+  
+  if( !empty($FV_Player_PayPerView) && !fv_player_extension_version_is_min($version,'ppv') ) :
+  ?>
+  <div class="error">
+      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pay Per View version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+  </div>
+  <?php
+  endif;
+}
+
+add_action( 'admin_notices', 'fv_player_pay_per_view_woocommerce_version_check' );
+
+function fv_player_pay_per_view_woocommerce_version_check() {
+  $version = '7.5.3.727';
+  
+  global $FV_Player_PayPerView_WooCommerce;
+  
+  if( !empty($FV_Player_PayPerView_WooCommerce) && !fv_player_extension_version_is_min($version,'ppv-woocommerce') ) :
+  ?>
+  <div class="error">
+      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+  </div>
+  <?php
+  endif;
+}
+
+// lazy-load of video encoder libraries
+add_action( 'fv_player_load_video_encoder_libs', 'fv_player_load_video_encoder_libs' );
+function fv_player_load_video_encoder_libs() {
+  include_once( dirname( __FILE__ ).'/../models/video-encoder/video-encoder.php');
+  require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-base.php' );
+  require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-step-base.php' );
 }

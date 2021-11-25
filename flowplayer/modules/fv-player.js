@@ -10,11 +10,17 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   } catch(e) {}
 
   flowplayer.conf = fv_flowplayer_conf;
+  flowplayer.conf.fullscreen = false; // replaced by fv_fullscreen
   flowplayer.conf.chromecast = false; // we have our own Chromecast code to use instead
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
   flowplayer.conf.analytics = false;
-  
+
+   // localstorage disabled by admin
+  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
+    flowplayer.conf.storage = {} // set empty to disable
+  }
+
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
     flowplayer.conf.key = atob(flowplayer.conf.key);
@@ -112,6 +118,9 @@ function fv_player_videos_parse(args, root) {
       }
     });
   }
+
+  root.trigger( 'fv_player_videos_parse', videos );
+
   return videos;
 }
 
@@ -132,7 +141,10 @@ jQuery(document).ready( function() {
     if( loading_count < 1000 && (
       window.fv_video_intelligence_conf && !window.FV_Player_IMA ||
       window.fv_vast_conf && !window.FV_Player_IMA ||
-      window.fv_player_pro && !window.FV_Flowplayer_Pro && document.getElementById('fv_player_pro') != fv_player_pro
+      window.fv_player_pro && !window.FV_Flowplayer_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
+      window.fv_player_user_playlists && !fv_player_user_playlists.is_loaded ||
+      // if using FV Player JS Loader wait until all scripts have finished loading
+      window.FV_Player_JS_Loader_scripts_total && window.FV_Player_JS_Loader_scripts_loaded < FV_Player_JS_Loader_scripts_total
     ) ) {      
       return;
     }
@@ -160,6 +172,11 @@ function fv_player_preload() {
   }
 
   flowplayer( function(api,root) {
+    // remove the temporary localStorage test item
+    if( localStorage.flowplayerTestStorage ) {
+      delete( localStorage.flowplayerTestStorage );
+    }
+
     root = jQuery(root);
     var fp_player = root.find('.fp-player');
     var splash_click = false;
@@ -178,10 +195,6 @@ function fv_player_preload() {
       root.find('.fp-volume').hide();
     }
     
-    if( root.data('fullscreen') == false ) {
-      root.find('.fp-fullscreen').remove();
-    }
-
     if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
       root.find('.fp-volume').remove();
     }
@@ -215,9 +228,17 @@ function fv_player_preload() {
         index = jQuery('a',playlist).index(this);
         $prev = $this.prev('a'),
         item = $this.data('item');
+      
+      // Open editing for the playlist item which was clicked
+      // TODO: There should be a better way of sending a signal to the editor!
+      if( location.href.match(/wp-admin/) && $this.parents('.fv-player-editor-preview').length > 0 ) {
+        fv_flowplayer_conf.current_video_to_edit = index;
+        $this.parents('.fv-player-custom-video').find('.edit-video .fv-player-editor-button').trigger('click');
+        return false;
+      }
 
       if ($prev.length && $this.is(':visible') && !$prev.is(':visible')) {
-        $prev.click();
+        $prev.trigger('click');
         return false;
       }
 
@@ -322,8 +343,14 @@ function fv_player_preload() {
       jQuery('.fp-playlist-external .now-playing').remove();
       jQuery('.fp-playlist-external a').removeClass('is-active');
 
-      fp_player.prepend(splash_text);
-      fp_player.prepend(splash_img);
+      var iframe = fp_player.find('iframe.fp-engine');
+      if( iframe.length ) {
+        iframe.after(splash_text);
+        iframe.after(splash_img);
+      } else {
+        fp_player.prepend(splash_text);
+        fp_player.prepend(splash_img);
+      }
 
       playlist_progress = false;
     });
@@ -369,6 +396,26 @@ function fv_player_preload() {
       });
       console.log( 'FV Player Status ('+type+')', status );
     }
+
+    // Tell the world that the FV Player has finished loading
+    if( !window.fv_player_loaded ) {
+      window.fv_player_loaded = true;
+      setTimeout( function() {
+
+        // jQuery event
+        jQuery(document).trigger('fv_player_loaded');
+
+        // pure JS event
+        var event= new CustomEvent('fv_player_loaded',[]);
+        document.dispatchEvent(event);
+      }, 100 );
+    }
+    
+    // It's good if the player element can tell others that the FV Player has loaded in it
+    setTimeout( function() {
+      root.trigger('fv_player_loaded');
+      // Seems like root.data('flowplayer') is only available after a while, it won't work without this delay
+    }, 10 );
   });
   
   //sets height for embedded players 
@@ -404,16 +451,44 @@ function fv_player_preload() {
   jQuery(window).on('hashchange',fv_autoplay_exec);
 }
 
+/*
+Calling this without any argument will check all .flowplayer elements and load FV Player where not loaded yet. You can also call it for a single element, then it loads that one and gives you the Flowplayer API for that one. If it's already loaded it gives you that API too - great for lazy load use.
+*/
+function fv_player_load( forced_el ) {
+  if( forced_el && forced_el.lenght > 1 ) {
+    console.log('FV Player: Can\'t use fv_player_load with more than a single forced element!');
+  }
+  var load_players = forced_el,
+    forced_api = false;
 
-function fv_player_load() {
-  
-  jQuery('.flowplayer' ).each( function(i,el) {
+  if( !load_players ) load_players = jQuery('.flowplayer' );
+
+  load_players.each( function(i,el) {
     var root = jQuery(el);
     var api = root.data('flowplayer');
-    if( api ) return;
-    
+    if( api ) {
+      if( forced_el ) forced_api = api;
+      return;
+    }
+
+    if( forced_el ) { // if the element load is forced we process the lazy load data too
+      root.find('.fp-preload, .fvfp_admin_error').remove();
+      if( root.attr('data-item-lazy') ) {
+        root.attr('data-item', root.attr('data-item-lazy') );
+        root.removeAttr('item-lazy')
+      } else if( playlist = jQuery( '[rel='+root.attr('id')+']' ) ) {
+        playlist.find('a[data-item-lazy]').each( function(k,v) {
+          v = jQuery(v);
+          v.attr('data-item', v.attr('data-item-lazy') );
+          v.removeAttr('data-item-lazy');
+        });
+      }
+    }
+
+    var conf = false;
     if( root.attr('data-item') ) {
-      root.flowplayer( { clip: fv_player_videos_parse(root.attr('data-item'), root) });
+      conf = { clip: fv_player_videos_parse(root.attr('data-item'), root) };
+      
     } else if( playlist = jQuery( '[rel='+root.attr('id')+']' ) ) {
       if ( playlist.find('a[data-item]').length == 0 ) return;  //  respect old playlist script setup
       
@@ -426,7 +501,14 @@ function fv_player_load() {
         }
       });
 
-      root.flowplayer( { playlist: items } );
+      conf = { playlist: items };
+    }
+    
+    if( conf ) {
+      // without this none of the root element data attributes would be processed
+      conf = flowplayer.extend(conf, root.data());
+      forced_api = flowplayer( root[0], conf );
+      root.data('flowplayer',forced_api);
     }
   } );
   
@@ -439,6 +521,10 @@ function fv_player_load() {
     jQuery('body').removeClass('fv_flowplayer_tabs_hide');
     jQuery('.fv_flowplayer_tabs_content').tabs();
   }
+
+  if( forced_el && forced_api ) {
+    return forced_api;
+  }  
 
 }
 
@@ -510,16 +596,8 @@ function fv_player_playlist_active(playlist,item) {
 }
 
 
-jQuery( function() {
-  jQuery('.flowplayer').each( function() {
-    flowplayer.bean.off(jQuery(this)[0],'contextmenu');
-  });
-} );
-
 var fv_fp_date = new Date();
 var fv_fp_utime = fv_fp_date.getTime();
-
-
 
 
 /* *
@@ -579,11 +657,11 @@ function fv_player_time_hms(seconds) {
   }
 
   // leading zero for minutes
-  if ( hours && minutes < 10) { // ecample: 1h05m
+  if ( hours && minutes < 10) { // example: 1h05m
     minutes = "0" + minutes + "m";
-  } else if( !hours && minutes ) { 
-    minutes += "m"; 
-  } else {
+  } else if( minutes ) { // example: 1h15m, 15m20s
+    minutes += "m";
+  } else { // example: 15s
     minutes = "";
   }
 
@@ -689,7 +767,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
 
   if(root.parent().hasClass('ui-tabs-panel')){
     var tabId = root.parent().attr('id');
-    jQuery('[aria-controls=' + tabId + '] a').click();
+    jQuery('[aria-controls=' + tabId + '] a').trigger('click');
   }
 
   if( !root.find('.fp-player').attr('class').match(/\bis-sticky/) ){
@@ -701,7 +779,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   }
   if(root.hasClass('lightboxed')){
     setTimeout(function(){
-      jQuery('[href=\\#' + root.attr('id')+ ']').click();
+      jQuery('[href=\\#' + root.attr('id')+ ']').trigger('click');
     },0);
   }
 
@@ -709,8 +787,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   if(index){
     if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
-        if( fTime > 0 ) api.seek(fTime);
-        fv_autoplay_exec_in_progress = false;
+        fv_player_video_link_seek( api, fTime );
         
       } else {
         api.play(parseInt(index));
@@ -734,8 +811,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
     }
   }else{
     if( api.ready ) {
-      if( fTime > 0 ) api.seek(fTime);
-      fv_autoplay_exec_in_progress = false;
+      fv_player_video_link_seek( api, fTime );
       
     } else {
       if( fv_player_video_link_autoplay_can(api) ) {
@@ -756,7 +832,17 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
 
   var do_seek = setInterval( function() {
     if ( api.loading ) return;
-    if ( fTime > 0 ) api.seek(fTime); // prevent seeking to 0s (causing glitch)
+    
+    // prevent seeking to 0s (causing glitch)
+    // unless the video position is > 0
+    if ( fTime > 0 || api.video.time > 0 ) {
+      // use the FV Player Pro method if available which considers the custom start/end time
+      if( !!api.custom_seek ) {
+        api.custom_seek(fTime);
+      } else {
+        api.seek(fTime);
+      } 
+    }
     if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
     clearInterval(do_seek);
   }, 10 );
@@ -824,9 +910,18 @@ function fv_autoplay_exec(){
         autoplay = root.attr('data-fvautoplay');
 
       if( !fv_player_did_autoplay && autoplay ) {
-        if( !( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) ) { // don't let these mobile devices autoplay YouTube
+        if( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) {
+          // don't let these mobile devices autoplay YouTube
+          console.log( 'FV Player: Autoplay for YouTube not supported on Android and iOS');
+          return;
+        } else {
           fv_player_did_autoplay = true;
-          api.load();
+
+          if( api.conf.playlist.length && !isNaN(parseFloat(autoplay)) && isFinite(autoplay) ) {
+            api.play( parseInt(autoplay) );
+          } else {
+            api.load();
+          }
 
           // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
           var play_icon = root.find('.fp-play').addClass('invisible'),

@@ -11,10 +11,10 @@
  */
 flowplayer( function(api,root) {
   root = jQuery(root);
-  var playlist = api.conf.playlist;
-  var videoIndex;
-
-  api.bind("ready", function (e, api, video) {
+  var playlist = api.conf.playlist,
+    videoIndex;
+    
+  api.bind("load", function (e, api, video) {
     videoIndex = video.index;
   });
 
@@ -42,6 +42,7 @@ flowplayer( function(api,root) {
         console.log('FV Player: Playlist item failure, auto-advancing to '+(videoIndex+1)+'. item');
         api.play(videoIndex);
       }
-    },1000);
+    }, 1000 );
   });
+  
 });

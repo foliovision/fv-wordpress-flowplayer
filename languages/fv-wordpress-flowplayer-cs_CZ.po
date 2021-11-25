@@ -1,15 +1,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: FV WordPress Flowplayer v.6.0.3.4\n"
-"POT-Creation-Date: 2017-08-07 14:12+0200\n"
-"PO-Revision-Date: 2017-08-07 14:14+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-21 10:28+0100\n"
+"PO-Revision-Date: 2021-10-21 10:28+0100\n"
 "Last-Translator: Polak Maros <polak.maros@foliovision.com>\n"
 "Language-Team: \n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"Plural-Forms: \n"
+"X-Generator: Eazy Po 0.9.5.3\n"
 "X-Poedit-KeywordsList: __;_e;_n\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -2208,6 +2210,27 @@ msgstr ""
 msgid "Ad Size"
 msgstr ""
 
+msgid "All"
+msgstr "Vše"
+
+msgid "Play All"
+msgstr "Přehrát vše"
+
+msgid "Replay Playlist"
+msgstr "Opakuj playlist"
+
+msgid "Repeat Track"
+msgstr "Opakuj video"
+
+msgid "Shuffle Playlist"
+msgstr "Náhodný výběr"
+
+msgid "Item %d."
+msgstr "Video %d."
+
+msgid "Click to unmute"
+msgstr "Zapnout zvuk"
+
 #~ msgid ""
 #~ "FV Wordpress Flowplayer has found old shortcodes in the content of your "
 #~ "posts. <a href=\"%1$s\">Run the conversion script.</a>"
@@ -2431,20 +2454,616 @@ msgstr ""
 #~ "Flowplayer offers 98% coverage even on mobile devices."
 #~ msgstr "sadsa"
 
-msgid "All"
-msgstr "Vše"
+#, php-format
+#~ msgid "FV Player: Please upgrade to FV Player Pro version %s or above!"
+#~ msgstr ""
 
-msgid "Play All"
-msgstr "Přehrát vše"
+#~ msgid "Embed feature not supported in editor preview"
+#~ msgstr ""
 
-msgid "Replay Playlist"
-msgstr "Opakuj playlist"
+#~ msgid "Link feature not supported in editor preview"
+#~ msgstr ""
 
-msgid "Repeat Track"
-msgstr "Opakuj video"
+#~ msgid "Video loading has stalled, click to reload"
+#~ msgstr ""
 
-msgid "Shuffle Playlist"
-msgstr "Náhodný výběr"
+#, php-format
+#~ msgid "%s day"
+#~ msgid_plural "%s days"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
 
-msgid "Item %d."
-msgstr "Video %d."
+#, php-format
+#~ msgid "%s hour"
+#~ msgid_plural "%s hours"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#, php-format
+#~ msgid "%s min"
+#~ msgid_plural "%s mins"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#, php-format
+#~ msgid "%s second"
+#~ msgid_plural "%s seconds"
+#~ msgstr[0] ""
+#~ msgstr[1] ""
+
+#, php-format
+#~ msgid "%1$s and %2$s"
+#~ msgstr ""
+
+#~ msgid "FV Player 7.5"
+#~ msgstr ""
+
+#~ msgid "Thanks for letting me know!"
+#~ msgstr ""
+
+#~ msgid "FV Player Video Lightbox"
+#~ msgstr ""
+
+#~ msgid "FV Player database storage is here!"
+#~ msgstr ""
+
+#~ msgid "FV Player Video Sitemap coverage"
+#~ msgstr ""
+
+#~ msgid "Go to setting"
+#~ msgstr ""
+
+#~ msgid "FV Player 7"
+#~ msgstr ""
+
+#~ msgid "Africa (Cape Town)"
+#~ msgstr ""
+
+#~ msgid "Asia Pacific (Hong Kong)"
+#~ msgstr ""
+
+#~ msgid "Asia Pacific (Osaka-Local)"
+#~ msgstr ""
+
+#~ msgid "China (Beijing)"
+#~ msgstr ""
+
+#~ msgid "China (Ningxia)"
+#~ msgstr ""
+
+#~ msgid "Europe (Frankfurt)"
+#~ msgstr ""
+
+#~ msgid "Europe (Ireland)"
+#~ msgstr ""
+
+#~ msgid "Europe (London)"
+#~ msgstr ""
+
+#~ msgid "Europe (Milan)"
+#~ msgstr ""
+
+#~ msgid "Europe (Paris)"
+#~ msgstr ""
+
+#~ msgid "Europe (Stockholm)"
+#~ msgstr ""
+
+#~ msgid "Middle East (Bahrain)"
+#~ msgstr ""
+
+#~ msgid "South America (S&atilde;o Paulo)"
+#~ msgstr ""
+
+#~ msgid "An unknown error occurred"
+#~ msgstr ""
+
+#~ msgid " extension installed successfully!"
+#~ msgstr ""
+
+#~ msgid " extension install failed - "
+#~ msgstr ""
+
+#~ msgid " extension upgraded successfully!"
+#~ msgstr ""
+
+#~ msgid "Domain"
+#~ msgstr ""
+
+#~ msgid "You can enter multiple domains separated by <code>,</code>."
+#~ msgstr ""
+
+#~ msgid "Secure Token"
+#~ msgstr ""
+
+#~ msgid "Draft"
+#~ msgstr ""
+
+#~ msgid "Remove fancyBox"
+#~ msgstr ""
+
+#~ msgid "Your gallery items will link to image files directly to allow this."
+#~ msgstr ""
+
+#~ msgid "Player Name"
+#~ msgstr ""
+
+#~ msgid "Date"
+#~ msgstr ""
+
+#~ msgid "Author"
+#~ msgstr ""
+
+#~ msgid "Chapters"
+#~ msgstr ""
+
+#~ msgid "Transcript"
+#~ msgstr ""
+
+#~ msgid "Embedded on"
+#~ msgstr ""
+
+#~ msgid "Plays"
+#~ msgstr ""
+
+#~ msgid "Players per page"
+#~ msgstr ""
+
+#~ msgid "no region"
+#~ msgstr ""
+
+#~ msgid "Remember video position"
+#~ msgstr ""
+
+#~ msgid "Video Stats"
+#~ msgstr ""
+
+#~ msgid "Gives you a daily count of video plays."
+#~ msgstr ""
+
+#~ msgid "System Info"
+#~ msgstr ""
+
+#~ msgid "Install"
+#~ msgstr ""
+
+#~ msgid "Reset"
+#~ msgstr ""
+
+#~ msgid "Login"
+#~ msgstr ""
+
+#~ msgid "Password"
+#~ msgstr ""
+
+#~ msgid "Sign in"
+#~ msgstr ""
+
+#~ msgid "Hide the vi Ads tab"
+#~ msgstr ""
+
+#~ msgid "video intelligence"
+#~ msgstr ""
+
+#~ msgid "Account"
+#~ msgstr ""
+
+#~ msgid "Hide vi Ads"
+#~ msgstr ""
+
+#~ msgid "Free video intelligence ads"
+#~ msgstr ""
+
+#~ msgid "Show the vi Ads tab again"
+#~ msgstr ""
+
+#~ msgid "vi Ads"
+#~ msgstr ""
+
+#~ msgid "Use XML Video Sitemap"
+#~ msgstr ""
+
+#~ msgid "Sitemap Post Meta"
+#~ msgstr ""
+
+#~ msgid "Amazon S3 Browser"
+#~ msgstr ""
+
+#~ msgid "Show Amazon S3 Browser in the \"Add Video\" dialog."
+#~ msgstr ""
+
+#~ msgid "Controlbar Always Visible"
+#~ msgstr ""
+
+#~ msgid "Enter values in pixels or 100%."
+#~ msgstr ""
+
+#~ msgid "Enable Chromecast"
+#~ msgstr ""
+
+#~ msgid "Adds support for Google Chromecast."
+#~ msgstr ""
+
+#~ msgid "Force HD Streaming"
+#~ msgstr ""
+
+#~ msgid "Use HD quality for HLS/MPEG-DASH even on slow connections."
+#~ msgstr ""
+
+#~ msgid "Matomo/Piwik Tracking"
+#~ msgstr ""
+
+#~ msgid "matomo.your-domain.com"
+#~ msgstr ""
+
+#~ msgid "Site ID"
+#~ msgstr ""
+
+#~ msgid "Multiple video playback"
+#~ msgstr ""
+
+#~ msgid "No Picture Button"
+#~ msgstr ""
+
+#~ msgid "Adds a button to turn the video picture on and off."
+#~ msgstr ""
+
+#~ msgid "Slider"
+#~ msgstr ""
+
+#~ msgid "Vertical Season"
+#~ msgstr ""
+
+#~ msgid "Polaroid"
+#~ msgstr ""
+
+#~ msgid "Text"
+#~ msgstr ""
+
+#~ msgid "Repeat Button"
+#~ msgstr ""
+
+#~ msgid "Adds a button to set playlist/track repeat and shuffle."
+#~ msgstr ""
+
+#~ msgid "Rewind/Forward Button"
+#~ msgstr ""
+
+#~ msgid "Adds a button to go 10 seconds back/forth."
+#~ msgstr ""
+
+#~ msgid "Maintenance tools and debug info."
+#~ msgstr ""
+
+#~ msgid "Disable saving skin CSS to a static file"
+#~ msgstr ""
+
+#~ msgid "Handle WordPress audio/video"
+#~ msgstr ""
+
+#~ msgid "Optimize FV Flowplayer JS loading"
+#~ msgstr ""
+
+#~ msgid "Helps with Google PageSpeed scores."
+#~ msgstr ""
+
+#~ msgid "Alternative iOS fullscreen mode"
+#~ msgstr ""
+
+#~ msgid "Force landscape orientation in fullscreen"
+#~ msgstr ""
+
+#~ msgid "Works on the Android mobile, not supported on iOS unfortunately."
+#~ msgstr ""
+
+#~ msgid " Adds the video meta data information for search engines."
+#~ msgstr ""
+
+#~ msgid "Show on pause"
+#~ msgstr ""
+
+#~ msgid "Playlist Item Titles"
+#~ msgstr ""
+
+#~ msgid "Splash Text"
+#~ msgstr ""
+
+#~ msgid "Sticky"
+#~ msgstr ""
+
+#~ msgid "Synopsis"
+#~ msgstr ""
+
+#~ msgid "Color"
+#~ msgstr ""
+
+#~ msgid "Controlbar Fullscreen"
+#~ msgstr ""
+
+#~ msgid "Enter value in em"
+#~ msgstr ""
+
+#~ msgid "Buttons"
+#~ msgstr ""
+
+#~ msgid "Slim"
+#~ msgstr ""
+
+#~ msgid "Full"
+#~ msgstr ""
+
+#~ msgid "Fat"
+#~ msgstr ""
+
+#~ msgid "Minimal"
+#~ msgstr ""
+
+#~ msgid "Icons"
+#~ msgstr ""
+
+#~ msgid "Edgy"
+#~ msgstr ""
+
+#~ msgid "Outlined"
+#~ msgstr ""
+
+#~ msgid "Playful"
+#~ msgstr ""
+
+#~ msgid "(inherit from player)"
+#~ msgstr ""
+
+#~ msgid "Second line."
+#~ msgstr ""
+
+#~ msgid "Enable"
+#~ msgstr ""
+
+#~ msgid "Placement"
+#~ msgstr ""
+
+#~ msgid "Player width [px]"
+#~ msgstr ""
+
+#~ msgid "Basic Setup"
+#~ msgstr ""
+
+#~ msgid "Installation"
+#~ msgstr ""
+
+#~ msgid "Start up guide"
+#~ msgstr ""
+
+#~ msgid "Alignment Settings"
+#~ msgstr ""
+
+#~ msgid "Customizing FV Player Skin"
+#~ msgstr ""
+
+#~ msgid "Sharing Videos on Social Media"
+#~ msgstr ""
+
+#~ msgid "Email Sharing"
+#~ msgstr ""
+
+#~ msgid "Using the Iframe Embedding"
+#~ msgstr ""
+
+#~ msgid "Using the Video Lightbox Effect"
+#~ msgstr ""
+
+#~ msgid "Video Encoding for HTML 5"
+#~ msgstr ""
+
+#~ msgid "How to Create Playlists"
+#~ msgstr ""
+
+#~ msgid "VTT Chapters"
+#~ msgstr ""
+
+#~ msgid "Adding Titles and Splash Text"
+#~ msgstr ""
+
+#~ msgid "Setting Up Video Quality Switching"
+#~ msgstr ""
+
+#~ msgid "How to Use the Built-in Video Checker"
+#~ msgstr ""
+
+#~ msgid "Creating Video Links in FV Player"
+#~ msgstr ""
+
+#~ msgid "Switching FV Player Pro to Beta"
+#~ msgstr ""
+
+#~ msgid "FAQ"
+#~ msgstr ""
+
+#~ msgid "WordPress Video Plugins Comparison"
+#~ msgstr ""
+
+#~ msgid "List of Shortcode Parameters"
+#~ msgstr ""
+
+#~ msgid "Video Hosting"
+#~ msgstr ""
+
+#~ msgid "Using YouTube with FV Player"
+#~ msgstr ""
+
+#~ msgid "How to Use Vimeo with WordPress"
+#~ msgstr ""
+
+#~ msgid "Serving Private Videos with Amazon S3"
+#~ msgstr ""
+
+#~ msgid "Serving Private Videos via CloudFront"
+#~ msgstr ""
+
+#~ msgid "Using BunnyCDN with FV Player Pro"
+#~ msgstr ""
+
+#~ msgid "Using KeyCDN With FV Player"
+#~ msgstr ""
+
+#~ msgid "Using HLS With FV Player"
+#~ msgstr ""
+
+#~ msgid "Advertising Options with FV Player"
+#~ msgstr ""
+
+#~ msgid "Custom Video Ads in FV Player (pre-roll and post-roll)"
+#~ msgstr ""
+
+#~ msgid "Overlay Ads in FV Player"
+#~ msgstr ""
+
+#~ msgid "Google Video Advertising Options"
+#~ msgstr ""
+
+#~ msgid "Incorporating Google Ads (AdSense)"
+#~ msgstr ""
+
+#~ msgid "Video Actions: HTML Pop-ups"
+#~ msgstr ""
+
+#~ msgid "Using ExoClick Ads With FV Player"
+#~ msgstr ""
+
+#~ msgid "Advanced"
+#~ msgstr ""
+
+#~ msgid "How to use FV Player Widget"
+#~ msgstr ""
+
+#~ msgid "Setting up Video Custom Fields"
+#~ msgstr ""
+
+#~ msgid "Using Google Analytics with FV Player"
+#~ msgstr ""
+
+#~ msgid "AB Loop Function"
+#~ msgstr ""
+
+#~ msgid "How to Create Subtitles"
+#~ msgstr ""
+
+#~ msgid "Interactive Video Transcript"
+#~ msgstr ""
+
+#~ msgid "How to Use Custom Start/End Time"
+#~ msgstr ""
+
+#~ msgid "Sticky Video"
+#~ msgstr ""
+
+#~ msgid "CSS Tips and Fixes"
+#~ msgstr ""
+
+#~ msgid "Using FV Player with Minify Plugins"
+#~ msgstr ""
+
+#~ msgid "How to Use the Speed Buttons"
+#~ msgstr ""
+
+#~ msgid "Using FV Player with Sub-domains and Multi-Domains"
+#~ msgstr ""
+
+#~ msgid "FV Player Profile Videos"
+#~ msgstr ""
+
+#~ msgid "Video Downloading With Simple History Support"
+#~ msgstr ""
+
+#~ msgid "Email Subscription Form Pop-ups"
+#~ msgstr ""
+
+#~ msgid "Using FV Player With AMP"
+#~ msgstr ""
+
+#~ msgid "Programmer&#8217;s Guide"
+#~ msgstr ""
+
+#~ msgid "FV WordPress Flowplayer Downgrading"
+#~ msgstr ""
+
+#~ msgid "Changelog"
+#~ msgstr ""
+
+#~ msgid "Incompatible Plugins and Scripts"
+#~ msgstr ""
+
+#~ msgid "Securing Your Video"
+#~ msgstr ""
+
+#~ msgid "How to Protect Your Videos from Being Downloaded"
+#~ msgstr ""
+
+#~ msgid "How to use RTMP streams with Flash"
+#~ msgstr ""
+
+#~ msgid "How to setup encrypted HLS stream with Amazon Elastic Transcoder"
+#~ msgstr ""
+
+#~ msgid "Protecting Videos With DRM Text"
+#~ msgstr ""
+
+#~ msgid "VAST/VPAID Ads"
+#~ msgstr ""
+
+#~ msgid "How to Use FV Player VAST"
+#~ msgstr ""
+
+#~ msgid "Using URL Tags"
+#~ msgstr ""
+
+#~ msgid "VAST Tester"
+#~ msgstr ""
+
+#~ msgid "Tracking VAST and VPAID Ads With Google Analytics"
+#~ msgstr ""
+
+#~ msgid "Using FV Player VAST Outside WordPress"
+#~ msgstr ""
+
+#~ msgid "List of Sample VAST/VPAID Ad Tags"
+#~ msgstr ""
+
+#~ msgid "Remove all data"
+#~ msgstr ""
+
+#~ msgid "Tools"
+#~ msgstr ""
+
+#~ msgid "Video SEO"
+#~ msgstr ""
+
+#~ msgid "Custom CSS"
+#~ msgstr ""
+
+#~ msgid "Rollback"
+#~ msgstr ""
+
+#~ msgid "Uninstall"
+#~ msgstr ""
+
+#~ msgid "Check license"
+#~ msgstr ""
+
+#~ msgid "Embeds"
+#~ msgstr ""
+
+#~ msgid "FV Player Pro is required to use this video type in playlist."
+#~ msgstr ""
+
+#~ msgid "Title"
+#~ msgstr ""
+
+#~ msgid "DVR stream"
+#~ msgstr ""
+
+#~ msgid "Audio stream"
+#~ msgstr ""
+
+#~ msgid "Pick existing player"
+#~ msgstr ""

@@ -115,9 +115,9 @@ class FV_Player_Checker {
     if( !empty($meta) ) {
       extract( $meta, EXTR_SKIP );
     }
-    
-    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-      $URLs = json_decode( stripslashes( trim($_POST['media']) ));
+
+    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) { 
+      $URLs = json_decode( stripslashes( trim( wp_strip_all_tags( $_POST['media'] ) ) ) );
     }
 
     if( isset($URLs) ) {
@@ -129,10 +129,10 @@ class FV_Player_Checker {
         } else if( !isset($media) && !preg_match( '!\.(m3u8ALLOW|m3uALLOW|avi)$!', $source) ) {
           $media = $source;
         }
-      }    
-              
+      }
+
       //$random = rand( 0, 10000 );
-      $random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
+      $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( $_POST['hash'] ) ) : false;
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
@@ -196,10 +196,9 @@ class FV_Player_Checker {
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-            
-            $request = wp_remote_get($remotefilename_encoded);
+            $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
+            $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
             $response = wp_remote_retrieve_body( $request );
-  
             $playlist = false;
             $duration = 0;
             $segments = false;
@@ -242,7 +241,7 @@ class FV_Player_Checker {
   
             $time = $duration;
           }
-          
+
           $time = apply_filters( 'fv_flowplayer_checker_time', $time, $remotefilename_encoded );
           $key = flowplayer::get_video_key($remotefilename_encoded);
           

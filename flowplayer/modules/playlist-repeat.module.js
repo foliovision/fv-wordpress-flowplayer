@@ -13,7 +13,7 @@ flowplayer( function(api,root) {
     }
 
     if( !api.video.type.match(/^audio/) && root.data('button-no-picture') && root.find('.fv-fp-no-picture').length == 0 ) {
-      var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="20px" height="20px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
+      var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="18px" height="18px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
       
       button_no_picture.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
         e.preventDefault();
@@ -29,16 +29,16 @@ flowplayer( function(api,root) {
         var t = fv_flowplayer_translations,
           playlist_button = jQuery(
           '<strong class="fv-fp-playlist mode-normal">\
-            <svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg>\
-            <svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg>\
-            <svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg>\
+            <svg viewBox="0 0 80.333 80" width="18px" height="18px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg>\
+            <svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg>\
+            <svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg>\
             <span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span>\
             </strong>'),
           playlist_menu = jQuery(
             '<div class="fp-menu fv-fp-playlist-menu">\
-              <a data-action="repeat_playlist"><svg viewBox="0 0 80.333 80" width="20px" height="20px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_all+'</span></a>\
-              <a data-action="shuffle_playlist"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg> <span class="screen-reader-text">'+t.playlist_shuffle+'</span></a>\
-              <a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_video+'</span></a>\
+              <a data-action="repeat_playlist"><svg viewBox="0 0 80.333 80" width="18px" height="18px" class="fvp-icon fvp-replay-list"><title>'+t.playlist_replay_all+'</title><use xlink:href="#fvp-replay-list"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_all+'</span></a>\
+              <a data-action="shuffle_playlist"><svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-shuffle"><title>'+t.playlist_shuffle+'</title><use xlink:href="#fvp-shuffle"></use></svg> <span class="screen-reader-text">'+t.playlist_shuffle+'</span></a>\
+              <a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_video+'</span></a>\
               <a class="fp-selected" data-action="normal"><span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span></a>\
               </div>').insertAfter( root.find('.fp-controls') );
           
@@ -66,7 +66,7 @@ flowplayer( function(api,root) {
           else {
             // workaround for flowplayer 7 not picking up our menu as one of its own,
             // thus not closing it
-            root.click();
+            root.trigger('click');
             api.showMenu(playlist_menu[0]);
           }
         });
@@ -122,7 +122,7 @@ flowplayer( function(api,root) {
         });
         
         if( api.conf.loop ) {
-          jQuery('a[data-action=repeat_playlist]', playlist_menu ).click();
+          jQuery('a[data-action=repeat_playlist]', playlist_menu ).trigger('click');
         }
         
         api.on('progress', function() {
@@ -137,7 +137,7 @@ flowplayer( function(api,root) {
         });      
         
       } else if( root.find('.fv-fp-track-repeat').length == 0 && api.conf.playlist.length == 0 ) {
-        var button_track_repeat = jQuery('<strong class="fv-fp-track-repeat"><svg viewBox="0 0 80.333 71" width="20px" height="20px" class="fvp-icon fvp-replay-track"><use xlink:href="#fvp-replay-track"></use></svg></strong>');
+        var button_track_repeat = jQuery('<strong class="fv-fp-track-repeat"><svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-replay-track"><use xlink:href="#fvp-replay-track"></use></svg></strong>');
         button_track_repeat.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
@@ -158,17 +158,32 @@ flowplayer( function(api,root) {
       }
     }
     
-    if( root.data('button-rewind') && root.find('.fv-fp-rewind').length == 0 ) {
-      var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="24px" height="24px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
-      
-      button_rewind.insertBefore( root.find('.fp-controls .fp-elapsed') ).on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    if( root.data('button-rewind') ) {
+      if( root.find('.fv-fp-rewind').length == 0 ) {
+        var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="21px" height="21px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
         
-        api.seek(api.video.time-10);
-      });
+        button_rewind.insertBefore( root.find('.fp-controls .fp-playbtn') ).on('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          api.seek(api.video.time-10);
+        });
 
-      button_rewind.toggle(!api.video.live);
+        button_rewind.toggle(!api.video.live);
+      }
+
+      if( root.find('.fv-fp-forward').length == 0 ) {
+        var button_forward = jQuery('<span class="fv-fp-forward"><svg viewBox="0 0 24 24" width="21px" height="21px" class="fvp-icon fvp-forward"><use xlink:href="#fvp-forward"></use></svg></span>');
+        
+        button_forward.insertAfter( root.find('.fp-controls .fp-playbtn') ).on('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          api.seek(api.video.time+10);
+        });
+
+        button_forward.toggle(!api.video.live);
+      }
     }
 
   }).bind('unload', function() {

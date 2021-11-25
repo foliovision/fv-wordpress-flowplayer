@@ -24,6 +24,8 @@ class FV_Player_lightbox {
     add_filter('fv_flowplayer_player_type', array($this, 'lightbox_enable'));
 
     add_filter('fv_flowplayer_args', array($this, 'disable_autoplay')); // disable autoplay for lightboxed videos
+    add_filter('fv_flowplayer_args', array($this, 'lightbox_button_align')); // save align for lightbox button
+
     add_filter('fv_flowplayer_args_pre', array($this, 'lightbox_playlist_style')); // force slider style for lightboxed playlist
 
     add_filter('fv_flowplayer_args', array($this, 'parse_html_caption'), 0);
@@ -58,7 +60,6 @@ class FV_Player_lightbox {
     global $fv_fp, $fv_wp_flowplayer_ver;
     if(
       !$force &&
-      !$fv_fp->_get_option('lightbox_images') && // "Use video lightbox for images as well" is disabled
       !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
     ) return;
     
@@ -162,6 +163,11 @@ class FV_Player_lightbox {
   }
 
   function lightbox_html($html) {
+    // disable lightbox HTML for previews
+    if (flowplayer::is_preview()) {
+      return $html;
+    }
+
     $aArgs = func_get_args();
 
     if (isset($aArgs[1]) ) {
@@ -223,7 +229,10 @@ class FV_Player_lightbox {
           $sTitle = " title='".esc_attr($sTitle)."'";
         }
         
+        // The original player HTML markup becomes the hidden lightbox content
+        // We add the lightboxed class
         $lightbox = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
+        // ...and wrap it in hidden DIV
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
         
         if ( $this->is_text_lightbox($args) ) {
@@ -254,17 +263,25 @@ class FV_Player_lightbox {
           $iWidth = ( isset($aLightbox[1]) && intval($aLightbox[1]) > 0 ) ? intval($aLightbox[1]) : ( ($iPlayerWidth > $iConfWidth) ? $iPlayerWidth : $iConfWidth );
           $iHeight = ( isset($aLightbox[2]) && intval($aLightbox[2]) > 0 ) ? intval($aLightbox[2]) : ( ($iPlayerHeight > $iConfHeight) ? $iPlayerHeight : $iConfHeight );
 
+          // new classes to be added
+          $add_classes = array( 'lightbox-starter' );
+
+          // use the align for the lightbox button
+          if( isset($args['lightbox_align']) ) {
+            $add_classes[] = 'align' . $args['lightbox_align'];
+          }
+
           $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $args['src']);
 
           // re-use the existing player HTML and add data-fancybox, data-options, new id and href
           $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
 
           // add all the new classes
-          $html = str_replace( 'class="flowplayer ', 'class="flowplayer lightbox-starter ', $html );
+          $html = str_replace( 'class="flowplayer ', 'class="flowplayer ' . implode(' ', $add_classes ). ' ' , $html );
 
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
-          
+
           // new ratio for responsiveness
           if( $iWidth > 0 ) {
             $ratio = $iHeight / $iWidth;
@@ -359,7 +376,12 @@ class FV_Player_lightbox {
       return $content;
     }
 
-    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content);
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
+
+    if( $count ) {
+      $this->enqueue();
+    }
+
     return $content;
   }
 
@@ -381,6 +403,14 @@ class FV_Player_lightbox {
     return $aArgs;
   }
 
+  function lightbox_button_align($aArgs) {
+    if (isset($aArgs['lightbox']) && !empty($aArgs['align']) ) {
+      $aArgs['lightbox_align'] = $aArgs['align']; // save align to new key
+      unset($aArgs['align']); // do not allow the align for lightbox as it doesn't make sense
+    }
+    return $aArgs;
+  }
+
   function lightbox_playlist_style($aArgs) {
     if (isset($aArgs['lightbox'])) { // we force the slider playlist style as that' the only one where the lightbox works properly with the sizing right now
       $aArgs['liststyle'] = 'slider';
@@ -395,7 +425,6 @@ class FV_Player_lightbox {
     global $fv_fp;
     if(
       $this->should_load() ||
-      $fv_fp->_get_option('lightbox_images') || // "Use video lightbox for images as well" is enabled
       $fv_fp->should_force_load_js() || // "Load FV Flowplayer JS everywhere" is enabled
       $fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is enabled
     ) {
@@ -450,7 +479,6 @@ class FV_Player_lightbox {
           var sLightbox = shortcode.match(/lightbox="(.*?)"/);
           if (sLightbox && typeof (sLightbox) != "undefined" && typeof (sLightbox[1]) != "undefined") {
             sLightbox = sLightbox[1];
-            fv_wp_fp_shortcode_remains = fv_wp_fp_shortcode_remains.replace(/lightbox="(.*?)"/, '');
 
             if (sLightbox) {
               var aLightbox = sLightbox.split(/[;]/, 4);
@@ -477,16 +505,6 @@ class FV_Player_lightbox {
             }
           }
         });
-        jQuery(document).on('fv_flowplayer_shortcode_create', function () {
-          if (document.getElementById("fv_wp_flowplayer_field_lightbox").checked) {
-            var iWidth = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_width").value);
-            var iHeight = parseInt(document.getElementById("fv_wp_flowplayer_field_lightbox_height").value);
-            var sSize = (iWidth && iHeight) ? ';' + iWidth + ';' + iHeight : '';
-            var sCaption = ';' + document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value.trim();
-            fv_wp_fp_shortcode += ' lightbox="true' + sSize + sCaption + '"';
-          }
-        })
-
       </script>
       <?php
     }

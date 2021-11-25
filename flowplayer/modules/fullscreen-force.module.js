@@ -6,10 +6,16 @@ flowplayer(function(api, root) {
     playlist_with_fullscreen =  playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid');
     fsforce = root.data('fsforce') == true; // used for players which load using Ajax after click and then they need fullscreen
   
+  if( root.data('fullscreen') == false ) {
+    return;
+  }
+    
   // Force fullscreen on mobile setting
   if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce || playlist_with_fullscreen ) {
     if( !flowplayer.support.fullscreen ) {
       api.bind('ready', function() {
+        if( api.video.vr ) return;
+
         api.fullscreen(true);
       });
     }
@@ -26,6 +32,8 @@ flowplayer(function(api, root) {
     });
     
     api.on('resume', function() {
+      if( api.video.vr ) return;
+      
       if( !api.isFullscreen ) api.fullscreen();
     });
     
@@ -56,12 +64,18 @@ flowplayer(function(api, root) {
         api.fullscreen(false);
       } else if( api.loading ) {
         is_closing = true;
-        api.one('ready', function(e) {
-          api.unload();
-        })
+        
+        // triggering unload on ready didn't work with HLS.js
+        api.one('resume', function(e) {
+          // it's already closed!
+          is_closing = false;
+          api.pause();
+        });
       }
       api.fakeFullscreen(false);
-      
+
+      // do not run Flowplayer unload() as that would reset the video time
+      return false;
     });
     
     jQuery('[rel='+root.attr('id')+'] a').on('click', function(e) {
@@ -100,10 +114,12 @@ flowplayer(function(api, root) {
   
   if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
-      if( api.video.width > api.video.height ) {
-        screen.orientation.lock("landscape-primary");
-      } else {
+      // If the video dimensions are not known assume it's wide and landscape mode should be used
+      // TODO: Instead fix HLS.js engine to report video width and height properly
+      if( (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height) ) { 
         screen.orientation.lock("portrait-primary");
+      } else { // if no height or width then force landscape
+        screen.orientation.lock("landscape-primary");
       }
     })
   }

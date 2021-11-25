@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.7
+Tested up to: 5.8
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -17,6 +17,7 @@ Custom HTML 5 video on your own site with Flash fallback for legacy browsers is 
 FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4 videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
 * Remembering video position both both guest users and members
+* Built in video plays stats
 * API for custom video fields
 * easy AB looped playback for your visitors (great for teaching sites)
 * improved and more powerful playlists (more playlist features coming soon).
@@ -26,11 +27,12 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * Enjoy unlimited instances in a single page.
 * No expensive plugins: unlike other players who nickel and dime you for every feature, with FV Player all advanced features are available in the standard license (Google Analytics, Cuepoints, Native fullscreen, Keyboard shortcuts, Subtitles, Slow motion, Random seeking, Retina ready)
 * Single site pro license available (JW Player requires five pack for full features)
-* Ultra-efficient player: just 181kB of JavaScript and 10kB of Flash code. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
+* Ultra-efficient player: just 55.6kB of Javascript. Rest is loaded later when user is going to play the video. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers while HLS.js library gives you HLS playback on desktop browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
 * Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
 * Supports video intelligence video ads
+* Integration with the Coconut.co video encoding service - using a free addon plugin: https://foliovision.com/downloads/fv-player-coconut
 
 To remove our branding and add your own branding and get access to additional pro support, [you can buy your own license here](https://foliovision.com/player/download).
 
@@ -356,6 +358,79 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.11.727 - 2021/10/14 =
+
+* Click to unmute - adding translations
+* Click to unmute - only show on hover
+* Click to unmute - only show once in playlist
+* Live streams - fix buffer indicator bug for long streams
+* Media Library - fix for picking of old FV Player Coconut jobs
+* PHP warnings - fix multibyte functions used without check
+* Store dismissed wp-admin popup notices also in cookies
+* Support for FV Player Coconut video uploads - fixes
+
+= 7.5.10.727 - 2021/10/06 =
+
+* Airplay - removing the button if the video type is not supported
+* Click to unmute - shows when a video playback starts muted
+* Flash is no longer the default video type
+* Support for FV Player Coconut video uploads
+
+= 7.5.7.727 - 2021/09/27 =
+
+* Bugfix - HLS - live stream check - countdown fix
+* Bugfix - Lightbox - image lightbox picks proper image caption for [caption] shortcodes
+* Bugfix - Matomo/Piwik support - fix when running in subfolder
+* Bugfix - Subtitles - remember disabled subtitles state even if subtitles on by default
+
+= 7.5.5.727 - 2021/09/09 =
+
+* Appearance - player interface is now a bit smaller on desktop devices
+* CSS - fix gap between player and controlbar for fixed controls and full timeline
+* Mobile - keep rewind button even on narrow displays
+* Support for chapters on video timeline (Pro feature)
+* Uninstall - adding the missing feature
+* Bugfix - native fullscreen not working on iOS
+
+= 7.5.4.727 - 2021/08/18 =
+
+* Bugfix - CSS - timeline dragging causing display issues on some websites with Gutenberg
+* Bugfix - Elementor FV Player widget not considered for the "Embedded on" column of wp-admin -> FV Player
+* Bugfix - Embedded post ID missing when editing player with FV Player Pay Per View enabled
+* Bugfix - Lightbox should not use left/right align
+* Bugfix - Video Stats - clear scheduled job hook if setting not active
+* Bugfix - Video Stats - do not track video recovery as another play
+* Bugfix - Video Stats - track video replay as another play
+
+= 7.5.3.727 - 2021/08/10 =
+
+* Security - fix for XSS vulnerability in stats screen
+* Bugfix - Force landscape orientation in fullscreen setting fix
+* Bugfix - bad scroll position after leaving fullscreen
+* Bugfix - Sticky player code should not run on mobile
+
+= 7.5.2.727 - 2021/07/28 =
+
+* Bugfix - editor auto-save for FV Player Pay Per View and FV Player Pay Per View for WooCommerce
+
+= 7.5.1.727 - 2021/07/21 =
+
+* Google Analytics - compatibility with Google Analytics 4
+* WordPress 5.8 - fix for the Widgets screen loading issues and FV Player widgets preview
+* Bugfix - Android landscape fullscreen lock not working with HLS
+* Bugfix - popup notice on 7.5 upgrade not going away when dismissed - possibly due to object cache issues, but we added a browser cookie to prevent it
+* Bugfix - some encrypted HLS streams failing to start properly in Safari
+
+= 7.5.0.727 - 2021/06/21 =
+
+* New feature - Daily video play stats, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Video Stats
+* New feature - Multiple video playback, just enable Settings -> FV Player -> Sidewide Flowplayer Defaults -> Multiple video playback
+* Improved editing experience with autosave and autopreview
+* Improved Gutenberg integration - with player preview, we still look forward for a proper Gutenberg block
+* Improved handling of multiple players on page - previously played video will pause and not go back to beginning
+* Improved HLS quality remembering
+* Improved JavaScript loading - player only loads files once the user is actually using the page
 
 = 7.4.47.727 - 2021/05/18 =
 

@@ -5,7 +5,7 @@
  */
 add_action('admin_menu', 'fv_player_admin_menu');
 
-function fv_player_admin_menu () {
+function fv_player_admin_menu() {
   if( function_exists('add_submenu_page') ) {
     add_options_page( 'FV Player', 'FV Player', 'manage_options', 'fvplayer', 'fv_player_admin_page' );
   }
@@ -20,11 +20,19 @@ function fv_player_admin_page() {
 
 
 
+
 function fv_player_is_admin_screen() {
   if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
-     return true;
+    return true;
   }
   return false;
+}
+
+
+
+
+function fv_player_stats_page() {
+  include dirname( __FILE__ ) . '/../view/stats.php';
 }
 
 
@@ -37,7 +45,7 @@ function fv_wp_flowplayer_plugin_action_links($links, $file) {
     $settings_link = '<a href="https://foliovision.com/pro-support" target="_blank">Premium Support</a>';
     array_unshift($links, $settings_link);
     $settings_link = '<a href="options-general.php?page=fvplayer">Settings</a>';
-    array_unshift($links, $settings_link);      
+    array_unshift($links, $settings_link);
   }
   return $links;
 }
@@ -61,7 +69,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
   <td class="plugin-update colspanchange" colspan="3">
     <div class="update-message">
-      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Easter sale!
+      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Summer sale!
     </div>
   </td>
 </tr>
@@ -140,6 +148,24 @@ function fv_player_admin_pointer_boxes() {
     );
   }
   
+  if( !$fv_fp->_get_option('notice_7_5') ) {
+    $fv_fp->pointer_boxes['fv_flowplayer_notice_7_5'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_flowplayer_notice_7_5',
+      'heading' => __('FV Player 7.5', 'fv-wordpress-flowplayer'),
+      'content' => __("<p>This new version includes several improvements:</p>
+      <ul style='list-style-type: revert; margin-left: 3em'>
+        <li>Editor autosave and preview improvements</li>
+        <li>FV Player Video Play Stats</li>
+        <li>Improved player JavaScript loading</li>
+        <li>Multiple video playback improvements</li>
+      </ul>
+      <p>You can read more about it in our <a href='https://foliovision.com/?p=137472' target='_blank'>blog announcement</a>.</p>", 'fv-wordpress-flowplayer'),
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
+    );
+  }
+  
   if( !$fv_fp->_get_option('notice_new_lightbox') ) {
     $fv_fp->pointer_boxes['fv_flowplayer_new_lightbox'] = array(
       'id' => '#wp-admin-bar-new-content',
@@ -147,7 +173,7 @@ function fv_player_admin_pointer_boxes() {
       'heading' => __('FV Player Video Lightbox', 'fv-wordpress-flowplayer'),
       'content' => __("<p>The lightbox technology has been changed from <a href='http://www.jacklmoore.com/colorbox/' target='_blank'>Colorbox</a> to <a href='https://fancyapps.com/fancybox/3/' target='_blank'>fancyBox</a></p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. You can check <a href='https://foliovision.com/player/demos/fv-flowplayer-lightbox' target='_blank'>our FV Player demo page</a> of it too.</p>", 'fv-wordpress-flowplayer'),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer')
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
     );
   }
   
@@ -158,7 +184,7 @@ function fv_player_admin_pointer_boxes() {
       'heading' => __('FV Player database storage is here!', 'fv-wordpress-flowplayer'),
       'content' => __("<p>Any new or updated FV Player instances will be stored in database. This simplifies the shortcodes and increases FV Player reliability. You can read the full announcement <a href='https://foliovision.com/2018/11/video-database/' target='_blank'>here</a></p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Advanced users can keep using the old shortcodes, but from now on the FV Player editor works with database only.</p>", 'fv-wordpress-flowplayer'),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer')
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
     );
   }
   
@@ -169,7 +195,7 @@ function fv_player_admin_pointer_boxes() {
       'heading' => __('FV Player Video Sitemap coverage', 'fv-wordpress-flowplayer'),
       'content' => __("<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>", 'fv-wordpress-flowplayer').'<script>jQuery(".fv_flowplayer_notice_xml_sitemap_iframes .button2").click()</script>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer'),
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
       'button2' => __('Go to setting', 'fv-wordpress-flowplayer'),
       'function2' => 'location.href = "'.admin_url('options-general.php?page=fvplayer').'#fv_flowplayer_seo"',
     );
@@ -189,7 +215,7 @@ function fv_player_admin_pointer_boxes() {
 <li>Improved video buffering</li></ul>'.
         '<p>More information in our <a href="https://foliovision.com/2018/09/fv-player-7" target="_blank">blog announcement</a>.</p>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Acknowledge', 'fv-wordpress-flowplayer'),
+      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
     );
   }
   
@@ -253,6 +279,7 @@ function fv_wp_flowplayer_pointers_ajax() {
   }  
   
   $notices = array(
+    'fv_flowplayer_notice_7_5'                 => 'notice_7_5',
     'fv_flowplayer_new_lightbox'               => 'notice_new_lightbox',
     'fv_flowplayer_notice_xml_sitemap_iframes' => 'notice_xml_sitemap_iframes',
     'fv_flowplayer_db'                         => 'notice_db',
@@ -311,7 +338,7 @@ function fv_flowplayer_admin_scripts() {
     
     wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), $fv_wp_flowplayer_ver );
-  
+
     wp_localize_script('fv-player-admin', 'cm_settings', wp_enqueue_code_editor(array('type' => 'text/css')) );
   }
 }

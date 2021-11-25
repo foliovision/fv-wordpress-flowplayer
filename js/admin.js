@@ -220,7 +220,9 @@
 
   /* CodeMirror */
   jQuery(function($) {
-    wp.codeEditor.initialize($('#customCSS'), cm_settings);
+    if( $('#customCSS').length ) {
+      wp.codeEditor.initialize($('#customCSS'), cm_settings);
+    }
   });
 
 }(jQuery));

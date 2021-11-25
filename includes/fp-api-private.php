@@ -54,6 +54,10 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         }
 
         add_action( 'admin_enqueue_scripts', array( $this, 'pointers_enqueue' ) );
+
+        // store cookie for each dimissed notice first
+        add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax_cookie' ), 0 );
+        // TODO: What about the actual processing of the Ajax? Does it have to be in the plugin for real?
         add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax' ), 999 );
         add_action( 'wp_ajax_check_domain_license', array( $this, 'check_domain_license' ) );
 
@@ -85,7 +89,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_action( 'update_option__transient_update_plugins',  array( $this, 'CheckPluginUpdateOld' ) );
         add_filter( 'http_request_args', array( $this, 'http_request_args' ), 10, 2 );
       }
-    }         
+    }
   }
   
   function object_cache_disable($value=null){
@@ -269,8 +273,8 @@ class FV_Wordpress_Flowplayer_Plugin_Private
       return $data;
     
     } else if( is_wp_error($resp) ) {
-      $args = array( 'sslverify' => false );
-      $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
+      $post['sslverify'] = false;
+      $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $post );
     
       if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
         return $data;
@@ -466,8 +470,18 @@ $this->strPrivateAPI - also
       }
     }
   }
-   
-   
+
+
+  function pointers_ajax_cookie() {
+    $cookie = $this->pointers_get_cookie();
+
+    $cookie[$_POST['key']] = !empty($_POST['value']) ? $_POST['value'] : true;
+
+    $secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
+    setcookie( $this->class_name.'_store_answer', json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
+  }
+
+
   function pointers_enqueue() {
     global $wp_version;
     if( ! current_user_can( 'manage_options' ) || ( isset($this->pointer_boxes) && count( $this->pointer_boxes ) == 0 ) || version_compare( $wp_version, '3.4', '<' ) ) {
@@ -481,8 +495,33 @@ $this->strPrivateAPI - also
 
     add_action( 'admin_print_footer_scripts', array( $this, 'pointers_init_scripts' ) );    
   }
-  
-  
+
+
+  /**
+   * Get a cookie storing which pointers were already dimissed
+   * The cookie uses JSON so we decode it too
+   *
+   * @return array
+   */
+  function pointers_get_cookie() {
+    $cookie_name = $this->class_name.'_store_answer';
+
+    $cookie = false;
+    if( !empty($_COOKIE[$cookie_name]) ) {
+      $cookie = $_COOKIE[$cookie_name];
+    }
+
+    $cookie = (array) json_decode( stripslashes($cookie) );
+
+    $json_error = json_last_error();
+    if( $json_error !== JSON_ERROR_NONE ) {
+      $cookie = array();
+    }
+
+    return $cookie;
+  }
+
+
   private function get_readme_url_remote( $url = false ) { // todo: caching
     $output = false;
     
@@ -506,7 +545,7 @@ $this->strPrivateAPI - also
         $output = $resp['body'];
       
       } else if( is_wp_error($resp) ) {
-        $args = array( 'sslverify' => false );
+        $args['sslverify'] = false;
         $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
       
         if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {    
@@ -627,11 +666,22 @@ $this->strPrivateAPI - also
       jQuery('#wp-pointer-0').remove(); // there must only be a single pointer at once. Or perhaps it removes them all, but the ones which were not dismissed by Ajax by storing the option will turn up again?
     });
   }
+
+  /*! js-cookie v3.0.1 | MIT */
+  !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self,function(){var n=e.Cookies,o=e.Cookies=t();o.noConflict=function(){return e.Cookies=n,o}}())}(this,(function(){"use strict";function e(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var o in n)e[o]=n[o]}return e}return function t(n,o){function r(t,r,i){if("undefined"!=typeof document){"number"==typeof(i=e({},o,i)).expires&&(i.expires=new Date(Date.now()+864e5*i.expires)),i.expires&&(i.expires=i.expires.toUTCString()),t=encodeURIComponent(t).replace(/%(2[346B]|5E|60|7C)/g,decodeURIComponent).replace(/[()]/g,escape);var c="";for(var u in i)i[u]&&(c+="; "+u,!0!==i[u]&&(c+="="+i[u].split(";")[0]));return document.cookie=t+"="+n.write(r,t)+c}}return Object.create({set:r,get:function(e){if("undefined"!=typeof document&&(!arguments.length||e)){for(var t=document.cookie?document.cookie.split("; "):[],o={},r=0;r<t.length;r++){var i=t[r].split("="),c=i.slice(1).join("=");try{var u=decodeURIComponent(i[0]);if(o[u]=n.read(c,u),e===u)break}catch(e){}}return e?o[e]:o}},remove:function(t,n){r(t,"",e({},n,{expires:-1}))},withAttributes:function(n){return t(this.converter,e({},this.attributes,n))},withConverter:function(n){return t(e({},this.converter,n),this.attributes)}},{attributes:{value:Object.freeze(o)},converter:{value:Object.freeze(n)}})}({read:function(e){return'"'===e[0]&&(e=e.slice(1,-1)),e.replace(/(%[\dA-F]{2})+/gi,decodeURIComponent)},write:function(e){return encodeURIComponent(e).replace(/%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,decodeURIComponent)}},{path:"/"})}));
+
 //]]>
 </script>
-    <?php    
+    <?php
+    $cookie = $this->pointers_get_cookie();
     
     foreach( $this->pointer_boxes AS $key => $args ) {
+      // Some users are experiencing issues when dismissing the notices
+      // So we use cookies as a backup to not show the same notice twice
+      if( !empty($cookie[$key]) ) {
+        continue;
+      }
+
       $nonce = wp_create_nonce( $key );
       
       $args = wp_parse_args( $args, array(
@@ -653,20 +703,30 @@ $this->strPrivateAPI - also
       } else {
         $html .= '<p>'.$content.'</p>';
       }
-      
+
       ?>
       <script type="text/javascript">
         //<![CDATA[
         (function ($) {
+          store_cookie_js = function(value , key) {
+            var cookie_name = '<?php echo $this->class_name.'_store_answer'; ?>';
+            var pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
+            pointer_cookies[key] = value;
+            Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', expires: 365 } )
+            jQuery('#wp-pointer-0').remove();
+          }
+
           var pointer_options = <?php echo json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
-          setup = function () {
-            $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
-            var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');       
-            buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function1; ?>; t.element.pointer('close'); }) );        
-            <?php if ( $button2 ) { ?>
-              buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').bind('click.pointer', function () { <?php echo $function2; ?> }) );                          
-            <?php } ?>             
-          };
+            key = '<?php echo $key; ?>',
+
+            setup = function () {
+              $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
+              var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
+              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true' , key); }));
+              <?php if ( $button2 ) { ?>
+                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false', key); }));
+              <?php } ?>
+            };
 
           if(pointer_options.position && pointer_options.position.defer_loading)
             $(window).bind('load.wp-pointers', setup);
@@ -678,7 +738,7 @@ $this->strPrivateAPI - also
       <?php
     }
   }
-  
+
 
   function check_domain_license() {
     if( $_POST['slug'] != $this->strPluginSlug ) {

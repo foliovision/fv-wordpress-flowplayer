@@ -13,28 +13,68 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 
 
-function fv_player_shortcode_editor_scripts_enqueue() {  
+function fv_player_shortcode_editor_scripts_enqueue() {
   global $fv_wp_flowplayer_ver;
-  wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );  
-  wp_enqueue_script('fvwpflowplayer-domwindow');  
-  
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver.'-fix' );
+  wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );
+  wp_enqueue_script('fvwpflowplayer-domwindow');
+
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), $fv_wp_flowplayer_ver );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
+    'admin_url' => admin_url('admin.php?page=fv_player'),
+    'home_url' => home_url('/'),
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
     'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
-    'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id())
+    'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id()),
+    'shortcode_args_to_preserve' => array(
+      'ab',
+      'ad',
+      'ad_height',
+      'ad_width',
+      'autoplay',
+      'controlbar',
+      'embed',
+      'fullscreen',
+      'height',
+      'liststyle',
+      'logo',
+      'midroll',
+      'playlist_advance',
+      'playlist_hide',
+      'playlist_start',
+      'share',
+      'sort',
+      'vast',
+      'volume',
+      'width'
+    ),
+    'shortcode_args_not_db_compatible' => array(
+      'fullscreen',
+      'logo',
+      'playlist_advance',
+      'sort',
+      'volume'
+    ),
+    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
   ) );
-  
+
+  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_translations', array(
+    'embed_notice' => __('Embed feature not supported in editor preview', 'fv-wordpress-flowplayer'),
+    'link_notice' => __('Link feature not supported in editor preview', 'fv-wordpress-flowplayer'),
+    'screenshot_cors_error' => __('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>', 'fv-wordpress-flowplayer'),
+  ) );
+
+  wp_localize_script( 'fvwpflowplayer-editor-screenshots', 'fv_player_editor_conf_screenshots', array(
+    'disable_domains' => apply_filters( 'fv_player_editor_screenshot_disable_domains', array() )
+  ) );
+
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');
   wp_enqueue_script('fvwpflowplayer-editor-screenshots');
-  
-  wp_register_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css','','1.0','screen');
-  wp_enqueue_style('fvwpflowplayer-domwindow-css');
-  wp_register_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css','','1.0','screen');
-  wp_enqueue_style('fvwpflowplayer-shortcode-editor');
+
+  wp_enqueue_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css', '', $fv_wp_flowplayer_ver, 'screen');
+  wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', $fv_wp_flowplayer_ver, 'screen');
 }
 
 
@@ -80,7 +120,7 @@ function fv_wp_flowplayer_gutenberg_editor_load() {
 add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
-  include dirname( __FILE__ ) . '/../view/wizard.php';
+  require_once dirname( __FILE__ ) . '/../view/wizard.php';
   
   // todo: will some of this break page builders?
   global $fv_fp_scripts, $fv_fp;
@@ -178,19 +218,32 @@ function fv_wp_flowplayer_featured_image($post_id) {
   }
   
   $post = get_post($post_id);
-  if( !$post || empty($post->post_content) ){
-    return;
-  }
   
   $url = false;
   
-  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) {
-    $url = $splash[1];
-  } else if( preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) {
+  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
+     $url = $splash[1];
+  }
+  
+  if( !$url && preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
     global $FV_Player_Db;    
     $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
     if( !empty($atts['splash']) ) {
       $url = $atts['splash'];
+    }
+  }
+    
+  if( !$url && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
+    foreach( $aMetas AS $key => $aMeta ) {
+      foreach( $aMeta AS $shortcode ) {
+        if( preg_match('/\[fvplayer.*?id="(\d+)/', $shortcode, $id) ) {
+          global $FV_Player_Db;
+          $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
+          if( !empty($atts['splash']) ) {
+            $url = $atts['splash'];
+          }
+        }
+      }
     }
   }
   
@@ -269,6 +322,12 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
       );
       // Insert the attachment
       $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
+      
+      // Define attachment metadata
+      $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+      
+      // Assign metadata to attachment
+      wp_update_attachment_metadata( $attach_id,  $attach_data );
 
     }
 
@@ -305,22 +364,29 @@ function fv_player_splashcreen_action() {
     return urldecode($caption);
   }
 
-  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ){
+  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {
     $title = $_POST['title'];
     $img = $_POST['img'];
-    
+    $limit = 128 - 5; // .jpeg
+
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-  
-    $decoded = base64_decode($img) ;
+    
+    if( function_exists('mb_strinwidth') ) {
+      $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
+    } else if( strlen( $title ) > $limit ) {
+      $title = substr($title, 0, $limit);
+    }
+
+    $decoded = base64_decode($img);
     
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
-    $filename = $title .'.jpeg';
+    $filename = $title .'.jpg';
     
     // $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
 
@@ -351,7 +417,7 @@ function fv_player_splashcreen_action() {
         'src'     =>  '',
         'error'   =>  $file_return['error']
       ); 
-    }else{
+    } else {
       $filename = $file_return['file'];
 
       $attachment = array(
@@ -361,21 +427,29 @@ function fv_player_splashcreen_action() {
         'post_status' => 'inherit',
         'guid' => $upload_dir['url'] . '/' . basename($filename)
       );
-      $attach_id = wp_insert_attachment( $attachment, $filename );
 
-      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_id = wp_insert_attachment( $attachment, $filename, 0, true );
+
+      if( is_wp_error( $attach_id ) ) {
+        $jsonReturn = array(
+          'src'     =>  '',
+          'error'   =>  $attach_id->get_error_message()
+        );
+      } else {
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
       
-      $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
-      wp_update_attachment_metadata( $attach_id, $attach_data );
-
-      $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
-
-      $jsonReturn = array(
-        'src'     =>  $src,
-        'error'   =>  ''
-      );
-    }      
-  }else{
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+  
+        $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
+  
+        $jsonReturn = array(
+          'src'     =>  $src,
+          'error'   =>  ''
+        );
+      }
+    }
+  } else {
     $jsonReturn = array(
       'src'     =>  '',
       'error'   =>  'Nonce error - please reload your page'
