@@ -458,8 +458,8 @@ jQuery( function($) {
   function locateSplashFileObjectForMediaFileHref(href) {
     var find = [ fileGetBase(href) ];
 
-    if( window.fv_player_shortcode_editor_qualities ) {
-      Object.keys(fv_player_shortcode_editor_qualities).forEach( function(prefix) {
+    if( fv_player_editor_pro.video_qualities ) {
+      Object.keys(fv_player_editor_pro.video_qualities).forEach( function(prefix) {
         var re = new RegExp(prefix+'$');
         if( find[0].match(re) ) {
           find.push( find[0].replace(re,'') );
