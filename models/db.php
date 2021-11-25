@@ -329,7 +329,7 @@ class FV_Player_Db {
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
-            $result_row->player_name = $player->getCheckedPlayerName();
+            $result_row->player_name = $player->getPlayerNameWithFallback();
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {

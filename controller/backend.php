@@ -869,7 +869,7 @@ function fv_player_submitbox_misc_actions( $attachment ) {
     foreach( $players as $player ) {
       ?>
         <div class="misc-pub-section misc-pub-attachment">
-          FV Player splash screen: <strong><a href="<?php echo esc_url( admin_url( 'admin.php?page=fv_player&id='. $player->getId() ) ); ?>"><?php echo esc_html( $player->getCheckedPlayerName() ); ?></a></strong>
+          FV Player splash screen: <strong><a href="<?php echo esc_url( admin_url( 'admin.php?page=fv_player&id='. $player->getId() ) ); ?>"><?php echo esc_html( $player->getPlayerNameWithFallback() ); ?></a></strong>
         </div>
       <?php
     }
