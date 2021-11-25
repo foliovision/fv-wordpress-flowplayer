@@ -50,6 +50,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function convert_one( $post ) {
     $start = microtime(true);
 
+    $content_updated = false;
     $new_content = $post->post_content;
     $output_data = array();
     $errors = array();
@@ -142,6 +143,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             if( $player_id > 0 ) {
               // echo "Inserted player #".$player_id."\n";
               $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
+              $content_updated = true;
               $output = "New FV Player #" . $player_id ;
             } else {
               $output = "Error saving FV Player instance";
@@ -170,6 +172,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
     return  array(
       'new_content' => $new_content,
+      'content_updated' => $content_updated,
       'output_data' => $output_data,
       'errors' => $errors
     );

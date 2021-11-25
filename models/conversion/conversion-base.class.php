@@ -38,6 +38,12 @@ abstract class FV_Player_Conversion_Base {
 
   function ajax_convert() {
     if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->screen ) ) {
+      
+      if( function_exists( 'FV_Player_Pro' ) ) {
+        // takes too long to save if not removed
+        remove_filter( 'content_save_pre', array( FV_Player_Pro(), 'save_post' ), 10 );
+      }
+
       $conversions_output = array();
       $convert_error = false;
       $html = array();
@@ -62,7 +68,9 @@ abstract class FV_Player_Conversion_Base {
 
         $conversions_output = array_merge( $conversions_output, $result['output_data'] );
 
-        wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
+        if( $result['content_updated'] ) {
+          wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
+        }
       }
 
       $percent_done = round ( (($offset + $limit) / $total) * 100 );
