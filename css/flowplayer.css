@@ -2268,3 +2268,27 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-minimal .fp-volumebtn-notice:before { content: "\e20d"; }
 .flowplayer.fp-edgy .fp-volumebtn-notice:before { content: "\e10d"; }
 .flowplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
+
+/* Videos pending encoding */
+.fv-player-encoder-video-processing-modal {
+  text-align: center;
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  color: white;
+  top: 0;
+}
+.fv-player-encoder-video-processing-modal.hidden {
+  display: none;
+}
+.fv-player-encoder-video-processing-modal h2 {
+  font-weight: bold;
+  color: white;
+  padding-top: 35px;
+}
+.flowplayer .fv-player-encoder-video-processing-modal p {
+  width: 100%;
+  max-width: 100%;
+}

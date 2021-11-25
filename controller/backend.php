@@ -840,3 +840,11 @@ function fv_player_pay_per_view_woocommerce_version_check() {
   <?php
   endif;
 }
+
+// lazy-load of video encoder libraries
+add_action( 'fv_player_load_video_encoder_libs', 'fv_player_load_video_encoder_libs' );
+function fv_player_load_video_encoder_libs() {
+  include_once( dirname( __FILE__ ).'/../models/video-encoder/video-encoder.php');
+  require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-base.php' );
+  require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-step-base.php' );
+}
