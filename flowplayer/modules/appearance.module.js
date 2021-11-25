@@ -141,12 +141,15 @@ flowplayer(function(api, root) {
  *  Tabbed playlist
  */
 jQuery(document).on("tabsactivate", '.fv_flowplayer_tabs_content', function(event, ui){
-  var oldPlayer = jQuery('.flowplayer.is-playing').data('flowplayer');
+  var oldPlayer = jQuery( ui.oldPanel ).find('.flowplayer').data('flowplayer');
+
+  // pause old player to make sure it does not keep playing while the new video is loading
   if( typeof(oldPlayer) != "undefined" ) {
     oldPlayer.pause();
   }
-  
+
+  // load new player
   var objPlayer = jQuery('.flowplayer',ui.newPanel);
   var api = objPlayer.data('flowplayer');
-  api.load();  
+  api.load();
 });

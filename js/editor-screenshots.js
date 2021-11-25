@@ -127,7 +127,7 @@
     function show_error() {
       spinner.remove();
       button.prop("disabled",false);
-      message.html('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>');
+      message.html(fv_player_editor_translations.screenshot_cors_error);
       fv_wp_flowplayer_dialog_resize();
     }
 

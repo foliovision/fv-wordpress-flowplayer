@@ -63,6 +63,17 @@ flowplayer( function(api,root) {
       });
     }
   }
+
+   // show notice in editor
+   if( typeof fv_player_editor_conf != 'undefined') {
+     root.on('click','.fvp-sharing > li', function(e) {
+      e.preventDefault();
+
+      fv_player_notice( root, fv_player_editor_translations.link_notice, 2000 );
+
+      return false;
+    });
+  }
   
   api.bind("pause resume finish unload ready", function(e,api) {
     root.addClass('no-brand');
@@ -72,7 +83,7 @@ flowplayer( function(api,root) {
     root.find('.fp-fullscreen').clone().appendTo( root.find('.fp-controls') );
   });
 
-  api.bind("ready", function (e, api, video) {
+  api.on("ready", function (e, api, video) {
     setTimeout( function () {
       jQuery('.fvp-share-bar',root).show();
       

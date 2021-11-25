@@ -2,27 +2,28 @@
     padding-top: 20px;
 }
 
-.upload_buttons .fv-player-s3-upload-cancel-btn, .upload_buttons .fv-player-s3-upload-file-input {
+.upload_buttons .fv-player-s3-upload-cancel-btn, .upload_buttons .fv-player-s3-upload-file-input, .upload_buttons input[type="file"] {
     display: none;
 }
 
-.fv-player-s3-upload-buttons {
+.fv-player-s3-upload-buttons, .fv-player-upload-buttons {
     float: left;
 }
-.fv-player-s3-upload-progress,
-.fv-player-s3-upload-wrap {
+.fv-player-s3-upload-progress, .fv-player-upload-progress,
+.fv-player-s3-upload-wrap, .fv-player-upload-wrap {
     float: right;
 }
 
-.fv-player-s3-upload-buttons .button {
+.fv-player-s3-upload-buttons .button, .fv-player-upload-buttons .button {
     margin-top: -5px;
 }
 
-.fv-player-s3-upload-buttons input, .fv-player-s3-upload-buttons .button, .fv-player-s3-upload-progress-enclosure {
+.fv-player-s3-upload-buttons input, .fv-player-s3-upload-buttons .button, .fv-player-s3-upload-progress-enclosure,
+.fv-player-upload-buttons input, .fv-player-upload-buttons .button, .fv-player-upload-progress-enclosure {
     margin-right: 10px;
 }
 
-.fv-player-s3-upload-progress-enclosure {
+.fv-player-s3-upload-progress-enclosure, .fv-player-upload-progress-enclosure {
     display: none;
     position:relative;
     height: 23px;
@@ -36,7 +37,7 @@
     box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
 }
 
-.fv-player-s3-upload-progress-number {
+.fv-player-s3-upload-progress-number, .fv-player-upload-progress-number {
     position: absolute;
     left: 50%;
     top: 2px;
@@ -44,7 +45,7 @@
     color: black;
 }
 
-.fv-player-s3-upload-progress-bar {
+.fv-player-s3-upload-progress-bar, .fv-player-upload-progress-bar {
     float: left;
     width: 0;
     height: 100%;

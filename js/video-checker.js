@@ -215,6 +215,10 @@ function fv_wp_flowplayer_admin_show_notice( id ) {
     jQuery(this).toggleClass("is-open", is_open );
     jQuery(this).find(".fv-player-video-checker-details").toggle( is_open );
     
+    if( is_open ) {
+      jQuery('#fv_wp_fp_notice_'+id).find('input').show();
+    }
+
     root.toggleClass( 'has-video-checker', is_open );
     
     api.disable( is_open );
@@ -225,6 +229,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
   jQuery('.fv_flowplayer_submit_error').remove();
 
   var comment_text = jQuery('#wpfp_support_'+hash).val();
+  var status_text = jQuery('#wpfp_notice_'+hash+'.fv-player-video-checker .video-checker-result').text();
   var comment_words = comment_text.split(/\s/);
   if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
     jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>'+fv_flowplayer_translations.what_is_wrong+'</strong></p>');
@@ -245,14 +250,16 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
     fv_player.ajaxurl,
     {
       action: 'fv_wp_flowplayer_support_mail',
+      status: status_text,
       comment: comment_text,
       notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
       details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()
     },
     function( response ) {
       jQuery('#wpfp_spin_'+hash).hide();
+      jQuery('#fv_wp_fp_notice_'+hash).find('input').hide();
       jQuery(button).removeAttr("disabled");
       jQuery(button).after(' Message sent');
-    }	
+    }
   );
 }

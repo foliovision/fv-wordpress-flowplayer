@@ -4,6 +4,11 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
+  // localstorage disabled by admin
+  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
+    return;
+  }
+
   var ls = window.localStorage;
 
   // restore subtitle on ready event

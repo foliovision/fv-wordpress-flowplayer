@@ -1,10 +1,21 @@
 var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
+
+  // TODO: Use some public method instead
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
   //     depending on which tab is currently active
-  fv_flowplayer_browser_assets_loaders = {};
+  fv_flowplayer_browser_assets_loaders = {},
+
+  // TODO: Use some public method instead
+  // the following will contain file patterns which will be checked when determining whether we can automatically find
+  // a splash screen for a video file in any given browser
+  //
+  // ... for example, Coconut uses m3u8 files with the same file name as its encoded file names for thumbnails,
+  //     so it will need to create an inclusion rule like so:
+  //        fv_flowplayer_browser_splash_file_lookup_rules['fv_player_coconut_browser_media_tab']['include'] = ['\.(m3u8)$']
+  fv_flowplayer_browser_splash_file_lookup_rules = {};
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
@@ -18,6 +29,10 @@ function fv_flowplayer_media_browser_setColumns() {
       .closest( '.media-frame-content' )
       .attr( 'data-columns', columns );
   }
+}
+
+function fv_player_get_active_tab() {
+  return jQuery( '.media-menu-item.active:visible' );
 }
 
 function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
@@ -124,7 +139,7 @@ function fv_flowplayer_browser_browse(data, options) {
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
         fileList.append( jQuery(
-          '<li class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '">'
+          '<li class="folders attachment save-ready">'
           + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
           + '<div class="thumbnail">'
           + '<a href="' + f.path + '" title="' + name + '" class="folders">'
@@ -146,7 +161,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
         var
           name = escapeHTML(f.name),
-          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready' + ( f.disabled ? ' disabled' : '' ) + '"></li>'),
+          file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
           isPicture = name.match(/\.(jpg|jpeg|png|gif)$/),
           icon = '';
 
@@ -168,7 +183,7 @@ function fv_flowplayer_browser_browse(data, options) {
           if ( f.extra.percentage ) {
             var percentage = f.extra.percentage;
             if( parseInt(percentage) < 5 ) percentage = 5+'%';
-            progress += '<div class="thumbnail-status">Processing</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
+            progress += '<div class="thumbnail-status">' + ( f.extra.encoding_job_status == 'playable' ? 'Playable' : 'Processing' ) + '</div><div class="thumbnail-progress"><div class="thumbnail-progress-marker" style="width: '+percentage+'"></div></div>';
           } else {
             progress += '<div class="thumbnail-status-error">Error</div>';
           }
@@ -237,7 +252,9 @@ function fv_flowplayer_browser_browse(data, options) {
 
 // adds new tab on top of the Media Library popup
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
-  if (!jQuery('#' + tabId).length) {
+  var $tab = jQuery('#' + tabId);
+
+  if (!$tab.length) {
     var
       $router = jQuery('.media-router:visible'),
       $nativeTabs = $router.find('.media-menu-item:not(.artificial)'),
@@ -266,6 +283,10 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       if (!$e.hasClass('clickbaited')) {
         $e.addClass('clickbaited');
         $e.on('click', function() {
+          fv_flowplayer_media_browser_disable_drag_drop(false);
+
+          fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
           if (!switchClicking) {
             switchClicking = true;
             // find a tab that is native and is not our clicked tab and click on it
@@ -293,6 +314,9 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
         $router.find('.media-menu-item.active').removeClass('active');
         jQuery(this).addClass('active');
 
+        fv_flowplayer_media_browser_disable_drag_drop(true);
+        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
+
         // execute tab click function
         if (typeof(tabClickEventCallback) == 'function' && !switchClicking) {
           tabClickEventCallback();
@@ -305,6 +329,12 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
           }
         } catch(e) {}
 
+        // hide the Drop files to upload modal initially
+        jQuery('.media-modal .uploader-window').css({
+          'display' : 'none',
+          'opacity' : 0,
+        });
+
         return tabOnClickCallback();
       });
 
@@ -316,6 +346,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       tabAddedCallback($item);
     }
 
+    $tab = $item;
   }
   
   // if this tab was the last active, make it active again
@@ -328,7 +359,62 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       }, 500);
     }
   } catch(e) {}
+
+  return $tab;
 };
+
+/*
+ * Disable/enable core WordPress drag&drop uploader
+ */
+function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
+  var
+    overlay = jQuery('.media-frame-uploader')
+    overlay_content = jQuery('.media-modal .uploader-window'),
+    drop_targets = jQuery('[id^=__wp-uploader-id-'),
+    upload_supported = fv_player_get_active_tab().hasClass( 'upload_supported' );
+
+  if( disable ) {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+    drop_targets.on('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    if ( !upload_supported ) {
+      overlay.css('opacity', 0 );
+    } else {
+      overlay.css('opacity', 1 );
+    }
+
+  } else {
+    drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
+
+    if ( !upload_supported ) {
+      overlay.css('opacity', '' );
+
+      // We need to hide this now as WordPress did make it visible at some point
+      overlay_content.css({
+        'display' : 'none',
+        'opacity' : 0,
+      });
+    } else {
+      overlay.css('opacity', 1 );
+      overlay_content.css({
+        'display' : 'block',
+        'opacity' : 1,
+      });
+    }
+  }
+}
+
+function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
+  // forward this event via a custom trigger which gets intercepted by our browsers that support file uploads
+  // ... if we just returned false here without the custom trigger, we're basically prevent any drop event anywhere on the Media Browser dialog
+  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
+  return false;
+}
+
+function fv_flowplayer_media_browser_show_upload( id ) {
+  jQuery('.media-toolbar-secondary > .upload_buttons').hide();
+  jQuery('.media-toolbar-secondary > .upload_buttons[data-tab-id='+id+']').show();
+}
 
 function renderBrowserPlaceholderHTML(options) {
   var html = '<div class="attachments-browser"><div class="media-toolbar s3-media-toolbar">';
@@ -424,21 +510,48 @@ jQuery( function($) {
       });
     }
 
-    var splash = false;
+    var
+      splash = false,
+      activeTabId = jQuery( '.media-router:visible .media-menu-item.active' ).attr('id');
 
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
-        var f = fv_flowplayer_scannedFiles[j];
-        if (
-          // image splash files with the same base name that are not poining to the same actual file
+        var
+          f = fv_flowplayer_scannedFiles[j],
+          // check for image splash files with the same base name that are not poining to the same actual file
           // as the one we're checking them against (classic splash files)
-          ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href )
-          ||
-          // m3u8 splash files that actually point to the same file as the one we're checking them against
-          // but have a splash image under a specific object key (such as Coconut thumbnails with different sizes
-          // used as splash screens and small Media Library thumbnails)
-          ( f && f.link && f.link.match(/\.(m3u8)$/) && fileGetBase(f.link) == find[i] )
-        ) {
+          splashCheck = ( f && f.link && f.link.match(/\.(jpg|jpeg|png|gif)$/) && fileGetBase(f.link) == find[i] && f.link != href );
+
+        // check for any additional inclusions and exclusions in splash checks
+        if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ] ) {
+          // see if we have additional files to include as splash images
+          if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['include'] ) {
+            // check for each of these file names against current file name
+            for ( var value of fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['include'] ) {
+              var regexCheck = new RegExp( value );
+              if ( f && f.link && f.link.match( regexCheck ) && fileGetBase(f.link) == find[i] ) {
+                // file pattern found, simply set splashCheck to true and bail out to continue with exclusion checks
+                splashCheck = true;
+                break;
+              }
+            }
+          }
+
+          // see if we have additional files to exclude as splash images
+          if ( fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['exclude'] ) {
+            // check for each of these file names against current file name
+            for ( var value of fv_flowplayer_browser_splash_file_lookup_rules[ activeTabId ]['exclude'] ) {
+              var regexCheck = new RegExp( value );
+              if ( f && f.link && !f.link.match( regexCheck ) && fileGetBase(f.link) == find[i] ) {
+                // file pattern found, simply set splashCheck to false and bail out, as we must exclude this file as splash
+                splashCheck = false;
+                break;
+              }
+            }
+          }
+        }
+
+        if ( splashCheck ) {
           splash = f;
         }
       }
@@ -472,11 +585,12 @@ jQuery( function($) {
       splash_name = 'splash';
     }
 
-    splash = file[ splash_name ];
+    // Perhaps it's a older encoding job without splash_large, so check carfully
+    splash = file[splash_name] ? file[splash_name] : file['splash']
 
     // we remove the signature when we're updating the Editor field, otherwise we leave it in,
     // so we can actually preview the splash
-    if (typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
+    if ( splash && typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
       splash = splash.substring(0, splash.indexOf('?'));
     }
 
@@ -593,9 +707,9 @@ jQuery( function($) {
             fSize = parseInt($filenameDiv.data('size')),
             fSizeTextual = fSize != $filenameDiv.data('size'),
             fDuration = parseInt($filenameDiv.data('duration')),
+            sizeSuffix = 'bytes',
             fExtraDisplayData = $filenameDiv.data('extra');
             fExtraDisplayData = fExtraDisplayData.displayData;
-            sizeSuffix = 'bytes';
 
           if (!fSizeTextual) {
             // if filesize is too small, show it in KBytes
@@ -685,8 +799,8 @@ jQuery( function($) {
             '\t\t' + ( ($filenameDiv.data('extra') != 'undefined' && $filenameDiv.data('extra').trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
             '\t</div>');
 
-          // if this item is unselectable (i.e. a Coconut job that errored-out), disable the Choose button
-          if ( $e.hasClass('disabled') ) {
+          // if this item is unselectable (i.e. a Coconut job that errored-out or encoding job that's still being processed externally), disable the Choose button
+          if ( $filenameDiv.data('extra') && $filenameDiv.data('extra').disabled ) {
             jQuery('.media-button-select').prop('disabled', 'disabled');
           } else {
             // enable Choose button
@@ -739,6 +853,17 @@ jQuery( function($) {
     }
 
     return false;
+  });
+
+  // listen to a drop event on one of our browser tabs and hide the drop overlay
+  // since WP does not do this for us apart from in its own upload tab
+  $( document ).on( "media_browser_drop_event", function() {
+    if ( fv_player_get_active_tab().hasClass('upload_supported') ) {
+      $( '.media-modal .uploader-window' ).css({
+        'display' : 'none',
+        'opacity' : 0,
+      });
+    }
   });
 
 });

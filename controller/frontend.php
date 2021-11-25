@@ -106,8 +106,10 @@ function fv_flowplayer_get_js_translations() {
   'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
   'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
+  'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
+  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer')
 );
-  
+
   return $aStrings;
 } 
 
@@ -398,10 +400,14 @@ function flowplayer_prepare_scripts() {
       $aConf['video_checker_site'] = home_url();
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;
+
+    // Used to restore volume, removed in JS if volume stored in browser localStorage    
     $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
+    
+    $aConf['default_volume'] = $aConf['volume'];
     
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
@@ -457,13 +463,17 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
-    
+
     if( $fv_fp->_get_option('hd_streaming') ) {
       $aConf['hd_streaming'] = true;
     }
 
     if( $fv_fp->_get_option('multiple_playback') ) {
       $aConf['multiple_playback'] = true;
+    }
+
+    if( $fv_fp->_get_option('disable_localstorage') ) {
+      $aConf['disable_localstorage'] = true;
     }
 
     $aConf['hlsjs'] = array(
@@ -775,4 +785,24 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
   $version = str_replace('.beta','',$version);
   
   return version_compare($version,$min ) != -1;
+}
+
+
+/*
+ * WP Rocket Used CSS exclusion
+ * Since many FV Player features are only visible once the video starts this optimization doesn't work
+*/
+add_filter( 'pre_get_rocket_option_remove_unused_css_safelist', 'fv_player_wp_rocket_used_css' );
+
+function fv_player_wp_rocket_used_css( $safelist ) {
+  // Without this our additions would show on WP Rocket settings page
+  global $pagenow;
+  if ( 'options-general.php' === $pagenow && 'wprocket' === $_GET['page'] ) {
+    return $safelist;
+  }
+
+  $safelist[] = '/wp-content/fv-flowplayer-custom/style-*';
+  $safelist[] = '/wp-content/plugins/fv-wordpress-flowplayer*';
+  $safelist[] = '/wp-content/plugins/fv-player-*';
+  return $safelist;
 }

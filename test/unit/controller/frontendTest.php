@@ -119,6 +119,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [video_hash_links] => 1
     [safety_resize] => 1
     [volume] => 0.7
+    [default_volume] => 0.7
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
@@ -204,6 +205,9 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [duration_n_seconds] => %s second
     [and] =>  and 
     [chrome_extension_disable_html5_autoplay] => It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos
+    [click_to_unmute] => Click to unmute
+    [audio_button] => AUD
+    [audio_menu] => Audio
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array

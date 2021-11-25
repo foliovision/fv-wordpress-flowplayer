@@ -1547,6 +1547,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( method_exists('CDN_Enabler_Engine', 'rewriter') ) {
         $item['sources'][$k]['src'] = CDN_Enabler_Engine::rewriter($source['src']);
       }
+
+      if( class_exists('BunnyCDN') && class_exists('BunnyCDNFilter') && method_exists( 'BunnyCDN', 'getOptions' ) && is_callable(BunnyCDNFilter::class, 'rewriteUrl') ) {
+
+        require_once dirname(__FILE__) . '/../includes/class.bunnycdn.rewrite.php';
+
+        $options = BunnyCDN::getOptions();
+
+        $fv_bunnycdn = new FV_Player_BunnyCDN_Rewrite($options["site_url"], (is_ssl() ? 'https://' : 'http://') . $options["cdn_domain_name"], $options["directories"], $options["excluded"], $options["disable_admin"]);
+        $item['sources'][$k]['src'] = $fv_bunnycdn->rewrite_url($source['src']);
+      }
+
     }
 
     return $item;
@@ -2024,8 +2035,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // Uppercase first letter
     foreach( $aLangs as $code => $native ) {
-      // $aLangs[$code] = ucfirst($native);
-      $aLangs[$code] = mb_convert_case($native, MB_CASE_TITLE, "UTF-8");
+      if( function_exists('mb_convert_case') ) {
+        $aLangs[$code] = mb_convert_case($native, MB_CASE_TITLE, "UTF-8");
+      } else {
+        $aLangs[$code] = $native;
+      }
     }
 
     ksort($aLangs);
@@ -2331,16 +2345,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         // 1st rule
         $new_k = str_replace( 'fvp(/(.*))?', 'fvp', $k ); // fvp only
         $new_v = preg_replace('/fv_player_embed=\$matches\[\d]/', 'fv_player_embed=1', $v); // fv_player_embed=1
-        
-        $aRulesNew[$new_k] = $new_v; 
-        
+
+        $aRulesNew[$new_k] = $new_v;
+
         // 2nd rule
-        $new_k = str_replace( '/fvp(/(', '/fvp((-?', $k ); // fvp{number} or fvp-{number}
+        $new_k = str_replace( '/fvp(/(.*))', '/fvp((-?\d+))', $k ); // fvp{number} or fvp-{number}
+
         $aRulesNew[$new_k]= $v;
       } else {
         $aRulesNew[$k] = $v;
       }
     }
+
     return $aRulesNew;
   }
 

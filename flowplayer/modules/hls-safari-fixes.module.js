@@ -42,7 +42,7 @@ flowplayer( function(api,root) {
   api.bind('beforeseek', wait_for_stalled );
   
   function debug(e) {
-    console.log("FV PLayer: iOS video element: " + e.type);
+    console.log("FV Player: iOS video element: " + e.type);
   }
   
   function wait_for_stalled() {
@@ -57,13 +57,13 @@ flowplayer( function(api,root) {
       are_waiting_already++;
       if( are_waiting_already > 1 ) {
         if( are_waiting_already > 3 ) {
-          console.log("FV PLayer: iOS video element needs a push, triggering 'stalled'");
+          console.log("FV Player: iOS video element needs a push, triggering 'stalled'");
           video_tag.trigger( "stalled" );
         }
         return;
       }
       
-      console.log("FV PLayer: iOS video element will trigger error after 'stalled' arrives");
+      console.log("FV Player: iOS video element will trigger error after 'stalled' arrives");
       
       // then it also triggers this event if it really fails to load more
       video_tag.one( "stalled", function() {
@@ -71,7 +71,7 @@ flowplayer( function(api,root) {
 
         // simple video files can be checked directly
         if( api.video.type.match(/video\//) ) {
-          console.log("FV PLayer: Running check of video file...");
+          console.log("FV Player: Running check of video file...");
 
           // create a new video tag and let iOS fetch the meta data
           var test_video = document.createElement('video');
@@ -97,13 +97,13 @@ flowplayer( function(api,root) {
           
           // did the video advance?
           if( api.video.time != time ) {
-            console.log("FV PLayer: iOS video element continues playing, no need for error");
+            console.log("FV Player: iOS video element continues playing, no need for error");
             return;
           }
 
           // the video is paused, so it should not progress and it's fine
           if( api.paused ) {
-            console.log("FV PLayer: iOS video element paused, no need for error");
+            console.log("FV Player: iOS video element paused, no need for error");
             return;
           }          
           

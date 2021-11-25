@@ -13,6 +13,7 @@ var fv_player_editor_matcher = {
 jQuery(function() {
   // The actual editor
   window.fv_player_editor = (function($) {
+    debug_log('Loading...');
 
     var
       $doc = $(document),
@@ -215,6 +216,8 @@ jQuery(function() {
       });*/
 
       if( jQuery().fv_player_box ) {
+        debug_log('Attaching click actions...');
+
         $doc.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
           // make the TinyMCE editor below this button active,
           // as otherwise we would be inserting into the last TinyMCE instance
@@ -265,6 +268,8 @@ jQuery(function() {
             title: 'Export FV Player',
             onComplete : function() {
               overlay_show('loading');
+
+              debug_log('Running fv_player_db_export Ajax.');
 
               $.post(ajaxurl, {
                 action: 'fv_player_db_export',
@@ -336,6 +341,8 @@ jQuery(function() {
           $element_td.find('a, span').hide();
           $element.after($spinner);
 
+          debug_log('Running fv_player_db_remove Ajax.');
+
           jQuery.post(ajaxurl, {
             action: "fv_player_db_remove",
             nonce: $element.data('nonce'),
@@ -371,6 +378,8 @@ jQuery(function() {
           $element
             .hide()
             .after($spinner);
+
+          debug_log('Running fv_player_db_clone Ajax.');
 
           $.post(ajaxurl, {
             action: "fv_player_db_clone",
@@ -605,6 +614,9 @@ jQuery(function() {
             if( jQuery('#remove-post-thumbnail').length > 0 ){
               return;
             }
+
+            debug_log('Running set-post-thumbnail Ajax.');
+
             jQuery.post(ajaxurl, {
               action:"set-post-thumbnail",
               post_id: fv_flowplayer_set_post_thumbnail_id,
@@ -807,6 +819,8 @@ jQuery(function() {
 
         $('.fv-player-save-error').hide();
 
+        debug_log('Running fv_player_db_save Ajax.');
+
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_save_this_please),
@@ -1004,6 +1018,9 @@ jQuery(function() {
 
             fv_player_editor.meta_data_load_started();
             var ajax_call = function () {
+
+              debug_log('Running fv_wp_flowplayer_retrieve_video_data Ajax.');
+
               $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
                   action: 'fv_wp_flowplayer_retrieve_video_data',
                   video_url: $element.val(),
@@ -1370,6 +1387,8 @@ jQuery(function() {
       $doc.on('click', '.copy_player', function() {
         // show loader
         overlay_show('loading');
+
+        debug_log('Running fv_player_db_retrieve_all_players_for_dropdown Ajax.');
 
         $.post(ajaxurl, {
           // TODO: Nonce
@@ -1806,6 +1825,13 @@ jQuery(function() {
       return data;
     }
 
+    function debug_log( message, details ) {
+      console.log( 'FV Player Editor: '+message);
+      if( details ) {
+        console.log(details);
+      }
+    }
+
     /*
      *  Closing the editor
      *  * updates the wp-admin -> FV Player screen
@@ -1917,8 +1943,31 @@ jQuery(function() {
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length;
 
       if (!db_id) {
+        // Edit button on wp-admin -> FV Player screen
+        if (is_fv_player_screen_edit(editor_button_clicked)) {
+          current_player_db_id = $(editor_button_clicked).data('player_id');
+
+          debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+
+          // create an artificial shortcode from which we can extract the actual player ID later below
+          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
+          shortcode = [editor_content];
+        }
+        
+        // Add new button on wp-admin -> FV Player screen
+        else if (is_fv_player_screen_add_new(editor_button_clicked)) {
+          debug_log('Loading for FV Player screen, new player' );
+
+          // create empty shortcode for Add New button on the list page
+          editor_content = '';
+          shortcode = '';
+
+        }
+
         // custom Field or Widget
-        if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
+        else if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
+          debug_log('Loading for custom field or a widget...');
+
           // this is a horrible hack as it adds the hidden marker to the otherwise clean text field value
           // just to make sure the shortcode varible below is parsed properly.
           // But it allows some extra text to be entered into the text widget, so for now - ok
@@ -1928,8 +1977,11 @@ jQuery(function() {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
 
-          // TinyMCE in Text Mode
-        } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+        }
+        // TinyMCE in Text Mode
+        else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+          debug_log('Loading for TinyMCE in Text Mode...');
+
           var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
 
           // look for start of shortcode
@@ -1950,22 +2002,13 @@ jQuery(function() {
           // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
           editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
 
-          // Edit button on wp-admin -> FV Player screen
-        } else if (is_fv_player_screen_edit(editor_button_clicked)) {
-          current_player_db_id = $(editor_button_clicked).data('player_id');
 
-          // create an artificial shortcode from which we can extract the actual player ID later below
-          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-          shortcode = [editor_content];
+        }
 
-          // Add new button on wp-admin -> FV Player screen
-        } else if (is_fv_player_screen_add_new(editor_button_clicked)) {
-          // create empty shortcode for Add New button on the list page
-          editor_content = '';
-          shortcode = '';
+        // Foliopress WYSIWYG
+        else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
+          debug_log('Loading for Foliopress WYSIWYG...' );
 
-          // Foliopress WYSIWYG
-        } else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
           editor_content = instance_fp_wysiwyg.GetHTML();
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
             instance_fp_wysiwyg.InsertHtml('<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>');
@@ -1973,6 +2016,8 @@ jQuery(function() {
           }
 
         } else {
+          debug_log('Loading for TinyMCE in Visual Mode...' );
+
           // TinyMCE in Visual Mode
           editor_content = instance_tinymce.getContent();
           instance_tinymce.settings.validate = false;
@@ -2002,6 +2047,8 @@ jQuery(function() {
       // but don't replace editor_content, since we'll need that to be actually updated
       // rather then set to a player ID
       if (db_id) {
+        debug_log('Loading for player id: '+db_id );
+
         content = db_id;
 
         // we loose the #fvp_placeholder# placeholder in TinyMCE text mode, so let's re-add it here
@@ -2050,6 +2097,8 @@ jQuery(function() {
       }
 
       if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
+        debug_log('Loading shortcode: '+shortcode );
+
         // check for new, DB-based player shortcode
         var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
@@ -2067,6 +2116,8 @@ jQuery(function() {
           // in WP heartbeat
           current_player_db_id = result[1];
 
+          debug_log('Loading shortcode player id: '+current_player_db_id );
+
           if (edit_lock_removal[result[1]]) {
             delete edit_lock_removal[result[1]];
           }
@@ -2083,12 +2134,16 @@ jQuery(function() {
 
           // now load playlist data
           // load video data via an AJAX call
-          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
+          debug_log('Running fv_player_db_load Ajax.');
+
+          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl+'?fv_player_db_load', {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
             playerID :  result[1]
           }, function(response) {
             var vids = response['videos'];
+
+            debug_log('Finished fv_player_db_load Ajax.',response);
 
             if (response) {
               if( typeof(response) != "object" ) {
@@ -2343,6 +2398,8 @@ jQuery(function() {
             }
           });
         } else {
+          debug_log('Loading shortcode without player id...');
+
           $doc.trigger('fv-player-editor-non-db-shortcode');
           // ordinary text shortcode in the editor
           var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
@@ -2637,6 +2694,8 @@ jQuery(function() {
         }
 
       } else {
+        debug_log('New player...' );
+
         jQuery(document).trigger('fv_flowplayer_shortcode_new');
         shortcode_remains = '';
         fix_save_btn_text();
@@ -2754,6 +2813,8 @@ jQuery(function() {
       if ( !has_draft_status ) {
         ajax_data['status'] = 'published';
       }
+
+      debug_log('Running fv_player_db_save Ajax.');
 
       // save data
       jQuery.post(ajaxurl, {
@@ -3444,6 +3505,8 @@ jQuery(function() {
       fv_player_editor.overlay_notice_close_all();
 
       overlay_show('loading');
+
+      debug_log('Running fv_player_db_import Ajax.');
 
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_import',

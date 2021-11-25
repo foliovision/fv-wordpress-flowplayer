@@ -6,7 +6,7 @@ jQuery( function($) {
     
     set_current_step_wrap();
 
-    $(document).on( 'click', '[data-fv-player-wizard-next]', function(e) {
+    $(document).on( 'click', '[data-fv-player-wizard-next]', function() {
       var button_next = $(this),
         indicator = current_step_wrap.find('[data-fv-player-wizard-indicator]');
 
@@ -15,7 +15,7 @@ jQuery( function($) {
       var has_required_fields = true
       get_step_fields().each( function() {
         var input = $(this);
-        if( !input.val() ) {
+        if( !input.val() && !input.data('optional') ) {
           add_field_error('This field is required',input);
           has_required_fields = false;
         }
