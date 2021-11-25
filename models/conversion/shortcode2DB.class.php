@@ -21,7 +21,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_count() {
     global $wpdb;
 
-    $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ',$this->matchers) . ")" );
+    $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ',$this->matchers) . ") AND post_type NOT IN ('topic','reply')" );
 
     return intval($count);
   }
@@ -34,7 +34,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_posts_with_shortcode($offset, $limit) {
     global $wpdb;
 
-    $results = $wpdb->get_results( "SELECT ID, post_date_gmt ,post_title, post_type, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") ORDER BY ID DESC LIMIT {$offset},{$limit}");
+    $results = $wpdb->get_results( "SELECT ID, post_date_gmt ,post_title, post_type, post_content FROM {$wpdb->posts} WHERE post_status != 'inherit' AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") AND post_type NOT IN ('topic','reply') ORDER BY ID DESC LIMIT {$offset},{$limit}");
 
     return $results;
   }
