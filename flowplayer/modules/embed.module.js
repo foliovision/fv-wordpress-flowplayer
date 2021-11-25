@@ -5,7 +5,7 @@ flowplayer(function(player, root) {
   root = jQuery(root);
   if( typeof(root.data('fv-embed')) == 'undefined' || !root.data('fv-embed') || root.data('fv-embed') == 'false' ) return;
 
-  player.embedCode = function() {    
+  player.embedCode = function() {
     var video = player.video;
     var width = root.width();
     var height = root.height();
@@ -32,7 +32,7 @@ jQuery(document).on('click', '.flowplayer .embed-code-toggle', function() {
 
   // show notice in editor
   if( typeof fv_player_editor_conf != 'undefined') {
-    fv_player_notice( root, 'Embed feature not supported in editor preview', 2000 );
+    fv_player_notice( root, fv_player_editor_translations.embed_notice , 2000 );
     return false;
   }
 

@@ -15,7 +15,12 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;
   flowplayer.conf.analytics = false;
-  
+
+   // localstorage disabled by admin
+  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
+    flowplayer.conf.storage = {} // set empty to disable
+  }
+
   // we had a problem that some websites would change the key in HTML if stored as $62\d+
   try {
     flowplayer.conf.key = atob(flowplayer.conf.key);
@@ -912,7 +917,7 @@ function fv_autoplay_exec(){
         } else {
           fv_player_did_autoplay = true;
 
-          if( api.conf.playlist.length && jQuery.isNumeric(autoplay) ) {
+          if( api.conf.playlist.length && !isNaN(parseFloat(autoplay)) && isFinite(autoplay) ) {
             api.play( parseInt(autoplay) );
           } else {
             api.load();

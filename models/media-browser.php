@@ -13,6 +13,7 @@ abstract class FV_Player_Media_Browser {
     add_action( 'admin_print_scripts-toplevel_page_fv_player', array($this, 'init_base'), 0 ); // wp-admin -> FV Player
     add_action( 'admin_print_scripts-widgets.php', array($this, 'init_base'), 0 ); // wp-admin -> Widgets
     add_action( 'admin_print_scripts-fv-player_page_fv_player_coconut', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Encode video
+    add_action( 'fv_player_media_browser_enqueue_base_uploader_css', array( $this, 'include_base_uploader_css' ) );
 
     // register extending class WP AJAX action
     $this->ajax_action_name = $ajax_action_name;
@@ -49,6 +50,10 @@ abstract class FV_Player_Media_Browser {
     }
   }
 
+  function include_base_uploader_css() {
+    wp_enqueue_style( 'fv-player-s3-uploader-css', flowplayer::get_plugin_url() . '/css/s3-uploader.css', array(), filemtime( dirname(__FILE__).'/../css/s3-uploader.css' ) );
+  }
+
   function include_s3_upload_assets() {
     if ( $this->s3_assets_loaded ) {
       return;
@@ -57,8 +62,8 @@ abstract class FV_Player_Media_Browser {
     global $fv_wp_flowplayer_ver;
 
     wp_enqueue_script( 'fv-player-s3-uploader', flowplayer::get_plugin_url().'/js/s3upload.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
-    wp_enqueue_style( 'fv-player-s3-uploader-css', flowplayer::get_plugin_url() . '/css/s3-uploader.css', array(), filemtime( dirname(__FILE__).'/../css/s3-uploader.css' ) );
     wp_enqueue_script( 'fv-player-s3-uploader-base', flowplayer::get_plugin_url().'/js/s3-upload-base.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
+    $this->include_base_uploader_css();
 
     $this->s3_assets_loaded = true;
   }
