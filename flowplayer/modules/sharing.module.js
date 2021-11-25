@@ -69,7 +69,7 @@ flowplayer( function(api,root) {
      root.on('click','.fvp-sharing > li', function(e) {
       e.preventDefault();
 
-      fv_player_notice( root, 'Link feature not supported in editor preview', 2000 );
+      fv_player_notice( root, fv_player_editor_translations.link_notice, 2000 );
 
       return false;
     });
