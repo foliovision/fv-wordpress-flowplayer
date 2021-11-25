@@ -52,7 +52,7 @@ $.fn.Progressor = function(args) {
     var opts = $.extend({
       action: 'Action',
       cancel: 'Cancel',
-      limit: 20, // limit jobs count
+      limit: 5, // limit jobs count
       nonce: '',
     }, args);
 

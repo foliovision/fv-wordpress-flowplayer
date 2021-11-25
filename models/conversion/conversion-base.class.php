@@ -17,6 +17,7 @@ abstract class FV_Player_Conversion_Base {
 
   function __construct( $args ) {
     $this->title = $args['title'];
+    $this->help = $args['help'];
     $this->slug = $args['slug'];
     $this->matchers = $args['matchers'];
     $this->screen = 'fv_player_conversion_' . $this->slug;
@@ -142,9 +143,10 @@ abstract class FV_Player_Conversion_Base {
       </style>
       <div class="wrap">
         <h1><?php echo $this->title; ?></h1>
+        <?php echo wpautop($this->help); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
-          <input class="button-primary" type="submit" name="convert" value="Convert shortcodes" />
+          <input class="button-primary" type="submit" name="convert" value="Start" />
         </p>
 
         <p>

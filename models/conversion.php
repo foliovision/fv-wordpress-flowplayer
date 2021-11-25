@@ -10,9 +10,7 @@ class FV_Player_Conversion {
   public function conversion_button() {
     ?>
       <tr>
-        <td>
-          <td class="first"><label>Convert jwplayer to fvplayer:</label></td>
-        </td>
+        <td><label>Convert JW Player shortcodes to <code>[fvplayer]</code>:</label></td>
         <td>
           <p class="description">
             <input type="button" class="button" value="<?php _e('Convert JW Player shortcodes', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-player-pro'); ?>') ) location.href='<?php echo wp_nonce_url( site_url('wp-admin/options-general.php?page=fvplayer'), 'convert_jwplayer', 'convert_jwplayer'); ?>'; "/>

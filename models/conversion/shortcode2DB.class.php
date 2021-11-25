@@ -9,7 +9,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'matchers' => array(
         "'%[fvplayer src=%'",
         "'%[flowplayer src=%'",
-      )
+      ),
+      'help' => __("This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.\n\nPlease make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.", 'fv-wordpress-flowplayer')
     ) );
   }
 
@@ -108,6 +109,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                 array(
                   'meta_key' => 'post_id',
                   'meta_value' => $post->ID
+                ),
+                array(
+                  'meta_key' => 'fv_player_conversion',
+                  'meta_value' => self::class
                 )
               ),
               'date_created' => $post->post_date_gmt,
@@ -173,12 +178,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function conversion_button() {
     ?>
       <tr>
-        <td>
-          <td class="first"><label>Convert fvplayer to DB:</label></td>
-        </td>
+        <td><label>Convert <code>[fvplayer src="..."]</code> shortocdes to database-driven <code>[fvplayer id="..."]</code> :</label></td>
         <td>
           <p class="description">
-            <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('This converts the [fvplayer src=...] and [flowplayer src=...] shortcodes into database [fvplayer id=...] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-player-pro'); ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
+            <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.', 'fv-wordpress-flowplayer') ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
           </p>
         </td>
       </tr>
