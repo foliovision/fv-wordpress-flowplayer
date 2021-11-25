@@ -22,6 +22,12 @@ abstract class FV_Player_Media_Browser {
 
   abstract function init();
 
+  // TOTO: should be abstract
+  function decode_link_components( $link ) {}
+
+  // TOTO: should be abstract
+  function get_custom_domain_url( $link, $bucket, $custom_domain ) {}
+
   function init_base() {
     global $fv_wp_flowplayer_ver;
     wp_enqueue_media();
@@ -36,6 +42,12 @@ abstract class FV_Player_Media_Browser {
 
   function register() {
     add_action( $this->ajax_action_name, array($this, 'load_assets') );
+  }
+
+  function include_aws_sdk() {
+    if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
+      require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
+    }
   }
 
   function include_base_uploader_css() {
@@ -58,6 +70,110 @@ abstract class FV_Player_Media_Browser {
 
   function get_formatted_assets_data() {
     return json_decode('{"items":{"name":"Home","type":"folder","path":"Home\/","items":[{"name":"01 The Beginning.mp3","size":2117536,"type":"file","path":"Home\/01 The Beginning.mp3","link":"http:\/\/sjdua7x04ygyx.cloudfront.net\/01%20The%20Beginning.mp3"},{"name":"Fender_Bass_Guitar_Patent.jpg","size":495756,"type":"file","path":"Home\/Fender_Bass_Guitar_Patent.jpg","link":"http:\/\/sjdua7x04ygyx.cloudfront.net\/Fender_Bass_Guitar_Patent.jpg"}]}}', true);
+  }
+
+  function get_output() {
+    $output = array(
+      'name' => 'Home',
+      'type' => 'folder',
+      'path' => !empty($_POST['path']) ? $_POST['path'] : 'Home/',
+      'items' => array()
+    );
+
+    return $output;
+  }
+
+  function get_metadata( $s3Client, $bucket ) {
+    $args = array(
+      'Bucket' => $bucket,
+      'Delimiter' => '/',
+    );
+
+    $request_path = !empty($_POST['path']) ? str_replace( 'Home/', '', stripslashes($_POST['path']) ) : false;
+
+    if( $request_path ) {
+      $args['Prefix'] = $request_path;
+    }
+
+    $paged = $s3Client->getPaginator('ListObjects',$args);
+
+    $date_format = get_option( 'date_format' );
+
+    return array( $request_path, $paged, $date_format );
+  }
+
+  function get_output_items( $output, $s3Client, $request_path, $paged, $date_format, $bucket, $sum_up = NULL, $custom_domain = NULL ) {
+    foreach( $paged AS $res ) {
+
+      $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
+      $files = $res->get('Contents');
+      if( !$files ) $files = array();
+      
+      $objects = array_merge( $folders, $files );
+
+      foreach ( $objects as $object ) {
+        if ( ! isset( $objectarray ) ) {
+          $objectarray = array();
+        }
+
+        $item = array();
+
+        $path = $object['Prefix'] ? $object['Prefix'] : $object['Key'];
+
+        if( isset($sum_up) && !empty($object['Key']) && preg_match( '~\.ts$~', $object['Key'] ) ) {
+          if( empty($sum_up['ts']) ) $sum_up['ts'] = 0;
+          $sum_up['ts']++;
+          continue;
+        }
+
+        $item['path'] = 'Home/' . $path;
+        
+        if( $request_path ) {
+          if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
+
+          $item['name'] = str_replace( $request_path, '', $path );
+        } else {
+          $item['name'] = $path;
+        }
+
+        if( !empty($object['Size']) ) {
+          $item['type'] = 'file';
+          $item['size'] = $object['Size'];
+          $item['modified'] = date($date_format, strtotime($object['LastModified']));
+
+          if( isset($object['LastModified']) ) {
+            $item['LastModified'] = $object['LastModified'];
+          }
+
+          $link = (string) $s3Client->getObjectUrl( $bucket, $path );
+
+          $link = $this->decode_link_components( $link );
+
+          // replace link with CloudFront URL, if we have one
+          if( !empty($custom_domain) ) {
+            $link = $this->get_custom_domain_url($link ,$bucket, $custom_domain);
+          }
+
+          $item['link'] = $link;
+
+          if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item['name'])) {
+            $item['splash'] = apply_filters('fv_flowplayer_splash', $link );
+          }
+        } else {
+          $item['type'] = 'folder';
+          $item['items'] = array();
+        }
+
+        $output['items'][] = $item;
+
+        if (strtolower(substr($item['name'], strrpos($item['name'], '.') + 1)) === 'ts') {
+          continue;
+        }
+
+      }
+    }
+
+    return array( $output, $sum_up );
   }
 
   function load_assets() {
