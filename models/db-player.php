@@ -863,7 +863,7 @@ CREATE TABLE " . self::$db_table_name . " (
    *
    * @return string player name from getter or assembled name
    */
-  public function getCheckedPlayerName() {
+  public function getPlayerNameWithFallback() {
     $player_name = $this->getPlayerName();
 
     // player name is present - return it
