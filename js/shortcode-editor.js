@@ -1050,7 +1050,7 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
-                              fv_player_editor.upload_splash( { 'url': json_data.thumbnail, 'title': title  }, $parent_table.attr('data-index') );
+                              fv_player_editor.upload_splash( { 'url': json_data.thumbnail, 'title': json_data.name }, $parent_table.attr('data-index') );
                               $splash_element.closest('tr').show();
                             }
                           }
