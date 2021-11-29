@@ -62,9 +62,19 @@ abstract class FV_Player_Video_Encoder {
     if( is_admin() ) {
       add_action( 'admin_menu', array($this, 'admin_menu'), 11 );
 
+      add_filter( 'fv_player_conf_defaults', array( $this, 'default_settings' ), 10, 2 );
+
       $version = get_option( 'fv_player_' . $this->encoder_id . '_ver' );
       if( $this->version != $version ) {
         update_option( 'fv_player_' . $this->encoder_id . '_ver', $this->version );
+
+        // This is where FV Player will set any default settings.
+        // We have to do this again as we only init this plugin on plugins_loaded after $fv_fp has been created with the default settings initialized.
+        global $fv_fp;
+        if( !empty($fv_fp) && method_exists( $fv_fp, '_get_conf' ) ) {
+          $fv_fp->_get_conf();
+        }
+
         $this->plugin_update_database();
       }
 
@@ -92,8 +102,6 @@ abstract class FV_Player_Video_Encoder {
       add_action( 'fv_flowplayer_shortcode_editor_item_after', array( $this, 'shortcode_editor_item' ) );
 
       add_filter('plugin_action_links', array( $this, 'admin_plugin_action_links' ), 10, 2);
-
-      add_filter( 'fv_player_conf_defaults', array( $this, 'default_settings' ), 10, 2 );
 
       $options = get_option( 'fvwpflowplayer' );
       if( !empty($options[ $this->encoder_id ]) && !empty($options[ $this->encoder_id ]['license_key']) ) {
