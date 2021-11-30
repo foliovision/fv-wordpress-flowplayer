@@ -3850,6 +3850,8 @@ jQuery(function() {
           title = item.find('#fv_wp_flowplayer_field_src').val();
         }
 
+        data.title = title;
+
         debug_log('Uploading splash for: ' + title );
 
         jQuery.post(fv_player.ajaxurl, data, function(response) {
