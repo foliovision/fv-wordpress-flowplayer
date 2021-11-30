@@ -1050,8 +1050,7 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
-                              var title = json_data.name ? json_data.name : $caption_element.val();
-                              fv_player_editor.upload_splash( { 'url': json_data.thumbnail, 'title': title }, $parent_table.attr('data-index') );
+                              fv_player_editor.upload_splash( { 'url': json_data.thumbnail }, $parent_table.attr('data-index') );
                               $splash_element.closest('tr').show();
                             }
                           }
@@ -3851,10 +3850,12 @@ jQuery(function() {
           title = item.find('#fv_wp_flowplayer_field_src').val();
         }
 
-        data.title = title;
+        debug_log('Uploading splash for: ' + title );
 
         jQuery.post(fv_player.ajaxurl, data, function(response) {
           if(response.src) {
+            debug_log('Editor splash response success: ' + response.src );
+
             var splashInput = item.find('#fv_wp_flowplayer_field_splash');
             splashInput.val(response.src);
             splashInput.css('background-color','#6ef442');
@@ -3869,9 +3870,9 @@ jQuery(function() {
             // trigger autosave
             splashInput.trigger('keyup');
 
-          }
+          } else if(response.error) {
+            debug_log('Editor splash response error: ' + response.error );
 
-          if(response.error) {
             splashInput.val(response.original_src).trigger('change'); // use original splash src if failed to download
             
             jQuery('.fv-messages').html('<div class="error"><p>'+response.error+'</p></div>');

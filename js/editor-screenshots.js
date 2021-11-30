@@ -38,7 +38,7 @@
 
         // try to set crossOrigin if it's a HTML5 video - no HLS or DASH
         if( video_tag && video_tag.crossOrigin != 'anonymous' && api.engine.engineName == 'html5' ) {
-          console.log('FV Player Editor Screenshots: Reloading with CORS');
+          debug_log('Screenshot: Reloading with CORS...');
 
           // without this Flowplayer will remove that crossOrigin="anonymous" automatically!
           api.conf.nativesubtitles = true;
@@ -50,12 +50,12 @@
 
         show_error();
 
-        console.log('FV Player Editor Screenshots: '+err);
+        debug_log('Screenshot error: '+ err);
 
         return;
       }
 
-      fv_player_editor.upload_splash( { 'img': screenshot, 'title': title }, index );
+      fv_player_editor.upload_splash( { 'img': screenshot }, index );
     });
 
     // Compatibility test
@@ -76,7 +76,7 @@
           try {
             takeScreenshot();
           } catch(err) {
-            button.prop("disabled",true);
+            button.prop("disabled", true);
           }
         }
       }
@@ -101,7 +101,7 @@
         // prevent FV Player Pro from trying to recover
         api.fv_retry_count = 100;
         
-        console.log('FV Player Editor Screenshots: Video won\'t play with crossOrigin="anonymous"');
+        debug_log('Screenshots: Video won\'t play with crossOrigin="anonymous"');
         
         show_error();
       }
