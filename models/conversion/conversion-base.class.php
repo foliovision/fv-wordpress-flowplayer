@@ -167,9 +167,9 @@ abstract class FV_Player_Conversion_Base {
         <table class="wp-list-table widefat fixed striped table-view-list posts">
           <thead>
             <tr>
-              <th>ID</th>
+              <th style="width: 5em">ID</th>
               <th>Title</th>
-              <th>Post Type</th>
+              <th style="width: 5em">Post Type</th>
               <th>Shortcode</th>
               <th>Result</th>
             </tr>
