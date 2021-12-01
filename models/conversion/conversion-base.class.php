@@ -83,7 +83,7 @@ abstract class FV_Player_Conversion_Base {
 
       // build html output
       foreach( $conversions_output as $output_data ) {
-        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
+        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "' target='_blank'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."' target='_blank'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
       }
 
       // response
@@ -108,18 +108,20 @@ abstract class FV_Player_Conversion_Base {
 
     $filename = $this->slug . '-export-' . date('Y-m-d') . '.csv';
 
-    header("Content-type: text/csv");
+    // UTF-8 wont work for older excel (pre Office 2016)
+    // header('Content-Encoding: UTF-8');
+    // header('Content-type: text/csv; charset=UTF-8');
     header("Content-Disposition: attachment; filename=$filename");
     header("Pragma: no-cache");
     header("Expires: 0");
 
     $meta_key = '_fv_player_' . $this->slug . '_failed';
 
-    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s'", $meta_key );
+    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s' ORDER BY {$wpdb->posts}.ID ASC ", $meta_key );
 
     $results = $wpdb->get_col( $sql );
 
-    echo 'ID,Title,Post Link,Edit Link,Message'."\n";
+    echo 'ID,Title,Post Link,Edit Link,Shortcode,Message'."\n";
     if( !empty( $results ) ) {
       foreach( $results as $result ) {
         $unserialized = unserialize( $result );
