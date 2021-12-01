@@ -71,6 +71,9 @@ $.fn.Progressor = function(args) {
         running = false;
         $(button).val(original);
         $('#loading').hide();
+        if( convert_error ) {
+          $('#export').show();
+        }
       }
       else {
         offset = 0;
@@ -78,6 +81,7 @@ $.fn.Progressor = function(args) {
 
         $(button).val(opts.cancel);
 
+        $('#export').hide();
         $('#loading').show();
         $(wrapper).fadeIn();
         $('#progress').css('width', '0px');

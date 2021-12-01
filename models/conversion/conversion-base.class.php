@@ -64,6 +64,11 @@ abstract class FV_Player_Conversion_Base {
         if( !empty( $result['errors'] ) ) {
           update_post_meta( $post->ID, '_fv_player_' . $this->slug . '_failed', $result['errors'] );
           $convert_error = true;
+        } else {
+          if( $result['content_updated'] ) {
+            // no problem, unmark
+            delete_post_meta( $post->ID, '_fv_player_' . $this->slug . '_failed' );
+          }
         }
 
         $conversions_output = array_merge( $conversions_output, $result['output_data'] );
@@ -78,7 +83,7 @@ abstract class FV_Player_Conversion_Base {
 
       // build html output
       foreach( $conversions_output as $output_data ) {
-        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td>#". $output_data['ID'] . "</td><td>". $output_data['title'] . "</td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td></tr>";
+        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
       }
 
       // response
@@ -98,7 +103,7 @@ abstract class FV_Player_Conversion_Base {
 
   function csv_export() {
     if( !current_user_can('install_plugins') ) return;
-    
+
     global $wpdb;
 
     $filename = $this->slug . '-export-' . date('Y-m-d') . '.csv';
@@ -172,6 +177,7 @@ abstract class FV_Player_Conversion_Base {
               <th style="width: 5em">Post Type</th>
               <th>Shortcode</th>
               <th>Result</th>
+              <th>Error</th>
             </tr>
           </thead>
           <tbody id="output"></tbody>

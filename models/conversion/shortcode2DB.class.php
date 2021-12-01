@@ -50,13 +50,14 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function convert_one( $post ) {
     $start = microtime(true);
 
-    $content_updated = false;
-    $new_content = $post->post_content;
-    $output_data = array();
-    $errors = array();
+    $content_updated = false; // track if content was updated
+    $new_content = $post->post_content; // copy of content for update
+    $output_data = array(); // output for html
+    $errors = array(); // all errors for export
 
     if( !empty( $post->post_content) ) {
 
+      // match shortcodes in post_content
       preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $post->post_content, $matched_shortcodes );
 
       $supported_atts = array(
@@ -68,11 +69,14 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         'width',
         'height',
         'autoplay',
+        'splashend',
+        'lightbox '
       );
 
       if( !empty( $matched_shortcodes) ) {
         foreach( $matched_shortcodes[0] as $shortcode ) {
-          $atts = shortcode_parse_atts( rtrim($shortcode,']') );
+          $atts = shortcode_parse_atts( trim(rtrim($shortcode,']')) );
+          $import_atts = array();
 
           unset( $atts[0] ); // remove [fvplayer or [flowplayer
 
@@ -86,23 +90,33 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
           foreach( $atts as $k => $v ) {
             if( !in_array( $k, $supported_atts ) ) {
               $unsupported_atts_found[] = $k;
+            } else {
+              $import_atts[$k] = $v;
             }
           }
 
-          $output = "Conversion failed.";
+          $output_msg = "Conversion failed.";
+          $failed_msg = "";
 
           // check if unsupported args found
           if( !empty($unsupported_atts_found) ) {
-            $output = "Unsupported argument(s) " . implode(',', $unsupported_atts_found);
+            $failed_msg = "Unsupported argument(s) " . implode(',', $unsupported_atts_found);
             
             $errors[] = array(
               'ID' => $post->ID,
               'post_title' => $post->post_title,
               'post_link' => get_permalink( $post->ID ),
               'post_edit' => get_edit_post_link( $post->ID ),
-              'message' => $output
+              'message' => $failed_msg
             );
           } else {
+            // $import_atts['meta'] = array(
+            //   array(
+            //     'meta_key' => '',
+            //     'meta_value' => ''
+            //   )
+            // );
+
             // only splash, caption and src, src1, src2
             $import = array(
               // 'player_name' => $post->post_title,
@@ -121,19 +135,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               'height' => isset($atts['height']) ? $atts['height'] : '',
               'autoplay' => isset($atts['autoplay']) ? $atts['autoplay'] : '',
               'videos' => array(
-                array(
-                  'src' => isset($atts['src']) ? $atts['src'] : '',
-                  'src1' => isset($atts['src1']) ? $atts['src1'] : '',
-                  'src2' => isset($atts['src2']) ? $atts['src2'] : '',
-                  'splash' => isset($atts['splash']) ? $atts['splash'] : '',
-                  'caption' => isset($atts['caption']) ? $atts['caption'] : '',
-                  // 'meta' => array(
-                  //   array(
-                  //     'meta_key' => '',
-                  //     'meta_value' => ''
-                  //   )
-                  // )
-                )
+                $import_atts
               )
             );
 
@@ -144,16 +146,16 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               // echo "Inserted player #".$player_id."\n";
               $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
               $content_updated = true;
-              $output = "New FV Player #" . $player_id ;
+              $output_msg = "New FV Player #" . $player_id ;
             } else {
-              $output = "Error saving FV Player instance";
+              $failed_msg = "Error saving FV Player instance";
               
               $errors[] = array(
                 'ID' => $post->ID,
                 'post_title' => $post->post_title,
                 'post_link' => get_permalink( $post->ID ),
                 'post_edit' => get_edit_post_link( $post->ID ),
-                'message' => $output
+                'message' => $failed_msg
               );
             }
           }
@@ -164,13 +166,14 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             'title' => $post->post_title,
             'type' => $post->post_type,
             'shortcode' => $shortcode,
-            'output' => $output,
+            'output' => $output_msg,
+            'error' => $failed_msg
           );
         }
       }
     }
 
-    return  array(
+    return array(
       'new_content' => $new_content,
       'content_updated' => $content_updated,
       'output_data' => $output_data,
