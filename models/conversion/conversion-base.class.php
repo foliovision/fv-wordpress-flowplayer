@@ -115,7 +115,7 @@ abstract class FV_Player_Conversion_Base {
 
     $meta_key = '_fv_player_' . $this->slug . '_failed';
 
-    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s' ORDER BY {$wpdb->posts}.ID ASC ", $meta_key );
+    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s' ORDER BY {$wpdb->posts}.post_date_gmt DESC ", $meta_key );
 
     $results = $wpdb->get_col( $sql );
 
