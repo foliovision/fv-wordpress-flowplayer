@@ -1151,7 +1151,25 @@ jQuery(function() {
                       }
                     }
                   }
+                  
+                  var item = jQuery($element).parents('table'),
+                    show = [],
+                    check = [];
 
+                  if( !!json_data.is_live ) {
+                    show = [ 'dvr', 'live' ];
+                    check = [ 'live' ];
+                  }
+                  
+                  if( json_data.is_audio == -1 ) {
+                    show.push('audio');
+                  } else if( !!json_data.is_audio ) {
+                    show.push('audio');
+                    check.push('audio');
+                  }
+                  
+                  show_stream_fields_worker( item, show, check );
+                  
                   $element.removeData('fv_player_video_data_ajax');
                   $element.removeData('fv_player_video_data_ajax_retry_count');
 
@@ -2656,6 +2674,7 @@ jQuery(function() {
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
               this.checked = 1;
+              jQuery(this).closest('tr').show();
             });
           }
 
@@ -3567,12 +3586,37 @@ jQuery(function() {
       // on fv_flowplayer_shortcode_new
       if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
 
-      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/),
-        is_vimeo_or_youtube = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//) || src.match(/youtube\.com\//);
+      // TODO: Gradually get rid of this and detect each stream type instead
+      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/rtmp:/) || src.match(/\.mpd/),
+        is_vimeo_live = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//);
     
-      item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!is_stream || !!is_vimeo_or_youtube);
-      item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!is_stream);
-      item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!is_stream);
+      var show = [];
+      if( !!is_stream ) show = [ 'audio', 'dvr', 'live' ];
+      if( !!is_vimeo_live ) show = [ 'live' ];
+      
+      show_stream_fields_worker( item, show );
+      
+      editor_resize();
+    }
+
+    function show_stream_fields_worker(item, to_show, to_check) {
+      jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
+        var field = item.find('[name=fv_wp_flowplayer_field_'+v+']'),
+          is_checked = field.prop('checked');
+
+        // We show the checkbox if it's to be shown or if it's checked
+        field.closest('tr').toggle( is_checked || to_show && to_show.indexOf(v) != -1 );
+        
+        // If it's not already checked we check it or not check it based on args
+        if( !is_checked ) {
+          field.prop( 'checked', to_check && to_check.indexOf(v) != -1 );
+        }
+      });
+      
+      // DVR should be always shown for live streams
+      if( item.find('[name=fv_wp_flowplayer_field_live]').prop('checked') ) {
+        item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').show();
+      }
       
       editor_resize();
     }
