@@ -202,7 +202,9 @@ class FV_Player_Checker {
             $playlist = false;
             $duration = 0;
             $segments = false;
-  
+
+            $is_live = stripos( $response, '#EXT-X-ENDLIST' ) === false;
+
             if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
               foreach($segments[1] as $segment_item){
                 $duration += $segment_item;
@@ -229,6 +231,9 @@ class FV_Player_Checker {
                 }
                 $request = wp_remote_get($item_url);
                 $playlist_item = wp_remote_retrieve_body( $request );
+                
+                $is_live = stripos( $playlist_item, '#EXT-X-ENDLIST' ) === false;
+                
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
                   foreach($segments[1] as $segment_item){
                     $duration += $segment_item;
@@ -253,6 +258,8 @@ class FV_Player_Checker {
           }
          
           $fv_flowplayer_meta['duration'] = $time;
+          $fv_flowplayer_meta['is_live'] = $is_live;
+          $fv_flowplayer_meta['is_audio'] = $is_audio;
           $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
           $fv_flowplayer_meta['date'] = time();
           $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
