@@ -108,9 +108,7 @@ abstract class FV_Player_Conversion_Base {
 
     $filename = $this->slug . '-export-' . date('Y-m-d') . '.csv';
 
-    // UTF-8 wont work for older excel (pre Office 2016)
-    // header('Content-Encoding: UTF-8');
-    // header('Content-type: text/csv; charset=UTF-8');
+    header('Content-type: text/csv');
     header("Content-Disposition: attachment; filename=$filename");
     header("Pragma: no-cache");
     header("Expires: 0");
@@ -121,15 +119,22 @@ abstract class FV_Player_Conversion_Base {
 
     $results = $wpdb->get_col( $sql );
 
-    echo 'ID,Title,Post Link,Edit Link,Shortcode,Message'."\n";
     if( !empty( $results ) ) {
+      $fp = fopen('php://output', 'wb');
+
+      $header = array('ID','Title','Post-Link','Edit-Link','Shortcode','Message');
+
+      fputcsv($fp, $header);
+
       foreach( $results as $result ) {
         $unserialized = unserialize( $result );
   
         foreach( $unserialized as $row ) {
-          echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
+          fputcsv($fp, $row);
         }
       }
+
+      fclose($fp);
     }
 
     die();
