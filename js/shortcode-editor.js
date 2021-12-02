@@ -282,7 +282,7 @@ jQuery(function() {
                 overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
 
                 jQuery('[name=fv_player_copy_to_clipboard]').select();
-              }).error(function() {
+              }).fail(function() {
                 overlay_show('message', 'An unexpected error has occurred. Please try again.');
               });
 
@@ -360,7 +360,7 @@ jQuery(function() {
 
               $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
             }
-          }).error(function() {
+          }).fail(function() {
             $spinner.remove();
 
             $element.html('Error');
@@ -394,7 +394,7 @@ jQuery(function() {
                   $('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
                   $spinner.remove();
                   $element.show();
-                }).error(function() {
+                }).fail(function() {
                 $spinner.remove();
                 $element.show();
               });
@@ -402,7 +402,7 @@ jQuery(function() {
               $spinner.remove();
               $element.html('Error');
             }
-          }).error(function() {
+          }).fail(function() {
             $spinner
             $element.html('Error');
           });
@@ -870,7 +870,7 @@ jQuery(function() {
             error(e);
           }
 
-        }, 'json' ).error( function() {
+        }, 'json' ).fail( function() {
           $('.fv-player-save-error').show();
           
           el_spinner.hide();
@@ -1157,7 +1157,7 @@ jQuery(function() {
 
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();
-                }).error(function () {
+                }).fail(function () {
                 fv_player_editor.meta_data_load_finished();
                   // remove element AJAX data
                   $element.removeData('fv_player_video_data_ajax');
@@ -1403,7 +1403,7 @@ jQuery(function() {
 
           overlay.find('select').html( dropdown.join('') );
 
-        }).error(function () {
+        }).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
 
         });
@@ -2373,7 +2373,7 @@ jQuery(function() {
 
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
-          }).error(function(xhr) {
+          }).fail(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
             } else {
@@ -2890,7 +2890,7 @@ jQuery(function() {
 
           jQuery('#fv_player_copy_to_clipboard').select();
         }
-      }).error(function() {
+      }).fail(function() {
         overlay_show('message', 'An unexpected error has occurred. Please try again');
       });
 
@@ -3515,7 +3515,7 @@ jQuery(function() {
             function (response) {
               jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
               jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
-            }).error(function() {
+            }).fail(function() {
             jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
           });
 
@@ -3523,7 +3523,7 @@ jQuery(function() {
           fv_player_editor.overlay_notice( button, response, 'error' );
 
         }
-      }).error(function() {
+      }).fail(function() {
         fv_player_editor.overlay_notice( button, 'Unknown error!', 'error' );
 
       });
