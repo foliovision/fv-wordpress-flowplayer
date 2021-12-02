@@ -192,8 +192,11 @@ class FV_Player_Checker {
           if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
             $time = $ThisFileInfo['playtime_seconds'];    	
           }
-          
+
+          $is_audio = false;
+
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
+            $is_audio = -1; // We do not know if it's audio only yet
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
@@ -221,7 +224,20 @@ class FV_Player_Checker {
                   $had_ext_x_stream_inf = false;
                 }
 
-                if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) $had_ext_x_stream_inf = true;
+                if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) {
+                  $had_ext_x_stream_inf = true;
+                  
+                  // If there are sub-playlists we can be certain it's either audio stream...
+                  if( $is_audio == -1 ) {
+                    $is_audio = true;
+                  }
+                  
+                  // ...or we found a video track, then we are sure it's not audio stream
+                  if( stripos($line,'RESOLUTION=') !== false ) {
+                    $is_audio = false;
+                  }
+                }
+                
               }
 
               foreach($streams as $item){
