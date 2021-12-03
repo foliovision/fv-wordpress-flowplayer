@@ -1466,6 +1466,9 @@ jQuery(function() {
           clearInterval(refreshTask);
           $this.removeData('fv_player_video_auto_refresh_task');
         }*/
+   
+        // Reset the HLS stream checkboxes (Live, DVR, ...)
+        show_stream_fields_worker( $this, [], [] );
       });
 
       jQuery('#fv_wp_flowplayer_field_player_name').show();
