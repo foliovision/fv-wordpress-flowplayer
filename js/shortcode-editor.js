@@ -414,7 +414,7 @@ jQuery(function() {
       /*
       * NAV TABS
       */
-      $('.fv-player-tabs-header a').click( function(e) {
+      $('.fv-player-tabs-header a').on( 'click', function(e) {
         e.preventDefault();
         $('.fv-player-tabs-header a').removeClass('nav-tab-active');
         $(this).addClass('nav-tab-active')
@@ -447,7 +447,7 @@ jQuery(function() {
       * Playlist view thumbnail toggle
       */
       var list_style_toggles = $('#fv-player-list-thumb-toggle > a');
-      list_style_toggles.click(function(){
+      list_style_toggles.on( 'click', function(){
         var button = $(this);
         if( button.hasClass('disabled') ) return;
 
@@ -643,7 +643,7 @@ jQuery(function() {
       * End of playlist Actions
       */
 
-      jQuery('#fv_wp_flowplayer_field_end_actions').change(function(){
+      jQuery('#fv_wp_flowplayer_field_end_actions').on( 'change', function(){
         var value = jQuery(this).val();
         jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
         switch(value){
@@ -675,7 +675,7 @@ jQuery(function() {
       */
 
       // TODO: Check
-      jQuery('#fv_wp_flowplayer_field_share').change(function(){
+      jQuery('#fv_wp_flowplayer_field_share').on( 'change', function(){
         var value = jQuery(this).val();
 
         switch(value){
@@ -756,12 +756,12 @@ jQuery(function() {
         }
 
         if( previous && JSON.stringify(ajax_data) == JSON.stringify(previous) ) {
-          console.log('Not really!');
+          debug_log('No changes to save.');
           return;
         }
 
         if( is_saving ) {
-          console.log('Still saving!');
+          debug_log('Still saving!');
           next = ajax_data;
           return;
         }
@@ -2238,9 +2238,9 @@ jQuery(function() {
                     }
                   } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
                     if (real_val === '1' || real_val === 'on' || real_val === 'true') {
-                      $element.attr('checked', 'checked');
+                      $element.prop('checked',true);
                     } else {
-                      $element.removeAttr('checked');
+                      $element.prop('checked',false);
                     }
                   } else {
                     $element.val(real_val);
@@ -2923,9 +2923,9 @@ jQuery(function() {
     function insert_button_toggle_disabled( disable ) {
       var button = $('.fv_player_field_insert-button');
       if( disable ) {
-        button.attr('disabled', 'disabled');
+        button.prop('disabled', true);
       } else {
-        button.removeAttr('disabled');
+        button.prop('disabled', false);
       }
     }
 
@@ -3490,7 +3490,7 @@ jQuery(function() {
     /*
     Click on Loading Overlay Close button
     */
-    $doc.on('click', '#fv-player-editor-overlay-close', function() {
+    $doc.on('click', '[data-fv-player-editor-overlay-close]', function() {
       $.fn.fv_player_box.close();
       // hide the overlay asynchronously to allow the actual modal close animation to finish,
       // so it doesn't blink from error message to an empty editor and only then starts to fade
