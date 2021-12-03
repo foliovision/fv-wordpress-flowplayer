@@ -3804,7 +3804,7 @@ jQuery(function() {
       },
 
       playlist_buttons_toggle: function( show ) {
-        $('.playlist_add, .playlist_edit').toggle( show );
+        $('.playlist_add, .playlist_edit').css( 'display', show ? 'inline-block' : 'none' );
       },
 
       insert_button_toggle: function( show ) {
