@@ -16,11 +16,14 @@ $.fn.Progressor = function(args) {
             var response = JSON.parse(data),
               percent = response.percent_done,
               table_rows = response.table_rows,
-              left = response.left;
+              left = response.left,
+              convert_error = false;
 
             if( response.convert_error ) {
               convert_error = true;
             }
+
+            console.log('Error', convert_error);
 
             $('#progress').css('width', percent+'%');
             
@@ -30,18 +33,21 @@ $.fn.Progressor = function(args) {
               // More to come
               offset += opts.limit;
               setTimeout(timer, 0);
-            }
-            else {
+            } else {
               // Finished
+              
+              $('#progress').css('width', '100%');
+
+              $('#loading').hide();
+              running = false;
+            }
+
+            if( !running ) {
+              $(opts.start).val(original);
+              
               if( convert_error ) {
                 $('#export').show();
               }
-
-              $('#progress').css('width', '100%');
-
-              $(opts.start).val(original);
-              $('#loading').hide();
-              running = false;
             }
           }
         });
@@ -52,7 +58,7 @@ $.fn.Progressor = function(args) {
     var opts = $.extend({
       action: 'Action',
       cancel: 'Cancel',
-      limit: 5, // limit jobs count
+      limit: 1, // limit jobs count
       nonce: '',
     }, args);
 
@@ -69,7 +75,7 @@ $.fn.Progressor = function(args) {
       if (running) {
         // Cancel
         running = false;
-        $(button).val(original);
+        $(button).val('Stopping');
         $('#loading').hide();
         if( convert_error ) {
           $('#export').show();
