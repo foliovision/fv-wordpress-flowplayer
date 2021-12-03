@@ -528,11 +528,14 @@ class flowplayer_frontend extends flowplayer
         //  Align
         $attributes['class'] .= $this->get_align();
         
-        if( $this->_get_option('engine') || $this->aCurArgs['engine'] == 'flash' ) {
+        if( $this->_get_option('engine') || !empty($this->aCurArgs['engine']) && $this->aCurArgs['engine'] == 'flash' ) {
           $attributes['data-engine'] = 'flash';
         }
 
-        if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+        if(
+          !empty($this->aCurArgs['embed']) && ( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) ||
+          $this->_get_option('disableembedding') && ( empty($this->aCurArgs['embed']) || $this->aCurArgs['embed'] != 'true' )
+        ) {
 
         } else {
           $attributes['data-fv-embed'] = $this->get_embed_url();
@@ -737,7 +740,7 @@ class flowplayer_frontend extends flowplayer
         $this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
         
         //  change engine for IE9 and 10
-        if( $this->aCurArgs['engine'] == 'false' ) {
+        if( !empty($this->aCurArgs['engine']) && $this->aCurArgs['engine'] == 'false' ) {
           $this->ret['script']['fv_flowplayer_browser_ie'][$this->hash] = true;
         }        
         
@@ -1206,14 +1209,17 @@ class flowplayer_frontend extends flowplayer
       $sHTMLVideoLink = false;
     }
     
-    if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) {
+    if( !empty($this->aCurArgs['embed']) && ( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) ) {
       $sHTMLVideoLink = false;
     }
 
     $sHTMLEmbed = '<div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div>';
 
 
-    if( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' || ( $this->_get_option('disableembedding') && $this->aCurArgs['embed'] != 'true' ) ) {
+    if(
+      !empty($this->aCurArgs['embed']) && ( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) ||
+      $this->_get_option('disableembedding') && ( empty($this->aCurArgs['embed']) || $this->aCurArgs['embed'] != 'true' )
+    ) {
       $sHTMLEmbed = '';
     }
     
