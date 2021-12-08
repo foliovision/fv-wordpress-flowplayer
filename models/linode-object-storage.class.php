@@ -1,43 +1,34 @@
 <?php
 
-if( !class_exists('FV_Player_DigitalOcean_Spaces') ) :
+if( !class_exists('FV_Player_Linode_Object_Storage') ) :
 
-class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
+class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
   
   function __construct() {
     // TODO: What if FV Player is not yet loaded?
-    parent::__construct( array( 'key' => 'digitalocean_spaces', 'title' => 'DigitalOcean Spaces') );
-    
-    // we use priority of 9 to make sure it's loaded before FV Player Pro would load it
-    add_action( 'plugins_loaded', array( $this, 'include_dos_media_browser' ), 9 );
-    add_action( 'admin_init', array( $this, 'remove_fv_player_pro_dos' ), 21 );
-    add_action( 'admin_init', array( $this, 'migrate_fv_player_pro_dos' ), 21 );
-  }
-
-  // includes the Digital Ocean Spaces handling class itself
-  public function include_dos_media_browser() {
-    if ( is_admin() && version_compare(phpversion(),'5.5.0') != -1 ) {
-      include( dirname( __FILE__ ) . '/digitalocean-spaces-browser.class.php' );
-    }
+    add_action( 'plugins_loaded', array( $this, 'include_linode_media_browser' ), 9 );
+    parent::__construct( array( 'key' => 'linode_object_storage', 'title' => 'Linode Object Storage') );
   }
   
+  // includes the Digital Ocean Spaces handling class itself
+  public function include_linode_media_browser() {
+    if ( is_admin() && version_compare(phpversion(),'5.5.0') != -1 ) {
+      include( dirname( __FILE__ ) . '/linode-object-storage-browser.class.php' );
+    }
+  }
+
   function get_endpoint() {
     global $fv_fp;
     $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
-    
-    if( count($parsed) == 1 && !empty($parsed['path']) ) { // for input like "region.digitaloceanspaces.com" it returns it as path, not realizing it's the hostname
+
+    if( count($parsed) == 1 && !empty($parsed['path']) ) {
       return $parsed['path'];
       
     } else if( !empty($parsed['host']) ) {
       return $parsed['host'];
-      
+
     }
     return false;
-  }
-
-  function get_space() {
-    global $fv_fp;
-    return $fv_fp->_get_option( array($this->key,'space' ) );
   }
 
   function get_domains() {
@@ -54,45 +45,10 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $parts = explode( '.', $this->get_endpoint() );
     return $parts[0];
   }
-
-  // TODO: rename this method, it's soooooo confusing! it does NOT provide secure tokens, it CHECKS for their presence
+  
   function get_secure_tokens() {
     global $fv_fp;
     return $fv_fp->_get_option( array($this->key,'key' ) ) && $fv_fp->_get_option( array($this->key,'secret' ) );
-  }
-
-  /*
-   * Migrate DigitalOcean Spaces settings from FV Player Pro
-   */
-  function migrate_fv_player_pro_dos() {
-    $option = get_option('fvwpflowplayer');
-    
-    $found_anything = false;
-
-    global $fv_fp;
-    foreach( array(
-      'endpoint',
-      'secret',
-      'key',
-      'space'
-    ) AS $key ) {
-
-      // bail if we have something already
-      if( !empty($option['digitalocean_spaces']) && !empty($option['digitalocean_spaces'][$key]) ) continue;
-
-      if( $value = $fv_fp->_get_option( array( 'pro', 'digitalocean_spaces_'.$key ) ) ) {
-        if( empty($option['digitalocean_spaces']) ) $option['digitalocean_spaces'] = array();
-      
-        $option['digitalocean_spaces'][$key] = $value;
-
-        $found_anything = true;
-      }
-    }
-    
-    if( $found_anything ) {
-      update_option('fvwpflowplayer', $option);
-    }
-
   }
   
   function options() {
@@ -104,7 +60,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       <?php
       $fv_fp->_get_input_text( array(
         'key' => array($this->key,'space'),
-        'name' => 'Space Name',
+        'name' => 'Storage Name',
         'first_td_class' => 'first'
       ) );
       $fv_fp->_get_input_text( array(
@@ -127,11 +83,6 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       </tr>
     </table>
     <?php
-  }
-
-  function remove_fv_player_pro_dos() {
-    // remove the legacy settings box in FV Player Pro
-    remove_meta_box('fv_player_pro_digitalocean_spaces', 'fv_flowplayer_settings_hosting', 'normal');    
   }
   
   function secure_link( $url, $secret, $ttl = false ) {
@@ -159,11 +110,11 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $sSignedHeaders = "host";
     $sXAMZCredential = urlencode( $key.'/'.$sCredentialScope);
     
-    //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
+    //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
     $sCanonicalRequest = "GET\n";
     $sCanonicalRequest .= $url_components['path']."\n";
     $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
-    $sCanonicalRequest .= "host:".$url_components['host']."\n";        
+    $sCanonicalRequest .= "host:".$url_components['host']."\n";
     $sCanonicalRequest .= "\n$sSignedHeaders\n";
     $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
     
@@ -193,7 +144,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
 }
 
-global $FV_Player_DigitalOcean_Spaces;
-$FV_Player_DigitalOcean_Spaces = new FV_Player_DigitalOcean_Spaces;
+global $FV_Player_Linode_Object_Storage;
+$FV_Player_Linode_Object_Storage = new FV_Player_Linode_Object_Storage;
 
 endif;

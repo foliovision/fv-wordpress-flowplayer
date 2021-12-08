@@ -2,7 +2,10 @@
 
 abstract class FV_Player_Wizard_Step_Base_Class {
 
-  var $buttons = array(
+  protected
+    $buttons_across_2_columns = false,
+
+    $buttons = array(
     'next' => array(
       'primary' => false,
       'value' => 'Next',
@@ -12,8 +15,12 @@ abstract class FV_Player_Wizard_Step_Base_Class {
   function buttons() {
     ?>
       <tr>
-        <td></td>
-        <td>
+        <?php
+            if ( !$this->buttons_across_2_columns ) {
+        ?><td></td>
+        <?php
+            }
+        ?><td<?php echo ( $this->buttons_across_2_columns ? ' colspan="2"' : '' ); ?>>
           <?php $this->get_buttons( $this->buttons ); ?>
         </td>
       </tr>
@@ -23,8 +30,8 @@ abstract class FV_Player_Wizard_Step_Base_Class {
   function display() {
     global $fv_fp;
     $fv_fp->_get_input_text( array(
-      'key' => self::$key,
-      'name' => self::$name,
+      'key' => $this->key,
+      'name' => $this->name,
       'class' => 'regular-text code'
     ) );
   }

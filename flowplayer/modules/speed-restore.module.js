@@ -2,6 +2,12 @@
  *  Video speed localstorage
  */
 flowplayer( function(api,root) {
+
+  // localstorage disabled by admin
+  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
+    return;
+  }
+
   api.on('speed', function(ev, _a, rate) {
     try {
       window.localStorage.fv_player_speed = rate;

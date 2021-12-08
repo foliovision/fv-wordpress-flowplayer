@@ -359,6 +359,17 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.12.727 - 2021/11/25 =
+
+* Bugfix - Playlist tabs not pausing the old tab player properly
+* Bugfix - Position Saving - do not use index.m3u8 as the video ID
+* Bugfix - Video link issue for videos over 1 hour
+* Compatibility - Bunny.net WordPress CDN Plugin
+* Compatibility - WP Rocket Used CSS
+* Lightbox - Fancybox updated - double tap on image zooms in
+* Linode Object Storage support
+* Video upload support for FV Player Coconut and FV Player Bunny Stream
+
 = 7.5.11.727 - 2021/10/14 =
 
 * Click to unmute - adding translations

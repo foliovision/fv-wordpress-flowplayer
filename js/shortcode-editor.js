@@ -13,6 +13,7 @@ var fv_player_editor_matcher = {
 jQuery(function() {
   // The actual editor
   window.fv_player_editor = (function($) {
+    debug_log('Loading...');
 
     var
       $doc = $(document),
@@ -24,6 +25,9 @@ jQuery(function() {
 
     // data to save in Ajax
     ajax_save_this_please = false,
+
+    // last saved data to detect changes for auto-saving
+    ajax_save_previous = false,
 
     current_player_db_id = -1,
     current_video_to_edit = -1,
@@ -202,7 +206,6 @@ jQuery(function() {
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
       var
-        previous = false,
         next = false,
         overlay_close_waiting_for_save = false,
         loading = true,
@@ -215,6 +218,8 @@ jQuery(function() {
       });*/
 
       if( jQuery().fv_player_box ) {
+        debug_log('Attaching click actions...');
+
         $doc.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
           // make the TinyMCE editor below this button active,
           // as otherwise we would be inserting into the last TinyMCE instance
@@ -266,6 +271,8 @@ jQuery(function() {
             onComplete : function() {
               overlay_show('loading');
 
+              debug_log('Running fv_player_db_export Ajax.');
+
               $.post(ajaxurl, {
                 action: 'fv_player_db_export',
                 playerID : $element.data('player_id'),
@@ -277,7 +284,7 @@ jQuery(function() {
                 overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
 
                 jQuery('[name=fv_player_copy_to_clipboard]').select();
-              }).error(function() {
+              }).fail(function() {
                 overlay_show('message', 'An unexpected error has occurred. Please try again.');
               });
 
@@ -336,6 +343,8 @@ jQuery(function() {
           $element_td.find('a, span').hide();
           $element.after($spinner);
 
+          debug_log('Running fv_player_db_remove Ajax.');
+
           jQuery.post(ajaxurl, {
             action: "fv_player_db_remove",
             nonce: $element.data('nonce'),
@@ -353,7 +362,7 @@ jQuery(function() {
 
               $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
             }
-          }).error(function() {
+          }).fail(function() {
             $spinner.remove();
 
             $element.html('Error');
@@ -372,6 +381,8 @@ jQuery(function() {
             .hide()
             .after($spinner);
 
+          debug_log('Running fv_player_db_clone Ajax.');
+
           $.post(ajaxurl, {
             action: "fv_player_db_clone",
             nonce: $element.data('nonce'),
@@ -385,7 +396,7 @@ jQuery(function() {
                   $('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
                   $spinner.remove();
                   $element.show();
-                }).error(function() {
+                }).fail(function() {
                 $spinner.remove();
                 $element.show();
               });
@@ -393,7 +404,7 @@ jQuery(function() {
               $spinner.remove();
               $element.html('Error');
             }
-          }).error(function() {
+          }).fail(function() {
             $spinner
             $element.html('Error');
           });
@@ -405,7 +416,7 @@ jQuery(function() {
       /*
       * NAV TABS
       */
-      $('.fv-player-tabs-header a').click( function(e) {
+      $('.fv-player-tabs-header a').on( 'click', function(e) {
         e.preventDefault();
         $('.fv-player-tabs-header a').removeClass('nav-tab-active');
         $(this).addClass('nav-tab-active')
@@ -438,7 +449,7 @@ jQuery(function() {
       * Playlist view thumbnail toggle
       */
       var list_style_toggles = $('#fv-player-list-thumb-toggle > a');
-      list_style_toggles.click(function(){
+      list_style_toggles.on( 'click', function(){
         var button = $(this);
         if( button.hasClass('disabled') ) return;
 
@@ -598,6 +609,9 @@ jQuery(function() {
             if( jQuery('#remove-post-thumbnail').length > 0 ){
               return;
             }
+
+            debug_log('Running set-post-thumbnail Ajax.');
+
             jQuery.post(ajaxurl, {
               action:"set-post-thumbnail",
               post_id: fv_flowplayer_set_post_thumbnail_id,
@@ -631,24 +645,8 @@ jQuery(function() {
       * End of playlist Actions
       */
 
-      jQuery('#fv_wp_flowplayer_field_end_actions').change(function(){
-        var value = jQuery(this).val();
-        jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
-        switch(value){
-          case 'redirect':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            break;
-          case 'popup':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            jQuery('#fv_wp_flowplayer_field_' + value + '_id').parents('tr').show();
-            break;
-          case 'email_list':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            break;
-          default:
-            break;
-        }
-      });
+      jQuery('#fv_wp_flowplayer_field_end_actions').on( 'change', show_end_actions );
+
 
       /*
       * Preview iframe dialog resize
@@ -663,7 +661,7 @@ jQuery(function() {
       */
 
       // TODO: Check
-      jQuery('#fv_wp_flowplayer_field_share').change(function(){
+      jQuery('#fv_wp_flowplayer_field_share').on( 'change', function(){
         var value = jQuery(this).val();
 
         switch(value){
@@ -743,18 +741,18 @@ jQuery(function() {
           return;
         }
 
-        if( previous && JSON.stringify(ajax_data) == JSON.stringify(previous) ) {
-          console.log('Not really!');
+        if( ajax_save_previous && JSON.stringify(ajax_data) == JSON.stringify(ajax_save_previous) ) {
+          debug_log('No changes to save.');
           return;
         }
 
         if( is_saving ) {
-          console.log('Still saving!');
+          debug_log('Still saving!');
           next = ajax_data;
           return;
         }
 
-        previous = ajax_data;
+        ajax_save_previous = ajax_data;
 
         ajax(ajax_data);
 
@@ -800,6 +798,8 @@ jQuery(function() {
 
         $('.fv-player-save-error').hide();
 
+        debug_log('Running fv_player_db_save Ajax.');
+
         $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_save_this_please),
@@ -813,7 +813,9 @@ jQuery(function() {
               }
             });
 
-            if( next ) {console.log('There is more to do...');
+            if( next ) {
+              debug_log('There is more to save...');
+
               ajax(next);
               next = false;
             } else {
@@ -856,7 +858,7 @@ jQuery(function() {
             error(e);
           }
 
-        }, 'json' ).error( function() {
+        }, 'json' ).fail( function() {
           $('.fv-player-save-error').show();
           
           el_spinner.hide();
@@ -997,6 +999,9 @@ jQuery(function() {
 
             fv_player_editor.meta_data_load_started();
             var ajax_call = function () {
+
+              debug_log('Running fv_wp_flowplayer_retrieve_video_data Ajax.');
+
               $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
                   action: 'fv_wp_flowplayer_retrieve_video_data',
                   video_url: $element.val(),
@@ -1134,13 +1139,31 @@ jQuery(function() {
                       }
                     }
                   }
+                  
+                  var item = jQuery($element).parents('table'),
+                    show = [],
+                    check = [];
 
+                  if( !!json_data.is_live ) {
+                    show = [ 'dvr', 'live' ];
+                    check = [ 'live' ];
+                  }
+                  
+                  if( json_data.is_audio == -1 ) {
+                    show.push('audio');
+                  } else if( !!json_data.is_audio ) {
+                    show.push('audio');
+                    check.push('audio');
+                  }
+                  
+                  show_stream_fields_worker( item, show, check );
+                  
                   $element.removeData('fv_player_video_data_ajax');
                   $element.removeData('fv_player_video_data_ajax_retry_count');
 
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();
-                }).error(function () {
+                }).fail(function () {
                 fv_player_editor.meta_data_load_finished();
                   // remove element AJAX data
                   $element.removeData('fv_player_video_data_ajax');
@@ -1364,6 +1387,8 @@ jQuery(function() {
         // show loader
         overlay_show('loading');
 
+        debug_log('Running fv_player_db_retrieve_all_players_for_dropdown Ajax.');
+
         $.post(ajaxurl, {
           // TODO: Nonce
           action: 'fv_player_db_retrieve_all_players_for_dropdown',
@@ -1384,7 +1409,7 @@ jQuery(function() {
 
           overlay.find('select').html( dropdown.join('') );
 
-        }).error(function () {
+        }).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
 
         });
@@ -1429,6 +1454,9 @@ jQuery(function() {
           clearInterval(refreshTask);
           $this.removeData('fv_player_video_auto_refresh_task');
         }*/
+   
+        // Reset the HLS stream checkboxes (Live, DVR, ...)
+        show_stream_fields_worker( $this, [], [] );
       });
 
       jQuery('#fv_wp_flowplayer_field_player_name').show();
@@ -1799,6 +1827,13 @@ jQuery(function() {
       return data;
     }
 
+    function debug_log( message, details ) {
+      console.log( 'FV Player Editor: '+message);
+      if( details ) {
+        console.log(details);
+      }
+    }
+
     /*
      *  Closing the editor
      *  * updates the wp-admin -> FV Player screen
@@ -1910,8 +1945,31 @@ jQuery(function() {
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length;
 
       if (!db_id) {
+        // Edit button on wp-admin -> FV Player screen
+        if (is_fv_player_screen_edit(editor_button_clicked)) {
+          current_player_db_id = $(editor_button_clicked).data('player_id');
+
+          debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+
+          // create an artificial shortcode from which we can extract the actual player ID later below
+          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
+          shortcode = [editor_content];
+        }
+        
+        // Add new button on wp-admin -> FV Player screen
+        else if (is_fv_player_screen_add_new(editor_button_clicked)) {
+          debug_log('Loading for FV Player screen, new player' );
+
+          // create empty shortcode for Add New button on the list page
+          editor_content = '';
+          shortcode = '';
+
+        }
+
         // custom Field or Widget
-        if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
+        else if (field.length || jQuery('#widget-widget_fvplayer-' + widget_id + '-text').length) {
+          debug_log('Loading for custom field or a widget...');
+
           // this is a horrible hack as it adds the hidden marker to the otherwise clean text field value
           // just to make sure the shortcode varible below is parsed properly.
           // But it allows some extra text to be entered into the text widget, so for now - ok
@@ -1921,8 +1979,11 @@ jQuery(function() {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
 
-          // TinyMCE in Text Mode
-        } else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+        }
+        // TinyMCE in Text Mode
+        else if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
+          debug_log('Loading for TinyMCE in Text Mode...');
+
           var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
 
           // look for start of shortcode
@@ -1943,22 +2004,13 @@ jQuery(function() {
           // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
           editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
 
-          // Edit button on wp-admin -> FV Player screen
-        } else if (is_fv_player_screen_edit(editor_button_clicked)) {
-          current_player_db_id = $(editor_button_clicked).data('player_id');
 
-          // create an artificial shortcode from which we can extract the actual player ID later below
-          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-          shortcode = [editor_content];
+        }
 
-          // Add new button on wp-admin -> FV Player screen
-        } else if (is_fv_player_screen_add_new(editor_button_clicked)) {
-          // create empty shortcode for Add New button on the list page
-          editor_content = '';
-          shortcode = '';
+        // Foliopress WYSIWYG
+        else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
+          debug_log('Loading for Foliopress WYSIWYG...' );
 
-          // Foliopress WYSIWYG
-        } else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
           editor_content = instance_fp_wysiwyg.GetHTML();
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
             instance_fp_wysiwyg.InsertHtml('<' + fvwpflowplayer_helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + fvwpflowplayer_helper_tag + '>');
@@ -1966,6 +2018,8 @@ jQuery(function() {
           }
 
         } else {
+          debug_log('Loading for TinyMCE in Visual Mode...' );
+
           // TinyMCE in Visual Mode
           editor_content = instance_tinymce.getContent();
           instance_tinymce.settings.validate = false;
@@ -1995,6 +2049,8 @@ jQuery(function() {
       // but don't replace editor_content, since we'll need that to be actually updated
       // rather then set to a player ID
       if (db_id) {
+        debug_log('Loading for player id: '+db_id );
+
         content = db_id;
 
         // we loose the #fvp_placeholder# placeholder in TinyMCE text mode, so let's re-add it here
@@ -2043,6 +2099,8 @@ jQuery(function() {
       }
 
       if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
+        debug_log('Loading shortcode: '+shortcode );
+
         // check for new, DB-based player shortcode
         var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
@@ -2060,6 +2118,8 @@ jQuery(function() {
           // in WP heartbeat
           current_player_db_id = result[1];
 
+          debug_log('Loading shortcode player id: '+current_player_db_id );
+
           if (edit_lock_removal[result[1]]) {
             delete edit_lock_removal[result[1]];
           }
@@ -2076,12 +2136,16 @@ jQuery(function() {
 
           // now load playlist data
           // load video data via an AJAX call
-          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
+          debug_log('Running fv_player_db_load Ajax.');
+
+          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl+'?fv_player_db_load', {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
             playerID :  result[1]
           }, function(response) {
             var vids = response['videos'];
+
+            debug_log('Finished fv_player_db_load Ajax.',response);
 
             if (response) {
               if( typeof(response) != "object" ) {
@@ -2116,24 +2180,7 @@ jQuery(function() {
 
                 // special processing for end video actions
                 if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
-                  var end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
-
-                  // to actually show the value, we need to trigger a change event on the end_actions dropdown itself
-                  jQuery('#fv_wp_flowplayer_field_end_actions').trigger('change');
-
-                  switch (end_of_playlist_action) {
-                    case 'redirect':
-                      jQuery('#fv_wp_flowplayer_field_redirect').val(value);
-                      break;
-                    case 'popup':
-                      jQuery('#fv_wp_flowplayer_field_popup_id').val(value);
-                      break;
-
-                    case 'email_list':
-                      jQuery('#fv_wp_flowplayer_field_email_list').val(value);
-                      break;
-                  }
-
+                  show_end_actions( false, value );
                   return;
                 } else if (['fv_wp_flowplayer_field_email_list', 'fv_wp_flowplayer_field_popup_id', 'fv_wp_flowplayer_field_redirect'].indexOf(real_key) > -1) {
                   // ignore the original fields, if we still use old DB values
@@ -2162,9 +2209,9 @@ jQuery(function() {
                     }
                   } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
                     if (real_val === '1' || real_val === 'on' || real_val === 'true') {
-                      $element.attr('checked', 'checked');
+                      $element.prop('checked',true);
                     } else {
-                      $element.removeAttr('checked');
+                      $element.prop('checked',false);
                     }
                   } else {
                     $element.val(real_val);
@@ -2275,6 +2322,9 @@ jQuery(function() {
 
               // if this player is published, mark it as such
               has_draft_status = ( response.status == 'draft' );
+              
+              // Set the current data as previous to let auto-saving detect changes
+              ajax_save_previous = build_ajax_data(true);
             }
 
             overlay_hide();
@@ -2318,7 +2368,7 @@ jQuery(function() {
 
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
-          }).error(function(xhr) {
+          }).fail(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
             } else {
@@ -2336,6 +2386,8 @@ jQuery(function() {
             }
           });
         } else {
+          debug_log('Loading shortcode without player id...');
+
           $doc.trigger('fv-player-editor-non-db-shortcode');
           // ordinary text shortcode in the editor
           var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
@@ -2599,6 +2651,7 @@ jQuery(function() {
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
               this.checked = 1;
+              jQuery(this).closest('tr').show();
             });
           }
 
@@ -2630,6 +2683,8 @@ jQuery(function() {
         }
 
       } else {
+        debug_log('New player...' );
+
         jQuery(document).trigger('fv_flowplayer_shortcode_new');
         shortcode_remains = '';
         fix_save_btn_text();
@@ -2748,6 +2803,8 @@ jQuery(function() {
         ajax_data['status'] = 'published';
       }
 
+      debug_log('Running fv_player_db_save Ajax.');
+
       // save data
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_save',
@@ -2829,7 +2886,7 @@ jQuery(function() {
 
           jQuery('#fv_player_copy_to_clipboard').select();
         }
-      }).error(function() {
+      }).fail(function() {
         overlay_show('message', 'An unexpected error has occurred. Please try again');
       });
 
@@ -2840,9 +2897,9 @@ jQuery(function() {
     function insert_button_toggle_disabled( disable ) {
       var button = $('.fv_player_field_insert-button');
       if( disable ) {
-        button.attr('disabled', 'disabled');
+        button.prop('disabled', true);
       } else {
-        button.removeAttr('disabled');
+        button.prop('disabled', false);
       }
     }
 
@@ -3407,11 +3464,12 @@ jQuery(function() {
     /*
     Click on Loading Overlay Close button
     */
-    $doc.on('click', '#fv-player-editor-overlay-close', function() {
+    $doc.on('click', '[data-fv-player-editor-overlay-close]', function() {
       $.fn.fv_player_box.close();
       // hide the overlay asynchronously to allow the actual modal close animation to finish,
       // so it doesn't blink from error message to an empty editor and only then starts to fade
       setTimeout(overlay_hide, 1000);
+      return false;
     });
 
     /*
@@ -3437,6 +3495,8 @@ jQuery(function() {
 
       overlay_show('loading');
 
+      debug_log('Running fv_player_db_import Ajax.');
+
       jQuery.post(ajaxurl, {
         action: 'fv_player_db_import',
         nonce: fv_player_editor_conf.db_import_nonce,
@@ -3452,7 +3512,7 @@ jQuery(function() {
             function (response) {
               jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
               jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
-            }).error(function() {
+            }).fail(function() {
             jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
           });
 
@@ -3460,7 +3520,7 @@ jQuery(function() {
           fv_player_editor.overlay_notice( button, response, 'error' );
 
         }
-      }).error(function() {
+      }).fail(function() {
         fv_player_editor.overlay_notice( button, 'Unknown error!', 'error' );
 
       });
@@ -3504,14 +3564,61 @@ jQuery(function() {
       // on fv_flowplayer_shortcode_new
       if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
 
-      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/),
-        is_vimeo_or_youtube = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//) || src.match(/youtube\.com\//);
+      // TODO: Gradually get rid of this and detect each stream type instead
+      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/rtmp:/) || src.match(/\.mpd/),
+        is_vimeo_live = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//);
     
-      item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!is_stream || !!is_vimeo_or_youtube);
-      item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!is_stream);
-      item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!is_stream);
+      var show = [];
+      if( !!is_stream ) show = [ 'audio', 'dvr', 'live' ];
+      if( !!is_vimeo_live ) show = [ 'live' ];
+      
+      show_stream_fields_worker( item, show );
       
       editor_resize();
+    }
+
+    function show_stream_fields_worker(item, to_show, to_check) {
+      jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
+        var field = item.find('[name=fv_wp_flowplayer_field_'+v+']'),
+          is_checked = field.prop('checked');
+
+        // We show the checkbox if it's to be shown or if it's checked
+        field.closest('tr').toggle( is_checked || to_show && to_show.indexOf(v) != -1 );
+        
+        // If it's not already checked we check it or not check it based on args
+        if( !is_checked ) {
+          field.prop( 'checked', to_check && to_check.indexOf(v) != -1 );
+        }
+      });
+      
+      // DVR should be always shown for live streams
+      if( item.find('[name=fv_wp_flowplayer_field_live]').prop('checked') ) {
+        item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').show();
+      }
+      
+      editor_resize();
+    }
+    
+    function show_end_actions( e, value ) {
+      // redirect, popup and email_list
+      var type = jQuery('#fv_wp_flowplayer_field_end_actions').val();
+
+      jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
+
+      var field = jQuery('#fv_wp_flowplayer_field_' + type);
+      field.parents('tr').show();
+      if( value ) {
+        field.val(value);
+      }
+
+      // The field id is different for popup
+      if( type == 'popup' ){
+        var field = jQuery('#fv_wp_flowplayer_field_' + type + '_id');
+        field.parents('tr').show();
+        if( value ) {
+          field.val(value);
+        }
+      }
     }
 
     function init_saved_player_fields( id_player ) {
@@ -3694,7 +3801,7 @@ jQuery(function() {
       },
 
       playlist_buttons_toggle: function( show ) {
-        $('.playlist_add, .playlist_edit').toggle( show );
+        $('.playlist_add, .playlist_edit').css( 'display', show ? 'inline-block' : 'none' );
       },
 
       insert_button_toggle: function( show ) {
@@ -3866,7 +3973,7 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
 }
 
 
-jQuery(document).on('click', '#fv-player-editor-export-overlay-copy', function() {
+jQuery(document).on('click', '[data-fv-player-editor-export-overlay-copy]', function() {
   var button = this;
   fv_player_clipboard(jQuery('[name=fv_player_copy_to_clipboard]').val(), function() {
     fv_player_editor.overlay_notice( button, 'Text Copied To Clipboard!', 'success', 3000 );
