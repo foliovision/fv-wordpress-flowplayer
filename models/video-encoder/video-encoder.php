@@ -907,7 +907,7 @@ abstract class FV_Player_Video_Encoder {
       KEY source (source(191)),
       KEY type (type),
       KEY status (status),
-      KEY job_id (job_id(15)),
+      KEY job_id (job_id(15))
     )" . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
