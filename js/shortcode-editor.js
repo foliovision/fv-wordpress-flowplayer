@@ -26,6 +26,9 @@ jQuery(function() {
     // data to save in Ajax
     ajax_save_this_please = false,
 
+    // last saved data to detect changes for auto-saving
+    ajax_save_previous = false,
+
     current_player_db_id = -1,
     current_video_to_edit = -1,
 
@@ -203,7 +206,6 @@ jQuery(function() {
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
       var
-        previous = false,
         next = false,
         overlay_close_waiting_for_save = false,
         loading = true,
@@ -755,7 +757,7 @@ jQuery(function() {
           return;
         }
 
-        if( previous && JSON.stringify(ajax_data) == JSON.stringify(previous) ) {
+        if( ajax_save_previous && JSON.stringify(ajax_data) == JSON.stringify(ajax_save_previous) ) {
           debug_log('No changes to save.');
           return;
         }
@@ -766,7 +768,7 @@ jQuery(function() {
           return;
         }
 
-        previous = ajax_data;
+        ajax_save_previous = ajax_data;
 
         ajax(ajax_data);
 
@@ -827,7 +829,9 @@ jQuery(function() {
               }
             });
 
-            if( next ) {console.log('There is more to do...');
+            if( next ) {
+              debug_log('There is more to save...');
+
               ajax(next);
               next = false;
             } else {
@@ -2351,6 +2355,9 @@ jQuery(function() {
 
               // if this player is published, mark it as such
               has_draft_status = ( response.status == 'draft' );
+              
+              // Set the current data as previous to let auto-saving detect changes
+              ajax_save_previous = build_ajax_data(true);
             }
 
             overlay_hide();
