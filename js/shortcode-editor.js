@@ -645,24 +645,8 @@ jQuery(function() {
       * End of playlist Actions
       */
 
-      jQuery('#fv_wp_flowplayer_field_end_actions').on( 'change', function(){
-        var value = jQuery(this).val();
-        jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
-        switch(value){
-          case 'redirect':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            break;
-          case 'popup':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            jQuery('#fv_wp_flowplayer_field_' + value + '_id').parents('tr').show();
-            break;
-          case 'email_list':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            break;
-          default:
-            break;
-        }
-      });
+      jQuery('#fv_wp_flowplayer_field_end_actions').on( 'change', show_end_actions );
+
 
       /*
       * Preview iframe dialog resize
@@ -2196,24 +2180,7 @@ jQuery(function() {
 
                 // special processing for end video actions
                 if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
-                  var end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
-
-                  // to actually show the value, we need to trigger a change event on the end_actions dropdown itself
-                  jQuery('#fv_wp_flowplayer_field_end_actions').trigger('change');
-
-                  switch (end_of_playlist_action) {
-                    case 'redirect':
-                      jQuery('#fv_wp_flowplayer_field_redirect').val(value);
-                      break;
-                    case 'popup':
-                      jQuery('#fv_wp_flowplayer_field_popup_id').val(value);
-                      break;
-
-                    case 'email_list':
-                      jQuery('#fv_wp_flowplayer_field_email_list').val(value);
-                      break;
-                  }
-
+                  show_end_actions( false, value );
                   return;
                 } else if (['fv_wp_flowplayer_field_email_list', 'fv_wp_flowplayer_field_popup_id', 'fv_wp_flowplayer_field_redirect'].indexOf(real_key) > -1) {
                   // ignore the original fields, if we still use old DB values
@@ -3629,6 +3596,28 @@ jQuery(function() {
       }
       
       editor_resize();
+    }
+    
+    function show_end_actions( e, value ) {
+      // redirect, popup and email_list
+      var type = jQuery('#fv_wp_flowplayer_field_end_actions').val();
+
+      jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
+
+      var field = jQuery('#fv_wp_flowplayer_field_' + type);
+      field.parents('tr').show();
+      if( value ) {
+        field.val(value);
+      }
+
+      // The field id is different for popup
+      if( type == 'popup' ){
+        var field = jQuery('#fv_wp_flowplayer_field_' + type + '_id');
+        field.parents('tr').show();
+        if( value ) {
+          field.val(value);
+        }
+      }
     }
 
     function init_saved_player_fields( id_player ) {
