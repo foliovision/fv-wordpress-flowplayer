@@ -3469,6 +3469,7 @@ jQuery(function() {
       // hide the overlay asynchronously to allow the actual modal close animation to finish,
       // so it doesn't blink from error message to an empty editor and only then starts to fade
       setTimeout(overlay_hide, 1000);
+      return false;
     });
 
     /*
@@ -3972,7 +3973,7 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
 }
 
 
-jQuery(document).on('click', '#fv-player-editor-export-overlay-copy', function() {
+jQuery(document).on('click', '[data-fv-player-editor-export-overlay-copy]', function() {
   var button = this;
   fv_player_clipboard(jQuery('[name=fv_player_copy_to_clipboard]').val(), function() {
     fv_player_editor.overlay_notice( button, 'Text Copied To Clipboard!', 'success', 3000 );
