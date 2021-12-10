@@ -24,15 +24,15 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
   }  
   
   public function testSettingsScreen() {
-        
+
     ob_start();
     fv_player_admin_page();
     $output = ob_get_clean();
-    
+
     $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html'));    
     $two = explode("\n",$this->fix_newlines($output));
     foreach( explode("\n",$one) as $k => $v ) {
-      
+
       /*if( $v != $two[$k]) {
         for($i=0;$i<strlen($two[$k]);$i++) {
           if( $v[$i] != $two[$k][$i]) {
@@ -43,7 +43,7 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
       
       $this->assertEquals( $v, $two[$k] );
     }
-    
+
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html')), $this->fix_newlines($output) );
   }
 
