@@ -29,8 +29,12 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
     fv_player_admin_page();
     $output = ob_get_clean();
 
-    $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html'));    
+    $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSettingsScreen.html'));
     $two = explode("\n",$this->fix_newlines($output));
+
+    $one = preg_replace('~"srclang".*?\.vtt"~', '"srclang":"/usr/bin/php","src":"http:\/\/example.org\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"', $one);
+    $two = preg_replace('~"srclang".*?\.vtt"~', '"srclang":"/usr/bin/php","src":"http:\/\/example.org\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"', $two);
+
     foreach( explode("\n",$one) as $k => $v ) {
 
       /*if( $v != $two[$k]) {

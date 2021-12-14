@@ -59,12 +59,11 @@ HTML
     // Fix bad play button image path due to running these tests on server console
     $expect =  $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') );
     $actual = $this->fix_newlines($output);
-    $regex = '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~';
 
-    $expect = preg_replace( $regex, 'wp-content/plugins/fv-wordpress-flowplayer/css', $expect );
-    $actual = preg_replace( $regex, 'wp-content/plugins/fv-wordpress-flowplayer/css', $actual );
+    $expect = preg_replace( '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~', 'wp-content/plugins/fv-wordpress-flowplayer/css', $expect );
+    $actual = preg_replace( '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~', 'wp-content/plugins/fv-wordpress-flowplayer/css', $actual );
 
-    $this->assertEquals($expect, $actual );      
+    $this->assertEquals($expect, $actual );
   }
   
   public function tearDown() {
