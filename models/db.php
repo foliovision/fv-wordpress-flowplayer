@@ -1577,8 +1577,10 @@ class FV_Player_Db {
         $url = $secured_url;
       }
       
-      $json_data['duration'] = $FV_Player_Checker->check_mimetype(array($url), false, true);
-      $json_data['duration'] = $json_data['duration']['duration'];
+      $check = $FV_Player_Checker->check_mimetype(array($url), false, true);
+      $json_data['duration'] = $check['duration'];
+      $json_data['is_live'] = $check['is_live'];
+      $json_data['is_audio'] = $check['is_audio'];
     }
 
     header('Content-Type: application/json');

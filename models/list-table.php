@@ -278,16 +278,16 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
-        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
-        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
+        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";
+        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
 
         $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
 
-        $value .= "</div>";
+        $value .= "</div>\n";
         break;
       case 'embeds':
         $player = new FV_Player_Db_Player($id);
