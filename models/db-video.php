@@ -854,7 +854,7 @@ CREATE TABLE " . self::$db_table_name . " (
         // if splash removed or changed, delete splash attachment
         if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
           delete_post_meta( $splash_attachment_id, 'fv_player_video_id' );
-          $splash_attachment_id = false;
+          $this->splash_attachment_id = '';
         }
       }
     }
@@ -960,7 +960,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       // store video id for splash attachment
-      if( !empty( $splash_attachment_id ) ) {
+      if( $this->getSplashAttachmentId() ) {
         update_post_meta($splash_attachment_id, 'fv_player_video_id', $this->getId() );
       }
 
