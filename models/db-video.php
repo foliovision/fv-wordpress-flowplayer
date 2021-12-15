@@ -849,11 +849,12 @@ CREATE TABLE " . self::$db_table_name . " (
       $saved_splash = wp_get_attachment_image_url($splash_attachment_id, 'full', false);
       if( !empty( $saved_splash ) ) {
         $saved_parse = wp_parse_url( $saved_splash );
-        $current_parse = wp_parse_url( $this->getSplash() );
+        $current_parse = $this->getSplash() ? wp_parse_url( $this->getSplash() ) : false;
 
-        // splash changed, delete splash attachment
-        if( strcmp( $saved_parse['path'], $current_parse['path'] ) != 0 ) {
+        // if splash removed or changed, delete splash attachment
+        if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
           delete_post_meta( $splash_attachment_id, 'fv_player_video_id' );
+          $splash_attachment_id = false;
         }
       }
     }
@@ -908,7 +909,7 @@ CREATE TABLE " . self::$db_table_name . " (
         foreach ($meta_data as $meta_record) {
           // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
           if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
-            unset($meta_record['id']);          
+            unset($meta_record['id']);
           }
           
           // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
