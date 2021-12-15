@@ -722,9 +722,16 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_scripts( $page ) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' || $page == 'settings_page_fvplayer' || $page == 'fv-player_page_' . $this->encoder_wp_url_slug ) {
-      wp_register_script('fv_player_' . $this->encoder_id . '_admin', plugins_url( 'js/admin.js', $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . '/js/admin.js') );
-      wp_enqueue_script('fv_player_' . $this->encoder_id . '_admin');
-      wp_localize_script( 'fv_player_' . $this->encoder_id . '_admin', $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
+      $file = false;
+      if( file_exists( dirname( $this->getFILE() ) . '/../js/'.$this->encoder_id.'-admin.js' ) ) {
+        $file = '/../js/'.$this->encoder_id.'-admin.js';
+      } else if( file_exists( dirname( $this->getFILE() ) . '/js/admin.js' ) ) {
+        $file = '/js/admin.js';
+      }
+
+      $handle = 'fv_player_' . $this->encoder_id . '_admin';
+      wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+      wp_localize_script( $handle, $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
     }
   }
 
