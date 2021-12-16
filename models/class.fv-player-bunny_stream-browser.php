@@ -183,6 +183,10 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
           } else {
             // video is playable but still encoding, mark it as such
             $item['extra']['encoding_job_status'] = 'playable';
+
+            // These properties are already there
+            $item['splash'] = $cdn_hostname . $video->guid . '/' . $video->thumbnailFileName;
+            $item['extra']['title'] = $video->title;
           }
         } else if ( $video->status > 4 ) {
           // job errored out
@@ -196,6 +200,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
         } else {
           // job complete
           $item['splash'] = $cdn_hostname . $video->guid . '/' . $video->thumbnailFileName;
+          $item['extra']['title'] = $video->title;
         }
 
         $body['items'][] = $item;
