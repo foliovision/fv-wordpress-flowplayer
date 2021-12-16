@@ -44,12 +44,6 @@ jQuery( function($) {
       if (firstLoad) {
         $media_frame_content.html($overlay_div);
       } else {
-        // if we're not appending, remove all LIs from the UL
-        var $ul = jQuery('#__assets_browser');
-        if (!appending) {
-          $ul.find('li').remove();
-        }
-
         jQuery('#overlay-loader-li div').html($overlay_div);
       }
 
