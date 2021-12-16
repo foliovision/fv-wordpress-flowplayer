@@ -152,7 +152,13 @@ jQuery( function($) {
   };
 
   $( document ).on( "mediaBrowserOpen", function(event) {
-    fv_flowplayer_media_browser_add_tab('fv_player_bunny_stream_browser_media_tab', 'Bunny.net Stream', fv_player_bunny_stream_browser_load_assets, null, function() {
+    var tabId = 'fv_player_bunny_stream_browser_media_tab';
+    
+    // make sure we'll add .m3u8 files with the same name as our encoded file into the list of elements to lookup splash images in
+    if( window.fv_flowplayer_browser_splash_file_lookup_rules ) {
+      fv_flowplayer_browser_splash_file_lookup_rules[ tabId ] = { 'include' : ['\.(m3u8)$'] };
+    }
+    fv_flowplayer_media_browser_add_tab( tabId, 'Bunny.net Stream', fv_player_bunny_stream_browser_load_assets, null, function() {
       firstLoad = true;
     }).addClass('upload_supported');
   });
