@@ -15,11 +15,9 @@ jQuery( function($) {
 
   // HeartBeat update row
   $(document).on( 'heartbeat-tick', function ( event, data ) {
-    console.log('hb data',data);
     var rows = data.coconut;
 
     if(typeof rows === 'object' && rows !== null) {
-      console.log('hb new data', data.coconut);
       for (var key in rows) {
         if (rows.hasOwnProperty(key)) {
           var table_row = $('a[data-id="'+key+'"]').closest('tr'); // find row
@@ -30,8 +28,6 @@ jQuery( function($) {
           }
         }
       }
-    } else {
-      console.log('hb no new data');
     }
 
     // update pending jobs
