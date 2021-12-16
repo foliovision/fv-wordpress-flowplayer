@@ -51,45 +51,5 @@
     $('#'+field).val('');
   } );
 
-  function check_for_coconut_src_value ( event, src_input_value, result, src_input_element ) {
-    var $input_field_notice = jQuery( src_input_element ).siblings('.fv-player-src-playlist-support-notice');
-
-    // if we're coming from editor opening event, fire up this function again with the correct source input element
-    if ( event.type == 'fv_player_editor_finished' && !event.customUpdated ) {
-      event.customUpdated = true;
-      var $inputElement = $( '#fv_wp_flowplayer_field_src:visible' );
-      check_for_coconut_src_value ( event, $inputElement.val(), result, $inputElement );
-    }
-
-    // if the source has a coconut_processing_ prefix, we want to show info about what it means
-    if ( src_input_value && src_input_value.substring(0, 19) == 'coconut_processing_' ) {
-      $input_field_notice
-        .data('oldTextCoconut', $input_field_notice.text())
-        .data('wasVisibleCoconut', ( $input_field_notice.is(':visible') ? 1 : 0 ) )
-        .text('This video is pending the FV Player Coconut encoding.')
-
-      // as other handlers might hide our message, we need to show it after a small timeout
-      setTimeout(function() {
-        $input_field_notice.show();
-      }, 10);
-    } else if ( $input_field_notice.data('oldTextCoconut') ) {
-      $input_field_notice
-        .text( $input_field_notice.data('oldTextCoconut') )
-        .removeData('oldTextCoconut');
-
-      if ( !$input_field_notice.data('wasVisibleCoconut') ) {
-        $input_field_notice.hide();
-      } else {
-        // as other handlers might hide our message, we need to show it after a small timeout
-        setTimeout(function() {
-          $input_field_notice.show();
-        }, 10);
-      }
-
-      $input_field_notice.removeData('wasVisibleCoconut');
-    }
-  };
-
-  $(document).on('fv-player-editor-src-change fv_player_editor_finished', check_for_coconut_src_value );
 
 }(jQuery));
