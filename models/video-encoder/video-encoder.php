@@ -164,7 +164,13 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_editor_scripts($page) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' ) {
-      wp_enqueue_script('fvplayer-shortcode-editor-' . $this->encoder_id, plugins_url( 'js/shortcode-editor.js', $this->getFILE() ), array('jquery', 'fvwpflowplayer-shortcode-editor'), $this->version );
+
+      $file = $this->locate_script('shortcode-editor.js');
+      if( $file ) {
+        $handle = 'fvplayer-shortcode-editor-' . $this->encoder_id;
+        wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+      }
+
     }
   }
 
@@ -188,6 +194,16 @@ abstract class FV_Player_Video_Encoder {
     }
 
     return $response;
+  }
+  
+  function locate_script( $script ) {
+    $file = false;
+    if( file_exists( dirname( $this->getFILE() ) . '/../js/'.$this->encoder_id.'-'.$script ) ) {
+      $file = '/../js/'.$this->encoder_id.'-'.$script;
+    } else if( file_exists( dirname( $this->getFILE() ).'/js/'.$script ) ) {
+      $file = '/js/'.$script;
+    }
+    return $file;
   }
 
   /**
@@ -722,16 +738,12 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_scripts( $page ) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' || $page == 'settings_page_fvplayer' || $page == 'fv-player_page_' . $this->encoder_wp_url_slug ) {
-      $file = false;
-      if( file_exists( dirname( $this->getFILE() ) . '/../js/'.$this->encoder_id.'-admin.js' ) ) {
-        $file = '/../js/'.$this->encoder_id.'-admin.js';
-      } else if( file_exists( dirname( $this->getFILE() ) . '/js/admin.js' ) ) {
-        $file = '/js/admin.js';
+      $file = $this->locate_script('admin.js');
+      if( $file ) {
+        $handle = 'fv_player_' . $this->encoder_id . '_admin';
+        wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+        wp_localize_script( $handle, $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
       }
-
-      $handle = 'fv_player_' . $this->encoder_id . '_admin';
-      wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
-      wp_localize_script( $handle, $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
     }
   }
 
