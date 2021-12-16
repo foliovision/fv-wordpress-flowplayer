@@ -1,6 +1,6 @@
 (function ($) {
-  var field = 'fv_wp_flowplayer_field_coconut_encoding_job_id',
-    meta_key = 'coconut_encoding_job_id';
+  var field = 'fv_wp_flowplayer_field_encoding_job_id',
+    meta_key = 'encoding_job_id';
     
   // TODO: The above is all you should ever need!
   

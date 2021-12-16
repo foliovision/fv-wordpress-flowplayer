@@ -118,7 +118,10 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
-    global $fv_fp;
+    global $fv_fp, $wpdb;
+    
+    $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM " . FV_Player_Bunny_Stream()->get_table_name() );
+    $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
     // load videos based from the library
     $api = new FV_Player_Bunny_Stream_API();
@@ -171,6 +174,10 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
           'height' => $video->height,
           'extra' => array(),
         );
+        
+        if( !empty($local_jobs[$video->guid]) ) {
+          $item['extra']['encoding_job_id'] = $local_jobs[$video->guid];
+        }
 
         // job in processing
         if ( $video->status < 4 ) {
