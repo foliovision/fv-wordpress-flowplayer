@@ -130,6 +130,8 @@ abstract class FV_Player_Conversion_Base {
         $unserialized = unserialize( $result );
   
         foreach( $unserialized as $row ) {
+          $row['post_link'] = htmlspecialchars_decode( $row['post_link'] );
+          $row['post_edit'] = htmlspecialchars_decode( $row['post_edit'] );
           fputcsv($fp, $row);
         }
       }
