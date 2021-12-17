@@ -559,11 +559,8 @@ jQuery(function() {
 
         fv_flowplayer_uploader_button = jQuery(this);
 
-        jQuery('.fv_flowplayer_target_attachment_url').removeClass('fv_flowplayer_target_attachment_url' );
-        jQuery('.fv_flowplayer_target_attachment_id').removeClass('fv_flowplayer_target_attachment_id' );
-
-        fv_flowplayer_uploader_button.siblings('input[type=text]').addClass('fv_flowplayer_target_attachment_url' );
-        fv_flowplayer_uploader_button.closest('tr').find('input[type=hidden]').addClass('fv_flowplayer_target_attachment_id');
+        jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+        fv_flowplayer_uploader_button.siblings('input[type=text]').addClass('fv_flowplayer_target' );
 
         //If the uploader object has already been created, reopen the dialog
         if (fv_flowplayer_uploader) {
@@ -590,11 +587,8 @@ jQuery(function() {
         fv_flowplayer_uploader.on('select', function() {
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
 
-          $('.fv_flowplayer_target_attachment_url').val(attachment.url).trigger('change').trigger('keyup');
-          $('.fv_flowplayer_target_attachment_url').removeClass('fv_flowplayer_target_attachment_url' );
-
-          $('.fv_flowplayer_target_attachment_id').val(attachment.id);
-          $('.fv_flowplayer_target_attachment_id').removeClass('fv_flowplayer_target_attachment_id' );
+          $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
+          $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {

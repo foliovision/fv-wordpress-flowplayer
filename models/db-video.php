@@ -842,28 +842,30 @@ CREATE TABLE " . self::$db_table_name . " (
   public function save($meta_data = array()) {
     global $wpdb;
 
-    $splash_attachment_id = $this->getSplashAttachmentId();
-
-    // check if splash url changed
-    if( !empty( $splash_attachment_id ) ) {
-      $saved_splash = wp_get_attachment_image_url($splash_attachment_id, 'full', false);
-      if( !empty( $saved_splash ) ) {
-        $saved_parse = wp_parse_url( $saved_splash );
-        $current_parse = $this->getSplash() ? wp_parse_url( $this->getSplash() ) : false;
-
-        // if splash removed or changed, delete splash attachment
-        if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
-          delete_post_meta( $splash_attachment_id, 'fv_player_video_id' );
-          $this->splash_attachment_id = '';
-        }
-      }
-    }
-
     // prepare SQL
     $is_update   = ($this->id ? true : false);
     $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
     $data_keys   = array();
     $data_values = array();
+
+    if( $is_update ) {
+      $splash_attachment_id = $this->getSplashAttachmentId();
+
+      // check if splash url changed
+      if( !empty( $splash_attachment_id ) ) {
+        $saved_splash = wp_get_attachment_image_url($splash_attachment_id, 'full', false);
+        if( !empty( $saved_splash ) ) {
+          $saved_parse = wp_parse_url( $saved_splash );
+          $current_parse = $this->getSplash() ? wp_parse_url( $this->getSplash() ) : false;
+  
+          // if splash removed or changed, delete splash attachment
+          if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
+            delete_post_meta( $splash_attachment_id, 'fv_player_video_id', $this->getId() );
+            $this->splash_attachment_id = '';
+          }
+        }
+      }
+    }
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
@@ -874,7 +876,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     $sql .= implode(',', $data_keys);
 
-    if ($is_update) {
+    if ( $is_update ) {
       $sql .= ' WHERE id = ' . $this->id;
     }
 
