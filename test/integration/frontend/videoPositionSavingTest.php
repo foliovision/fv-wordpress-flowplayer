@@ -38,6 +38,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
   }
 
+  // For not logged in users the video position saving Ajax should not do anything
   public function testNoSaveForNotLoggedInUsers() {
     // is anybody listening out there?
     $this->assertTrue( has_action('wp_ajax_fv_wp_flowplayer_video_position_save') );
@@ -87,6 +88,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $this->assertEquals( $this->fix_newlines($expect), $this->fix_newlines($output) );
   }
 
+  // For logged in users the video position saving Ajax should affect the FV Player output - adding position to data-item
   public function testSaveAndPlaylistHTMLForLoggedInUsers() {
     // is anybody listening out there?
     $this->assertTrue( has_action('wp_ajax_fv_wp_flowplayer_video_position_save') );

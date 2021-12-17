@@ -106,8 +106,10 @@ function fv_flowplayer_get_js_translations() {
   'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
   'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
+  'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
+  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer')
 );
-  
+
   return $aStrings;
 } 
 
@@ -461,13 +463,17 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
-    
+
     if( $fv_fp->_get_option('hd_streaming') ) {
       $aConf['hd_streaming'] = true;
     }
 
     if( $fv_fp->_get_option('multiple_playback') ) {
       $aConf['multiple_playback'] = true;
+    }
+
+    if( $fv_fp->_get_option('disable_localstorage') ) {
+      $aConf['disable_localstorage'] = true;
     }
 
     $aConf['hlsjs'] = array(

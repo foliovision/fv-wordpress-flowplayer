@@ -255,17 +255,16 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   public function column_default( $player, $column_name ) {
-    global $FV_Player_Coconut;
-
     $id = $player->id;
 
+    // TODO: This should be done in a sensible way
     // if any of the videos for this player contain a coconut_processing_ placeholder,
     // try to run Coconut's job check, so we can update that SRC if it was already
     // processed
-    if ( isset( $FV_Player_Coconut ) ) {
+    if ( function_exists( 'FV_Player_Coconut' ) ) {
       foreach ( $player->video_objects as $video_object ) {
         if ( strpos( $video_object->getSrc(), 'coconut_processing_' ) !== false ) {
-          $FV_Player_Coconut->jobs_check();
+          FV_Player_Coconut()->jobs_check();
           break;
         }
       }
@@ -279,16 +278,16 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
-        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
-        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
+        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";
+        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
 
         $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
 
-        $value .= "</div>";
+        $value .= "</div>\n";
         break;
       case 'embeds':
         $player = new FV_Player_Db_Player($id);

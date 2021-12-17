@@ -26,6 +26,9 @@ jQuery(function() {
     // data to save in Ajax
     ajax_save_this_please = false,
 
+    // last saved data to detect changes for auto-saving
+    ajax_save_previous = false,
+
     current_player_db_id = -1,
     current_video_to_edit = -1,
 
@@ -203,7 +206,6 @@ jQuery(function() {
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
       var
-        previous = false,
         next = false,
         overlay_close_waiting_for_save = false,
         loading = true,
@@ -282,7 +284,7 @@ jQuery(function() {
                 overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
 
                 jQuery('[name=fv_player_copy_to_clipboard]').select();
-              }).error(function() {
+              }).fail(function() {
                 overlay_show('message', 'An unexpected error has occurred. Please try again.');
               });
 
@@ -360,7 +362,7 @@ jQuery(function() {
 
               $element_td.find('span, a:not(.fv-player-remove-confirm)').show();
             }
-          }).error(function() {
+          }).fail(function() {
             $spinner.remove();
 
             $element.html('Error');
@@ -394,7 +396,7 @@ jQuery(function() {
                   $('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
                   $spinner.remove();
                   $element.show();
-                }).error(function() {
+                }).fail(function() {
                 $spinner.remove();
                 $element.show();
               });
@@ -402,7 +404,7 @@ jQuery(function() {
               $spinner.remove();
               $element.html('Error');
             }
-          }).error(function() {
+          }).fail(function() {
             $spinner
             $element.html('Error');
           });
@@ -414,7 +416,7 @@ jQuery(function() {
       /*
       * NAV TABS
       */
-      $('.fv-player-tabs-header a').click( function(e) {
+      $('.fv-player-tabs-header a').on( 'click', function(e) {
         e.preventDefault();
         $('.fv-player-tabs-header a').removeClass('nav-tab-active');
         $(this).addClass('nav-tab-active')
@@ -447,7 +449,7 @@ jQuery(function() {
       * Playlist view thumbnail toggle
       */
       var list_style_toggles = $('#fv-player-list-thumb-toggle > a');
-      list_style_toggles.click(function(){
+      list_style_toggles.on( 'click', function(){
         var button = $(this);
         if( button.hasClass('disabled') ) return;
 
@@ -643,24 +645,8 @@ jQuery(function() {
       * End of playlist Actions
       */
 
-      jQuery('#fv_wp_flowplayer_field_end_actions').change(function(){
-        var value = jQuery(this).val();
-        jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
-        switch(value){
-          case 'redirect':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            break;
-          case 'popup':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            jQuery('#fv_wp_flowplayer_field_' + value + '_id').parents('tr').show();
-            break;
-          case 'email_list':
-            jQuery('#fv_wp_flowplayer_field_' + value).parents('tr').show();
-            break;
-          default:
-            break;
-        }
-      });
+      jQuery('#fv_wp_flowplayer_field_end_actions').on( 'change', show_end_actions );
+
 
       /*
       * Preview iframe dialog resize
@@ -675,7 +661,7 @@ jQuery(function() {
       */
 
       // TODO: Check
-      jQuery('#fv_wp_flowplayer_field_share').change(function(){
+      jQuery('#fv_wp_flowplayer_field_share').on( 'change', function(){
         var value = jQuery(this).val();
 
         switch(value){
@@ -755,18 +741,18 @@ jQuery(function() {
           return;
         }
 
-        if( previous && JSON.stringify(ajax_data) == JSON.stringify(previous) ) {
-          console.log('Not really!');
+        if( ajax_save_previous && JSON.stringify(ajax_data) == JSON.stringify(ajax_save_previous) ) {
+          debug_log('No changes to save.');
           return;
         }
 
         if( is_saving ) {
-          console.log('Still saving!');
+          debug_log('Still saving!');
           next = ajax_data;
           return;
         }
 
-        previous = ajax_data;
+        ajax_save_previous = ajax_data;
 
         ajax(ajax_data);
 
@@ -827,7 +813,9 @@ jQuery(function() {
               }
             });
 
-            if( next ) {console.log('There is more to do...');
+            if( next ) {
+              debug_log('There is more to save...');
+
               ajax(next);
               next = false;
             } else {
@@ -870,7 +858,7 @@ jQuery(function() {
             error(e);
           }
 
-        }, 'json' ).error( function() {
+        }, 'json' ).fail( function() {
           $('.fv-player-save-error').show();
           
           el_spinner.hide();
@@ -1151,13 +1139,31 @@ jQuery(function() {
                       }
                     }
                   }
+                  
+                  var item = jQuery($element).parents('table'),
+                    show = [],
+                    check = [];
 
+                  if( !!json_data.is_live ) {
+                    show = [ 'dvr', 'live' ];
+                    check = [ 'live' ];
+                  }
+                  
+                  if( json_data.is_audio == -1 ) {
+                    show.push('audio');
+                  } else if( !!json_data.is_audio ) {
+                    show.push('audio');
+                    check.push('audio');
+                  }
+                  
+                  show_stream_fields_worker( item, show, check );
+                  
                   $element.removeData('fv_player_video_data_ajax');
                   $element.removeData('fv_player_video_data_ajax_retry_count');
 
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();
-                }).error(function () {
+                }).fail(function () {
                 fv_player_editor.meta_data_load_finished();
                   // remove element AJAX data
                   $element.removeData('fv_player_video_data_ajax');
@@ -1403,7 +1409,7 @@ jQuery(function() {
 
           overlay.find('select').html( dropdown.join('') );
 
-        }).error(function () {
+        }).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
 
         });
@@ -1448,6 +1454,9 @@ jQuery(function() {
           clearInterval(refreshTask);
           $this.removeData('fv_player_video_auto_refresh_task');
         }*/
+   
+        // Reset the HLS stream checkboxes (Live, DVR, ...)
+        show_stream_fields_worker( $this, [], [] );
       });
 
       jQuery('#fv_wp_flowplayer_field_player_name').show();
@@ -2171,24 +2180,7 @@ jQuery(function() {
 
                 // special processing for end video actions
                 if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
-                  var end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val();
-
-                  // to actually show the value, we need to trigger a change event on the end_actions dropdown itself
-                  jQuery('#fv_wp_flowplayer_field_end_actions').trigger('change');
-
-                  switch (end_of_playlist_action) {
-                    case 'redirect':
-                      jQuery('#fv_wp_flowplayer_field_redirect').val(value);
-                      break;
-                    case 'popup':
-                      jQuery('#fv_wp_flowplayer_field_popup_id').val(value);
-                      break;
-
-                    case 'email_list':
-                      jQuery('#fv_wp_flowplayer_field_email_list').val(value);
-                      break;
-                  }
-
+                  show_end_actions( false, value );
                   return;
                 } else if (['fv_wp_flowplayer_field_email_list', 'fv_wp_flowplayer_field_popup_id', 'fv_wp_flowplayer_field_redirect'].indexOf(real_key) > -1) {
                   // ignore the original fields, if we still use old DB values
@@ -2217,9 +2209,9 @@ jQuery(function() {
                     }
                   } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
                     if (real_val === '1' || real_val === 'on' || real_val === 'true') {
-                      $element.attr('checked', 'checked');
+                      $element.prop('checked',true);
                     } else {
-                      $element.removeAttr('checked');
+                      $element.prop('checked',false);
                     }
                   } else {
                     $element.val(real_val);
@@ -2330,6 +2322,9 @@ jQuery(function() {
 
               // if this player is published, mark it as such
               has_draft_status = ( response.status == 'draft' );
+              
+              // Set the current data as previous to let auto-saving detect changes
+              ajax_save_previous = build_ajax_data(true);
             }
 
             overlay_hide();
@@ -2373,7 +2368,7 @@ jQuery(function() {
 
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
-          }).error(function(xhr) {
+          }).fail(function(xhr) {
             if (xhr.status == 404) {
               overlay_show('message', 'The requested player could not be found. Please try again.');
             } else {
@@ -2656,6 +2651,7 @@ jQuery(function() {
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
               this.checked = 1;
+              jQuery(this).closest('tr').show();
             });
           }
 
@@ -2890,7 +2886,7 @@ jQuery(function() {
 
           jQuery('#fv_player_copy_to_clipboard').select();
         }
-      }).error(function() {
+      }).fail(function() {
         overlay_show('message', 'An unexpected error has occurred. Please try again');
       });
 
@@ -2901,9 +2897,9 @@ jQuery(function() {
     function insert_button_toggle_disabled( disable ) {
       var button = $('.fv_player_field_insert-button');
       if( disable ) {
-        button.attr('disabled', 'disabled');
+        button.prop('disabled', true);
       } else {
-        button.removeAttr('disabled');
+        button.prop('disabled', false);
       }
     }
 
@@ -3468,11 +3464,12 @@ jQuery(function() {
     /*
     Click on Loading Overlay Close button
     */
-    $doc.on('click', '#fv-player-editor-overlay-close', function() {
+    $doc.on('click', '[data-fv-player-editor-overlay-close]', function() {
       $.fn.fv_player_box.close();
       // hide the overlay asynchronously to allow the actual modal close animation to finish,
       // so it doesn't blink from error message to an empty editor and only then starts to fade
       setTimeout(overlay_hide, 1000);
+      return false;
     });
 
     /*
@@ -3515,7 +3512,7 @@ jQuery(function() {
             function (response) {
               jQuery('#the-list tr:first').before(jQuery(response).find('#the-list tr:first'));
               jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
-            }).error(function() {
+            }).fail(function() {
             jQuery('.fv-wordpress-flowplayer-button').fv_player_box.close();
           });
 
@@ -3523,7 +3520,7 @@ jQuery(function() {
           fv_player_editor.overlay_notice( button, response, 'error' );
 
         }
-      }).error(function() {
+      }).fail(function() {
         fv_player_editor.overlay_notice( button, 'Unknown error!', 'error' );
 
       });
@@ -3567,14 +3564,61 @@ jQuery(function() {
       // on fv_flowplayer_shortcode_new
       if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
 
-      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/m3u8/) || src.match(/rtmp:/) || src.match(/\.mpd/),
-        is_vimeo_or_youtube = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//) || src.match(/youtube\.com\//);
+      // TODO: Gradually get rid of this and detect each stream type instead
+      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/rtmp:/) || src.match(/\.mpd/),
+        is_vimeo_live = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//);
     
-      item.find('[name=fv_wp_flowplayer_field_live]').closest('tr').toggle(!!is_stream || !!is_vimeo_or_youtube);
-      item.find('[name=fv_wp_flowplayer_field_audio]').closest('tr').toggle(!!is_stream);
-      item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').toggle(!!is_stream);
+      var show = [];
+      if( !!is_stream ) show = [ 'audio', 'dvr', 'live' ];
+      if( !!is_vimeo_live ) show = [ 'live' ];
+      
+      show_stream_fields_worker( item, show );
       
       editor_resize();
+    }
+
+    function show_stream_fields_worker(item, to_show, to_check) {
+      jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
+        var field = item.find('[name=fv_wp_flowplayer_field_'+v+']'),
+          is_checked = field.prop('checked');
+
+        // We show the checkbox if it's to be shown or if it's checked
+        field.closest('tr').toggle( is_checked || to_show && to_show.indexOf(v) != -1 );
+        
+        // If it's not already checked we check it or not check it based on args
+        if( !is_checked ) {
+          field.prop( 'checked', to_check && to_check.indexOf(v) != -1 );
+        }
+      });
+      
+      // DVR should be always shown for live streams
+      if( item.find('[name=fv_wp_flowplayer_field_live]').prop('checked') ) {
+        item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').show();
+      }
+      
+      editor_resize();
+    }
+    
+    function show_end_actions( e, value ) {
+      // redirect, popup and email_list
+      var type = jQuery('#fv_wp_flowplayer_field_end_actions').val();
+
+      jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
+
+      var field = jQuery('#fv_wp_flowplayer_field_' + type);
+      field.parents('tr').show();
+      if( value ) {
+        field.val(value);
+      }
+
+      // The field id is different for popup
+      if( type == 'popup' ){
+        var field = jQuery('#fv_wp_flowplayer_field_' + type + '_id');
+        field.parents('tr').show();
+        if( value ) {
+          field.val(value);
+        }
+      }
     }
 
     function init_saved_player_fields( id_player ) {
@@ -3757,7 +3801,7 @@ jQuery(function() {
       },
 
       playlist_buttons_toggle: function( show ) {
-        $('.playlist_add, .playlist_edit').toggle( show );
+        $('.playlist_add, .playlist_edit').css( 'display', show ? 'inline-block' : 'none' );
       },
 
       insert_button_toggle: function( show ) {
@@ -3929,7 +3973,7 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
 }
 
 
-jQuery(document).on('click', '#fv-player-editor-export-overlay-copy', function() {
+jQuery(document).on('click', '[data-fv-player-editor-export-overlay-copy]', function() {
   var button = this;
   fv_player_clipboard(jQuery('[name=fv_player_copy_to_clipboard]').val(), function() {
     fv_player_editor.overlay_notice( button, 'Text Copied To Clipboard!', 'success', 3000 );

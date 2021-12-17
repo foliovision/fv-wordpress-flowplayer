@@ -65,33 +65,56 @@ class FV_Player_Position_Save {
     // TODO: XSS filter for POST values?
     // check if videoTimes is not a JSON-encoded value, which will happen
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
-    $decoded = json_decode(urldecode($_POST['videoTimes']), true);
-    if ($decoded !== false) {
-      $_POST['videoTimes'] = $decoded;
+    $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
+    $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
+
+    if ($decoded_times !== false) {
+      $_POST['videoTimes'] = $decoded_times;
     }
 
-    if (is_user_logged_in() && isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
+    if ($decoded_playlists !== false) {
+      $_POST['playlistItems'] = $decoded_playlists;
+    }
+
+    $success = false;
+
+    if ( is_user_logged_in() ) {
       $uid = get_current_user_id();
-      foreach ($times as $record) {
-        $name = $this->get_extensionless_file_name($record['name']);
-        if( $record['position'] == 0 ) {
-          delete_user_meta($uid, 'fv_wp_flowplayer_position_'.$name );
-        } else {
-          update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
+      if (isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
+        
+        foreach ($times as $record) {
+          $name = $this->get_extensionless_file_name($record['name']);
+          if( intval($record['position']) == 0 ) {
+            delete_user_meta($uid, 'fv_wp_flowplayer_position_'.$name );
+          } else {
+            update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
+          }
+          
+          if( !empty($record['saw']) && $record['saw'] == true ) {
+            update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
+          }
         }
         
-        if( !empty($record['saw']) && $record['saw'] == true ) {
-          update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
+        if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
+          foreach ($_POST['sawVideo'] as $record) {
+            update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$this->get_extensionless_file_name($record['name']), true);
+          }
         }
+        
+        $success = true;
       }
-      
-      if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
-        foreach ($_POST['sawVideo'] as $record) {
-          update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$this->get_extensionless_file_name($record['name']), true);
+
+      if (isset($_POST['playlistItems']) && ($playlistItems = $_POST['playlistItems']) && count($playlistItems)) {
+        foreach ($playlistItems as $playeritem) {
+          update_user_meta($uid, 'fv_wp_flowplayer_player_playlist_'.$playeritem['player'], $playeritem['item']);
         }
+
+        $success = true;
       }
-      
-      wp_send_json_success();
+
+      if( $success ) {
+        wp_send_json_success();
+      }
     } else {
       wp_send_json_error();
     }
@@ -101,13 +124,32 @@ class FV_Player_Position_Save {
     global $fv_fp;
     $fv_fp->_get_checkbox(__('Remember video position', 'fv-wordpress-flowplayer'), 'video_position_save_enable', __('Stores the last video play position for users, so they can continue watching from where they left.'), __('It stores in <code>wp_usermeta</code> database table for logged in users and in a localStorage or cookie for guest users.'));
   }
-  
+
   function shortcode( $attributes, $media, $fv_fp ) {
     if( !empty($fv_fp->aCurArgs['saveposition']) ) {
       $attributes['data-save-position'] = $fv_fp->aCurArgs['saveposition'];
     }
+
+    if ( $fv_fp->_get_option('video_position_save_enable') || !empty($fv_fp->aCurArgs['saveposition']) ) {
+      $player_id = false;
+
+      if( $fv_fp->current_player() ) { // db player
+        $player_id = $fv_fp->current_player()->getId();
+      }
+
+      if( $player_id ) { // add id to data item if db player
+        $attributes['data-player-id'] = $player_id;
+
+        $metaItem = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
+
+        if ( $metaItem >= 0 ) {
+          // playlist item restore
+          $attributes['data-playlist_start'] = intval($metaItem) + 1; // playlist-start-position module starts from 0
+        }
+      }
+    }
+
     return $attributes;
   }
-
 }
 $FV_Player_Position_Save = new FV_Player_Position_Save();

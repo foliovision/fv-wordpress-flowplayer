@@ -128,7 +128,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     
     <div id="fv-player-editor-message-overlay" class="fv-player-editor-overlay">
       <p></p>
-      <a id="fv-player-editor-overlay-close" href="#" value="Close" class="button button-primary">Close</a>
+      <a data-fv-player-editor-overlay-close href="#" class="button button-primary">Close</a>
     </div>
     
     <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay">
@@ -136,7 +136,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <option hidden disabled selected value>Choose a Player...</option>
       </select>
       
-      <a id="fv-player-editor-overlay-close" href="#" class="button">Close</a>
+      <a data-fv-player-editor-overlay-close href="#" class="button">Close</a>
     </div>
     
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
@@ -144,7 +144,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <br />
       <br />
       <a id="fv-player-editor-import-overlay-import" href="#" class="button button-primary">Import player</a>
-      <a id="fv-player-editor-overlay-close" href="#" class="button">Close</a>
+      <a data-fv-player-editor-overlay-close href="#" class="button">Close</a>
       <div class="fv-player-editor-overlay-notice"></div>
     </div>
     
@@ -152,8 +152,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <textarea name="fv_player_copy_to_clipboard" rows="13"></textarea>
       <br />
       <br />
-      <a id="fv-player-editor-export-overlay-copy" href="#" class="button button-primary">Copy To Clipboard</a>
-      <a id="fv-player-editor-overlay-close" href="#" class="button">Close</a>
+      <a data-fv-player-editor-export-overlay-copy href="#" class="button button-primary">Copy To Clipboard</a>
+      <a data-fv-player-editor-overlay-close href="#" class="button">Close</a>
       <div class="fv-player-editor-overlay-notice"></div>
     </div>
     
@@ -162,8 +162,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <textarea name="fv_player_copy_to_clipboard" rows="15"></textarea>
       <br />
       <br />
-      <a id="fv-player-editor-export-overlay-copy" href="#" class="button button-primary">Copy To Clipboard</a>
-      <a id="fv-player-editor-overlay-close" href="#" class="button button-primary">Close</a>
+      <a data-fv-player-editor-export-overlay-copy href="#" class="button button-primary">Copy To Clipboard</a>
+      <a data-fv-player-editor-overlay-close href="#" class="button button-primary">Close</a>
       <div class="fv-player-editor-overlay-notice"></div>
     </div>
   
@@ -306,7 +306,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <td class="field"><div class="add_rtmp_wrapper"><a href="#" class="partial-underline" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add RTMP', 'fv_flowplayer'); ?></a></div></td>  				
               </tr>      
 
-              <tr <?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?> class="first-item-only">
+              <tr class="first-item-only<?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' fv_player_interface_hide'; ?>">
                 <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright"><?php _e('Mobile video', 'fv_flowplayer'); ?></label></th>
                 <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" placeholder="<?php _e('Put low-bandwidth video here or leave blank', 'fv_flowplayer'); ?>" />
                   <?php if ($allow_uploads == 'true') { ?>
@@ -375,7 +375,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               <td class="field fv-fp-subtitles" colspan="2">
                 <div class="fv-fp-subtitle">
                   <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
-                    <option></option>
+                    <option value="">&nbsp;</option>
                     <?php
                     $aLanguages = flowplayer::get_languages();
                     $aCurrent = explode('-', get_bloginfo('language'));
@@ -402,7 +402,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               <td colspan="2">
               </td>              
               <td>
-                <a class="fv_flowplayer_language_add_link" style="outline: 0" class="partial-underline" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
+                <a class="fv_flowplayer_language_add_link partial-underline"  style="outline: 0" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
               </td>
             </tr>
           </table>
@@ -415,7 +415,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               <th>
                 <label for="fv_wp_flowplayer_field_width" class="alignright"><?php _e('Size', 'fv_flowplayer'); ?></label> 
               </th>
-              <td class="field" colspan="2">
+              <td class="field">
                 <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
                 <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
               </td>
@@ -436,7 +436,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   array('season','Season'),
                   array('polaroid','Polaroid'),
                   array('text','Text')
-                ), 'class' => 'hide-if-singular', 'id' => 'fv_wp_flowplayer_add_format_wrapper' ) );
+                ), 'class' => 'hide-if-singular' ) );
                 ?>
             <?php fv_player_shortcode_row( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'dropdown' => array( 'Default', 'Yes', 'No', 'Custom' ) ) ); ?>
             
@@ -481,8 +481,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               <td>
                 <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
                 <div style="display: none">
-                  <p><span class="dashicons dashicons-warning"></span> <?php _e('You are using the legacy popup functionality. Move the popup code', 'fv-wordpress-flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_target"><?php _e('here', 'fv-wordpress-flowplayer'); ?></a><?php _e(', then use the drop down menu above.', 'fv-wordpress-flowplayer'); ?></p>
-                  <textarea type="text" id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
+                  <p><span class="dashicons dashicons-warning"></span> <?php _e('You are using the legacy popup functionality. Move the popup code', 'fv-wordpress-flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php _e('here', 'fv-wordpress-flowplayer'); ?></a><?php _e(', then use the drop down menu above.', 'fv-wordpress-flowplayer'); ?></p>
+                  <textarea id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
                 </div>                      
               </td>
             </tr>
@@ -508,12 +508,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
               <td>
-                <textarea type="text" id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
+                <textarea id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
               </td>
             </tr> 
             <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Ad Size', 'fv_flowplayer'); ?></label></th>
-              <td class="field" <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+              <td class="field<?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' fv_player_interface_hide'; ?>">
                 <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
                 <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%; margin-right: 25px;" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
                 <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
