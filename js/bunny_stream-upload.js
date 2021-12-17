@@ -88,7 +88,7 @@ jQuery( function($) {
     .done(  function( response ) {
       if ( response && typeof( response ) == 'object' && response.success ) {
         // everything worked out fine, file is uploaded
-        // reload Bunny.net Stream tab
+        // reload Bunny Stream tab
         $('#fv_player_bunny_stream_browser_media_tab').click();
         $progressDiv.text( upload_success_message );
       } else {
@@ -140,7 +140,7 @@ jQuery( function($) {
 
   $doc.on("mediaBrowserOpen", function (event) {
     var
-      upload_button_text = 'Upload to Bunny.net Stream',
+      upload_button_text = 'Upload to Bunny Stream',
       cancel_button_class = 'fv-player-bunny_stream-browser-upload-cancel',
       upload_progress_class = 'fv-player-bunny_stream-browser-upload-progress',
       upload_progress_bar_enclosure_class = 'fv-player-bunny_stream-progress',

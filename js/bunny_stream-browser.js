@@ -152,7 +152,7 @@ jQuery( function($) {
     if( window.fv_flowplayer_browser_splash_file_lookup_rules ) {
       fv_flowplayer_browser_splash_file_lookup_rules[ tabId ] = { 'include' : ['\.(m3u8)$'] };
     }
-    fv_flowplayer_media_browser_add_tab( tabId, 'Bunny.net Stream', fv_player_bunny_stream_browser_load_assets, null, function() {
+    fv_flowplayer_media_browser_add_tab( tabId, 'Bunny Stream', fv_player_bunny_stream_browser_load_assets, null, function() {
       firstLoad = true;
     }).addClass('upload_supported');
   });

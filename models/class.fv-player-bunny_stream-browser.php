@@ -14,7 +14,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       do_action( 'fv_player_media_browser_enqueue_base_uploader_css' );
       wp_enqueue_script( 'fv-player-bunny_stream-upload', plugins_url( 'js/bunny_stream-upload.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), filemtime( dirname(__FILE__).'/js/bunny_stream-upload.js' ), true );
       wp_localize_script( 'fv-player-bunny_stream-upload', 'fv_player_bunny_stream_upload_settings', array(
-        'upload_button_text' => __('Upload to Bunny.net Stream', 'fv-player-bunny_stream'),
+        'upload_button_text' => __('Upload to Bunny Stream', 'fv-player-bunny_stream'),
         'lib_id' => $fv_fp->_get_option( array('bunny_stream','lib_id') ),
         'api_key' => $fv_fp->_get_option( array('bunny_stream','api_key') ),
         'job_submit_nonce' => wp_create_nonce('fv_player_bunny_stream'),
@@ -182,7 +182,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
         // job in processing
         if ( $video->status < 4 ) {
           $item['extra']['encoding_job_status'] = 'processing';
-          $item['extra']['displayData'] = 'This file is currently being processed by the Bunny.net Stream service.';
+          $item['extra']['displayData'] = 'This file is currently being processed by the Bunny Stream service.';
           $item['extra']['percentage'] = $video->encodeProgress . '%';
           // don't allow selecting this file until it's at least playable
           if ( !$video->availableResolutions ) {
@@ -200,7 +200,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
           $item['extra']['disabled'] = 1;
           $item['extra']['encoding_job_status'] = 'error';
           if ( $video->status == 5 ) {
-            $item['extra']['displayData'] = 'Processing error on the Bunny.net Stream side.';
+            $item['extra']['displayData'] = 'Processing error on the Bunny Stream side.';
           } else {
             $item['extra']['displayData'] = 'Upload error or file upload cancelled.';
           }

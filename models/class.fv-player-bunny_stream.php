@@ -40,11 +40,11 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   public function admin_notices() {}
 
   /**
-   * Bunny.net Stream doesn't use configurations, so we'll just return the same config that we received.
+   * Bunny Stream doesn't use configurations, so we'll just return the same config that we received.
    *
    * @param $conf Pre-populated configuration array into which the extending Encoder's class configuration should go.
    *
-   * @return array Simply returns the same config that we received, since Bunny.net Stream doesn't use configurations.
+   * @return array Simply returns the same config that we received, since Bunny Stream doesn't use configurations.
    */
   public function default_settings( $conf ) {
     return $conf;
@@ -87,12 +87,12 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   }
 
   /**
-   * Bunny.net Stream uses no configuration, it will encode videos according to each stream's settings.
+   * Bunny Stream uses no configuration, it will encode videos according to each stream's settings.
    * This method simply therefore returns exactly what it was given.
    *
    * @param $args array Config array from the base encoder class.
    *
-   * @return array      Returns the same $args array that it was given, since Bunny.net Streams use no configurations.
+   * @return array      Returns the same $args array that it was given, since Bunny Streams use no configurations.
    */
   function get_conf( $args ) {
     return $args;
@@ -107,9 +107,9 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   }
 
   /**
-   * Normalizes Bunny.net Stream statuses for use in our DB.
+   * Normalizes Bunny Stream statuses for use in our DB.
    *
-   * @param $status string The original status from Bunny.net Stream.
+   * @param $status string The original status from Bunny Stream.
    *
    * @return string Returns the normalized status for use in our DB.
    */
@@ -153,7 +153,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
    * array(
    *  'result' object Job info from Bunny.net
    *  'status' string You get either "processing", "completed" or "error"
-   *  'output' object URLs for resources - for Bunny.net Streams, we don't change CDN URLs, so both URLs here will be the same
+   *  'output' object URLs for resources - for Bunny Streams, we don't change CDN URLs, so both URLs here will be the same
    * )
    */
   protected function job_check( $pending_job ) {
@@ -251,7 +251,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   }
 
   /**
-    * Submit the job to Bunny.net Stream and store the result in table
+    * Submit the job to Bunny Stream and store the result in table
     *
     * @param int $job_id     Job ID
 
@@ -478,7 +478,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 }
 
 function FV_Player_Bunny_Stream() {
-  return FV_Player_Bunny_Stream::getInstance( 'bunny_stream', 'Bunny.net Stream', 'fv_player_bunny_stream', dirname(__FILE__) . '/class.fv-player-bunny_stream-browser.php' );
+  return FV_Player_Bunny_Stream::getInstance( 'bunny_stream', 'Bunny Stream', 'fv_player_bunny_stream', dirname(__FILE__) . '/class.fv-player-bunny_stream-browser.php' );
 }
 
 // create the instance right away, so the browser and other assets are loaded correctly where they should be

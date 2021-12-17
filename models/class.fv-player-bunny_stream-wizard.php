@@ -17,7 +17,7 @@ class FV_Player_Bunny_Stream_Wizard extends FV_Player_Wizard_Base_Class {
       'id' => 'fv_player_bunny_stream_wizard',
       'page' => 'fv_player_bunny_stream',
       'steps_path' => dirname(__FILE__).'/bunny-stream-wizard',
-      'title' => 'FV Player Bunny.net Stream Wizard'
+      'title' => 'FV Player Bunny Stream Wizard'
     ) );
   }
 

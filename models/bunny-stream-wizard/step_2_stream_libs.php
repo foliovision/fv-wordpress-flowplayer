@@ -19,7 +19,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
     ?>
       <tr>
           <td colspan="2">
-              <h2>Bunny.net Stream Library</h2>
+              <h2>Bunny Stream Library</h2>
               <p>Pick an existing library to upload videos to or create a new one:</p>
           </td>
       </tr>
@@ -115,7 +115,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
         return array('error' => $lib->get_error_message() );
       }
 
-      // load the Pull Zone and get its CDN URL, so we can display thumbnails in the Bunny.net Stream browser
+      // load the Pull Zone and get its CDN URL, so we can display thumbnails in the Bunny Stream browser
       $pull_zone = $api->api_call( 'https://api.bunny.net/pullzone/' . $lib->PullZoneId );
 
       if ( is_wp_error($pull_zone) ) {
@@ -129,7 +129,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
         return array('error' => $lib->get_error_message() );
       }
 
-      // load the Pull Zone and get its CDN URL, so we can display thumbnails in the Bunny.net Stream browser
+      // load the Pull Zone and get its CDN URL, so we can display thumbnails in the Bunny Stream browser
       $pull_zone = $api->api_call( 'https://api.bunny.net/pullzone/' . $lib->PullZoneId );
 
       if ( is_wp_error($pull_zone) ) {

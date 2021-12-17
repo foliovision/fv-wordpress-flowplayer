@@ -218,8 +218,8 @@ jQuery( function($) {
     $(this).prop('checked','checked');
   });
 
-  // When the media Library is open go to Bunny.net Stream browser directly
-  // But make sure you are on the right screen - FV Player -> Bunny.net Stream Jobs
+  // When the media Library is open go to Bunny Stream browser directly
+  // But make sure you are on the right screen - FV Player -> Bunny Stream Jobs
   if( location.href.match(/page=fv_player_bunny_stream/) ) {
     $(document).on("mediaBrowserOpen", function () {
       var bunny_stream_browser_link = false;
