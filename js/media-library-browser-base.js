@@ -623,7 +623,7 @@ jQuery( function($) {
       .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
       .trigger('change'); // this check the video duration etc.
 
-    var are_we_picking_the_video = $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);
+    var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);
       
     if( splash && are_we_picking_the_video ) {
       var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
