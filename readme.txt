@@ -359,6 +359,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.13.727 - 2021/12/20 =
+
+* New feature - drag&drop video upload and encoding with the Bunny Stream service!
+* New feature - Editor now detects the HLS stream type to show Live stream and Audio stream checkboxes only when needed
+* Compatibility - Editor - jQuery 3.6 fixes
+* Bugfix - Editor - prevent autosave attempt right after opening the editor
+
 = 7.5.12.727 - 2021/11/25 =
 
 * Bugfix - Playlist tabs not pausing the old tab player properly

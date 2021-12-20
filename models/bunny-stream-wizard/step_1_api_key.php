@@ -21,7 +21,7 @@ class FV_Player_Bunny_Stream_Wizard_API_Key extends FV_Player_Wizard_Step_Base_C
       <tr>
           <td colspan="2">
               <h2>Bunny.net API key</h2>
-              <p>We need your Bunny.net API key to connect to your Stream Library.<br />Please open <a href="https://bunnycdn.com/dashboard/account" target="_blank">bunnycdn.com/dashboard/account</a> to get your API key.</p>
+              <p>We need your Bunny.net API key to connect to your Stream Library.<br />Please open <a href="https://panel.bunny.net/dashboard/account" target="_blank">panel.bunny.net/dashboard/account</a> to get your API key.</p>
               <p>(Note: we do not store this token, it's only used during this Wizard session).</p>
               <p><img src="<?php echo plugins_url( 'images/bunnycdn-api.png', __FILE__ ); ?>" srcset="<?php echo plugins_url( 'images/bunnycdn-api.png', __FILE__ ); ?> 1x, <?php echo plugins_url( 'images/bunnycdn-api-2x.png', __FILE__ ); ?> 2x" /></p>
           </td>
