@@ -143,7 +143,7 @@
 
   jQuery(document).on('fvp-preview-complete', function() {
     jQuery('#fv-splash-screen-button').remove();
-    jQuery('.fv-player-shortcode-editor-small-spinner').remove();
+    if( !fv_player_editor.uploading_splash ) jQuery('.fv-player-shortcode-editor-small-spinner').remove(); // ajax for splash upload is still running
     jQuery('.fv-messages').empty();
   });
 

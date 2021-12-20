@@ -1032,6 +1032,7 @@ jQuery(function() {
                         case 'splash':
                           if (json_data.thumbnail) {
                             if (!$splash_element.val() || typeof($splash_element.data('fv_player_user_updated')) == 'undefined') {
+                              $splash_element.val(json_data.thumbnail);
                               fv_player_editor.upload_splash( { 'url': json_data.thumbnail }, $parent_table.attr('data-index') );
                               $splash_element.closest('tr').show();
                             }
@@ -1164,6 +1165,11 @@ jQuery(function() {
 
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();
+
+                  // ajax for splash upload is still running
+                  if( fv_player_editor.uploading_splash ) {
+                    jQuery('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>').insertAfter(item.find('#fv_wp_flowplayer_field_splash'));
+                  }
                 }).fail(function () {
                 fv_player_editor.meta_data_load_finished();
                   // remove element AJAX data
@@ -3891,6 +3897,8 @@ jQuery(function() {
         data.title = title;
 
         debug_log('Uploading splash for: ' + title );
+
+        fv_player_editor.uploading_splash = 1;
 
         jQuery.post(fv_player.ajaxurl, data, function(response) {
           if(response.src) {
