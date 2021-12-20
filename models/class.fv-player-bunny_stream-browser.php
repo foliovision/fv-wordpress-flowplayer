@@ -75,11 +75,11 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
   function upload_complete() {
     global $FV_Player_DigitalOcean_Spaces;
 
-    $partsModel = $this->s3("listParts",[
+    $partsModel = $this->s3("listParts", array(
       'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
       'Key' => $_REQUEST['sendBackData']['key'],
       'UploadId' => $_REQUEST['sendBackData']['uploadId'],
-    ]);
+    ) );
 
     $ret = $this->s3( "completeMultipartUpload" , array(
       'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),

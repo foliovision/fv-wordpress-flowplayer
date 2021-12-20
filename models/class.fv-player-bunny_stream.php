@@ -12,11 +12,11 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
    * gets the instance via lazy initialization (created on first usage)
    */
   public static function getInstance( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
-    if ( static::$instance === null ) {
-      static::$instance = new static( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file );
+    if ( self::$instance === null ) {
+      self::$instance = new static( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file );
     }
 
-    return static::$instance;
+    return self::$instance;
   }
 
   /**
