@@ -623,7 +623,9 @@ jQuery( function($) {
       .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
       .trigger('change'); // this check the video duration etc.
 
-    if( splash && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/) ) {
+    var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);
+      
+    if( splash && are_we_picking_the_video ) {
       var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
       if( splash_input.val() == '' ) {
         splash_input.val(splash);
@@ -634,6 +636,7 @@ jQuery( function($) {
       var hlskey_field = $url_input.closest('table').find('#fv_wp_flowplayer_hlskey');
       if( extra && extra.hlskey ) {
         hlskey_field.val(extra.hlskey);
+        hlskey_field.closest('tr').show();
       } else {
         hlskey_field.val('');
       }
@@ -661,6 +664,14 @@ jQuery( function($) {
         audio_checkbox.prop( "checked", true );
       } else {
         audio_checkbox.prop( "checked", false );
+      }
+    }
+    
+    if( extra && extra.title ) {
+      var title_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_caption');
+      if( title_input.val() == '' ) {
+        title_input.val(extra.title);
+        title_input.closest('tr').show();
       }
     }
 

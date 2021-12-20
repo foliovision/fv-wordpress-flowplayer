@@ -7,7 +7,7 @@ abstract class FV_Player_Video_Encoder {
     $encoder_wp_url_slug = '', // used in all links that will point to the list of this encoder jobs
                                // examples: fv_player_coconut, fv_player_bunny_stream ...
     $encoder_name = '',        // used to display name of the service where appropriate (mostly information DIVs in a HTML output)
-                               // examples: Coconut, Bunny.net Stream ...
+                               // examples: Coconut, Bunny Stream ...
     $instance = null,          // self-explanatory
     $admin_page = false,       // will be set to a real admin submenu page object once created
     $browser_inc_file = '';    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
@@ -164,7 +164,13 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_editor_scripts($page) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' ) {
-      wp_enqueue_script('fvplayer-shortcode-editor-' . $this->encoder_id, plugins_url( 'js/shortcode-editor.js', $this->getFILE() ), array('jquery', 'fvwpflowplayer-shortcode-editor'), $this->version );
+
+      $file = $this->locate_script('shortcode-editor.js');
+      if( $file ) {
+        $handle = 'fvplayer-shortcode-editor-' . $this->encoder_id;
+        wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+      }
+
     }
   }
 
@@ -188,6 +194,16 @@ abstract class FV_Player_Video_Encoder {
     }
 
     return $response;
+  }
+  
+  function locate_script( $script ) {
+    $file = false;
+    if( file_exists( dirname( $this->getFILE() ) . '/../js/'.$this->encoder_id.'-'.$script ) ) {
+      $file = '/../js/'.$this->encoder_id.'-'.$script;
+    } else if( file_exists( dirname( $this->getFILE() ).'/js/'.$script ) ) {
+      $file = '/js/'.$script;
+    }
+    return $file;
   }
 
   /**
@@ -406,9 +422,9 @@ abstract class FV_Player_Video_Encoder {
    */
   function init_browser() {
     // it should not show when picking the media file in dashboard
-    if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
+    //if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
       include_once( $this->browser_inc_file );
-    }
+    //}
   }
 
   /**
@@ -722,9 +738,12 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_scripts( $page ) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' || $page == 'settings_page_fvplayer' || $page == 'fv-player_page_' . $this->encoder_wp_url_slug ) {
-      wp_register_script('fv_player_' . $this->encoder_id . '_admin', plugins_url( 'js/admin.js', $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . '/js/admin.js') );
-      wp_enqueue_script('fv_player_' . $this->encoder_id . '_admin');
-      wp_localize_script( 'fv_player_' . $this->encoder_id . '_admin', $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
+      $file = $this->locate_script('admin.js');
+      if( $file ) {
+        $handle = 'fv_player_' . $this->encoder_id . '_admin';
+        wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+        wp_localize_script( $handle, $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
+      }
     }
   }
 
