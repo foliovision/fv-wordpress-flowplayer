@@ -256,6 +256,9 @@ jQuery( function($) {
         clearInterval(bunny_stream_browser_finder);
       }, 2000 );
 
+      // Hide the Choose button because the videos are uploaded with drag&drop
+      $('.media-toolbar-primary').html('<button type="button" class="button media-button button-primary button-large" disabled="">Pick your video in FV Player directly</button>');
+
     });
 
   }

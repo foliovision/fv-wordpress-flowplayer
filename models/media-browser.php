@@ -14,7 +14,8 @@ abstract class FV_Player_Media_Browser {
     add_action( 'admin_print_scripts-widgets.php', array($this, 'init_base'), 0 ); // wp-admin -> Widgets
 
     // TODO: Video encoder class should take care of this
-    add_action( 'admin_print_scripts-fv-player_page_fv_player_coconut', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Encode video
+    add_action( 'admin_print_scripts-fv-player_page_fv_player_coconut', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Coconut Jobs
+    add_action( 'admin_print_scripts-fv-player_page_fv_player_bunny_stream', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Bunny Stream Jobs
     add_action( 'fv_player_media_browser_enqueue_base_uploader_css', array( $this, 'include_base_uploader_css' ) );
 
     // register extending class WP AJAX action

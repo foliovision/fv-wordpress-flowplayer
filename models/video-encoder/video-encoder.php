@@ -422,9 +422,9 @@ abstract class FV_Player_Video_Encoder {
    */
   function init_browser() {
     // it should not show when picking the media file in dashboard
-    if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
+    //if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
       include_once( $this->browser_inc_file );
-    }
+    //}
   }
 
   /**
