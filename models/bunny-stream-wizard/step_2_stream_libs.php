@@ -25,26 +25,26 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
       </tr>
       <tr>
       <td colspan="2">
+        <input type="hidden" name="bunnycdn_api" value="<?php echo esc_attr($_POST['bunnycdn_api']); ?>" />
         <select name="fv_bunny_stream_wizard_lib" id="fv_bunny_stream_wizard_lib">
           <option value="-1" disabled selected hidden>Pick a Library...</option>
           <option value="-2">- Create a new Stream Library -</option>
-    <?php
-    // retrieve a list of existing Stream Libraries
-    if ( !empty( $_SESSION['fv_bunny_stream_wizard'] ) ) {
-      $api = new FV_Player_Bunny_Stream_API( $_SESSION['fv_bunny_stream_wizard']['api_key'] );
-      $libs = $api->api_call( 'https://api.bunny.net/videolibrary?page=1&perPage=1000' );
-      if ( $libs->Items && count( $libs->Items ) ) {
-        foreach ( $libs->Items as $lib ) {
-          ?>
-            <option value="<?php echo $lib->Id; ?>"><?php echo $lib->Name; ?></option>
-          <?php
+        <?php
+        // retrieve a list of existing Stream Libraries
+        if ( !empty($_POST['bunnycdn_api']) ) {
+          $api = new FV_Player_Bunny_Stream_API( $_POST['bunnycdn_api'] );
+          $libs = $api->api_call( 'https://api.bunny.net/videolibrary?page=1&perPage=1000' );
+          if ( $libs->Items && count( $libs->Items ) ) {
+            foreach ( $libs->Items as $lib ) {
+              ?>
+                <option value="<?php echo $lib->Id; ?>"><?php echo $lib->Name; ?></option>
+              <?php
+            }
+          }
         }
-      }
-    }
-    ?>
-    </select>
+        ?>
+        </select>
       <script>
-        <!--
         (function ($) {
           $( '#fv_bunny_stream_wizard_lib' ).on( 'change', function() {
             var self = this;
@@ -70,7 +70,6 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
             }
           } );
         }(jQuery));
-        //-->
       </script>
     </td>
     </tr>
@@ -105,7 +104,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
     }
 
     // create new API instance
-    $api = new FV_Player_Bunny_Stream_API( $_SESSION['fv_bunny_stream_wizard']['api_key'] );
+    $api = new FV_Player_Bunny_Stream_API( $_POST['bunnycdn_api'] );
 
     if ( $_POST['fv_bunny_stream_wizard_lib'] == '-2' ) {
       // create the stream library
@@ -143,8 +142,6 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
     $fv_fp->conf['bunny_stream']['cdn_hostname'] = $pull_zone->Hostnames[0]->Value;
     $fv_fp->_set_conf( $fv_fp->conf );
 
-    // all done and saved, unset the wizard session
-    unset( $_SESSION['fv_bunny_stream_wizard'] );
     return array( 'ok' => true );
   }
 

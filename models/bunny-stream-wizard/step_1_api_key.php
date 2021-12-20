@@ -4,11 +4,11 @@ class FV_Player_Bunny_Stream_Wizard_API_Key extends FV_Player_Wizard_Step_Base_C
 
   protected
     $key = 'bunnycdn_api',
-    $name = 'BunnyCDN API Key',
+    $name = 'Bunny.net API Key',
 
     $buttons = array(
     'next' => array(
-      'value' => 'Setup Bunny Stream',
+      'value' => 'Check API key',
     )
   );
 
@@ -40,12 +40,20 @@ class FV_Player_Bunny_Stream_Wizard_API_Key extends FV_Player_Wizard_Step_Base_C
       return array('error' => $result->get_error_message() );
     }
 
-    $_SESSION['fv_bunny_stream_wizard']['api_key'] = $api_key;
-    return array( 'ok' => true );
+    $bunny_stream_library_picker = new FV_Player_Bunny_Stream_Wizard_Stream_Libs();
+
+    ob_start();
+    $bunny_stream_library_picker->display();
+    $bunny_stream_library_picker->buttons();
+
+    return array(
+      'next_step' => ob_get_clean(),
+      'ok' => true
+    );
   }
 
   function should_show() {
-    return empty( $_SESSION['fv_bunny_stream_wizard']['api_key'] ) && !FV_Player_Bunny_Stream()->is_configured();
+    return !FV_Player_Bunny_Stream()->is_configured();
   }
 
 }
