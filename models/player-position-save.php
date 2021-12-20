@@ -65,15 +65,20 @@ class FV_Player_Position_Save {
     // TODO: XSS filter for POST values?
     // check if videoTimes is not a JSON-encoded value, which will happen
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
-    $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
-    $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
-
-    if ($decoded_times !== false) {
-      $_POST['videoTimes'] = $decoded_times;
+    if( isset( $_POST['videoTimes'] ) ) {
+      $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
+    
+      if ($decoded_times !== false) {
+        $_POST['videoTimes'] = $decoded_times;
+      }
     }
 
-    if ($decoded_playlists !== false) {
-      $_POST['playlistItems'] = $decoded_playlists;
+    if( isset( $_POST['playlistItems'] ) ) {
+      $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
+    
+      if ($decoded_playlists !== false) {
+        $_POST['playlistItems'] = $decoded_playlists;
+      }
     }
 
     $success = false;
