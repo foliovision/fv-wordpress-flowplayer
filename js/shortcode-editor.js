@@ -3927,6 +3927,8 @@ jQuery(function() {
             fv_player_editor.fv_wp_flowplayer_dialog_resize();
           }
 
+          delete fv_player_editor.uploading_splash;
+
           item.find('.fv-player-shortcode-editor-small-spinner').remove(); // remove spinner
           jQuery('#fv-splash-screen-button').prop( "disabled", false ); // unlock button 
 
