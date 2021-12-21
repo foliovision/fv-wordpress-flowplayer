@@ -104,9 +104,12 @@ include_once(dirname( __FILE__ ).'/models/migration-wizard.php');
 include_once(dirname( __FILE__ ) . '/models/stats.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
-function fv_player_bunny_stream_include() {
-  do_action( 'fv_player_load_video_encoder_libs' );
-  if ( class_exists( 'FV_Player_Video_Encoder' ) ) {
-    require_once( dirname( __FILE__ ).'/models/class.fv-player-bunny_stream.php' );
+
+if( !function_exists( 'fv_player_bunny_stream_include' ) ) {
+  function fv_player_bunny_stream_include() {
+    do_action( 'fv_player_load_video_encoder_libs' );
+    if ( class_exists( 'FV_Player_Video_Encoder' ) ) {
+      require_once( dirname( __FILE__ ).'/models/class.fv-player-bunny_stream.php' );
+    }
   }
 }
