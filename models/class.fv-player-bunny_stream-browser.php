@@ -31,7 +31,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
   function get_formatted_assets_data() {
     global $fv_fp, $wpdb;
-    
+
     $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM " . FV_Player_Bunny_Stream()->get_table_name() );
     $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
@@ -44,16 +44,14 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       $query_string['search'] = $_POST['search'];
     }
 
-    // query default videos or collection library
-    if( isset($_POST['collection']) && intval($_POST['collection']) ) {
-      $endpoint_item = intval($_POST['collection']);
-    } else {
-      $endpoint_item = $fv_fp->_get_option( array('bunny_stream','lib_id') );
+    // query default videos or concrete collection library
+    if( isset($_POST['collection_id']) ) {
+      $query_string['collection'] = $_POST['collection_id'];
     }
 
     $endpoint = add_query_arg(
       $query_string,
-      'https://video.bunnycdn.com/library/'.$endpoint_item.'/videos'
+      'https://video.bunnycdn.com/library/'.$fv_fp->_get_option( array('bunny_stream','lib_id') ).'/videos'
     );
 
     $result = $api->api_call( $endpoint );
@@ -144,13 +142,13 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
         $query_string,
         'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections'
       );
-  
+
       $result_collection = $api->api_call( $endpoint );
 
       if( !is_wp_error( $result_collection ) ) {
         foreach( $result_collection->items as $collection ) {
           $item_collection = array(
-            'link' => $collection->videoLibraryId,
+            'link' => $collection->guid,
             'name' => $collection->name
           );
 

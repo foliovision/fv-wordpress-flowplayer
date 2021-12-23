@@ -56,12 +56,16 @@ jQuery( function($) {
       ajax_data['page'] = page;
 
        // check if we have any collection selected
-       var collectionVal = jQuery('#browser-dropdown').val();
-       if (collectionVal != -1) {
-         ajax_data['collection'] = collectionVal;
-       } else {
-         delete(ajax_data['collection']);
-       }
+       var collectionVal = jQuery('#browser-dropdown').val(),
+        collectionName = jQuery('#browser-dropdown option:selected').text();
+
+      if (collectionVal != -1) {
+        ajax_data['collection_id'] = collectionVal;
+        ajax_data['collection_name'] = collectionName;
+      } else {
+        delete(ajax_data['collection_id']);
+        delete(ajax_data['collection_name']);
+      }
 
       ajax_data['appending'] = (appending ? 1 : 0);
       ajax_data['firstLoad'] = (firstLoad ? 1 : 0);
