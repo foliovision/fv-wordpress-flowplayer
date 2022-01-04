@@ -2064,7 +2064,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_optimize.prop('readonly', cb_js_everywhere.prop('checked') );
     }
-    cb_js_everywhere.click( check_js_everywhere );
+    cb_js_everywhere.on('click', check_js_everywhere );
     check_js_everywhere();
 
     function check_js_optimize( was_clicked ) {
@@ -2075,7 +2075,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_everywhere.prop('readonly', cb_js_optimize.prop('checked') );
     }
-    cb_js_optimize.click( check_js_optimize );
+    cb_js_optimize.on('click', check_js_optimize );
     check_js_optimize();
   });
 	//]]>
