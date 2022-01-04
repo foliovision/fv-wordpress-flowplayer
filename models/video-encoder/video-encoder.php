@@ -469,6 +469,10 @@ abstract class FV_Player_Video_Encoder {
     global $wpdb;
 
     $ids = array();
+    if( $wpdb->get_var("SHOW TABLES LIKE '".$this->table_name."'") != $this->table_name ) {
+      return $ids;
+    }
+    
     $pending_jobs = $wpdb->get_results( "SELECT * FROM ".  $this->table_name . " WHERE type = '{$this->encoder_id}' AND status = 'processing'" . ( $all ? '' : ' AND date_checked < DATE_SUB( UTC_TIMESTAMP(), INTERVAL 30 SECOND )' ) );
 
     foreach( $pending_jobs AS $pending_job ) {
