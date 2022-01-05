@@ -54,6 +54,19 @@ jQuery( function($) {
       }
 
       ajax_data['page'] = page;
+
+       // check if we have any collection selected
+       var collectionVal = jQuery('#browser-dropdown').val(),
+        collectionName = jQuery('#browser-dropdown option:selected').text();
+
+      if (collectionVal != -1) {
+        ajax_data['collection_id'] = collectionVal;
+        ajax_data['collection_name'] = collectionName;
+      } else {
+        delete(ajax_data['collection_id']);
+        delete(ajax_data['collection_name']);
+      }
+
       ajax_data['appending'] = (appending ? 1 : 0);
       ajax_data['firstLoad'] = (firstLoad ? 1 : 0);
 
@@ -61,7 +74,23 @@ jQuery( function($) {
         // don't overwrite the page if we've shown the browser for the first time already
         // ... instead, we'll be either clearing and rewriting the UL or appending data to it
         if (firstLoad) {
-          var renderOptions = {};
+          var
+          renderOptions = {
+            'dropdownItems' : [],
+            'dropdownItemSelected' : ret.active_collection_link,
+            'dropdownDefaultOption' : {
+              'value' : -1,
+              'text' : 'Choose Collection...'
+            }
+          };
+
+          // fill dropdown options
+          for (var i in ret.collections) {
+            renderOptions.dropdownItems.push({
+              'value' : ret.collections[i].link,
+              'text' : ret.collections[i].name
+            });
+          }
 
           // add errors, if any
           if (ret.err) {
@@ -69,6 +98,17 @@ jQuery( function($) {
           }
 
           $media_frame_content.html( renderBrowserPlaceholderHTML(renderOptions) );
+
+          // add change event listener to the playlists dropdown
+          jQuery('#browser-dropdown').on('change', function() {
+            allLoaded = false;
+            appending = false;
+            page = 1;
+            // disable Choose button
+            jQuery('.media-button-select').prop('disabled', 'disabled');
+            // load collection contents
+            fv_player_bunny_stream_browser_load_assets();
+          });
         } else if (!appending && !allLoaded) {
           // clear the UL if we're not appending
           jQuery('#__assets_browser').find('li').remove();

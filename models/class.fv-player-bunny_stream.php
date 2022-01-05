@@ -265,13 +265,20 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     $target_name = $wpdb->get_var( $wpdb->prepare( "SELECT target FROM " . $this->table_name ." WHERE id = %d", $id ) );
 
+    $body = array(
+      'title' => $target_name,
+    );
+
+    // check if we have collection
+    if( isset( $_POST['collection_id'] ) && strcmp( $_POST['collection_id'], '-1' ) !== 0 ) {
+      $body['collectionId'] = $_POST['collection_id'];
+    }
+
     require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php');
     $api = new FV_Player_Bunny_Stream_API();
     $job = $api->api_call(
             'https://video.bunnycdn.com/library/' . $fv_fp->_get_option( array('bunny_stream','lib_id') ) . '/videos',
-            array(
-              'title' => $target_name,
-            ),
+            $body,
             'POST'
     );
 

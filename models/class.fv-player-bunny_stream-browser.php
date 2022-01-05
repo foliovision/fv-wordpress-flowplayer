@@ -24,102 +24,14 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
   function register() {
     add_action( $this->ajax_action_name, array($this, 'load_assets') );
-
-    // register extra AJAX functions for file uploads to DOS
-    add_action( 'wp_ajax_create_upload', array( $this, 'create_upload' ) );
-    add_action( 'wp_ajax_upload_complete', array( $this, 'upload_complete' ) );
-    add_action( 'wp_ajax_upload_abort', array( $this, 'upload_abort' ) );
   }
 
   // Legacy
   function init_for_gutenberg() {}
 
-  function create_upload() {
-    global $FV_Player_DigitalOcean_Spaces;
-
-    // make sure we have correct CORS on the DOS bucket
-    $this->s3("putBucketCors",
-      array(
-        "Bucket" => $FV_Player_DigitalOcean_Spaces->get_space(),
-        "CORSConfiguration" => array(
-          "CORSRules" => array(
-            array(
-              'AllowedHeaders' => array(
-                'Access-Control-Allow-Methods',
-                'Access-Control-Allow-Origin',
-                'Origin',
-                'Range',
-              ),
-              'AllowedMethods'=> array('GET','HEAD','PUT'),
-              "AllowedOrigins"=> array("*"),
-            ),
-          ),
-        ),
-      )
-    );
-
-    $res = $this->s3( "createMultipartUpload", array(
-      'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-      'Key' => $_POST['fileInfo']['name'],
-      'ContentType' => $_REQUEST['fileInfo']['type'],
-      'Metadata' => $_REQUEST['fileInfo']
-    ));
-
-    wp_send_json( array(
-      'uploadId' => $res->get('UploadId'),
-      'key' => $res->get('Key'),
-    ));
-    wp_die();
-  }
-
-  function upload_complete() {
-    global $FV_Player_DigitalOcean_Spaces;
-
-    $partsModel = $this->s3("listParts", array(
-      'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-      'Key' => $_REQUEST['sendBackData']['key'],
-      'UploadId' => $_REQUEST['sendBackData']['uploadId'],
-    ) );
-
-    $ret = $this->s3( "completeMultipartUpload" , array(
-      'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-      'Key' => $_REQUEST['sendBackData']['key'],
-      'UploadId' => $_REQUEST['sendBackData']['uploadId'],
-      'MultipartUpload' => array(
-        "Parts" => $partsModel["Parts"],
-      ),
-      ))->toArray();
-
-    wp_send_json( array(
-      'success' => true,
-      'url' => $ret['ObjectURL'],
-      'key' => $ret['Key'],
-      'nonce' => wp_create_nonce( 'fv_player_coconut' ),
-    ));
-    wp_die();
-  }
-
-  function upload_abort() {
-    global $FV_Player_DigitalOcean_Spaces;
-
-    // if initial pre-upload request fails, we'll have no sendBackData to abort
-    if ( !empty( $_REQUEST['sendBackData'] ) ) {
-      $this->s3("abortMultipartUpload",[
-        'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-        'Key' => $_REQUEST['sendBackData']['key'],
-        'UploadId' => $_REQUEST['sendBackData']['uploadId']
-      ]);
-    }
-
-    wp_send_json( array(
-      'success' => true
-    ));
-    wp_die();
-  }
-
   function get_formatted_assets_data() {
     global $fv_fp, $wpdb;
-    
+
     $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM " . FV_Player_Bunny_Stream()->get_table_name() );
     $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
@@ -132,12 +44,17 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       $query_string['search'] = $_POST['search'];
     }
 
+    // query default videos or concrete collection library
+    if( isset($_POST['collection_id']) ) {
+      $query_string['collection'] = $_POST['collection_id'];
+    }
+
     $endpoint = add_query_arg(
       $query_string,
       'https://video.bunnycdn.com/library/'.$fv_fp->_get_option( array('bunny_stream','lib_id') ).'/videos'
     );
 
-    $result = $api->api_call(  $endpoint );
+    $result = $api->api_call( $endpoint );
 
     if ( is_wp_error( $result ) ) {
       $result = array( 'error' => $result->get_error_message() );
@@ -174,7 +91,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
           'height' => $video->height,
           'extra' => array(),
         );
-        
+
         if( !empty($local_jobs[$video->guid]) ) {
           $item['extra']['encoding_job_id'] = $local_jobs[$video->guid];
         }
@@ -214,6 +131,35 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       }
     }
 
+    // get collections for list
+    if( $_POST['firstLoad'] == 1 ) {
+      $collections = array();
+
+      $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
+      $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
+
+      $endpoint = add_query_arg(
+        $query_string,
+        'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections'
+      );
+
+      $result_collection = $api->api_call( $endpoint );
+
+      if( !is_wp_error( $result_collection ) ) {
+        foreach( $result_collection->items as $collection ) {
+          $item_collection = array(
+            'link' => $collection->guid,
+            'name' => $collection->name
+          );
+
+          $collections[ $collection->name ] = $item_collection;
+        }
+      }
+
+      // sort collections by name
+      ksort( $collections, SORT_NATURAL | SORT_FLAG_CASE );
+    }
+
     $json_final = array(
       'items' => $body,
       'is_last_page' => !$video_data_more_pages_exist,
@@ -222,6 +168,10 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     // ... $result will be a return-value array instead of an object if there was an error
     if ( is_array($result) ) {
       $json_final['err'] = $result['error'];
+    }
+
+    if ($_POST['firstLoad'] == 1) {
+      $json_final['collections'] = $collections;
     }
 
     return $json_final;
