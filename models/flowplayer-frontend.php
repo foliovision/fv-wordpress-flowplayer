@@ -569,8 +569,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fullscreen'] = 'false';
         }
         
-        if( !$bIsAudio && stripos($width,'%') == false && intval($width) > 0 && stripos($height,'%') == false && intval($height) > 0 ) {
-          $ratio = round($height / $width, 4);   
+        if( !$bIsAudio && stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
+          $ratio = round( intval($height) / intval($width), 4);   
           $this->fRatio = $ratio;
   
           $attributes['data-ratio'] = str_replace(',','.',$ratio);

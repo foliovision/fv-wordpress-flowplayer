@@ -252,7 +252,13 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   
   private function get_result_counts() {
     global $wpdb;
-    $this->total_items = $wpdb->get_var( "SELECT COUNT(*) FROM ".$this->table_name );
+
+    $aWhere = array();
+    $aWhere[] = "type = '{$this->encoder_id}'";
+
+    $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
+
+    $this->total_items = $wpdb->get_var( "SELECT COUNT(*) FROM ".$this->table_name." ".$where );
   }
   
   public function get_columns() {
