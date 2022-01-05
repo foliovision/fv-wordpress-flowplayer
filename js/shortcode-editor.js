@@ -1151,10 +1151,18 @@ jQuery(function() {
                     check.push('audio');
                   }
                   
+                  // If we are unable to check the HLS stream, show all the options
+                  if( json_data.error ) {
+                    show.push('audio');
+                    show.push('live');
+                  }
+
                   show_stream_fields_worker( item, show, check );
                   
                   $element.removeData('fv_player_video_data_ajax');
                   $element.removeData('fv_player_video_data_ajax_retry_count');
+
+                  file_info_show( json_data );
 
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();

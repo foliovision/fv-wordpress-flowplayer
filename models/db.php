@@ -1593,6 +1593,7 @@ class FV_Player_Db {
       }
       
       $check = $FV_Player_Checker->check_mimetype(array($url), false, true);
+      $json_data['error'] = $check['error'];
       $json_data['duration'] = $check['duration'];
       $json_data['is_live'] = $check['is_live'];
       $json_data['is_audio'] = $check['is_audio'];
