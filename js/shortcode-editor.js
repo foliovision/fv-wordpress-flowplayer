@@ -597,12 +597,7 @@ jQuery(function() {
               $('.fv_wp_flowplayer_field_height').val(attachment.height);
             }
             if( typeof(attachment.fileLength) != "undefined" ) {
-              $('#fv_wp_flowplayer_file_info').show();
-              $('#fv_wp_flowplayer_file_duration').html(attachment.fileLength);
-            }
-            if( typeof(attachment.filesizeHumanReadable) != "undefined" ) {
-              $('#fv_wp_flowplayer_file_info').show();
-              $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
+              file_info_show( { duration: attachment.fileLength } );
             }
 
           } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
@@ -1485,7 +1480,8 @@ jQuery(function() {
         instance_fp_wysiwyg = FCKeditorAPI.GetInstance('content');
       }
 
-      jQuery('#fv_wp_flowplayer_file_info').hide();
+      file_info_hide();
+
       jQuery(".fv_wp_flowplayer_field_src2_wrapper").hide();
       jQuery("#fv_wp_flowplayer_field_src2_uploader").hide();
       jQuery(".fv_wp_flowplayer_field_src1_wrapper").hide();
@@ -2893,7 +2889,35 @@ jQuery(function() {
       return;
 
     }
-              
+
+    function file_info_hide() {
+      jQuery('#fv_wp_flowplayer_file_info').hide();
+      jQuery('#fv_wp_flowplayer_file_info td').html('');
+    }
+
+    function file_info_show( args ) {
+      
+      var html = '';
+      if( args.duration ) {
+        var duration = args.duration;
+        if( !isNaN(duration) ) {
+          duration = fv_player_time_hms(duration);
+        }
+        html += 'Duration: '+duration;
+      }
+      if( args.error ) {
+        html += 'Error: '+args.error;
+      }
+      
+      if( html ) {
+        $('#fv_wp_flowplayer_file_info').show();
+        $('#fv_wp_flowplayer_file_info td').html(html);
+      } else {
+        file_info_hide();
+      }
+      
+    }
+
     function insert_button_toggle_disabled( disable ) {
       var button = $('.fv_player_field_insert-button');
       if( disable ) {
