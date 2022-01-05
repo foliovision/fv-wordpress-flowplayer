@@ -80,8 +80,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           unset( $atts[0] ); // remove [fvplayer or [flowplayer
 
-          // ignore db players
-          if ( isset( $atts['id'] )) {
+          // ignore db players and posts with trash status
+          if ( isset( $atts['id'] ) || strcmp( $post->post_status, 'trash' ) == 0 ) {
             continue;
           }
 
@@ -132,7 +132,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                 )
               ),
               'author' => $post->post_author,
-              'status' => $post->post_status,
+              'status' => 'published',
               'date_created' => $post->post_date_gmt,
               'width' => isset($atts['width']) ? $atts['width'] : '',
               'height' => isset($atts['height']) ? $atts['height'] : '',
