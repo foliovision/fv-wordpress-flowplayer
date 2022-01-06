@@ -996,10 +996,12 @@ jQuery(function() {
             var ajax_call = function () {
 
               debug_log('Running fv_wp_flowplayer_retrieve_video_data Ajax.');
+              
+              var video_url = $element.val();
 
               $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
                   action: 'fv_wp_flowplayer_retrieve_video_data',
-                  video_url: $element.val(),
+                  video_url: video_url,
                   cookie: encodeURIComponent(document.cookie),
                 }, function (json_data) {
                 fv_player_editor.meta_data_load_finished();
@@ -1152,7 +1154,7 @@ jQuery(function() {
                   }
                   
                   // If we are unable to check the HLS stream, show all the options
-                  if( json_data.error ) {
+                  if( json_data.error && video_url.match(/\.m3u8/) ) {
                     show.push('audio');
                     show.push('live');
                   }
