@@ -113,7 +113,7 @@ jQuery(function() {
     errors = {};
 
 
-    /*
+    /**
      * A shorthand to save you from all the "fv_wp_flowplayer_field_"
      * when selecting fields
      *
@@ -144,7 +144,7 @@ jQuery(function() {
       return element;
     }
 
-    /*
+    /**
      * Gives you "src" out of "fv_wp_flowplayer_field_src"
      *
      * @param {string}    name  The field name
@@ -158,7 +158,7 @@ jQuery(function() {
       return name;
     }
 
-    /*
+    /**
      * Gives you the desired tab with video information
      *
      * @param {int|string}  index   Number, or first, or last
@@ -180,7 +180,7 @@ jQuery(function() {
       return $el_editor.find(selector);
     }
 
-    /*
+    /**
     * Gives you all desired tabs of a certain kind
     *
     * @return {object}            The tab elements
@@ -1437,7 +1437,7 @@ jQuery(function() {
 
 
 
-    /*
+    /**
      *  Initializes shortcode, removes playlist items, hides elements, figures out
      *  which actual field is edited - post editor, widget, etc.
      */
@@ -1560,7 +1560,7 @@ jQuery(function() {
       $doc.trigger('fv-player-editor-init');
     }
 
-    /*
+    /**
      *  Checks all the input fields and created the JavaScript object.
      *  Works when saving and also previewing.
      */
@@ -1850,7 +1850,7 @@ jQuery(function() {
       }
     }
 
-    /*
+    /**
      *  Closing the editor
      *  * updates the wp-admin -> FV Player screen
      *  * sets data for WordPress Heartbeat to unlock the player
@@ -1925,7 +1925,7 @@ jQuery(function() {
     }
 
 
-    /*
+    /**
     * removes previous values from editor
     * fills new values from shortcode
     *
