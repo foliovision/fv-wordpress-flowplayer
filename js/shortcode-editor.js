@@ -585,10 +585,13 @@ jQuery(function() {
 
         //When a file is selected, grab the URL and set it as the text field's value
         fv_flowplayer_uploader.on('select', function() {
+
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
 
-          $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
-          $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+          var target_element = $('.fv_flowplayer_target');
+
+          target_element.val(attachment.url).trigger('change').trigger('keyup');
+          target_element.removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
@@ -606,29 +609,35 @@ jQuery(function() {
               $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
             }
 
-          } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
-            if( jQuery('#remove-post-thumbnail').length > 0 ){
-              return;
+          } else if( attachment.type == 'image' ) {
+            if( attachment.id ) {
+              // update attachent id, upload_splash will not run
+              target_element.closest('table').find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(attachment.id);
             }
 
-            debug_log('Running set-post-thumbnail Ajax.');
-
-            jQuery.post(ajaxurl, {
-              action:"set-post-thumbnail",
-              post_id: fv_flowplayer_set_post_thumbnail_id,
-              thumbnail_id: attachment.id,
-              _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
-              cookie: encodeURIComponent(document.cookie)
-            }, function(str){
-              var win = window.dialogArguments || opener || parent || top;
-              if ( str == '0' ) {
-                alert( setPostThumbnailL10n.error );
-              } else {
-                jQuery('#postimagediv .inside').html(str);
-                jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+            if( typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
+              if( jQuery('#remove-post-thumbnail').length > 0 ) {
+                return;
               }
-            } );
-
+  
+              debug_log('Running set-post-thumbnail Ajax.');
+  
+              jQuery.post(ajaxurl, {
+                action:"set-post-thumbnail",
+                post_id: fv_flowplayer_set_post_thumbnail_id,
+                thumbnail_id: attachment.id,
+                _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
+                cookie: encodeURIComponent(document.cookie)
+              }, function(str){
+                var win = window.dialogArguments || opener || parent || top;
+                if ( str == '0' ) {
+                  alert( setPostThumbnailL10n.error );
+                } else {
+                  jQuery('#postimagediv .inside').html(str);
+                  jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+                }
+              } );
+            }
           }
         });
 
@@ -3878,8 +3887,9 @@ jQuery(function() {
           'action': 'fv_player_splashcreen_action',
           'security': fv_player_editor_conf.splashscreen_nonce,
         },
-          title = '',
-          item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
+
+        title = '',
+        item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
 
         if( args.img ) {
           data.img = args.img; // screenshot
