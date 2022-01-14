@@ -59,7 +59,7 @@ flowplayer(function (api,root) {
         return false;
       }
 
-      if( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) ) {
+      if( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) && root.find('#'+player_id+'_custom_popup' ).length == 0 ) {
         root.addClass('is-popup-showing');
         root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+popup_data.html+'</div>' );
       }
