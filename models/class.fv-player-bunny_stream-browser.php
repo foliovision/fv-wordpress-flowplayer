@@ -12,7 +12,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     if ( $fv_fp->_get_option( array('bunny_stream','api_key') ) && ( is_admin() || get_current_screen()->base == 'fv_player_bunny_stream' ) ) {
       wp_enqueue_script( 'fv-player-bunny_stream-browser', plugins_url( 'js/bunny_stream-browser.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), FV_Player_Bunny_Stream()->get_version(), true );
       do_action( 'fv_player_media_browser_enqueue_base_uploader_css' );
-      wp_enqueue_script( 'fv-player-bunny_stream-upload', plugins_url( 'js/bunny_stream-upload.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), filemtime( dirname(__FILE__).'/js/bunny_stream-upload.js' ), true );
+      wp_enqueue_script( 'fv-player-bunny_stream-upload', plugins_url( 'js/bunny_stream-upload.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), filemtime( dirname(__FILE__).'/../js/bunny_stream-upload.js' ), true );
       wp_localize_script( 'fv-player-bunny_stream-upload', 'fv_player_bunny_stream_upload_settings', array(
         'upload_button_text' => __('Upload to Bunny Stream', 'fv-player-bunny_stream'),
         'lib_id' => $fv_fp->_get_option( array('bunny_stream','lib_id') ),
