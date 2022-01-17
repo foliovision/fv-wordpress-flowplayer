@@ -12,7 +12,7 @@ class FV_Player_Learndash_LMS {
     }
 
     // Register FV Player Custom Video field for LearnDash lesson settings
-    add_filter( 'init', array( $this, 'register_fv_player_field' ) );
+    add_filter( 'init', array( $this, 'register_fv_player_field' ), 0 );
     // Make sure it does not appear as a standard meta box
     add_action( 'add_meta_boxes', array( $this, 'remove_fv_player_meta_box' ), PHP_INT_MAX );
     
@@ -33,14 +33,16 @@ class FV_Player_Learndash_LMS {
 
   function admin_load_assets() {
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_script('fvplayer-learndash-lms-admin', plugins_url('js/learndash-lms-admin.js', dirname(__FILE__) ), array('jquery'), $fv_wp_flowplayer_ver );
+    wp_enqueue_script('fvplayer-learndash-lms-admin', plugins_url('js/learndash-lms-admin.js', dirname(__FILE__) ), array('jquery'), $fv_wp_flowplayer_ver, true );
   }
 
   function display_field( $field_args ) {
     if( $field_args['name'] == 'lesson_fv_player' ) {
       global $FV_Player_Custom_Videos_form_instances;
       $objVideos = $FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'];
-      $field_args['html'] = $objVideos->get_form();
+      if( method_exists($objVideos, 'get_form') ) {
+        $field_args['html'] = $objVideos->get_form();
+      }
     }
     return $field_args;
   }
