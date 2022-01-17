@@ -33,7 +33,7 @@ class FV_Player_Learndash_LMS {
 
   function admin_load_assets() {
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_script('fvplayer-learndash-lms-admin', plugins_url('js/learndash-lms-admin.js', dirname(__FILE__) ), array('jquery'), $fv_wp_flowplayer_ver );
+    wp_enqueue_script('fvplayer-learndash-lms-admin', plugins_url('js/learndash-lms-admin.js', dirname(__FILE__) ), array('jquery'), $fv_wp_flowplayer_ver, true );
   }
 
   function display_field( $field_args ) {
@@ -116,6 +116,14 @@ class FV_Player_Learndash_LMS {
           'multiple' => false
         )
       );
+      new \FV_Player_MetaBox( array(
+          'name' => 'FV Player',
+          'meta_key' => 'lesson_fv_player',
+          'post_type' => 'sfwd-topic',
+          'display' => false,
+          'multiple' => false
+        )
+      );
     }
   }
 
@@ -125,45 +133,62 @@ class FV_Player_Learndash_LMS {
   
   // https://developers.learndash.com/hook/learndash_settings_fields/
   function save_field( $post_id ) {
-    
-    $lesson_use_fvplayer_video = false;
-    if ( isset( $_POST['learndash-lesson-display-content-settings']['lesson_use_fvplayer_video'] ) ) {
-      $lesson_use_fvplayer_video = true;
-      
-      $my_settings_value = esc_attr( $_POST['learndash-lesson-display-content-settings']['lesson_use_fvplayer_video'] );
-      update_post_meta( $post_id, 'lesson_use_fvplayer_video', $my_settings_value );
-      
-    } else {
-      delete_post_meta( $post_id, 'lesson_use_fvplayer_video' );
-    }
-    
-    // Adjust the Video URL stored by LearnDash
-    $_sfwd_lessons = get_post_meta( $post_id, '_sfwd-lessons', true );
-    if( $_sfwd_lessons ) {        
-      $backup = get_post_meta( $post_id, '_backup_sfwd_lessons_lesson_video_url', true );
-      if( $lesson_use_fvplayer_video ) {
-        if( !$backup ) {
-          update_post_meta( $post_id, '_backup_sfwd_lessons_lesson_video_url', $_sfwd_lessons["sfwd-lessons_lesson_video_url"] );
-        }
-        
-        $lesson_fv_player = '';
-        
-        $objVideos = new FV_Player_Custom_Videos( array('id' => $post_id, 'meta' => 'lesson_fv_player', 'type' => 'post' ) );
-        if( $objVideos->have_videos() ) {
-          foreach( $objVideos->get_videos() AS $video ) {
-            $lesson_fv_player .= $video;
-          }
-        }
-        
-        // We need to put in that [embed][/embed] shortcode to ensure Learndash detects that as a shortcode to show
-        $_sfwd_lessons["sfwd-lessons_lesson_video_url"] = '[embed][/embed]'.$lesson_fv_player;
-      } else if( $backup ) {
-        $_sfwd_lessons["sfwd-lessons_lesson_video_url"] = $backup;
-        
-        delete_post_meta( $post_id, '_backup_sfwd_lessons_lesson_video_url' );
-      }
 
-      update_post_meta( $post_id, '_sfwd-lessons', $_sfwd_lessons );
+    $lesson_use_fvplayer_video = false;
+
+    // We need to save our custom field for Use FV Player
+    foreach( array(
+      'learndash-lesson-display-content-settings',
+      'learndash-topic-display-content-settings'
+    ) AS $key ) {
+
+      if ( isset( $_POST[$key]['lesson_use_fvplayer_video'] ) ) {
+        $lesson_use_fvplayer_video = true;
+
+        $my_settings_value = esc_attr( $_POST[$key]['lesson_use_fvplayer_video'] );
+        update_post_meta( $post_id, 'lesson_use_fvplayer_video', $my_settings_value );
+
+      } else {
+        delete_post_meta( $post_id, 'lesson_use_fvplayer_video' );
+      }
+    }
+
+    // Adjusting the Video URL field based on "Use FV Player"
+    foreach( array(
+      '_sfwd-lessons' => 'sfwd-lessons',
+      '_sfwd-topic' => 'sfwd-topic'
+    ) AS $meta_key => $prefix ) {
+      $video_url_key = $prefix."_lesson_video_url";
+      $backup_key = '_backup_'.$prefix.'_lesson_video_url';
+
+      // Adjust the Video URL stored by LearnDash
+      $meta = get_post_meta( $post_id, $meta_key, true );
+      if( $meta ) {
+        $backup = get_post_meta( $post_id, $backup_key, true );
+        if( $lesson_use_fvplayer_video ) {
+          if( !$backup ) {
+            update_post_meta( $post_id, $backup_key, $meta[$video_url_key] );
+          }
+
+          $lesson_fv_player = '';
+
+          $objVideos = new FV_Player_Custom_Videos( array('id' => $post_id, 'meta' => 'lesson_fv_player', 'type' => 'post' ) );
+          if( $objVideos->have_videos() ) {
+            foreach( $objVideos->get_videos() AS $video ) {
+              $lesson_fv_player .= $video;
+            }
+          }
+
+          // We need to put in that [embed][/embed] shortcode to ensure Learndash detects that as a shortcode to show
+          $meta[$video_url_key] = '[embed][/embed]'.$lesson_fv_player;
+        } else if( $backup ) {
+          $meta[$video_url_key] = $backup;
+          
+          delete_post_meta( $post_id, $backup_key );
+        }
+
+        update_post_meta( $post_id, $meta_key, $meta );
+      }
     }
   }
 
