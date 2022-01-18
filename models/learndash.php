@@ -134,60 +134,75 @@ class FV_Player_Learndash_LMS {
   // https://developers.learndash.com/hook/learndash_settings_fields/
   function save_field( $post_id ) {
 
-    $lesson_use_fvplayer_video = false;
-
-    // We need to save our custom field for Use FV Player
+    // Is it saving LearnDash lesson or a topic?
+    $post_key = false;
     foreach( array(
       'learndash-lesson-display-content-settings',
       'learndash-topic-display-content-settings'
     ) AS $key ) {
-
-      if ( isset( $_POST[$key]['lesson_use_fvplayer_video'] ) ) {
-        $lesson_use_fvplayer_video = true;
-
-        $my_settings_value = esc_attr( $_POST[$key]['lesson_use_fvplayer_video'] );
-        update_post_meta( $post_id, 'lesson_use_fvplayer_video', $my_settings_value );
-
-      } else {
-        delete_post_meta( $post_id, 'lesson_use_fvplayer_video' );
+      if( !empty($_POST[$key]) ) {
+        $post_key = $key;
       }
     }
 
-    // Adjusting the Video URL field based on "Use FV Player"
-    foreach( array(
-      '_sfwd-lessons' => 'sfwd-lessons',
-      '_sfwd-topic' => 'sfwd-topic'
-    ) AS $meta_key => $prefix ) {
-      $video_url_key = $prefix."_lesson_video_url";
-      $backup_key = '_backup_'.$prefix.'_lesson_video_url';
+    if( !$post_key ) {
+      return false;
+    }
 
-      // Adjust the Video URL stored by LearnDash
-      $meta = get_post_meta( $post_id, $meta_key, true );
-      if( $meta ) {
-        $backup = get_post_meta( $post_id, $backup_key, true );
-        if( $lesson_use_fvplayer_video ) {
-          if( !$backup ) {
-            update_post_meta( $post_id, $backup_key, $meta[$video_url_key] );
-          }
+    $lesson_use_fvplayer_video = false;
 
-          $lesson_fv_player = '';
+    // We need to save our custom field for Use FV Player
+    if ( isset( $_POST[$post_key]['lesson_use_fvplayer_video'] ) ) {
+      $lesson_use_fvplayer_video = true;
+      
+      $my_settings_value = esc_attr( $_POST[$post_key]['lesson_use_fvplayer_video'] );
+      update_post_meta( $post_id, 'lesson_use_fvplayer_video', $my_settings_value );
 
-          $objVideos = new FV_Player_Custom_Videos( array('id' => $post_id, 'meta' => 'lesson_fv_player', 'type' => 'post' ) );
-          if( $objVideos->have_videos() ) {
-            foreach( $objVideos->get_videos() AS $video ) {
-              $lesson_fv_player .= $video;
+    } else {
+      delete_post_meta( $post_id, 'lesson_use_fvplayer_video' );
+    }
+
+    if( !empty($_POST[$post_key]['lesson_video_enabled']) && $_POST[$post_key]['lesson_video_enabled'] == 'on' ) {
+    
+      // Adjusting the Video URL field based on "Use FV Player"
+      foreach( array(
+        '_sfwd-lessons' => 'sfwd-lessons',
+        '_sfwd-topic' => 'sfwd-topic'
+      ) AS $meta_key => $prefix ) {
+        $video_url_key = $prefix."_lesson_video_url";
+        $backup_key = '_backup_'.$prefix.'_lesson_video_url';
+
+        // Adjust the Video URL stored by LearnDash
+        $meta = get_post_meta( $post_id, $meta_key, true );
+        if( $meta ) {
+          $backup = get_post_meta( $post_id, $backup_key, true );
+          if( $lesson_use_fvplayer_video ) {
+            if( !$backup ) {
+              update_post_meta( $post_id, $backup_key, $meta[$video_url_key] );
             }
+
+            $lesson_fv_player = '';
+
+            $objVideos = new FV_Player_Custom_Videos( array('id' => $post_id, 'meta' => 'lesson_fv_player', 'type' => 'post' ) );
+            if( $objVideos->have_videos() ) {
+              foreach( $objVideos->get_videos() AS $video ) {
+                $lesson_fv_player .= $video;
+              }
+            }
+
+            // We need to put in that [embed][/embed] shortcode to ensure Learndash detects that as a shortcode to show
+            $meta[$video_url_key] = '[embed][/embed]'.$lesson_fv_player;
+          } else if( $backup ) {
+            $meta[$video_url_key] = $backup;
+            
+            delete_post_meta( $post_id, $backup_key );
           }
 
-          // We need to put in that [embed][/embed] shortcode to ensure Learndash detects that as a shortcode to show
-          $meta[$video_url_key] = '[embed][/embed]'.$lesson_fv_player;
-        } else if( $backup ) {
-          $meta[$video_url_key] = $backup;
-          
-          delete_post_meta( $post_id, $backup_key );
-        }
+          // If Video URL is empty, LearnDash would just turn this off
+          $meta[$prefix."_lesson_video_enabled"] = 'on';
 
-        update_post_meta( $post_id, $meta_key, $meta );
+          update_post_meta( $post_id, $meta_key, $meta );
+        }
       }
     }
   }
