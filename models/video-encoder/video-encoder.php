@@ -30,7 +30,7 @@ abstract class FV_Player_Video_Encoder {
     return $this->table_name;
   }
 
-  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
+  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file = '' ) {
     global $wpdb;
 
     if ( !$encoder_id ) {
@@ -43,10 +43,6 @@ abstract class FV_Player_Video_Encoder {
 
     if ( !$encoder_wp_url_slug ) {
       throw new Exception('Extending encoder class did not provide an encoder URL slug!');
-    }
-
-    if ( !$browser_inc_file ) {
-      throw new Exception('Extending encoder class did not provide a browser backend PHP file name!');
     }
 
     $this->encoder_id = $encoder_id;
@@ -423,7 +419,9 @@ abstract class FV_Player_Video_Encoder {
   function init_browser() {
     // it should not show when picking the media file in dashboard
     //if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
+    if( !empty( $this->browser_inc_file ) ) {
       include_once( $this->browser_inc_file );
+    }
     //}
   }
 
