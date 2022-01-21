@@ -15,10 +15,9 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 function fv_player_shortcode_editor_scripts_enqueue() {
   global $fv_wp_flowplayer_ver;
-  wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );
-  wp_enqueue_script('fvwpflowplayer-domwindow');
+  wp_enqueue_script('fv-player-editor-modal', flowplayer::get_plugin_url().'/js/fv-player-editor-modal.js', array('jquery'), filemtime( dirname(__FILE__).'/../js/fv-player-editor-modal.js' ) );
 
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), defined('SCRIPT_DEBUG') ? filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ) : $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ) );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
@@ -73,6 +72,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_enqueue_script('fvwpflowplayer-shortcode-editor');
   wp_enqueue_script('fvwpflowplayer-editor-screenshots');
 
+  // TODO: Eliminate, keep the close button
   wp_enqueue_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css', '', $fv_wp_flowplayer_ver, 'screen');
   wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', $fv_wp_flowplayer_ver, 'screen');
 }

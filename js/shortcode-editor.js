@@ -41,9 +41,6 @@ jQuery(function() {
     // used in WP Heartbeat
     edit_lock_removal = {},
 
-    // used to size the lightbox in editor_resize()
-    editor_resize_height_record = 0,
-
     // TinyMCE instance, if any
     instance_tinymce,
 
@@ -239,19 +236,15 @@ jQuery(function() {
 
           editor_button_clicked = this;
           e.preventDefault();
+
           $.fv_player_box( {
-            top: "100px",
-            initialWidth: 1100,
-            initialHeight: 50,
-            width:"1100px",
-            height:"100px",
             href: "#fv-player-shortcode-editor",
-            inline: true,
             title: 'Add FV Player',
             onComplete : editor_open,
             onClosed : editor_close,
             onOpen: lightbox_open
           } );
+
           widget_id = $(this).data().number;
         });
 
@@ -260,11 +253,6 @@ jQuery(function() {
 
           e.preventDefault();
           $.fv_player_box( {
-            top: "100px",
-            initialWidth: 1100,
-            initialHeight: 50,
-            width:"1100px",
-            height:"100px",
             href: "#fv-player-shortcode-editor",
             inline: true,
             title: 'Export FV Player',
@@ -301,11 +289,6 @@ jQuery(function() {
 
           e.preventDefault();
           $.fv_player_box( {
-            top: "100px",
-            initialWidth: 1100,
-            initialHeight: 50,
-            width:"1100px",
-            height:"100px",
             href: "#fv-player-shortcode-editor",
             inline: true,
             title: 'Import FV Player(s)',
@@ -422,8 +405,6 @@ jQuery(function() {
         $(this).addClass('nav-tab-active')
         $('.fv-player-tabs > .fv-player-tab').hide();
         $('.' + $(this).data('tab')).show();
-
-        editor_resize();
       });
 
       /*
@@ -648,7 +629,6 @@ jQuery(function() {
       */
       $doc.on('fvp-preview-complete',function(e){
         $el_preview.attr('class','preview-show');
-        editor_resize();
       });
 
       /*
@@ -1335,6 +1315,7 @@ jQuery(function() {
 
       // prevent closing of the overlay if we have unsaved data
       // unfortunately there is no event for this which we could use
+      // TODO: Now we can do this propery since we dropped Colorbox!
       $.fn.fv_player_box.oldClose = $.fn.fv_player_box.close;
       $.fn.fv_player_box.close = function() {
         // don't close editor if we have errors showing, otherwise we'd just overlay them by an infinite loader
@@ -1852,8 +1833,6 @@ jQuery(function() {
         return;
       }
 
-      editor_resize_height_record = 0;
-      
       // remove TinyMCE hidden tags and other similar tags which aids shortcode editing
       // to prevent opening the same player over and over
       editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
@@ -1922,8 +1901,6 @@ jQuery(function() {
     * @param {int} db_id Optional, force load of specified player ID
     */
     function editor_open(db_id) {
-      editor_resize_height_record = 0;
-
       $('#fv_player_box').removeAttr('tabindex');
 
       editor_init();
@@ -2714,29 +2691,6 @@ jQuery(function() {
     }
 
     /*
-     *  Calculate FV Player editor popup (Colorbox) size
-     */
-    function editor_resize() {
-      setTimeout(function(){
-        var height = $el_editor.height();
-
-        // minimal height
-        if( height < 50 ) height = 50;
-
-        // maximum height
-        if( height > $(window).height() - 160 ) height = $(window).height() - 160;
-
-        // bit of space for padding
-        height = height + 50;
-
-        if( editor_resize_height_record <= height ) {
-          editor_resize_height_record = height;
-          $el_editor.fv_player_box.resize({width:1100, height:height})
-        }
-      },0);
-    }
-
-    /*
      *  Saving the data
      */
     function editor_submit() {
@@ -3143,8 +3097,6 @@ jQuery(function() {
       if (!input) {
         $doc.trigger('fv-player-playlist-item-add');
       }
-
-      editor_resize();
       return new_item;
     }
 
@@ -3272,7 +3224,7 @@ jQuery(function() {
       }
 
       jQuery('.fv-player-tab-playlist').show();
-      editor_resize();
+
       tabs_refresh();
 
       return false;
@@ -3327,8 +3279,6 @@ jQuery(function() {
       if( typeof(message) != 'undefined' ) {
         overlayDiv.find('p').html( message );
       }
-
-      editor_resize();
       return overlayDiv;
     }
 
@@ -3373,8 +3323,6 @@ jQuery(function() {
 
         get_field('subtitles_lang',subElement).val(sLang).change();
       }
-
-      editor_resize();
       return false;
     }
 
@@ -3441,7 +3389,6 @@ jQuery(function() {
           get_field("src1_wrapper").show();
           get_field("src1_uploader").show();
         }
-        editor_resize();
       }
       else {
         alert('Please enter the file name of your video file.');
@@ -3457,7 +3404,6 @@ jQuery(function() {
       var item = $(this).parents('.fv-player-playlist-item');
       get_field("rtmp_wrapper", item).show();
       item.find(".add_rtmp_wrapper").hide();
-      editor_resize();
       return false;
     });
 
@@ -3490,8 +3436,6 @@ jQuery(function() {
         $parent.find('[name]').val('');
         $parent.removeAttr('data-id_subtitles');
       }
-      editor_resize();
-
       return false;
     });
 
@@ -3607,8 +3551,6 @@ jQuery(function() {
       if( !!is_vimeo_live ) show = [ 'live' ];
       
       show_stream_fields_worker( item, show );
-      
-      editor_resize();
     }
 
     function show_stream_fields_worker(item, to_show, to_check) {
@@ -3629,8 +3571,6 @@ jQuery(function() {
       if( item.find('[name=fv_wp_flowplayer_field_live]').prop('checked') ) {
         item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').show();
       }
-      
-      editor_resize();
     }
     
     function show_end_actions( e, value ) {
@@ -3789,7 +3729,8 @@ jQuery(function() {
         $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
       },
 
-      editor_resize: editor_resize,
+      // We keep it for backwards compatibility
+      editor_resize: function() {},
 
       /**
        * Adds a preview to the Gutenberg FV Player block.
@@ -3944,12 +3885,7 @@ function fv_wp_delete_video_meta_record(id) {
   }
 }
 
-function fv_wp_flowplayer_dialog_resize() {
-  console.log('WARNING! USE OF DEPRECATED FUNCTION fv_wp_flowplayer_dialog_resize() FOUND!');
-  console.log('Please update this to call the function as fv_player_editor.fv_wp_flowplayer_dialog_resize() instead!');
-
-  fv_player_editor.editor_resize();
-}
+function fv_wp_flowplayer_dialog_resize() {}
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
   // multiselect element

@@ -117,7 +117,9 @@ var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-previe
 var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </script>
 
-<div style="display: none">
+<div id="fv-player-editor-backdrop" style="display: none">
+</div>
+<div id="fv-player-editor-modal" style="display: none">
 
   <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?>>
 
@@ -166,12 +168,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <a data-fv-player-editor-overlay-close href="#" class="button button-primary">Close</a>
       <div class="fv-player-editor-overlay-notice"></div>
     </div>
+    
+    <div id="fv-player-editor-modal-top">
+      <h1>FV Player</h1>
+	    <button type="button" id="fv-player-editor-modal-close">close</button>
+    </div>
   
     <div id="fv-player-shortcode-editor-left">
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
-          <h1><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></h1>
+          <!--<h1><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></h1>-->
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
@@ -536,6 +543,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         
         <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
 
+        <div id="fv-player-editor-modal-bottom">
         <a class="button-primary fv_player_field_insert-button"><?php _e('Insert', 'fv_flowplayer'); ?></a>
         <a class="playlist_add button hide-if-singular-active"><?php _e(' + Add playlist item', 'fv_flowplayer');?></a>
         <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
@@ -547,6 +555,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
           <?php endif;
         endif; ?>
+        
+        </div>
+      
       </div>
       <!--<div id="fv-player-tabs-debug"></div>-->
     </div>
