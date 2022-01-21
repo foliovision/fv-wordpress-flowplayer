@@ -140,10 +140,6 @@
   <?php // TODO: What's this about? ?>
   <!--<p id="inspector-toggle-control-0__help" class="components-base-control__help">This is a sub-text default style.</p>-->
 </div>
-<script>
-if( !window.fv_player_editor_defaults ) window.fv_player_editor_defaults = {}
-window.fv_player_editor_defaults['<?php echo $name; ?>'] = '<?php echo $default; ?>';
-</script>
     <?php
   }
   
@@ -470,15 +466,39 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               </td>
             </tr>
             
-            <div class="components-panel__body">
-              <?php fv_player_editor_checkbox( array( 'label' => 'Autoplay', 'name' => 'autoplay', 'default' => $fv_fp->_get_option('autoplay') ) ); // TODO: Muted ?>
-              <?php fv_player_editor_checkbox( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'default' => true ) ); ?>
-              <?php fv_player_editor_checkbox( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
-              <?php fv_player_editor_checkbox( array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance', 'default' => !$fv_fp->_get_option('playlist_advance') ) ); ?>
-              <?php fv_player_editor_checkbox( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'default' => !$fv_fp->_get_option('disablesharing') ) ); // TODO: Custom ?>
-              <?php fv_player_editor_checkbox( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'default' => $fv_fp->_get_option('ui_speed') ) ); ?>
-              <?php fv_player_editor_checkbox( array( 'label' => 'Sticky video', 'name' => 'sticky', 'default' => $fv_fp->_get_option('sticky') ) ); ?>
-            </div>
+            <?php
+            $player_options = apply_filters( 'fv_player_editor_player_options', array(
+              'general' => array(
+                array( 'label' => 'Autoplay', 'name' => 'autoplay', 'default' => $fv_fp->_get_option('autoplay') ), // TODO: Muted autoplay
+                array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance', 'default' => !$fv_fp->_get_option('playlist_advance') ),
+                array( 'label' => 'Sticky video', 'name' => 'sticky', 'default' => $fv_fp->_get_option('sticky') )
+              ),
+              'controls' => array(
+                array( 'label' => 'Controlbar', 'name' => 'controlbar', 'default' => true ),
+                array( 'label' => 'Embedding', 'name' => 'embed', 'default' => !$fv_fp->_get_option('disableembedding') ),
+                array( 'label' => 'Sharing Buttons', 'name' => 'share', 'default' => !$fv_fp->_get_option('disablesharing') ), // TODO: Custom URL setting
+                array( 'label' => 'Speed Buttons', 'name' => 'speed', 'default' => $fv_fp->_get_option('ui_speed') )
+              )
+            ) );
+
+            $script_fv_player_editor_defaults = array();
+
+            foreach( $player_options AS $group => $inputs ) {
+              echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
+              foreach( $inputs AS $input ) {
+                if( isset($input['default']) ) {
+                  $script_fv_player_editor_defaults[$input['name']] = $input['default'];
+                }
+
+                if( empty($input['type']) || $input['type'] == 'checkbox' ) {
+                  fv_player_editor_checkbox( $input );
+                }
+              }
+              echo "</div>\n";
+            }
+
+            echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>"
+            ?>
 
             <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
             <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
