@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
-  global $fv_wp_flowplayer_ver;
+  global $fv_wp_flowplayer_ver, $fv_fp;
   global $post;
   $post_id = isset($post->ID) ? $post->ID : 0;
   
@@ -99,6 +99,51 @@
           </select>
         </td>
       </tr>
+    <?php
+  }
+  
+  function fv_player_editor_checkbox( $args ) {
+    $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
+    $args = wp_parse_args( $args, array(
+                          'class' => false,
+                          'default' => false,
+                          'dropdown' => array( 'Default', 'On', 'Off' ),
+                          'id' => false,
+                          'label' => '',
+                          'live' => true,
+                          'name' => '',
+                          'playlist_label' => false,
+                         ) );
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }    
+
+    $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
+
+    $live = !$live ? ' data-live-update="false"' : '';
+
+    $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
+
+    // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field 
+    ?>
+<div class="components-base-control <?php echo $class; ?>">
+  <div <?php echo $id; ?> class="components-base-control__field">
+    <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
+      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?><?php /*if( $default ) echo ' checked="checked"';*/ ?> />
+      <span class="components-form-toggle__track"></span>
+      <span class="components-form-toggle__thumb"></span>
+    </span>
+    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php _e( $label, 'fv_flowplayer'); ?></label>
+  </div>
+  <?php // TODO: What's this about? ?>
+  <!--<p id="inspector-toggle-control-0__help" class="components-base-control__help">This is a sub-text default style.</p>-->
+</div>
+<script>
+if( !window.fv_player_editor_defaults ) window.fv_player_editor_defaults = {}
+window.fv_player_editor_defaults['<?php echo $name; ?>'] = '<?php echo $default; ?>';
+</script>
     <?php
   }
   
@@ -425,11 +470,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               </td>
             </tr>
             
-            <?php fv_player_shortcode_row( array( 'label' => 'Autoplay', 'name' => 'autoplay', 'dropdown' => array( 'Default', array('true','Yes'), array('false','No'), array('muted','Muted') ) ) ); ?>
-            <?php fv_player_shortcode_row( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
+            <div class="components-panel__body">
+              <?php fv_player_editor_checkbox( array( 'label' => 'Autoplay', 'name' => 'autoplay', 'default' => $fv_fp->_get_option('autoplay') ) ); // TODO: Muted ?>
+              <?php fv_player_editor_checkbox( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'default' => true ) ); ?>
+              <?php fv_player_editor_checkbox( array( 'label' => 'Embedding', 'name' => 'embed' ) ); ?>
+              <?php fv_player_editor_checkbox( array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance', 'default' => !$fv_fp->_get_option('playlist_advance') ) ); ?>
+              <?php fv_player_editor_checkbox( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'default' => !$fv_fp->_get_option('disablesharing') ) ); // TODO: Custom ?>
+              <?php fv_player_editor_checkbox( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'default' => $fv_fp->_get_option('ui_speed') ) ); ?>
+              <?php fv_player_editor_checkbox( array( 'label' => 'Sticky video', 'name' => 'sticky', 'default' => $fv_fp->_get_option('sticky') ) ); ?>
+            </div>
+
             <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
-            <?php fv_player_shortcode_row( array( 'label' => 'Controlbar', 'name' => 'controlbar', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
-            <?php fv_player_shortcode_row( array( 'label' => 'Sticky video', 'name' => 'sticky' ) ); ?>
             <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
                   array('','Default'),
                   array('horizontal','Horizontal'),
@@ -442,7 +493,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   array('text','Text')
                 ), 'class' => 'hide-if-singular' ) );
                 ?>
-            <?php fv_player_shortcode_row( array( 'label' => 'Sharing Buttons', 'name' => 'share', 'dropdown' => array( 'Default', 'Yes', 'No', 'Custom' ) ) ); ?>
+
+            
             
             <tr id="fv_wp_flowplayer_field_share_custom" style="display: none">
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_lightbox" class="alignright">Sharing Properties</label></th>
@@ -452,9 +504,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               </td>
             </tr>                  
             
-            <?php fv_player_shortcode_row( array( 'label' => 'Speed Buttons', 'name' => 'speed', 'dropdown' => array( 'Default', 'Yes', 'No' ) ) ); ?>
-                              
-            <?php fv_player_shortcode_row( array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance' ) ); ?>
             
             <?php do_action('fv_flowplayer_shortcode_editor_tab_options'); ?>
           </table>
@@ -544,17 +593,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
 
         <div id="fv-player-editor-modal-bottom">
-        <a class="button-primary fv_player_field_insert-button"><?php _e('Insert', 'fv_flowplayer'); ?></a>
-        <a class="playlist_add button hide-if-singular-active"><?php _e(' + Add playlist item', 'fv_flowplayer');?></a>
-        <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
-        
-        <?php
-        if( function_exists('get_current_screen') && current_user_can('edit_posts') ) :
-          $screen = get_current_screen();
-          if ( $screen->parent_base != 'fv_player' ) : ?>
-            <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
-          <?php endif;
-        endif; ?>
+          <a class="button-primary fv_player_field_insert-button"><?php _e('Insert', 'fv_flowplayer'); ?></a>
+          <a class="playlist_add button hide-if-singular-active"><?php _e(' + Add playlist item', 'fv_flowplayer');?></a>
+          <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+
+          <?php
+          if( function_exists('get_current_screen') && current_user_can('edit_posts') ) :
+            $screen = get_current_screen();
+            if ( $screen->parent_base != 'fv_player' ) : ?>
+              <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
+            <?php endif;
+          endif; ?>
         
         </div>
       

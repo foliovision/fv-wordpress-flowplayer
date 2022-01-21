@@ -396,6 +396,15 @@ jQuery(function() {
         });
 
       }
+      
+      $('#fv-player-shortcode-editor').on( 'click', '.components-form-toggle input[type=checkbox]', function() {
+        var wrap = $(this).closest('.components-form-toggle');
+        wrap.toggleClass( 'is-checked', $(this).prop('checked') );
+        
+        var k = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+        wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[k] );
+      });
+      
       /*
       * NAV TABS
       */
@@ -1922,6 +1931,18 @@ jQuery(function() {
       $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find(".fv_player_field_insert-button").text( 'Insert' );
+      
+      if( window.fv_player_editor_defaults ) {
+        jQuery.each( window.fv_player_editor_defaults, function(k,v) {
+          var checkbox = $el_editor.find('#fv_wp_flowplayer_field_'+k+'[type=checkbox]');
+          if( checkbox.length ) {
+            checkbox.attr( 'checked', !!v ); 
+            
+            var wrap = checkbox.closest('.components-form-toggle');
+            wrap.toggleClass( 'is-checked is-default', !!v );
+          }
+        } );
+      }
 
       var
         field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
