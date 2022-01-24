@@ -119,6 +119,77 @@
   </div>
     <?php
   }
+
+  function fv_player_editor_numfield( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+
+    $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
+    ?>
+  <div <?php echo $id; ?> class="components-base-control">
+    <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
+    <div class="components-base-control__field">
+      <input class="components-text-control__input" type="number" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
+    </div>
+  </div>
+    <?php
+  }
+
+  function fv_player_editor_select( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+
+    $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
+    ?>
+  <div <?php echo $id; ?> class="components-base-control__field">
+    <div class="components-flex components-select-control">
+      <div class="components-flex__item">
+        <label for="<?php echo $field_id; ?>" class="components-input-control__label"><?php echo $label; ?></label>
+      </div>
+      <div class="components-input-control__container">
+        <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>">
+          <?php foreach( $dropdown AS $option ) : ?>
+            <?php if( is_array($option) ) : ?>
+              <option value="<?php echo $option[0]; ?>"><?php echo $option[1]; ?></option>
+            <?php else : ?>
+              <option><?php echo $option; ?></option>
+            <?php endif; ?>
+          <?php endforeach; ?>
+        </select>
+        <span class="components-input-control__suffix">
+          <div class="css-1einvap-DownArrowWrapper">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" role="img" aria-hidden="true" focusable="false"><path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"></path></svg>
+          </div>
+        </span>
+      </div>
+      </div>
+  </div>  
+    <?php
+  }
+
+  function fv_player_editor_textfield( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+
+    $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
+    ?>
+  <div <?php echo $id; ?> class="components-base-control">
+    <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
+    <div class="components-base-control__field">
+      <input class="components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
+    </div>
+  </div>
+    <?php
+  }
   
   function fv_player_editor_input( $args, $is_child = false ) {
     $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
@@ -131,12 +202,20 @@
                           'label' => '',
                           'live' => true,
                           'name' => '',
+                          'options' => array(),
                           'playlist_label' => false,
+                          'scope' => false,
+                          'type' => false,
                          ) );
 
     extract($args);
 
+    // Check if the field is enabled in Post Interface Options
     $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
+
+    if( $scope == 'playlist' ) {
+      $class .= ' hide-if-singular';
+    }
 
     $live = !$live ? ' data-live-update="false"' : '';
 
@@ -148,8 +227,14 @@
 <div id="fv-player-editor-field-wrap-<?php echo $name; ?>" class="components-base-control <?php echo $class; ?>">
     <?php endif;
 
-    if( empty($input['type']) || $input['type'] == 'checkbox' ) {
+    if( !$type || $type == 'checkbox' ) {
       fv_player_editor_checkbox( $args );     
+    } else if( $type == 'text' ) {
+      fv_player_editor_textfield( $args );     
+    } else if( $type == 'number' ) {
+      fv_player_editor_numfield( $args );     
+    } else if( $type == 'select' ) {
+      fv_player_editor_select( $args );     
     }
   
     if( $children ) : ?>
@@ -167,7 +252,11 @@
     <?php endif;
   }
   
+  // Sort inputs alphabetically, but the one with sticky always wins
   function fv_player_editor_input_sort( $a, $b ) {
+    if( !empty($a["sticky"]) ) {
+      return -1;
+    }
     return strnatcasecmp($a["label"], $b["label"]);
   }
   
@@ -353,16 +442,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <div class="fv-player-src-playlist-support-notice" data-todo="martinv"><?php _e('FV Player Pro is required to use this video type in playlist.', 'fv_flowplayer'); ?></div>
                 </td>    			
               </tr>
-              
-              <tr class="hide-if-playlist">
-                <th>
-                  <label for="fv_wp_flowplayer_field_width" class="alignright"><?php _e('Size', 'fv_flowplayer'); ?></label> 
-                </th>
-                <td class="field" colspan="2">
-                  <input type="text" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
-                  <input type="text" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
-                </td>
-              </tr>
 
               <tr class="fv_wp_flowplayer_field_rtmp_wrapper">
                 <th scope="row" class="label"><label for="fv_wp_flowplayer_field_rtmp" class="alignright"><?php _e('RTMP Server', 'fv_flowplayer'); ?></label> <?php if (!empty($fv_flowplayer_conf["rtmp"]) && $fv_flowplayer_conf["rtmp"]!= 'false') : ?>(<abbr title="<?php _e('Leave empty to use Flash streaming server from plugin settings', 'fv_flowplayer'); ?>">?</abbr>)<?php endif; ?></th>
@@ -484,33 +563,82 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <div class="fv-player-tab fv-player-tab-options" style="display: none">
           <table width="100%">
             
-            <tr class="hide-if-singular">
-              <th>
-                <label for="fv_wp_flowplayer_field_width" class="alignright"><?php _e('Size', 'fv_flowplayer'); ?></label> 
-              </th>
-              <td class="field">
-                <input type="text" id="fv_wp_flowplayer_field_width" class="fv_wp_flowplayer_field_width" name="fv_wp_flowplayer_field_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
-                <input type="text" id="fv_wp_flowplayer_field_height" class="fv_wp_flowplayer_field_height" name="fv_wp_flowplayer_field_height" style="width: 19%" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
-              </td>
-            </tr>
-            
-            <?php
-            $player_options = apply_filters( 'fv_player_editor_player_options', array(
-              'general' => array(
-                array( 'label' => 'Align', 'name' => 'align' ), // TODO: Show drop down and a width field, save properly
-                array( 'label' => 'Autoplay', 'name' => 'autoplay', 'default' => $fv_fp->_get_option('autoplay'), 'children' => array(
-                  array( 'label' => 'Muted Autoplay', 'name' => 'autoplay_muted' ), // TODO: Save properly  
-                ) ),
-                array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance', 'default' => !$fv_fp->_get_option('playlist_advance') ), // TODO: If playlist!
-                array( 'label' => 'Sticky video', 'name' => 'sticky', 'default' => $fv_fp->_get_option('sticky'), 'dependencies' => array( 'lightbox' => false ) )
+          <?php
+          $player_options = apply_filters('fv_player_editor_player_options', array(
+            'general' => array(
+              array(
+                'label' => __('Align', 'fv-wordpress-flowplayer'),
+                'name' => 'align',
+                'children' => array(
+                  array(
+                    'label' => __('Position', 'fv-wordpress-flowplayer'),
+                    'name' => 'align',
+                    'options' => array(
+                      'Default',
+                      'Left',
+                      'Right'
+                    ),
+                    'type' => 'select'
+                  ),
+                  array(
+                    'label' => __('Width', 'fv-wordpress-flowplayer'),
+                    'name' => 'lightbox_width',
+                    'type' => 'number'
+                  )
+                )
               ),
-              'controls' => array(
-                array( 'label' => 'Controlbar', 'name' => 'controlbar', 'default' => true ),
-                array( 'label' => 'Embedding', 'name' => 'embed', 'default' => !$fv_fp->_get_option('disableembedding') ),
-                array( 'label' => 'Sharing Buttons', 'name' => 'share', 'default' => !$fv_fp->_get_option('disablesharing') ), // TODO: Custom URL setting
-                array( 'label' => 'Speed Buttons', 'name' => 'speed', 'default' => $fv_fp->_get_option('ui_speed'), 'dependencies' => array( 'controlbar' => true ) )
+              array(
+                'label' => __('Autoplay', 'fv-wordpress-flowplayer'),
+                'name' => 'autoplay',
+                'default' => $fv_fp->_get_option('autoplay'),
+                'children' => array(
+                  array(
+                    'label' => __('Muted Autoplay', 'fv-wordpress-flowplayer'),
+                    'name' => 'autoplay_muted'
+                  ), // TODO: Save properly  
+                )
+              ),
+              array(
+                'label' => __('Playlist auto advance', 'fv-wordpress-flowplayer'),
+                'name' => 'playlist_advance',
+                'default' => !$fv_fp->_get_option('playlist_advance'),
+                'scope' => 'playlist'
+              ),
+              array(
+                'label' => __('Sticky video', 'fv-wordpress-flowplayer'),
+                'name' => 'sticky',
+                'default' => $fv_fp->_get_option('sticky'),
+                'dependencies' => array( 'lightbox' => false )
               )
-            ) );
+            ),
+            'controls' => array(
+              array(
+                'label' => __('Controlbar', 'fv-wordpress-flowplayer'),
+                'name' => 'controlbar',
+                'default' => true,
+                'sticky' => true
+              ),
+              array(
+                'label' => __('Speed Buttons', 'fv-wordpress-flowplayer'),
+                'name' => 'speed',
+                'default' => $fv_fp->_get_option('ui_speed'),
+                'dependencies' => array( 'controlbar' => true )
+              )
+            ),
+            'header' => array(
+              array(
+                'label' => __('Embedding', 'fv-wordpress-flowplayer'),
+                'name' => 'embed',
+                'default' => !$fv_fp->_get_option('disableembedding')
+              ),
+              array(
+                'label' => __('Sharing Buttons', 'fv-wordpress-flowplayer'),
+                'name' => 'share',
+                'default' => !$fv_fp->_get_option('disablesharing')
+              ), // TODO: Custom URL setting
+            )
+          ));
+
 
             $script_fv_player_editor_defaults = array();
 

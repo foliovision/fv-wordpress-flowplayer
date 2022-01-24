@@ -149,7 +149,28 @@ class FV_Player_lightbox {
   function editor_setting( $options ) {
     global $fv_fp;
     if( $fv_fp->_get_option(array('interface','lightbox')) ) {
-      $options['general'][] = array( 'label' => 'Lightbox', 'name' => 'lightbox', 'dependency' => array( 'sticky' => false ) ); // TODO: Show more inputs
+      $options['general'][] = array(
+        'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
+        'name' => 'lightbox',
+        'dependencies' => array( 'sticky' => false ),
+        'children' => array(
+          array(
+            'label' => __('Width', 'fv-wordpress-flowplayer'),
+            'name' => 'lightbox_width',
+            'type' => 'number'
+          ),
+          array(
+            'label' => __('Height', 'fv-wordpress-flowplayer'),
+            'name' => 'lightbox_height',
+            'type' => 'number'
+          ),
+          array(
+            'label' => __('Title', 'fv-wordpress-flowplayer'),
+            'name' => 'lightbox_caption',
+            'type' => 'text'
+          ),
+        )
+      );
     }
     return $options;
   }
@@ -465,18 +486,9 @@ class FV_Player_lightbox {
 
     $bLightbox = $fv_fp->_get_option(array('interface','lightbox'));
 
+    // TODO: Ensure the new inputs work with old shortcodes etc.
     if ($bLightbox) {
       ?>
-
-      <tr<?php if (!$bLightbox) echo ' style="display: none"'; ?>>
-        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_lightbox" class="alignright">Lightbox popup</label></th>
-        <td class="field">
-          <input type="checkbox" id="fv_wp_flowplayer_field_lightbox" name="fv_wp_flowplayer_field_lightbox" />        
-          <input type="text" id="fv_wp_flowplayer_field_lightbox_width" name="fv_wp_flowplayer_field_lightbox_width" style="width: 12%" placeholder="Width" />
-          <input type="text" id="fv_wp_flowplayer_field_lightbox_height" name="fv_wp_flowplayer_field_lightbox_height" style="width: 12%" placeholder="Height" />
-          <input type="text" id="fv_wp_flowplayer_field_lightbox_caption" name="fv_wp_flowplayer_field_lightbox_caption" style="width: 62%" placeholder="Title" />
-        </td>
-      </tr>
       <script>
 
         jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode) {
