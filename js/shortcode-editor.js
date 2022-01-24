@@ -398,11 +398,27 @@ jQuery(function() {
       }
       
       $('#fv-player-shortcode-editor').on( 'click', '.components-form-toggle input[type=checkbox]', function() {
-        var wrap = $(this).closest('.components-form-toggle');
-        wrap.toggleClass( 'is-checked', $(this).prop('checked') );
-        
-        var k = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
-        wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[k] );
+        var wrap = $(this).closest('.components-form-toggle'),
+          checked = $(this).prop('checked'),
+          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+
+        wrap.toggleClass( 'is-checked', checked );
+
+        wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
+
+        if( window.fv_player_editor_dependencies[name] ) {
+          jQuery.each( window.fv_player_editor_dependencies[name], function(k,v) {
+            var compare = checked ? 1 : 0,
+              field_wrap = $('#fv-player-editor-field-wrap-'+v);
+
+            // TODO: What should be saved when it's enabled?
+            field_wrap.slideToggle( k == compare );
+          });
+        }
+
+        // TODO: What should be saved when it's all hidden?
+        $('#fv-player-editor-field-children-'+name).toggle( checked );
+
       });
       
       /*

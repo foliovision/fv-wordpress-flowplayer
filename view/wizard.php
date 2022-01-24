@@ -103,8 +103,27 @@
   }
   
   function fv_player_editor_checkbox( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+    ?>
+  <div <?php echo $id; ?> class="components-base-control__field">
+    <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
+      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?><?php /*if( $default ) echo ' checked="checked"';*/ ?> />
+      <span class="components-form-toggle__track"></span>
+      <span class="components-form-toggle__thumb"></span>
+    </span>
+    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php _e( $label, 'fv_flowplayer'); ?></label>
+  </div>
+    <?php
+  }
+  
+  function fv_player_editor_input( $args, $is_child = false ) {
     $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
     $args = wp_parse_args( $args, array(
+                          'children' => false,
                           'class' => false,
                           'default' => false,
                           'dropdown' => array( 'Default', 'On', 'Off' ),
@@ -114,11 +133,8 @@
                           'name' => '',
                           'playlist_label' => false,
                          ) );
-    extract($args);
 
-    if( $id ) {
-      $id = ' id="'.$id.'"';
-    }    
+    extract($args);
 
     $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
 
@@ -126,21 +142,33 @@
 
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
 
-    // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field 
-    ?>
-<div class="components-base-control <?php echo $class; ?>">
-  <div <?php echo $id; ?> class="components-base-control__field">
-    <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
-      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?><?php /*if( $default ) echo ' checked="checked"';*/ ?> />
-      <span class="components-form-toggle__track"></span>
-      <span class="components-form-toggle__thumb"></span>
-    </span>
-    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php _e( $label, 'fv_flowplayer'); ?></label>
-  </div>
-  <?php // TODO: What's this about? ?>
-  <!--<p id="inspector-toggle-control-0__help" class="components-base-control__help">This is a sub-text default style.</p>-->
+    // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field
+    
+    if( !$is_child ) : ?>
+<div id="fv-player-editor-field-wrap-<?php echo $name; ?>" class="components-base-control <?php echo $class; ?>">
+    <?php endif;
+
+    if( empty($input['type']) || $input['type'] == 'checkbox' ) {
+      fv_player_editor_checkbox( $args );     
+    }
+  
+    if( $children ) : ?>
+      <div id="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
+        <?php
+        foreach( $children AS $child_input ) {
+          fv_player_editor_input( $child_input, true );
+        }
+        ?>
+      </div>
+    <?php endif;
+    
+    if( !$is_child ) : ?>
 </div>
-    <?php
+    <?php endif;
+  }
+  
+  function fv_player_editor_input_sort( $a, $b ) {
+    return strnatcasecmp($a["label"], $b["label"]);
   }
   
 	$fv_flowplayer_helper_tag = ( is_plugin_active('jetpack/jetpack.php') ) ? 'b' : 'span';
@@ -469,15 +497,18 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <?php
             $player_options = apply_filters( 'fv_player_editor_player_options', array(
               'general' => array(
-                array( 'label' => 'Autoplay', 'name' => 'autoplay', 'default' => $fv_fp->_get_option('autoplay') ), // TODO: Muted autoplay
-                array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance', 'default' => !$fv_fp->_get_option('playlist_advance') ),
-                array( 'label' => 'Sticky video', 'name' => 'sticky', 'default' => $fv_fp->_get_option('sticky') )
+                array( 'label' => 'Align', 'name' => 'align' ), // TODO: Show drop down and a width field, save properly
+                array( 'label' => 'Autoplay', 'name' => 'autoplay', 'default' => $fv_fp->_get_option('autoplay'), 'children' => array(
+                  array( 'label' => 'Muted Autoplay', 'name' => 'autoplay_muted' ), // TODO: Save properly  
+                ) ),
+                array( 'label' => 'Playlist auto advance', 'name' => 'playlist_advance', 'default' => !$fv_fp->_get_option('playlist_advance') ), // TODO: If playlist!
+                array( 'label' => 'Sticky video', 'name' => 'sticky', 'default' => $fv_fp->_get_option('sticky'), 'dependencies' => array( 'lightbox' => false ) )
               ),
               'controls' => array(
                 array( 'label' => 'Controlbar', 'name' => 'controlbar', 'default' => true ),
                 array( 'label' => 'Embedding', 'name' => 'embed', 'default' => !$fv_fp->_get_option('disableembedding') ),
                 array( 'label' => 'Sharing Buttons', 'name' => 'share', 'default' => !$fv_fp->_get_option('disablesharing') ), // TODO: Custom URL setting
-                array( 'label' => 'Speed Buttons', 'name' => 'speed', 'default' => $fv_fp->_get_option('ui_speed') )
+                array( 'label' => 'Speed Buttons', 'name' => 'speed', 'default' => $fv_fp->_get_option('ui_speed'), 'dependencies' => array( 'controlbar' => true ) )
               )
             ) );
 
@@ -485,23 +516,37 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
             foreach( $player_options AS $group => $inputs ) {
               echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
+              
+              usort( $inputs, 'fv_player_editor_input_sort' );
+              
               foreach( $inputs AS $input ) {
                 if( isset($input['default']) ) {
                   $script_fv_player_editor_defaults[$input['name']] = $input['default'];
                 }
-
-                if( empty($input['type']) || $input['type'] == 'checkbox' ) {
-                  fv_player_editor_checkbox( $input );
+                
+                if( isset($input['dependencies']) ) {
+                  foreach( $input['dependencies'] AS $parent => $value ) {
+                    if( empty($script_fv_player_editor_dependencies[$parent]) ) {
+                      $script_fv_player_editor_dependencies[$parent] = array();
+                    }
+                    if( empty($script_fv_player_editor_dependencies[$parent][$value]) ) {
+                      $script_fv_player_editor_dependencies[$parent][$value] = array();
+                    }
+                    $script_fv_player_editor_dependencies[$parent][$value][] = $input['name'];
+                  }
                 }
+
+                fv_player_editor_input( $input );
+
               }
               echo "</div>\n";
             }
 
-            echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>"
+            echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>";
+            echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>";
             ?>
 
           <table width="100%">            
-            <?php fv_player_shortcode_row( array( 'label' => 'Align', 'name' => 'align', 'dropdown' => array( 'Default', 'Left', 'Right' ) ) ); ?>
             <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
                   array('','Default'),
                   array('horizontal','Horizontal'),

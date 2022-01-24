@@ -34,6 +34,8 @@ class FV_Player_lightbox {
     add_filter('the_content', array($this, 'html_lightbox_images'), 999);  //  moved after the shortcodes are parsed to work for galleries
 
     add_action('fv_flowplayer_shortcode_editor_tab_options', array($this, 'shortcode_editor'), 8);
+    
+    add_filter( 'fv_player_editor_player_options', array( $this, 'editor_setting' ) );
 
     add_action('fv_flowplayer_admin_default_options_after', array( $this, 'lightbox_admin_default_options_html' ) );
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
@@ -142,6 +144,14 @@ class FV_Player_lightbox {
     if (strlen($this->lightboxHtml)) {
       echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
     }
+  }
+  
+  function editor_setting( $options ) {
+    global $fv_fp;
+    if( $fv_fp->_get_option(array('interface','lightbox')) ) {
+      $options['general'][] = array( 'label' => 'Lightbox', 'name' => 'lightbox', 'dependency' => array( 'sticky' => false ) ); // TODO: Show more inputs
+    }
+    return $options;
   }
 
   /*
