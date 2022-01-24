@@ -154,7 +154,7 @@
       </div>
       <div class="components-input-control__container">
         <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>">
-          <?php foreach( $dropdown AS $option ) : ?>
+          <?php foreach( $options AS $option ) : ?>
             <?php if( is_array($option) ) : ?>
               <option value="<?php echo $option[0]; ?>"><?php echo $option[1]; ?></option>
             <?php else : ?>
@@ -573,10 +573,10 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   array(
                     'label' => __('Position', 'fv-wordpress-flowplayer'),
                     'name' => 'align',
-                    'options' => array(
-                      'Default',
+                    'options' => array(                      
                       'Left',
-                      'Right'
+                      'Right',
+                      'Centered'
                     ),
                     'type' => 'select'
                   ),
