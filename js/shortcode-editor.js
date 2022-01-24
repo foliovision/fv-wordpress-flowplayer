@@ -400,19 +400,23 @@ jQuery(function() {
       $('#fv-player-shortcode-editor').on( 'click', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
-          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' ),
+          compare = checked ? 1 : 0;
 
         wrap.toggleClass( 'is-checked', checked );
 
         wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
 
         if( window.fv_player_editor_dependencies[name] ) {
-          jQuery.each( window.fv_player_editor_dependencies[name], function(k,v) {
-            var compare = checked ? 1 : 0,
-              field_wrap = $('#fv-player-editor-field-wrap-'+v);
+          jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
+            
+            jQuery.each( inputs, function(k,input_name) {
+              var field_wrap = $('#fv-player-editor-field-wrap-'+input_name);
 
-            // TODO: What should be saved when it's enabled?
-            field_wrap.slideToggle( k == compare );
+              // TODO: What should be saved when it's enabled?
+              field_wrap.toggleClass( 'is-visible-dependency', value == compare );
+              field_wrap.toggleClass( 'is-hidden-dependency', value != compare );
+            });
           });
         }
 
@@ -3368,8 +3372,8 @@ jQuery(function() {
       $el_editor.find('a[data-tab]').removeClass('fv_player_interface_hide');
       $el_editor.find('.fv-player-tabs > .fv-player-tab').each(function(){
         var bHideTab = true
-        $(this).find('tr:not(.fv_player_actions_end-toggle):not(.submit-button-wrapper)').each(function(){
-          if( $(this).css('display') === 'table-row' ){
+        $(this).find('tr:not(.fv_player_actions_end-toggle):not(.submit-button-wrapper), .components-panel__body').each(function(){
+          if( $(this).css('display') === 'table-row' || $(this).css('display') == 'block' ){
             bHideTab = false;
             return false;
           }

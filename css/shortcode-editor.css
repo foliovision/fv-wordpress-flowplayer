@@ -46,7 +46,16 @@
 .fv-player-tabs-header .nav-tab-wrapper{ margin:0; }
 .fv-player-tabs-header .nav-tab-wrapper .nav-tab{ margin-left: 0; margin-right: .5em; }
 .fv-player-tabs-header .nav-tab-wrapper, .wrap h2.nav-tab-wrapper, h1.nav-tab-wrapper{ border-spacing: 0px; padding-top: 0px;}
-.fv_player_actions_end-toggle,.fv_player_interface_hide,.fv-player-playlist-item-title{ display:none; }
+
+
+.is-visible-dependency {
+  display: block;
+}
+.is-hidden-dependency {
+  display: none;
+}
+
+.fv_player_actions_end-toggle,.fv_player_interface_hide, .is-visible-dependency.fv_player_interface_hide, .fv-player-playlist-item-title{ display:none; }
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
 
