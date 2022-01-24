@@ -74,7 +74,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
 
   // TODO: Eliminate, keep the close button
   wp_enqueue_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css', '', $fv_wp_flowplayer_ver, 'screen');
-  wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', filemtime( dirname(__FILE__).'../css/shortcode-editor.css' ), 'screen');
+  wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', filemtime( dirname(__FILE__).'/../css/shortcode-editor.css' ), 'screen');
 }
 
 
