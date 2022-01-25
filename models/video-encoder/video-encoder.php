@@ -10,7 +10,8 @@ abstract class FV_Player_Video_Encoder {
                                // examples: Coconut, Bunny Stream ...
     $instance = null,          // self-explanatory
     $admin_page = false,       // will be set to a real admin submenu page object once created
-    $browser_inc_file = '';    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
+    $browser_inc_file = '',    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
+    $use_wp_list_table;        // allow descendants to decide if use wp list table
 
   // variables to override or access from outside of the base class
   protected
@@ -30,7 +31,7 @@ abstract class FV_Player_Video_Encoder {
     return $this->table_name;
   }
 
-  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file = '' ) {
+  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file = '', $use_wp_list_table = true ) {
     global $wpdb;
 
     if ( !$encoder_id ) {
@@ -52,6 +53,7 @@ abstract class FV_Player_Video_Encoder {
     // table names always start on WP prefix, so add that here for our table name here
     $this->table_name = $wpdb->prefix . $this->table_name;
     $this->browser_inc_file = $browser_inc_file;
+    $this->use_wp_list_table = $use_wp_list_table;
 
     add_action('init', array( $this, 'email_notification' ), 7 );
 
@@ -397,7 +399,7 @@ abstract class FV_Player_Video_Encoder {
     // submit the job to the Encoder service
     $result = $this->job_submit($id);
 
-    if( defined('DOING_AJAX') ) {
+    if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
       require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
 
       ob_start();
