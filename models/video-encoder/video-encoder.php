@@ -589,7 +589,7 @@ abstract class FV_Player_Video_Encoder {
    *
    * @return ID                 Job ID
    */
-  protected function job_create( $args ) {
+  public function job_create( $args ) {
     global $wpdb;
     global $fv_fp;
 

@@ -359,6 +359,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.14.727 - 2021/01/06 =
+
+* Bunny Stream - show video collections
+* Bugfix - Editor - show HLS stream checkboxes if the stream cannot be checked as it's not available
+
 = 7.5.13.727 - 2021/12/20 =
 
 * New feature - drag&drop video upload and encoding with the Bunny Stream service!

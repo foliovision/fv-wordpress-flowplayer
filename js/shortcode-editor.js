@@ -601,12 +601,7 @@ jQuery(function() {
               $('.fv_wp_flowplayer_field_height').val(attachment.height);
             }
             if( typeof(attachment.fileLength) != "undefined" ) {
-              $('#fv_wp_flowplayer_file_info').show();
-              $('#fv_wp_flowplayer_file_duration').html(attachment.fileLength);
-            }
-            if( typeof(attachment.filesizeHumanReadable) != "undefined" ) {
-              $('#fv_wp_flowplayer_file_info').show();
-              $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
+              file_info_show( { duration: attachment.fileLength } );
             }
 
           } else if( attachment.type == 'image' ) {
@@ -1011,10 +1006,12 @@ jQuery(function() {
             var ajax_call = function () {
 
               debug_log('Running fv_wp_flowplayer_retrieve_video_data Ajax.');
+              
+              var video_url = $element.val();
 
               $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
                   action: 'fv_wp_flowplayer_retrieve_video_data',
-                  video_url: $element.val(),
+                  video_url: video_url,
                   cookie: encodeURIComponent(document.cookie),
                 }, function (json_data) {
                 fv_player_editor.meta_data_load_finished();
@@ -1167,10 +1164,18 @@ jQuery(function() {
                     check.push('audio');
                   }
                   
+                  // If we are unable to check the HLS stream, show all the options
+                  if( json_data.error && video_url.match(/\.m3u8/) ) {
+                    show.push('audio');
+                    show.push('live');
+                  }
+
                   show_stream_fields_worker( item, show, check );
                   
                   $element.removeData('fv_player_video_data_ajax');
                   $element.removeData('fv_player_video_data_ajax_retry_count');
+
+                  file_info_show( json_data );
 
                   // remove spinners
                   $('.fv-player-shortcode-editor-small-spinner').remove();
@@ -1501,7 +1506,8 @@ jQuery(function() {
         instance_fp_wysiwyg = FCKeditorAPI.GetInstance('content');
       }
 
-      jQuery('#fv_wp_flowplayer_file_info').hide();
+      file_info_hide();
+
       jQuery(".fv_wp_flowplayer_field_src2_wrapper").hide();
       jQuery("#fv_wp_flowplayer_field_src2_uploader").hide();
       jQuery(".fv_wp_flowplayer_field_src1_wrapper").hide();
@@ -2909,7 +2915,35 @@ jQuery(function() {
       return;
 
     }
-              
+
+    function file_info_hide() {
+      jQuery('#fv_wp_flowplayer_file_info').hide();
+      jQuery('#fv_wp_flowplayer_file_info td').html('');
+    }
+
+    function file_info_show( args ) {
+      
+      var html = '';
+      if( args.duration ) {
+        var duration = args.duration;
+        if( !isNaN(duration) ) {
+          duration = fv_player_time_hms(duration);
+        }
+        html += 'Duration: '+duration;
+      }
+      if( args.error ) {
+        html += 'Error: '+args.error;
+      }
+      
+      if( html ) {
+        $('#fv_wp_flowplayer_file_info').show();
+        $('#fv_wp_flowplayer_file_info td').html(html);
+      } else {
+        file_info_hide();
+      }
+      
+    }
+
     function insert_button_toggle_disabled( disable ) {
       var button = $('.fv_player_field_insert-button');
       if( disable ) {

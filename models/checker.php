@@ -107,7 +107,8 @@ class FV_Player_Checker {
   public function check_mimetype( $URLs = false, $meta = false, $force_is_cron = false ) {
 
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-    
+  
+    $error = false;
     $tStart = microtime(true);
   
     global $fv_wp_flowplayer_ver, $fv_fp;
@@ -165,7 +166,13 @@ class FV_Player_Checker {
             }
             fclose($out);
 
-            $headers = WP_Http::processHeaders( $header );			
+            $headers = WP_Http::processHeaders( $header );
+            if( !empty($headers['response']['code']) && intval($headers['response']['code']) > 399 ) {
+              $error = 'HTTP '.$headers['response']['code'];
+              if( !empty($headers['response']['message']) ) {
+                $error .= ': '.$headers['response']['message'];
+              }
+            }
 
             list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
             if( $bFatal ) {
@@ -186,7 +193,7 @@ class FV_Player_Checker {
         /*
         Only check file length
         */
-        
+
         if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
           $time = false;
           if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
@@ -206,9 +213,9 @@ class FV_Player_Checker {
             $duration = 0;
             $segments = false;
 
-            $is_live = stripos( $response, '#EXT-X-ENDLIST' ) === false;
-
             if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
+              $is_live = stripos( $response, '#EXT-X-ENDLIST' ) === false;
+
               foreach($segments[1] as $segment_item){
                 $duration += $segment_item;
               }
@@ -247,10 +254,10 @@ class FV_Player_Checker {
                 }
                 $request = wp_remote_get($item_url);
                 $playlist_item = wp_remote_retrieve_body( $request );
-                
-                $is_live = stripos( $playlist_item, '#EXT-X-ENDLIST' ) === false;
-                
+
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
+                  $is_live = stripos( $playlist_item, '#EXT-X-ENDLIST' ) === false;
+
                   foreach($segments[1] as $segment_item){
                     $duration += $segment_item;
                   }  
@@ -273,6 +280,7 @@ class FV_Player_Checker {
             if( !$fv_flowplayer_meta ) $fv_flowplayer_meta = array();
           }
          
+          $fv_flowplayer_meta['error'] = $error;
           $fv_flowplayer_meta['duration'] = $time;
           $fv_flowplayer_meta['is_live'] = $is_live;
           $fv_flowplayer_meta['is_audio'] = $is_audio;
@@ -280,7 +288,7 @@ class FV_Player_Checker {
           $fv_flowplayer_meta['date'] = time();
           $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
   
-          if( $time > 0 || $this->is_cron ) {
+          if( $time > 0 || $error || $this->is_cron ) {
             if( !empty($post) ) {
               update_post_meta( $post->ID, $key, $fv_flowplayer_meta );
             }
