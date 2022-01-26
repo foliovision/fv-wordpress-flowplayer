@@ -2260,6 +2260,10 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   50% { opacity: 1; }
   100% { opacity: 0; }
 }
+.flowplayer.no-controlbar .fv-fp-tap-left,
+.flowplayer.no-controlbar .fv-fp-tap-right {
+  display: none;
+}
 
 /* Click to unmute */
 .flowplayer .fp-message-muted { opacity: 0; text-align: center }
