@@ -1577,7 +1577,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $amazon_key = -1;
     if( count($fv_fp->_get_option('amazon_key')) && count($fv_fp->_get_option('amazon_secret')) && count($fv_fp->_get_option('amazon_bucket')) ) {
       foreach( $fv_fp->_get_option('amazon_bucket') AS $key => $item ) {
-        if( stripos($media,$item.'/') != false  || stripos($media,$item.'.') != false ) {
+        // The bucket name must be in the first folder
+        // or the subdomain
+        if(
+          stripos($media,'.amazonaws.com/'.$item.'/') != false  ||
+          stripos($media,'.amazonaws.com.cn/'.$item.'/') != false  ||
+          stripos($media,'//'.$item.'.') != false
+        ) {
           $amazon_key = $key;
           break;
         }
