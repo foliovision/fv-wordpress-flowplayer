@@ -1928,9 +1928,9 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 <script type="text/javascript">
 	//<![CDATA[
-	jQuery(document).ready( function($) {
+	jQuery(document).one( 'ready', function() {
 		// close postboxes that should be closed
-		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
@@ -2014,8 +2014,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     /*
     Ensure only one of "Load FV Flowplayer JS everywhere" and "Optimize FV Flowplayer JS loading" can be enabled
     */
-    var cb_js_everywhere = $('#js-everywhere'),
-      cb_js_optimize = $('#js-optimize');
+    var cb_js_everywhere = jQuery('#js-everywhere'),
+      cb_js_optimize = jQuery('#js-optimize');
 
     function check_js_everywhere( was_clicked ) {
       if( was_clicked && cb_js_optimize.prop('checked') ) {
