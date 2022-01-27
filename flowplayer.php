@@ -55,7 +55,6 @@ include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
-include_once(dirname( __FILE__ ) . '/models/conversion.php');
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
 include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
@@ -100,10 +99,14 @@ include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
 include_once( dirname( __FILE__ ) . '/models/avada-builder-bridge.php' );
 include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
 
-include_once(dirname( __FILE__ ).'/models/migration-wizard.class.php');
-include_once(dirname( __FILE__ ).'/models/migration-wizard.php');
+include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
+include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+
+include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
+include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
+include_once(dirname( __FILE__ ) . '/models/conversion.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
