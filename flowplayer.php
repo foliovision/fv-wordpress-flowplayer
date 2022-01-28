@@ -90,6 +90,11 @@ if( is_admin() ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
+
+  include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
+  include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
+  include_once(dirname( __FILE__ ) . '/models/conversion.php');
+
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 }
 
@@ -103,10 +108,6 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
-
-include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
-include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
-include_once(dirname( __FILE__ ) . '/models/conversion.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
