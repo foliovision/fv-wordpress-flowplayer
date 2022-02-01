@@ -175,6 +175,14 @@ class FV_Player_Learndash_LMS {
         // Adjust the Video URL stored by LearnDash
         $meta = get_post_meta( $post_id, $meta_key, true );
         if( $meta ) {
+
+          // If we detect [fvplayer] shortcode was used as Video URL we enable FV Player
+          if( stripos($meta[$video_url_key],'[fvplayer ') !== false ) {
+            $lesson_use_fvplayer_video = true;
+            update_post_meta( $post_id, 'lesson_use_fvplayer_video', true );
+            update_post_meta( $post_id, 'lesson_fv_player', $meta[$video_url_key] );
+          }
+
           $backup = get_post_meta( $post_id, $backup_key, true );
           if( $lesson_use_fvplayer_video ) {
             if( !$backup ) {
