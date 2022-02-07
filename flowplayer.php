@@ -27,7 +27,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.5.15.727';
+$fv_wp_flowplayer_ver = '7.5.15.727.1';
 $fv_wp_flowplayer_core_ver = '7.2.7.2';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -90,6 +90,11 @@ if( is_admin() ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
+
+  include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
+  include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
+  include_once(dirname( __FILE__ ) . '/models/conversion.php');
+
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 }
 
@@ -103,10 +108,6 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
-
-include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
-include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
-include_once(dirname( __FILE__ ) . '/models/conversion.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
