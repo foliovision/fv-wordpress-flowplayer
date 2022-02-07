@@ -4,8 +4,9 @@
   var $playerDiv = $root.find('.fp-player');
   var sticky = $root.data("fvsticky");
   var globalSticky = false;
-  var videoRatio = $root.data("ratio"),
-    is_sticky = false;
+  var videoRatio = $root.data("ratio");
+  
+  api.is_sticky = false;
   
   if (typeof(videoRatio) == "undefined") {
     videoRatio = 0.5625;
@@ -49,7 +50,7 @@
      $window
       .on("resize", function() {
         if( !is_big_enough() ) {
-          if( is_sticky ) {
+          if( api.is_sticky ) {
             fv_player_sticky_class_remove();
           }
           return;
@@ -60,7 +61,7 @@
       })
       .on("scroll", function() {
         if( !is_big_enough() ) {
-          if( is_sticky ) {
+          if( api.is_sticky ) {
             fv_player_sticky_class_remove();
           }
           return;
@@ -94,7 +95,7 @@
       $playerDiv.css("height", stickyHeight);
       $playerDiv.css("max-height", stickyHeight);
       
-      is_sticky = true;
+      api.is_sticky = true;
       api.trigger( 'sticky', [ api ] );
     }
     $playerDiv.parent(".flowplayer").addClass("is-stickable");
@@ -107,8 +108,8 @@
     $playerDiv.css("max-height", "");
     $playerDiv.parent(".flowplayer").removeClass("is-stickable");
     
-    if( is_sticky ) {
-      is_sticky = false;
+    if( api.is_sticky ) {
+      api.is_sticky = false;
       api.trigger( 'sticky-exit', [ api ] );
     }
   }
@@ -120,8 +121,12 @@
 
 jQuery(function($) {
   $(document).on('click', "a.fp-sticky", function() {
-    $("div.flowplayer.is-stickable").addClass("is-unSticky");
-    var $playerDiv = $("div.flowplayer.is-stickable").find('.fp-player');
+    var root = $("div.flowplayer.is-stickable"),
+      api = root.data('flowplayer');
+
+    root.addClass("is-unSticky");
+
+    var $playerDiv = root.find('.fp-player');
     $playerDiv.removeClass("is-sticky-right-bottom");
     $playerDiv.removeClass("is-sticky-left-bottom");
     $playerDiv.removeClass("is-sticky-right-top");
@@ -130,8 +135,8 @@ jQuery(function($) {
     $playerDiv.css("height", "");
     $playerDiv.css("max-height", "");
     
-    if( is_sticky ) {
-      is_sticky = false;
+    if( api.is_sticky ) {
+      api.is_sticky = false;
       api.trigger( 'sticky-exit', [ api ] );
     }
   });
