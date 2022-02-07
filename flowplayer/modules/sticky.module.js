@@ -108,7 +108,7 @@
   }
 
   function is_big_enough() {
-    return jQuery(window).innerWidth() >= 1020;
+    return jQuery(window).innerWidth() >= 0;
   }
 });
 
