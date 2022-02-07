@@ -29,20 +29,12 @@
   }
 
   function fv_player_sticky_video() {
-    var change = false;
     var $window = jQuery(window),
       $flowplayerDiv = $root,
       top = $flowplayerDiv.offset().top,
       offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
-    
-    api.on('ready', function() {
-      change = true;
-    });
-    api.on('progress', function() {
-         change = true;
-     });
+
     api.on('unload', function() {
-      change = false;
       fv_player_sticky_class_remove();
       $root.removeClass("is-unSticky");
     });
@@ -68,8 +60,10 @@
         }
 
         top = $flowplayerDiv.offset().top;
-        offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2)); 
-        if ($window.scrollTop() > offset && change) {
+        offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
+
+        // Is the player loading, or is it the audible player?
+        if ($window.scrollTop() > offset && ( api.loading || flowplayer.audible_instance == $root.data('flowplayer-instance-id') ) ) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) {
             console.log('unSticky', jQuery("div.flowplayer.is-unSticky").length);
             return false;
@@ -78,7 +72,6 @@
           }
         } else {
           fv_player_sticky_class_remove();
-          change = false;
         }
       });
   }

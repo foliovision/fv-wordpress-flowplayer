@@ -1908,6 +1908,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   	right: 30px;
   	left: auto;
     max-width: 50%;
+    background: black;
     z-index: 999;
   }
   div.fp-player.is-sticky-left-top {
