@@ -1870,6 +1870,16 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   }
 }
 
+.fp-player a.fp-sticky {
+  display: none;
+}
+.flowplayer.is-stickable a.fp-sticky {
+  display: block;
+  float: right;
+}
+.flowplayer a.fp-sticky:before {
+  content: "\e10f";
+}
 
 @media screen and (min-width: 1020px) {
   .fp-playlist-external.fp-playlist-polaroid a,
@@ -1885,16 +1895,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   .fp-playlist-external.fp-playlist-polaroid a:nth-child(4n+1) {
     clear: both;
   }
-  .fp-player a.fp-sticky {
-      display: none;
-  }
-  .flowplayer.is-stickable a.fp-sticky {
-      display: block;
-      float: right;
-  }
-  .flowplayer a.fp-sticky:before {
-      content: "\e10f";
-  }
+
   div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
     transform: translateX(-20px);
     -ms-transform: translateX(-20px);
@@ -1908,6 +1909,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   	right: 30px;
   	left: auto;
     max-width: 50%;
+    background: black;
     z-index: 999;
   }
   div.fp-player.is-sticky-left-top {
