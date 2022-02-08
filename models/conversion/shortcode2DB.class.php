@@ -66,8 +66,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         'src1',
         'src2',
         'splash',
-        'caption',
-        'subtitles'
       );
 
       // atts for player that are supported
@@ -76,7 +74,9 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         'height',
         'autoplay',
         'lightbox',
-        'playlist'
+        'playlist',
+        'caption',
+        'subtitles'
       );
 
       $supported_atts = array_merge( $supported_video_atts, $supported_player_atts );
@@ -134,6 +134,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
             // add player atts , parse lightbox, playlist items
             foreach( $supported_player_atts as $player_att ) {
+              $video_index = 0; // reset video index to 0
               if( isset( $import_atts[$player_att] ) ) {
                 if( strcmp( $player_att, 'lightbox' ) == 0 ) { // handle lightbox
                   $lightbox_atts = explode(';', $import_atts[$player_att] );
@@ -163,7 +164,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                     // parse src, scr1, scr2 and splash
                     if( count( $item_data ) > 1 ) {
                       foreach(  $item_data as $i => $data ) {
-                        if( stripos($data, '.png') !== false || stripos($data, '.jpg') !== false || stripos($data, '.jpeg') !== false || $i === (count( $item_data ) - 1) ) { // splash ( check file extension or if last item )
+                        if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~', $data) || stripos($data, 'i.vimeocdn.com') !== false ) { // splash
                           $import_video_atts[$video_index]['splash'] = $data;
                         } else if( $i > 0 ) { // src1, src2
                           $import_video_atts[$video_index]['src'.$i] = $data;
@@ -172,6 +173,32 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
                     }
 
                     $import_video_atts[$video_index]['src'] = $item_data[0]; // src
+                  }
+                } else if(strcmp( $player_att, 'subtitles' ) == 0) { // subtitles
+                  $subtitles = explode(';', $import_atts[$player_att]);
+                  foreach( $subtitles as $subtile ) {
+                    if( !empty( $subtile ) ) {
+                      if( !isset( $import_video_atts[$video_index]['meta'] ) ) {
+                        $import_video_atts[$video_index]['meta'] = array();
+                      }
+                      $import_video_atts[$video_index]['meta'][] = array( 'meta_key' => 'subtitles', 'meta_value' => esc_url_raw($subtile) );
+                    }
+
+                    $video_index++;
+                  }
+
+                } else if(strcmp( $player_att, 'caption' ) == 0) { // caption
+                  $replace_from = array('&amp;','\;', '\,'); // escaped characters
+                  $replace_to = array('<!--amp-->','<!--semicolon-->','<!--comma-->'); // temp replacements
+                  $unescaped = array( '&', ';', ',' );
+                  $captions = str_replace( $replace_from, $replace_to, $import_atts[$player_att] );
+                  $captions = explode(';', $captions);
+
+                  foreach( $captions as $caption ) {
+                    $caption = str_replace( $replace_to, $unescaped, $caption );
+                    $import_video_atts[$video_index]['caption'] = $caption;
+
+                    $video_index++;
                   }
                 } else { // other atts
                   $import_player_atts[$player_att] =  $import_atts[$player_att];
@@ -205,6 +232,11 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
             // add videos
             $import_player_atts['videos'] = $import_video_atts;
+
+            // echo '<pre>';
+            // var_export($import_player_atts);
+            // echo '</pre>';
+            // die();
 
             global $FV_Player_Db;
             $player_id =  $FV_Player_Db->import_player_data(false, false, $import_player_atts);
