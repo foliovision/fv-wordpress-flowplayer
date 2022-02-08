@@ -1728,6 +1728,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
+  /*
+   * Get duration of the longets video in the post
+   */
   public static function get_duration_post( $post_id = false ) {
     global $post, $fv_fp;
     $post_id = ( $post_id ) ? $post_id : $post->ID;
@@ -1745,9 +1748,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $content = false;
     $objPost = get_post($post_id);
     if( $aVideos = FV_Player_Checker::get_videos($objPost->ID) ) {
-      if( $sDuration = flowplayer::get_duration($post_id, $aVideos[0]) ) {
-        $content = $sDuration;
+      foreach( $aVideos AS $video ) {
+        $tDuration = flowplayer::get_duration($post_id, $video, true );
+        if( !$content || $tDuration > $content ) {
+          $content = $tDuration;
+        }
       }
+    }
+    
+    if( $content ) {
+      $content = flowplayer::format_hms($content);
     }
     
     return $content;
