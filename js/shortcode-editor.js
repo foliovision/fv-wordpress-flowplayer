@@ -2432,7 +2432,7 @@ jQuery(function() {
             fv_wp_flowplayer_shortcode_parse_arg( shortcode, aSubtitlesLangs[i], false, fv_wp_flowplayer_subtitle_parse_arg );
           }
           if(!aSubtitlesLangs){ //  move
-            subtitle_language_add(false, false );
+            fv_player_editor.subtitle_language_add(false, false );
           }
 
           var smobile = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'mobile' );
@@ -3104,7 +3104,7 @@ jQuery(function() {
 
         if (typeof sSubtitles === 'object' && sSubtitles.length && sSubtitles[0].lang) {
           for (var i in sSubtitles) {
-            subtitle_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex, sSubtitles[i].id);
+            fv_player_editor.subtitle_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex, sSubtitles[i].id);
           }
         }
 
@@ -3343,41 +3343,6 @@ jQuery(function() {
       get_tabs('embeds').find('td').html(html);
     }
 
-    /*
-    * Adds another language to subtitle menu
-    */
-    function subtitle_language_add( sInput, sLang, iTabIndex, sId ) {
-      if(!iTabIndex){
-        var current = jQuery('.fv-player-tab-subtitles table:visible');
-        iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
-      }
-      var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
-      oTab.append( template_subtitles );
-
-      var subElement = jQuery('.fv-fp-subtitle:last' , oTab);
-
-      if (typeof(sId) !== 'undefined') {
-        subElement.attr('data-id_subtitles', sId);
-      }
-
-      if( sInput ) {
-        get_field('subtitles',subElement).val(sInput);
-      }
-
-      if ( sLang ) {
-        if( sLang == 'iw' ) sLang = 'he';
-        if( sLang == 'in' ) sLang = 'id';
-        if( sLang == 'jw' ) sLang = 'jv';
-        if( sLang == 'mo' ) sLang = 'ro';
-        if( sLang == 'sh' ) sLang = 'sr';
-
-        get_field('subtitles_lang',subElement).val(sLang).change();
-      }
-
-      editor_resize();
-      return false;
-    }
-
     function tabs_refresh(){
       var visibleTabs = 0;
       $el_editor.find('a[data-tab]').removeClass('fv_player_interface_hide');
@@ -3465,7 +3430,7 @@ jQuery(function() {
     Click on Add Another Language (of Subtitles)
     */
     $doc.on('click', '.fv_flowplayer_language_add_link', function() {
-      subtitle_language_add(false,true);
+      fv_player_editor.subtitle_language_add(false,true);
       return false;
     });
 
@@ -3754,6 +3719,41 @@ jQuery(function() {
 
       set_shortcode_remains: function(value) {
         shortcode_remains = value;
+      },
+      
+      /*
+      * Adds another language to subtitle menu
+      */
+      subtitle_language_add: function( sInput, sLang, iTabIndex, sId ) {
+        if(!iTabIndex){
+          var current = jQuery('.fv-player-tab-subtitles table:visible');
+          iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
+        }
+        var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
+        oTab.append( template_subtitles );
+
+        var subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+
+        if (typeof(sId) !== 'undefined') {
+          subElement.attr('data-id_subtitles', sId);
+        }
+
+        if( sInput ) {
+          get_field('subtitles',subElement).val(sInput);
+        }
+
+        if ( sLang ) {
+          if( sLang == 'iw' ) sLang = 'he';
+          if( sLang == 'in' ) sLang = 'id';
+          if( sLang == 'jw' ) sLang = 'jv';
+          if( sLang == 'mo' ) sLang = 'ro';
+          if( sLang == 'sh' ) sLang = 'sr';
+
+          get_field('subtitles_lang',subElement).val(sLang).change();
+        }
+
+        editor_resize();
+        return false;
       },
 
       /*
@@ -4045,7 +4045,7 @@ function fv_player_open_preview_window(url, width, height){
 Also used by FV Player Pro and FV Player Pay Per View
 */
 function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallback ) {
-
+  console.log('fv_wp_flowplayer_shortcode_parse_arg');
   var rDoubleQ = new RegExp(sArg+"=\"","g");
   var rSingleQ = new RegExp(sArg+"='","g");
   var rNoQ = new RegExp(sArg+"=[^\"']","g");
@@ -4067,7 +4067,7 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
   var aOutput = rMatch.exec(sShortcode);
   fv_player_editor.set_shortcode_remains( fv_player_editor.get_shortcode_remains().replace( rMatch, '' ) );
  
-  if( bHTML ) {
+  if( aOutput && bHTML ) {
     aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|])/g, '$1');
   }
   
@@ -4082,7 +4082,7 @@ function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallbac
 function fv_wp_flowplayer_subtitle_parse_arg( args ) {
   var input = ('fv_wp_flowplayer_subtitle_parse_arg',args);
   var aLang = input[0].match(/subtitles_([a-z][a-z])/);
-  subtitle_language_add( input[1], aLang[1] );
+  fv_player_editor.subtitle_language_add( input[1], aLang[1] );
 }
 
 
