@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.8
+Tested up to: 5.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.15.727 - 2022/01/27 =
+
+* HLS.js - upgrade to 1.1.4 to fix playback on Apple Silicon M1 computers
+* LearnDash LMS support - add FV Player directly in your lesson Video Progression settings
+* Shortcode to database conversion tool - use FV Player -> Tools -> Conversion to upgrade from [fvplayer src="..."] to [fvplayer id="..."]
+* Video Sitemap XML - Elementor support
+* Bugfix - Amazon S3 - fix bucket name being matched in the file name
+* Bugfix - Settings screen - fix boxes not opening in rare cases
 
 = 7.5.14.727 - 2021/01/06 =
 

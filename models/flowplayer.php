@@ -1577,7 +1577,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $amazon_key = -1;
     if( count($fv_fp->_get_option('amazon_key')) && count($fv_fp->_get_option('amazon_secret')) && count($fv_fp->_get_option('amazon_bucket')) ) {
       foreach( $fv_fp->_get_option('amazon_bucket') AS $key => $item ) {
-        if( stripos($media,$item.'/') != false  || stripos($media,$item.'.') != false ) {
+        // The bucket name must be in the first folder
+        // or the subdomain
+        if(
+          stripos($media,'.amazonaws.com/'.$item.'/') != false  ||
+          stripos($media,'.amazonaws.com.cn/'.$item.'/') != false  ||
+          stripos($media,'//'.$item.'.') != false
+        ) {
           $amazon_key = $key;
           break;
         }
@@ -1722,6 +1728,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
   
   
+  /*
+   * Get duration of the longets video in the post
+   */
   public static function get_duration_post( $post_id = false ) {
     global $post, $fv_fp;
     $post_id = ( $post_id ) ? $post_id : $post->ID;
@@ -1739,9 +1748,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $content = false;
     $objPost = get_post($post_id);
     if( $aVideos = FV_Player_Checker::get_videos($objPost->ID) ) {
-      if( $sDuration = flowplayer::get_duration($post_id, $aVideos[0]) ) {
-        $content = $sDuration;
+      foreach( $aVideos AS $video ) {
+        $tDuration = flowplayer::get_duration($post_id, $video, true );
+        if( !$content || $tDuration > $content ) {
+          $content = $tDuration;
+        }
       }
+    }
+    
+    if( $content ) {
+      $content = flowplayer::format_hms($content);
     }
     
     return $content;

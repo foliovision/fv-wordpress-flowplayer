@@ -135,6 +135,11 @@ class FV_Xml_Video_Sitemap {
 
           foreach ( $partial AS $key => $shortcode ) {
             $count++;
+
+            // It will use JSON in this case
+            if( in_array( $key, array( '_elementor_data' ) ) ) {
+              $shortcode = stripslashes($shortcode);
+            }
             
             $xml_video = array();
             

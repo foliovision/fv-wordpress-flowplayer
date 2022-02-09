@@ -966,8 +966,17 @@ function fv_flowplayer_admin_pro() {
           <?php _e('Monetize the video content on your membership site.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
-    </tr>  
-  </table>  
+    </tr>
+  </table>
+  <?php
+}
+
+function fv_flowplayer_settings_box_conversion() {
+  ?>
+    <p><?php _e('This section allows you to convert videos posted using other plugins to FV Player shortcodes.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2" style="margin: 5px; ">
+      <?php do_action('fv_player_conversion_buttons'); ?>
+    </table>
   <?php
 }
 
@@ -1741,8 +1750,9 @@ if( !class_exists('FV_Player_Pro') ) {
 
 /* Tools tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal' );
-add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal', 'low' );
+add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
@@ -1928,9 +1938,9 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 <script type="text/javascript">
 	//<![CDATA[
-	jQuery(document).ready( function($) {
+	jQuery(document).one( 'ready', function() {
 		// close postboxes that should be closed
-		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
@@ -2014,8 +2024,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     /*
     Ensure only one of "Load FV Flowplayer JS everywhere" and "Optimize FV Flowplayer JS loading" can be enabled
     */
-    var cb_js_everywhere = $('#js-everywhere'),
-      cb_js_optimize = $('#js-optimize');
+    var cb_js_everywhere = jQuery('#js-everywhere'),
+      cb_js_optimize = jQuery('#js-optimize');
 
     function check_js_everywhere( was_clicked ) {
       if( was_clicked && cb_js_optimize.prop('checked') ) {

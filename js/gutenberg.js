@@ -15,7 +15,11 @@
         )
       },
   
-      category: 'layout',
+      description: 'Insert FV Player block',
+
+      category: 'media',
+
+      keywords: ['fv player', 'player', 'fv', 'flowplayer'],
       
       attributes: {
         content: {

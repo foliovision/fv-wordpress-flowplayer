@@ -921,19 +921,6 @@ jQuery(document).ready(function($) {
         </table>
 </div>
 </div>
-<div id="fv_flowplayer_conversion" class="postbox " >
-<div class="postbox-header"><h2 class="hndle">Conversion</h2>
-<div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_flowplayer_conversion-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_conversion-handle-order-higher-description">Move Conversion box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_flowplayer_conversion-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_conversion-handle-order-lower-description">Move Conversion box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Conversion</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
-    <p>This section allows you to convert videos posted using other plugins to FV Player shortcodes.</p>
-    <table class="form-table2" style="margin: 5px; ">
-      <tr>
-        <td>          
-          <input type="button" class="button" value="Convert JW Player shortcodes" style="margin-top: 2ex;" onclick="if( confirm('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.') ) location.href='http://example.org/wp-admin/options-general.php?page=fvplayer&amp;convert_jwplayer=41b140b197'; "/>
-        </td>
-      </tr>
-    </table>
-    </div>
-</div>
 <div id="fv_player_pro" class="postbox " >
 <div class="postbox-header"><h2 class="hndle">Pro Features</h2>
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_player_pro-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_player_pro-handle-order-higher-description">Move Pro Features box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_player_pro-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_player_pro-handle-order-lower-description">Move Pro Features box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Pro Features</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
@@ -2406,6 +2393,31 @@ fv_player_videometa not found!
 <a class="button" href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-system-info&amp;_wpnonce=a5050e98d7">Export</a>
     </div>
 </div>
+<div id="fv_flowplayer_conversion" class="postbox " >
+<div class="postbox-header"><h2 class="hndle">Conversion</h2>
+<div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_flowplayer_conversion-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_conversion-handle-order-higher-description">Move Conversion box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_flowplayer_conversion-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_conversion-handle-order-lower-description">Move Conversion box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Conversion</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
+<p>This section allows you to convert videos posted using other plugins to FV Player shortcodes.</p>
+<table class="form-table2" style="margin: 5px; ">
+  <tr>
+    <td><label>Convert <code>[fvplayer src="..."]</code> shortocdes to database-driven <code>[fvplayer id="..."]</code> :</label></td>
+    <td>
+      <p class="description">
+        <input type="button" class="button" value="Convert FV Player shortcodes to DB" style="margin-top: 2ex;" onclick="if( confirm('Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.') )location.href='http://example.org/wp-admin/admin.php?page=fv_player_conversion_shortcode2db'; "/>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td><label>Convert JW Player shortcodes to <code>[fvplayer]</code>:</label></td>
+    <td>
+      <p class="description">
+        <input type="button" class="button" value="Convert JW Player shortcodes" style="margin-top: 2ex;" onclick="if( confirm('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.') ) location.href='http://example.org/wp-admin/options-general.php?page=fvplayer&amp;convert_jwplayer=XYZ'; "/>
+      </p>
+    </td>
+  </tr>
+</table>
+
+    </div>
+</div>
 <div id="fv_flowplayer_rollback" class="postbox " >
 <div class="postbox-header"><h2 class="hndle">Rollback</h2>
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_flowplayer_rollback-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_rollback-handle-order-higher-description">Move Rollback box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_flowplayer_rollback-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_rollback-handle-order-lower-description">Move Rollback box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Rollback</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
@@ -2722,9 +2734,9 @@ fv_player_videometa not found!
 
 <script type="text/javascript">
 	//<![CDATA[
-	jQuery(document).ready( function($) {
+	jQuery(document).one( 'ready', function() {
 		// close postboxes that should be closed
-		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
     
@@ -2808,8 +2820,8 @@ fv_player_videometa not found!
     /*
     Ensure only one of "Load FV Flowplayer JS everywhere" and "Optimize FV Flowplayer JS loading" can be enabled
     */
-    var cb_js_everywhere = $('#js-everywhere'),
-      cb_js_optimize = $('#js-optimize');
+    var cb_js_everywhere = jQuery('#js-everywhere'),
+      cb_js_optimize = jQuery('#js-optimize');
 
     function check_js_everywhere( was_clicked ) {
       if( was_clicked && cb_js_optimize.prop('checked') ) {
