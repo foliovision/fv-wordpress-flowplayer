@@ -4045,7 +4045,6 @@ function fv_player_open_preview_window(url, width, height){
 Also used by FV Player Pro and FV Player Pay Per View
 */
 function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallback ) {
-  console.log('fv_wp_flowplayer_shortcode_parse_arg');
   var rDoubleQ = new RegExp(sArg+"=\"","g");
   var rSingleQ = new RegExp(sArg+"='","g");
   var rNoQ = new RegExp(sArg+"=[^\"']","g");
