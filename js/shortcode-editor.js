@@ -30,6 +30,7 @@ jQuery(function() {
     ajax_save_previous = false,
 
     current_player_db_id = -1,
+    current_video_db_id = -1,
     current_video_to_edit = -1,
 
     // stores the button which was clicked to open the editor
@@ -805,6 +806,11 @@ jQuery(function() {
               var item = $('.fv-player-playlist-item').eq(k);
               if( !item.data('id_video') ) {
                 item.attr('data-id_video',v);
+              }
+
+              if( k == item_index ) {
+                debug_log('current_video_db_id after save: '+v);
+                current_video_db_id = v;
               }
             });
 
@@ -3166,6 +3172,11 @@ jQuery(function() {
       get_tabs('video-files').hide();
       var video_tab = get_tab(new_index,'video-files').show();
 
+      if( video_tab.attr('data-id_video') ) {
+        current_video_db_id = video_tab.attr('data-id_video');
+        debug_log('current_video_db_id: '+current_video_db_id);
+      }
+
       get_tabs('subtitles').hide();
       get_tab(new_index,'subtitles').show();
 
@@ -3219,6 +3230,8 @@ jQuery(function() {
     */
     function playlist_show() {
       item_index = -1;
+      current_video_db_id = -1;
+      debug_log('current_video_db_id: '+current_video_db_id);
 
       editing_video_details = false;
       $el_editor.attr('class','is-playlist-active');
@@ -3699,6 +3712,10 @@ jQuery(function() {
     return {
       get_current_player_db_id() {
         return current_player_db_id;
+      },
+
+      get_current_video_db_id() {
+        return current_video_db_id;
       },
 
       get_edit_lock_removal() {
