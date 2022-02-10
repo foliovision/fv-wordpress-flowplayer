@@ -337,6 +337,10 @@ abstract class FV_Player_Video_Encoder {
       }
     }
 
+    if( isset( $_POST['id_video'] ) ) {
+      $id_video = intval( $_POST['id_video'] );
+    }
+
     $target = $this->util__sanitize_target($target);
 
     // check for a valid source URL
@@ -390,6 +394,10 @@ abstract class FV_Player_Video_Encoder {
     // support for trailers
     if ( isset( $trailer ) ) {
       $job['trailer'] = $trailer;
+    }
+
+    if( isset( $id_video ) ) {
+      $job['id_video'] = $id_video;
     }
 
     // create a new job
@@ -602,6 +610,7 @@ abstract class FV_Player_Video_Encoder {
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
       'date_created' => date("Y-m-d H:i:s"),
+      'id_video' => $args['id_video'],
       'source' => $args['source'],
       'target' => $args['target'],
       'type' => $this->encoder_id,
@@ -612,6 +621,7 @@ abstract class FV_Player_Video_Encoder {
       'author' => get_current_user_id()
     ), array(
       '%s',
+      '%d',
       '%s',
       '%s',
       '%s',
