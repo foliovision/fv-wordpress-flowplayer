@@ -122,7 +122,8 @@ jQuery(function() {
      *                                you "fv_wp_flowplayer_field_src"
      * @param {object|string}  where  Lets you narrow down the element wher you
      *                                want to locate he field. You can use a jQuery
-     *                                element or a string selector for jQuery
+     *                                element or a string selector for jQuery.
+     *                                Or TRUE to get the currently open playlist item.
      *
      * @return {object}               The field element
      */
@@ -130,7 +131,11 @@ jQuery(function() {
       var element = false,
         selector = '.' + fv_wp_flowplayer_map_names_to_editor_fields(key) + ', [name=' + fv_wp_flowplayer_map_names_to_editor_fields(key) + ']';
 
-      if( where && typeof(where) == "object" ) {
+      if( typeof(where) == 'boolean' && where ) {
+        where = jQuery('.fv-player-tab [data-index='+item_index+']');
+        element = where.find(selector);
+
+      } else if( where && typeof(where) == "object" ) {
         element = where.find(selector);
       } else if( where && typeof(where) == "string" ) {
         element = $el_editor.find(where).find(selector);
@@ -3720,6 +3725,10 @@ jQuery(function() {
 
       get_edit_lock_removal() {
         return edit_lock_removal;
+      },
+
+      get_field( key, where ) {
+        return get_field( key, where );
       },
 
       get_shortcode_remains: function() {
