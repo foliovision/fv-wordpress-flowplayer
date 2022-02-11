@@ -794,8 +794,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
     global $FV_Player_Pro;
     $media = $mediaData['sources'];
+    
+    static $enabled;
+    if( !isset($enabled) ) {
+      $enabled = current_user_can('manage_options') && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') );
+    }
 
-    if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
+    if( $enabled && $this->ajax_count < 100 ) {
       $this->ajax_count++;
 
       if( stripos($rtmp,'rtmp://') === false && $rtmp ) {
