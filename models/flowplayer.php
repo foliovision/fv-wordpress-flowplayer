@@ -128,7 +128,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure') );
 
-    add_filter( 'fv_player_item', array( $this, 'enable_cdn_rewrite'), 11 );
+    add_action( 'init', array( $this, 'enable_cdn_rewrite_maybe') );
     
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
@@ -1566,6 +1566,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     return $item;
+  }
+
+  function enable_cdn_rewrite_maybe() {
+    // Support WordPress CDN plugins - can slow down the PHP if you have hundreds of videos on a single page
+    // We tried to check if the video is using the site domain before checking with the WordPress CDN plugins
+    // But there is just no way around this - even that would be slow
+    // So if you greatly care about peformance use:
+    //
+    // add_filter( 'fv_player_performance_disable_wp_cdn', '__return_true' );
+    if( !apply_filters( 'fv_player_performance_disable_wp_cdn', false ) ) {
+      add_filter( 'fv_player_item', array( $this, 'enable_cdn_rewrite'), 11 );
+    }
   }
   
   public static function esc_caption( $caption ) {
