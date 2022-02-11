@@ -604,7 +604,7 @@ abstract class FV_Player_Video_Encoder {
     $args = wp_parse_args( $args, array(
       'encryption' => false,
       'trailer' => false,
-      'video_id' => false
+      'id_video' => false
     ) );
 
     // first we instert the table row with basic data and remember the row ID
