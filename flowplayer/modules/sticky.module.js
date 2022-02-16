@@ -108,7 +108,7 @@
   }
 
   function is_big_enough() {
-    return jQuery(window).innerWidth() >= 0;
+    return jQuery(window).innerWidth() >= fv_flowplayer_conf.sticky_min_width;
   }
 });
 
