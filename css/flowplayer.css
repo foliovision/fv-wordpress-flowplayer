@@ -1915,18 +1915,16 @@ div.fp-player.is-sticky-right-bottom {
     right: 0;
   }
   .flowplayer.fixed-controls div.fp-player.is-sticky-left-bottom,
-  .flowplayer.fixed-controls.fp-full.fp-slim div.fp-player.is-sticky-left-bottom {
+  .flowplayer.fixed-controls div.fp-player.is-sticky-right-bottom {
     bottom: 2.4em;
   }
-  .flowplayer.fixed-controls div.fp-player.is-sticky-right-bottom,
-  .flowplayer.fixed-controls.fp-full.fp-slim div.fp-player.is-sticky-right-bottom {
-    bottom: 2.4em;
-  }
-  .flowplayer.fixed-controls.fp-full div.fp-player.is-sticky-left-bottom {
+  .flowplayer.fixed-controls.fp-full:not(.fp-slim) div.fp-player.is-sticky-left-bottom,
+  .flowplayer.fixed-controls.fp-full:not(.fp-slim) div.fp-player.is-sticky-right-bottom {
     bottom: 2.8em;
   }
-  .flowplayer.fixed-controls.fp-full div.fp-player.is-sticky-right-bottom {
-    bottom: 2.8em;
+  .flowplayer.fixed-controls.has-abloop div.fp-player.is-sticky-left-bottom,
+  .flowplayer.fixed-controls.has-abloop div.fp-player.is-sticky-right-bottom {
+    bottom: 4em;
   }
 }
 @media only screen and (max-width: 29.9375em) {
