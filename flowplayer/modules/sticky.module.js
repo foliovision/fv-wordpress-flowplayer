@@ -65,7 +65,6 @@
         // Is the player loading, or is it the audible player?
         if ($window.scrollTop() > offset && ( api.loading || flowplayer.audible_instance == $root.data('flowplayer-instance-id') ) ) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) {
-            console.log('unSticky', jQuery("div.flowplayer.is-unSticky").length);
             return false;
           } else {
             fv_player_sticky_class_add();
@@ -80,6 +79,7 @@
     if ($playerDiv.hasClass("is-sticky-" + stickyPlace)) {
       return;
     } else {
+      $playerDiv.addClass("is-sticky");
       $playerDiv.addClass("is-sticky-" + stickyPlace);
       if ($root.find("a.fp-sticky").length == 0){
         $root.find('div.fp-header').prepend('<a class="fp-sticky fp-icon"></a>');
@@ -95,6 +95,7 @@
   }
 
   function fv_player_sticky_class_remove() {
+    $playerDiv.removeClass("is-sticky");
     $playerDiv.removeClass("is-sticky-" + stickyPlace);
     $playerDiv.css("width", "");
     $playerDiv.css("height", "");
@@ -108,7 +109,23 @@
   }
 
   function is_big_enough() {
-    return jQuery(window).innerWidth() >= 0;
+    return jQuery(window).innerWidth() >= fv_flowplayer_conf.sticky_min_width;
+  }
+  
+  api.sticky = function( flag, remember ) {
+    if( typeof(flag) == "undefined" ) {
+      flag = !api.is_sticky;
+    }
+
+    if( remember ) {
+      $root.toggleClass("is-unSticky", !flag );
+    }
+
+    if( flag ) {
+      fv_player_sticky_class_add();
+    } else {
+      fv_player_sticky_class_remove();
+    }
   }
 });
 
@@ -120,6 +137,7 @@ jQuery(function($) {
     root.addClass("is-unSticky");
 
     var $playerDiv = root.find('.fp-player');
+    $playerDiv.removeClass("is-sticky");
     $playerDiv.removeClass("is-sticky-right-bottom");
     $playerDiv.removeClass("is-sticky-left-bottom");
     $playerDiv.removeClass("is-sticky-right-top");

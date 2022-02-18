@@ -128,7 +128,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure') );
 
-    add_filter( 'fv_player_item', array( $this, 'enable_cdn_rewrite'), 11 );
+    add_action( 'init', array( $this, 'enable_cdn_rewrite_maybe') );
     
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
@@ -794,8 +794,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
     global $FV_Player_Pro;
     $media = $mediaData['sources'];
+    
+    static $enabled;
+    if( !isset($enabled) ) {
+      $enabled = current_user_can('manage_options') && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') );
+    }
 
-    if( current_user_can('manage_options') && $this->ajax_count < 100 && !$this->_get_option('disable_videochecker') && ( $this->_get_option('video_checker_agreement') || $this->_get_option('key_automatic') ) ) {
+    if( $enabled && $this->ajax_count < 100 ) {
       $this->ajax_count++;
 
       if( stripos($rtmp,'rtmp://') === false && $rtmp ) {
@@ -1561,6 +1566,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     return $item;
+  }
+
+  function enable_cdn_rewrite_maybe() {
+    // Support WordPress CDN plugins - can slow down the PHP if you have hundreds of videos on a single page
+    // We tried to check if the video is using the site domain before checking with the WordPress CDN plugins
+    // But there is just no way around this - even that would be slow
+    // So if you greatly care about peformance use:
+    //
+    // add_filter( 'fv_player_performance_disable_wp_cdn', '__return_true' );
+    if( !apply_filters( 'fv_player_performance_disable_wp_cdn', false ) ) {
+      add_filter( 'fv_player_item', array( $this, 'enable_cdn_rewrite'), 11 );
+    }
   }
   
   public static function esc_caption( $caption ) {
