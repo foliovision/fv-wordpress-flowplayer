@@ -123,6 +123,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
+    [sticky_min_width] => 1020
     [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
     [script_dash_js_version] => 2.7
