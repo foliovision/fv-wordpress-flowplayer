@@ -94,6 +94,7 @@ if( is_admin() ) {
   include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
   include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
   include_once(dirname( __FILE__ ) . '/models/conversion.php');
+  include_once( dirname( __FILE__ ) .'/models/splash-download.php');
 
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 }

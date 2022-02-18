@@ -937,6 +937,7 @@ jQuery(function() {
           $chapters_element = $playlist_row = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
           $caption_element = $parent_table.find('#fv_wp_flowplayer_field_caption'),
           $splash_element = $parent_table.find('#fv_wp_flowplayer_field_splash'),
+          $splash_attachment_id_element = $parent_table.find('#fv_wp_flowplayer_field_splash_attachment_id'),
           $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash'),
           $auto_caption_element = $element.siblings('#fv_wp_flowplayer_field_auto_caption');
 
@@ -1144,6 +1145,12 @@ jQuery(function() {
                             }
                           }
                           break;
+
+                        case 'splash_attachment_id':
+                          if (json_data.splash_attachment_id) {
+                            $splash_attachment_id_element.val(json_data.splash_attachment_id);
+                          }
+                          break
                       }
                     }
                   }

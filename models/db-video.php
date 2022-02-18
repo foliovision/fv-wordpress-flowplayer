@@ -29,6 +29,7 @@ class FV_Player_Db_Video {
     $rtmp_path, // if RTMP is set, this will have the path on the server to the RTMP stream
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
+    $splash_attachment_id, // splash attachment id
     $src, // the main video source
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
@@ -122,6 +123,13 @@ class FV_Player_Db_Video {
    */
   public function getSplashText() {
     return $this->splash_text;
+  }
+
+  /**
+   * @return int
+   */
+  public function getSplashAttachmentId() {
+    return $this->splash_attachment_id;
   }
 
   /**
@@ -839,6 +847,25 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_keys   = array();
     $data_values = array();
 
+    if( $is_update ) {
+      $splash_attachment_id = $this->getSplashAttachmentId();
+
+      // check if splash url changed
+      if( !empty( $splash_attachment_id ) ) {
+        $saved_splash = wp_get_attachment_image_url($splash_attachment_id, 'full', false);
+        if( !empty( $saved_splash ) ) {
+          $saved_parse = wp_parse_url( $saved_splash );
+          $current_parse = $this->getSplash() ? wp_parse_url( $this->getSplash() ) : false;
+
+          // if splash removed or changed, delete splash attachment
+          if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
+            delete_post_meta( $splash_attachment_id, 'fv_player_video_id', $this->getId() );
+            $this->splash_attachment_id = '';
+          }
+        }
+      }
+    }
+
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
         $data_keys[] = $property . ' = %s';
@@ -918,6 +945,25 @@ CREATE TABLE " . self::$db_table_name . " (
       $cache = self::$DB_Instance->getVideosCache();
       $cache[$this->id] = $this;
       self::$DB_Instance->setVideosCache($cache);
+
+      $saved_attachments = $wpdb->get_col( 
+        $wpdb->prepare( "SELECT post_id FROM `{$wpdb->postmeta}` WHERE meta_key = 'fv_player_video_id' AND meta_value = %d", $this->getId() )
+      );
+
+      // check for unused attachments
+      if( !empty( $saved_attachments ) ) {
+        foreach( $saved_attachments as $post_id ) {
+          // remove if not used
+          if( $splash_attachment_id != $post_id ) {
+            delete_post_meta( $post_id, 'fv_player_video_id' );
+          }
+        }
+      }
+
+      // store video id for splash attachment
+      if( $this->getSplashAttachmentId() ) {
+        update_post_meta($splash_attachment_id, 'fv_player_video_id', $this->getId() );
+      }
 
       return $this->id;
     } else {

@@ -852,3 +852,34 @@ function fv_player_load_video_encoder_libs() {
   require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-base.php' );
   require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-step-base.php' );
 }
+
+/**
+ * Attachment edit - show attached posts
+ */
+add_action( 'attachment_submitbox_misc_actions', 'fv_player_submitbox_misc_actions' );
+
+function fv_player_submitbox_misc_actions( $attachment ) {
+  global $pagenow, $typenow;
+
+  // We only want to run the code on a specific page
+  if( $pagenow != 'post.php' || $typenow != 'attachment' ) {
+    return;
+  }
+
+  global $fv_fp;
+
+  $video_id = get_post_meta( $attachment->ID, 'fv_player_video_id', true );
+
+  if( !empty($video_id) ) {
+    $players = $fv_fp->get_players_by_video_ids( $video_id );
+
+    // Iterate players and create html with name and link to player
+    foreach( $players as $player ) {
+      ?>
+        <div class="misc-pub-section misc-pub-attachment">
+          FV Player splash screen: <strong><a href="<?php echo esc_url( admin_url( 'admin.php?page=fv_player&id='. $player->getId() ) ); ?>"><?php echo esc_html( $player->getPlayerNameWithFallback() ); ?></a></strong>
+        </div>
+      <?php
+    }
+  }
+}

@@ -859,6 +859,42 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Returns player name, if its empty then its assembled from video captions and /or sources
+   *
+   * @return string player name from getter or assembled name
+   */
+  public function getPlayerNameWithFallback() {
+    $player_name = $this->getPlayerName();
+
+    // player name is present - return it
+    if( !empty( $player_name ) ) {
+      return $player_name;
+    }
+
+    // else assemble player name
+    $player_name = array();
+
+    foreach( $this->getVideos() as $video ) {
+      $caption = $video->getCaption();
+      if( !$caption ) {
+        $caption = $video->getCaptionFromSrc();
+      }
+
+      $player_name[] = $caption;
+    }
+
+    // join name items
+    $player_name = join(', ', $player_name);
+
+    // add "Draft" at the end of player, if in draft status
+    if ( $this->getStatus() == 'draft' ) {
+      $player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
+    }
+
+    return $player_name;
+  }
+
+  /**
    * Returns all global options data for this player.
    *
    * @return array Returns all global options data for this player.
