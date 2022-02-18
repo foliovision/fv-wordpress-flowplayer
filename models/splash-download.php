@@ -94,6 +94,8 @@ class FV_Player_Splash_Download {
 
       require_once(ABSPATH . 'wp-admin/includes/image.php');
 
+      update_post_meta( $attach_id, 'fv_player_original_splash_url', $splash_url ); // store original splash url in attachment meta
+
       $attach_data = wp_generate_attachment_metadata( $attach_id, $file_name );
       wp_update_attachment_metadata( $attach_id, $attach_data );
 
