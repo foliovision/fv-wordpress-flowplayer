@@ -605,6 +605,8 @@ abstract class FV_Player_Video_Encoder {
       'video_id' => false
     ) );
 
+    $video_ids = explode( ',', $args['video_id'] );
+
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
       'date_created' => date("Y-m-d H:i:s"),
@@ -615,7 +617,8 @@ abstract class FV_Player_Video_Encoder {
       'status' => 'created',
       'output' => $this->prepare_job_output_column_value(),
       'args' => '',
-      'author' => get_current_user_id()
+      'author' => get_current_user_id(),
+      'id_video' => $video_ids[0]
     ), array(
       '%s',
       '%s',
@@ -625,6 +628,7 @@ abstract class FV_Player_Video_Encoder {
       '%s',
       '%s',
       '%s',
+      '%d',
       '%d'
     ));
 
