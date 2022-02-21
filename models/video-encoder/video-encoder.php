@@ -15,7 +15,9 @@ abstract class FV_Player_Video_Encoder {
   // variables to override or access from outside of the base class
   protected
     $version = 'latest',
-    $license_key = false,
+    $license_key = false;
+    
+  public
     $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
   public function _get_instance() {
