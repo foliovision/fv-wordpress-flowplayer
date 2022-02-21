@@ -3208,6 +3208,8 @@ jQuery(function() {
       $('.fv_wp_flowplayer_field_subtitles_lang, .subtitle_language_add_link').attr('style',false);
 
       tabs_refresh();
+
+      $doc.trigger('fv-player-editor-video-opened', [ item_index ] );
     }
 
     /*
@@ -3292,6 +3294,8 @@ jQuery(function() {
       jQuery('.fv-player-tab-playlist').show();
       editor_resize();
       tabs_refresh();
+      
+      $doc.trigger('fv-player-editor-video-opened', [ item_index ] );
 
       return false;
     }
