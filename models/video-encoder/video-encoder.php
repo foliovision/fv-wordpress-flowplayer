@@ -16,7 +16,9 @@ abstract class FV_Player_Video_Encoder {
   // variables to override or access from outside of the base class
   protected
     $version = 'latest',
-    $license_key = false,
+    $license_key = false;
+    
+  public
     $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
   public function _get_instance() {
@@ -513,7 +515,11 @@ abstract class FV_Player_Video_Encoder {
     if ( $check_result ) {
       $check = $check_result;
     } else if ( $fv_fp->current_video() ) {
+      if ( !$job_id ) {
       $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
+    } else {
+        $check = $this->job_check( (int) $job_id );
+      }
     } else {
       user_error('Could not retrieve JOB check for encoder ' . $this->encoder_name . ', job ID: ' . $job_id . ', defaulted back to input value: ' . print_r( $check_result, true ), E_USER_WARNING );
       return $check_result;
@@ -607,6 +613,8 @@ abstract class FV_Player_Video_Encoder {
       'id_video' => false
     ) );
 
+    $video_ids = explode( ',', $args['video_id'] );
+
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
       'date_created' => date("Y-m-d H:i:s"),
@@ -618,7 +626,8 @@ abstract class FV_Player_Video_Encoder {
       'status' => 'created',
       'output' => $this->prepare_job_output_column_value(),
       'args' => '',
-      'author' => get_current_user_id()
+      'author' => get_current_user_id(),
+      'id_video' => $video_ids[0]
     ), array(
       '%s',
       '%d',
@@ -629,6 +638,7 @@ abstract class FV_Player_Video_Encoder {
       '%s',
       '%s',
       '%s',
+      '%d',
       '%d'
     ));
 
