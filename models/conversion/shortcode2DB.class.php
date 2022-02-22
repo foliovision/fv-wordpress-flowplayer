@@ -10,7 +10,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         "'%[fvplayer src=%'",
         "'%[flowplayer src=%'",
       ),
-      'help' => __("This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.\n\nPlease make sure you backup your database before continuing. You can use revisions to get back to previos versions of your posts as well.", 'fv-wordpress-flowplayer')
+      'help' => __("This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.", 'fv-wordpress-flowplayer')
     ) );
   }
 
@@ -238,25 +238,30 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
             // echo '</pre>';
             // die();
 
-            global $FV_Player_Db;
-            $player_id =  $FV_Player_Db->import_player_data(false, false, $import_player_atts);
+            if( $this->is_live() ) {
+              global $FV_Player_Db;
+              $player_id =  $FV_Player_Db->import_player_data(false, false, $import_player_atts);
 
-            if( $player_id > 0 ) {
-              // echo "Inserted player #".$player_id."\n";
-              $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
-              $content_updated = true;
-              $output_msg = "New FV Player #" . $player_id ;
+              if( $player_id > 0 ) {
+                // echo "Inserted player #".$player_id."\n";
+                $new_content = str_replace( $shortcode , '[fvplayer id="'.$player_id.'"]', $new_content );
+                $content_updated = true;
+                $output_msg = "New FV Player #" . $player_id ;
+              } else {
+                $failed_msg = "Error saving FV Player instance";
+
+                $errors[] = array(
+                  'ID' => $post->ID,
+                  'post_title' => $post->post_title,
+                  'post_link' => get_permalink( $post->ID ),
+                  'post_edit' => get_edit_post_link( $post->ID ),
+                  'shortcode' => $shortcode,
+                  'message' => $failed_msg
+                );
+              }
+              
             } else {
-              $failed_msg = "Error saving FV Player instance";
-
-              $errors[] = array(
-                'ID' => $post->ID,
-                'post_title' => $post->post_title,
-                'post_link' => get_permalink( $post->ID ),
-                'post_edit' => get_edit_post_link( $post->ID ),
-                'shortcode' => $shortcode,
-                'message' => $failed_msg
-              );
+              $output_msg = "Would create new FV Player";
             }
           }
 
@@ -287,7 +292,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         <td><label>Convert <code>[fvplayer src="..."]</code> shortocdes to database-driven <code>[fvplayer id="..."]</code> :</label></td>
         <td>
           <p class="description">
-            <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php _e('Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-wordpress-flowplayer') ?>') )location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
+            <input type="button" class="button" value="<?php _e('Convert FV Player shortcodes to DB', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
           </p>
         </td>
       </tr>
