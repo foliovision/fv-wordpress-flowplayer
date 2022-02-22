@@ -604,8 +604,7 @@ abstract class FV_Player_Video_Encoder {
    * @return ID                 Job ID
    */
   public function job_create( $args ) {
-    global $wpdb;
-    global $fv_fp;
+    global $wpdb, $fv_fp;
 
     $args = wp_parse_args( $args, array(
       'encryption' => false,
@@ -613,7 +612,7 @@ abstract class FV_Player_Video_Encoder {
       'id_video' => false
     ) );
 
-    $video_ids = explode( ',', $args['video_id'] );
+    $video_ids = explode( ',', strval($args['id_video']) );
 
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
