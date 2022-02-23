@@ -1938,7 +1938,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 <script type="text/javascript">
 	console.log( 'FV Player Settings screen loading...');
-	jQuery(document).one( 'ready', function() {
+	jQuery(window).one( 'load', function() {
     console.log( 'FV Player Settings screen initializing settings boxes...');
 
 		// close postboxes that should be closed
@@ -2037,7 +2037,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_optimize.prop('readonly', cb_js_everywhere.prop('checked') );
     }
-    cb_js_everywhere.click( check_js_everywhere );
+    cb_js_everywhere.on( 'click', check_js_everywhere );
     check_js_everywhere();
 
     function check_js_optimize( was_clicked ) {
@@ -2048,7 +2048,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_everywhere.prop('readonly', cb_js_optimize.prop('checked') );
     }
-    cb_js_optimize.click( check_js_optimize );
+    cb_js_optimize.on( 'click', check_js_optimize );
     check_js_optimize();
 
     console.log( 'FV Player Settings screen initializing finished.');
@@ -2056,15 +2056,15 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 </script>
 
 <script>
-/* TABS */  
-jQuery(document).one( 'ready', function(){
+/* TABS */
+jQuery(window).one( 'load', function() {
   jQuery('#fv_player_js_warning').hide();
-  
+
   var anchor = window.location.hash.substring(1);
   if( !anchor || !anchor.match(/tab_/) ) {
     anchor = 'postbox-container-tab_basic';
   }
-  
+
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
