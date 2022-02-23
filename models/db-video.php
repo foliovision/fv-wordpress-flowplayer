@@ -210,6 +210,7 @@ CREATE TABLE " . self::$db_table_name . " (
   src varchar(1024) NOT NULL,
   src1 varchar(1024) NOT NULL,
   src2 varchar(1024) NOT NULL,
+  splash_attachment_id bigint(20) unsigned,
   splash varchar(1024) NOT NULL,
   splash_text varchar(1024) NOT NULL,
   caption varchar(1024) NOT NULL,
