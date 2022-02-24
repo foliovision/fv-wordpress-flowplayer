@@ -1855,19 +1855,19 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       </h2>
     </div>    
   
-		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
+    <div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>    
-				<?php
-				do_meta_boxes($val['id'], 'normal', false );
-				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
-				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
-				?>
-			</div>
+      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>
+        <?php do_meta_boxes($val['id'], 'normal', false ); ?>
+      </div>
       <?php endforeach;?>
       <div style="clear: both"></div>
-		</div>
-    <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
+    </div>
+    <?php
+    wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' );
+    wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
+    wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
+    ?>
   </form>
   
 </div>
@@ -1937,20 +1937,22 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 
 <script type="text/javascript">
-	//<![CDATA[
-	jQuery(document).one( 'ready', function() {
+	console.log( 'FV Player Settings screen loading...');
+	jQuery(window).one( 'load', function() {
+    console.log( 'FV Player Settings screen initializing settings boxes...');
+
 		// close postboxes that should be closed
 		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
-    
+
     jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
-      
+
       jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_activate_extension' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
         button.siblings('img').eq(0).hide();
-        
+
         var obj;
         try {
           response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
@@ -2035,7 +2037,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_optimize.prop('readonly', cb_js_everywhere.prop('checked') );
     }
-    cb_js_everywhere.click( check_js_everywhere );
+    cb_js_everywhere.on( 'click', check_js_everywhere );
     check_js_everywhere();
 
     function check_js_optimize( was_clicked ) {
@@ -2046,22 +2048,23 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_everywhere.prop('readonly', cb_js_optimize.prop('checked') );
     }
-    cb_js_optimize.click( check_js_optimize );
+    cb_js_optimize.on( 'click', check_js_optimize );
     check_js_optimize();
+
+    console.log( 'FV Player Settings screen initializing finished.');
   });
-	//]]>
 </script>
 
 <script>
-/* TABS */  
-jQuery(document).ready(function(){
+/* TABS */
+jQuery(window).one( 'load', function() {
   jQuery('#fv_player_js_warning').hide();
-  
+
   var anchor = window.location.hash.substring(1);
   if( !anchor || !anchor.match(/tab_/) ) {
     anchor = 'postbox-container-tab_basic';
   }
-  
+
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();

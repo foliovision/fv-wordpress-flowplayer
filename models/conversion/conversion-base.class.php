@@ -73,7 +73,7 @@ abstract class FV_Player_Conversion_Base {
 
         $conversions_output = array_merge( $conversions_output, $result['output_data'] );
 
-        if( $result['content_updated'] ) {
+        if( $this->is_live() && $result['content_updated'] ) {
           wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
         }
       }
@@ -168,6 +168,10 @@ abstract class FV_Player_Conversion_Base {
         <?php echo wpautop($this->help); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
+          
+          <?php // This checkbox shows the JS confirmation box when clicked to enable ?>
+          <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php _e('Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-wordpress-flowplayer') ?>') " /> <label for="make-changes">Make changes</label>
+
           <input class="button-primary" type="submit" name="convert" value="Start" />
         </p>
 
@@ -206,6 +210,10 @@ abstract class FV_Player_Conversion_Base {
         });
       </script>
     <?php
+  }
+  
+  function is_live() {
+    return !empty($_POST['make-changes']) && $_POST['make-changes'] == 'true';
   }
 
 }

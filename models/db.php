@@ -224,6 +224,11 @@ class FV_Player_Db {
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
     } else if ($search) {
+      // Try to load the player which ID matches the search query it it's a number
+      if( is_numeric($search) ) {
+        new FV_Player_Db_Player( $search );
+      }
+
       // search for videos that are consistent with the search text
       // and load their players only
       $vids = FV_Player_Db_Video::search(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
@@ -256,6 +261,7 @@ class FV_Player_Db {
           'db_options' => $db_options
         ), $FV_Player_Db );
       }
+
     } else {
       // load all players, which will put them into the cache automatically
 

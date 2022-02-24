@@ -169,7 +169,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   display: none;
 }
 
-.show-info, .show-info:hover, .show-info:active, .show-info:focus { color: #444; box-shadow: none; }
+.show-info, .show-info:hover, .show-info:active, .show-info:focus { color: #444; box-shadow: none; text-decoration: none; }
 .fv-player-admin-tooltip {
   position: absolute;
   background: white;

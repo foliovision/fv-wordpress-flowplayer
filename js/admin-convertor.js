@@ -8,7 +8,14 @@ $.fn.Progressor = function(args) {
         $.ajax({
           url: opts.url,
           cache: false,
-          data: ({ action: opts.action, offset: offset, limit: opts.limit, _ajax_nonce: opts.nonce, offset2: $('[name=offset]').val(), verbose: $('[name=verbose]').is(':checked')
+          data: ({
+            action: opts.action,
+            offset: offset,
+            limit: opts.limit,
+            _ajax_nonce: opts.nonce,
+            offset2: $('[name=offset]').val(),
+            verbose: $('[name=verbose]').is(':checked'),
+            'make-changes': jQuery('#make-changes').prop('checked')
           }),
           type: 'POST',
           error: showAlert ,
@@ -82,6 +89,8 @@ $.fn.Progressor = function(args) {
         }
       }
       else {
+        $("#output").html('');
+
         offset = 0;
         running = true;
 
