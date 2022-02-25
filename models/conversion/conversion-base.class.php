@@ -52,11 +52,9 @@ abstract class FV_Player_Conversion_Base {
       $offset = 0 + intval($_POST['offset2']) + $offset;
       $limit = intval($_POST['limit']);
 
-      $total = $this->get_count();
-
       $posts = $this->get_posts_with_shortcode( $offset, $limit );
 
-      $start = microtime(true);
+      $total = $this->get_count();
 
       foreach( $posts AS $post ) {
         $result = $this->convert_one($post);
