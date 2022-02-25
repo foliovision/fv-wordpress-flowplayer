@@ -81,13 +81,12 @@ abstract class FV_Player_Conversion_Base {
 
       // build html output
       foreach( $conversions_output as $output_data ) {
-        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "' target='_blank'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."' target='_blank'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
+        $html[] = "<tr><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "' target='_blank'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."' target='_blank'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
       }
 
       // response
       echo json_encode(
         array(
-          'timing' => microtime(true) - $start,
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
           'left' => $left,

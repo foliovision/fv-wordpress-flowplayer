@@ -45,8 +45,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
    * @return arrray
    */
   function convert_one( $post ) {
-    $start = microtime(true);
-
     $content_updated = false; // track if content was updated
     $new_content = $post->post_content; // copy of content for update
     $output_data = array(); // output for html
