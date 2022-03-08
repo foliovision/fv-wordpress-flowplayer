@@ -1460,16 +1460,10 @@ class FV_Player_Db {
         $player->setVideos(implode(',', $player_video_ids));
 
         // save player
-        $id_player = $player->save();
-
-        // create player meta, if any
-        if (isset($data['meta'])) {
-          foreach ($data['meta'] as $meta_data) {
-            $meta_object = new FV_Player_Db_Player_Meta(null, $meta_data, $FV_Player_Db);
-            $meta_object->link2db($id_player, true);
-            $meta_object->save();
-          }
-        }
+        $id_player = $player->save(
+          isset($data['meta']) ? $data['meta'] : array(),
+          true
+        );
 
       } catch (Exception $e) {
         if (WP_DEBUG) {
