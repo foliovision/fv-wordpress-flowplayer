@@ -31,6 +31,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'caption',
       'subtitles',
       'ab',
+      'chapters',
+      'controlbar',
       'speed'
     );
 
@@ -231,6 +233,19 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
               $video_index++;
             }
+          } else if(strcmp( $player_att, 'chapters' ) == 0) { // subtitles
+            $chapters = explode(';', $import_atts[$player_att]);
+            foreach( $chapters as $chapters_vtt ) {
+              if( !empty( $chapters_vtt ) ) {
+                if( !isset( $import_video_atts[$video_index]['meta'] ) ) {
+                  $import_video_atts[$video_index]['meta'] = array();
+                }
+                $import_video_atts[$video_index]['meta'][] = array( 'meta_key' => 'chapters', 'meta_value' => esc_url_raw($chapters_vtt) );
+              }
+
+              $video_index++;
+            }
+
           } else { // other atts
             $import_player_atts[$player_att] =  $import_atts[$player_att];
           }
