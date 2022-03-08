@@ -341,7 +341,7 @@ class FV_Player_List_Table extends WP_List_Table {
   public function get_data() {
     $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
     $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
-    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'p.id';
+    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
 
