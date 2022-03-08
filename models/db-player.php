@@ -1021,11 +1021,12 @@ CREATE TABLE " . self::$db_table_name . " (
    *
    * @param array $meta_data An optional array of key-value objects
    *                         with possible meta data for this player.
+   * @param bool  $is_import Used when importing to respect the desired player status flag
    *
    * @return bool|int Returns record ID if successful, false otherwise.
    * @throws Exception When the underlying metadata object throws.
    */
-  public function save($meta_data = array()) {
+  public function save($meta_data = array(), $is_import = false ) {
     global $wpdb;
 
     // prepare SQL
@@ -1057,7 +1058,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // make sure status is set to "draft" for a new player
         if ( $property == 'status' ) {
-          if ( !$is_update ) {
+          if ( !$is_update && !$is_import ) {
             $value = 'draft';
           } else if ( !$value ) {
             // for existing player, only update if we need to change player status
