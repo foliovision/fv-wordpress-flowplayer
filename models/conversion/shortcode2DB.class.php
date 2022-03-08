@@ -57,7 +57,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function get_posts_with_shortcode($offset, $limit) {
     global $wpdb;
 
-    $results = $wpdb->get_results( "SELECT SQL_CALC_FOUND_ROWS ID, post_author, post_date_gmt, post_status, post_title, post_type, post_content FROM {$wpdb->posts} WHERE post_status NOT IN ('inherit','trash') AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") AND post_type NOT IN ('topic','reply') ORDER BY post_date_gmt DESC LIMIT {$offset},{$limit}");
+    // Each row is the matching wp_posts row or wp_posts row with matching meta_value
+    $results = $wpdb->get_results( "SELECT SQL_CALC_FOUND_ROWS  ID, post_author, post_date_gmt, post_status, post_title, post_type, post_content FROM {$wpdb->posts} AS p JOIN {$wpdb->postmeta} AS m ON p.ID = m.post_id WHERE post_status NOT IN ('inherit','trash') AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") AND post_type NOT IN ('topic','reply') OR (meta_value LIKE " . implode(' OR meta_value LIKE ',$this->matchers) . ") GROUP BY ID ORDER BY post_date_gmt DESC LIMIT {$offset},{$limit}");
 
     return $results;
   }
@@ -86,9 +87,60 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
           if( $result ) {
 
             $new_content = $result['new_content'];
+            if( $result['content_updated'] ) {
+              $content_updated = $result['content_updated'];
+            }
             $errors = array_merge( $errors, $result['errors'] );
 
             $output_data[] = $result['data'];
+          }
+        }
+      }
+    }
+
+    $meta = get_post_custom( $post->ID );
+
+    if( is_array($meta) ) {
+      foreach( $meta AS $meta_key => $meta_values ) {
+        // Skip meta keys created by the conversion
+        if(
+          preg_match( '~^_fv_player_.*?_backup_~', $meta_key ) ||
+          preg_match( '~^_fv_player_.*?_failed$~', $meta_key )
+        ) {
+          continue;
+        }
+
+        foreach( $meta_values AS $meta_value ) {
+
+          // Skip serialized meta values, it would be tricky to update
+          if( is_serialized($meta_value) ) {
+            continue;
+          }
+
+          $original_meta_value = $meta_value;
+
+          $meta_updated = false;
+
+          preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_value, $matched_shortcodes );
+
+          if( !empty($matched_shortcodes) ) {
+            foreach( $matched_shortcodes[0] as $shortcode ) {
+              $result = $this->worker( $shortcode, $post, $meta_value, $meta_key );
+              if( $result ) {
+                if( $result['content_updated'] ) {
+                  $meta_updated = $result['content_updated'];
+                  $meta_value = $result['new_content'];
+                }
+                $errors = array_merge( $errors, $result['errors'] );
+
+                $output_data[] = $result['data'];
+              }
+            }
+          }
+
+          if( $this->is_live() && $meta_updated ) {
+            update_post_meta( $post->ID, '_fv_player_'.$this->slug.'_backup_'.$meta_key, $original_meta_value );
+            update_post_meta( $post->ID, $meta_key, $meta_value, $original_meta_value );
           }
         }
       }
@@ -115,7 +167,9 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     <?php
   }
 
-  function worker( $shortcode, $post, $new_content ) {
+  function worker( $shortcode, $post, $new_content, $meta_key = false ) {
+    $content_updated = false;
+
     $atts = shortcode_parse_atts( trim(rtrim($shortcode,']')) );
     $import_video_atts = array();
     $import_player_atts = array();
@@ -311,17 +365,23 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       }
     }
 
+    $type = $post->post_type;
+    if( $meta_key ) {
+      $type .= '<br />meta_key: <code>'.$meta_key.'</code>';
+    }
+
     return array(
       'errors' => $errors,
       'data' => array(
         'ID' => $post->ID,
         'title' => $post->post_title,
-        'type' => $post->post_type,
+        'type' => $type,
         'shortcode' => $shortcode,
         'output' => $output_msg,
         'error' => $failed_msg
       ),
-      'new_content' => $new_content
+      'new_content' => $new_content,
+      'content_updated' => $content_updated
     );
   }
 
