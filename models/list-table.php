@@ -347,7 +347,9 @@ class FV_Player_List_Table extends WP_List_Table {
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;
-    return FV_Player_Db::getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
+
+    global $FV_Player_Db;
+    return $FV_Player_Db->getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
   }
   
   public function prepare_items() {

@@ -211,7 +211,7 @@ class FV_Player_Db {
    * @return array     Returns an array of all list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
-  public static function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
+  public function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
     global $player_ids_when_searching, $FV_Player_Db; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
 
     // sanitize variables
