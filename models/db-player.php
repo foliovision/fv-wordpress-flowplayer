@@ -546,7 +546,6 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     $this->initDB($wpdb);
-    $multiID = is_array($id) || $id === null;
 
     // don't load anything, if we've only created this instance
     // to initialize the database (this comes from list-table.php and unit tests)
@@ -554,16 +553,71 @@ CREATE TABLE " . self::$db_table_name . " (
       return;
     }
 
+    if ( is_numeric($id) && $id >= -1 ) {
+      /* @var $cache FV_Player_Db_Player[] */
+      $cache = ($DB_Cache ? $DB_Cache->getPlayersCache() : array());
+      $all_cached = false;
+
+      if ($DB_Cache && !$DB_Cache->isPlayerCached($id)) {
+        // load a single video
+        $player_data = $wpdb->get_row('
+        SELECT
+          *
+        FROM
+          '.self::$db_table_name.'
+        WHERE
+          id = '.intval($id),
+          ARRAY_A
+        );
+      } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
+        $all_cached = true;
+      } else {
+        $player_data = -1;
+        $this->is_valid = false;
+      }
+
+      if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
+
+        $this->fill_properties($player_data,$DB_Cache);
+
+        // cache this player in DB object
+        if ($DB_Cache) {
+          $cache[$this->id] = $this;
+        }
+
+      } else if ($all_cached) {
+        // fill the data for this class with data of the cached class
+        $cached_player = $cache[$id];
+
+        foreach ($cached_player->getAllDataValues() as $key => $value) {
+          if( is_array($value) ) continue; // problem with video_objects when exporting
+
+          $this->$key = $value === null ? $value : stripslashes($value);
+        }
+
+        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
+        $this->id = $this->id_player;
+
+        // add meta data
+        $this->meta_data = $cached_player->getMetaData();
+
+        // make this class a valid player
+        $this->is_valid = true;
+      } else if ($player_data !== -1) {
+        // no players found in DB
+        $this->is_valid = false;
+      }
+
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new player into the DB in such case
-    if (is_array($options) && count($options) && !isset($options['db_options'])) {
+    } else if (is_array($options)) {
 
       if( !empty($options['id']) ) {
         // ID cannot be set, as it's automatically assigned to all new players
         trigger_error('ID of a newly created DB player was provided but will be generated automatically.');
         unset($options['id']);
       }
-      
+
       $this->fill_properties($options);
 
       // add dates for newly created players
@@ -581,180 +635,6 @@ CREATE TABLE " . self::$db_table_name . " (
         } else {
           $this->changed_by = get_current_user_id();
         }
-      }
-    } else if ($multiID || (is_numeric($id) && $id >= -1)) {
-      /* @var $cache FV_Player_Db_Player[] */
-      $cache = ($DB_Cache ? $DB_Cache->getPlayersCache() : array());
-      $all_cached = false;
-
-      // no options, load data from DB
-      if ($multiID) {
-        $query_ids = array();
-
-        if ($id !== null) {
-          // make sure we have numeric IDs and that they're not cached yet
-          $query_ids = array();
-          foreach ( $id as $id_key => $id_value ) {
-            // check if this player is not cached yet
-            if ($DB_Cache && !$DB_Cache->isPlayerCached($id_value)) {
-              $query_ids[ $id_key ] = (int) $id_value;
-            }
-
-            $id[ $id_key ] = (int) $id_value;
-          }
-        }
-
-        if ($id === null || count($query_ids)) {
-          
-          // load multiple players via their IDs but a single query and return their values
-          $select = 'p.*';
-          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'p.id,'.esc_sql($options['db_options']['select_fields']);
-          
-          $where = '';
-          if( $id !== null ) {
-            $where = ' WHERE p.id IN('. implode(',', $query_ids).') ';
-            
-          // if we have multiple video IDs to load players for, let's prepare a like statement here
-          } else if( !empty($options['db_options']) && !empty($options['db_options']['search_by_video_ids'])){
-            $where_like_part = array();
-            foreach ($options['db_options']['search_by_video_ids'] as $player_video_id) {
-              $player_video_id = intval($player_video_id);
-              $where_like_part[] = "(videos = \"$player_video_id\" OR videos LIKE \"%,$player_video_id\" OR videos LIKE \"$player_video_id,%\")";
-            }
-
-            $where = ' WHERE '.implode(' OR ', $where_like_part);
-          } else if( !empty( $options['db_options'] ) && array_key_exists( 'author_id', $options['db_options'] ) ) {
-            $where = ' WHERE author ='.$options['db_options']['author_id'];
-          }
-
-          $order = '';
-          if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
-            $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
-            if( !empty($options['db_options']['order']) ) $order .= ' '.esc_sql($options['db_options']['order']);
-          }
-          
-          $limit = '';
-          if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
-            $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
-          }
-          
-          $meta_counts_select = '';
-          $meta_counts_join = '';
-          if( is_admin() ) {
-            $meta_counts_select = ',
-  count(subtitles.id) as subtitles_count,
-  count(cues.id) as cues_count,
-  count(chapters.id) as chapters_count,
-  count(transcript.id) as transcript_count';
-            $meta_counts_join = 'LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS cues ON v.id = cues.id_video AND cues.meta_key like "cues%"
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
-  LEFT JOIN `'.$wpdb->prefix.'fv_player_videometa` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
-  ';
-          }
-          
-          $player_data = $wpdb->get_results('SELECT
-  '.$select.$meta_counts_select.'
-  FROM `'.self::$db_table_name.'` AS p
-  JOIN `'.$wpdb->prefix.'fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
-  '.$meta_counts_join.$where.'
-  GROUP BY p.id
-  '.$order.$limit);
-
-        } else if ($id !== null && !count($query_ids)) {
-          $all_cached = true;
-        } else {
-          $player_data = -1;
-          $this->is_valid = false;
-        }
-      } else {
-        if ($DB_Cache && !$DB_Cache->isPlayerCached($id)) {
-          // load a single video
-          $player_data = $wpdb->get_row('
-          SELECT
-            '.($options && !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ? 'id,'.esc_sql( $options['db_options']['select_fields'] ) : '*').'
-          FROM
-            '.self::$db_table_name.'
-          WHERE
-            id = '.intval($id),
-            ARRAY_A
-          );
-        } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
-          $all_cached = true;
-        } else {
-          $player_data = -1;
-          $this->is_valid = false;
-        }
-      }
-
-      if (isset($player_data) && $player_data !== -1 && is_array($player_data) && count($player_data)) {
-
-        // single ID, just populate our own data
-        if (!$multiID) {
-          $this->fill_properties($player_data,$DB_Cache);
-
-          // cache this player in DB object
-          if ($DB_Cache) {
-            $cache[$this->id] = $this;
-          }
-        } else {
-          // multiple IDs, create new player objects for each of them
-          // and cache those (except for the first one, which will be
-          // this actual instance)
-          $first_done = false;
-          foreach ($player_data as $db_record) {
-            if (!$first_done) {
-              $this->fill_properties($db_record,$DB_Cache);
-              
-              $first_done = true;
-
-              // cache this player in DB object
-              if ($DB_Cache) {
-                $cache[$db_record->id] = $this;
-              }
-            } else {
-              // create a new video object and populate it with DB values
-              $record_id = $db_record->id;
-              // if we don't unset this, we'll get warnings
-              unset($db_record->id);
-
-              if (self::$DB_Instance && !self::$DB_Instance->isPlayerCached($record_id)) {
-                $player_object = new FV_Player_Db_Player( null, get_object_vars( $db_record ), self::$DB_Instance );
-                $player_object->link2db( $record_id );
-
-                // cache this player in DB object
-                if ($DB_Cache) {
-                  $cache[$record_id] = $player_object;
-                }
-              }
-            }
-          }
-        }
-      } else if ($all_cached) {
-        // fill the data for this class with data of the cached class
-        if ($multiID) {
-          $cached_player = $cache[reset($id)];
-        } else {
-          $cached_player = $cache[$id];
-        }
-
-        foreach ($cached_player->getAllDataValues() as $key => $value) {
-          if( is_array($value) ) continue; // problem with video_objects when exporting
-          
-          $this->$key = $value === null ? $value : stripslashes($value);
-        }
-
-        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
-        $this->id = $this->id_player;
-
-        // add meta data
-        $this->meta_data = $cached_player->getMetaData();
-
-        // make this class a valid player
-        $this->is_valid = true;
-      } else if ($player_data !== -1) {
-        // no players found in DB
-        $this->is_valid = false;
       }
     } else {
       if ( defined('WP_DEBUG') && WP_DEBUG ) {
