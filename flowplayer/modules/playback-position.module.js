@@ -348,10 +348,14 @@ if (!Date.now) {
         return position;
       }
 
+      isSupported = function() {
+        return !( api.live || api.video && api.video.click );
+      }
+
       // used to seek into the desired last stored position when he video has started
       seekIntoPosition = function (e, api) {
         // do not restore position for live video or video ad
-        if( api.video && (api.video.live || api.video.click ) ) return;
+        if( !isSupported() ) return;
 
         var position = getVideoPosition(api);
 
@@ -365,7 +369,7 @@ if (!Date.now) {
 
       // stores currently played/paused/stopped video position
       storeVideoPosition = function (e, api) {
-        if (api.live) {
+        if ( !isSupported() ) {
           return;
         }
 
