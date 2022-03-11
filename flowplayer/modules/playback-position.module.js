@@ -523,7 +523,9 @@ if (!Date.now) {
     // this used to run on ready event for !flowplayer.support.fvmobile,
     // but then we run into some reliability issue with HLS.js, so it's safer
     // to use progress
-    api.one( 'progress', seekIntoPosition);
+    api.on( 'ready', function() {
+      api.one( 'progress', seekIntoPosition);
+    });
 
     api.bind('unload', function() {
       item_changed = false;
