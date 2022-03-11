@@ -1,7 +1,7 @@
 @charset "UTF-8";
 @font-face {
   font-family: flowplayer;
-  src: url("icons/flowplayer.eot?#iefix") format("embedded-opentype"), url("icons/flowplayer.woff2") format("woff2"), url("icons/flowplayer.woff") format("woff"); }
+  src: url("icons/flowplayer.eot?#iefix") format("embedded-opentype"), url("icons/flowplayer.woff2.php") format("woff2"), url("icons/flowplayer.woff") format("woff"); }
 
 .fp-icon { display: inline-block; }
   .fp-icon:before, .fp-icon:after { font-family: flowplayer; font-size: 1.7em; }
