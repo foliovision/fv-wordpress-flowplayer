@@ -308,16 +308,14 @@ if (!Date.now) {
       player_id = $root.data('player-id') ? $root.data('player-id') : false,
       item_changed = false,
 
-      // used to seek into the desired last stored position when he video has started
-      seekIntoPosition = function (e, api) {
-        if( api.video && api.video.live ) return;
-
+      // get stored video position
+      getVideoPosition = function (api) {
         var
           video_id = getVideoId(api.video),
           position = api.video.position;
 
-        // try to lookup position of a guest visitor
-        if (flowplayer.conf.is_logged_in != '1') {
+         // try to lookup position of a guest visitor
+         if (flowplayer.conf.is_logged_in != '1') {
           var data = getCookieKey(cookiePositionsKeyName);
           if (data && typeof(data) !== 'undefined') {
             try {
@@ -346,6 +344,16 @@ if (!Date.now) {
             position = false;
           }
         }
+
+        return position;
+      }
+
+      // used to seek into the desired last stored position when he video has started
+      seekIntoPosition = function (e, api) {
+        // do not restore position for live video or video ad
+        if( api.video && (api.video.live || api.video.click ) ) return;
+
+        var position = getVideoPosition(api);
 
         api.bind('progress', storeVideoPosition);
 
@@ -486,7 +494,15 @@ if (!Date.now) {
         }
 
         if ( item_index >= 0  && !item_changed ) {
-          api.play(item_index);
+          if( typeof api.queue_video != 'undefined' ) {
+            var position = getVideoPosition(api) ? getVideoPosition(api) : 0;
+            
+            console.log('using queue_video with position', position);
+            api.queue_video(item_index, position);
+          } else {
+            api.play(item_index);
+          }
+          
           item_changed = true;
         }
 
