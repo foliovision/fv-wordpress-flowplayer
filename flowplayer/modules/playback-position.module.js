@@ -365,7 +365,7 @@ if (!Date.now) {
 
       // stores currently played/paused/stopped video position
       storeVideoPosition = function (e, api) {
-        if (api.live) {
+        if (api.live || api.video.click) {
           return;
         }
 
