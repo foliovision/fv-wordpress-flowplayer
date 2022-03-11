@@ -359,8 +359,6 @@ if (!Date.now) {
 
         var position = getVideoPosition(api);
 
-        api.bind('progress', storeVideoPosition);
-
         // no temporary positions found, let's work with DB / cookies
         if (position) {
           seek(position);
@@ -523,13 +521,15 @@ if (!Date.now) {
     // stop events
     api.bind('finish', removeVideoPosition);
 
-    // seek into the last saved position, it also hooks the progress event
+    // seek into the last saved position
     // this used to run on ready event for !flowplayer.support.fvmobile,
     // but then we run into some reliability issue with HLS.js, so it's safer
     // to use progress
     api.on( 'ready', function() {
       api.one( 'progress', seekIntoPosition);
     });
+
+    api.bind('progress', storeVideoPosition);
 
     api.bind('unload', function() {
       item_changed = false;
