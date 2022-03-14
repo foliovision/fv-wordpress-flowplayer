@@ -606,29 +606,35 @@ jQuery(function() {
               file_info_show( { duration: attachment.fileLength } );
             }
 
-          } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
-            if( jQuery('#remove-post-thumbnail').length > 0 ){
-              return;
+          } else if( attachment.type == 'image' ) {
+            if( attachment.id ) {
+              // update attachent id, upload_splash will not run
+              target_element.closest('table').find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(attachment.id);
             }
 
-            debug_log('Running set-post-thumbnail Ajax.');
-
-            jQuery.post(ajaxurl, {
-              action:"set-post-thumbnail",
-              post_id: fv_flowplayer_set_post_thumbnail_id,
-              thumbnail_id: attachment.id,
-              _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
-              cookie: encodeURIComponent(document.cookie)
-            }, function(str){
-              var win = window.dialogArguments || opener || parent || top;
-              if ( str == '0' ) {
-                alert( setPostThumbnailL10n.error );
-              } else {
-                jQuery('#postimagediv .inside').html(str);
-                jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+            if( typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
+              if( jQuery('#remove-post-thumbnail').length > 0 ) {
+                return;
               }
-            } );
 
+              debug_log('Running set-post-thumbnail Ajax.');
+
+              jQuery.post(ajaxurl, {
+                action:"set-post-thumbnail",
+                post_id: fv_flowplayer_set_post_thumbnail_id,
+                thumbnail_id: attachment.id,
+                _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
+                cookie: encodeURIComponent(document.cookie)
+              }, function(str){
+                var win = window.dialogArguments || opener || parent || top;
+                if ( str == '0' ) {
+                  alert( setPostThumbnailL10n.error );
+                } else {
+                  jQuery('#postimagediv .inside').html(str);
+                  jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+                }
+              } );
+            }
           }
         });
 
@@ -3118,6 +3124,7 @@ jQuery(function() {
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
         get_field('splash',new_item).val(objVid.splash);
         get_field('splash_text',new_item).val(objVid.splash_text);
+        get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
 
         get_field('start',new_item).val(objVid.start);
         get_field('end',new_item).val(objVid.end);
