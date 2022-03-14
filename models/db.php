@@ -795,6 +795,60 @@ class FV_Player_Db {
     return $atts;
   }
 
+  public function db_load_player_data( $id ) {
+    global $fv_fp;
+
+    $this->getPlayerAttsFromDb( array( 'id' => $id ) );
+
+    // fill the $out variable with player data
+    $out = $fv_fp->current_player()->getAllDataValues();
+
+    // load player meta data
+    $meta = $fv_fp->current_player()->getMetaData();
+    foreach ($meta as $meta_object) {
+      if (!isset($out['meta'])) {
+        $out['meta'] = array();
+      }
+
+      $out['meta'][] = $meta_object->getAllDataValues();
+    }
+
+    unset($out['video_objects'], $out['videos']);
+
+    // fill the $out variable with video data
+    $out['videos'] = array();
+    foreach ($fv_fp->current_player()->getVideos() as $video) {
+      // load video values
+      $vid = $video->getAllDataValues();
+      $vid['meta'] = array();
+
+      // load all meta data
+      $meta = $video->getMetaData();
+
+      foreach ($meta as $meta_object) {
+        $vid['meta'][] = $meta_object->getAllDataValues();
+      }
+
+      $out['videos'][] = $vid;
+    }
+
+    // load posts where this player is embedded
+    $embeds_html = '';
+    if( $posts = $fv_fp->current_player()->getMetaValue('post_id') ) {
+      foreach( $posts AS $post_id ) {
+        $embeds_html .= '<li><a href="'.get_permalink($post_id).'" target="_blank">'.get_the_title($post_id).'</a></li>';
+      }
+    }
+    if( $embeds_html ) {
+      $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
+    }
+
+    $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId() ) );
+    $out['html'] = $preview_data['html'];
+
+    return $out;
+  }
+
 
   /**
    * Stored player data in a database from the POST data sent via AJAX
@@ -1030,20 +1084,7 @@ class FV_Player_Db {
         $id = $player->save($player_meta);
 
         if ($id) {
-          $output = array( 'id' => $id );
-          $videos = array();
-          foreach( $player->getVideos() AS $video ) {
-            $videos[] = $video->getId();
-          }
-
-          do_action('fv_player_db_save', $id);
-
-          $output = array( 'id' => $id, 'videos' => $videos );
-          
-          $preview_data = $fv_fp->build_min_player( false, array( 'id' => $id ) );
-          $output['html'] = $preview_data['html'];
-          
-          echo wp_json_encode( $output );
+          echo wp_json_encode( $this->db_load_player_data( $id ) );
         } else {
           echo -1;
         }
@@ -1070,8 +1111,7 @@ class FV_Player_Db {
     global $fv_fp;
 
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-      $out = array();
-      
+
       if( defined('DOING_AJAX') && DOING_AJAX &&
         ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-load-".get_current_user_id() ) )
       ) {
@@ -1149,56 +1189,12 @@ class FV_Player_Db {
         }
       }
 
-      // fill the $out variable with player data
-      $out = array_merge($out, $fv_fp->current_player()->getAllDataValues());
+      $out = $this->db_load_player_data( $_POST['playerID'] );
 
-      // load player meta data
-      $meta = $fv_fp->current_player()->getMetaData();
-      foreach ($meta as $meta_object) {
-        if (!isset($out['meta'])) {
-          $out['meta'] = array();
-        }
-
-        $out['meta'][] = $meta_object->getAllDataValues();
-      }
-
-      unset($out['video_objects'], $out['videos']);
-
-      // fill the $out variable with video data
-      $out['videos'] = array();
-      foreach ($fv_fp->current_player()->getVideos() as $video) {
-        // load video values
-        $vid = $video->getAllDataValues();
-        $vid['meta'] = array();
-
-        // load all meta data
-        $meta = $video->getMetaData();
-
-        foreach ($meta as $meta_object) {
-          $vid['meta'][] = $meta_object->getAllDataValues();
-        }
-
-        $out['videos'][] = $vid;
-      }
-
-      // load posts where this player is embedded
-      $embeds_html = '';
-      if( $posts = $fv_fp->current_player()->getMetaValue('post_id') ) {
-        foreach( $posts AS $post_id ) {
-          $embeds_html .= '<li><a href="'.get_permalink($post_id).'" target="_blank">'.get_the_title($post_id).'</a></li>';
-        }
-      }
-      if( $embeds_html ) {
-        $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
-      }
-
-      $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId() ) );
-      $out['html'] = $preview_data['html'];
-
-      header('Content-Type: application/json');      
+      header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
         echo json_encode($out);
-      } else {        
+      } else {
         echo json_encode($out, true);
       }
     }
