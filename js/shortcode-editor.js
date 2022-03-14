@@ -114,7 +114,7 @@ jQuery(function() {
     errors = {};
 
 
-    /*
+    /**
      * A shorthand to save you from all the "fv_wp_flowplayer_field_"
      * when selecting fields
      *
@@ -150,7 +150,7 @@ jQuery(function() {
       return element;
     }
 
-    /*
+    /**
      * Gives you "src" out of "fv_wp_flowplayer_field_src"
      *
      * @param {string}    name  The field name
@@ -164,7 +164,7 @@ jQuery(function() {
       return name;
     }
 
-    /*
+    /**
      * Gives you the desired tab with video information
      *
      * @param {int|string}  index   Number, or first, or last
@@ -186,7 +186,7 @@ jQuery(function() {
       return $el_editor.find(selector);
     }
 
-    /*
+    /**
     * Gives you all desired tabs of a certain kind
     *
     * @return {object}            The tab elements
@@ -591,9 +591,11 @@ jQuery(function() {
         //When a file is selected, grab the URL and set it as the text field's value
         fv_flowplayer_uploader.on('select', function() {
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
+          
+          var target_element = $('.fv_flowplayer_target');
 
-          $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
-          $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+          target_element.val(attachment.url).trigger('change').trigger('keyup');
+          target_element.removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
@@ -608,7 +610,7 @@ jQuery(function() {
 
           } else if( attachment.type == 'image' ) {
             if( attachment.id ) {
-              // update attachent id, upload_splash will not run
+              // update splash attachent id
               target_element.closest('table').find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(attachment.id);
             }
 
@@ -1157,9 +1159,10 @@ jQuery(function() {
 
                         case 'splash_attachment_id':
                           if (json_data.splash_attachment_id) {
-                            $splash_attachment_id_element.val(json_data.splash_attachment_id);
+                            $splash_attachment_id_element.val(json_data.splash_attachment_id).trigger('change');
+                            console.log('New attachment id', json_data.splash_attachment_id)
                           }
-                          break
+                          break;
                       }
                     }
                   }
@@ -1941,7 +1944,7 @@ jQuery(function() {
     }
 
 
-    /*
+    /**
     * removes previous values from editor
     * fills new values from shortcode
     *
@@ -3382,7 +3385,7 @@ jQuery(function() {
       return overlayDiv;
     }
 
-    /*
+    /**
      * Populate content of the Embeds tab and show it if there is any content to be set
      * 
      * @param string  html  The OL > LI list of posts which contain the same player.
@@ -3855,7 +3858,7 @@ jQuery(function() {
         return false;
       },
 
-      /*
+      /**
        * Show a notice in the overlay above the editor
        *
        * @param {Object}  button      The button in the overlay that was clicked
