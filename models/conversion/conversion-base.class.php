@@ -52,11 +52,9 @@ abstract class FV_Player_Conversion_Base {
       $offset = 0 + intval($_POST['offset2']) + $offset;
       $limit = intval($_POST['limit']);
 
-      $total = $this->get_count();
-
       $posts = $this->get_posts_with_shortcode( $offset, $limit );
 
-      $start = microtime(true);
+      $total = $this->get_count();
 
       foreach( $posts AS $post ) {
         $result = $this->convert_one($post);
@@ -73,23 +71,26 @@ abstract class FV_Player_Conversion_Base {
 
         $conversions_output = array_merge( $conversions_output, $result['output_data'] );
 
-        if( $result['content_updated'] ) {
+        if( $this->is_live() && $result['content_updated'] ) {
           wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
         }
       }
 
-      $percent_done = round ( (($offset + $limit) / $total) * 100 );
+      $percent_done = $total > 0 ? round ( (($offset + $limit) / $total) * 100 ) : 0;
       $left = $total - ($offset + $limit);
 
       // build html output
       foreach( $conversions_output as $output_data ) {
-        $html[] = "<tr data-timing='" . number_format(microtime(true) - $start) . "'><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "' target='_blank'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."' target='_blank'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
+        $html[] = "<tr><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "' target='_blank'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."' target='_blank'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
+      }
+      
+      if( empty($html) && $percent_done == 0 ) {
+        $html[] = "<tr><td colspan='6'>No matching players found.</td></tr>";
       }
 
       // response
       echo json_encode(
         array(
-          'timing' => microtime(true) - $start,
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
           'left' => $left,
@@ -144,7 +145,7 @@ abstract class FV_Player_Conversion_Base {
 
   function conversion_screen() {
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-convertor.js', array('jquery'), $fv_wp_flowplayer_ver );
+    wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-convertor.js', array('jquery'), filemtime( dirname(__FILE__).'/../../js/admin-convertor.js' ) );
 
     ?>
       <style>
@@ -168,7 +169,13 @@ abstract class FV_Player_Conversion_Base {
         <?php echo wpautop($this->help); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
+          
+          <?php // This checkbox shows the JS confirmation box when clicked to enable ?>
+          <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php _e('Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-wordpress-flowplayer') ?>') " /> <label for="make-changes">Make changes</label>
+
           <input class="button-primary" type="submit" name="convert" value="Start" />
+
+          <img id="loading" width="16" height="16" src="<?php echo site_url('wp-includes/images/wpspin-2x.gif'); ?>" style="display: none" />
         </p>
 
         <p>
@@ -176,7 +183,6 @@ abstract class FV_Player_Conversion_Base {
         </p>
 
         <div id="wrapper" style="display: none"><div id="progress"></div></div>
-        <div id="loading" style="display: none"></div>
 
         <table class="wp-list-table widefat fixed striped table-view-list posts">
           <thead>
@@ -206,6 +212,10 @@ abstract class FV_Player_Conversion_Base {
         });
       </script>
     <?php
+  }
+  
+  function is_live() {
+    return !empty($_POST['make-changes']) && $_POST['make-changes'] == 'true';
   }
 
 }

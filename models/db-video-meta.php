@@ -79,6 +79,19 @@ class FV_Player_Db_Video_Meta {
   }
 
   /**
+   * Returns name of the video DB table.
+   *
+   * @return mixed The name of the video DB table.
+   */
+  public static function get_db_table_name() {
+    if ( !self::$db_table_name ) {
+      self::init_db_name();
+    }
+
+    return self::$db_table_name;
+  }
+
+  /**
    * Checks for DB tables existence and creates it as necessary.
    *
    * @param $wpdb The global WordPress database object.

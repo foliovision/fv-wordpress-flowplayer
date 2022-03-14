@@ -307,9 +307,9 @@ class FV_Player_Checker {
   function checker_cron() {
     global $fv_fp;
     if( $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
-      // get all video IDs for which there is no duration meta_key    
+      // get all video IDs for which there is no duration meta_key or where the duration is "h"
       global $wpdb;
-      $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL ORDER BY id DESC" );
+      $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video, meta_value from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL OR m.meta_value = 'h' ORDER BY id DESC" );
       
       if( $aVideos ) {
         foreach( $aVideos AS $objVideo ) {
@@ -323,16 +323,19 @@ class FV_Player_Checker {
           if( $last_check && intval($last_check) + 86400 > time() ) {
             continue;
           }
-          
+
+          // TODO: This should change to a proper filter at once
           $meta_data = apply_filters('fv_player_meta_data', $url, false);
-          if( $meta_data == false) {
+
+          if( $meta_data == false || is_string($meta_data) && strcmp($meta_data,$url) == 0 ) {
             if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
               $url = $secured_url;
             }
-            
-            $meta_data['duration'] = $this->check_mimetype(array($url), false, true);
-            $meta_data['duration'] = $meta_data['duration']['duration'];
-            
+
+            if( $check = $this->check_mimetype(array($url), false, true) ) {
+              $meta_data = $check;
+            }
+
           }
   
           if( !empty($meta_data['thumbnail']) ) {

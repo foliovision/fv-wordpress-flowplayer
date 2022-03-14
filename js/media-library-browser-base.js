@@ -166,7 +166,7 @@ function fv_flowplayer_browser_browse(data, options) {
           icon = '';
 
         if( f.splash ) {
-          icon = '<img src="' + f.splash + '" draggable="false" class="icon thumb" title="' + name + '" />';
+          icon = '<img src="' + f.splash + '" draggable="false" class="icon thumb" title="' + name + '" loading="lazy" />';
         } else {
           var fileType = name.split('.');
           if( fileType.length > 1 ) {
@@ -784,7 +784,7 @@ jQuery( function($) {
           var
             isPicture = $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/),
             splashValue = getFileSplashImage( locateSplashFileObjectForMediaFileHref( $filenameDiv.data('link') ) ),
-            splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" />');
+            splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" loading="lazy" />');
 
           // if we didn't find a splash image for a media file,
           // use its icon

@@ -8,13 +8,29 @@ $.fn.Progressor = function(args) {
         $.ajax({
           url: opts.url,
           cache: false,
-          data: ({ action: opts.action, offset: offset, limit: opts.limit, _ajax_nonce: opts.nonce, offset2: $('[name=offset]').val(), verbose: $('[name=verbose]').is(':checked')
+          data: ({
+            action: opts.action,
+            offset: offset,
+            limit: opts.limit,
+            _ajax_nonce: opts.nonce,
+            offset2: $('[name=offset]').val(),
+            verbose: $('[name=verbose]').is(':checked'),
+            'make-changes': jQuery('#make-changes').prop('checked')
           }),
           type: 'POST',
           error: showAlert ,
           success: function(data) {
-            var response = JSON.parse(data),
-              percent = response.percent_done,
+            try {
+              var response = JSON.parse(data);
+            } catch(e) {
+              alert('Error in conversion Ajax, please check the PHP error log');
+              $(button).val('Start');
+              $('#loading').hide();
+              running = false;
+              return;
+            }
+
+            var percent = response.percent_done,
               table_rows = response.table_rows,
               left = response.left,
               convert_error = false;
@@ -23,10 +39,8 @@ $.fn.Progressor = function(args) {
               convert_error = true;
             }
 
-            console.log('Error', convert_error);
-
             $('#progress').css('width', percent+'%');
-            
+
             $("#output").append(table_rows);
 
             if (left > 0) {
@@ -35,7 +49,7 @@ $.fn.Progressor = function(args) {
               setTimeout(timer, 0);
             } else {
               // Finished
-              
+
               $('#progress').css('width', '100%');
 
               $('#loading').hide();
@@ -44,7 +58,7 @@ $.fn.Progressor = function(args) {
 
             if( !running ) {
               $(opts.start).val(original);
-              
+
               if( convert_error ) {
                 $('#export').show();
               }
@@ -68,9 +82,10 @@ $.fn.Progressor = function(args) {
     var wrapper = this;
     var messages = $('#messages');
     var original = $(opts.start).val();
+    var button;
     
     $(opts.start).click(function() {
-      var button = this;
+      button = this;
 
       if (running) {
         // Cancel
@@ -82,6 +97,8 @@ $.fn.Progressor = function(args) {
         }
       }
       else {
+        $("#output").html('');
+
         offset = 0;
         running = true;
 
