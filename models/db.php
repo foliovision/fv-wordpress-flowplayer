@@ -1713,7 +1713,7 @@ GROUP BY p.id
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    $players = $this->getListPageData('date_created', 'desc', null, null);
+    $players = $this->getListPageData('date_created', 'desc', false, false);
     $json_data = array();
 
     foreach ($players as $player) {
