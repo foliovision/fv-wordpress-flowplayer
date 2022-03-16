@@ -982,9 +982,23 @@ function fv_player_notice(root, message, timeout) {
 
 
 var fv_player_clipboard = function(text, successCallback, errorCallback) {
+  if( navigator.clipboard && typeof(navigator.clipboard.writeText) == "function" ) {
+    navigator.clipboard.writeText(text).then(function() {
+        successCallback();
+      }, function() {
+        errorCallback();
+      }
+    );
+    return;
+  }
+
   try {
-    fv_player_doCopy(text);
-    successCallback();
+    if( fv_player_doCopy(text) ) {
+      successCallback();
+    } else {
+      errorCallback();
+    }
+    
   } catch (e) {
     if( typeof(errorCallback) != "undefined" ) errorCallback(e);
   }
@@ -1020,7 +1034,7 @@ function fv_player_doCopy(text) {
 
   try {
     var result = document.execCommand('copy');
-
+console.log('result',result);
     // Restore previous selection.
     if (selected) {
       document.getSelection().removeAllRanges();

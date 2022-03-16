@@ -286,10 +286,7 @@ jQuery(function() {
                 cookie: encodeURIComponent(document.cookie),
               }, function(json_export_data) {
                 var overlay = overlay_show('export');
-
                 overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-
-                jQuery('[name=fv_player_copy_to_clipboard]').select();
               }).fail(function() {
                 overlay_show('message', 'An unexpected error has occurred. Please try again.');
               });
@@ -4093,7 +4090,7 @@ function fv_wp_flowplayer_check_for_video_meta_field(fieldName) {
 
 jQuery(document).on('click', '[data-fv-player-editor-export-overlay-copy]', function() {
   var button = this;
-  fv_player_clipboard(jQuery('[name=fv_player_copy_to_clipboard]').val(), function() {
+  fv_player_clipboard( jQuery(button).closest('.fv-player-editor-overlay').find('[name=fv_player_copy_to_clipboard]').val(), function() {
     fv_player_editor.overlay_notice( button, 'Text Copied To Clipboard!', 'success', 3000 );
   }, function() {
     fv_player_editor.overlay_notice( button, '<strong>Error copying text into clipboard!</strong><br />Please copy the content of the above text area manually by using CTRL+C (or CMD+C on MAC).', 'error' );
