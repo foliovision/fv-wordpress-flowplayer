@@ -803,6 +803,7 @@ jQuery(function() {
           data: JSON.stringify(ajax_save_this_please),
           nonce: fv_player_editor_conf.preview_nonce,
         }, function(player) {
+          debug_log('player ID after save: '+player.id_player);
 
           current_player_object = player;
 
@@ -852,8 +853,8 @@ jQuery(function() {
               // add all the data and inputs to page that we need for an existing player
               if ( is_unsaved ) {
                 fv_player_editor.copy_player_button_toggle(false);
-                init_saved_player_fields( player.id );
-                current_player_db_id = player.id;
+                init_saved_player_fields( player.id_player );
+                current_player_db_id = player.id_player;
                 is_unsaved = false;
                 //is_draft_changed = false;
                 loading = false;
@@ -2836,7 +2837,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         var player = JSON.parse(response);
-        current_player_db_id = parseInt(player.id);
+        current_player_db_id = parseInt(player.id_player);
         if( current_player_db_id > 0 ) {
           var
             has_store_shortcode_args = false,
@@ -3653,6 +3654,7 @@ jQuery(function() {
     }
 
     function init_saved_player_fields( id_player ) {
+      // TODO: This should not be using inputs
       var
         $id_player_element = $('#fv-player-id_player'),
         $deleted_videos_element = $('#fv-player-deleted_videos'),
