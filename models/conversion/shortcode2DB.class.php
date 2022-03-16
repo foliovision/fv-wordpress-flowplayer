@@ -300,6 +300,22 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               $video_index++;
             }
 
+          } else if(strcmp( $player_att, 'ab' ) == 0) { // subtitles
+            if( $import_atts[$player_att] == 'true' ) {
+              $import_player_atts[$player_att] = 'on';
+            } else if( $import_atts[$player_att] == 'false' ) {
+              $import_player_atts[$player_att] = 'off';
+            }  else {
+              $import_player_atts[$player_att] =  $import_atts[$player_att];
+            }
+          
+          } else if(strcmp( $player_att, 'speed' ) == 0) { // subtitles
+            if( $import_atts[$player_att] == 'buttons' ) {
+              $import_player_atts[$player_att] = 'yes';
+            } else {
+              $import_player_atts[$player_att] =  $import_atts[$player_att];
+            }
+
           } else { // other atts
             $import_player_atts[$player_att] =  $import_atts[$player_att];
           }
