@@ -241,6 +241,8 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     $this->initDB($wpdb);
+
+    // TODO: This should not be here at all
     $multiID = is_array($id);
 
     // don't load anything, if we've only created this instance
@@ -251,7 +253,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // if we've got options, fill them in instead of querying the DB,
     // since we're storing new video into the DB in such case
-    if (is_array($options) && count($options) && !isset($options['db_options'])) {
+    if (is_array($options) && count($options) ) {
       foreach ($options as $key => $value) {
         if( $key == 'meta' ) continue; // meta is handled elsewhere, but it's part of the object when importing from JSON
         
@@ -289,20 +291,12 @@ CREATE TABLE " . self::$db_table_name . " (
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
           $select = '*';
-          if( !empty($options['db_options']) && !empty($options['db_options']['select_fields']) ) $select = 'id,'.esc_sql($options['db_options']['select_fields']);
-          
+
           $where = ' WHERE id IN('. implode(',', $query_ids).') ';
           
           $order = '';
-          if( !empty($options['db_options']) && !empty($options['db_options']['order_by']) ) {
-            $order = ' ORDER BY '.esc_sql($options['db_options']['order_by']);
-            if( !empty($options['db_options']['order']) ) $order .= ' '.esc_sql($options['db_options']['order']);
-          }
           
           $limit = '';
-          if( !empty($options['db_options']) && isset($options['db_options']['offset']) && isset($options['db_options']['per_page']) ) {
-            $limit = ' LIMIT '.intval($options['db_options']['offset']).', '.intval($options['db_options']['per_page']);
-          }
           
           $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
           
@@ -317,7 +311,7 @@ CREATE TABLE " . self::$db_table_name . " (
           // load a single video
           $video_data = $wpdb->get_row( '
           SELECT
-            ' . ( $options && ! empty( $options['db_options'] ) && ! empty( $options['db_options']['select_fields'] ) ? 'id,' . esc_sql($options['db_options']['select_fields']) : '*' ) . '
+            *
           FROM
             ' . self::$db_table_name . '
           WHERE

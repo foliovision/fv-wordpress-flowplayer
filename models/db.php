@@ -296,11 +296,7 @@ class FV_Player_Db {
       // load all videos data at once
       if (count($videos)) {
         // TODO: This class should not provide search
-        $vids_data = new FV_Player_Db_Video( $videos, array(
-          'db_options' => array(
-            'select_fields' => 'caption, src, splash'
-          )
-        ), $FV_Player_Db );
+        $vids_data = new FV_Player_Db_Video( $videos, array(), $FV_Player_Db );
 
         // reset $videos variable and index all of our video data,
         // so they are easily accessible when building the resulting
