@@ -21,6 +21,7 @@ class FV_Player_Db {
 
   private
     $edit_lock_timeout_seconds = 120,
+    $valid_order_by = array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count'),
     $videos_cache = array(),
     $video_atts_cache = array(),
     $video_meta_cache = array(),
@@ -216,7 +217,7 @@ class FV_Player_Db {
 
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
-    $order_by = (in_array($order_by, array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count')) ? $order_by : 'id');
+    $order_by = (in_array($order_by, $this->valid_order_by) ? $order_by : 'id');
     $author_id = get_current_user_id();
     $cannot_edit_other_posts = !current_user_can('edit_others_posts');
 
@@ -224,9 +225,14 @@ class FV_Player_Db {
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
     } else if ($search) {
+
+      $direct_hit_cache = false;
+
       // Try to load the player which ID matches the search query it it's a number
       if( is_numeric($search) ) {
-        new FV_Player_Db_Player( $search );
+        new FV_Player_Db_Player( $search, array(), $FV_Player_Db );
+
+        $direct_hit_cache = $this->getPlayersCache();
       }
 
       // search for videos that are consistent with the search text
@@ -258,6 +264,11 @@ class FV_Player_Db {
         }
 
         $this->query_players( $db_options );
+      }
+
+      if( is_array($direct_hit_cache) ) {
+        $cache = $this->getPlayersCache();
+        $this->setPlayersCache( array_merge( $direct_hit_cache, $cache ) );
       }
 
     } else {
@@ -296,11 +307,7 @@ class FV_Player_Db {
       // load all videos data at once
       if (count($videos)) {
         // TODO: This class should not provide search
-        $vids_data = new FV_Player_Db_Video( $videos, array(
-          'db_options' => array(
-            'select_fields' => 'caption, src, splash'
-          )
-        ), $FV_Player_Db );
+        $vids_data = new FV_Player_Db_Video( $videos, array(), $FV_Player_Db );
 
         // reset $videos variable and index all of our video data,
         // so they are easily accessible when building the resulting
@@ -1237,14 +1244,29 @@ class FV_Player_Db {
       $where = ' WHERE '.implode(' OR ', $where_like_part);
 
     } else if( !empty( $args['author_id']) ) {
-      $where = ' WHERE author ='.$args['author_id'];
+      $where = ' WHERE author ='.intval($args['author_id']);
     }
 
     $order = '';
     if( !empty($args['order_by']) ) {
-      $order = ' ORDER BY '.esc_sql($args['order_by']);
-      if( !empty($args['order']) ) {
-        $order .= ' '.esc_sql($args['order']);
+
+      // Verify that each order by is valid
+      $order_by_items = explode( ',', $args['order_by'] );
+      $order_by_items = array_map( 'trim', $order_by_items );
+
+      foreach( $order_by_items AS $k => $v ) {
+        if( !in_array($v, $this->valid_order_by ) ) {
+          unset($order_by_items[$k]);
+        }
+      }
+
+      if( count($order_by_items) > 0 ) {
+        $order = ' ORDER BY '.implode( ', ', array_map( 'esc_sql', $order_by_items ) );
+        if( !empty($args['order']) ) {
+          if( in_array($args['order'], array( 'asc', 'desc' ) ) ) {
+            $order .= ' '.esc_sql($args['order']);
+          }
+        }
       }
     }
 
@@ -1694,7 +1716,7 @@ GROUP BY p.id
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    $players = $this->getListPageData('date_created', 'desc', null, null);
+    $players = $this->getListPageData('date_created', 'desc', false, false);
     $json_data = array();
 
     foreach ($players as $player) {

@@ -480,8 +480,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-playlist has-playlist-'.$this->aCurArgs['liststyle'];
         }
       
-        
-        if( $autoplay != -1 ) {
+        // Only add the HTML code if autoplay is not disabled or if it's set to be disabled for the player
+        if( $autoplay != -1 || $autoplay == -1 && !empty($this->aCurArgs['autoplay']) && empty($this->aCurArgs['lightbox']) ) {
           $attributes['data-fvautoplay'] = $autoplay;
         } 
 

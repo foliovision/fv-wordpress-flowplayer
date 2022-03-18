@@ -50,7 +50,10 @@
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
 
-#fv-player-shortcode-editor-left{ float: left; width:42%; margin-right: 1% }
+#fv-player-shortcode-editor-left{
+  float: left; width:42%; margin-right: 1%;
+  overflow-x: hidden;
+}
 #fv-player-shortcode-editor-right{ float: left; width:57%; }
 #fv-player-shortcode-editor #fv_wp_flowplayer_field_player_name { width: 96%; margin: 0 0 6px; }
 .fv-player-tab{position:relative;}
@@ -299,3 +302,40 @@ a #add-format, a #add-rtmp {
 }
 
 #fv-player-shortcode-editor .fv-player-playlist-item-title, #fv-player-shortcode-editor .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
+
+body.elementor-editor-active #fv-player-shortcode-editor .button, body.elementor-editor-active #fv-player-shortcode-editor .button-primary {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 2.15384615;
+  min-height: 30px;
+  margin: 0;
+  padding: 0 10px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-appearance: none;
+  border-radius: 3px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  color: #2271b1;
+  border-color: #2271b1;
+  background: #f6f7f7;
+}
+body.elementor-editor-active #fv-player-shortcode-editor .button-primary {
+  background: #2271b1;
+  border-color: #2271b1;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: none;
+}
+body.elementor-editor-active #fv-player-shortcode-editor .button:hover {
+  background: #f0f0f1;
+  border-color: #0a4b78;
+  color: #0a4b78;
+}
+body.elementor-editor-active #fv-player-shortcode-editor .button-primary:hover {
+  background: #135e96;
+  border-color: #135e96;
+  color: #fff;
+}
