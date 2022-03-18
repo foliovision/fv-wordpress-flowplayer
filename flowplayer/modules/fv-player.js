@@ -1038,7 +1038,6 @@ function fv_player_doCopy(text) {
 
   try {
     var result = document.execCommand('copy');
-console.log('result',result);
     // Restore previous selection.
     if (selected) {
       document.getSelection().removeAllRanges();

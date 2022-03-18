@@ -359,6 +359,20 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.18.727 - 2022/03/18 =
+
+* Security - fix for SQL injection vulnerability when saving player in editor - for Author user level and above. Thanks to Tien Nguyen Anh for the report!
+* Elementor - Bring back the FV Player into Elementor Elements search
+* Media Library - optimized images loading
+* Shortcode to database conversion tool fixes
+* wp-admin -> FV Player - allow search by player ID
+* Bugfix - bad values coming from the background video duration scanner
+* Bugfix - JavaScript compatibility fixes
+* Bugfix - Picture button stopped working
+* Bugfix - Sticky player - fix when closing sticky mode
+* Bugfix - Sticky player - fix when scrolling too fast
+* Bugfix - Volume restoration not working if default volume set to zero
+
 = 7.5.15.727 - 2022/01/27 =
 
 * HLS.js - upgrade to 1.1.4 to fix playback on Apple Silicon M1 computers
