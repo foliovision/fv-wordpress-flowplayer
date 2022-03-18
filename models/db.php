@@ -225,9 +225,14 @@ class FV_Player_Db {
     if ($single_id) {
       new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
     } else if ($search) {
+
+      $direct_hit_cache = false;
+
       // Try to load the player which ID matches the search query it it's a number
       if( is_numeric($search) ) {
-        new FV_Player_Db_Player( $search );
+        new FV_Player_Db_Player( $search, array(), $FV_Player_Db );
+
+        $direct_hit_cache = $this->getPlayersCache();
       }
 
       // search for videos that are consistent with the search text
@@ -259,6 +264,11 @@ class FV_Player_Db {
         }
 
         $this->query_players( $db_options );
+      }
+
+      if( is_array($direct_hit_cache) ) {
+        $cache = $this->getPlayersCache();
+        $this->setPlayersCache( array_merge( $direct_hit_cache, $cache ) );
       }
 
     } else {
