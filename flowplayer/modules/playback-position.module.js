@@ -303,7 +303,7 @@ if (!Date.now) {
 
     var
       $root = jQuery(root),
-      enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != 'false' || $root.data('save-position'),
+      enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != false || $root.data('save-position'),
       progressEventsCount = 0,
       player_id = $root.data('player-id') ? $root.data('player-id') : false,
       item_changed = false,
