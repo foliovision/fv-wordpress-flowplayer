@@ -127,6 +127,17 @@ function fv_flowplayer_browser_browse(data, options) {
       fileList.empty().hide();
     }
 
+    if(options && options.addnewfolder) {
+      fileList.append('<li class="attachment new-folder">+</li>').on('click', function() {
+        var name = prompt("Please enter folder name");
+        if(name != null) {
+          options.addFolderAjax(jQuery(this), name);
+        }
+      });
+    }
+
+    console.log('options', options);
+
     if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
       filemanager.find('.nothingfound').show();
     }
