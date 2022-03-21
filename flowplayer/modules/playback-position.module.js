@@ -308,10 +308,8 @@ if (!Date.now) {
       player_id = $root.data('player-id') ? $root.data('player-id') : false,
       item_changed = false,
 
-      // used to seek into the desired last stored position when he video has started
-      seekIntoPosition = function (e, api) {
-        if( api.video && api.video.live ) return;
-
+      // get stored video position
+      getVideoPosition = function (api) {
         var
           video_id = getVideoId(api.video),
           position = api.video.position;
@@ -347,7 +345,19 @@ if (!Date.now) {
           }
         }
 
-        api.bind('progress', storeVideoPosition);
+        return position;
+      }
+
+      isSupported = function() {
+        return !( api.live || api.video && api.video.click );
+      }
+
+      // used to seek into the desired last stored position when he video has started
+      seekIntoPosition = function (e, api) {
+        // do not restore position for live video or video ad
+        if( !isSupported() ) return;
+
+        var position = getVideoPosition(api);
 
         // no temporary positions found, let's work with DB / cookies
         if (position) {
@@ -357,7 +367,7 @@ if (!Date.now) {
 
       // stores currently played/paused/stopped video position
       storeVideoPosition = function (e, api) {
-        if (api.live) {
+        if ( !isSupported() ) {
           return;
         }
 
@@ -486,7 +496,13 @@ if (!Date.now) {
         }
 
         if ( item_index >= 0  && !item_changed ) {
-          api.play(item_index);
+          if( typeof api.queue_video != 'undefined' ) {
+            var position = getVideoPosition(api) ? getVideoPosition(api) : 0;
+            api.queue_video(item_index, position);
+          } else {
+            api.play(item_index);
+          }
+          
           item_changed = true;
         }
 
@@ -503,11 +519,15 @@ if (!Date.now) {
     // stop events
     api.bind('finish', removeVideoPosition);
 
-    // seek into the last saved position, it also hooks the progress event
+    // seek into the last saved position
     // this used to run on ready event for !flowplayer.support.fvmobile,
     // but then we run into some reliability issue with HLS.js, so it's safer
     // to use progress
-    api.one( 'progress', seekIntoPosition);
+    api.on( 'ready', function() {
+      api.one( 'progress', seekIntoPosition);
+    });
+
+    api.bind('progress', storeVideoPosition);
 
     api.bind('unload', function() {
       item_changed = false;
