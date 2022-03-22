@@ -71,6 +71,17 @@ function fv_flowplayer_safety_resize() {
 			while( jQuery(el).width() < 30 || jQuery(el).width() == jQuery(this).width() ) {
         if( jQuery(el).parent().length == 0 ) break; 
 				el = jQuery(el).parent();
+
+        // LearnDash sets the parent DIV height to 0 and uses padding-top: 56.25% to make up some space
+        // So we avoid that here as otherwise the player would not appear!
+        if( el.hasClass('ld-video') ) {
+          if( el[0].style.height == '' ) {
+            el.css('height','auto');
+          }
+          if( parseInt( el.css('padding-bottom') ) > 0 ) {
+            el.css('padding-bottom', '0');
+          }
+        }
 			}
 			
 			jQuery(this).width( jQuery(el).width() );
