@@ -607,13 +607,13 @@ class flowplayer_frontend extends flowplayer
           
           if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
             $attributes['class'] .= ' has-caption';
-            $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->get_title()."</p>", $this );
+            $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".htmlspecialchars( $this->get_title() )."</p>", $this );
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
           
         } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
-          $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->get_title()."</p>", $this );
+          $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".htmlspecialchars( $this->get_title() )."</p>", $this );
           
         }
         
@@ -724,7 +724,7 @@ class flowplayer_frontend extends flowplayer
         
         if( !empty($this->aCurArgs['splash_text']) ) {
           $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );         
-          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".htmlspecialchars($aSplashText[0])."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
         if( empty($this->aCurArgs['checker']) && !$this->_get_option('disable_videochecker') && current_user_can('manage_options') ) {
