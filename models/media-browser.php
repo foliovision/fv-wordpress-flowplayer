@@ -3,9 +3,10 @@
 abstract class FV_Player_Media_Browser {
 
   public $ajax_action_name = 'wp_ajax_load_assets';
+  public $ajax_folder_add_name = 'wp_ajax_add_folder';
   private $s3_assets_loaded = false;
 
-  public function __construct($ajax_action_name) {
+  public function __construct($ajax_action_name, $ajax_folder_add_name = '') {
 
     // load base JS
     add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 ); // for old WP editor
@@ -20,11 +21,16 @@ abstract class FV_Player_Media_Browser {
 
     // register extending class WP AJAX action
     $this->ajax_action_name = $ajax_action_name;
+    $this->ajax_folder_add_name = $ajax_folder_add_name;
+
     $this->register();
   }
 
   abstract function init();
 
+  // TODO: should be abstract
+  public function add_folder_ajax() {}
+  
   // TOTO: should be abstract
   function decode_link_components( $link ) {}
 

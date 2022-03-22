@@ -96,6 +96,23 @@ function fv_flowplayer_browser_browse(data, options) {
     });
   }
 
+  function addFolderAjax($element, folder_name, options) {
+    console.log('element', $element, 'folder_name', folder_name, 'options', options);
+    
+    var data = {
+      action: options.action,
+      nonce: options.nonce,
+      folder_name: folder_name
+    };
+
+    jQuery.post(fv_player.ajaxurl, data, function (response) {
+      console.log('Add folder response', response);
+      if(response.error) {
+        alert(response.error);
+      }
+    });
+  }
+
   // Render the HTML for the file manager
   function render(data, options) {
 
@@ -129,14 +146,12 @@ function fv_flowplayer_browser_browse(data, options) {
 
     if(options && options.addnewfolder) {
       fileList.append('<li class="attachment new-folder">+</li>').on('click', function() {
-        var name = prompt("Please enter folder name");
-        if(name != null) {
-          options.addFolderAjax(jQuery(this), name);
+        var folder_name = prompt("Please enter folder name");
+        if(folder_name != null && folder_name.length > 1 ) {
+          addFolderAjax(jQuery(this), folder_name, options);
         }
       });
     }
-
-    console.log('options', options);
 
     if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
       filemanager.find('.nothingfound').show();
