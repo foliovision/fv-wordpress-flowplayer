@@ -334,8 +334,17 @@ function fv_player_preload() {
 
       // Show splash img if audio
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
-        splash_img.remove();
-        splash_text.remove();
+
+        // Ensure the splash is only removed once the video really really starts playing when using autoplay
+        if( fv_player_pro.autoplay_scroll || root.data('fvautoplay') ) {
+          api.one('progress', function() {
+            splash_img.remove();
+            splash_text.remove();
+          });
+        } else {
+          splash_img.remove();
+          splash_text.remove();
+        }
       }
     } );
 
