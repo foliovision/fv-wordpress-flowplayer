@@ -2319,7 +2319,14 @@ jQuery(function() {
                   for (var i in video_meta) {
                     // video duration hidden input
                     if (['duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(video_meta[i].meta_key) > -1) {
-                      $video_data_tab.find('#fv_wp_flowplayer_field_src').after('<input type="hidden" name="fv_wp_flowplayer_field_' + video_meta[i].meta_key + '" id="fv_wp_flowplayer_field_' + video_meta[i].meta_key + '" value="' + video_meta[i].meta_value + '" data-id="' + video_meta[i].id + '" />');
+                      var meta_el = jQuery('<input />')
+                        .attr('type', 'hidden' )
+                        .attr('name', 'fv_wp_flowplayer_field_'+video_meta[i].meta_key )
+                        .attr('id', 'fv_wp_flowplayer_field_'+video_meta[i].meta_key )
+                        .attr('value', video_meta[i].meta_value )
+                        .attr('data-id', video_meta[i].id );
+
+                      $video_data_tab.find('#fv_wp_flowplayer_field_src').after(meta_el);
                     } else {
                       // predefined meta input with field already existing in the dialog
                       set_player_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
@@ -2490,7 +2497,7 @@ jQuery(function() {
 
           if( srcurl != null && srcurl[1] != null ) {
             get_field('src').val(srcurl[1]);
-            playlist_row.find('.fvp_item_video-filename').html( srcurl[1] );
+            playlist_row.find('.fvp_item_video-filename').text( srcurl[1] );
           }
 
           get_field('width').val(iwidth[1] || '');
@@ -2527,7 +2534,12 @@ jQuery(function() {
 
           if( ssplash != null && ssplash[1] != null ) {
             get_field("splash").val(ssplash[1]);
-            playlist_row.find('.fvp_item_splash').html( '<img width="120" src="'+ssplash[1]+'" />' );
+
+            var playlist_img = jQuery('<img />')
+              .attr('width', 120 )
+              .attr('src', ssplash[1] );
+
+            playlist_row.find('.fvp_item_splash').html( playlist_img );
           }
 
           var aSubtitles = false;
@@ -2637,7 +2649,7 @@ jQuery(function() {
 
             var caption = aCaptions.shift();
             get_field("caption").val( caption );
-            playlist_row.find('.fvp_item_caption div').html( caption );
+            playlist_row.find('.fvp_item_caption div').text( caption );
           }
 
           var aSplashText = false;
@@ -3267,19 +3279,23 @@ jQuery(function() {
 
         var playlist_row = jQuery('.fv-player-tab-playlist table tbody tr').eq( current.data('index') );
 
-        var video_preview = get_field("splash",current).val();
-        playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? '<img src="' + video_preview + '" />':'');
+        var video_preview = get_field("splash",current).val(),
+          playlist_img = jQuery('<img />')
+            .attr('width', 120 )
+            .attr('src', video_preview );
+
+        playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? playlist_img : '' );
 
         var video_name = decodeURIComponent(currentUrl).split("/").pop();
         video_name = video_name.replace(/\+/g,' ');
         video_name = video_name.replace(/watch\?v=/,'YouTube: ');
 
-        playlist_row.find('.fvp_item_video-filename').html( video_name );
+        playlist_row.find('.fvp_item_video-filename').text( video_name );
 
         var playlist_row_div = playlist_row.find('.fvp_item_caption div');
         // do not put in caption if it's loading
         if (!playlist_row_div.hasClass('fv-player-shortcode-editor-small-spinner')) {
-          playlist_row_div.html( get_field("caption",current).val() );
+          playlist_row_div.text( get_field("caption",current).val() );
         }
       });
 
