@@ -405,11 +405,13 @@ jQuery(function() {
               });
             } else {
               $spinner.remove();
-              $element.html('Error');
+              $element.show();
+              alert(playerID); // show respone message
             }
           }).fail(function() {
-            $spinner
-            $element.html('Error');
+            $spinner.remove();
+            $element.show();
+            alert('Error');
           });
 
           return false;

@@ -1525,11 +1525,20 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     ) {
       die('Security check failed');
     }
-    
+
     if ( $id ) {
       // first, load the player
       $player = new FV_Player_Db_Player($id, array(), $this);
       if ($player && $player->getIsValid()) {
+        $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+        $author_id = get_current_user_id();
+
+        if( $cannot_edit_other_posts ) {
+          if( $author_id !== $player->getAuthor() ) {
+            die('You dont have permission to export this player.');
+          }
+        }
+
         $export_data = $player->export();
 
         // load player meta data
@@ -1718,6 +1727,16 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
       // first, load the player
       $player = new FV_Player_Db_Player($_POST['playerID'], array(), $this);
       if ($player && $player->getIsValid()) {
+        $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+        $author_id = get_current_user_id();
+
+        // check if user can delete player
+        if( $cannot_edit_other_posts ) {
+          if( $author_id !== $player->getAuthor() ) {
+            die('You dont have permission to delete this player.');
+          }
+        }
+
         // remove the player
         if ($player->delete()) {
           echo 1;
@@ -1742,6 +1761,17 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    */
   public function clone_player() {
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
+      $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+      $author_id = get_current_user_id();
+
+      $player = new FV_Player_Db_Player( intval($_POST['playerID']), array(), $this );
+
+      if( $cannot_edit_other_posts ) {
+        if( $author_id !== $player->getAuthor() ) {
+          die('You dont have permission to clone this player.');
+        }
+      }
+
       $export_data = $this->export_player_data(null, false);
 
       // do not clone information about where the player is embeded
