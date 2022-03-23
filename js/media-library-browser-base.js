@@ -145,12 +145,14 @@ function fv_flowplayer_browser_browse(data, options) {
     }
 
     if(options && options.addnewfolder) {
-      fileList.append('<li class="attachment new-folder">+</li>').on('click', function() {
+      var new_folder = jQuery('<li class="attachment new-folder">+</li>').on('click', function() {
         var folder_name = prompt("Please enter folder name");
         if(folder_name != null && folder_name.length > 1 ) {
           addFolderAjax(jQuery(this), folder_name, options);
         }
-      });
+      })
+
+      fileList.append(new_folder);
     }
 
     if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
