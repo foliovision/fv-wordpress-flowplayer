@@ -27,7 +27,8 @@ class FV_Player_Db {
     $video_meta_cache = array(),
     $players_cache = array(),
     //$player_atts_cache = array(),
-    $player_meta_cache = array();
+    $player_meta_cache = array(),
+    $player_ids_when_searching;
 
   public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
@@ -200,6 +201,44 @@ class FV_Player_Db {
   }
 
   /**
+   * Retrieves total number of players in the database.
+   *
+   * @return int Returns the total number of players in database.
+   */
+  public function getListPageCount() {
+    global $wpdb;
+
+    $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+
+    // make total the number of players cached, if we've used search
+    if (isset($_GET['s']) && $_GET['s']) {
+      if ($this->player_ids_when_searching) {
+        $total = count( $this->player_ids_when_searching );
+      } else {
+        $total = 0;
+      }
+    } else {
+      $query = 'SELECT Count(*) AS Total FROM ' . $wpdb->prefix .'fv_player_players';
+
+      if( $cannot_edit_other_posts ) {
+        $author_id = get_current_user_id();
+        $query .= ' WHERE author = ' . $author_id;
+      }
+
+      $total = $wpdb->get_row( $query );
+      if ( $total ) {
+        $total = $total->Total;
+      }
+    }
+
+    if ($total) {
+      return $total;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
    * Retrieves data for all players table shown in admin.
    *
    * @param $order_by  If set, data will be ordered by this column.
@@ -213,8 +252,6 @@ class FV_Player_Db {
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
   public function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
-    global $player_ids_when_searching, $FV_Player_Db; // this is an instance of this same class, but since we're in static context, we need to access this globally like that... sorry :P
-
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
     $order_by = (in_array($order_by, $this->valid_order_by) ? $order_by : 'id');
@@ -223,14 +260,14 @@ class FV_Player_Db {
 
     // load single player, as requested by the user
     if ($single_id) {
-      new FV_Player_Db_Player( $single_id, array(), $FV_Player_Db );
+      new FV_Player_Db_Player( $single_id, array(), $this );
     } else if ($search) {
 
       $direct_hit_cache = false;
 
       // Try to load the player which ID matches the search query it it's a number
       if( is_numeric($search) ) {
-        new FV_Player_Db_Player( $search, array(), $FV_Player_Db );
+        new FV_Player_Db_Player( $search, array(), $this );
 
         $direct_hit_cache = $this->getPlayersCache();
       }
@@ -247,8 +284,8 @@ class FV_Player_Db {
           $player_video_ids[] = $db_record->id;
         }
 
-        // cache this, so we can use this in the FV_Player_Db_Player::getTotalPlayersCount() method
-        $player_ids_when_searching = $player_video_ids;
+        // cache this, so we can use this in the FV_Player_Db_Player::getListPageCount() method
+        $this->player_ids_when_searching = $player_video_ids;
 
         $db_options = array(
           'select_fields'       => 'player_name, date_created, videos, author, status',
@@ -307,7 +344,7 @@ class FV_Player_Db {
       // load all videos data at once
       if (count($videos)) {
         // TODO: This class should not provide search
-        $vids_data = new FV_Player_Db_Video( $videos, array(), $FV_Player_Db );
+        $vids_data = new FV_Player_Db_Video( $videos, array(), $this );
 
         // reset $videos variable and index all of our video data,
         // so they are easily accessible when building the resulting
@@ -364,10 +401,8 @@ class FV_Player_Db {
               // use splash with caption / filename in a span
               if ( isset($videos[ $video_id ]) && $caption ) {
                 $txt = $caption;
-              } else {
-                $txt = esc_attr($caption_src);
               }
-              
+
               $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
 
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($txt).'" title="'.esc_attr($txt).'" loading="lazy" /><span>' . $txt . '</span></div>';
@@ -1329,7 +1364,7 @@ GROUP BY p.id
       $cache[$record_id] = $player_object;
     }
 
-    $this->setPlayersCache($cache);
+    if(!empty($cache)) $this->setPlayersCache($cache);
   }
 
   /**
