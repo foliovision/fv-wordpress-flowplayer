@@ -970,7 +970,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
       
       if( $sItemCaption ) {
-        $sHTML .= "<h4>".htmlspecialchars($sItemCaption)."</h4>";
+        $sHTML .= "<h4>".$sItemCaption."</h4>";
       }
       
     }
