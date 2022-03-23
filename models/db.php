@@ -209,11 +209,22 @@ class FV_Player_Db {
     global $wpdb;
 
     $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+    $author_id = get_current_user_id();
 
     // make total the number of players cached, if we've used search
     if (isset($_GET['s']) && $_GET['s']) {
-      if ($this->player_ids_when_searching) {
-        $total = count( $this->player_ids_when_searching );
+      if( $this->player_ids_when_searching ) {
+        $db_options = array(
+          'select_fields'       => 'player_name, date_created, videos, author, status',
+          'count'               => true,
+          'search_by_video_ids' => $this->player_ids_when_searching
+        );
+  
+        if( $cannot_edit_other_posts ) {
+          $db_options['author_id'] = $author_id;
+        }
+  
+        $total = intval( $this->query_players( $db_options ));
       } else {
         $total = 0;
       }
@@ -221,7 +232,7 @@ class FV_Player_Db {
       $query = 'SELECT Count(*) AS Total FROM ' . $wpdb->prefix .'fv_player_players';
 
       if( $cannot_edit_other_posts ) {
-        $author_id = get_current_user_id();
+        
         $query .= ' WHERE author = ' . $author_id;
       }
 
@@ -1253,7 +1264,8 @@ class FV_Player_Db {
       'order_by' => false,
       'per_page' => false,
       'search_by_video_ids' => false,
-      'select_fields' => false
+      'select_fields' => false,
+      'count' => false
     ) );
 
     $ids = array();
@@ -1277,9 +1289,13 @@ class FV_Player_Db {
       $select = 'p.id,'.esc_sql($args['select_fields']);
     }
 
-    $where = '';
+    if($args['count']) {
+      $select = 'count(*) as row_count';
+    }
+
+    $where = ' WHERE 1=1';
     if( count($query_ids) ) {
-      $where = ' WHERE p.id IN('. implode(',', $query_ids).') ';
+      $where .= ' AND p.id IN('. implode(',', $query_ids).') ';
 
     // if we have multiple video IDs to load players for, let's prepare a like statement here
     } else if( is_array($args['search_by_video_ids']) ) {
@@ -1291,10 +1307,11 @@ class FV_Player_Db {
         $where_like_part[] = "(videos = \"$player_video_id\" OR videos LIKE \"%,$player_video_id\" OR videos LIKE \"$player_video_id,%\")";
       }
 
-      $where = ' WHERE '.implode(' OR ', $where_like_part);
+      $where .= ' AND (' . implode(' OR ', $where_like_part) . ') ';
+    }
 
-    } else if( !empty( $args['author_id']) ) {
-      $where = ' WHERE author ='.intval($args['author_id']);
+    if( !empty( $args['author_id']) ) {
+      $where .= ' AND author ='.intval($args['author_id']).' ';
     }
 
     $order = '';
@@ -1344,12 +1361,22 @@ LEFT JOIN `'.$meta_table.'` AS transcript ON v.id = transcript.id_video AND tran
       }
 
     global $wpdb;
+
+    if($args['count']) {
+      $group_order = '';
+    } else {
+      $group_order = 'GROUP BY p.id'.$order.$limit;
+    }
+
     $player_data = $wpdb->get_results('SELECT
 '.$select.$meta_counts_select.'
 FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
-'.$meta_counts_join.$where.'
-GROUP BY p.id
-'.$order.$limit);
+'.$meta_counts_join.$where.$group_order);
+
+
+    if($args['count']) {
+      return $player_data[0]->row_count;
+    }
 
     foreach( $player_data AS $db_record ) {
       // create a new video object and populate it with DB values
