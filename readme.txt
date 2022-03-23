@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.19.727 - 2022/03/23 =
+
+* Security - XSS fix - users with the Contributor role (or above) were able to insert rudimentary JavaScript into FV Player. Thanks to m0ze (Patchstack) for the report!
+
 = 7.5.18.727 - 2022/03/18 =
 
 * Security - fix for SQL injection vulnerability when saving player in editor - for Author user level and above. Thanks to Tien Nguyen Anh for the report!
