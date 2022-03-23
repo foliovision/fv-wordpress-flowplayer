@@ -915,12 +915,24 @@ class FV_Player_Db {
     $player_options        = array();
     $video_ids             = array();
     
+    $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+    $user_id = get_current_user_id();
+
     $post_data = null;
     if( is_array($data) ) {
       $post_data = $data;
-    } else if( !empty($_POST['data']) && wp_verify_nonce( $_POST['nonce'],"fv-player-preview-".get_current_user_id() ) ) {
+    } else if( !empty($_POST['data']) && wp_verify_nonce( $_POST['nonce'],"fv-player-preview-".$user_id ) ) {
       if( json_decode( stripslashes($_POST['data']) ) ) {
         $post_data = json_decode( stripslashes($_POST['data']), true );
+
+        // check if user can update player
+        if(!empty($post_data['update']) && $cannot_edit_other_posts ) {
+          $player_to_check = new FV_Player_Db_Player(intval($post_data['update']), array(), $FV_Player_Db);
+
+          if( $player_to_check->getAuthor() !== $user_id ) {
+            echo -1;
+          }
+        }
       }
     }
     
@@ -1296,7 +1308,7 @@ class FV_Player_Db {
       $select = 'count(*) as row_count';
     }
 
-    $where = ' WHERE 1=1';
+    $where = ' WHERE 1=1 ';
     if( count($query_ids) ) {
       $where .= ' AND p.id IN('. implode(',', $query_ids).') ';
 
