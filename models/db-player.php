@@ -83,7 +83,7 @@ class FV_Player_Db_Player {
    * @return int
    */
   public function getAuthor() {
-    return $this->author;
+    return intval($this->author);
   }
 
   /**

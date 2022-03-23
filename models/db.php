@@ -931,6 +931,7 @@ class FV_Player_Db {
 
           if( $player_to_check->getAuthor() !== $user_id ) {
             echo -1;
+            die();
           }
         }
       }
