@@ -803,6 +803,16 @@ jQuery(function() {
           data: JSON.stringify(ajax_save_this_please),
           nonce: fv_player_editor_conf.preview_nonce,
         }, function(player) {
+
+          if( player.error ) {
+            $('.fv-player-save-error').html('<p>'+player.error+'</p>').show();
+            el_spinner.hide();
+            
+            is_saving = false;
+
+            return;
+          }
+
           debug_log('player ID after save: '+player.id_player);
 
           current_player_object = player;
@@ -2165,10 +2175,10 @@ jQuery(function() {
             debug_log('Finished fv_player_db_load Ajax.',response);
 
             if (response) {
-              if( typeof(response) != "object" ) {
+              if( response.error ) {
                 reset_editor_ids();
 
-                overlay_show('message', 'Error: '+response);
+                overlay_show('message', response.error );
 
                 // The editor failed to load, it's not locked
                 edit_lock_removal[current_player_db_id] = 1;
@@ -2844,6 +2854,16 @@ jQuery(function() {
         data: JSON.stringify(ajax_data),
         nonce: fv_player_editor_conf.preview_nonce
       }, function(response) {
+
+        if( response.error ) {
+          $('.fv-player-save-error').html('<p>'+response.error+'</p>').show();
+          el_spinner.hide();
+          
+          is_saving = false;
+
+          return;
+        }
+
         // player saved, reset draft status
         is_unsaved = false;
         //is_draft_changed = false;

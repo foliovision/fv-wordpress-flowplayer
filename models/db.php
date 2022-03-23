@@ -44,7 +44,7 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_player_db_remove', array($this, 'remove_player') );
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce, move into controller/editor.php
     add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
-    add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') ); // todo: error message on failure
+    add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') );
   }
 
   public function getVideosCache() {
@@ -930,8 +930,7 @@ class FV_Player_Db {
           $player_to_check = new FV_Player_Db_Player(intval($post_data['update']), array(), $FV_Player_Db);
 
           if( $player_to_check->getAuthor() !== $user_id ) {
-            echo -1;
-            die();
+            wp_send_json( array( 'error' => 'Security check failed.' ) );
           }
         }
       }
@@ -1147,7 +1146,7 @@ class FV_Player_Db {
         if ($id) {
           echo wp_json_encode( $this->db_load_player_data( $id ) );
         } else {
-          echo -1;
+          wp_send_json( array( 'error' => 'Failed to save player.' ) );
         }
       } else {
         $player->link2meta( $player_meta );
@@ -1176,7 +1175,8 @@ class FV_Player_Db {
       if( defined('DOING_AJAX') && DOING_AJAX &&
         ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-load-".get_current_user_id() ) )
       ) {
-        die('Security check failed'); // todo: this doesn't show up for the user
+        wp_send_json( array( 'error' => 'Security check failed.' ) );
+        die();
       }
 
       // load player and its videos from DB
@@ -1185,8 +1185,18 @@ class FV_Player_Db {
         die();
       }
 
-      // check player's meta data for an edit lock
       $userID = get_current_user_id();
+      $cannot_edit_other_posts = !current_user_can('edit_others_posts');
+
+      if( $cannot_edit_other_posts && $fv_fp->current_player() ) {
+        $author = $fv_fp->current_player()->getAuthor();
+        if( $userID !== $author ) {
+          wp_send_json( array( 'error' => 'You dont have permission to edit this player.' ) );
+          die();
+        }
+      }
+
+      // check player's meta data for an edit lock
       if ($fv_fp->current_player() && count($fv_fp->current_player()->getMetaData())) {
         $edit_lock_found = false;
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
@@ -1216,7 +1226,7 @@ class FV_Player_Db {
                   if( !empty($user->display_name) ) $name = $user->display_name;
                   if( !empty($user->user_nicename) ) $name = $user->user_nicename;
                 }
-                echo $name." is editing this player at the moment. Please try again later.";
+                wp_send_json( array( 'error' => $name." is editing this player at the moment. Please try again later." ) );
                 die();
               }
             } else {
