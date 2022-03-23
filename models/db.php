@@ -224,7 +224,7 @@ class FV_Player_Db {
           $db_options['author_id'] = $author_id;
         }
   
-        $total = intval( $this->query_players( $db_options ));
+        $total = $this->query_players( $db_options );
       } else {
         $total = 0;
       }
@@ -410,13 +410,8 @@ class FV_Player_Db {
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
               // use splash with caption / filename in a span
-              if ( isset($videos[ $video_id ]) && $caption ) {
-                $txt = $caption;
-              }
-
               $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
-
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($txt).'" title="'.esc_attr($txt).'" loading="lazy" /><span>' . $txt . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($caption).'" title="'.esc_attr($caption).'" loading="lazy" /><span>' . $caption . '</span></div>';
             } else if ( isset($videos[ $video_id ]) && $caption ) {
               // use caption
               $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption) . '"><span>' . $caption . '</span></div>';
@@ -1255,6 +1250,14 @@ class FV_Player_Db {
     wp_die();
   }
 
+  /**
+   * Search for players, set internal cache or return
+   * count if $args['count'] is true
+   *
+   * @param array $args
+   *
+   * @return void|int
+   */
   public function query_players( $args ) {
     $args = wp_parse_args( $args, array(
       'author_id' => false,
@@ -1375,7 +1378,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
 
     if($args['count']) {
-      return $player_data[0]->row_count;
+      return intval($player_data[0]->row_count);
     }
 
     foreach( $player_data AS $db_record ) {
