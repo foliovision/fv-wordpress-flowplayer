@@ -335,7 +335,8 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   public function get_result_counts() {
-      $this->total_items = FV_Player_Db_Player::getTotalPlayersCount();
+    global $FV_Player_Db;
+    $this->total_items = $FV_Player_Db->getListPageCount();
   }
 
   public function get_data() {

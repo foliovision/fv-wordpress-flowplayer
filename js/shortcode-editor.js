@@ -114,7 +114,7 @@ jQuery(function() {
     errors = {};
 
 
-    /*
+    /**
      * A shorthand to save you from all the "fv_wp_flowplayer_field_"
      * when selecting fields
      *
@@ -150,7 +150,7 @@ jQuery(function() {
       return element;
     }
 
-    /*
+    /**
      * Gives you "src" out of "fv_wp_flowplayer_field_src"
      *
      * @param {string}    name  The field name
@@ -164,7 +164,7 @@ jQuery(function() {
       return name;
     }
 
-    /*
+    /**
      * Gives you the desired tab with video information
      *
      * @param {int|string}  index   Number, or first, or last
@@ -186,7 +186,7 @@ jQuery(function() {
       return $el_editor.find(selector);
     }
 
-    /*
+    /**
     * Gives you all desired tabs of a certain kind
     *
     * @return {object}            The tab elements
@@ -405,11 +405,13 @@ jQuery(function() {
               });
             } else {
               $spinner.remove();
-              $element.html('Error');
+              $element.show();
+              alert(playerID); // show respone message
             }
           }).fail(function() {
-            $spinner
-            $element.html('Error');
+            $spinner.remove();
+            $element.show();
+            alert('Error');
           });
 
           return false;
@@ -773,20 +775,8 @@ jQuery(function() {
         // show error overlay if we have errors
         var err = fv_player_editor.has_errors();
         if ( err ) {
-          $el_save_error_p
-            .data( 'old_txt', $el_save_error.text() )
-            .text( err );
-          $el_save_error.show();
-
+          save_error_show( err );
           return;
-        } else {
-          // revert error text and hide error overlay if we have no errors to show
-          if ( $el_save_error_p.data( 'old_txt ') ) {
-            $el_save_error_p
-              .text( $el_save_error_p.data( 'old_txt ') )
-              .removeData( 'old_txt' );
-            $el_save_error.hide();
-          }
         }
 
         is_saving = true;
@@ -794,7 +784,7 @@ jQuery(function() {
 
         el_spinner.show();
 
-        $('.fv-player-save-error').hide();
+        save_error_hide();
 
         debug_log('Running fv_player_db_save Ajax.');
 
@@ -802,13 +792,23 @@ jQuery(function() {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_save_this_please),
           nonce: fv_player_editor_conf.preview_nonce,
-        }, function(player) {
-          debug_log('player ID after save: '+player.id_player);
+        }, function(response) {
 
-          current_player_object = player;
+          if( response.error ) {
+            save_error_show( response.error )
+            el_spinner.hide();
+            
+            is_saving = false;
+
+            return;
+          }
+
+          debug_log('player ID after save: '+response.id_player);
+
+          current_player_object = response;
 
           try {
-            $(player.videos).each( function(k,v) {
+            $(response.videos).each( function(k,v) {
               var item = $('.fv-player-playlist-item').eq(k);
               if( !item.data('id_video') ) {
                 item.attr('data-id_video',v.id);
@@ -842,9 +842,9 @@ jQuery(function() {
                 }
                 overlay_close_waiting_for_save = false;
                 $.fn.fv_player_box.close();
-              } else if ( player.html ) {
+              } else if ( response.html ) {
                 // auto-refresh preview
-                el_preview_target.html( player.html )
+                el_preview_target.html( response.html )
 
                 $doc.trigger('fvp-preview-complete');
               }
@@ -853,8 +853,8 @@ jQuery(function() {
               // add all the data and inputs to page that we need for an existing player
               if ( is_unsaved ) {
                 fv_player_editor.copy_player_button_toggle(false);
-                init_saved_player_fields( player.id_player );
-                current_player_db_id = player.id_player;
+                init_saved_player_fields( response.id_player );
+                current_player_db_id = response.id_player;
                 is_unsaved = false;
                 //is_draft_changed = false;
                 loading = false;
@@ -866,7 +866,7 @@ jQuery(function() {
           }
 
         }, 'json' ).fail( function() {
-          $('.fv-player-save-error').show();
+          save_error_show();
           
           el_spinner.hide();
           
@@ -1438,7 +1438,7 @@ jQuery(function() {
 
 
 
-    /*
+    /**
      *  Initializes shortcode, removes playlist items, hides elements, figures out
      *  which actual field is edited - post editor, widget, etc.
      */
@@ -1561,7 +1561,7 @@ jQuery(function() {
       $doc.trigger('fv-player-editor-init');
     }
 
-    /*
+    /**
      *  Checks all the input fields and created the JavaScript object.
      *  Works when saving and also previewing.
      */
@@ -1851,7 +1851,7 @@ jQuery(function() {
       }
     }
 
-    /*
+    /**
      *  Closing the editor
      *  * updates the wp-admin -> FV Player screen
      *  * sets data for WordPress Heartbeat to unlock the player
@@ -1926,7 +1926,7 @@ jQuery(function() {
     }
 
 
-    /*
+    /**
     * removes previous values from editor
     * fills new values from shortcode
     *
@@ -2165,10 +2165,10 @@ jQuery(function() {
             debug_log('Finished fv_player_db_load Ajax.',response);
 
             if (response) {
-              if( typeof(response) != "object" ) {
+              if( response.error ) {
                 reset_editor_ids();
 
-                overlay_show('message', 'Error: '+response);
+                overlay_show('message', response.error );
 
                 // The editor failed to load, it's not locked
                 edit_lock_removal[current_player_db_id] = 1;
@@ -2740,8 +2740,8 @@ jQuery(function() {
       }
     }
 
-    /*
-     *  Calculate FV Player editor popup (Colorbox) size
+    /**
+     * Calculate FV Player editor popup (Colorbox) size
      */
     function editor_resize() {
       setTimeout(function(){
@@ -2763,7 +2763,7 @@ jQuery(function() {
       },0);
     }
 
-    /*
+    /**
      *  Saving the data
      */
     function editor_submit() {
@@ -2844,6 +2844,16 @@ jQuery(function() {
         data: JSON.stringify(ajax_data),
         nonce: fv_player_editor_conf.preview_nonce
       }, function(response) {
+
+        if( response.error ) {
+          save_error_show(response.error);
+
+          el_spinner.hide();
+          is_saving = false;
+
+          return;
+        }
+
         // player saved, reset draft status
         is_unsaved = false;
         //is_draft_changed = false;
@@ -2964,7 +2974,7 @@ jQuery(function() {
       }
     }
 
-    /*
+    /**
     * Sends new shortcode to editor
     */
     function insert_shortcode( shortcode ) {
@@ -3228,7 +3238,7 @@ jQuery(function() {
       $doc.trigger('fv-player-editor-video-opened', [ item_index ] );
     }
 
-    /*
+    /**
      *  Recalculate the data-index values for playlist items
      */
     function playlist_index() {
@@ -3357,7 +3367,7 @@ jQuery(function() {
       }
     }
 
-    /*
+    /**
      *  Hide any overlays
      */
     function overlay_hide() {
@@ -3365,7 +3375,7 @@ jQuery(function() {
       return false;
     }
 
-    /*
+    /**
      *  Show a certain kind of overlay
      */
     function overlay_show( type, message ) {
@@ -3381,7 +3391,24 @@ jQuery(function() {
       return overlayDiv;
     }
 
-    /*
+    /**
+     * Show save error message
+     * 
+     * @param {string} message optional mesage 
+     */
+    function save_error_show( message = 'Error saving changes.' ) {
+      $el_save_error_p.text( message );
+      $el_save_error.show();
+    }
+
+    /**
+     * Hide save error message
+     */
+    function save_error_hide() {
+      $el_save_error.hide();
+    }
+
+    /**
      * Populate content of the Embeds tab and show it if there is any content to be set
      * 
      * @param string  html  The OL > LI list of posts which contain the same player.
@@ -3392,7 +3419,7 @@ jQuery(function() {
       get_tabs('embeds').find('td').html(html);
     }
 
-    function tabs_refresh(){
+    function tabs_refresh() {
       var visibleTabs = 0;
       $el_editor.find('a[data-tab]').removeClass('fv_player_interface_hide');
       $el_editor.find('.fv-player-tabs > .fv-player-tab').each(function(){
@@ -3576,7 +3603,7 @@ jQuery(function() {
       return false;
     });
 
-    /*
+    /**
     * Removes playlist item
     * Also stores the RTMP server of the first item as that's the only place where
     * it's stored, so in case we are removing the first playlist item, we save it
@@ -3855,7 +3882,7 @@ jQuery(function() {
         return false;
       },
 
-      /*
+      /**
        * Show a notice in the overlay above the editor
        *
        * @param {Object}  button      The button in the overlay that was clicked

@@ -83,7 +83,7 @@ class FV_Player_Db_Player {
    * @return int
    */
   public function getAuthor() {
-    return $this->author;
+    return intval($this->author);
   }
 
   /**
@@ -647,43 +647,6 @@ CREATE TABLE " . self::$db_table_name . " (
     // update cache, if changed
     if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
       self::$DB_Instance->setPlayersCache($cache);
-    }
-  }
-
-  /**
-   * Retrieves total number of players in the database.
-   *
-   * @return int Returns the total number of players in database.
-   */
-  public static function getTotalPlayersCount() {
-    global $player_ids_when_searching, $wpdb;
-
-    self::init_db_name();
-
-    // make total the number of players cached, if we've used search
-    if (isset($_GET['s']) && $_GET['s']) {
-      if ($player_ids_when_searching) {
-        $total = count( $player_ids_when_searching );
-      } else {
-        $total = 0;
-      }
-    } else {
-      // if we don't yet have instance of FV_Player_Db_Player created the DB for players
-      // has not yet been created at all... try to init it first, then select totals
-      if (!self::$DB_Instance) {
-      	new FV_Player_Db_Player(-1);
-      }
-
-      $total = $wpdb->get_row( 'SELECT Count(*) AS Total FROM ' . self::$db_table_name );
-      if ( $total ) {
-        $total = $total->Total;
-      }
-    }
-
-    if ($total) {
-      return $total;
-    } else {
-      return 0;
     }
   }
 
