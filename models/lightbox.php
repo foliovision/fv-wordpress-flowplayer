@@ -147,7 +147,7 @@ class FV_Player_lightbox {
   /*
    * Controls the stylesheet and script loading
    */
-  function enqueue() {
+  public function enqueue() {
     $this->bLoad = true;
   }
 
