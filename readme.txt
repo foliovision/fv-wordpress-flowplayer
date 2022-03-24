@@ -359,9 +359,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.19.727 - 2022/03/23 =
+= 7.5.19.727 - 2022/03/24 =
 
+* Security - player editing permission checks for Contributors and Authors
 * Security - XSS fix - users with the Contributor role (or above) were able to insert rudimentary JavaScript into FV Player. Thanks to m0ze (Patchstack) for the report!
+* Autoplay - only remove splash once video really plays to prevent empty black video from showing
+* LearnDash LMS support - fix display issues with playlist
+* Bugfix - Position saving - skip playlist position restore for YouTube playlist - for now
+* Bugfix - Position saving - fix for invalid player index for non-logged in users
 
 = 7.5.18.727 - 2022/03/18 =
 
