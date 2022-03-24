@@ -853,6 +853,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $aItem = isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) ? $aPlayer['sources'][0] :  false;
     $sListStyle = !empty($aArgs['liststyle']) ? $aArgs['liststyle'] : false;
+
+    $sItemCaption = flowplayer::filter_possible_html($sItemCaption);
     
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
@@ -931,7 +933,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( $sListStyle == 'season' ) {
       $sHTML .= "<div class='fvp-playlist-item-info'>";
       if( $sItemCaption ) {
-        $sHTML .= "<h4>".htmlspecialchars($sItemCaption)."</h4>";
+        $sHTML .= "<h4>".$sItemCaption."</h4>";
       }
       if ($this->current_video()) {
         $sSynopsis = $this->current_video()->getMetaValue('synopsis',true);
@@ -958,7 +960,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML .= "</div>";
       
     } else {
-      if( $sItemCaption ) $sItemCaption = "<span>".htmlspecialchars($sItemCaption)."</span>";
+      if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
       
       if( $tDuration ) {
         $sDuration = '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
@@ -1582,6 +1584,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   public static function esc_caption( $caption ) {
     return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
+  }
+
+  /*
+   * Use the heavy-duty WordPress HTML filtering if the value looks like it might be HTML
+   * 
+   * @param string $content
+   *
+   * @return string Filtered string
+   */
+  public static function filter_possible_html( $content ) {
+    if( stripos($content, '<') !== false || stripos($content, '>') !== false ) {
+      $content = wp_kses( $content, 'post' );
+    }
+    return $content;
   }
   
   
