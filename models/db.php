@@ -1191,7 +1191,7 @@ class FV_Player_Db {
       if( $cannot_edit_other_posts && $fv_fp->current_player() ) {
         $author = $fv_fp->current_player()->getAuthor();
         if( $userID !== $author ) {
-          wp_send_json( array( 'error' => 'You dont have permission to edit this player.' ) );
+          wp_send_json( array( 'error' => 'You don\'t have permission to edit this player.' ) );
           die();
         }
       }
@@ -1535,7 +1535,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
         if( $cannot_edit_other_posts ) {
           if( $author_id !== $player->getAuthor() ) {
-            die('You dont have permission to export this player.');
+            die('You don\'t have permission to export this player.');
           }
         }
 
@@ -1733,7 +1733,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         // check if user can delete player
         if( $cannot_edit_other_posts ) {
           if( $author_id !== $player->getAuthor() ) {
-            die('You dont have permission to delete this player.');
+            die('You don\'t have permission to delete this player.');
           }
         }
 
@@ -1768,7 +1768,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
       if( $cannot_edit_other_posts ) {
         if( $author_id !== $player->getAuthor() ) {
-          die('You dont have permission to clone this player.');
+          die('You don\'t have permission to clone this player.');
         }
       }
 
