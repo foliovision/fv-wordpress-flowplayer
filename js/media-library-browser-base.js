@@ -114,12 +114,11 @@ function fv_flowplayer_browser_browse(data, options) {
   }
 
   function addFolderAjax($element, folder_name, options) {
-    console.log('element', $element, 'folder_name', folder_name, 'options', options);
-    
     var data = {
       action: options.action,
       nonce: options.nonce,
-      folder_name: folder_name
+      folder_name: folder_name,
+      current_folder: fv_player_media_browser.get_current_folder()
     };
 
     jQuery.post(fv_player.ajaxurl, data, function (response) {
