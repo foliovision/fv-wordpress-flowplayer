@@ -1,3 +1,19 @@
+jQuery(function() {
+  window.fv_player_media_browser = (function($) {
+    var current_folder = '';
+  
+    return {
+      get_current_folder() {
+        return current_folder;
+      },
+  
+      set_current_folder( folder ) {
+        return current_folder = folder;
+      }
+    }
+  })(jQuery);
+})
+
 var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
@@ -19,12 +35,12 @@ var
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
-  const
+  var
     width = jQuery('#__assets_browser').width(),
     idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
 
   if ( width ) {
-    const columns = Math.min( Math.round( width / idealColumnWidth ), 12 ) || 1;
+    var columns = Math.min( Math.round( width / idealColumnWidth ), 12 ) || 1;
     jQuery('#__assets_browser')
       .closest( '.media-frame-content' )
       .attr( 'data-columns', columns );
@@ -47,21 +63,22 @@ function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonA
 // retrieves options and data for media browser and refreshes its content
 function fv_flowplayer_browser_browse(data, options) {
 
-  const
+  var
     filemanager = jQuery('.attachments-browser'),
     breadcrumbs = jQuery('.breadcrumbs'),
     fileList = filemanager.find('.data'),
     showBreadcrumbs = (options && options.breadcrumbs ? options.breadcrumbs : false);
 
-  var
-    currentPath = '',
+  var 
     breadcrumbsUrls = [];
+
+    fv_player_media_browser.set_current_folder('')
 
   // if we're appending data, don't do all this
   if (!options || !options.append) {
     jQuery(window).off('fv-player-browser-open-folder');
     jQuery(window).on('fv-player-browser-open-folder', function (e, path) {
-      currentPath = data.path;
+      fv_player_media_browser.set_current_folder(data.path);
 
       if (showBreadcrumbs) {
         breadcrumbsUrls.push(data.path);
