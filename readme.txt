@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.20.727 - 2022/03/25 =
+
+* Urgent Bugfix - video splash screens not disappearing for non-Pro users
+
 = 7.5.19.727 - 2022/03/24 =
 
 * Security - player editing permission checks for Contributors and Authors
