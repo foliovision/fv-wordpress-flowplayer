@@ -29,6 +29,10 @@ function S3MultiUpload(file) {
  */
 S3MultiUpload.prototype.createMultipartUpload = function() {
     var self = this;
+
+    // prepend path
+    self.fileInfo.name = fv_player_media_browser.get_current_folder() + '/' + self.fileInfo.name;
+
     jQuery.post(self.SERVER_LOC, {
         action: 'create_multiupload',
         fileInfo: self.fileInfo,
