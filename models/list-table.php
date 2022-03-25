@@ -278,7 +278,7 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>\n";
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($player->player_name)."</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
         $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";
@@ -335,7 +335,8 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   public function get_result_counts() {
-      $this->total_items = FV_Player_Db_Player::getTotalPlayersCount();
+    global $FV_Player_Db;
+    $this->total_items = $FV_Player_Db->getListPageCount();
   }
 
   public function get_data() {

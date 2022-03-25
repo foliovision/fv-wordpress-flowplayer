@@ -496,14 +496,14 @@ if (!Date.now) {
         }
 
         if ( item_index >= 0  && !item_changed ) {
-          if( typeof api.queue_video != 'undefined' ) {
-            var position = getVideoPosition(api) ? getVideoPosition(api) : 0;
-            api.queue_video(item_index, position);
-          } else {
+          if( api.video && api.video.type != 'video/youtube' ) {
             api.play(item_index);
           }
           
           item_changed = true;
+
+          // playlist-start-position.module.js should not interfere
+          $root.data('position_changed', 1);
         }
 
       };
