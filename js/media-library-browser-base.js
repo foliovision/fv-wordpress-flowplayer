@@ -9,6 +9,11 @@ jQuery(function() {
   
       set_current_folder( folder ) {
         return current_folder = folder;
+      },
+
+      // TODO: fv_player_get_active_tab
+      get_current_bucket() {
+        return jQuery('#browser-dropdown').val()
       }
     }
   })(jQuery);
@@ -118,13 +123,16 @@ function fv_flowplayer_browser_browse(data, options) {
       action: options.action,
       nonce: options.nonce,
       folder_name: folder_name,
-      current_folder: fv_player_media_browser.get_current_folder()
+      current_path: fv_player_media_browser.get_current_folder()
     };
 
     jQuery.post(fv_player.ajaxurl, data, function (response) {
       console.log('Add folder response', response);
       if(response.error) {
         alert(response.error);
+      } else {
+        // refresh browser
+        fv_flowplayer_browser_assets_loaders[ fv_player_get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
       }
     });
   }
@@ -179,6 +187,12 @@ function fv_flowplayer_browser_browse(data, options) {
     }
 
     if(fv_flowplayer_scannedFolders.length) {
+      // sort folders alphabetically
+      fv_flowplayer_scannedFolders.sort(function(a, b) {
+        if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+        if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+        return 0;
+      });
 
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
