@@ -358,7 +358,7 @@ function fv_flowplayer_browser_browse(data, options) {
     fv_flowplayer_media_browser_setColumns();
     fileList.hide().fadeIn();
 
-    // check if should refresh, or if folder/bucket changed then also change refresh and remove old one 
+    // check if should refresh or if folder/bucket/tab changed then also change refresh and remove old one 
     if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
       if( !fv_player_media_browser.get_current_pending_path() ) {
         fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
@@ -390,7 +390,7 @@ function fv_flowplayer_browser_browse(data, options) {
         fv_player_media_browser.set_current_pending_refresh(refresh);
       }
 
-    } else {
+    } else { // nothing pending, remove old refresh
       if( fv_player_media_browser.get_current_pending_refresh() ) {
         clearTimeout(fv_player_media_browser.get_current_pending_refresh());
         fv_player_media_browser.set_current_pending_refresh(false);
