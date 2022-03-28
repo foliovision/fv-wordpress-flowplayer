@@ -11,6 +11,10 @@ flowplayer( function(api,root) {
     LearnDash_watchPlayers();
 
     api.on("finish", function(e,api,time) {
+      if( api.video.click ) {
+        return;
+      }
+
       // Enable "Mark Complete" button
       window.LearnDash_disable_assets(false);
     });
