@@ -1,6 +1,9 @@
 jQuery(function() {
   window.fv_player_media_browser = (function($) {
-    var current_folder = '';
+    var current_folder = '',
+      current_pending_path = '',
+      current_pending_bucket = '',
+      uploading = false;
   
     return {
       get_current_folder() {
@@ -9,6 +12,30 @@ jQuery(function() {
   
       set_current_folder( folder ) {
         return current_folder = folder;
+      },
+
+      get_current_pending_path() {
+        return current_pending_path;
+      },
+
+      set_current_pending_path( path ) {
+        return current_pending_path = path;
+      },
+
+      get_current_pending_bucket() {
+        return current_pending_bucket;
+      },
+
+      set_current_pending_bucket( bucket ) {
+        return current_pending_bucket = bucket;
+      },
+
+      get_upload_status() {
+        return uploading;
+      },
+
+      set_upload_status( uploading ) {
+        return uploading = uploading;
       },
 
       // TODO: fv_player_get_active_tab
@@ -22,7 +49,8 @@ jQuery(function() {
 var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
-
+  fv_flowplayer_current_pending_refresh = false,
+  fv_flowplayer_current_pending_path,
   // TODO: Use some public method instead
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
@@ -139,6 +167,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
   // Render the HTML for the file manager
   function render(data, options) {
+    var havePendingItems = false;
 
     fv_flowplayer_scannedFolders = [];
     fv_flowplayer_scannedFiles = [];
@@ -216,7 +245,6 @@ function fv_flowplayer_browser_browse(data, options) {
     if(fv_flowplayer_scannedFiles.length) {
 
       fv_flowplayer_scannedFiles.forEach(function(f) {
-
         var
           name = escapeHTML(f.name),
           file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
@@ -261,6 +289,10 @@ function fv_flowplayer_browser_browse(data, options) {
           '<span class="screen-reader-text">Deselect</span>' +
           '</button>');
 
+        if ( f.extra && f.extra.encoding_job_status && f.extra.encoding_job_status == 'processing' ) {
+          havePendingItems = true;
+        }
+
         file.appendTo(fileList);
       });
 
@@ -299,6 +331,34 @@ function fv_flowplayer_browser_browse(data, options) {
     fileList.show();
     fv_flowplayer_media_browser_setColumns();
     fileList.hide().fadeIn();
+
+    // check if should refresh, or folder/bucket changed
+    if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
+      if( !fv_player_media_browser.get_current_pending_path() ) {
+        fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
+      }
+
+      if( !fv_player_media_browser.get_current_pending_bucket() ) {
+        fv_player_media_browser.set_current_pending_bucket(  fv_player_media_browser.get_current_bucket())
+      }
+
+      if( ( fv_player_media_browser.get_current_folder() != fv_flowplayer_current_pending_path ) || ( fv_player_media_browser.get_current_bucket() != fv_player_media_browser.get_current_pending_bucket() ) || !fv_flowplayer_current_pending_refresh ) { 
+        if( fv_flowplayer_current_pending_refresh ) {
+          clearTimeout(fv_flowplayer_current_pending_refresh);
+        }
+
+        fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
+
+        fv_flowplayer_current_pending_refresh = setTimeout( function() {
+          fv_flowplayer_browser_assets_loaders[ fv_player_get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+        }, 30000 );
+      }
+
+    } else {
+      if( fv_flowplayer_current_pending_refresh ) {
+        clearTimeout(fv_flowplayer_current_pending_refresh);
+      }
+    }
   }
 
   // This function escapes special html characters in names
