@@ -3,6 +3,8 @@ jQuery(function() {
     var current_folder = '',
       current_pending_path = '',
       current_pending_bucket = '',
+      $current_pending_tab = false,
+      current_pending_refresh = false,
       uploading = false;
   
     return {
@@ -30,6 +32,30 @@ jQuery(function() {
         return current_pending_bucket = bucket;
       },
 
+      get_current_pending_tab() {
+        return $current_pending_tab;
+      },
+
+      set_current_pending_tab( tab ) {
+        return $current_pending_tab = tab;
+      },
+
+      get_current_pending_refresh() {
+        return current_pending_refresh;
+      },
+
+      set_current_pending_refresh( refresh ) {
+        return current_pending_refresh = refresh;
+      },
+
+      get_upload_status() {
+        return uploading;
+      },
+
+      set_upload_status( uploading ) {
+        return uploading = uploading;
+      },
+
       get_upload_status() {
         return uploading;
       },
@@ -41,6 +67,10 @@ jQuery(function() {
       // TODO: fv_player_get_active_tab
       get_current_bucket() {
         return jQuery('#browser-dropdown').val()
+      },
+
+      get_active_tab() {
+        return jQuery('.media-menu-item.active:visible');
       }
     }
   })(jQuery);
@@ -78,10 +108,6 @@ function fv_flowplayer_media_browser_setColumns() {
       .closest( '.media-frame-content' )
       .attr( 'data-columns', columns );
   }
-}
-
-function fv_player_get_active_tab() {
-  return jQuery( '.media-menu-item.active:visible' );
 }
 
 function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
@@ -160,7 +186,7 @@ function fv_flowplayer_browser_browse(data, options) {
         alert(response.error);
       } else {
         // refresh browser
-        fv_flowplayer_browser_assets_loaders[ fv_player_get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+        fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
       }
     });
   }
@@ -332,31 +358,42 @@ function fv_flowplayer_browser_browse(data, options) {
     fv_flowplayer_media_browser_setColumns();
     fileList.hide().fadeIn();
 
-    // check if should refresh, or folder/bucket changed
+    // check if should refresh, or if folder/bucket changed then also change refresh and remove old one 
     if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
       if( !fv_player_media_browser.get_current_pending_path() ) {
         fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
       }
 
       if( !fv_player_media_browser.get_current_pending_bucket() ) {
-        fv_player_media_browser.set_current_pending_bucket(  fv_player_media_browser.get_current_bucket())
+        fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
       }
 
-      if( ( fv_player_media_browser.get_current_folder() != fv_flowplayer_current_pending_path ) || ( fv_player_media_browser.get_current_bucket() != fv_player_media_browser.get_current_pending_bucket() ) || !fv_flowplayer_current_pending_refresh ) { 
-        if( fv_flowplayer_current_pending_refresh ) {
-          clearTimeout(fv_flowplayer_current_pending_refresh);
+      if( !fv_player_media_browser.get_current_pending_tab() ) {
+        fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
+      }
+
+      if( ( fv_player_media_browser.get_current_folder() != fv_player_media_browser.get_current_pending_path()) || ( fv_player_media_browser.get_current_bucket() != fv_player_media_browser.get_current_pending_bucket() ) || ( fv_player_media_browser.get_current_pending_tab().attr('id') != fv_player_media_browser.get_active_tab().attr('id') ) || !fv_player_media_browser.get_current_pending_refresh() ) { 
+        if( fv_player_media_browser.get_current_pending_refresh() ) {
+          clearTimeout(fv_player_media_browser.get_current_pending_refresh());
+          fv_player_media_browser.set_current_pending_refresh(false);
         }
 
+        // update pending values
         fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
+        fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
+        fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
 
-        fv_flowplayer_current_pending_refresh = setTimeout( function() {
-          fv_flowplayer_browser_assets_loaders[ fv_player_get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+        var refresh = setTimeout( function() {
+          fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
         }, 30000 );
+
+        fv_player_media_browser.set_current_pending_refresh(refresh);
       }
 
     } else {
-      if( fv_flowplayer_current_pending_refresh ) {
-        clearTimeout(fv_flowplayer_current_pending_refresh);
+      if( fv_player_media_browser.get_current_pending_refresh() ) {
+        clearTimeout(fv_player_media_browser.get_current_pending_refresh());
+        fv_player_media_browser.set_current_pending_refresh(false);
       }
     }
   }
@@ -490,7 +527,7 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
     overlay_content = jQuery('.media-modal .uploader-window'),
     overlay_title = overlay_content.find('.uploader-editor-title'),
     drop_targets = jQuery('[id^=__wp-uploader-id-'),
-    upload_supported = fv_player_get_active_tab().hasClass( 'upload_supported' );
+    upload_supported = fv_player_media_browser.get_active_tab().hasClass( 'upload_supported' );
 
   var original_title = overlay_title.data('original-overlay-title');
   if( !original_title ) {
@@ -535,7 +572,7 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
 function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
   // forward this event via a custom trigger which gets intercepted by our browsers that support file uploads
   // ... if we just returned false here without the custom trigger, we're basically prevent any drop event anywhere on the Media Browser dialog
-  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
+  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_media_browser.get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
   return false;
 }
 
@@ -997,7 +1034,7 @@ jQuery( function($) {
   // listen to a drop event on one of our browser tabs and hide the drop overlay
   // since WP does not do this for us apart from in its own upload tab
   $( document ).on( "media_browser_drop_event", function() {
-    if ( fv_player_get_active_tab().hasClass('upload_supported') ) {
+    if ( fv_player_media_browser.get_active_tab().hasClass('upload_supported') ) {
       $( '.media-modal .uploader-window' ).css({
         'display' : 'none',
         'opacity' : 0,
