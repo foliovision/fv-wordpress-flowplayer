@@ -11,7 +11,7 @@ flowplayer( function(api,root) {
     LearnDash_watchPlayers();
 
     api.on("finish", function(e,api,time) {
-      if( api.video.click ) {
+      if( typeof(api.video.click) == "string" ) {
         return;
       }
 

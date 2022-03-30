@@ -349,7 +349,7 @@ if (!Date.now) {
       }
 
       isSupported = function() {
-        return !( api.live || api.video && api.video.click );
+        return !( api.live || api.video && typeof(api.video.click) == "string" );
       }
 
       // used to seek into the desired last stored position when he video has started
