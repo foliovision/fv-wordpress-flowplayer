@@ -410,45 +410,6 @@ jQuery(document).ready(function($) {
 
           $('.fv_flowplayer_target').val(attachment.url);
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
-
-          /*if( attachment.type == 'video' ) {
-            if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
-              $('.fv_wp_flowplayer_field_width').val(attachment.width);
-            }
-            if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
-              $('.fv_wp_flowplayer_field_height').val(attachment.height);
-            }
-            if( typeof(attachment.fileLength) != "undefined" ) {
-              $('#fv_wp_flowplayer_file_info').show();
-              $('#fv_wp_flowplayer_file_duration').html(attachment.fileLength);
-            }
-            if( typeof(attachment.filesizeHumanReadable) != "undefined" ) {
-              $('#fv_wp_flowplayer_file_info').show();
-              $('#fv_wp_flowplayer_file_size').html(attachment.filesizeHumanReadable);
-            }
-
-          } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
-            if( jQuery('#remove-post-thumbnail').length > 0 ){
-              return;
-            }
-            jQuery.post(ajaxurl, {
-                action:"set-post-thumbnail",
-                post_id: fv_flowplayer_set_post_thumbnail_id,
-                thumbnail_id: attachment.id,
-                 _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
-                cookie: encodeURIComponent(document.cookie)
-              }, function(str){
-                var win = window.dialogArguments || opener || parent || top;
-                if ( str == '0' ) {
-                  alert( setPostThumbnailL10n.error );
-                } else {
-                  jQuery('#postimagediv .inside').html(str);
-                  jQuery('#postimagediv .inside #plupload-upload-ui').hide();
-                }
-              } );
-
-          }*/
-
       });
 
       //Open the uploader dialog
@@ -1005,8 +966,17 @@ function fv_flowplayer_admin_pro() {
           <?php _e('Monetize the video content on your membership site.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
-    </tr>  
-  </table>  
+    </tr>
+  </table>
+  <?php
+}
+
+function fv_flowplayer_settings_box_conversion() {
+  ?>
+    <p><?php _e('This section allows you to convert videos posted using other plugins to FV Player shortcodes.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2" style="margin: 5px; ">
+      <?php do_action('fv_player_conversion_buttons'); ?>
+    </table>
   <?php
 }
 
@@ -1780,8 +1750,9 @@ if( !class_exists('FV_Player_Pro') ) {
 
 /* Tools tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal' );
-add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal', 'low' );
+add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 
 /* Help tab */
 add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_usage', 'fv_flowplayer_settings_help', 'normal', 'high' );
@@ -1884,19 +1855,19 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
       </h2>
     </div>    
   
-		<div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
+    <div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>    
-				<?php
-				do_meta_boxes($val['id'], 'normal', false );
-				wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
-				wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
-				?>
-			</div>
+      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>
+        <?php do_meta_boxes($val['id'], 'normal', false ); ?>
+      </div>
       <?php endforeach;?>
       <div style="clear: both"></div>
-		</div>
-    <?php wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' ); ?>
+    </div>
+    <?php
+    wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' );
+    wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
+    wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
+    ?>
   </form>
   
 </div>
@@ -1966,20 +1937,22 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 
 <script type="text/javascript">
-	//<![CDATA[
-	jQuery(document).ready( function($) {
+	console.log( 'FV Player Settings screen loading...');
+	jQuery(window).one( 'load', function() {
+    console.log( 'FV Player Settings screen initializing settings boxes...');
+
 		// close postboxes that should be closed
-		$('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
 		// postboxes setup
 		postboxes.add_postbox_toggles('fv_flowplayer_settings');
-    
+
     jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
-      
+
       jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '<?php echo wp_create_nonce( 'fv_wp_flowplayer_activate_extension' ); ?>', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
         button.siblings('img').eq(0).hide();
-        
+
         var obj;
         try {
           response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
@@ -2053,8 +2026,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     /*
     Ensure only one of "Load FV Flowplayer JS everywhere" and "Optimize FV Flowplayer JS loading" can be enabled
     */
-    var cb_js_everywhere = $('#js-everywhere'),
-      cb_js_optimize = $('#js-optimize');
+    var cb_js_everywhere = jQuery('#js-everywhere'),
+      cb_js_optimize = jQuery('#js-optimize');
 
     function check_js_everywhere( was_clicked ) {
       if( was_clicked && cb_js_optimize.prop('checked') ) {
@@ -2064,7 +2037,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_optimize.prop('readonly', cb_js_everywhere.prop('checked') );
     }
-    cb_js_everywhere.click( check_js_everywhere );
+    cb_js_everywhere.on( 'click', check_js_everywhere );
     check_js_everywhere();
 
     function check_js_optimize( was_clicked ) {
@@ -2075,22 +2048,23 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
       cb_js_everywhere.prop('readonly', cb_js_optimize.prop('checked') );
     }
-    cb_js_optimize.click( check_js_optimize );
+    cb_js_optimize.on( 'click', check_js_optimize );
     check_js_optimize();
+
+    console.log( 'FV Player Settings screen initializing finished.');
   });
-	//]]>
 </script>
 
 <script>
-/* TABS */  
-jQuery(document).ready(function(){
+/* TABS */
+jQuery(window).one( 'load', function() {
   jQuery('#fv_player_js_warning').hide();
-  
+
   var anchor = window.location.hash.substring(1);
   if( !anchor || !anchor.match(/tab_/) ) {
     anchor = 'postbox-container-tab_basic';
   }
-  
+
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();

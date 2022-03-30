@@ -65,15 +65,20 @@ class FV_Player_Position_Save {
     // TODO: XSS filter for POST values?
     // check if videoTimes is not a JSON-encoded value, which will happen
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
-    $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
-    $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
-
-    if ($decoded_times !== false) {
-      $_POST['videoTimes'] = $decoded_times;
+    if( isset( $_POST['videoTimes'] ) ) {
+      $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
+    
+      if ($decoded_times !== false) {
+        $_POST['videoTimes'] = $decoded_times;
+      }
     }
 
-    if ($decoded_playlists !== false) {
-      $_POST['playlistItems'] = $decoded_playlists;
+    if( isset( $_POST['playlistItems'] ) ) {
+      $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
+    
+      if ($decoded_playlists !== false) {
+        $_POST['playlistItems'] = $decoded_playlists;
+      }
     }
 
     $success = false;
@@ -140,11 +145,14 @@ class FV_Player_Position_Save {
       if( $player_id ) { // add id to data item if db player
         $attributes['data-player-id'] = $player_id;
 
-        $metaItem = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
+        $user_id = get_current_user_id();
+        if( $user_id ) {
+          $metaItem = get_user_meta( $user_id, 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
 
-        if ( $metaItem >= 0 ) {
-          // playlist item restore
-          $attributes['data-playlist_start'] = intval($metaItem) + 1; // playlist-start-position module starts from 0
+          if ( $metaItem >= 0 ) {
+            // playlist item restore
+            $attributes['data-playlist_start'] = intval($metaItem) + 1; // playlist-start-position module starts from 0
+          }
         }
       }
     }

@@ -281,7 +281,7 @@
     z-index: 2; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
-#browser-dropdown {
+#browser-dropdown, #media-search-input {
     margin-top: 10px;
 }
 

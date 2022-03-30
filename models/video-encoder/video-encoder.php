@@ -7,15 +7,18 @@ abstract class FV_Player_Video_Encoder {
     $encoder_wp_url_slug = '', // used in all links that will point to the list of this encoder jobs
                                // examples: fv_player_coconut, fv_player_bunny_stream ...
     $encoder_name = '',        // used to display name of the service where appropriate (mostly information DIVs in a HTML output)
-                               // examples: Coconut, Bunny.net Stream ...
+                               // examples: Coconut, Bunny Stream ...
     $instance = null,          // self-explanatory
     $admin_page = false,       // will be set to a real admin submenu page object once created
-    $browser_inc_file = '';    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
+    $browser_inc_file = '',    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
+    $use_wp_list_table;        // allow descendants to decide if use wp list table
 
   // variables to override or access from outside of the base class
   protected
     $version = 'latest',
-    $license_key = false,
+    $license_key = false;
+    
+  public
     $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
   public function _get_instance() {
@@ -30,7 +33,7 @@ abstract class FV_Player_Video_Encoder {
     return $this->table_name;
   }
 
-  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
+  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file = '', $use_wp_list_table = true ) {
     global $wpdb;
 
     if ( !$encoder_id ) {
@@ -45,10 +48,6 @@ abstract class FV_Player_Video_Encoder {
       throw new Exception('Extending encoder class did not provide an encoder URL slug!');
     }
 
-    if ( !$browser_inc_file ) {
-      throw new Exception('Extending encoder class did not provide a browser backend PHP file name!');
-    }
-
     $this->encoder_id = $encoder_id;
     $this->encoder_name = $encoder_name;
     $this->encoder_wp_url_slug = $encoder_wp_url_slug;
@@ -56,6 +55,7 @@ abstract class FV_Player_Video_Encoder {
     // table names always start on WP prefix, so add that here for our table name here
     $this->table_name = $wpdb->prefix . $this->table_name;
     $this->browser_inc_file = $browser_inc_file;
+    $this->use_wp_list_table = $use_wp_list_table;
 
     add_action('init', array( $this, 'email_notification' ), 7 );
 
@@ -164,7 +164,13 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_editor_scripts($page) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' ) {
-      wp_enqueue_script('fvplayer-shortcode-editor-' . $this->encoder_id, plugins_url( 'js/shortcode-editor.js', $this->getFILE() ), array('jquery', 'fvwpflowplayer-shortcode-editor'), $this->version );
+
+      $file = $this->locate_script('shortcode-editor.js');
+      if( $file ) {
+        $handle = 'fvplayer-shortcode-editor-' . $this->encoder_id;
+        wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+      }
+
     }
   }
 
@@ -188,6 +194,16 @@ abstract class FV_Player_Video_Encoder {
     }
 
     return $response;
+  }
+  
+  function locate_script( $script ) {
+    $file = false;
+    if( file_exists( dirname( $this->getFILE() ) . '/../js/'.$this->encoder_id.'-'.$script ) ) {
+      $file = '/../js/'.$this->encoder_id.'-'.$script;
+    } else if( file_exists( dirname( $this->getFILE() ).'/js/'.$script ) ) {
+      $file = '/js/'.$script;
+    }
+    return $file;
   }
 
   /**
@@ -323,6 +339,10 @@ abstract class FV_Player_Video_Encoder {
       }
     }
 
+    if( isset( $_POST['id_video'] ) ) {
+      $id_video = intval( $_POST['id_video'] );
+    }
+
     $target = $this->util__sanitize_target($target);
 
     // check for a valid source URL
@@ -378,6 +398,10 @@ abstract class FV_Player_Video_Encoder {
       $job['trailer'] = $trailer;
     }
 
+    if( isset( $id_video ) ) {
+      $job['id_video'] = $id_video;
+    }
+
     // create a new job
     $id = $this->job_create( $job );
     $show = array( $id );
@@ -385,7 +409,7 @@ abstract class FV_Player_Video_Encoder {
     // submit the job to the Encoder service
     $result = $this->job_submit($id);
 
-    if( defined('DOING_AJAX') ) {
+    if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
       require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
 
       ob_start();
@@ -406,9 +430,11 @@ abstract class FV_Player_Video_Encoder {
    */
   function init_browser() {
     // it should not show when picking the media file in dashboard
-    if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
+    //if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
+    if( !empty( $this->browser_inc_file ) ) {
       include_once( $this->browser_inc_file );
     }
+    //}
   }
 
   /**
@@ -453,6 +479,10 @@ abstract class FV_Player_Video_Encoder {
     global $wpdb;
 
     $ids = array();
+    if( $wpdb->get_var("SHOW TABLES LIKE '".$this->table_name."'") != $this->table_name ) {
+      return $ids;
+    }
+    
     $pending_jobs = $wpdb->get_results( "SELECT * FROM ".  $this->table_name . " WHERE type = '{$this->encoder_id}' AND status = 'processing'" . ( $all ? '' : ' AND date_checked < DATE_SUB( UTC_TIMESTAMP(), INTERVAL 30 SECOND )' ) );
 
     foreach( $pending_jobs AS $pending_job ) {
@@ -485,7 +515,11 @@ abstract class FV_Player_Video_Encoder {
     if ( $check_result ) {
       $check = $check_result;
     } else if ( $fv_fp->current_video() ) {
+      if ( !$job_id ) {
       $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
+    } else {
+        $check = $this->job_check( (int) $job_id );
+      }
     } else {
       user_error('Could not retrieve JOB check for encoder ' . $this->encoder_name . ', job ID: ' . $job_id . ', defaulted back to input value: ' . print_r( $check_result, true ), E_USER_WARNING );
       return $check_result;
@@ -569,19 +603,21 @@ abstract class FV_Player_Video_Encoder {
    *
    * @return ID                 Job ID
    */
-  protected function job_create( $args ) {
-    global $wpdb;
-    global $fv_fp;
+  public function job_create( $args ) {
+    global $wpdb, $fv_fp;
 
     $args = wp_parse_args( $args, array(
       'encryption' => false,
       'trailer' => false,
-      'video_id' => false
+      'id_video' => false
     ) );
+
+    $video_ids = explode( ',', strval($args['id_video']) );
 
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
       'date_created' => date("Y-m-d H:i:s"),
+      'id_video' => $args['id_video'],
       'source' => $args['source'],
       'target' => $args['target'],
       'type' => $this->encoder_id,
@@ -589,9 +625,11 @@ abstract class FV_Player_Video_Encoder {
       'status' => 'created',
       'output' => $this->prepare_job_output_column_value(),
       'args' => '',
-      'author' => get_current_user_id()
+      'author' => get_current_user_id(),
+      'id_video' => $video_ids[0]
     ), array(
       '%s',
+      '%d',
       '%s',
       '%s',
       '%s',
@@ -599,6 +637,7 @@ abstract class FV_Player_Video_Encoder {
       '%s',
       '%s',
       '%s',
+      '%d',
       '%d'
     ));
 
@@ -722,9 +761,12 @@ abstract class FV_Player_Video_Encoder {
    */
   public function admin_enqueue_scripts( $page ) {
     if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' || $page == 'settings_page_fvplayer' || $page == 'fv-player_page_' . $this->encoder_wp_url_slug ) {
-      wp_register_script('fv_player_' . $this->encoder_id . '_admin', plugins_url( 'js/admin.js', $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . '/js/admin.js') );
-      wp_enqueue_script('fv_player_' . $this->encoder_id . '_admin');
-      wp_localize_script( 'fv_player_' . $this->encoder_id . '_admin', $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
+      $file = $this->locate_script('admin.js');
+      if( $file ) {
+        $handle = 'fv_player_' . $this->encoder_id . '_admin';
+        wp_enqueue_script( $handle, plugins_url( $file, $this->getFILE() ), array('jquery'), filemtime( dirname( $this->getFILE() ) . $file), true );
+        wp_localize_script( $handle, $this->encoder_id . '_pending_jobs', $this->jobs_check(true) );
+      }
     }
   }
 

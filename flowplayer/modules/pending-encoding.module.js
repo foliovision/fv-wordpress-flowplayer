@@ -13,7 +13,7 @@ if( typeof(flowplayer) !== "undefined" ) {
 
     // Do we need to show the notice right away?
     var playlist = api.conf.playlist.length ? api.conf.playlist : [ api.conf.clip ];
-    if( playlist[0].pending_encoding) {
+    if( playlist[0] && playlist[0].pending_encoding) {
       show_notice(playlist[0]);
     } 
 

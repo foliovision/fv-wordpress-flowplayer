@@ -334,8 +334,17 @@ function fv_player_preload() {
 
       // Show splash img if audio
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
-        splash_img.remove();
-        splash_text.remove();
+
+        // Ensure the splash is only removed once the video really really starts playing when using autoplay
+        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') ) {
+          api.one('progress', function() {
+            splash_img.remove();
+            splash_text.remove();
+          });
+        } else {
+          splash_img.remove();
+          splash_text.remove();
+        }
       }
     } );
 
@@ -910,6 +919,10 @@ function fv_autoplay_exec(){
         autoplay = root.attr('data-fvautoplay');
 
       if( !fv_player_did_autoplay && autoplay ) {
+        if( autoplay == -1 ) {
+          return;
+        }
+
         if( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) {
           // don't let these mobile devices autoplay YouTube
           console.log( 'FV Player: Autoplay for YouTube not supported on Android and iOS');
@@ -982,9 +995,23 @@ function fv_player_notice(root, message, timeout) {
 
 
 var fv_player_clipboard = function(text, successCallback, errorCallback) {
+  if( navigator.clipboard && typeof(navigator.clipboard.writeText) == "function" ) {
+    navigator.clipboard.writeText(text).then(function() {
+        successCallback();
+      }, function() {
+        errorCallback();
+      }
+    );
+    return;
+  }
+
   try {
-    fv_player_doCopy(text);
-    successCallback();
+    if( fv_player_doCopy(text) ) {
+      successCallback();
+    } else {
+      errorCallback();
+    }
+    
   } catch (e) {
     if( typeof(errorCallback) != "undefined" ) errorCallback(e);
   }
@@ -1020,7 +1047,6 @@ function fv_player_doCopy(text) {
 
   try {
     var result = document.execCommand('copy');
-
     // Restore previous selection.
     if (selected) {
       document.getSelection().removeAllRanges();

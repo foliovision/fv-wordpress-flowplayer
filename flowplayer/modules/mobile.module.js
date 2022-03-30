@@ -26,10 +26,10 @@ function fv_flowplayer_mobile_switch(id) {
 }
 
 if( typeof(fv_flowplayer_mobile_switch_array) != "undefined" ) {
-  for( var i in fv_flowplayer_mobile_switch_array ) {
-		if( !fv_flowplayer_mobile_switch_array.hasOwnProperty(i) ) continue;
+  for( var fv_flowplayer_mobile_switch_i in fv_flowplayer_mobile_switch_array ) {
+		if( !fv_flowplayer_mobile_switch_array.hasOwnProperty(fv_flowplayer_mobile_switch_i) ) continue;
 
-    fv_flowplayer_mobile_switch( i );
+    fv_flowplayer_mobile_switch( fv_flowplayer_mobile_switch_i );
   }
 }
 

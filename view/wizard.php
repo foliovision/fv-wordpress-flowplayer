@@ -255,10 +255,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
               <tr style="display: none" id="fv_wp_flowplayer_file_info">
                 <th></th>
-                <td colspan="2">
-                  <?php _e('Video Duration', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_duration"></span><br />
-                  <?php _e('File size', 'fv_flowplayer'); ?>: <span id="fv_wp_flowplayer_file_size"></span>
-                </td>
+                <td colspan="2"></td>
               </tr>
 
               <tr style="display: none;" class="fv_wp_flowplayer_field_src1_wrapper">

@@ -480,8 +480,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-playlist has-playlist-'.$this->aCurArgs['liststyle'];
         }
       
-        
-        if( $autoplay != -1 ) {
+        // Only add the HTML code if autoplay is not disabled or if it's set to be disabled for the player
+        if( $autoplay != -1 || $autoplay == -1 && !empty($this->aCurArgs['autoplay']) && empty($this->aCurArgs['lightbox']) ) {
           $attributes['data-fvautoplay'] = $autoplay;
         } 
 
@@ -569,8 +569,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fullscreen'] = 'false';
         }
         
-        if( !$bIsAudio && stripos($width,'%') == false && intval($width) > 0 && stripos($height,'%') == false && intval($height) > 0 ) {
-          $ratio = round($height / $width, 4);   
+        if( !$bIsAudio && stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
+          $ratio = round( intval($height) / intval($width), 4);   
           $this->fRatio = $ratio;
   
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
@@ -724,7 +724,7 @@ class flowplayer_frontend extends flowplayer
         
         if( !empty($this->aCurArgs['splash_text']) ) {
           $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );         
-          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".flowplayer::filter_possible_html($aSplashText[0])."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
         if( empty($this->aCurArgs['checker']) && !$this->_get_option('disable_videochecker') && current_user_can('manage_options') ) {
@@ -1243,15 +1243,19 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_title() {
+    $title = false;
+
     if( !empty($this->aCurArgs['caption']) ) {
-      return trim($this->aCurArgs['caption']);
+      $title = $this->aCurArgs['caption'];
     }
     
     if( !empty($this->aCurArgs['title']) ) {
-      return trim($this->aCurArgs['title']);
+      $title = $this->aCurArgs['title'];
     }
-    
-    return false;
+
+    $title = flowplayer::filter_possible_html($title);
+    $title = trim($title);
+    return $title;
   }
   
   

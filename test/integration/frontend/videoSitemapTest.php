@@ -52,19 +52,19 @@ HTML
   public function testVideoSitemap() {
     
     ob_start();
-    global $FV_Xml_Video_Sitemap;    
+    global $FV_Xml_Video_Sitemap;
     $FV_Xml_Video_Sitemap->fv_generate_video_sitemap_do( date('Y'), date('m') );
     $output = ob_get_clean();
-    
+
+    // file_put_contents(dirname(__FILE__).'/video-sitemap.xml', $output);
+
+    $expect = file_get_contents(dirname(__FILE__).'/video-sitemap.xml');
+
     // Fix bad play button image path due to running these tests on server console
-    $expect =  $this->fix_newlines( file_get_contents(dirname(__FILE__).'/video-sitemap.xml') );
-    $actual = $this->fix_newlines($output);
-    $regex = '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~';
+    $expect = preg_replace( '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~', 'wp-content/plugins/fv-wordpress-flowplayer/css', $expect );
+    $actual = preg_replace( '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~', 'wp-content/plugins/fv-wordpress-flowplayer/css', $output );
 
-    $expect = preg_replace( $regex, 'wp-content/plugins/fv-wordpress-flowplayer/css', $expect );
-    $actual = preg_replace( $regex, 'wp-content/plugins/fv-wordpress-flowplayer/css', $actual );
-
-    $this->assertEquals($expect, $actual );      
+    $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($actual) );
   }
   
   public function tearDown() {
