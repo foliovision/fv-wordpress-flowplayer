@@ -467,7 +467,7 @@ class flowplayer_frontend extends flowplayer
         }
         $attributes['class'] .= ' no-svg is-paused '.$skin;
         $timeline_class = $this->_get_option(array($skin, 'design-timeline'));
-        if( $bIsAudio && $timeline_class == 'fp-minimal' ) {
+        if( $bIsAudio && ( $timeline_class == 'fp-minimal' || $timeline_class == 'fp-full' ) ) {
           $timeline_class = 'fp-slim';
         }
         $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
