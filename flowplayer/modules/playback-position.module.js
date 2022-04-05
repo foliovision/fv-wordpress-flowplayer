@@ -388,9 +388,19 @@ if (!Date.now) {
 
           playPositions[video_id] = position;
 
-          // only store the top position if there is none or if the new one is bigger
-          if( !playTopPositions[video_id] || playTopPositions[video_id] < position ) {
-            playTopPositions[video_id] = position;
+          // initialize top position variable with the already stored top position
+          if ( typeof(playTopPositions[video_id]) == "undefined" ) {
+            var stored_top_position = 0;
+            if ( api.conf.playlist ) {
+              stored_top_position = api.conf.playlist[api.video.index] && api.conf.playlist[api.video.index].sources[0] && api.conf.playlist[api.video.index].sources[0].top_position ? api.conf.playlist[api.video.index].sources[0].top_position : 0;
+            } else {
+              stored_top_position = api.conf.clip.sources[0] && api.conf.clip.sources[0].top_position ? api.conf.clip.sources[0].top_position : 0;
+            }
+            playTopPositions[video_id] = stored_top_position;
+            
+          // only store the top position if the new one is bigger
+          } else if( playTopPositions[video_id] < position) {
+            playTopPositions[video_id] = position
           }
 
           if( api.conf.playlist.length > 0 ) {
