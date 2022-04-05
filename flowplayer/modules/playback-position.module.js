@@ -356,11 +356,11 @@ if (!Date.now) {
         }
 
         return position;
-      }
+      },
 
       isSupported = function() {
         return !( api.live || api.video && typeof(api.video.click) == "string" );
-      }
+      },
 
       // used to seek into the desired last stored position when he video has started
       seekIntoPosition = function (e, api) {
