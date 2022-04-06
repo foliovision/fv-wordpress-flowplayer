@@ -529,7 +529,9 @@ abstract class FV_Player_Video_Encoder {
       // if we don't have current_video then we're on the players listing page, so we need to find and update
       // all players where our temporary "encoder_processing_" placeholder is used
       if ( !$fv_fp->current_video() ) {
-        while ( $vid = $FV_Player_Db->get_video_by_src( $this->encoder_id . '_processing_' . (int) $job_id ) ) {
+        while ( $vid = $FV_Player_Db->query_videos( array('src'), $this->encoder_id . '_processing_' . (int) $job_id, false) ) {
+          $vid = $vid[0];
+
           // video processed, replace its SRC
           $vid->set( 'src', $check['output']->src[0] );
 

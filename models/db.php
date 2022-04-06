@@ -286,14 +286,14 @@ class FV_Player_Db {
 
       // search for videos that are consistent with the search text
       // and load their players only
-      $vids = $this->search(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
+      $vids = $this->query_videos(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR');
 
       // if we have any data, assemble video IDs and load their players
       if ($vids !== false) {
         $player_video_ids = array();
 
-        foreach ($vids as $db_record) {
-          $player_video_ids[] = $db_record->id;
+        foreach ($vids as $video) {
+          $player_video_ids[] = $video->getId();
         }
 
         // cache this, so we can use this in the FV_Player_Db_Player::getListPageCount() method
@@ -1948,31 +1948,6 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     }
   }
 
-  /**
-   * Retrieves a video instance where the SRC field is set
-   * to the $src variable given.
-   *
-   * @param $src string The video SRC to search for in the database.
-   */
-  public function get_video_by_src( $src ) {
-    global $wpdb;
-
-    $row = $wpdb->get_row( '
-          SELECT
-            id
-          FROM
-            ' . FV_Player_Db_Video::get_db_table_name() . '
-          WHERE
-            src = "' . esc_sql( $src ) . '"'
-    );
-
-    if ( $row ) {
-      return new FV_Player_Db_Video( $row->id );
-    } else {
-      return null;
-    }
-  }
-
   public static function get_player_duration( $id ) {
     global $wpdb;
     return $wpdb->get_var( "SELECT sum(vm.meta_value) FROM {$wpdb->prefix}fv_player_videometa AS vm JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) WHERE p.id = ".intval($id)." AND vm.meta_key = 'duration'" );
@@ -1986,11 +1961,10 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    * @param string $search_string   The actual text to search for.
    * @param bool $like              The LIKE part for the database query. If false, exact match is used.
    * @param string $and_or          The condition to use when multiple fields are being searched.
-   * @param null $fields            Fields to return for this search. If null, all fields are returned.
    *
    * @return array|bool Returns true if any data were loaded, false otherwise.
    */
-  public function search($fields_to_search, $search_string, $like = false, $and_or = 'OR', $fields = null) {
+  public function query_videos($fields_to_search, $search_string, $like = false, $and_or = 'OR') {
     global $wpdb;
 
     // assemble where part
@@ -2069,13 +2043,28 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     $where = implode(' '.esc_sql($and_or).' ', $where);
 
-    $data = $wpdb->get_results("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . $wpdb->prefix.'fv_player_videos' . "` WHERE $where ORDER BY id DESC");
+    $video_data = $wpdb->get_results("SELECT * FROM `" . FV_Player_Db_Video::get_db_table_name() . "` WHERE $where ORDER BY id DESC");
 
-    if (!$data) {
+    if (!$video_data) {
       return false;
-    } else {
-      return $data;
     }
+
+    $videos = array();
+
+    foreach( $video_data AS $db_record ) {
+      // create a new video object and populate it with DB values
+      $record_id = $db_record->id;
+      // if we don't unset this, we'll get warnings
+      unset($db_record->id);
+
+      $video_object = new FV_Player_Db_Video( null, get_object_vars( $db_record ), $this );
+      $video_object->link2db( $record_id );
+
+      // cache this player in DB object
+      $videos[] = $video_object;
+    }
+
+    return $videos;
   }
 
   /**

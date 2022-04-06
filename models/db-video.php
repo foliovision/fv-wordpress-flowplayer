@@ -452,35 +452,6 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
-   * Searches for a player video via custom query.
-   * Used in plugins such as HLS which will
-   * provide video src data but not ID to search for.
-   *
-   * @param bool $like   The LIKE part for the database query. If false, exact match is used.
-   * @param null $fields Fields to return for this search. If null, all fields are returned.
-   *
-   * @return bool Returns true if any data were loaded, false otherwise.
-   */
-  public function searchBySrc($like = false, $fields = null) {
-    global $wpdb;
-
-    $row = $wpdb->get_row("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE `src` ". ($like ? 'LIKE "%'.esc_sql($this->src).'%"' : '="'.esc_sql($this->src).'"') ." ORDER BY id DESC");
-
-    if (!$row) {
-      return false;
-    } else {
-      // load up all values for this video
-      foreach ($row as $key => $value) {
-        if (property_exists($this, $key)) {
-          $this->$key = stripslashes($value);
-        }
-      }
-
-      return true;
-    }
-  }
-
-  /**
    * Returns all options data for this video.
    *
    * @return array Returns all options data for this video.
