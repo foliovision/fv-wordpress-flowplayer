@@ -28,7 +28,8 @@ class FV_Player_Db {
     $players_cache = array(),
     //$player_atts_cache = array(),
     $player_meta_cache = array(),
-    $player_ids_when_searching;
+    $player_ids_when_searching,
+    $stopwords;  // used in get_search_stopwords method
 
   public function __construct() {
     add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
@@ -285,7 +286,7 @@ class FV_Player_Db {
 
       // search for videos that are consistent with the search text
       // and load their players only
-      $vids = FV_Player_Db_Video::search(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
+      $vids = $this->search(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR', 'id');
 
       // if we have any data, assemble video IDs and load their players
       if ($vids !== false) {
@@ -1976,6 +1977,194 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     global $wpdb;
     return $wpdb->get_var( "SELECT sum(vm.meta_value) FROM {$wpdb->prefix}fv_player_videometa AS vm JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) WHERE p.id = ".intval($id)." AND vm.meta_key = 'duration'" );
     
+  }
+
+  /**
+   * Searches for a player video via custom query.
+   *
+   * @param array $fields_to_search Array with fields in which to perform this search.
+   * @param string $search_string   The actual text to search for.
+   * @param bool $like              The LIKE part for the database query. If false, exact match is used.
+   * @param string $and_or          The condition to use when multiple fields are being searched.
+   * @param null $fields            Fields to return for this search. If null, all fields are returned.
+   *
+   * @return array|bool Returns true if any data were loaded, false otherwise.
+   */
+  public function search($fields_to_search, $search_string, $like = false, $and_or = 'OR', $fields = null) {
+    global $wpdb;
+
+    // assemble where part
+    $where = array();
+
+    /*
+     * Inspired by core WP WP_Query::parse_search() but adjusted to make it fit our SQL query
+     */
+    if ( $like ) {
+      $search_terms_count = 1;
+      $search_terms = '';
+
+      $search_string = stripslashes( $search_string );
+
+      if( (substr($search_string, 0,1) == "'" && substr( $search_string,-1) == "'") || (substr($search_string, 0,1) == '"' && substr( $search_string,-1) == '"') ) { // Dont break term if in '' or ""
+        $search_string = substr($search_string, 1, -1);
+        $search_terms = array( $search_string );
+      } else {
+        if ( preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search_string, $matches ) ) {
+          $search_terms_count = count( $matches[0] );
+          $search_terms = self::parse_search_terms( $matches[0] );
+          // If the search string has only short terms or stopwords, or is 10+ terms long, match it as sentence.
+          if ( empty( $search_terms ) || count( $search_terms ) > 9 ) {
+            $search_terms = array( $search_string );
+          }
+        } else {
+          $search_terms = array( $search_string );
+        }
+      }
+      
+      $search_terms_encoded = array();
+
+      foreach( $search_terms as $term ) {
+        $search_terms_encoded[] = $term; 
+        $search_terms_encoded[] = urlencode($term);
+        $search_terms_encoded[] = rawurlencode($term);
+      }
+
+      $search_terms = $search_terms_encoded;
+
+      unset($search_terms_encoded);
+
+      $exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
+      
+      foreach ($fields_to_search as $field_name) {
+        $searchlike = '';
+        $first = true;
+        foreach ( $search_terms as $term ) {
+          // If there is an $exclusion_prefix, terms prefixed with it should be excluded.
+          $exclude = $exclusion_prefix && ( substr( $term, 0, 1 ) === $exclusion_prefix );
+         
+          if ( $exclude ) {
+            $like_op  = 'NOT LIKE';
+            $andor_op = 'AND';
+            $term     = substr( $term, 1 );
+          } else {
+            $like_op  = 'LIKE';
+            $andor_op = 'OR';
+          }
+          
+          if( $first ) $andor_op = '';
+
+          $like_term = '%' . $wpdb->esc_like( $term ) . '%';
+          $searchlike .= $wpdb->prepare( "{$andor_op}({$field_name} $like_op %s)", $like_term);
+
+          $first = false;
+        }
+        $where[] = "(". $searchlike .")";
+      }
+
+    } else { // TODO same as like
+      foreach ($fields_to_search as $field_name) {
+        $where[] = "`$field_name` ='" . esc_sql($search_string) . "'";
+      }
+    }
+
+    $where = implode(' '.esc_sql($and_or).' ', $where);
+
+    $data = $wpdb->get_results("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . $wpdb->prefix.'fv_player_videos' . "` WHERE $where ORDER BY id DESC");
+
+    if (!$data) {
+      return false;
+    } else {
+      return $data;
+    }
+  }
+
+  /**
+   * Copy of core WordPress WP_Query::parse_search_terms() for our purposes without any changes
+   * 
+   * Check if the terms are suitable for searching.
+   *
+   * Uses an array of stopwords (terms) that are excluded from the separate
+   * term matching when searching for posts. The list of English stopwords is
+   * the approximate search engines list, and is translatable. ( from class-wp-query.php )
+   *
+   * @since 3.7.0
+   * 
+   * @param string[] $terms Array of terms to check.
+   * @return string[] Terms that are not stopwords.
+   */
+  public function parse_search_terms( $terms ) {
+    $strtolower = function_exists( 'mb_strtolower' ) ? 'mb_strtolower' : 'strtolower';
+    $checked    = array();
+
+    $stopwords = $this->get_search_stopwords();
+
+    foreach ( $terms as $term ) {
+      // Keep before/after spaces when term is for exact match.
+      if ( preg_match( '/^".+"$/', $term ) ) {
+        $term = trim( $term, "\"'" );
+      } else {
+        $term = trim( $term, "\"' " );
+      }
+
+      // Avoid single A-Z and single dashes.
+      if ( ! $term || ( 1 === strlen( $term ) && preg_match( '/^[a-z\-]$/i', $term ) ) ) {
+        continue;
+      }
+
+      if ( in_array( call_user_func( $strtolower, $term ), $stopwords, true ) ) {
+        continue;
+      }
+
+      $checked[] = $term;
+    }
+
+    return $checked;
+  }
+
+  /**
+   * Copy of core WordPress WP_Query::get_search_stopwords() for our purposes without any changes
+   * 
+   * Retrieve stopwords used when parsing search terms. ( from class-wp-query.php )
+   *
+   * @since 3.7.0
+   *
+   * @return string[] Stopwords.
+   */
+  public function get_search_stopwords() {
+    if ( isset( $this->stopwords ) ) {
+      return $this->stopwords;
+    }
+
+    /*
+    * translators: This is a comma-separated list of very common words that should be excluded from a search,
+    * like a, an, and the. These are usually called "stopwords". You should not simply translate these individual
+    * words into your language. Instead, look for and provide commonly accepted stopwords in your language.
+    */
+    $words = explode(
+      ',',
+      _x(
+        'about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www',
+        'Comma-separated list of search stopwords in your language'
+      )
+    );
+
+    $stopwords = array();
+    foreach ( $words as $word ) {
+      $word = trim( $word, "\r\n\t " );
+      if ( $word ) {
+        $stopwords[] = $word;
+      }
+    }
+
+    /**
+     * Filters stopwords used when parsing search terms.
+     *
+     * @since 3.7.0
+     *
+     * @param string[] $stopwords Array of stopwords.
+     */
+    $this->stopwords = apply_filters( 'wp_search_stopwords', $stopwords );
+    return $this->stopwords;
   }
 
 }
