@@ -2018,17 +2018,17 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
          
           if ( $exclude ) {
             $like_op  = 'NOT LIKE';
-            $andor_op = 'AND';
+            $andor_op = ' AND ';
             $term     = substr( $term, 1 );
           } else {
             $like_op  = 'LIKE';
-            $andor_op = 'OR';
+            $andor_op = ' OR ';
           }
           
           if( $first ) $andor_op = '';
 
           $like_term = '%' . $wpdb->esc_like( $term ) . '%';
-          $searchlike .= $wpdb->prepare( "{$andor_op}({$field_name} $like_op %s)", $like_term);
+          $searchlike .= $wpdb->prepare( "{$andor_op}(v.{$field_name} $like_op %s)", $like_term);
 
           $first = false;
         }
@@ -2037,13 +2037,18 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     } else { // TODO same as like
       foreach ($fields_to_search as $field_name) {
-        $where[] = "`$field_name` ='" . esc_sql($search_string) . "'";
+        $where[] = "`v.$field_name` ='" . esc_sql($search_string) . "'";
       }
     }
 
     $where = implode(' '.esc_sql($and_or).' ', $where);
 
-    $video_data = $wpdb->get_results("SELECT * FROM `" . FV_Player_Db_Video::get_db_table_name() . "` WHERE $where ORDER BY id DESC");
+    $video_table = FV_Player_Db_Video::get_db_table_name();
+    $player_table = FV_Player_Db_Player::get_db_table_name();
+
+    $query = "SELECT * FROM `{$video_table}` AS v JOIN `{$player_table}` AS p ON FIND_IN_SET(v.id, p.videos) WHERE $where ORDER BY v.id DESC";
+
+    $video_data = $wpdb->get_results($query);
 
     if (!$video_data) {
       return false;
