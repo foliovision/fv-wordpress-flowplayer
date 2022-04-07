@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/foliovision/fv-player-pro.git"
+    "url": "https://github.com/foliovision/fv-wordpress-flowplayer"
   },
   "author": "foliovision",
   "bugs": {
-    "url": "https://github.com/foliovision/fv-player-pro/issues"
+    "url": "https://github.com/foliovision/fv-wordpress-flowplayer/issues"
   },
-  "homepage": "https://github.com/foliovision/fv-player-pro#readme",
+  "homepage": "https://github.com/foliovision/fv-wordpress-flowplayer#readme",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
