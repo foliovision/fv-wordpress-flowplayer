@@ -94,9 +94,9 @@ if (!Date.now) {
     removeCookieKey = function(key) {
       if (localStorageEnabled) {
         localStorage.removeItem(key);
-      } {
+      } else {
         Cookies.remove(key);
-      };
+      }
     },
 
     // called when the video finishes playing - removes that video position from cache, as it's no longer needed

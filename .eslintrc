@@ -3,9 +3,11 @@
     "indent": "off",
     "no-empty": ["error", { "allowEmptyCatch": true }],
     "no-console": "off",
+    "no-unused-vars": "warn",
     "no-inner-declarations": "warn",
     "no-cond-assign": "warn",
-    "no-extra-boolean-cast": "warn"
+    "no-extra-boolean-cast": "warn",
+    "no-prototype-builtins": "warn"
   },
   "extends": "eslint:recommended",
   "env": {
@@ -18,6 +20,8 @@
   "globals": {
     "flowplayer": true,
     "fv_player": true,
+    "fv_player_pro": true,
+    "FV_Flowplayer_Pro": true,
     "fv_flowplayer_conf": true,
     "fv_player_editor_conf": true,
     "fv_player_editor_conf_screenshots": true,
@@ -28,7 +32,11 @@
     "fv_player_bunny_stream_upload_settings": true,
     "fv_player_lightbox": true,
     "fv_player_clipboard": true,
+    "fv_player_get_video_link_hash": true,
+    "fv_player_time_hms_ms": true,
+    "fv_player_time_hms": true,
     "fv_player_notice": true,
-    "fv_autoplay_exec": true
+    "fv_autoplay_exec": true,
+    "fv_player_load": true
   }
 }
