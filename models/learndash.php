@@ -107,21 +107,21 @@ class FV_Player_Learndash_LMS {
   }
 
   function register_fv_player_field() {
-    if( class_exists('\FV_Player_MetaBox') ) {
-      new \FV_Player_MetaBox( array(
-          'name' => 'FV Player',
-          'meta_key' => 'lesson_fv_player',
-          'post_type' => 'sfwd-lessons',
-          'display' => false,
-          'multiple' => false
+    if( class_exists('FV_Player_MetaBox') ) {
+      new FV_Player_MetaBox( array(
+        'name' => 'FV Player',
+        'meta_key' => 'lesson_fv_player',
+        'post_type' => 'sfwd-lessons',
+        'display' => false,
+        'multiple' => false
         )
       );
-      new \FV_Player_MetaBox( array(
-          'name' => 'FV Player',
-          'meta_key' => 'lesson_fv_player',
-          'post_type' => 'sfwd-topic',
-          'display' => false,
-          'multiple' => false
+      new FV_Player_MetaBox( array(
+        'name' => 'FV Player',
+        'meta_key' => 'lesson_fv_player',
+        'post_type' => 'sfwd-topic',
+        'display' => false,
+        'multiple' => false
         )
       );
     }

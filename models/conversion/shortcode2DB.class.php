@@ -330,7 +330,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         ),
         array(
           'meta_key' => 'fv_player_conversion',
-          'meta_value' => self::class
+          'meta_value' => get_class($this)
         )
       );
 
