@@ -2,7 +2,10 @@
   "rules": {
     "indent": "off",
     "no-empty": ["error", { "allowEmptyCatch": true }],
-    "no-console": "off"
+    "no-console": "off",
+    "no-inner-declarations": "warn",
+    "no-cond-assign": "warn",
+    "no-extra-boolean-cast": "warn"
   },
   "extends": "eslint:recommended",
   "env": {
@@ -10,7 +13,22 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "jquery": true,
-    "wp": true
+    "jquery": true
+  },
+  "globals": {
+    "flowplayer": true,
+    "fv_player": true,
+    "fv_flowplayer_conf": true,
+    "fv_player_editor_conf": true,
+    "fv_player_editor_conf_screenshots": true,
+    "fv_player_editor_translations": true,
+    "fv_flowplayer_translations": true,
+    "fv_flowplayer_playlists": true,
+    "fv_player_wizard_base": true,
+    "fv_player_bunny_stream_upload_settings": true,
+    "fv_player_lightbox": true,
+    "fv_player_clipboard": true,
+    "fv_player_notice": true,
+    "fv_autoplay_exec": true
   }
 }

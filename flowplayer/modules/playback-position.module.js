@@ -1,3 +1,5 @@
+/* global Cookies */
+
 /*
  *  Video Position Store functionality
  */
@@ -127,8 +129,8 @@ if (!Date.now) {
         callback = function() {};
       }
 
-      postDataPositions = [];
-      postDataPlaylists = [];
+      var postDataPositions = [];
+      var postDataPlaylists = [];
 
       for (var video_name in playPositions) {
         if( !playPositions.hasOwnProperty(video_name) ) continue;
