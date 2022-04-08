@@ -111,7 +111,7 @@ include_once(dirname( __FILE__ ) . '/models/stats.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
-if( !function_exists( 'fv_player_bunny_stream_include' ) ) {
+if( !function_exists( 'fv_player_bunny_stream_include' ) && version_compare(PHP_VERSION, '5.2.17') >= 0 ) {
   function fv_player_bunny_stream_include() {
     do_action( 'fv_player_load_video_encoder_libs' );
     if ( class_exists( 'FV_Player_Video_Encoder' ) ) {
