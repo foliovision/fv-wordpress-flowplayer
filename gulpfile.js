@@ -35,7 +35,7 @@ function jsMinify() {
       ["@babel/preset-env", {"modules": false} ]
     ]}))
     .pipe(concat('fv-player.min.js'))
-    .pipe(uglify())
+    .pipe(uglify({mangle: true}).on('error', console.error))
     .pipe(dest('./flowplayer/')
   );
 }
