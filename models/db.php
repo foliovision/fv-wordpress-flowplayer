@@ -2025,6 +2025,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
       $exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
       
       foreach ($args['fields_to_search'] as $field_name) {
+        $field_name = sanitize_key($field_name);
         $searchlike = '';
         $first = true;
         foreach ( $search_terms as $term ) {
@@ -2052,6 +2053,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     } else { // TODO same as like
       foreach ($args['fields_to_search'] as $field_name) {
+        $field_name = sanitize_key($field_name);
         $where[] = "v.$field_name ='" . esc_sql($args['search_string']) . "'";
       }
     }
