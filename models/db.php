@@ -286,7 +286,14 @@ class FV_Player_Db {
 
       // search for videos that are consistent with the search text
       // and load their players only
-      $vids = $this->query_videos(array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), $search, true, 'OR');
+      $query_videos = array( 
+        'fields_to_search' =>  array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'), 
+        'search_string' => $search, 
+        'like' => true, 
+        'and_or' => 'OR'
+      );
+
+      $vids = $this->query_videos($query_videos);
 
       // if we have any data, assemble video IDs and load their players
       if ($vids !== false) {
@@ -1957,15 +1964,23 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
   /**
    * Searches for a player video via custom query.
    *
-   * @param array $fields_to_search Array with fields in which to perform this search.
-   * @param string $search_string   The actual text to search for.
-   * @param bool $like              The LIKE part for the database query. If false, exact match is used.
-   * @param string $and_or          The condition to use when multiple fields are being searched.
+   * @param array $args Array with search arguments.
    *
-   * @return array|bool Returns true if any data were loaded, false otherwise.
+   * @return array|bool Returns array of FV_Player_Db_Video if any data were loaded, false otherwise.
    */
-  public function query_videos($fields_to_search, $search_string, $like = false, $and_or = 'OR') {
+  public function query_videos($args) {
     global $wpdb;
+
+    $args =  wp_parse_args( $args,
+      array( 
+        'fields_to_search' => array(
+          'src'
+        ),
+        'search_string' => '',
+        'like' => false,
+        'and_or' => 'OR'
+      )
+    );
 
     // assemble where part
     $where = array();
@@ -1973,25 +1988,25 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     /*
      * Inspired by core WP WP_Query::parse_search() but adjusted to make it fit our SQL query
      */
-    if ( $like ) {
+    if ( $args['like'] ) {
       $search_terms_count = 1;
       $search_terms = '';
 
-      $search_string = stripslashes( $search_string );
+      $args['search_string'] = stripslashes( $args['search_string'] );
 
-      if( (substr($search_string, 0,1) == "'" && substr( $search_string,-1) == "'") || (substr($search_string, 0,1) == '"' && substr( $search_string,-1) == '"') ) { // Dont break term if in '' or ""
-        $search_string = substr($search_string, 1, -1);
-        $search_terms = array( $search_string );
+      if( (substr($args['search_string'], 0,1) == "'" && substr( $args['search_string'],-1) == "'") || (substr($args['search_string'], 0,1) == '"' && substr( $args['search_string'],-1) == '"') ) { // Dont break term if in '' or ""
+        $args['search_string'] = substr($args['search_string'], 1, -1);
+        $search_terms = array( $args['search_string'] );
       } else {
-        if ( preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $search_string, $matches ) ) {
+        if ( preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $args['search_string'], $matches ) ) {
           $search_terms_count = count( $matches[0] );
           $search_terms = self::parse_search_terms( $matches[0] );
           // If the search string has only short terms or stopwords, or is 10+ terms long, match it as sentence.
           if ( empty( $search_terms ) || count( $search_terms ) > 9 ) {
-            $search_terms = array( $search_string );
+            $search_terms = array( $args['search_string'] );
           }
         } else {
-          $search_terms = array( $search_string );
+          $search_terms = array( $args['search_string'] );
         }
       }
       
@@ -2009,7 +2024,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
       $exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
       
-      foreach ($fields_to_search as $field_name) {
+      foreach ($args['fields_to_search'] as $field_name) {
         $searchlike = '';
         $first = true;
         foreach ( $search_terms as $term ) {
@@ -2036,12 +2051,12 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
       }
 
     } else { // TODO same as like
-      foreach ($fields_to_search as $field_name) {
-        $where[] = "`v.$field_name` ='" . esc_sql($search_string) . "'";
+      foreach ($args['fields_to_search'] as $field_name) {
+        $where[] = "`v.$field_name` ='" . esc_sql($args['search_string']) . "'";
       }
     }
 
-    $where = implode(' '.esc_sql($and_or).' ', $where);
+    $where = implode(' '.esc_sql($args['and_or']).' ', $where);
 
     $video_table = FV_Player_Db_Video::get_db_table_name();
     $player_table = FV_Player_Db_Player::get_db_table_name();
