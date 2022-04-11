@@ -181,7 +181,6 @@ function fv_flowplayer_browser_browse(data, options) {
     };
 
     jQuery.post(fv_player.ajaxurl, data, function (response) {
-      console.log('Add folder response', response);
       if(response.error) {
         alert(response.error);
       } else {
@@ -230,7 +229,7 @@ function fv_flowplayer_browser_browse(data, options) {
       + '<div class="thumbnail">'
       + '<span class="icon folder"></span>'
       + '<div class="filename">'
-      + '<div>+ Add new folder</div>'
+      + '<div>+ Add new category</div>'
       + '</div>'
       + '</div>'
       + '</div>').on('click', function() {
