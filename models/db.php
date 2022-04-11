@@ -2052,7 +2052,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     } else { // TODO same as like
       foreach ($args['fields_to_search'] as $field_name) {
-        $where[] = "`v.$field_name` ='" . esc_sql($args['search_string']) . "'";
+        $where[] = "v.$field_name ='" . esc_sql($args['search_string']) . "'";
       }
     }
 
