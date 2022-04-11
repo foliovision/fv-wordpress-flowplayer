@@ -3,10 +3,9 @@
 abstract class FV_Player_Media_Browser {
 
   public $ajax_action_name = 'wp_ajax_load_assets';
-  public $ajax_folder_add_name = 'wp_ajax_add_folder';
   private $s3_assets_loaded = false;
 
-  public function __construct($ajax_action_name, $ajax_folder_add_name = '') {
+  public function __construct($args) {
 
     // load base JS
     add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 ); // for old WP editor
@@ -19,9 +18,14 @@ abstract class FV_Player_Media_Browser {
     add_action( 'admin_print_scripts-fv-player_page_fv_player_bunny_stream', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Bunny Stream Jobs
     add_action( 'fv_player_media_browser_enqueue_base_uploader_css', array( $this, 'include_base_uploader_css' ) );
 
-    // register extending class WP AJAX action
-    $this->ajax_action_name = $ajax_action_name;
-    $this->ajax_folder_add_name = $ajax_folder_add_name;
+    if( is_array($args) ) {
+      foreach ( $args as $arg_name => $arg_value ) {
+        $this->$arg_name = $arg_value;
+      }
+    } else {
+      // register extending class WP AJAX action
+      $this->ajax_action_name = $args;
+    }
 
     $this->register();
   }
