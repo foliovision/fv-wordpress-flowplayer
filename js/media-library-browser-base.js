@@ -224,7 +224,16 @@ function fv_flowplayer_browser_browse(data, options) {
     }
 
     if(options && options.addnewfolder) {
-      var new_folder = jQuery('<li class="attachment new-folder">+</li>').on('click', function() {
+      var new_folder = jQuery(
+      '<li class="attachment new-folder">'
+      + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
+      + '<div class="thumbnail">'
+      + '<span class="icon folder"></span>'
+      + '<div class="filename">'
+      + '<div>+ Add new folder</div>'
+      + '</div>'
+      + '</div>'
+      + '</div>').on('click', function() {
         var folder_name = prompt("Please enter folder name");
         if(folder_name != null && folder_name.length > 1 ) {
           addFolderAjax(jQuery(this), folder_name, options);
