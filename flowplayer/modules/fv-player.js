@@ -225,7 +225,7 @@ function fv_player_preload() {
       var
         $this = jQuery(this),
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
-        index = jQuery('a',playlist).index(this);
+        index = jQuery('a',playlist).index(this),
         $prev = $this.prev('a'),
         item = $this.data('item');
       

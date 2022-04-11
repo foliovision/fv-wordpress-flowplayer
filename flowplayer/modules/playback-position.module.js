@@ -1,3 +1,5 @@
+/* global Cookies */
+
 /*
  *  Video Position Store functionality
  */
@@ -92,9 +94,9 @@ if (!Date.now) {
     removeCookieKey = function(key) {
       if (localStorageEnabled) {
         localStorage.removeItem(key);
-      } {
+      } else {
         Cookies.remove(key);
-      };
+      }
     },
 
     // called when the video finishes playing - removes that video position from cache, as it's no longer needed
@@ -127,8 +129,8 @@ if (!Date.now) {
         callback = function() {};
       }
 
-      postDataPositions = [];
-      postDataPlaylists = [];
+      var postDataPositions = [];
+      var postDataPlaylists = [];
 
       for (var video_name in playPositions) {
         if( !playPositions.hasOwnProperty(video_name) ) continue;

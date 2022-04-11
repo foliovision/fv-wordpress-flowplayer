@@ -1,3 +1,5 @@
+/*global learndash_video_data, LearnDash_disable_assets, LearnDash_watchPlayers */
+
 flowplayer( function(api,root) {
   root = jQuery(root);
 
