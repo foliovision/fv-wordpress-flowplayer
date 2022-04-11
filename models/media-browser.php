@@ -2,7 +2,7 @@
 
 abstract class FV_Player_Media_Browser {
 
-  public $ajax_action_name = 'wp_ajax_load_assets';
+  public $ajax_action_name = false;
   private $s3_assets_loaded = false;
 
   public function __construct($args) {
@@ -19,9 +19,15 @@ abstract class FV_Player_Media_Browser {
     add_action( 'fv_player_media_browser_enqueue_base_uploader_css', array( $this, 'include_base_uploader_css' ) );
 
     if( is_array($args) ) {
-      foreach ( $args as $arg_name => $arg_value ) {
-        $this->$arg_name = $arg_value;
-      }
+      $args = wp_parse_args($args ,array(
+        'ajax_action_name' => false,
+        'ajax_action_name_add_new_folder' => false,
+        )
+      );
+
+      $this->ajax_action_name = $args['ajax_action_name'];
+      $this->ajax_action_name_add_new_folder = $args['ajax_action_name_add_new_folder'];
+
     } else {
       // register extending class WP AJAX action
       $this->ajax_action_name = $args;

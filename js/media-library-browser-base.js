@@ -175,7 +175,7 @@ function fv_flowplayer_browser_browse(data, options) {
   function addFolderAjax($element, folder_name, options) {
     var data = {
       action: options.action,
-      nonce: options.nonce,
+      nonce_add_new_folder: options.nonce_add_new_folder,
       folder_name: folder_name,
       current_path: fv_player_media_browser.get_current_folder()
     };
@@ -222,7 +222,7 @@ function fv_flowplayer_browser_browse(data, options) {
       fileList.empty().hide();
     }
 
-    if(options && options.addnewfolder) {
+    if(options && options.add_new_folder) {
       var new_folder = jQuery(
       '<li class="attachment new-folder">'
       + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
