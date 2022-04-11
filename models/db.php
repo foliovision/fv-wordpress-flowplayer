@@ -2061,7 +2061,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     $video_table = FV_Player_Db_Video::get_db_table_name();
     $player_table = FV_Player_Db_Player::get_db_table_name();
 
-    $query = "SELECT * FROM `{$video_table}` AS v JOIN `{$player_table}` AS p ON FIND_IN_SET(v.id, p.videos) WHERE $where ORDER BY v.id DESC";
+    $query = "SELECT v.* FROM `{$video_table}` AS v JOIN `{$player_table}` AS p ON FIND_IN_SET(v.id, p.videos) WHERE $where ORDER BY v.id DESC";
 
     $video_data = $wpdb->get_results($query);
 
