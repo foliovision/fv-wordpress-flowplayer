@@ -10,6 +10,7 @@ const cleanCSS = require('gulp-clean-css'); // minify css
 const wpPot = require('gulp-wp-pot'); // for generating the .pot file.
 const sort = require('gulp-sort'); // recommended to prevent unnecessary changes in pot-file.
 const zip = require('gulp-zip'); // zip project
+const gulpSort = require('gulp-sort');
 
 // project
 const projectZipFile = 'fv-wordpress-flowplayer.zip';
@@ -22,11 +23,10 @@ const translationFile = 'fv-wordpress-flowplayer.pot';
 const bugReport = 'https://foliovision.com/support';
 
 // files to check
-const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
-const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
+// const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
+// const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
 const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
-
-const projectPHPWatchFiles = ['*.php', './controller/**/*.php', './models/**/*.php'];
+const projectPHPWatchFiles = ['*.php', './controller/**/*.php', './models/**/*.php', './view/**/*.php'];
 
 // concat js files + uglify
 function jsMinify() {
@@ -48,7 +48,9 @@ function potFileGenerate() {
       domain: textDomain,
       package: package,
       bugReport: bugReport,
-      team: team
+      lastTranslator: "",
+      team: team,
+      headers: false
     } ))
     .pipe(dest('./languages/' + translationFile ))
 }
@@ -68,10 +70,12 @@ function zipProject() {
     "!composer.lock"
     ])
     .pipe(zip(projectZipFile))
-    .pipe(dest('.'));
+    .pipe(dest('./dist'));
 };
 
 // export tasks
-exports.zipProject = zipProject;
-exports.potFileGenerate = potFileGenerate;
-exports.jsMinify = jsMinify;
+exports.zip = zipProject;
+exports.pot = potFileGenerate;
+exports.js = jsMinify;
+
+exports.default = series( parallel(jsMinify, potFileGenerate) , zipProject )
