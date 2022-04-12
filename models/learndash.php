@@ -39,8 +39,12 @@ class FV_Player_Learndash_LMS {
   function display_field( $field_args ) {
     if( $field_args['name'] == 'lesson_fv_player' ) {
       global $FV_Player_Custom_Videos_form_instances;
-      $objVideos = $FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'];
-      $field_args['html'] = $objVideos->get_form();
+      if( !empty($FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player']) && method_exists($FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'], 'get_form') ) {
+        $objVideos = $FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'];
+        $field_args['html'] = $objVideos->get_form();
+      } else {
+        $field_args['html'] = 'Failed to load FV Player Editor.';
+      }
     }
     return $field_args;
   }
