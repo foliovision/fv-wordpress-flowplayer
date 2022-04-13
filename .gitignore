@@ -3,3 +3,4 @@ composer.lock
 test/testSuite
 .DS_Store
 .vscode/launch.json
+node_modules

@@ -410,7 +410,7 @@ abstract class FV_Player_Video_Encoder {
     $result = $this->job_submit($id);
 
     if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
-      require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
+      $this->include_listing_lib();
 
       ob_start();
       $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
@@ -450,7 +450,7 @@ abstract class FV_Player_Video_Encoder {
     $rows = array();
 
     if( count($ids) > 0 ) {
-      require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
+      $this->include_listing_lib();
       // get html for processed rows
       foreach($ids as $id ) {
         ob_start();
