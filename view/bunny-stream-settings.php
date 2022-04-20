@@ -36,6 +36,15 @@ global $fv_fp;
       'name' => __('Stream Library CDN Hostname', 'fv-player-bunny_stream'),
       'class' => 'regular-text code'
     ) );
+
+    $fv_fp->_get_checkbox(__('Enable video token (PRO)', 'fv-wordpress-flowplayer'), array('bunny_stream', 'video_token'), __('Improve Video Security.', 'fv-wordpress-flowplayer'));
+
+    $fv_fp->_get_input_text( array(
+      'key' => array( 'bunny_stream', 'global_api_key' ),
+      'name' => __('Global API Key', 'fv-player-bunny_stream'),
+      'class' => 'regular-text code'
+    ) );
+
     ?>
     <tr>
       <td></td>
@@ -46,3 +55,35 @@ global $fv_fp;
     </tr>
   </table>
 </form>
+
+<script>
+  jQuery(function() {
+    var global_api_key_input = jQuery('input[name="bunny_stream[global_api_key]"]'),
+    global_api_key_row = global_api_key_input.closest('tr');
+
+    if(global_api_key_input.val()) {
+      global_api_key_row.show();
+    } else {
+      global_api_key_row.hide();
+    }
+
+    jQuery('input[name="bunny_stream[video_token]"]').on('click', function(e) {
+      var checked = jQuery(this).prop('checked');
+
+      if(checked === true) {
+        if(!global_api_key_input.val()) {
+          var key = prompt("Please Enter Global Bunny API Key To Use Video Token Authentification.");
+          if(key) {
+            global_api_key_input.val(key);
+            global_api_key_row.show();
+          } else {
+            global_api_key_row.hide();
+          }
+        }
+        global_api_key_row.show();
+      } else {
+        global_api_key_row.hide();
+      }
+    });
+  });
+</script>
