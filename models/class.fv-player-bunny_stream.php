@@ -377,6 +377,8 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
           }
 
           foreach( $_POST['bunny_stream'] AS $k => $v ) {
+            if(in_array($k, array('global_api_key'))) continue; // do not store
+          
             $fv_fp->conf['bunny_stream'][$k] = trim($v);
           }
 
@@ -389,7 +391,6 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
         }
       } else {
         echo "<div class='error'><p>Nonce error.</p></div>";
-
       }
     }
 

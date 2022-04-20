@@ -40,6 +40,12 @@ global $fv_fp;
     $fv_fp->_get_checkbox(__('Enable video token (PRO)', 'fv-wordpress-flowplayer'), array('bunny_stream', 'video_token'), __('Improve Video Security.', 'fv-wordpress-flowplayer'));
 
     $fv_fp->_get_input_text( array(
+      'key' => array( 'bunny_stream', 'zone_security_key' ),
+      'name' => __('Zone Security Key', 'fv-player-bunny_stream'),
+      'class' => 'regular-text code'
+    ) );
+
+    $fv_fp->_get_input_text( array(
       'key' => array( 'bunny_stream', 'global_api_key' ),
       'name' => __('Global API Key', 'fv-player-bunny_stream'),
       'class' => 'regular-text code'
@@ -59,12 +65,16 @@ global $fv_fp;
 <script>
   jQuery(function() {
     var global_api_key_input = jQuery('input[name="bunny_stream[global_api_key]"]'),
-    global_api_key_row = global_api_key_input.closest('tr');
+      global_api_key_row = global_api_key_input.closest('tr'),
+      zone_security_key_input = jQuery('input[name="bunny_stream[zone_security_key]"]'),
+      zone_security_key_row = zone_security_key_input.closest('tr');
 
-    if(global_api_key_input.val()) {
-      global_api_key_row.show();
+    global_api_key_row.hide(); // do not show
+
+    if(zone_security_key_input.val()) { // check if already set
+      zone_security_key_row.show();
     } else {
-      global_api_key_row.hide();
+      zone_security_key_row.hide();
     }
 
     jQuery('input[name="bunny_stream[video_token]"]').on('click', function(e) {
@@ -73,16 +83,18 @@ global $fv_fp;
       if(checked === true) {
         if(!global_api_key_input.val()) {
           var key = prompt("Please Enter Global Bunny API Key To Use Video Token Authentification.");
-          if(key) {
+          if(typeof key == 'string' && key.length > 1) {
             global_api_key_input.val(key);
-            global_api_key_row.show();
           } else {
-            global_api_key_row.hide();
+            zone_security_key_row.hide();
+            jQuery(this).prop('checked', false);
           }
         }
-        global_api_key_row.show();
       } else {
-        global_api_key_row.hide();
+        // wipe data
+        global_api_key_input.val('');
+        zone_security_key_input.val('');
+        zone_security_key_row.hide();
       }
     });
   });
