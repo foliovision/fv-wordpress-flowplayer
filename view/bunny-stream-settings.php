@@ -17,7 +17,6 @@ global $fv_fp;
 </style>
 
 <form method="POST">
-  <div style="display: none;" class="fv-pro-not-compatible notice notice-error inline"><p>To Use Token Authentication You Need To Install Latest FV Player Pro.</p></div>
   <table class='form-table'>
     <?php
     $fv_fp->_get_input_text( array(
@@ -76,9 +75,14 @@ global $fv_fp;
       api_access_key_row = api_access_key_input.closest('tr'),
       security_token_input = jQuery('input[name="bunny_stream[security_token]"]'),
       security_token_row = security_token_input.closest('tr'),
-      pro_compatible = <?php echo json_encode(FV_Player_Bunny_Stream()->fv_player_pro_compatible()); ?>;
+      pro_compatible = <?php echo json_encode(FV_Player_Bunny_Stream()->fv_player_pro_compatible()); ?>,
+      checkbox = jQuery('input[name="bunny_stream[video_token]"]:checkbox');
 
     api_access_key_row.hide(); // do not show
+
+    if(!pro_compatible) {
+      checkbox.prop('checked', false);
+    }
 
     if(security_token_input.val()) { // check if already set
       security_token_row.show();
@@ -86,24 +90,21 @@ global $fv_fp;
       security_token_row.hide();
     }
 
-    jQuery('input[name="bunny_stream[video_token]"]').on('click', function(e) {
+    checkbox.on('click', function(e) {
       if(!pro_compatible) {
-        jQuery('.fv-pro-not-compatible').show();
+        api_access_key_row.html('<td></td><td><p>Video protection is only supported if you install FV Player Pro. You can purchase it <a href="https://foliovision.com/downloads/fv-player-license" target="_blank">here</a>.</p></td>');
+        api_access_key_row.show();
 
         jQuery(this).prop('checked', false);
-        return false;
-      }
-
-      var checked = jQuery(this).prop('checked');
-
-      if(checked === true) {
-        api_access_key_row.show();
       } else {
-        // wipe data
-        api_access_key_input.val('');
-        security_token_input.val('');
-        api_access_key_row.hide();
-        security_token_row.hide();
+        if(jQuery(this).prop('checked') === true) {
+          api_access_key_row.show();
+        } else {
+          // wipe data
+          security_token_input.val('');
+          api_access_key_row.hide();
+          security_token_row.hide();
+        }
       }
     });
   });
