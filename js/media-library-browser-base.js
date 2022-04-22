@@ -5,7 +5,7 @@ jQuery(function() {
       current_pending_bucket = '',
       $current_pending_tab = false,
       current_pending_refresh = false,
-      uploading = false;
+      is_uploading = false;
   
     return {
       get_current_folder() {
@@ -49,19 +49,11 @@ jQuery(function() {
       },
 
       get_upload_status() {
-        return uploading;
+        return is_uploading;
       },
 
       set_upload_status( uploading ) {
-        return uploading = uploading;
-      },
-
-      get_upload_status() {
-        return uploading;
-      },
-
-      set_upload_status( uploading ) {
-        return uploading = uploading;
+        return is_uploading = uploading;
       },
 
       // TODO: fv_player_get_active_tab
@@ -411,7 +403,7 @@ function fv_flowplayer_browser_browse(data, options) {
     return text.replace(/\&/g,'&amp;').replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
   }
 
-};
+}
 
 // adds new tab on top of the Media Library popup
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
@@ -524,7 +516,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
   } catch(e) {}
 
   return $tab;
-};
+}
 
 /*
  * Disable/enable core WordPress drag&drop uploader
