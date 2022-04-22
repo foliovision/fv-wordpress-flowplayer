@@ -1,3 +1,5 @@
+/*global coconut_pending_jobs:writable */
+
 jQuery( function($) {
   var $expert_ui = $('#fv-player-coconut-expert-ui'),
     $expert_submit = $expert_ui.find('[type=submit]'),

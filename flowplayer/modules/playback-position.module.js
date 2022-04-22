@@ -1,3 +1,5 @@
+/* global Cookies */
+
 /*
  *  Video Position Store functionality
  */
@@ -19,9 +21,11 @@ if (!Date.now) {
     cookiePositionsKeyName = 'video_positions',
     cookiePlaylistsKeyName = 'player_playlist_item',
     tempPositionCookieKeyName = 'video_positions_tmp',
+    tempTopPositionCookieKeyName = 'video_top_positions_tmp',
     tempPlaylistsCookieKeyName = 'player_playlist_item_tmp',
     tempSawCookieKeyName = 'video_saw_tmp',
     playPositions = [],
+    playTopPositions = [],
     playlistIndexes = [],
     sawVideo = [],
 
@@ -90,9 +94,9 @@ if (!Date.now) {
     removeCookieKey = function(key) {
       if (localStorageEnabled) {
         localStorage.removeItem(key);
-      } {
+      } else {
         Cookies.remove(key);
-      };
+      }
     },
 
     // called when the video finishes playing - removes that video position from cache, as it's no longer needed
@@ -100,6 +104,7 @@ if (!Date.now) {
       if (api.video.sources) {
         var video_id = getVideoId(api.video);
         playPositions[video_id] = 0;
+        playTopPositions[video_id] = 0;
         sawVideo[video_id] = 1;
       }
     },
@@ -124,8 +129,8 @@ if (!Date.now) {
         callback = function() {};
       }
 
-      postDataPositions = [];
-      postDataPlaylists = [];
+      var postDataPositions = [];
+      var postDataPlaylists = [];
 
       for (var video_name in playPositions) {
         if( !playPositions.hasOwnProperty(video_name) ) continue;
@@ -134,6 +139,7 @@ if (!Date.now) {
         postDataPositions.push({
           name: video_name,
           position: playPositions[video_name],
+          top_position: playTopPositions[video_name],
           saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false
         });
       }
@@ -154,6 +160,7 @@ if (!Date.now) {
       if (!postDataPositions.length) {
         // no video positions? remove the temporary position cookie/localStorage data as well
         removeCookieKey(tempPositionCookieKeyName);
+        removeCookieKey(tempTopPositionCookieKeyName);
         removeCookieKey(tempSawCookieKeyName);
         return;
       }
@@ -165,6 +172,7 @@ if (!Date.now) {
           // which will get removed on next page load
           try {
             var temp_position_data = {},
+              temp_top_position_data = {},
               temp_saw_data = {},
               temp_playlist_data = {};
 
@@ -172,8 +180,11 @@ if (!Date.now) {
             for (var i in postDataPositions) {
               if( !postDataPositions.hasOwnProperty(i) ) continue;
 
-              temp_position_data[postDataPositions[i].name] = postDataPositions[i].position;
-              temp_saw_data[postDataPositions[i].name] = postDataPositions[i].saw;
+              var name = postDataPositions[i].name;
+
+              temp_position_data[name] = postDataPositions[i].position;
+              temp_top_position_data[name] = postDataPositions[i].top_position;
+              temp_saw_data[name] = postDataPositions[i].saw;
             }
 
             // playlist and item
@@ -183,6 +194,7 @@ if (!Date.now) {
             }
 
             setCookieKey(tempPositionCookieKeyName, getSerialized(temp_position_data));
+            setCookieKey(tempTopPositionCookieKeyName, getSerialized(temp_top_position_data));
             setCookieKey(tempSawCookieKeyName, getSerialized(temp_saw_data));
             setCookieKey(tempPlaylistsCookieKeyName, getSerialized(temp_playlist_data));
           } catch (e) {
@@ -346,11 +358,11 @@ if (!Date.now) {
         }
 
         return position;
-      }
+      },
 
       isSupported = function() {
-        return !( api.live || api.video && api.video.click );
-      }
+        return !( api.live || api.video && typeof(api.video.click) == "string" );
+      },
 
       // used to seek into the desired last stored position when he video has started
       seekIntoPosition = function (e, api) {
@@ -377,6 +389,21 @@ if (!Date.now) {
             position = Math.round(api.video.time);
 
           playPositions[video_id] = position;
+
+          // initialize top position variable with the already stored top position
+          if ( typeof(playTopPositions[video_id]) == "undefined" ) {
+            var stored_top_position = 0;
+            if ( api.conf.playlist ) {
+              stored_top_position = api.conf.playlist[api.video.index] && api.conf.playlist[api.video.index].sources[0] && api.conf.playlist[api.video.index].sources[0].top_position ? api.conf.playlist[api.video.index].sources[0].top_position : 0;
+            } else {
+              stored_top_position = api.conf.clip.sources[0] && api.conf.clip.sources[0].top_position ? api.conf.clip.sources[0].top_position : 0;
+            }
+            playTopPositions[video_id] = stored_top_position;
+            
+          // only store the top position if the new one is bigger
+          } else if( playTopPositions[video_id] < position) {
+            playTopPositions[video_id] = position
+          }
 
           if( api.conf.playlist.length > 0 ) {
             if( player_id ) playlistIndexes[ player_id ] = api.video.index; // player_id => playlist_item
@@ -576,7 +603,8 @@ if (!Date.now) {
     // We do this as the position saving Ajax can no longer be synchronous and block the page reload
     // So sometimes it takes longer to progress than the page load
     if (flowplayer.conf.is_logged_in == '1') {
-      var playlist = api.conf.playlist.length > 0 ? api.conf.playlist : [ api.conf.clip ],
+      var is_playlist = api.conf.playlist.length > 0,
+        playlist = is_playlist ? api.conf.playlist : [ api.conf.clip ],
         playlist_external = jQuery('[rel='+jQuery(root).attr('id')+']');
       
       for( var i in playlist ) {
@@ -584,10 +612,11 @@ if (!Date.now) {
 
         var video_id = getVideoId(playlist[i]),
           position = processTempData(tempPositionCookieKeyName,video_id),
+          top_position = processTempData(tempTopPositionCookieKeyName,video_id),
           saw = processTempData(tempSawCookieKeyName,video_id);
 
         if( position ) {
-          if( api.conf.playlist.length ) {
+          if( is_playlist ) {
             // set the position
             api.conf.playlist[i].sources[0].position = position;
 
@@ -602,8 +631,19 @@ if (!Date.now) {
           }
         }
 
+        // Accept the new top position if there is none or if then new one is bigger
+        if( top_position ) {
+          if( !playlist[i].sources[0].top_position || playlist[i].sources[0].top_position < top_position ) {
+            if( is_playlist ) {
+              api.conf.playlist[i].sources[0].top_position = top_position;
+            } else {
+              api.conf.clip.sources[0].top_position = top_position;
+            }
+          }
+        }
+
         if( saw ) {
-          if( api.conf.playlist.length ) {
+          if( is_playlist ) {
             api.conf.playlist[i].sources[0].saw = true;
           } else {
             api.conf.clip.sources[0].saw = true;

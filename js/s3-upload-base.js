@@ -1,3 +1,5 @@
+/*global S3MultiUpload, fv_player_coconut_dos_upload_settings*/
+
 function fv_flowplayer_init_s3_uploader( options ) {
   var
     $ = jQuery,

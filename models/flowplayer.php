@@ -2505,7 +2505,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   // Also used by FV Player extensions
   function should_force_load_js() {
-    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']) || isset($_GET['elementor-preview']);
+    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']) || isset($_GET['elementor-preview']) || did_action('fv_player_force_load_assets');
   }
 
   function template_preview() {

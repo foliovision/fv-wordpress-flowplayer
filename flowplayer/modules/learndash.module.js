@@ -1,3 +1,5 @@
+/*global learndash_video_data, LearnDash_disable_assets, LearnDash_watchPlayers */
+
 flowplayer( function(api,root) {
   root = jQuery(root);
 
@@ -11,6 +13,10 @@ flowplayer( function(api,root) {
     LearnDash_watchPlayers();
 
     api.on("finish", function(e,api,time) {
+      if( typeof(api.video.click) == "string" ) {
+        return;
+      }
+
       // Enable "Mark Complete" button
       window.LearnDash_disable_assets(false);
     });

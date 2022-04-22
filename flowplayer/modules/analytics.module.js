@@ -1,3 +1,5 @@
+/*global gtag, ga, _paq, _gat*/
+
 /*
  *  Google Analytics improvements + heartbeat
  *  Also provides custom fv_track_* events

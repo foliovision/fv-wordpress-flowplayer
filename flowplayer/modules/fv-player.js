@@ -225,7 +225,7 @@ function fv_player_preload() {
       var
         $this = jQuery(this),
         playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
-        index = jQuery('a',playlist).index(this);
+        index = jQuery('a',playlist).index(this),
         $prev = $this.prev('a'),
         item = $this.data('item');
       
@@ -336,7 +336,7 @@ function fv_player_preload() {
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
 
         // Ensure the splash is only removed once the video really really starts playing when using autoplay
-        if( fv_player_pro.autoplay_scroll || root.data('fvautoplay') ) {
+        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') ) {
           api.one('progress', function() {
             splash_img.remove();
             splash_text.remove();

@@ -531,7 +531,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
  */
 function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
   var
-    overlay = jQuery('.media-frame-uploader')
+    overlay = jQuery('.media-frame-uploader'),
     overlay_content = jQuery('.media-modal .uploader-window'),
     overlay_title = overlay_content.find('.uploader-editor-title'),
     drop_targets = jQuery('[id^=__wp-uploader-id-'),

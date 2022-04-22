@@ -7,6 +7,7 @@ var fv_player_editor_matcher = {
     matcher: /\.(mp4|webm|m3u8)$/i,
     // AJAX will return these fields which can be auto-updated via JS
     update_fields: ['duration', 'last_video_meta_check'],
+    support_thumb_generate: true
   }
 };
 
@@ -4229,7 +4230,7 @@ function fv_wp_flowplayer_share_parse_arg( args ) {
 
 function fv_player_editor_shortcode_arg_split(sInput) {
   sInput[1] = sInput[1].replace(/\\;/gi, '<!--FV Flowplayer Caption Separator-->').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-  aInput = sInput[1].split(';');
+  var aInput = sInput[1].split(';');
   for( var i in aInput ){
     aInput[i] = aInput[i].replace(/\\"/gi, '"');
     aInput[i] = aInput[i].replace(/\\<!--FV Flowplayer Caption Separator-->/gi, ';');
