@@ -40,15 +40,22 @@ global $fv_fp;
     $fv_fp->_get_checkbox(__('Enable Token Authentication', 'fv-wordpress-flowplayer'), array('bunny_stream', 'video_token'), __('Improve Video Security.', 'fv-wordpress-flowplayer'));
 
     $fv_fp->_get_input_text( array(
-      'key' => array( 'bunny_stream', 'zone_security_key' ),
+      'key' => array( 'bunny_stream', 'security_token' ),
       'name' => __('Security Token', 'fv-player-bunny_stream'),
       'class' => 'regular-text code'
     ) );
 
+    ob_start();
+    ?>
+    <p><img width="400" src="<?php echo plugins_url( 'models/bunny-stream-wizard/images/bunnycdn-api.png', dirname(__FILE__) ); ?>" srcset="<?php echo plugins_url( 'models/bunny-stream-wizard/images/bunnycdn-api.png', dirname(__FILE__) ); ?> 1x, <?php echo plugins_url( 'models/bunny-stream-wizard/images/bunnycdn-api-2x.png', dirname(__FILE__) ); ?> 2x" /></p>
+    <?php
+    $help = ob_get_clean();
+
     $fv_fp->_get_input_text( array(
-      'key' => array( 'bunny_stream', 'global_api_key' ),
-      'name' => __('Global API Key', 'fv-player-bunny_stream'),
-      'class' => 'regular-text code'
+      'key' => array( 'bunny_stream', 'api_access_key' ),
+      'name' => __('API Access Key', 'fv-player-bunny_stream'),
+      'class' => 'regular-text code',
+      'help' => $help
     ) );
 
     ?>
@@ -64,18 +71,18 @@ global $fv_fp;
 
 <script>
   jQuery(function() {
-    var global_api_key_input = jQuery('input[name="bunny_stream[global_api_key]"]'),
-      global_api_key_row = global_api_key_input.closest('tr'),
-      zone_security_key_input = jQuery('input[name="bunny_stream[zone_security_key]"]'),
-      zone_security_key_row = zone_security_key_input.closest('tr'),
+    var api_access_key_input = jQuery('input[name="bunny_stream[api_access_key]"]'),
+      api_access_key_row = api_access_key_input.closest('tr'),
+      security_token_input = jQuery('input[name="bunny_stream[security_token]"]'),
+      security_token_row = security_token_input.closest('tr'),
       pro_compatible = <?php echo json_encode(FV_Player_Bunny_Stream()->fv_player_pro_compatible()); ?>;
 
-    global_api_key_row.hide(); // do not show
+    api_access_key_row.hide(); // do not show
 
-    if(zone_security_key_input.val()) { // check if already set
-      zone_security_key_row.show();
+    if(security_token_input.val()) { // check if already set
+      security_token_row.show();
     } else {
-      zone_security_key_row.hide();
+      security_token_row.hide();
     }
 
     jQuery('input[name="bunny_stream[video_token]"]').on('click', function(e) {
@@ -88,14 +95,13 @@ global $fv_fp;
       var checked = jQuery(this).prop('checked');
 
       if(checked === true) {
-        if(!global_api_key_input.val()) {
-          global_api_key_row.show();
-        }
+        api_access_key_row.show();
       } else {
         // wipe data
-        global_api_key_input.val('');
-        zone_security_key_input.val('');
-        zone_security_key_row.hide();
+        api_access_key_input.val('');
+        security_token_input.val('');
+        api_access_key_row.hide();
+        security_token_row.hide();
       }
     });
   });
