@@ -81,16 +81,12 @@ global $fv_fp;
       pro_compatible = <?php echo json_encode(FV_Player_Bunny_Stream()->fv_player_pro_compatible()); ?>,
       checkbox = jQuery('input[name="bunny_stream[video_token]"]:checkbox');
 
-    api_access_key_row.hide(); // do not show
+    // do not show
+    api_access_key_row.hide(); 
+    security_token_row.hide();
 
     if(!pro_compatible) {
       checkbox.prop('checked', false);
-    }
-
-    if(security_token_input.val()) { // check if already set
-      security_token_row.show();
-    } else {
-      security_token_row.hide();
     }
 
     checkbox.on('click', function(e) {
@@ -104,7 +100,6 @@ global $fv_fp;
           // wipe data
           security_token_input.val('');
           api_access_key_row.show();
-          security_token_row.hide();
         }
       }
     });
