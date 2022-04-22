@@ -377,8 +377,20 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
           }
 
           foreach( $_POST['bunny_stream'] AS $k => $v ) {
+            if(strcmp($k,'video_token') === 0 && empty($_POST['bunny_stream']['api_access_key'])) { // video token enabled but no api_access_key provided
+              if(isset($fv_fp->conf['bunny_stream'][$k]) && $v != $fv_fp->conf['bunny_stream'][$k] ) { // and setting changed
+                // then unset option
+                unset($_POST['bunny_stream'][$k]);
+                unset($fv_fp->conf['bunny_stream'][$k]);
+
+                echo "<div class='error'><p>No API Access Key provided to enable or disable Token Authentication.</p></div>";
+
+                continue;
+              }
+            }
+
             if(in_array($k, array('api_access_key'))) continue; // do not store
-          
+
             $fv_fp->conf['bunny_stream'][$k] = trim($v);
           }
 

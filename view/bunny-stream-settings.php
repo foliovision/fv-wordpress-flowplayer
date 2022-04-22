@@ -57,8 +57,11 @@ global $fv_fp;
       'class' => 'regular-text code',
       'help' => $help
     ) );
-
     ?>
+    <tr id="fv-player-pro-compatibility" style="display: none;">
+    <td></td><td><p>Video protection is only supported if you install FV Player Pro. You can purchase it <a href="https://foliovision.com/downloads/fv-player-license" target="_blank">here</a>.</p></td>
+    </tr>
+
     <tr>
       <td></td>
       <td>
@@ -92,9 +95,7 @@ global $fv_fp;
 
     checkbox.on('click', function(e) {
       if(!pro_compatible) {
-        api_access_key_row.html('<td></td><td><p>Video protection is only supported if you install FV Player Pro. You can purchase it <a href="https://foliovision.com/downloads/fv-player-license" target="_blank">here</a>.</p></td>');
-        api_access_key_row.show();
-
+        jQuery('#fv-player-pro-compatibility').show();
         jQuery(this).prop('checked', false);
       } else {
         if(jQuery(this).prop('checked') === true) {
@@ -102,7 +103,7 @@ global $fv_fp;
         } else {
           // wipe data
           security_token_input.val('');
-          api_access_key_row.hide();
+          api_access_key_row.show();
           security_token_row.hide();
         }
       }
