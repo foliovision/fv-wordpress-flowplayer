@@ -15,9 +15,10 @@ abstract class FV_Player_Video_Encoder {
 
   // variables to override or access from outside of the base class
   protected
+    $list_class = 'FV_Player_Encoder_List_Table', // class name of custom list table class
     $version = 'latest',
     $license_key = false;
-    
+
   public
     $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
@@ -413,7 +414,7 @@ abstract class FV_Player_Video_Encoder {
       $this->include_listing_lib();
 
       ob_start();
-      $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
+      $jobs_table = new $this->list_class( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
       $jobs_table->prepare_items($show);
       $jobs_table->display();
       $html = ob_get_clean();
@@ -454,7 +455,7 @@ abstract class FV_Player_Video_Encoder {
       // get html for processed rows
       foreach($ids as $id ) {
         ob_start();
-        $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
+        $jobs_table = new $this->list_class( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
         $jobs_table->prepare_items( array($id) );
         $jobs_table->display();
         $html = ob_get_clean();

@@ -337,7 +337,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     do_action( 'fv_player_video_encoder_include_listing_lib' );
 
-    $table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => 'bunny_stream', 'table_name' => $this->table_name, 'per_page' => $per_page ) );
+    $table = new $this->list_class( array( 'encoder_id' => 'bunny_stream', 'table_name' => $this->table_name, 'per_page' => $per_page ) );
     $table->prepare_items();
     ?>
       <style>
