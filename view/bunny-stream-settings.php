@@ -53,7 +53,7 @@ global $fv_fp;
 
     $fv_fp->_get_input_text( array(
       'key' => array( 'bunny_stream', 'api_access_key' ),
-      'name' => __('API Access Key', 'fv-player-bunny_stream'),
+      'name' => __('API Access Key (Not Stored)', 'fv-player-bunny_stream'),
       'class' => 'regular-text code',
       'help' => $help
     ) );
