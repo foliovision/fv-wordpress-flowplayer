@@ -37,7 +37,7 @@ global $fv_fp;
       'class' => 'regular-text code'
     ) );
 
-    $fv_fp->_get_checkbox(__('Enable Token Authentication', 'fv-wordpress-flowplayer'), array('bunny_stream', 'video_token'), __('Improve Video Security.', 'fv-wordpress-flowplayer'));
+    $fv_fp->_get_checkbox(__('Enable Token Authentication', 'fv-wordpress-flowplayer'), array('bunny_stream', 'video_token'), __('Improves video download protection.', 'fv-wordpress-flowplayer'));
 
     $fv_fp->_get_input_text( array(
       'key' => array( 'bunny_stream', 'security_token' ),
