@@ -17,6 +17,7 @@ global $fv_fp;
 </style>
 
 <form method="POST">
+  <div style="display: none;" class="fv-pro-not-compatible notice notice-error inline"><p>To Use Token Authentication You Need To Install Latest FV Player Pro.</p></div>
   <table class='form-table'>
     <?php
     $fv_fp->_get_input_text( array(
@@ -87,7 +88,8 @@ global $fv_fp;
 
     jQuery('input[name="bunny_stream[video_token]"]').on('click', function(e) {
       if(!pro_compatible) {
-        alert('To Use This Feature You Need To Install Latest FV Player Pro.');
+        jQuery('.fv-pro-not-compatible').show();
+
         jQuery(this).prop('checked', false);
         return false;
       }
