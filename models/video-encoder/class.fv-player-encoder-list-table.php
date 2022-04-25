@@ -255,6 +255,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
 
     $aWhere = array();
     $aWhere[] = "type = '{$this->encoder_id}'";
+    if( !empty($_GET['s']) ) {
+      $search = sanitize_text_field($_GET['s']);
+      $aWhere[] = "source LIKE '%".$search."%'";
+    }
 
     $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
 
