@@ -616,7 +616,7 @@
     font-size: 90%;
     bottom: 1.4em;
     height: auto; }
-  .flowplayer .fp-timeline:hover .fp-timestamp {
+  .flowplayer:not(.is-touch) .fp-timeline:hover .fp-timestamp, .flowplayer .fp-timeline.is-fp-dragging .fp-timestamp {
     display: inline; }
   .flowplayer .fp-volume {
     display: -ms-flexbox;
