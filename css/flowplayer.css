@@ -1018,7 +1018,7 @@
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: 3px; }
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
-    content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
+    content: ''; position: absolute; top:-1.3em; height:2em; left: 0; right: 0 }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
     height: .2em; }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
