@@ -1028,6 +1028,14 @@
 .flowplayer.fp-slim.fp-full .fp-timeline {
     height: 3px; }
 
+.flowplayer.is-tiny.fp-full .fp-timeline {
+  bottom: 3.2em;
+}
+.flowplayer.is-tiny.fp-full .fp-controls {
+  height: 3.2em;
+  padding-top: .4em;
+}
+
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: 3px; }
@@ -1050,7 +1058,8 @@
 .flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
-.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
+.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.8em}
+.flowplayer.fixed-controls.fp-full.fp-slim.is-tiny .fp-controls {bottom: -3.2em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
