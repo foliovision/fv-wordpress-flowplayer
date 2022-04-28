@@ -991,6 +991,20 @@
   display: none;
 }
 
+.flowplayer .fp-timeline.is-fp-dragging .fp-progress::after {
+  content: "";
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+  height: 13px;
+  right: 0;
+  margin-right: -7px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+}
+
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
     background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, .25)), color-stop(15%, transparent));
     background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, .25), transparent 15%);
