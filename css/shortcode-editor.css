@@ -370,8 +370,9 @@ New FV Player Editor modal box styling
   background-image: url(https://d2uolguxr56s4e.cloudfront.net/img/kartrapages/video_player_placeholder.gif);
   width: 75%;
   height: 57%;
-  background-size: cover;
-  position: absolute;
+  background-size: contain;
+  background-position: center;
+  image-rendering: -webkit-optimize-contrast;
   left: 0;
   right: 0;
   top: 0;
@@ -394,8 +395,13 @@ New FV Player Editor modal box styling
   height: calc(100% - 60px);
 }
 #fv-player-shortcode-editor-preview {
-  position: initial;
-  text-align: center;
+    position: initial;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+
 }
 
 #fv-player-shortcode-editor .nav-tab {
