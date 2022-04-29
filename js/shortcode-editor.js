@@ -3857,9 +3857,20 @@ jQuery(function() {
           iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
         }
         var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
-        oTab.append( template_subtitles );
 
-        var subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+        // Do we have an empty subtitle field?
+        var subElement = jQuery('.fv-fp-subtitle:last', oTab);
+        if( subElement.length ) {
+          if( get_field('subtitles',subElement).val() ) {
+            subElement = false;
+          }
+        }
+
+        // If we do not have an empty subtitle field, add new
+        if( !subElement ) {
+        oTab.append( template_subtitles );
+          subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+        }
 
         if (typeof(sId) !== 'undefined') {
           subElement.attr('data-id_subtitles', sId);
