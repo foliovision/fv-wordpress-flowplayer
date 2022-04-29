@@ -149,9 +149,10 @@ class FV_Player_lightbox {
   function editor_setting( $options ) {
     global $fv_fp;
     if( $fv_fp->_get_option(array('interface','lightbox')) ) {
-      $options['general'][] = array(
+      $options['general']['items'][] = array(
         'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
         'name' => 'lightbox',
+        'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
         'dependencies' => array( 'sticky' => false ),
         'children' => array(
           array(
