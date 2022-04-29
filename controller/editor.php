@@ -206,12 +206,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
     $post_id = $parent_id;
   }
-  
-  global $fv_fp;
-  if( !$fv_fp->_get_option( array('integrations','featured_img') ) ){
-    return;
-  }
-  
+
   $thumbnail_id = get_post_thumbnail_id($post_id);
   if( $thumbnail_id != 0 ) {
     return;
@@ -268,7 +263,9 @@ function fv_wp_flowplayer_construct_filename( $post_id ) {
 }
 
 function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
-  
+
+  $image_url = apply_filters( 'fv_flowplayer_splash', $image_url );
+
   $error = '';
   $response = wp_remote_get( $image_url );
   if( is_wp_error( $response ) ) {
