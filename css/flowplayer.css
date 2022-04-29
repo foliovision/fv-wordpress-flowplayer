@@ -616,7 +616,7 @@
     font-size: 90%;
     bottom: 1.4em;
     height: auto; }
-  .flowplayer .fp-timeline:hover .fp-timestamp {
+  .flowplayer:not(.is-touch) .fp-timeline:hover .fp-timestamp, .flowplayer .fp-timeline.is-fp-dragging .fp-timestamp {
     display: inline; }
   .flowplayer .fp-volume {
     display: -ms-flexbox;
@@ -991,6 +991,20 @@
   display: none;
 }
 
+.flowplayer .fp-timeline.is-fp-dragging .fp-progress::after {
+  content: "";
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+  height: 13px;
+  right: 0;
+  margin-right: -7px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+}
+
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
     background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, .25)), color-stop(15%, transparent));
     background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, .25), transparent 15%);
@@ -1011,18 +1025,22 @@
 .flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop, .entry-content .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 
-/* using fp-full and fp-slim at once should only make the timeline full width and nothings else should change */
-.flowplayer.fp-slim.fp-full .fp-controls {
-    height: 2.4em; }
 .flowplayer.fp-slim.fp-full .fp-timeline {
-  bottom: 2.4em;
     height: 3px; }
+
+.flowplayer.is-tiny.fp-full .fp-timeline {
+  bottom: 3.2em;
+}
+.flowplayer.is-tiny.fp-full .fp-controls {
+  height: 3.2em;
+  padding-top: .4em;
+}
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: 3px; }
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
-    content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
+    content: ''; position: absolute; top:-1.3em; height:2em; left: 0; right: 0 }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
     height: .2em; }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
@@ -1040,7 +1058,8 @@
 .flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
-.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
+.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.8em}
+.flowplayer.fixed-controls.fp-full.fp-slim.is-tiny .fp-controls {bottom: -3.2em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
@@ -2304,6 +2323,33 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-minimal .fp-volumebtn-notice:before { content: "\e20d"; }
 .flowplayer.fp-edgy .fp-volumebtn-notice:before { content: "\e10d"; }
 .flowplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
+
+/* Better touch in fullscreen in portrait mode */
+.flowplayer.is-tiny.is-fullscreen .fp-player {
+  align-items: center;
+  display: flex;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-engine {
+  height: auto !important;
+  position: static;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui {
+  pointer-events: none;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui > * {
+  pointer-events: auto;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header {
+  pointer-events: none;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header > * {
+  pointer-events: auto;
+}
+.flowplayer.is-tiny.is-fullscreen .fv-fp-tap-left, .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-right {
+  height: 50%;
+  margin: 0;
+  top: 25%;
+}
 
 /* Videos pending encoding */
 .fv-player-encoder-video-processing-modal {
