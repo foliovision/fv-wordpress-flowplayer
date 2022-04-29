@@ -4,7 +4,7 @@ If there is an error in live stream, it shows a special message and reload the s
 
 flowplayer( function(api,root) {
   var
-    initialDelay = 30,
+    initialDelay = api.conf.live_stream_reload ? api.conf.live_stream_reload : 30,
     continueDelay = 10,
     useDelay = initialDelay,
     retryLabel = fv_flowplayer_translations.live_stream_retry,
@@ -32,7 +32,10 @@ flowplayer( function(api,root) {
   }).on('progress', function() {
     useDelay = continueDelay;
     retryLabel = fv_flowplayer_translations.live_stream_continue;
-  })
+
+    // Without this the error handler might do the count down in "timer" and reload the video for no reason
+    clearInterval(timer);
+  });
   
   api.on("error", function (e, api, err) {
     setTimeout( function() {
@@ -76,7 +79,14 @@ flowplayer( function(api,root) {
           if (reload_delay > 0 && messageElement) {
             messageElement.querySelector("span").innerHTML = secondsToDhms(delay);
           } else {
+
             clearInterval(timer);
+
+            // Does the video need help at all?
+            if( !api.error ) {
+              return;
+            }
+
             api.error = api.loading = false;
             
             messageElement = root.querySelector(".fp-ui .fp-message");

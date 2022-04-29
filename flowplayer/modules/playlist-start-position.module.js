@@ -6,10 +6,14 @@ flowplayer( function(api,root) {
 
   if( typeof(start_index) == 'undefined' ) return; 
 
-  function start_position_changer() {  
-    if ($root.data('position_changed') !== 1 && api.conf.playlist.length) {      
+  function start_position_changer() {
+    if ($root.data('position_changed') !== 1 && api.conf.playlist.length) {
       start_index--; // the index should start from 0
-      api.play(start_index);
+      // Do not go to the playlist item if it's ad
+      // TODO: Have it pick the previous video
+      if( typeof(api.conf.playlist[start_index].click) == "undefined" ) {
+        api.play(start_index);
+      }
       $root.data('position_changed', 1);
     }
   }
@@ -18,7 +22,6 @@ flowplayer( function(api,root) {
     start_index = $root.data('playlist_start');
     $root.removeData('position_changed');
     api.one('ready', start_position_changer);
-    api.video.index = 0;
   });
 
   api.one('ready', start_position_changer);

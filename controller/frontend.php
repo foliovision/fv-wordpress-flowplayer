@@ -105,9 +105,12 @@ function fv_flowplayer_get_js_translations() {
   'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
   'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
+  'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
+  'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
+  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
   'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to remove location bar.', 'fv-wordpress-flowplayer'),
 );
-  
+
   return $aStrings;
 } 
 
@@ -339,7 +342,7 @@ function flowplayer_prepare_scripts() {
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
     $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
     
-    $aConf = array( 'fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
+    $aConf = array( 'fv_fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
     
     // Load base Flowplayer library
     $path = '/flowplayer/modules/flowplayer.min.js';
@@ -398,10 +401,14 @@ function flowplayer_prepare_scripts() {
       $aConf['video_checker_site'] = home_url();
     }
     if( $sLogo ) $aConf['logo'] = $sLogo;
+
+    // Used to restore volume, removed in JS if volume stored in browser localStorage    
     $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
+    
+    $aConf['default_volume'] = $aConf['volume'];
     
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
@@ -417,6 +424,7 @@ function flowplayer_prepare_scripts() {
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width');
+    $aConf['sticky_min_width'] = intval( apply_filters( 'fv_player_sticky_min_width', 1020 ) );
        
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {
@@ -425,9 +433,9 @@ function flowplayer_prepare_scripts() {
     }
     
     if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.0.4', true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.1.3', true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.0.4';
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.1.3';
         
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
@@ -445,6 +453,9 @@ function flowplayer_prepare_scripts() {
       $parsed = parse_url($matomo_domain);
       if( $parsed && !empty($parsed['host']) ) { 
         $matomo_domain = $parsed['host'];
+        if( !empty($parsed['path']) ) { 
+          $matomo_domain .= '/'.$parsed['path'];
+        }
       }
       $aConf['matomo_domain'] = $matomo_domain;
       $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
@@ -454,13 +465,17 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
     }
-    
+
     if( $fv_fp->_get_option('hd_streaming') ) {
       $aConf['hd_streaming'] = true;
     }
 
     if( $fv_fp->_get_option('multiple_playback') ) {
       $aConf['multiple_playback'] = true;
+    }
+
+    if( $fv_fp->_get_option('disable_localstorage') ) {
+      $aConf['disable_localstorage'] = true;
     }
 
     $aConf['hlsjs'] = array(
@@ -487,6 +502,7 @@ function flowplayer_prepare_scripts() {
       $aLocalize['admin_input'] = true;
       $aLocalize['admin_js_test'] = true;
     }
+
     if( current_user_can('edit_posts') ) {
       $aLocalize['user_edit'] = true;
     }
@@ -658,17 +674,42 @@ add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_rewi
 
 function fv_player_footer_svg_rewind() {
   ?>
-<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="http://www.w3.org/2000/svg">
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="https://www.w3.org/2000/svg">
   <g id="fvp-rewind">
     <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z"  fill="#fff"/><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" fill="#fff"/><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" fill="#fff"/>
   </g>
 </svg>
-<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="http://www.w3.org/2000/svg">
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="https://www.w3.org/2000/svg">
   <g id="fvp-forward">
     <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z"  fill="#fff" transform="scale(-1,1) translate(-24,0)" /><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" fill="#fff" /><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" fill="#fff" />
   </g>
 </svg>
   <?php
+}
+
+add_action( 'wp_footer', 'fv_player_load_svg_buttons_everywhere' );
+
+function fv_player_load_svg_buttons_everywhere() {
+  global $fv_fp;
+  if( !$fv_fp->should_force_load_js() ) {
+    return;
+  }
+
+  foreach( array(
+    'no_picture',
+    'repeat',
+    'rewind'
+  ) AS $type ) {
+    if( $type == 'rewind' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
+    } else if( $type == 'repeat' || $type == 'no_picture' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_playlist', 101 );
+    }
+  }
+
+  if( function_exists('FV_Player_Pro') && method_exists( 'FV_Player_Pro', 'svg_chapters') ) {
+    add_action( 'wp_footer', array( FV_Player_Pro(), 'svg_chapters'), 101 );
+  }
 }
 
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
@@ -771,4 +812,24 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
   $version = str_replace('.beta','',$version);
   
   return version_compare($version,$min ) != -1;
+}
+
+
+/*
+ * WP Rocket Used CSS exclusion
+ * Since many FV Player features are only visible once the video starts this optimization doesn't work
+*/
+add_filter( 'pre_get_rocket_option_remove_unused_css_safelist', 'fv_player_wp_rocket_used_css' );
+
+function fv_player_wp_rocket_used_css( $safelist ) {
+  // Without this our additions would show on WP Rocket settings page
+  global $pagenow;
+  if ( 'options-general.php' === $pagenow && 'wprocket' === $_GET['page'] ) {
+    return $safelist;
+  }
+
+  $safelist[] = '/wp-content/fv-flowplayer-custom/style-*';
+  $safelist[] = '/wp-content/plugins/fv-wordpress-flowplayer*';
+  $safelist[] = '/wp-content/plugins/fv-player-*';
+  return $safelist;
 }

@@ -107,7 +107,8 @@ class FV_Player_Checker {
   public function check_mimetype( $URLs = false, $meta = false, $force_is_cron = false ) {
 
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-    
+  
+    $error = false;
     $tStart = microtime(true);
   
     global $fv_wp_flowplayer_ver, $fv_fp;
@@ -115,9 +116,9 @@ class FV_Player_Checker {
     if( !empty($meta) ) {
       extract( $meta, EXTR_SKIP );
     }
-    
-    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {    
-      $URLs = json_decode( stripslashes( trim($_POST['media']) ));
+
+    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) { 
+      $URLs = json_decode( stripslashes( trim( wp_strip_all_tags( $_POST['media'] ) ) ) );
     }
 
     if( isset($URLs) ) {
@@ -129,10 +130,10 @@ class FV_Player_Checker {
         } else if( !isset($media) && !preg_match( '!\.(m3u8ALLOW|m3uALLOW|avi)$!', $source) ) {
           $media = $source;
         }
-      }    
-              
+      }
+
       //$random = rand( 0, 10000 );
-      $random = (isset($_POST['hash'])) ? trim($_POST['hash']) : false;
+      $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( $_POST['hash'] ) ) : false;
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
@@ -165,7 +166,13 @@ class FV_Player_Checker {
             }
             fclose($out);
 
-            $headers = WP_Http::processHeaders( $header );			
+            $headers = WP_Http::processHeaders( $header );
+            if( !empty($headers['response']['code']) && intval($headers['response']['code']) > 399 ) {
+              $error = 'HTTP '.$headers['response']['code'];
+              if( !empty($headers['response']['message']) ) {
+                $error .= ': '.$headers['response']['message'];
+              }
+            }
 
             list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
             if( $bFatal ) {
@@ -186,14 +193,17 @@ class FV_Player_Checker {
         /*
         Only check file length
         */
-        
+
         if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
           $time = false;
           if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
             $time = $ThisFileInfo['playtime_seconds'];    	
           }
-          
+
+          $is_audio = false;
+
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
+            $is_audio = -1; // We do not know if it's audio only yet
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
@@ -202,8 +212,10 @@ class FV_Player_Checker {
             $playlist = false;
             $duration = 0;
             $segments = false;
-  
+
             if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $response,$segments)){
+              $is_live = stripos( $response, '#EXT-X-ENDLIST' ) === false;
+
               foreach($segments[1] as $segment_item){
                 $duration += $segment_item;
               }
@@ -219,7 +231,20 @@ class FV_Player_Checker {
                   $had_ext_x_stream_inf = false;
                 }
 
-                if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) $had_ext_x_stream_inf = true;
+                if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) {
+                  $had_ext_x_stream_inf = true;
+                  
+                  // If there are sub-playlists we can be certain it's either audio stream...
+                  if( $is_audio == -1 ) {
+                    $is_audio = true;
+                  }
+                  
+                  // ...or we found a video track, then we are sure it's not audio stream
+                  if( stripos($line,'RESOLUTION=') !== false ) {
+                    $is_audio = false;
+                  }
+                }
+                
               }
 
               foreach($streams as $item){
@@ -229,7 +254,10 @@ class FV_Player_Checker {
                 }
                 $request = wp_remote_get($item_url);
                 $playlist_item = wp_remote_retrieve_body( $request );
+
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
+                  $is_live = stripos( $playlist_item, '#EXT-X-ENDLIST' ) === false;
+
                   foreach($segments[1] as $segment_item){
                     $duration += $segment_item;
                   }  
@@ -252,12 +280,15 @@ class FV_Player_Checker {
             if( !$fv_flowplayer_meta ) $fv_flowplayer_meta = array();
           }
          
+          $fv_flowplayer_meta['error'] = $error;
           $fv_flowplayer_meta['duration'] = $time;
+          $fv_flowplayer_meta['is_live'] = $is_live;
+          $fv_flowplayer_meta['is_audio'] = $is_audio;
           $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
           $fv_flowplayer_meta['date'] = time();
           $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
   
-          if( $time > 0 || $this->is_cron ) {
+          if( $time > 0 || $error || $this->is_cron ) {
             if( !empty($post) ) {
               update_post_meta( $post->ID, $key, $fv_flowplayer_meta );
             }
@@ -276,9 +307,9 @@ class FV_Player_Checker {
   function checker_cron() {
     global $fv_fp;
     if( $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
-      // get all video IDs for which there is no duration meta_key    
+      // get all video IDs for which there is no duration meta_key or where the duration is "h"
       global $wpdb;
-      $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL ORDER BY id DESC" );
+      $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video, meta_value from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL OR m.meta_value = 'h' ORDER BY id DESC" );
       
       if( $aVideos ) {
         foreach( $aVideos AS $objVideo ) {
@@ -292,16 +323,19 @@ class FV_Player_Checker {
           if( $last_check && intval($last_check) + 86400 > time() ) {
             continue;
           }
-          
+
+          // TODO: This should change to a proper filter at once
           $meta_data = apply_filters('fv_player_meta_data', $url, false);
-          if( $meta_data == false) {
+
+          if( $meta_data == false || is_string($meta_data) && strcmp($meta_data,$url) == 0 ) {
             if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
               $url = $secured_url;
             }
-            
-            $meta_data['duration'] = $this->check_mimetype(array($url), false, true);
-            $meta_data['duration'] = $meta_data['duration']['duration'];
-            
+
+            if( $check = $this->check_mimetype(array($url), false, true) ) {
+              $meta_data = $check;
+            }
+
           }
   
           if( !empty($meta_data['thumbnail']) ) {

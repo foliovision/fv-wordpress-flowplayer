@@ -135,6 +135,11 @@ class FV_Xml_Video_Sitemap {
 
           foreach ( $partial AS $key => $shortcode ) {
             $count++;
+
+            // It will use JSON in this case
+            if( in_array( $key, array( '_elementor_data' ) ) ) {
+              $shortcode = stripslashes($shortcode);
+            }
             
             $xml_video = array();
             
@@ -235,7 +240,12 @@ class FV_Xml_Video_Sitemap {
             }
             
             if( $aCategories = get_the_category($objPost->ID) ) {
-              $xml_video['category'] = mb_substr( implode(', ',wp_list_pluck($aCategories,'name')), 0, 250 );
+              $categories = implode(', ',wp_list_pluck($aCategories,'name'));
+              if( function_exists('mb_substr') ) {
+                $xml_video['category'] = mb_substr( $categories, 0, 250 );
+              } else {
+                $xml_video['category'] = substr( $categories, 0, 250 );
+              }
             }
             $xml_video['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
             

@@ -27,16 +27,16 @@ add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_ma
 function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) ) {
 
-  	$current_user = wp_get_current_user();    
-
-  	$content = '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
+  	$current_user = wp_get_current_user();
+    $content = "<h1>Admin: ".$_POST['status']."</h1>\n";
+  	$content .= '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";  	
   	$content .= '<p>User Agent: '.$_SERVER['HTTP_USER_AGENT']."</p>\n";  	
   	$content .= '<p>Referer: '.$_SERVER['HTTP_REFERER']."</p>\n";
   	$content .= "<p>Comment:</p>\n".wpautop( stripslashes($_POST['comment']) );  	  	
   	$notice = str_replace( '<span class="value"', ': <span class="value"', stripslashes($_POST['notice']) );
   	$notice .= str_replace( '<span class="value"', ': <span class="value"', stripslashes($_POST['details']) );  	
   	
-  	$content .= "<p>Video analysis:</p>\n".$notice;  	  	
+  	$content .= "<p>Video analysis:</p>\n".$notice;
     
     global $fv_wp_flowplayer_support_mail_from, $fv_wp_flowplayer_support_mail_from_name; 
     
@@ -44,13 +44,17 @@ function fv_wp_flowplayer_support_mail() {
     $fv_wp_flowplayer_support_mail_from_name = $current_user->display_name;
     $fv_wp_flowplayer_support_mail_from = $current_user->user_email;
   	
-  	add_filter( 'wp_mail_content_type', create_function('', "return 'text/html';") );
+  	add_filter( 'wp_mail_content_type', 'fv_wp_flowplayer_support_mail_content_type' );
   	
   	//add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
   	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content );
   	
   	die('1');
   }
+}
+
+function fv_wp_flowplayer_support_mail_content_type() {
+  return 'text/html';
 }
 
 function fv_wp_flowplayer_support_mail_phpmailer_init( $phpmailer ) {
@@ -249,7 +253,9 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
 
 function fv_wp_flowplayer_check_files() {
   global $wpdb;
-  define('VIDEO_DIR', '/videos/');
+  if( !defined('VIDEO_DIR') ) {
+    define('VIDEO_DIR', '/videos/');
+  }
   
   $bNotDone = false;
   $tStart = microtime(true);
@@ -555,7 +561,7 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
     return $data;
   
   } else if( is_wp_error($resp) ) {
-    $args = array( 'sslverify' => false );
+    $args['sslverify'] = false;
     $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
   
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
@@ -702,7 +708,6 @@ function flowplayer_deactivate() {
 
 
 
-
 /*
  *  DB based player data saving
  */
@@ -811,7 +816,7 @@ function fv_player_pro_version_check() {
 add_action( 'admin_notices', 'fv_player_pay_per_view_version_check' );
 
 function fv_player_pay_per_view_version_check() {
-  $version = '7.5.2.727';
+  $version = '7.5.3.727';
   
   global $FV_Player_PayPerView;
   
@@ -827,7 +832,7 @@ function fv_player_pay_per_view_version_check() {
 add_action( 'admin_notices', 'fv_player_pay_per_view_woocommerce_version_check' );
 
 function fv_player_pay_per_view_woocommerce_version_check() {
-  $version = '7.5.2.727';
+  $version = '7.5.3.727';
   
   global $FV_Player_PayPerView_WooCommerce;
   
@@ -838,4 +843,12 @@ function fv_player_pay_per_view_woocommerce_version_check() {
   </div>
   <?php
   endif;
+}
+
+// lazy-load of video encoder libraries
+add_action( 'fv_player_load_video_encoder_libs', 'fv_player_load_video_encoder_libs' );
+function fv_player_load_video_encoder_libs() {
+  include_once( dirname( __FILE__ ).'/../models/video-encoder/video-encoder.php');
+  require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-base.php' );
+  require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-step-base.php' );
 }

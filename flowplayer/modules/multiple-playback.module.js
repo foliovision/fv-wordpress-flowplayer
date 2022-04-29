@@ -66,6 +66,10 @@ flowplayer( function(api,root) {
     }
 
   }).on('resume', function() {
+    if( !api.muted ) {
+      flowplayer.audible_instance = instance_id;
+    }
+
     // if we resume a video, we need to pause all the other ones, unless multiple playback is enabled
     if( !api.conf.multiple_playback ) {
       jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {

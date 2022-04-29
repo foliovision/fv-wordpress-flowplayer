@@ -256,6 +256,20 @@ class FV_Player_List_Table extends WP_List_Table {
   
   public function column_default( $player, $column_name ) {
     $id = $player->id;
+
+    // TODO: This should be done in a sensible way
+    // if any of the videos for this player contain a coconut_processing_ placeholder,
+    // try to run Coconut's job check, so we can update that SRC if it was already
+    // processed
+    if ( function_exists( 'FV_Player_Coconut' ) ) {
+      foreach ( $player->video_objects as $video_object ) {
+        if ( strpos( $video_object->getSrc(), 'coconut_processing_' ) !== false ) {
+          FV_Player_Coconut()->jobs_check();
+          break;
+        }
+      }
+    }
+
     switch ( $column_name ) {
       case 'id':
         $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
@@ -264,16 +278,16 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".$player->player_name."</a>";
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($player->player_name)."</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
-        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a><span> | ";
-        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a><span> | ";
+        $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";
+        $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
 
         $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
 
-        $value .= "</div>";
+        $value .= "</div>\n";
         break;
       case 'embeds':
         $player = new FV_Player_Db_Player($id);
@@ -321,19 +335,22 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   public function get_result_counts() {
-      $this->total_items = FV_Player_Db_Player::getTotalPlayersCount();
+    global $FV_Player_Db;
+    $this->total_items = $FV_Player_Db->getListPageCount();
   }
 
   public function get_data() {
     $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
     $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
-    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'p.id';
+    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
-    $search = !empty($_GET['s']) ? $_GET['s'] : null;
+    $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;
-    return FV_Player_Db::getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
+
+    global $FV_Player_Db;
+    return $FV_Player_Db->getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
   }
   
   public function prepare_items() {

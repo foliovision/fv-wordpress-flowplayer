@@ -158,7 +158,7 @@
 
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>Plays For Player <?php echo $_GET['player_id']; ?> in past week</h2>
+    <h2>Plays For Player <?php echo intval($_GET['player_id']); ?> in past week</h2>
     <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
   </div>
   <script>
@@ -190,7 +190,7 @@
   </script>
 <?php elseif ( isset($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>No Plays For Player <?php echo $_GET['player_id']; ?> in past week</h2>
+    <h2>No Plays For Player <?php echo intval($_GET['player_id']); ?> in past week</h2>
   </div>
 <?php endif; ?>
 </div>

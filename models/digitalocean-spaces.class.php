@@ -35,6 +35,11 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     return false;
   }
 
+  function get_space() {
+    global $fv_fp;
+    return $fv_fp->_get_option( array($this->key,'space' ) );
+  }
+
   function get_domains() {
     global $fv_fp;
     $space = $fv_fp->_get_option( array($this->key,'space' ) );
@@ -49,7 +54,8 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $parts = explode( '.', $this->get_endpoint() );
     return $parts[0];
   }
-  
+
+  // TODO: rename this method, it's soooooo confusing! it does NOT provide secure tokens, it CHECKS for their presence
   function get_secure_tokens() {
     global $fv_fp;
     return $fv_fp->_get_option( array($this->key,'key' ) ) && $fv_fp->_get_option( array($this->key,'secret' ) );
@@ -186,6 +192,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   }
 
 }
+
 global $FV_Player_DigitalOcean_Spaces;
 $FV_Player_DigitalOcean_Spaces = new FV_Player_DigitalOcean_Spaces;
 

@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.8
+Tested up to: 5.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,122 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.21.727 - 2022/04/07 =
+
+* Bugfix - Position saving - issues with position restore when multiple players on the page
+* Bugfix - CSS - ensure the controlbar fonts load before video starts playing
+* Bugfix - LearnDash LMS support - fix FV Player Pro video ads to not affect lesson completion button
+
+= 7.5.20.727 - 2022/03/25 =
+
+* Urgent Bugfix - video splash screens not disappearing for non-Pro users
+
+= 7.5.19.727 - 2022/03/24 =
+
+* Security - player editing permission checks for Contributors and Authors
+* Security - XSS fix - users with the Contributor role (or above) were able to insert rudimentary JavaScript into FV Player. Thanks to m0ze (Patchstack) for the report!
+* Autoplay - only remove splash once video really plays to prevent empty black video from showing
+* LearnDash LMS support - fix display issues with playlist
+* Bugfix - Position saving - skip playlist position restore for YouTube playlist - for now
+* Bugfix - Position saving - fix for invalid player index for non-logged in users
+
+= 7.5.18.727 - 2022/03/18 =
+
+* Security - fix for SQL injection vulnerability when saving player in editor - for Author user level and above. Thanks to Tien Nguyen Anh for the report!
+* Elementor - Bring back the FV Player into Elementor Elements search
+* Media Library - optimized images loading
+* Shortcode to database conversion tool fixes
+* wp-admin -> FV Player - allow search by player ID
+* Bugfix - bad values coming from the background video duration scanner
+* Bugfix - JavaScript compatibility fixes
+* Bugfix - Picture button stopped working
+* Bugfix - Sticky player - fix when closing sticky mode
+* Bugfix - Sticky player - fix when scrolling too fast
+* Bugfix - Volume restoration not working if default volume set to zero
+
+= 7.5.15.727 - 2022/01/27 =
+
+* HLS.js - upgrade to 1.1.4 to fix playback on Apple Silicon M1 computers
+* LearnDash LMS support - add FV Player directly in your lesson Video Progression settings
+* Shortcode to database conversion tool - use FV Player -> Tools -> Conversion to upgrade from [fvplayer src="..."] to [fvplayer id="..."]
+* Video Sitemap XML - Elementor support
+* Bugfix - Amazon S3 - fix bucket name being matched in the file name
+* Bugfix - Settings screen - fix boxes not opening in rare cases
+
+= 7.5.14.727 - 2021/01/06 =
+
+* Bunny Stream - show video collections
+* Bugfix - Editor - show HLS stream checkboxes if the stream cannot be checked as it's not available
+
+= 7.5.13.727 - 2021/12/20 =
+
+* New feature - drag&drop video upload and encoding with the Bunny Stream service!
+* New feature - Editor now detects the HLS stream type to show Live stream and Audio stream checkboxes only when needed
+* Compatibility - Editor - jQuery 3.6 fixes
+* Bugfix - Editor - prevent autosave attempt right after opening the editor
+
+= 7.5.12.727 - 2021/11/25 =
+
+* Bugfix - Playlist tabs not pausing the old tab player properly
+* Bugfix - Position Saving - do not use index.m3u8 as the video ID
+* Bugfix - Video link issue for videos over 1 hour
+* Compatibility - Bunny.net WordPress CDN Plugin
+* Compatibility - WP Rocket Used CSS
+* Lightbox - Fancybox updated - double tap on image zooms in
+* Linode Object Storage support
+* Video upload support for FV Player Coconut and FV Player Bunny Stream
+
+= 7.5.11.727 - 2021/10/14 =
+
+* Click to unmute - adding translations
+* Click to unmute - only show on hover
+* Click to unmute - only show once in playlist
+* Live streams - fix buffer indicator bug for long streams
+* Media Library - fix for picking of old FV Player Coconut jobs
+* PHP warnings - fix multibyte functions used without check
+* Store dismissed wp-admin popup notices also in cookies
+* Support for FV Player Coconut video uploads - fixes
+
+= 7.5.10.727 - 2021/10/06 =
+
+* Airplay - removing the button if the video type is not supported
+* Click to unmute - shows when a video playback starts muted
+* Flash is no longer the default video type
+* Support for FV Player Coconut video uploads
+
+= 7.5.7.727 - 2021/09/27 =
+
+* Bugfix - HLS - live stream check - countdown fix
+* Bugfix - Lightbox - image lightbox picks proper image caption for [caption] shortcodes
+* Bugfix - Matomo/Piwik support - fix when running in subfolder
+* Bugfix - Subtitles - remember disabled subtitles state even if subtitles on by default
+
+= 7.5.5.727 - 2021/09/09 =
+
+* Appearance - player interface is now a bit smaller on desktop devices
+* CSS - fix gap between player and controlbar for fixed controls and full timeline
+* Mobile - keep rewind button even on narrow displays
+* Support for chapters on video timeline (Pro feature)
+* Uninstall - adding the missing feature
+* Bugfix - native fullscreen not working on iOS
+
+= 7.5.4.727 - 2021/08/18 =
+
+* Bugfix - CSS - timeline dragging causing display issues on some websites with Gutenberg
+* Bugfix - Elementor FV Player widget not considered for the "Embedded on" column of wp-admin -> FV Player
+* Bugfix - Embedded post ID missing when editing player with FV Player Pay Per View enabled
+* Bugfix - Lightbox should not use left/right align
+* Bugfix - Video Stats - clear scheduled job hook if setting not active
+* Bugfix - Video Stats - do not track video recovery as another play
+* Bugfix - Video Stats - track video replay as another play
+
+= 7.5.3.727 - 2021/08/10 =
+
+* Security - fix for XSS vulnerability in stats screen
+* Bugfix - Force landscape orientation in fullscreen setting fix
+* Bugfix - bad scroll position after leaving fullscreen
+* Bugfix - Sticky player code should not run on mobile
 
 = 7.5.2.727 - 2021/07/28 =
 

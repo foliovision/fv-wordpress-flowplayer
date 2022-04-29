@@ -1,8 +1,14 @@
+/*global Hls*/
+
 /*
  *  MPEG-DASH and HLS.js ABR changes
  */
 flowplayer( function(api,root) {
   root = jQuery(root);
+
+  if( typeof api.conf.disable_localstorage !='undefined' ) {
+    return;
+  }
 
   var hlsjs;
 

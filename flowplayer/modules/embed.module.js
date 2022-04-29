@@ -5,7 +5,7 @@ flowplayer(function(player, root) {
   root = jQuery(root);
   if( typeof(root.data('fv-embed')) == 'undefined' || !root.data('fv-embed') || root.data('fv-embed') == 'false' ) return;
 
-  player.embedCode = function() {    
+  player.embedCode = function() {
     var video = player.video;
     var width = root.width();
     var height = root.height();
@@ -28,19 +28,27 @@ flowplayer(function(player, root) {
 });
 
 jQuery(document).on('click', '.flowplayer .embed-code-toggle', function() {
+  var root = jQuery(this).closest('.flowplayer');
+
+  // show notice in editor
+  if( typeof fv_player_editor_conf != 'undefined') {
+    fv_player_notice( root, fv_player_editor_translations.embed_notice , 2000 );
+    return false;
+  }
+
   var button = jQuery(this);
   var player = button.parents('.flowplayer');
   var api = player.data('flowplayer');
   if( typeof(api.embedCode) == 'function') {
     player.find('.embed-code textarea').val(api.embedCode());  
   }
-  
+
   fv_player_clipboard( player.find('.embed-code textarea').val(), function() {
       fv_player_notice(player,fv_flowplayer_translations.embed_copied,2000);          
     }, function() {
       button.parents('.fvp-share-bar').find('.embed-code').toggle();
       button.parents('.fvp-share-bar').toggleClass('visible');
     });
-  
+
   return false;
 } );

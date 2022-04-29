@@ -281,7 +281,7 @@
     z-index: 2; /* or a file uploader link will be invisibly over the UL with thumbs */
 }
 
-#browser-dropdown {
+#browser-dropdown, #media-search-input {
     margin-top: 10px;
 }
 
@@ -311,6 +311,35 @@
 
 #overlay-loader-li #fv-player-shortcode-editor-preview-spinner {
     top: 0;
+}
+
+.thumbnail-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    righT: 0;
+    background: white;
+    height: 5px;
+    border: 1px solid gray;
+}
+.thumbnail-progress-marker {
+    background: #00a0d2;
+    height: 5px;
+}
+
+.thumbnail .thumbnail-status, .thumbnail .thumbnail-status-error {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    text-shadow: 1px 1px 1px black;
+    color: white;
+    background: #00a0d2;
+    border-radius: 1em;
+    padding: .1em .4em;
+}
+
+.thumbnail .thumbnail-status-error {
+    background-color: #ed331c;
 }
 
 #__assets_browser .browser-progress-bar {
