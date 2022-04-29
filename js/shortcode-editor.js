@@ -3850,30 +3850,48 @@ jQuery(function() {
       
       /*
       * Adds another language to subtitle menu
+       *
+       * @param {string}  sInput        Subtitle URL to load
+       * @param {string}  sLang         Subtitle language to use
+       * @param {int}     iTabIndex     Playlist item number when loading playlist for editing
+       * @param {int}     video_meta_id Subtitle row video meta ID
       */
-      subtitle_language_add: function( sInput, sLang, iTabIndex, sId ) {
+      subtitle_language_add: function( sInput, sLang, iTabIndex, video_meta_id ) {
         if(!iTabIndex){
           var current = jQuery('.fv-player-tab-subtitles table:visible');
           iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
         }
         var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
 
-        // Do we have an empty subtitle field?
-        var subElement = jQuery('.fv-fp-subtitle:last', oTab);
+        
+        var subElement = false;
+        
+        // If we are loading data, do we have an empty subtitle field?
+        if( sInput ) {
+          subElement = jQuery('.fv-fp-subtitle:last', oTab);
         if( subElement.length ) {
           if( get_field('subtitles',subElement).val() ) {
             subElement = false;
           }
+        }
         }
 
         // If we do not have an empty subtitle field, add new
         if( !subElement ) {
         oTab.append( template_subtitles );
           subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+
+          if( !sInput ) {
+            // force user to pick the language by removing the blank value and selecting what's first
+            subElement.find('select option[value=""]').remove();
+            setTimeout( function() {
+              subElement.find('select option').eq(0).prop('selected',true);
+            }, 0 );
+          }
         }
 
-        if (typeof(sId) !== 'undefined') {
-          subElement.attr('data-id_subtitles', sId);
+        if (typeof(video_meta_id) !== 'undefined') {
+          subElement.attr('data-id_subtitles', video_meta_id);
         }
 
         if( sInput ) {
