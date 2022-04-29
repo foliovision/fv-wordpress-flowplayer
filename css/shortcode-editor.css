@@ -18,7 +18,7 @@
 #fv-player-shortcode-editor .fv-player-tab-subtitles table input.with-button { width: 70%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles { width: 82%; }
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
-#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; margin: 1px 2px; height: 27px }
+#fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; margin: 1px 2px; height: 27px; padding-left: 5px }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
