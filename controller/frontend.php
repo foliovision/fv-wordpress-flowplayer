@@ -686,6 +686,31 @@ function fv_player_footer_svg_rewind() {
   <?php
 }
 
+add_action( 'wp_footer', 'fv_player_load_svg_buttons_everywhere' );
+
+function fv_player_load_svg_buttons_everywhere() {
+  global $fv_fp;
+  if( !$fv_fp->should_force_load_js() ) {
+    return;
+  }
+
+  foreach( array(
+    'no_picture',
+    'repeat',
+    'rewind'
+  ) AS $type ) {
+    if( $type == 'rewind' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
+    } else if( $type == 'repeat' || $type == 'no_picture' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_playlist', 101 );
+    }
+  }
+
+  if( function_exists('FV_Player_Pro') && method_exists( 'FV_Player_Pro', 'svg_chapters') ) {
+    add_action( 'wp_footer', array( FV_Player_Pro(), 'svg_chapters'), 101 );
+  }
+}
+
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
 
 /*
