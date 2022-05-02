@@ -9,7 +9,7 @@
 .fv-wp-flowplayer-notice.fv-wp-flowplayer-note { background-color: #F8F8F8; border-color: #E0E0E0; } 
 .fv-wp-flowplayer-notice p { font-family: sans-serif; font-size: 12px; margin: 0.5em 0; padding: 2px; } 
 .fv_wp_flowplayer_playlist_remove { display: none; }
-.fv-player-tabs-header { padding-bottom: 6px; }
+.fv-player-tabs-header {}
 #fv-flowplayer-playlist table { border-bottom: 1px #eee solid; }
 #fv-player-shortcode-editor table input[type=text], #fv-flowplayer-playlist table input[type=text].with-button { width: 93%; }
 #fv-player-shortcode-editor table textarea { width: 93%; }
@@ -232,6 +232,7 @@ a #add-format, a #add-rtmp {
   box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
   margin: 5px 15px 2px;
   padding: 1px 12px;
+  max-width:40%;
 }
 .fv-player-save-completed {
   border-left: 4px solid #46b450;
@@ -293,10 +294,10 @@ a #add-format, a #add-rtmp {
 #fv-player-shortcode-editor select,
 #fv-player-shortcode-editor textarea {
 	box-shadow: 0 0 0 transparent;
-	border-radius: 0;
-	border: 1px solid #ddd;
-	background-color: #fff;
-	color: #32373c;
+	border: 1px solid #918f8f;
+    background-color: #fff;
+    color: #32373c;
+    border-radius: 4px;
 }
 #fv-player-shortcode-editor input[type="text"],
 #fv-player-shortcode-editor input[type="number"] {
@@ -349,6 +350,7 @@ New FV Player Editor modal box styling
   border-bottom: 1px solid #e9e9e9;
   display: flex;
   align-items: center;
+  justify-content:space-between;
 }
 #fv-player-editor-modal-top h1 {
   padding: 0 16px;
@@ -358,13 +360,27 @@ New FV Player Editor modal box styling
   font-weight:600;
 }
 #fv-player-editor-modal-top #fv-player-editor-modal-close {
-  top: 23px;
-  right: 21px;
-  display: block;
-  color: #444;
-  height: 16px;
-  width: 16px;
+    margin-right: 20px;
+    border: 0;
+    background-color: transparent;
+    display: block;
+    color: #444;
+    height: 38px;
+    width: 40px;
+    cursor: pointer;
+    text-align: center;
+    background-size: 34px;
+    background-repeat: no-repeat;
+    font-size: 0;
+    border-radius: 100%;
+    background-position: center;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 0 24 24' width='24px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z'/%3E%3C/svg%3E");
+  
 }
+#fv-player-editor-modal-top #fv-player-editor-modal-close:hover {
+    background-color: #efefef;
+}
+
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no {
   /* TODO: Use proper path */
   background-image: url(https://d2uolguxr56s4e.cloudfront.net/img/kartrapages/video_player_placeholder.gif);
@@ -456,6 +472,10 @@ New FV Player Editor inputs styling
 #fv-player-shortcode-editor .components-base-control {
   margin-bottom: 24px;
 }
+#fv-player-shortcode-editor .components-panel__body>.components-base-control:not(:last-of-type) {
+ 
+}
+
 #fv-player-shortcode-editor .components-base-control:last-of-type {
   margin-bottom: 0;
 }
@@ -466,6 +486,9 @@ New FV Player Editor inputs styling
   margin-bottom: 12px;
   line-height: normal;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top:5px;
 }
 #fv-player-shortcode-editor .components-form-toggle {
   margin-right: 12px;
@@ -570,4 +593,40 @@ position: relative;
   transition: transform .1s ease;
   background-color: #1e1e1e;
   border: 5px solid #1e1e1e;
+}
+
+/* Tabs */
+.fv-player-tabs {
+    height: calc(100% - 123px);
+}
+.fv-player-tab.fv-player-tab-options {
+    overflow-y: scroll;
+    height: 100%;
+}
+/* Direct fields */
+/* lightbox */
+div#fv-player-editor-field-children-lightbox {
+    display: grid;
+    grid-template-columns: 48% 48%;
+	-ms-grid-columns: 48% 48%;
+    justify-content: space-between;
+}
+div#fv-player-editor-field-children-lightbox .components-base-control {
+    margin-bottom: 0;
+}
+/* autoplay */
+div#fv-player-editor-field-children-autoplay .components-base-control__field {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+}
+/* alignment */
+div#fv-player-editor-field-children-align {
+    display: grid;
+    grid-template-columns: 48% 48%;
+	-ms-grid-columns: 48% 48%;
+    gap: 20px;
+}
+#fv-player-shortcode-editor .components-flex.components-select-control {
+    width: 100%;
 }

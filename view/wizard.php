@@ -162,13 +162,9 @@
             <?php endif; ?>
           <?php endforeach; ?>
         </select>
-        <span class="components-input-control__suffix">
-          <div class="css-1einvap-DownArrowWrapper">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" role="img" aria-hidden="true" focusable="false"><path d="M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z"></path></svg>
-          </div>
-        </span>
+        
       </div>
-      </div>
+    </div>
   </div>  
     <?php
   }
@@ -187,7 +183,7 @@
     <div class="components-base-control__field">
       <input class="components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
       <?php if( $browser ) : ?>
-        <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add', 'fv_flowplayer'); ?> <?php echo $label; ?></a>
+        <a class="components-button is-tertiary" href="#"><?php _e('Add', 'fv_flowplayer'); ?> <?php echo $label; ?> <?php _e('from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
     </div>
   </div>
