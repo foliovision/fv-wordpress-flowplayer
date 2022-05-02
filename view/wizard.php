@@ -407,92 +407,122 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <!--<td class="fvp_item_dimension">-</td>-->
                 <!--<td class="fvp_item_time">-</td>-->
                 <!--<td class="fvp_item_remove"><div></div></td>-->
-              </tr> 
-            </tbody>        
+              </tr>
+            </tbody>
           </table>
 
         </div>
-        
+
         <div class="fv-player-tab fv-player-tab-video-files">
           <div class="fv-player-playlist-item" data-playlist-item data-index="0">
-          <?php
-          $video_fields = apply_filters('fv_player_editor_video_fields', array(
-            'video' => array(
-              array(
-                'label' => __('Video', 'fv-wordpress-flowplayer'),
-                'name' => 'src',
-                'browser' => true,
-                'type' => 'text',
-                'sticky' => true,
-                'visible' => true
-              ),
-              // TODO: #fv_wp_flowplayer_file_info, Add more formats, add mobile video, add RTMP even
-              array(
-                'label' => __('Splash', 'fv-wordpress-flowplayer'),
-                'name' => 'src',
-                'browser' => true,
-                'type' => 'text',
-                'visible' => true
-              ),
-              array(
-                'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
-                'name' => 'splash_text',
-                'type' => 'text'
-              ),
-              array(
-                'label' => __('Title', 'fv-wordpress-flowplayer'),
-                'name' => 'caption',
-                'type' => 'text',
-                'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
+            <?php
+            $video_fields = apply_filters('fv_player_editor_video_fields', array(
+              'video' => array(
+                array(
+                  'label' => __('Video', 'fv-wordpress-flowplayer'),
+                  'name' => 'src',
+                  'browser' => true,
+                  'type' => 'text',
+                  'visible' => true
+                ),
+                // TODO: Actually make these live
+                array(
+                  'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
+                  'name' => 'live',
+                ),
+                array(
+                  'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
+                  'name' => 'dvr',
+                ),
+                array(
+                  'label' => __('Audio Stream', 'fv-wordpress-flowplayer'),
+                  'name' => 'audio',
+                ),
+                array(
+                  'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
+                  'name' => 'advanced-settings', // TODO: Do not save
+                  'visible' => true,
+                  'children' => array(
+                    array(
+                      'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
+                      'name' => 'src1',
+                      'browser' => true,
+                      'type' => 'text',
+                      'visible' => true
+                    ),
+                    array(
+                      'label' => __('Alternative Format 2', 'fv-wordpress-flowplayer'),
+                      'name' => 'src2',
+                      'browser' => true,
+                      'type' => 'text',
+                      'visible' => true
+                    ),
+                    array(
+                      'label' => __('RTMP', 'fv-wordpress-flowplayer'),
+                      'name' => 'rtmp_show', // TODO: Do not save
+                      'visible' => true,
+                      'children' => array(
+                        array(
+                          'label' => __('Path', 'fv-wordpress-flowplayer'),
+                          'name' => 'rtmp_path',
+                          'type' => 'text',
+                          'visible' => true
+                        ),
+                        array(
+                          'label' => __('Server', 'fv-wordpress-flowplayer'),
+                          'name' => 'rtmp',
+                          'type' => 'text',
+                          'visible' => true
+                        ),
+                      )
+                    ),
+                  ),
+                ),
+                array(
+                  'label' => __('Splash', 'fv-wordpress-flowplayer'),
+                  'name' => 'src',
+                  'browser' => true,
+                  'type' => 'text',
+                  'visible' => true
+                ),
+                array(
+                  'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
+                  'name' => 'splash_text',
+                  'type' => 'text',
+                  'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true'
+                ),
+                array(
+                  'label' => __('Title', 'fv-wordpress-flowplayer'),
+                  'name' => 'caption',
+                  'type' => 'text',
+                  'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
+                ),
+                array(
+                  'label' => __('Synopsis', 'fv-wordpress-flowplayer'),
+                  'name' => 'synopsis',
+                  'type' => 'textarea',
+                  'visible' => isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true'
+                )
               )
-            )
-          ) );
+            ) );
 
-          // TODO: Refactor, use same code as for $player_options
-          foreach( $video_fields AS $group => $inputs ) {
-            echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
-            
-            usort( $inputs, 'fv_player_editor_input_sort' );
-            
-            foreach( $inputs AS $input ) {
-              fv_player_editor_input( $input );
+            // TODO: Refactor, use same code as for $player_options
+            foreach( $video_fields AS $group => $inputs ) {
+              echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
+
+              //usort( $inputs, 'fv_player_editor_input_sort' );
+
+              foreach( $inputs AS $input ) {
+                fv_player_editor_input( $input );
+              }
+              echo "</div>\n";
             }
-            echo "</div>\n";
-          }
-          ?>
 
-          <table class="slidetoggle describe fv-player-playlist-item" width="100%" data-index="0">
-            <tbody>
-              <?php do_action('fv_flowplayer_shortcode_editor_before'); ?>
+            // Legacy
+            do_action('fv_flowplayer_shortcode_editor_before');
 
-              <tr id="fv_wp_flowplayer_add_format_wrapper">
-                <th scope="row" class="label"></th>
-                <td class="field" style="width: 50%"><div id="add_format_wrapper"><a href="#" class="partial-underline" style="outline: 0"><span id="add-format">+</span>&nbsp;<?php _e('Add another format', 'fv_flowplayer'); ?></a> <?php _e('(i.e. WebM, OGV)', 'fv_flowplayer'); ?></div></td>
-                <td class="field"><div class="add_rtmp_wrapper"><a href="#" class="partial-underline" style="outline: 0"><span id="add-rtmp">+</span>&nbsp;<?php _e('Add RTMP', 'fv_flowplayer'); ?></a></div></td>  				
-              </tr>      
-              
-    <tr class="<?php if (isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true') echo 'playlist_synopsis'; else echo 'fv_player_interface_hide'; ?>" >
-                <th scope="row" class="label" valign="top"><label for="fv_wp_flowplayer_field_synopsis" class="alignright"><?php _e('Synopsis', 'fv_flowplayer'); ?></label></th>
-                <td class="field" colspan="2"><textarea id="fv_wp_flowplayer_field_synopsis" name="fv_wp_flowplayer_field_synopsis" class="<?php echo $upload_field_class; ?>" rows="3"></textarea></td>
-              </tr>
-
-              <tr class="fv_player_interface_hide">
-                  <th scope="row" class="label"><label for="fv_wp_flowplayer_field_live" class="alignright"><?php _e('Live stream', 'fv_flowplayer'); ?></label></th>
-                  <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_live" name="fv_wp_flowplayer_field_live" /></td>
-              </tr>
-              
-              <tr class="fv_player_interface_hide">
-                  <th scope="row" class="label"><label for="fv_wp_flowplayer_field_dvr" class="alignright"><?php _e('DVR stream', 'fv_flowplayer'); ?></label></th>
-                  <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_dvr" name="fv_wp_flowplayer_field_dvr" /></td>
-              </tr>
-              
-              <tr class="fv_player_interface_hide">
-                  <th scope="row" class="label"><label for="fv_wp_flowplayer_field_audio" class="alignright"><?php _e('Audio stream', 'fv_flowplayer'); ?></label></th>
-                  <td class="field"><input type="checkbox" id="fv_wp_flowplayer_field_audio" name="fv_wp_flowplayer_field_audio" /></td>
-              </tr>                    
-
-              <?php do_action('fv_flowplayer_shortcode_editor_item_after'); ?>     
-
+            do_action('fv_flowplayer_shortcode_editor_item_after');
+            ?>
           </div>
         </div>
 
@@ -580,7 +610,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'type' => 'number'
                     )
                   )
-                ),                
+                ),
                 array(
                   'label' => __('Playlist auto advance', 'fv-wordpress-flowplayer'),
                   'name' => 'playlist_advance',
