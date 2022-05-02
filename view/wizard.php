@@ -183,7 +183,7 @@
     <div class="components-base-control__field">
       <input class="components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
       <?php if( $browser ) : ?>
-        <a class="components-button is-tertiary" href="#"><?php _e('Add', 'fv_flowplayer'); ?> <?php echo $label; ?> <?php _e('from media library', 'fv_flowplayer'); ?></a>
+        <a class="components-button is-secondary" href="#"><?php _e('Add', 'fv_flowplayer'); ?> <?php echo $label; ?> <?php _e('from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
     </div>
   </div>
