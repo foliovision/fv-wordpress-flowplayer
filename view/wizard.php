@@ -414,7 +414,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         </div>
         
         <div class="fv-player-tab fv-player-tab-video-files">
-
+          <div class="fv-player-playlist-item" data-playlist-item data-index="0">
           <?php
           $video_fields = apply_filters('fv_player_editor_video_fields', array(
             'video' => array(
@@ -493,15 +493,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
               <?php do_action('fv_flowplayer_shortcode_editor_item_after'); ?>     
 
-              <?php if (!$allow_uploads && current_user_can('manage_options')) : ?> 
-                <tr>
-                  <td colspan="2">
-                    <div class="fv-wp-flowplayer-notice"><?php _e('Admin note: Video uploads are currently disabled, set Allow User Uploads to true in', 'fv_flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer"><?php _e('Settings', 'fv_flowplayer'); ?></a></div>
-                  </td>
-                </tr>            
-              <?php endif; ?>
-            </tbody>
-          </table>
+          </div>
         </div>
 
         <div class="fv-player-tab fv-player-tab-subtitles" style="display: none">

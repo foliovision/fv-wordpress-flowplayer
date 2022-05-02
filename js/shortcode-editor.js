@@ -166,7 +166,7 @@ jQuery(function() {
      * @return {object}             The tab element
      */
     function get_tab( index, tab ) {
-      var selector = '.fv-player-tab-'+tab+' table';
+      var selector = '.fv-player-tab-'+tab+' [data-playlist-item]';
       if( index == 'first' ) {
         selector += ':first';
       } else if( index == 'last' ) {
@@ -183,7 +183,7 @@ jQuery(function() {
     * @return {object}            The tab elements
     */
     function get_tabs( tab ) {
-      var selector = '.fv-player-tab-'+tab+' table';
+      var selector = '.fv-player-tab-'+tab+' [data-playlist-item]';
       return $el_editor.find(selector);
     }
 
@@ -508,7 +508,7 @@ jQuery(function() {
 
         // if no playlist item is left, add a new one
         // TODO: Some better way?
-        if( !jQuery('.fv-player-tab-subtitles table[data-index]').length ){
+        if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
           playlist_item_add();
           jQuery('.fv-player-tab-playlist tr td').click();
         }
@@ -519,6 +519,7 @@ jQuery(function() {
       /*
       *  Sort playlist
       */
+      // TODO: New markup
       $('.fv-player-tab-playlist table tbody').sortable({
         start: function( event, ui ) {
           store_rtmp_server = get_field( 'rtmp', get_tab('first','video-files') ).val();
@@ -1511,7 +1512,7 @@ jQuery(function() {
       jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").hide();
       $el_preview.attr('class','preview-no');
 
-      jQuery('.fv-player-tab-video-files table').each( function(i,e) {
+      jQuery('.fv-player-tab-video-files [data-playlist-item]').each( function(i,e) {
         if( i == 0 ) return;
         jQuery(e).remove();
       } );
@@ -1540,7 +1541,7 @@ jQuery(function() {
       //hide empy tabs hide tabs
       jQuery('.fv-player-tab-playlist').hide();
       jQuery('.fv-player-playlist-item-title').html('');
-      jQuery('.fv-player-tab-video-files table').show();
+      jQuery('.fv-player-tab-video-files [data-playlist-item]').show();
 
       jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
 
@@ -3572,16 +3573,16 @@ jQuery(function() {
     function show_stream_fields(e,index) {
       // on keyup
       var src = jQuery(this).val(),
-        item = jQuery(this).parents('table');
+        item = jQuery(this).parents('[data-playlist-item]');
 
       // on fv_flowplayer_shortcode_item_switch
       if( typeof(index) != "undefined" ) {
-        item = jQuery('.fv-player-playlist-item[data-index='+index+']');
-        src = item.find('[name=fv_wp_flowplayer_field_src]').val();
+        item = get_tab(index,'video-files');
+        src = get_field( 'src', item ).val();
       }
 
       // on fv_flowplayer_shortcode_new
-      if( item.length == 0 ) item = jQuery('.fv-player-playlist-item[data-index=0]');
+      if( item.length == 0 ) item = get_tab( 0, 'video-files' );
 
       // TODO: Gradually get rid of this and detect each stream type instead
       var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/rtmp:/) || src.match(/\.mpd/),
