@@ -220,7 +220,7 @@ jQuery(function() {
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
       var
-        next = false,
+        next = false, // track if the player data has changed while saving
         overlay_close_waiting_for_save = false,
         loading = true,
         int_keyup = false;
@@ -756,7 +756,7 @@ jQuery(function() {
 
         if( is_saving ) {
           debug_log('Still saving!');
-          next = ajax_data;
+          next = true;
           return;
         }
 
@@ -828,10 +828,16 @@ jQuery(function() {
               }
             });
 
+            // Did the data change while saving?
             if( next ) {
               debug_log('There is more to save...');
 
-              ajax(next);
+              // Make sure you use store the new player ID already!
+              if ( is_unsaved ) {
+                init_saved_player_fields( response.id_player );
+              }
+
+              ajax( build_ajax_data(true) );
               next = false;
             } else {
               is_saving = false;
