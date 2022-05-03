@@ -292,13 +292,20 @@ msgstr ""
 
 #: controller/settings.php:156
 msgid ""
-"<p>This new version includes several improvements:</p>\n"
-"      <ul style='list-style-type: revert; margin-left: 3em'>\n"
-"        <li>Editor autosave and preview improvements</li>\n"
-"        <li>FV Player Video Play Stats</li>\n"
-"        <li>Improved player JavaScript loading</li>\n"
-"        <li>Multiple video playback improvements</li>\n"
-"      </ul>\n"
+"<p>This new version includes several improvements:</p>
+\n"
+"      <ul style='list-style-type: revert; margin-left: 3em'>
+\n"
+"        <li>Editor autosave and preview improvements</li>
+\n"
+"        <li>FV Player Video Play Stats</li>
+\n"
+"        <li>Improved player JavaScript loading</li>
+\n"
+"        <li>Multiple video playback improvements</li>
+\n"
+"      </ul>
+\n"
 "      <p>You can read more about it in our <a href='https://foliovision.com/?p=137472' target='_blank'>blog announcement</a>.</p>"
 msgstr ""
 
@@ -1344,10 +1351,6 @@ msgstr ""
 
 #: view/admin.php:845
 msgid "Align"
-msgstr ""
-
-#: view/admin.php:846
-msgid "Allow Video Uploads"
 msgstr ""
 
 #: view/admin.php:846

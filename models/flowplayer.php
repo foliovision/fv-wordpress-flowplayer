@@ -535,7 +535,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';    
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
-    if( !isset( $conf['allowuploads'] ) ) $conf['allowuploads'] = 'true';
     if( !isset( $conf['postthumbnail'] ) ) $conf['postthumbnail'] = 'false';
     
     //default colors

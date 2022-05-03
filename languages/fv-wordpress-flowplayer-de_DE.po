@@ -1431,10 +1431,6 @@ msgid "Align"
 msgstr "Ausrichtung"
 
 #: view/admin.php:798
-msgid "Allow Video Uploads"
-msgstr ""
-
-#: view/admin.php:798
 msgid ""
 "Enables the WP Media Library integraton if you want to host videos on your "
 "own server"

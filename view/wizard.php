@@ -21,14 +21,6 @@
   $post_id = isset($post->ID) ? $post->ID : 0;
   
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
-  $allow_uploads = false;
-
-	if( isset($fv_flowplayer_conf["allowuploads"]) && $fv_flowplayer_conf["allowuploads"] == 'true' ) {
-	  $allow_uploads = $fv_flowplayer_conf["allowuploads"];
-	  $upload_field_class = ' with-button';
-	} else {
-	  $upload_field_class = '';
-	}
   
   function fv_flowplayer_admin_select_popups($aArgs) {
 
