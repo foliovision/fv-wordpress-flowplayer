@@ -27,7 +27,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     $uploadButton.after('<input type="file" accept=".mp4,.mov,.web,.flv,.avi,.vmw,.avchd,.swf,.mkv,.webm.,mpeg,.mpg" class="fv-player-s3-upload-file-input ' + input_class_name + '" name="' + input_name + '" />');
 
     $uploadInput = $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
-    $uploadInput.change(function() {
+    $uploadInput.on( 'change', function() {
       upload( $uploadInput[0].files[0] );
     });
   }

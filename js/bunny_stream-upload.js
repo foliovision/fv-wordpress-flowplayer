@@ -22,8 +22,8 @@ jQuery( function($) {
     $uploadButton.after('<input type="file" accept=".mp4,.mov,.web,.flv,.avi,.vmw,.avchd,.swf,.mkv,.webm.,mpeg,.mpg" class="fv-player-bunny_stream-upload-file-input ' + input_class_name + '" name="' + input_name + '" />');
 
     $uploadInput = $('.media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
-    $uploadInput.change(function() {
-      upload( $uploadInput[0].files[0] );
+        $uploadInput.on('change', function() {
+            upload( $uploadInput[0].files[0] );
     });
   }
 
@@ -181,11 +181,11 @@ jQuery( function($) {
 
       recreate_file_input( file_select_input_name, file_select_input_class );
 
-      $uploadButton.click(function() {
+      $uploadButton.on( 'click', function() {
         $uploadInput.click();
       });
 
-      $cancelButton.click(function() {
+      $cancelButton.on( 'click', function() {
         if ( file_upload_xhr ) {
           file_upload_xhr.abort();
         }

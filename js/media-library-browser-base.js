@@ -291,13 +291,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
             switchClicking = true;
             // find a tab that is native and is not our clicked tab and click on it
             if ($prev.length && !$prev.hasClass('artificial')) {
-              $prev.click();
+              $prev.trigger('click');
             } else {
-              $next.click();
+              $next.trigger('click');
             }
 
             // then click back on our tab to activate it
-            $e.click();
+            $e.trigger('click');
             switchClicking = false;
           }
         });
