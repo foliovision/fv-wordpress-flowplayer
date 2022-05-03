@@ -302,6 +302,9 @@ a #add-format, a #add-rtmp {
     color: #32373c;
     border-radius: 2px;
 }
+#fv-player-shortcode-editor textarea{
+	width:100%;
+}
 #fv-player-shortcode-editor input[type="text"],
 #fv-player-shortcode-editor input[type="number"],
 #fv-player-shortcode-editor select {
@@ -678,6 +681,15 @@ div#fv-player-editor-field-children-align {
     width: 100%;
 }
 
+.field-with-language {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 36% 60%;
+    gap: 0;
+    justify-content: space-between;
+}
+
+
 @media only screen and (max-width: 1400px) {
 	#fv-player-shortcode-editor-left {
 		float: left;
@@ -718,7 +730,9 @@ div#fv-player-editor-field-children-align {
 		min-height: 29px;
 		margin-bottom: 0px;
 	}
-
+	.field-with-language {
+		grid-template-columns: 48% 48%;
+	}
 }
 
 @media only screen and (max-width: 560px) {
