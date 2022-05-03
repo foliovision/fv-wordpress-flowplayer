@@ -502,16 +502,16 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'visible' => true
                 ),
                 array(
-                  'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
-                  'name' => 'splash_text',
-                  'type' => 'text',
-                  'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true'
-                ),
-                array(
                   'label' => __('Title', 'fv-wordpress-flowplayer'),
                   'name' => 'caption',
                   'type' => 'text',
                   'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
+                ),
+                array(
+                  'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
+                  'name' => 'splash_text',
+                  'type' => 'text',
+                  'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true'
                 ),
                 array(
                   'label' => __('Synopsis', 'fv-wordpress-flowplayer'),
