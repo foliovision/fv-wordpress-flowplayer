@@ -195,7 +195,28 @@
   <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
+      <?php if( $subtitle_language ) : ?>
+        <div class="field-with-language">
+          <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
+            <option value=""><?php _e('Pick language', 'fv_flowplayer'); ?></option>
+            <?php
+            $aLanguages = flowplayer::get_languages();
+            $aCurrent = explode('-', get_bloginfo('language'));
+            $sCurrent = ''; //aCurrent[0];
+            foreach ($aLanguages AS $sCode => $sLabel) {
+              ?><option value="<?php echo strtolower($sCode); ?>"<?php if (strtolower($sCode) == $sCurrent) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
+              <?php
+            }
+            ?>
+          </select>
+      <?php endif; ?>
+    
       <input class="components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
+      
+      <?php if( $subtitle_language ) : ?>
+        </div><!-- /.field-with-language-->
+      <?php endif; ?>
+      
       <?php if( $browser ) : ?>
         <a class="components-button is-secondary" href="#"><?php _e('Add', 'fv_flowplayer'); ?> <?php echo $label; ?> <?php _e('from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
@@ -219,6 +240,7 @@
                           'options' => array(),
                           'playlist_label' => false,
                           'scope' => false,
+                          'subtitle_language' => false,
                           'type' => false,
                           'visible' => false
                          ) );
@@ -258,6 +280,8 @@
       fv_player_editor_numfield( $args );     
     } else if( $type == 'select' ) {
       fv_player_editor_select( $args );     
+    } else if( $type == 'button' ) {
+      fv_player_editor_button( $args );     
     }
 
     if( !empty($args['description']) ) : ?>
@@ -535,6 +559,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             }
 
             // Legacy
+            // TODO: Will these still actually work?
             do_action('fv_flowplayer_shortcode_editor_before');
 
             do_action('fv_flowplayer_shortcode_editor_item_after');
@@ -543,51 +568,51 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         </div>
 
         <div class="fv-player-tab fv-player-tab-subtitles" style="display: none">
-          <table width="100%" data-index="0">
+          <div class="fv-player-playlist-item" data-playlist-item data-index="0">
 
-          <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend'); ?>
-
-            <tr>
-              <th scope="row" class="label"><label for="fv_wp_flowplayer_field_subtitles" class="alignright"><?php _e('Subtitles', 'fv_flowplayer'); ?></label></th>
-              <td class="field fv-fp-subtitles" colspan="2">
-                <div class="fv-fp-subtitle">
-                  <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
-                    <option value="">&nbsp;</option>
                     <?php
-                    $aLanguages = flowplayer::get_languages();
-                    $aCurrent = explode('-', get_bloginfo('language'));
-                    $sCurrent = ''; //aCurrent[0];
-                    foreach ($aLanguages AS $sCode => $sLabel) {
-                      ?><option value="<?php echo strtolower($sCode); ?>"<?php if (strtolower($sCode) == $sCurrent) echo ' selected'; ?>><?php echo $sCode; ?>&nbsp;&nbsp;(<?php echo $sLabel; ?>)</option>
-                      <?php
+            $subtitle_fields = apply_filters('fv_player_editor_subtitle_fields', array(
+              'subtitles' => array(
+                array(
+                  'label' => __('Subtitles URL', 'fv-wordpress-flowplayer'),
+                  'name' => 'subtitles',
+                  'browser' => true,
+                  'subtitle_language' => true,
+                  'type' => 'text',
+                  'visible' => true
+                ),
+                array(
+                  'label' => __('Add Another Language', 'fv-wordpress-flowplayer'),
+                  'name' => 'subtitles_add', // TODO: Do not save
+                  'type' => 'button',
+                  'visible' => true
+                )
+              )
+            ) );
+
+            // TODO: Refactor, use same code as for $player_options
+            foreach( $subtitle_fields AS $group => $inputs ) {
+              echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
+
+              //usort( $inputs, 'fv_player_editor_input_sort' );
+
+              foreach( $inputs AS $input ) {
+                fv_player_editor_input( $input );
                     }
-                    ?>
-                  </select>                
-                  <input type="text" class="text<?php echo $upload_field_class; ?> fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
-                  <?php if ($allow_uploads == 'true') { ?>
-                    <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
-                    <a class="fv-fp-subtitle-remove" href="#" style="display: none">X</a>
-                  <?php }; ?>
-                  <div style="clear:both"></div>
-                </div>
-              </td>
-            </tr>
+              echo "</div>\n";
+            }
 
-            <?php do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append'); ?>
+            // Legacy
+            // TODO: Will these still actually work?
+            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
 
-            <tr class="submit-button-wrapper">
-              <td colspan="2">
-              </td>              
-              <td>
-                <a class="fv_flowplayer_language_add_link partial-underline"  style="outline: 0" href="#"><span class="add-subtitle-lang">+</span>&nbsp;<?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
-              </td>
-            </tr>
-          </table>
+            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+            ?>
+
+          </div>
         </div>
 
         <div class="fv-player-tab fv-player-tab-options" style="display: none">
-          <table width="100%">
-            
           <?php
           $player_options = apply_filters('fv_player_editor_player_options', array(
             'general' => array(
