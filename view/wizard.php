@@ -102,6 +102,20 @@
     <?php
   }
   
+  // TODO: How to actually assign any action to this?
+  function fv_player_editor_button( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+    ?>
+  <div <?php echo $id; ?> class="components-base-control__field">
+    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>" <?php echo $live; ?>><?php _e( $label, 'fv_flowplayer'); ?></a>
+  </div>
+    <?php
+  }
+
   function fv_player_editor_checkbox( $args ) {
     extract($args);
 
