@@ -47,4 +47,6 @@ a.button.fv-wordpress-flowplayer-button {
     margin-bottom: 5px;
     text-decoration: none;
     padding: 0 7px;
+	min-height: unset;
+    line-height: 2.15384615;
 }

@@ -151,7 +151,7 @@
 .fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
 .fv-player-playlist-item .fv-player-shortcode-editor-small-spinner {position: absolute; top: 4px; right: 123px;}
 .fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
-#fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no{background-image: url(../images/icon-256x256.png);width: 256px;height: 290px;background-repeat: no-repeat;line-height:512px;overflow:hidden;margin:0 auto;text-align: center;}
+
 #fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}
 
 #fv-player-shortcode-editor-preview div.notice { display: block }
@@ -297,15 +297,17 @@ a #add-format, a #add-rtmp {
 	border: 1px solid #918f8f;
     background-color: #fff;
     color: #32373c;
-    border-radius: 4px;
+    border-radius: 2px;
 }
 #fv-player-shortcode-editor input[type="text"],
-#fv-player-shortcode-editor input[type="number"] {
+#fv-player-shortcode-editor input[type="number"],
+#fv-player-shortcode-editor select {
 	padding: 0 8px;
 	/* inherits font size 14px */
 	line-height: 2; /* 28px */
 	/* Only necessary for IE11 */
-	min-height: 30px;
+	min-height: 36px;
+	width:100%;
 }
 
 #fv-player-shortcode-editor .fv-player-playlist-item-title, #fv-player-shortcode-editor .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
@@ -383,9 +385,8 @@ New FV Player Editor modal box styling
 
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no {
   /* TODO: Use proper path */
-  background-image: url(https://d2uolguxr56s4e.cloudfront.net/img/kartrapages/video_player_placeholder.gif);
-  width: 75%;
-  height: 57%;
+  
+  border: 4px dashed #ddd;
   background-size: contain;
   background-position: center;
   image-rendering: -webkit-optimize-contrast;
@@ -394,6 +395,7 @@ New FV Player Editor modal box styling
   top: 0;
   bottom: 0;
   margin: auto;
+  padding: 95px 0;
 }
 
 #fv-player-shortcode-editor-left {
@@ -403,6 +405,9 @@ New FV Player Editor modal box styling
   height: calc(100% - 60px);
   position:relative;
   border-right: 1px solid #e9e9e9;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
 }
 #fv-player-shortcode-editor-right {
   float: left;
@@ -411,12 +416,7 @@ New FV Player Editor modal box styling
   height: calc(100% - 60px);
 }
 #fv-player-shortcode-editor-preview {
-    position: initial;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    height: 100%;
-    align-items: center;
+   width:75%;
 
 }
 
@@ -454,6 +454,7 @@ New FV Player Editor modal box styling
   bottom: 0;
   padding: 20px;
   border-top: 1px solid #e9e9e9;
+  box-sizing:border-box;
 }
 
 
@@ -599,8 +600,8 @@ position: relative;
 .fv-player-tabs {
     height: calc(100% - 123px);
 }
-.fv-player-tab.fv-player-tab-options {
-    overflow-y: scroll;
+.fv-player-tab {
+    overflow-y: auto;
     height: 100%;
 }
 /* Direct fields */
@@ -610,6 +611,7 @@ div#fv-player-editor-field-children-lightbox {
     grid-template-columns: 48% 48%;
 	-ms-grid-columns: 48% 48%;
     justify-content: space-between;
+	gap: 4%;
 }
 div#fv-player-editor-field-children-lightbox .components-base-control {
     margin-bottom: 0;
@@ -625,8 +627,201 @@ div#fv-player-editor-field-children-align {
     display: grid;
     grid-template-columns: 48% 48%;
 	-ms-grid-columns: 48% 48%;
-    gap: 20px;
+    gap: 4%;
 }
 #fv-player-shortcode-editor .components-flex.components-select-control {
     width: 100%;
+}
+
+@media only screen and (max-width: 1400px) {
+	#fv-player-shortcode-editor-left {
+		float: left;
+		width: 60%;
+	}
+	#fv-player-shortcode-editor-right {
+		float: left;
+		width: calc(40% - 1px);
+	}
+}
+@media only screen and (max-width: 1160px) {
+	#fv-player-shortcode-editor-left {
+		width: 100%;
+		height: 265px;
+	}
+	#fv-player-shortcode-editor-right {
+
+		width: calc(100% - 1px);
+		height: calc(100% - 325px);
+	}
+	#fv-player-shortcode-editor .nav-tab-wrapper{
+		display: flex;
+		justify-content: center;
+	}
+	#fv-player-shortcode-editor-preview {
+		width: 390px;
+	}
+	 #fv-player-shortcode-editor-preview-no {
+		padding: 20px 0;
+	}
+}
+@media only screen and (max-width: 782px) {
+	#fv-player-editor-modal-bottom .button, #fv-player-editor-modal-bottom .button-primary {
+		padding: 0 14px;
+		line-height: 2;
+		font-size: 14px;
+		vertical-align: middle;
+		min-height: 29px;
+		margin-bottom: 0px;
+	}
+
+}
+
+@media only screen and (max-width: 560px) {
+	#fv-player-shortcode-editor-preview {
+		width: 95%;
+		max-width: 390px;
+	}
+	#fv-player-editor-modal {
+		position: fixed;
+		top: 10px;
+		left: 10px;
+		right: 10px;
+		bottom: 10px;
+		z-index: 160000;
+	}
+	#fv-player-editor-modal-bottom {
+		padding: 8px 3px;
+	}
+	#fv-player-editor-modal-top {
+		height: 36px;
+	}	
+	#fv-player-editor-modal-bottom .button, #fv-player-editor-modal-bottom .button-primary {
+		padding: 0px 4px;
+		line-height: 22px;
+		font-size: 12px;
+		vertical-align: middle;
+		min-height: unset;
+		height: 24px;
+		margin-bottom: 0;
+		letter-spacing: -0.03em;
+	}
+	#fv-player-editor-modal-top #fv-player-editor-modal-close {
+		margin-right: 5px;
+		height: 32px;
+		width: 32px;
+		background-size: 24px;
+	}
+	#fv-player-shortcode-editor .nav-tab-wrapper {
+
+		padding: 0px 10px;
+		padding-bottom: 0;
+	}
+	#fv-player-shortcode-editor .nav-tab {
+		margin-top: 0;
+		margin-right: 15px !important;
+	}
+	#fv-player-shortcode-editor-right {
+	
+		height: calc(100% - 302px);
+	}	
+	.fv-player-tabs {
+		height: calc(100% - 84px);
+	}
+}
+
+/*gutenberg extras*/
+#fv-player-shortcode-editor .components-button.is-secondary {
+    box-shadow: inset 0 0 0 1px #007cba;
+    outline: 1px solid transparent;
+    white-space: nowrap;
+    color: #007cba;
+    background: #f6f7f7;
+	
+}
+
+#fv-player-shortcode-editor .components-button.is-secondary, 
+#fv-player-shortcode-editor .components-button.is-tertiary {
+    outline: 1px solid transparent;
+}
+#fv-player-shortcode-editor .components-button.is-tertiary {
+    white-space: nowrap;
+    color: #007cba;
+    background: transparent;
+    padding: 6px;
+}
+#fv-player-shortcode-editor .components-button.is-secondary:hover:not(:disabled), 
+#fv-player-shortcode-editor .components-button.is-tertiary:hover:not(:disabled) {
+    color: #006ba1;
+    box-shadow: inset 0 0 0 1px #006ba1;
+	background: #f0f0f1;
+}
+
+#fv-player-shortcode-editor .components-select-control__input {
+
+    margin: 1px;
+    outline: 0;
+    width: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
+
+#fv-player-shortcode-editor .components-form-token-field__help {
+    font-size: 12px;
+    font-style: normal;
+    color: #585757;
+}
+
+#fv-player-shortcode-editor .components-panel__body-toggle.components-button .components-panel__arrow {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #1e1e1e;
+    fill: currentColor;
+    transition: 0.1s color ease-in-out;
+}
+
+#fv-player-shortcode-editor .components-panel__body > .components-panel__body-title {
+    display: block;
+    padding: 0;
+    font-size: inherit;
+    margin-top: 0;
+    margin-bottom: 0;
+    transition: 0.1s background ease-in-out;
+}
+
+#fv-player-shortcode-editor .components-panel__body.is-opened > .components-panel__body-title {
+    margin: -16px;
+    margin-bottom: 5px;
+}
+
+#fv-player-shortcode-editor .components-button {
+    display: inline-flex;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 13px;
+    margin: 0;
+    border: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    background: none;
+    transition: box-shadow 0.1s linear;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 6px 12px;
+    border-radius: 2px;
+    color: #1e1e1e;
+}
+
+#fv-player-shortcode-editor .components-panel__body-toggle.components-button {
+    position: relative;
+    padding: 16px 48px 16px 16px;
+    outline: none;
+    width: 100%;
+    font-weight: 500;
+    text-align: left;
+    color: #1e1e1e;
+    border: none;
+    box-shadow: none;
+    transition: 0.1s background ease-in-out;
+    height: auto;
 }
