@@ -610,7 +610,7 @@ jQuery(function() {
         });
 
         fv_flowplayer_uploader.on('open', function() {
-          $( document ).trigger( "mediaBrowserOpen" );
+        $( document ).trigger( "mediaBrowserOpen" );
           jQuery('.media-router .media-menu-item').eq(0).trigger('click');
           jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
         });
@@ -1643,7 +1643,7 @@ jQuery(function() {
           $tab = jQuery(this),
           is_videos_tab = $tab.hasClass('fv-player-tab-video-files'),
           is_subtitles_tab = $tab.hasClass('fv-player-tab-subtitles'),
-          $tables = ((is_videos_tab || is_subtitles_tab) ? $tab.find('table') : $tab.find('input, select, textarea')),
+          $input_groups = ((is_videos_tab || is_subtitles_tab) ? $tab.find('[data-playlist-item]') : $tab.find('input, select, textarea')),
           save_index = -1;
 
         // prepare video and subtitles data, which are duplicated through their input names
@@ -1656,7 +1656,7 @@ jQuery(function() {
         }
 
         // iterate over all tables in tabs
-        $tables.each(function() {
+        $input_groups.each(function() {
           // only videos, subtitles tabs have tables, so we only need to search for their inputs when working with those
           var
             $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
