@@ -5,9 +5,13 @@
 
     $("#fv-player-editor-modal, #fv-player-editor-backdrop").show();
 
-		$(document).on( 'click', '#fv-player-editor-modal-close', function() {
+    $('body').addClass('is-fv-player-editor-modal-open');
+
+		$(document).on( 'click', '#fv-player-editor-modal-close, #fv-player-editor-backdrop', function() {
 			args.onClosed();
 			$("#fv-player-editor-modal, #fv-player-editor-backdrop").hide();
+
+      $('body').removeClass('is-fv-player-editor-modal-open');
 		});
 
     return this;

@@ -377,6 +377,9 @@ New FV Player Editor modal box styling
   opacity: 0.7;
   z-index: 159900;
 }
+body.is-fv-player-editor-modal-open {
+  overflow: hidden;
+}
 #fv-player-shortcode-editor {
   overflow: hidden;
   position: absolute;
