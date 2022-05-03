@@ -1937,6 +1937,10 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
             ) );
 
             $meta->save();
+
+            // Make sure the player is no longer a Draft is used in a post
+            $player->setStatus('published');
+            $player->save();
           }
         }
 
