@@ -1,3 +1,5 @@
+/*global gtag, ga, _paq, _gat*/
+
 /*
  *  Google Analytics improvements + heartbeat
  *  Also provides custom fv_track_* events
@@ -174,7 +176,16 @@ function is_ga_4 ( api ) {
  *
  */
 function fv_player_track( api, ga_id, event, engineType, name, value) {
-  
+  // Handle bad function call from old FV Player Pro
+  if( typeof(api) != "object" ) {
+    value = name;
+    name = engineType;
+    engineType = event;
+    event = ga_id;
+    ga_id = api;
+    api = false;
+  }
+
   if( !ga_id ) ga_id = flowplayer.conf.fvanalytics;
   
   if( typeof(engineType) == "undefined" ) engineType = 'Unknown engine';

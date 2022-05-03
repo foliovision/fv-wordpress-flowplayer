@@ -1,3 +1,5 @@
+/*global Hls*/
+
 /*
  *  MPEG-DASH and HLS.js ABR changes
  */

@@ -616,7 +616,7 @@
     font-size: 90%;
     bottom: 1.4em;
     height: auto; }
-  .flowplayer .fp-timeline:hover .fp-timestamp {
+  .flowplayer:not(.is-touch) .fp-timeline:hover .fp-timestamp, .flowplayer .fp-timeline.is-fp-dragging .fp-timestamp {
     display: inline; }
   .flowplayer .fp-volume {
     display: -ms-flexbox;
@@ -991,6 +991,20 @@
   display: none;
 }
 
+.flowplayer .fp-timeline.is-fp-dragging .fp-progress::after {
+  content: "";
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+  height: 13px;
+  right: 0;
+  margin-right: -7px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+}
+
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
     background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, .25)), color-stop(15%, transparent));
     background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, .25), transparent 15%);
@@ -1011,18 +1025,22 @@
 .flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop, .entry-content .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 
-/* using fp-full and fp-slim at once should only make the timeline full width and nothings else should change */
-.flowplayer.fp-slim.fp-full .fp-controls {
-    height: 2.4em; }
 .flowplayer.fp-slim.fp-full .fp-timeline {
-  bottom: 2.4em;
     height: 3px; }
+
+.flowplayer.is-tiny.fp-full .fp-timeline {
+  bottom: 3.2em;
+}
+.flowplayer.is-tiny.fp-full .fp-controls {
+  height: 3.2em;
+  padding-top: .4em;
+}
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: 3px; }
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
-    content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
+    content: ''; position: absolute; top:-1.3em; height:2em; left: 0; right: 0 }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
     height: .2em; }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
@@ -1040,7 +1058,8 @@
 .flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
-.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
+.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.8em}
+.flowplayer.fixed-controls.fp-full.fp-slim.is-tiny .fp-controls {bottom: -3.2em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
@@ -1176,7 +1195,7 @@
 /* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
-.flowplayer .fvp-share-bar{font-size:12px}
+.flowplayer .fvp-share-bar, .flowplayer .fvp-share-bar label {font-size:12px}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 
@@ -1773,8 +1792,8 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio + .fp-playlist-external a h4,.entry-content .is-audio + .fp-playlist-external a h4 { display: block;opacity:1;position:relative;text-align:left;font-size:13px;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
 .is-audio + .fp-playlist-external a h4 span,.entry-content .is-audio + .fp-playlist-external a h4 span { position:relative;top:auto;padding:0;transform:none }
 .is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
-.flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:0;height:2.8em }
-.flowplayer.fixed-controls.is-audio.fp-slim { height:2.4em }
+.flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:2.8em;height:2.8em }
+.flowplayer.fixed-controls.is-audio.fp-slim { height:2.8em }
 .flowplayer.is-audio .fv-ab-loop,.flowplayer.fixed-controls.is-audio .fv-ab-loop {bottom:-28px;padding-left:82px}
 .flowplayer.is-loading.is-audio .fp-controls { display:flex }
 .flowplayer.is-audio.is-loading .fp-playbtn {opacity:0}
@@ -1816,6 +1835,57 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   padding-top: 0;
 }
 
+.fp-player a.fp-sticky {
+  display: none;
+}
+.flowplayer.is-stickable a.fp-sticky {
+  display: block;
+  float: right;
+}
+.flowplayer a.fp-sticky:before {  
+  content: "\e10f";
+}
+div.fp-player.is-sticky {
+  transform: translateX(-20px);
+  -ms-transform: translateX(-20px);
+  -webkit-transform: translateX(-20px);
+  transition: transform .5s ease-in-out;
+  position: fixed;
+  max-width: 80%;
+  background: black;
+  z-index: 999;
+}
+div.fp-player.is-sticky-left-top {
+  transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  -webkit-transform: translateX(20px); 
+  top: 50px;
+  left: 50px;
+  right: auto;
+  bottom: auto;
+}
+div.fp-player.is-sticky-right-top {
+  top: 50px;
+  right: 30px;
+  left: auto;
+  bottom: auto;
+}
+div.fp-player.is-sticky-left-bottom {
+  transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  -webkit-transform: translateX(20px);
+  bottom: 50px;
+  left: 30px;
+  right: auto;
+  top: auto;
+}
+div.fp-player.is-sticky-right-bottom {
+  bottom: 50px;
+  right: 30px;
+  left: auto;
+  top: auto;
+}
+
 /* Media Queries - done */        
 
 @media (max-width: 56.1875em){
@@ -1841,6 +1911,40 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
     .fp-playlist-vertical-wrapper .fp-playlist-vertical a,.fp-playlist-vertical a {width:49.5%;float:left;margin: .75% 0 0 1%}
     .fp-playlist-only-captions.fp-playlist-vertical a {width:100%;float:none;margin:8px 0}
     .fp-playlist-vertical a:nth-child(2n+1) {clear:both;margin-left:0}
+  
+  div.fp-player.is-sticky {
+    transform: translateX(0);
+    -ms-transform: translateX(0);
+    -webkit-transform: translateX(0); 
+  }
+  div.fp-player.is-sticky-left-top {
+    top: 0;
+    left: 0;
+  }
+  div.fp-player.is-sticky-right-top {
+    top: 0;
+    right: 0;
+  }
+  div.fp-player.is-sticky-left-bottom {
+    bottom: 0;
+    left: 0;
+  }
+  div.fp-player.is-sticky-right-bottom {
+    bottom: 0;
+    right: 0;
+  }
+  .flowplayer.fixed-controls div.fp-player.is-sticky-left-bottom,
+  .flowplayer.fixed-controls div.fp-player.is-sticky-right-bottom {
+    bottom: 2.4em;
+  }
+  .flowplayer.fixed-controls.fp-full:not(.fp-slim) div.fp-player.is-sticky-left-bottom,
+  .flowplayer.fixed-controls.fp-full:not(.fp-slim) div.fp-player.is-sticky-right-bottom {
+    bottom: 2.8em;
+  }
+  .flowplayer.fixed-controls.has-abloop div.fp-player.is-sticky-left-bottom,
+  .flowplayer.fixed-controls.has-abloop div.fp-player.is-sticky-right-bottom {
+    bottom: 4em;
+  }
 }
 @media only screen and (max-width: 29.9375em) {
 	.flowplayer .fv_player_popup {width:100%;font-size:12px;top:0;}
@@ -1870,7 +1974,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   }
 }
 
-
 @media screen and (min-width: 1020px) {
   .fp-playlist-external.fp-playlist-polaroid a,
   .entry-content .fp-playlist-external.fp-playlist-polaroid a {
@@ -1884,61 +1987,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
   }
   .fp-playlist-external.fp-playlist-polaroid a:nth-child(4n+1) {
     clear: both;
-  }
-  .fp-player a.fp-sticky {
-      display: none;
-  }
-  .flowplayer.is-stickable a.fp-sticky {
-      display: block;
-      float: right;
-  }
-  .flowplayer a.fp-sticky:before {
-      content: "\e10f";
-  }
-  div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
-    transform: translateX(-20px);
-    -ms-transform: translateX(-20px);
-    -webkit-transform: translateX(-20px);
-   	transition: width .5s ease-in-out, height .5s ease-in-out, transform .5s ease-in-out;
-    transition: transform .5s;
-  }
-  div.fp-player.is-sticky-left-top, div.fp-player.is-sticky-right-top , div.fp-player.is-sticky-left-bottom , div.fp-player.is-sticky-right-bottom {
-  	position: fixed;
-  	top: 50px;
-  	right: 30px;
-  	left: auto;
-    max-width: 50%;
-    z-index: 999;
-  }
-  div.fp-player.is-sticky-left-top {
-    transform: translateX(20px);
-    -ms-transform: translateX(20px);
-    -webkit-transform: translateX(20px); 
-  	top: 50px;
-  	left: 50px;
-  	right: auto;
-    bottom: auto;
-  }
-  div.fp-player.is-sticky-right-top {
-  	top: 50px;
-  	right: 30px;
-  	left: auto;
-    bottom: auto;
-  }
-  div.fp-player.is-sticky-left-bottom {
-    transform: translateX(20px);
-    -ms-transform: translateX(20px);
-    -webkit-transform: translateX(20px);
-  	bottom: 50px;
-  	left: 30px;
-  	right: auto;
-    top: auto;
-  }
-  div.fp-player.is-sticky-right-bottom {
-  	bottom: 50px;
-  	right: 30px;
-  	left: auto;
-    top: auto;
   }
 }
 
@@ -2260,6 +2308,10 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   50% { opacity: 1; }
   100% { opacity: 0; }
 }
+.flowplayer.no-controlbar .fv-fp-tap-left,
+.flowplayer.no-controlbar .fv-fp-tap-right {
+  display: none;
+}
 
 /* Click to unmute */
 .flowplayer .fp-message-muted { opacity: 0; text-align: center }
@@ -2271,6 +2323,33 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-minimal .fp-volumebtn-notice:before { content: "\e20d"; }
 .flowplayer.fp-edgy .fp-volumebtn-notice:before { content: "\e10d"; }
 .flowplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
+
+/* Better touch in fullscreen in portrait mode */
+.flowplayer.is-tiny.is-fullscreen .fp-player {
+  align-items: center;
+  display: flex;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-engine {
+  height: auto !important;
+  position: static;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui {
+  pointer-events: none;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui > * {
+  pointer-events: auto;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header {
+  pointer-events: none;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header > * {
+  pointer-events: auto;
+}
+.flowplayer.is-tiny.is-fullscreen .fv-fp-tap-left, .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-right {
+  height: 50%;
+  margin: 0;
+  top: 25%;
+}
 
 /* Videos pending encoding */
 .fv-player-encoder-video-processing-modal {

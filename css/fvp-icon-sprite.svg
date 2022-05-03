@@ -1,4 +1,4 @@
-<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="http://www.w3.org/2000/svg">
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="https://www.w3.org/2000/svg">
   <defs>
 <g id="fvp-playlist">
 	<path class="svg-color" d="M4.972,44.723C2.984,42.668,2,40.282,2,37.543v-35.9h14.36v31.792h37.345V18.057l24.629,22.574 

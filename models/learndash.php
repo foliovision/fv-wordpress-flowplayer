@@ -39,8 +39,12 @@ class FV_Player_Learndash_LMS {
   function display_field( $field_args ) {
     if( $field_args['name'] == 'lesson_fv_player' ) {
       global $FV_Player_Custom_Videos_form_instances;
-      $objVideos = $FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'];
-      $field_args['html'] = $objVideos->get_form();
+      if( !empty($FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player']) && method_exists($FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'], 'get_form') ) {
+        $objVideos = $FV_Player_Custom_Videos_form_instances['fv_player_custom_videos-field_lesson_fv_player'];
+        $field_args['html'] = $objVideos->get_form();
+      } else {
+        $field_args['html'] = 'Failed to load FV Player Editor.';
+      }
     }
     return $field_args;
   }
@@ -107,21 +111,21 @@ class FV_Player_Learndash_LMS {
   }
 
   function register_fv_player_field() {
-    if( class_exists('\FV_Player_MetaBox') ) {
-      new \FV_Player_MetaBox( array(
-          'name' => 'FV Player',
-          'meta_key' => 'lesson_fv_player',
-          'post_type' => 'sfwd-lessons',
-          'display' => false,
-          'multiple' => false
+    if( class_exists('FV_Player_MetaBox') ) {
+      new FV_Player_MetaBox( array(
+        'name' => 'FV Player',
+        'meta_key' => 'lesson_fv_player',
+        'post_type' => 'sfwd-lessons',
+        'display' => false,
+        'multiple' => false
         )
       );
-      new \FV_Player_MetaBox( array(
-          'name' => 'FV Player',
-          'meta_key' => 'lesson_fv_player',
-          'post_type' => 'sfwd-topic',
-          'display' => false,
-          'multiple' => false
+      new FV_Player_MetaBox( array(
+        'name' => 'FV Player',
+        'meta_key' => 'lesson_fv_player',
+        'post_type' => 'sfwd-topic',
+        'display' => false,
+        'multiple' => false
         )
       );
     }
@@ -175,6 +179,20 @@ class FV_Player_Learndash_LMS {
         // Adjust the Video URL stored by LearnDash
         $meta = get_post_meta( $post_id, $meta_key, true );
         if( $meta ) {
+
+          // If we detect [fvplayer] shortcode was used as Video URL we enable FV Player
+          if( stripos($meta[$video_url_key],'[fvplayer ') !== false ) {
+            
+            // If the FV Player is not already in
+            // ...or if Use FV Player is not on
+            $objVideos = new FV_Player_Custom_Videos( array('id' => $post_id, 'meta' => 'lesson_fv_player', 'type' => 'post' ) );
+            if( !$objVideos->have_videos() || !$lesson_use_fvplayer_video ) {
+              $lesson_use_fvplayer_video = true;
+              update_post_meta( $post_id, 'lesson_use_fvplayer_video', 'on' );
+              update_post_meta( $post_id, 'lesson_fv_player', $meta[$video_url_key] );
+            }
+          }
+
           $backup = get_post_meta( $post_id, $backup_key, true );
           if( $lesson_use_fvplayer_video ) {
             if( !$backup ) {

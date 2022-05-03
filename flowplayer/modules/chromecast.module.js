@@ -1,3 +1,5 @@
+/*global chrome*/
+
 // copy of the original function with some mods
 flowplayer(function(api, root) {
   if ( !api.conf.fv_chromecast ) return;

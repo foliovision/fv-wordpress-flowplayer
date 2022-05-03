@@ -2,8 +2,8 @@ flowplayer( function(api,root) {
   root = jQuery(root);
   var original_prev, original_next, random_seed;
 
-  if( !root.data('button-no-picture') && !root.data('button-repeat') && !root.data('button-rewind') ) return;
-  
+  if( !root.data('button-no_picture') && !root.data('button-repeat') && !root.data('button-rewind') ) return;
+
   api.bind('ready', function(e,api) {
     
     // Backup original api.next() and api.prev()
@@ -12,7 +12,8 @@ flowplayer( function(api,root) {
       original_prev = api.prev;
     }
 
-    if( !api.video.type.match(/^audio/) && root.data('button-no-picture') && root.find('.fv-fp-no-picture').length == 0 ) {
+    if( !api.video.type.match(/^audio/) && root.data('button-no_picture') && root.find('.fv-fp-no-picture').length == 0 ) {
+
       var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="18px" height="18px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
       
       button_no_picture.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {

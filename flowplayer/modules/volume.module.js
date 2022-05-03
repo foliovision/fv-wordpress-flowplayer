@@ -10,9 +10,14 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
   var bean = flowplayer.bean;
-  var restore = flowplayer.conf.default_volume;
   
   // Restore volume on click on the speaker icon
+  var restore = flowplayer.conf.default_volume;
+  // Watch out, the website default might be to use a zero volume!
+  if( restore == 0 ) {
+    restore = "0.5";
+  }
+  
   root.on('mousedown touchstart','.fp-volumebtn', function(e) {
     var volumebtn = jQuery(this);
 

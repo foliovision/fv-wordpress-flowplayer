@@ -4,7 +4,7 @@ If there is an error in live stream, it shows a special message and reload the s
 
 flowplayer( function(api,root) {
   var
-    initialDelay = 30,
+    initialDelay = api.conf.live_stream_reload ? api.conf.live_stream_reload : 30,
     continueDelay = 10,
     useDelay = initialDelay,
     retryLabel = fv_flowplayer_translations.live_stream_retry,

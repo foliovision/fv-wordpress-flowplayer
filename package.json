@@ -1,0 +1,37 @@
+{
+  "name": "fv-wordpress-flowplayer",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "description": "Extension for FV Player - Wordpress's most reliable, easy to use and feature-rich video player.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foliovision/fv-wordpress-flowplayer"
+  },
+  "author": "foliovision",
+  "bugs": {
+    "url": "https://github.com/foliovision/fv-wordpress-flowplayer/issues"
+  },
+  "homepage": "https://github.com/foliovision/fv-wordpress-flowplayer#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "browser-sync": "^2.27.9",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-sort": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-wp-pot": "^2.5.0",
+    "gulp-zip": "^5.1.0"
+  },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
+  }
+}

@@ -9,7 +9,11 @@ flowplayer( function(api,root) {
   function start_position_changer() {
     if ($root.data('position_changed') !== 1 && api.conf.playlist.length) {
       start_index--; // the index should start from 0
-      api.play(start_index);
+      // Do not go to the playlist item if it's ad
+      // TODO: Have it pick the previous video
+      if( typeof(api.conf.playlist[start_index].click) == "undefined" ) {
+        api.play(start_index);
+      }
       $root.data('position_changed', 1);
     }
   }
