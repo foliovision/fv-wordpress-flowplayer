@@ -1152,6 +1152,8 @@ class FV_Player_Db {
         $id = $player->save($player_meta);
 
         if ($id) {
+          do_action('fv_player_db_save', $id);
+
           echo wp_json_encode( $this->db_load_player_data( $id ) );
         } else {
           wp_send_json( array( 'error' => 'Failed to save player.' ) );
