@@ -202,7 +202,7 @@
 
     $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
     ?>
-  <div <?php echo $id; ?> class="components-base-control">      
+  <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
       <?php if( $subtitle_language ) : ?>
@@ -228,7 +228,7 @@
       <?php endif; ?>
       
       <?php if( $browser ) : ?>
-        <a class="components-button is-secondary" href="#"><?php _e('Add from media library', 'fv_flowplayer'); ?></a>
+        <a class="components-button is-secondary add_media" href="#" data-target="<?php echo $field_id; ?>"><?php _e('Add from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
     </div>
   </div>

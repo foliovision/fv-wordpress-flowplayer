@@ -587,12 +587,12 @@ jQuery(function() {
       var fv_flowplayer_uploader;
       var fv_flowplayer_uploader_button;
 
-      $doc.on( 'click', '#fv-player-shortcode-editor .button.add_media', function(e) {
+      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media', function(e) {
         e.preventDefault();
 
         fv_flowplayer_uploader_button = jQuery(this);
         jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
-        fv_flowplayer_uploader_button.siblings('input[type=text]').addClass('fv_flowplayer_target' );
+        fv_flowplayer_uploader_button.closest('.components-base-control').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']').addClass('fv_flowplayer_target');
 
         //If the uploader object has already been created, reopen the dialog
         if (fv_flowplayer_uploader) {
@@ -611,7 +611,7 @@ jQuery(function() {
 
         fv_flowplayer_uploader.on('open', function() {
           $( document ).trigger( "mediaBrowserOpen" );
-          jQuery('.media-router .media-menu-item').eq(0).click();
+          jQuery('.media-router .media-menu-item').eq(0).trigger('click');
           jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
         });
 
