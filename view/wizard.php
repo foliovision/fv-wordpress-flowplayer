@@ -532,7 +532,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 ),
                 array(
                   'label' => __('Splash Screen', 'fv-wordpress-flowplayer'),
-                  'name' => 'src',
+                  'name' => 'splash',
                   'browser' => true,
                   'type' => 'text',
                   'visible' => true,
