@@ -543,7 +543,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'name' => 'src',
                   'browser' => true,
                   'type' => 'text',
-                  'visible' => true
+                  'visible' => true,
+                  'description' => __('Will appear in place of the video before it plays.', 'fv-wordpress-flowplayer'),
                 ),
                 array(
                   'label' => __('Title', 'fv-wordpress-flowplayer'),
@@ -555,13 +556,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
                   'name' => 'splash_text',
                   'type' => 'text',
-                  'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true'
+                  'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true',
+                  'description' => __('Will appear over the video before it plays.', 'fv-wordpress-flowplayer'),
                 ),
                 array(
                   'label' => __('Synopsis', 'fv-wordpress-flowplayer'),
                   'name' => 'synopsis',
                   'type' => 'textarea',
-                  'visible' => isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true'
+                  'visible' => isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true',
+                  'description' => __('Shows for the Vertical Season playlist style.', 'fv-wordpress-flowplayer'),
                 )
               )
             ) );
