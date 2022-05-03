@@ -5,10 +5,10 @@ function fv_flowplayer_browser_ff_m4v( hash ) {
 }
 
 if( typeof(fv_flowplayer_browser_ff_m4v_array) != "undefined" ) {
-  for( var i in fv_flowplayer_browser_ff_m4v_array ) {
-		if( !fv_flowplayer_browser_ff_m4v_array.hasOwnProperty(i) ) continue;
+  for( var fv_flowplayer_browser_ff_m4v_i in fv_flowplayer_browser_ff_m4v_array ) {
+		if( !fv_flowplayer_browser_ff_m4v_array.hasOwnProperty(fv_flowplayer_browser_ff_m4v_i) ) continue;
 
-    fv_flowplayer_browser_ff_m4v( i );
+    fv_flowplayer_browser_ff_m4v( fv_flowplayer_browser_ff_m4v_i );
   }
 }
 
@@ -32,10 +32,10 @@ function fv_flowplayer_browser_chrome_fail( hash, sAttributes, sVideo, bAutobuff
 }
 
 if( typeof(fv_flowplayer_browser_chrome_fail_array) != "undefined" ) {
-  for( var i in fv_flowplayer_browser_chrome_fail_array ) {
-		if( !fv_flowplayer_browser_chrome_fail_array.hasOwnProperty(i) ) continue;
+  for( var fv_flowplayer_browser_chrome_fail_i in fv_flowplayer_browser_chrome_fail_array ) {
+		if( !fv_flowplayer_browser_chrome_fail_array.hasOwnProperty(fv_flowplayer_browser_chrome_fail_i) ) continue;
 
-    fv_flowplayer_browser_chrome_fail( i, fv_flowplayer_browser_chrome_fail_array[i]['attrs'], fv_flowplayer_browser_chrome_fail_array[i]['mp4'], fv_flowplayer_browser_chrome_fail_array[i]['auto_buffer'] );
+    fv_flowplayer_browser_chrome_fail( fv_flowplayer_browser_chrome_fail_i, fv_flowplayer_browser_chrome_fail_array[fv_flowplayer_browser_chrome_fail_i]['attrs'], fv_flowplayer_browser_chrome_fail_array[fv_flowplayer_browser_chrome_fail_i]['mp4'], fv_flowplayer_browser_chrome_fail_array[fv_flowplayer_browser_chrome_fail_i]['auto_buffer'] );
   }
 }
 
@@ -46,10 +46,10 @@ function fv_flowplayer_browser_ie( hash ) {
 }
 
 if( typeof(fv_flowplayer_browser_ie_array) != "undefined" ) {
-  for( var i in fv_flowplayer_browser_ie_array ) {
-		if( !fv_flowplayer_browser_ie_array.hasOwnProperty(i) ) continue;
+  for( var fv_flowplayer_browser_ie_i in fv_flowplayer_browser_ie_array ) {
+		if( !fv_flowplayer_browser_ie_array.hasOwnProperty(fv_flowplayer_browser_ie_i) ) continue;
 
-    fv_flowplayer_browser_ie( i );
+    fv_flowplayer_browser_ie( fv_flowplayer_browser_ie_i );
   }
 }
 

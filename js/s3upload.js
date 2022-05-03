@@ -56,7 +56,7 @@ S3MultiUpload.prototype.uploadParts = function() {
 
     while(start < this.file.size) {
         end = Math.min(start + this.PART_SIZE, this.file.size);
-		    filePart = this.file.slice(start, end);
+        var filePart = this.file.slice(start, end);
         // this is to prevent push blob with 0Kb
         if (filePart.size > 0)
             blobs.push(filePart);
@@ -226,7 +226,7 @@ S3MultiUpload.prototype.updateProgress = function() {
         }
     }
     if (complete)
-    	this.completeMultipartUpload();
+    this.completeMultipartUpload();
     total=this.fileInfo.size;
     this.onProgressChanged(loaded, total, byterate);
 };

@@ -10,12 +10,15 @@ abstract class FV_Player_Video_Encoder {
                                // examples: Coconut, Bunny Stream ...
     $instance = null,          // self-explanatory
     $admin_page = false,       // will be set to a real admin submenu page object once created
-    $browser_inc_file = '';    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
+    $browser_inc_file = '',    // the full inclusion path for this Encoder's browser PHP backend file, so we can include_once() it
+    $use_wp_list_table;        // allow descendants to decide if use wp list table
 
   // variables to override or access from outside of the base class
   protected
     $version = 'latest',
-    $license_key = false,
+    $license_key = false;
+    
+  public
     $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
   public function _get_instance() {
@@ -30,7 +33,7 @@ abstract class FV_Player_Video_Encoder {
     return $this->table_name;
   }
 
-  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file ) {
+  protected function __construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file = '', $use_wp_list_table = true ) {
     global $wpdb;
 
     if ( !$encoder_id ) {
@@ -45,10 +48,6 @@ abstract class FV_Player_Video_Encoder {
       throw new Exception('Extending encoder class did not provide an encoder URL slug!');
     }
 
-    if ( !$browser_inc_file ) {
-      throw new Exception('Extending encoder class did not provide a browser backend PHP file name!');
-    }
-
     $this->encoder_id = $encoder_id;
     $this->encoder_name = $encoder_name;
     $this->encoder_wp_url_slug = $encoder_wp_url_slug;
@@ -56,6 +55,7 @@ abstract class FV_Player_Video_Encoder {
     // table names always start on WP prefix, so add that here for our table name here
     $this->table_name = $wpdb->prefix . $this->table_name;
     $this->browser_inc_file = $browser_inc_file;
+    $this->use_wp_list_table = $use_wp_list_table;
 
     add_action('init', array( $this, 'email_notification' ), 7 );
 
@@ -339,6 +339,10 @@ abstract class FV_Player_Video_Encoder {
       }
     }
 
+    if( isset( $_POST['id_video'] ) ) {
+      $id_video = intval( $_POST['id_video'] );
+    }
+
     $target = $this->util__sanitize_target($target);
 
     // check for a valid source URL
@@ -394,6 +398,10 @@ abstract class FV_Player_Video_Encoder {
       $job['trailer'] = $trailer;
     }
 
+    if( isset( $id_video ) ) {
+      $job['id_video'] = $id_video;
+    }
+
     // create a new job
     $id = $this->job_create( $job );
     $show = array( $id );
@@ -401,7 +409,7 @@ abstract class FV_Player_Video_Encoder {
     // submit the job to the Encoder service
     $result = $this->job_submit($id);
 
-    if( defined('DOING_AJAX') ) {
+    if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
       require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
 
       ob_start();
@@ -423,7 +431,9 @@ abstract class FV_Player_Video_Encoder {
   function init_browser() {
     // it should not show when picking the media file in dashboard
     //if( empty( $_GET['page'] ) || strcmp( $_GET['page'], $this->encoder_wp_url_slug ) != 0 ) {
+    if( !empty( $this->browser_inc_file ) ) {
       include_once( $this->browser_inc_file );
+    }
     //}
   }
 
@@ -505,7 +515,11 @@ abstract class FV_Player_Video_Encoder {
     if ( $check_result ) {
       $check = $check_result;
     } else if ( $fv_fp->current_video() ) {
+      if ( !$job_id ) {
       $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
+    } else {
+        $check = $this->job_check( (int) $job_id );
+      }
     } else {
       user_error('Could not retrieve JOB check for encoder ' . $this->encoder_name . ', job ID: ' . $job_id . ', defaulted back to input value: ' . print_r( $check_result, true ), E_USER_WARNING );
       return $check_result;
@@ -515,31 +529,41 @@ abstract class FV_Player_Video_Encoder {
       // if we don't have current_video then we're on the players listing page, so we need to find and update
       // all players where our temporary "encoder_processing_" placeholder is used
       if ( !$fv_fp->current_video() ) {
-        while ( $vid = $FV_Player_Db->get_video_by_src( $this->encoder_id . '_processing_' . (int) $job_id ) ) {
-          // video processed, replace its SRC
-          $vid->set( 'src', $check['output']->src[0] );
+        $videos = $FV_Player_Db->query_videos( array( 
+          'fields_to_search' =>  array('src'), 
+          'search_string' => $this->encoder_id . '_processing_' . (int) $job_id, 
+          'like' => false, 
+          'and_or' => 'OR' 
+          )
+        );
 
-          // also replace its thumbnail / splash
-          if ( $check['output']->thumbnail ) {
-            $vid->set( 'splash', $check['output']->thumbnail );
-          } else if ( $check['output']->splash ) {
-            $vid->set( 'splash', $check['output']->splash );
-          }
-
-          // also set its timeline preview, if received
-          if ( $check['output']->timeline_previews ) {
-            $vid->updateMetaValue( 'timeline_previews', $check['output']->timeline_previews );
-          }
-
-          // save changes for this video
-          $vid->save();
-
-          // purge HTML caches for all posts where players containing this video are present
-          $players = $fv_fp->get_players_by_video_ids( $vid->getId() );
-          foreach ( $players as $player ) {
-            if ( $posts = $player->getMetaValue( 'post_id' ) ) {
-              foreach ( $posts as $post_id ) {
-                wp_update_post( array( 'ID' => $post_id ) );
+        if(!empty($videos)) {
+          foreach ( $videos as $video) {
+            // video processed, replace its SRC
+            $video->set( 'src', $check['output']->src[0] );
+  
+            // also replace its thumbnail / splash
+            if ( $check['output']->thumbnail ) {
+              $video->set( 'splash', $check['output']->thumbnail );
+            } else if ( $check['output']->splash ) {
+              $video->set( 'splash', $check['output']->splash );
+            }
+  
+            // also set its timeline preview, if received
+            if ( $check['output']->timeline_previews ) {
+              $video->updateMetaValue( 'timeline_previews', $check['output']->timeline_previews );
+            }
+  
+            // save changes for this video
+            $video->save();
+  
+            // purge HTML caches for all posts where players containing this video are present
+            $players = $fv_fp->get_players_by_video_ids( $video->getId() );
+            foreach ( $players as $player ) {
+              if ( $posts = $player->getMetaValue( 'post_id' ) ) {
+                foreach ( $posts as $post_id ) {
+                  wp_update_post( array( 'ID' => $post_id ) );
+                }
               }
             }
           }
@@ -590,18 +614,20 @@ abstract class FV_Player_Video_Encoder {
    * @return ID                 Job ID
    */
   public function job_create( $args ) {
-    global $wpdb;
-    global $fv_fp;
+    global $wpdb, $fv_fp;
 
     $args = wp_parse_args( $args, array(
       'encryption' => false,
       'trailer' => false,
-      'video_id' => false
+      'id_video' => false
     ) );
+
+    $video_ids = explode( ',', strval($args['id_video']) );
 
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
       'date_created' => date("Y-m-d H:i:s"),
+      'id_video' => $args['id_video'],
       'source' => $args['source'],
       'target' => $args['target'],
       'type' => $this->encoder_id,
@@ -609,9 +635,11 @@ abstract class FV_Player_Video_Encoder {
       'status' => 'created',
       'output' => $this->prepare_job_output_column_value(),
       'args' => '',
-      'author' => get_current_user_id()
+      'author' => get_current_user_id(),
+      'id_video' => $video_ids[0]
     ), array(
       '%s',
+      '%d',
       '%s',
       '%s',
       '%s',
@@ -619,6 +647,7 @@ abstract class FV_Player_Video_Encoder {
       '%s',
       '%s',
       '%s',
+      '%d',
       '%d'
     ));
 

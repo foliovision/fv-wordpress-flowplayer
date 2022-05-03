@@ -97,7 +97,7 @@ final class FV_Player_Controller extends TestCase {
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
 Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=1.2.3.4 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
-Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.0.4 footer? 1
+Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3 footer? 1
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
@@ -123,7 +123,8 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
-    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.0.4
+    [sticky_min_width] => 1020
+    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
     [script_dash_js_version] => 2.7
     [chromecast] => 

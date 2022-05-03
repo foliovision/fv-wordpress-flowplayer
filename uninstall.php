@@ -64,6 +64,9 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
 
   $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'fv\_player\_%'" );
   $wpdb->query( "DELETE FROM $wpdb->options WHERE option_name LIKE 'fv-player-%'" );
+  
+  $wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key LIKE 'fv_wp_flowplayer_%'" );
+  $wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key IN( 'closedpostboxes_fv_flowplayer_settings', 'metaboxhidden_fv_flowplayer_settings' ) " );
 
   // delete plugin created folders
   if ( WP_Filesystem() ) {

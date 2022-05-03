@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.8
+Tested up to: 5.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,48 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.21.727 - 2022/04/07 =
+
+* Bugfix - Position saving - issues with position restore when multiple players on the page
+* Bugfix - CSS - ensure the controlbar fonts load before video starts playing
+* Bugfix - LearnDash LMS support - fix FV Player Pro video ads to not affect lesson completion button
+
+= 7.5.20.727 - 2022/03/25 =
+
+* Urgent Bugfix - video splash screens not disappearing for non-Pro users
+
+= 7.5.19.727 - 2022/03/24 =
+
+* Security - player editing permission checks for Contributors and Authors
+* Security - XSS fix - users with the Contributor role (or above) were able to insert rudimentary JavaScript into FV Player. Thanks to m0ze (Patchstack) for the report!
+* Autoplay - only remove splash once video really plays to prevent empty black video from showing
+* LearnDash LMS support - fix display issues with playlist
+* Bugfix - Position saving - skip playlist position restore for YouTube playlist - for now
+* Bugfix - Position saving - fix for invalid player index for non-logged in users
+
+= 7.5.18.727 - 2022/03/18 =
+
+* Security - fix for SQL injection vulnerability when saving player in editor - for Author user level and above. Thanks to Tien Nguyen Anh for the report!
+* Elementor - Bring back the FV Player into Elementor Elements search
+* Media Library - optimized images loading
+* Shortcode to database conversion tool fixes
+* wp-admin -> FV Player - allow search by player ID
+* Bugfix - bad values coming from the background video duration scanner
+* Bugfix - JavaScript compatibility fixes
+* Bugfix - Picture button stopped working
+* Bugfix - Sticky player - fix when closing sticky mode
+* Bugfix - Sticky player - fix when scrolling too fast
+* Bugfix - Volume restoration not working if default volume set to zero
+
+= 7.5.15.727 - 2022/01/27 =
+
+* HLS.js - upgrade to 1.1.4 to fix playback on Apple Silicon M1 computers
+* LearnDash LMS support - add FV Player directly in your lesson Video Progression settings
+* Shortcode to database conversion tool - use FV Player -> Tools -> Conversion to upgrade from [fvplayer src="..."] to [fvplayer id="..."]
+* Video Sitemap XML - Elementor support
+* Bugfix - Amazon S3 - fix bucket name being matched in the file name
+* Bugfix - Settings screen - fix boxes not opening in rare cases
 
 = 7.5.14.727 - 2021/01/06 =
 
