@@ -409,7 +409,8 @@ jQuery(function() {
         });
 
       }
-      
+
+      // Gutenberg style checkboxes
       $('#fv-player-shortcode-editor').on( 'click', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
@@ -436,6 +437,14 @@ jQuery(function() {
         // TODO: What should be saved when it's all hidden?
         $('#fv-player-editor-field-children-'+name).toggle( checked );
 
+      });
+
+      // Gutenberg style closable sections
+      $('#fv-player-shortcode-editor').on( 'click', 'button.components-panel__body-toggle', function() {
+        var wrap = $(this).closest('.components-panel__body'),
+          is_opened = wrap.hasClass('is-opened');
+
+        wrap.toggleClass( 'is-opened', !is_opened );
       });
       
       /*

@@ -734,6 +734,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             foreach( $player_options AS $group => $group_options ) {
               echo "<div class='components-panel__body fv-player-editor-options-".$group." is-opened'>\n";
               echo "<h2 class='components-panel__body-title'><button type='button' aria-expanded='true' class='components-button components-panel__body-toggle'><span aria-hidden='true'><svg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' class='components-panel__arrow' role='img' aria-hidden='true' focusable='false'><path d='M17.5 11.6L12 16l-5.5-4.4.9-1.2L12 14l4.5-3.6 1 1.2z'></path></svg></span>".$group_options['label']."</button></h2>\n";
+              echo "<div class='fv-components-panel__body-content'>\n";
               
               usort( $group_options['items'], 'fv_player_editor_input_sort' );
               
@@ -757,7 +758,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 fv_player_editor_input( $input );
 
               }
-              echo "</div>\n";
+              echo "</div><!-- .fv-components-panel__body-content -->\n";
+              echo "</div><!-- .components-panel__body -->\n";
             }
 
             echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>";

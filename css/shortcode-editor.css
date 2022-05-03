@@ -816,7 +816,7 @@ div#fv-player-editor-field-children-align {
     position: absolute;
     right: 16px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) rotate(180deg);
     color: #1e1e1e;
     fill: currentColor;
     transition: 0.1s color ease-in-out;
@@ -831,7 +831,7 @@ div#fv-player-editor-field-children-align {
     transition: 0.1s background ease-in-out;
 }
 
-#fv-player-shortcode-editor .components-panel__body.is-opened > .components-panel__body-title {
+#fv-player-shortcode-editor .components-panel__body > .components-panel__body-title {
     margin: -16px;
     margin-bottom: 5px;
 }
@@ -866,4 +866,13 @@ div#fv-player-editor-field-children-align {
     box-shadow: none;
     transition: 0.1s background ease-in-out;
     height: auto;
+}
+#fv-player-shortcode-editor .components-panel__body .fv-components-panel__body-content {
+  display: none;
+}
+#fv-player-shortcode-editor .components-panel__body.is-opened button.components-panel__body-toggle svg {
+  transform: translateY(-50%);
+}
+#fv-player-shortcode-editor .components-panel__body.is-opened .fv-components-panel__body-content {
+  display: block;
 }
