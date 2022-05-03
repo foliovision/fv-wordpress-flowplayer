@@ -183,6 +183,24 @@
     <?php
   }
 
+  function fv_player_editor_textarea( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+
+    $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
+    ?>
+  <div <?php echo $id; ?> class="components-base-control">      
+    <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
+    <div class="components-base-control__field">
+      <textarea class="components-textarea-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" rows="4"></textarea>
+    </div>
+  </div>
+    <?php
+  }
+
   function fv_player_editor_textfield( $args ) {
     extract($args);
 
@@ -282,6 +300,8 @@
       fv_player_editor_select( $args );     
     } else if( $type == 'button' ) {
       fv_player_editor_button( $args );     
+    } else if( $type == 'textarea' ) {
+      fv_player_editor_textarea( $args );     
     }
 
     if( !empty($args['description']) ) : ?>
@@ -802,7 +822,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   array(
                     'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
                     'name' => 'ad',
-                    'type' => 'text',
+                    'type' => 'textarea',
                   ),
                   array(
                     'label' => __('Width', 'fv-wordpress-flowplayer'),
