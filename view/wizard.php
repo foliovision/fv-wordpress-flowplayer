@@ -236,7 +236,7 @@
       <?php endif; ?>
       
       <?php if( $browser ) : ?>
-        <a class="components-button is-secondary" href="#"><?php _e('Add', 'fv_flowplayer'); ?> <?php echo $label; ?> <?php _e('from media library', 'fv_flowplayer'); ?></a>
+        <a class="components-button is-secondary" href="#"><?php _e('Add from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
     </div>
   </div>
