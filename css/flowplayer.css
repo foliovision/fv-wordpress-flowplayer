@@ -58,16 +58,16 @@
   .flowplayer.is-fullscreen .fp-player {
     background-color: #333; }
   .flowplayer.is-fullscreen .fp-fullscreen:before {
-    content: "\e016"; }
+    content: "\e00f"; }
 
 .flowplayer.is-fullscreen.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-minimal .fp-fullscreen:before {
-  content: "\e216"; }
+  content: "\e30f"; }
 
 .flowplayer.is-fullscreen.fp-edgy .fp-fullscreen:before {
-  content: "\e116"; }
+  content: "\e10f"; }
 
 .flowplayer.is-fullscreen.fp-edgy.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-edgy.fp-minimal .fp-fullscreen:before {
-  content: "\e316"; }
+  content: "\e30f"; }
 
 .flowplayer.fake-fullscreen .fp-fullscreen:before { content: "\e002"; }
 .flowplayer.fake-fullscreen.fp-edgy .fp-fullscreen:before { content: "\e102"; }
