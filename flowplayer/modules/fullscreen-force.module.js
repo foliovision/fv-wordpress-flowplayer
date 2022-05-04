@@ -122,6 +122,8 @@ flowplayer(function(api, root) {
     });
   }
 
+  var show_iphone_notice_timeout = false;
+
   // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
   if( flowplayer.support.iOS && !flowplayer.support.fullscreen ) {
     api.on('fullscreen', show_iphone_notice );
@@ -129,7 +131,8 @@ flowplayer(function(api, root) {
     window.addEventListener('resize', function() {
       // No location bar? We are all good!
       if( !check_for_location_bar() ) {
-        clearTimeout(api.show_iphone_notice_timeout);
+        clearTimeout(show_iphone_notice_timeout);
+        show_iphone_notice_timeout = false;
         api.trigger('resize-good');
       }
     } );
@@ -158,13 +161,14 @@ flowplayer(function(api, root) {
   }
 
   function show_iphone_notice() {
-    if( api.isFullscreen && window.innerWidth > window.innerHeight && check_for_location_bar() ) {
+    if( api.isFullscreen && window.innerWidth > window.innerHeight && check_for_location_bar() && !show_iphone_notice_timeout ) {
       // Show the notice until the location bar disappears
       fv_player_notice( root, fv_flowplayer_translations.iphone_swipe_up_location_bar, 'resize-good' );
 
       // Hide the notice after 5 seconds
-      api.show_iphone_notice_timeout = setTimeout( function() {
-        console.log('timeout');
+      show_iphone_notice_timeout = setTimeout( function() {
+        show_iphone_notice_timeout = false;
+
         api.trigger('resize-good');
       }, 5000 );
     }
