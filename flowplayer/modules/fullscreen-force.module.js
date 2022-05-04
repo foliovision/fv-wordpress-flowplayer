@@ -53,7 +53,7 @@ flowplayer(function(api, root) {
     var position, unload = root.find('.fp-unload'), is_closing = false;
     api.isFakeFullscreen = false;
     
-    unload.show();
+    root.addClass('is-closeable');
     
     root.on('click', function(e) {
       if( !api.ready && e.target != unload[0] ) api.fakeFullscreen(true);

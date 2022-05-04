@@ -103,6 +103,7 @@
 .flowplayer.is-inverted .fp-duration {display: none}
 .flowplayer.is-inverted .fp-remaining {display: block}
 .flowplayer.is-closeable .fp-header .fp-unload {display: block}
+.flowplayer.is-closeable.is-fullscreen:not(.fake-fullscreen) .fp-header .fp-unload {display: none}
 
 .flowplayer.is-error {
   background-color: #aaa; }
