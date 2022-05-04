@@ -54,7 +54,7 @@ function fv_flowplayer_get_js_translations() {
   7 => __('SWF file not found', 'fv-wordpress-flowplayer'),
   8 => __('Subtitles not found', 'fv-wordpress-flowplayer'),
   9 => __('Invalid RTMP URL', 'fv-wordpress-flowplayer'),
-  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv-wordpress-flowplayer'),  
+  10 => __('Unsupported video format.', 'fv-wordpress-flowplayer'),  
   11 => __('Click to watch the video', 'fv-wordpress-flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv-wordpress-flowplayer'),
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
