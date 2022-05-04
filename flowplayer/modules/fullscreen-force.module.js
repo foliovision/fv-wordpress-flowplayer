@@ -60,7 +60,7 @@ flowplayer(function(api, root) {
     });
     
     unload.on('click', function(e) {
-      if( api.ready ) {
+      if( api.ready && api.isFullscreen ) {
         api.fullscreen(false);
       } else if( api.loading ) {
         is_closing = true;
