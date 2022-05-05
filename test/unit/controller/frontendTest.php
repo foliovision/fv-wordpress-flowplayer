@@ -209,6 +209,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [click_to_unmute] => Click to unmute
     [audio_button] => AUD
     [audio_menu] => Audio
+    [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array
