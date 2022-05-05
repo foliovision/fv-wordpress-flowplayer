@@ -236,12 +236,12 @@
   }
   
   function fv_player_editor_input( $args, $is_child = false ) {
-    $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
     $args = wp_parse_args( $args, array(
                           'browser' => false,
                           'children' => false,
                           'class' => false,
                           'default' => false,
+                          'dependencies' => false,
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
@@ -257,12 +257,28 @@
 
     extract($args);
 
+    if( !empty($dependencies) ) {
+      global $script_fv_player_editor_dependencies;
+
+      foreach( $dependencies AS $parent => $value ) {
+        if( empty($script_fv_player_editor_dependencies[$parent]) ) {
+          $script_fv_player_editor_dependencies[$parent] = array();
+        }
+        if( empty($script_fv_player_editor_dependencies[$parent][$value]) ) {
+          $script_fv_player_editor_dependencies[$parent][$value] = array();
+        }
+        $script_fv_player_editor_dependencies[$parent][$value][] = $name;
+      }
+    }
+
     // Check if the field is enabled in Post Interface Options
+    $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
+
     if(
       !$visible &&
       (
         !isset($fv_flowplayer_conf["interface"][$name]) ||
-        $fv_flowplayer_conf["interface"] [$name] !== 'true'
+        $fv_flowplayer_conf["interface"][$name] !== 'true'
       )
     ) {
       $class .= ' fv_player_interface_hide';
@@ -721,6 +737,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           ));
 
 
+            global $script_fv_player_editor_defaults;
             $script_fv_player_editor_defaults = array();
 
             foreach( $player_options AS $group => $group_options ) {
@@ -734,18 +751,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 if( isset($input['default']) ) {
                   $script_fv_player_editor_defaults[$input['name']] = $input['default'];
                 }
-                
-                if( isset($input['dependencies']) ) {
-                  foreach( $input['dependencies'] AS $parent => $value ) {
-                    if( empty($script_fv_player_editor_dependencies[$parent]) ) {
-                      $script_fv_player_editor_dependencies[$parent] = array();
-                    }
-                    if( empty($script_fv_player_editor_dependencies[$parent][$value]) ) {
-                      $script_fv_player_editor_dependencies[$parent][$value] = array();
-                    }
-                    $script_fv_player_editor_dependencies[$parent][$value][] = $input['name'];
-                  }
-                }
 
                 fv_player_editor_input( $input );
 
@@ -753,9 +758,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               echo "</div><!-- .fv-components-panel__body-content -->\n";
               echo "</div><!-- .components-panel__body -->\n";
             }
-
-            echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>";
-            echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>";
             ?>
 
           <table width="100%">            
@@ -953,3 +955,11 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     <div class="fv-messages"></div>   
   </div>
 </div>
+
+<?php
+global $script_fv_player_editor_defaults;
+global $script_fv_player_editor_dependencies;
+
+echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>";
+echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>";
+?>
