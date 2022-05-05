@@ -154,7 +154,7 @@ class FV_Player_lightbox {
         'name' => 'lightbox',
         'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
         'dependencies' => array( 'sticky' => false ),
-        'children' => array(
+        /*'children' => array(
           array(
             'label' => __('Width', 'fv-wordpress-flowplayer'),
             'name' => 'lightbox_width',
@@ -170,7 +170,7 @@ class FV_Player_lightbox {
             'name' => 'lightbox_caption',
             'type' => 'text'
           ),
-        )
+        )*/
       );
     }
     return $options;
