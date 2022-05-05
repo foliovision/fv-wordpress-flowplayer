@@ -953,6 +953,7 @@ jQuery(function() {
         
       });
 
+      // TODO: New markup
       $body.on('change', '#fv_wp_flowplayer_field_src', function() {
         var
           $element = jQuery(this),
@@ -3718,6 +3719,7 @@ jQuery(function() {
     /*
     Mark each manually updated title or splash field as such
     */
+    // TODO: New markup
     $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_caption', function() {
       // remove spinner from playlist table row, if present
       var $element = jQuery(this);
@@ -3848,6 +3850,7 @@ jQuery(function() {
        */
       subtitle_language_add: function( sInput, sLang, iTabIndex, video_meta_id ) {
         if(!iTabIndex){
+          // TODO: New markup
           var current = jQuery('.fv-player-tab-subtitles table:visible');
           iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
         }
