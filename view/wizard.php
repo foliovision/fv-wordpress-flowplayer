@@ -234,7 +234,7 @@
   </div>
     <?php
   }
-  
+
   function fv_player_editor_input( $args, $is_child = false ) {
     $args = wp_parse_args( $args, array(
                           'browser' => false,
@@ -834,13 +834,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'type' => 'number'
                   )
                 ),
-                'visible' => true
+                'visible' => true,
+                'dependencies' => array( 'ad_skip' => false )
               ),
               array(
                 'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
                 'name' => 'ad_skip',
                 'description' => __('Video will autoplay when the page loads.', 'fv-wordpress-flowplayer'),
-                'visible' => true
+                'visible' => true,
+                'dependencies' => array( 'ad_custom' => false )
               ),
             )
           ) );
