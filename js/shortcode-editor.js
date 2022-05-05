@@ -439,14 +439,6 @@ jQuery(function() {
 
       });
 
-      // Gutenberg style closable sections
-      $('#fv-player-shortcode-editor').on( 'click', 'button.components-panel__body-toggle', function() {
-        var wrap = $(this).closest('.components-panel__body'),
-          is_opened = wrap.hasClass('is-opened');
-
-        wrap.toggleClass( 'is-opened', !is_opened );
-      });
-      
       /*
       * NAV TABS
       */
