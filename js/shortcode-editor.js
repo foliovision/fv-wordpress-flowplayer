@@ -3249,11 +3249,11 @@ jQuery(function() {
         $(this).attr('data-index', $(this).index() );
       });
 
-      $('.fv-player-tab-video-files table').each(function(){
+      $('.fv-player-tab-video-files [data-playlist-item]').each(function(){
         $(this).attr('data-index', $(this).index() );
       });
 
-      $('.fv-player-tab.fv-player-tab-subtitles table').each(function(){
+      $('.fv-player-tab.fv-player-tab-subtitles [data-playlist-item]').each(function(){
         $(this).attr('data-index', $(this).index() );
       });
     }
@@ -3278,8 +3278,8 @@ jQuery(function() {
 
       playlist_index();
 
-      // fills playlist editor table from individual video tables
-      var video_files = jQuery('.fv-player-tab-video-files table');
+      // fills playlist editor table from individual video items
+      var video_files = jQuery('.fv-player-tab-video-files [data-playlist-item]');
       video_files.each( function() {
         var current = jQuery(this);
 
