@@ -258,12 +258,18 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
-    $aPlaylistItems = array();  //  todo: remove
-    $aSplashScreens = array();
-    $aCaptions = array();
-    
-    list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );    
-    
+    list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
+
+    // remove all playlist items but the one we need if we're previewing
+    // and only editing a single video
+    if( isset($args['current_video_to_edit']) && $args['current_video_to_edit'] > -1 ) {
+      $aPlaylistItems = array( $aPlaylistItems[ $args['current_video_to_edit'] ] );
+
+      // Pick title and splash from the previewed video
+      $this->aCurArgs['caption'] = $aPlaylistItems[0]['fv_title'];
+      $splash_img = $aPlaylistItems[0]['splash'];
+    }
+
     if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
       $playlist_items_external_html = false;
       $attributes[ !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item' ] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );

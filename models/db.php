@@ -851,7 +851,7 @@ class FV_Player_Db {
     return $atts;
   }
 
-  public function db_load_player_data( $id ) {
+  public function db_load_player_data( $id, $current_video_to_edit = -1 ) {
     global $fv_fp;
 
     $this->getPlayerAttsFromDb( array( 'id' => $id ) );
@@ -899,7 +899,12 @@ class FV_Player_Db {
       $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
     }
 
-    $preview_data = $fv_fp->build_min_player( false, array( 'id' => $fv_fp->current_player()->getId() ) );
+    $args = array( 'id' => $fv_fp->current_player()->getId() );
+    if( $current_video_to_edit > -1 ) {
+      $args['current_video_to_edit'] = $current_video_to_edit;
+    }
+
+    $preview_data = $fv_fp->build_min_player( false, $args );
     $out['html'] = $preview_data['html'];
 
     return $out;
@@ -1270,7 +1275,7 @@ class FV_Player_Db {
         }
       }
 
-      $out = $this->db_load_player_data( $_POST['playerID'] );
+      $out = $this->db_load_player_data( $_POST['playerID'], $_POST['current_video_to_edit'] );
 
       header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
