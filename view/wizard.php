@@ -645,7 +645,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     ), // TODO: Save properly  
                   )
                 ),
-                array(
+                /*array(
                   'label' => __('Player Alignment', 'fv-wordpress-flowplayer'),
                   'name' => 'align',
                   'description' => __('Allows the article text to wrap around the player.', 'fv-wordpress-flowplayer'),
@@ -666,7 +666,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'type' => 'number'
                     )
                   )
-                ),
+                ),*/
                 array(
                   'label' => __('Playlist auto advance', 'fv-wordpress-flowplayer'),
                   'name' => 'playlist_advance',

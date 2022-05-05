@@ -31,7 +31,7 @@ class FV_Player_Db_Player {
     $ad_height, // height of advertisement for this player
     $ad_width, // width of advertisement for this player
     $ad_skip, // whether or not to skip ads for this player
-    $align, // alignment position
+    $align, // alignment position, DEPRECATED
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
     $copy_text, // whether to show DRM text on the player
@@ -173,7 +173,7 @@ class FV_Player_Db_Player {
   /**
    * @return string
    */
-  public function getAlign() {
+  public function getAlign() { // DEPRECATED
     return $this->align;
   }
 

@@ -2475,7 +2475,6 @@ jQuery(function() {
           var iheight = fv_wp_flowplayer_shortcode_parse_arg( shortcode_parse_fix, 'height' );
 
           var sad_skip = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'ad_skip' );
-          var salign = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'align' );
           var scontrolbar = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'controlbar' );
           var sautoplay = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'autoplay' );
           var sliststyle = fv_wp_flowplayer_shortcode_parse_arg( shortcode, 'liststyle' );
@@ -2670,13 +2669,6 @@ jQuery(function() {
             var field = get_field("playlist_advance")[0];
             if (splaylist_advance[1] == 'true') field.selectedIndex = 1;
             if (splaylist_advance[1] == 'false') field.selectedIndex = 2;
-          }
-
-
-          if( salign != null && salign[1] != null ) {
-            var field = get_field("align")[0];
-            if (salign[1] == 'left') field.selectedIndex = 1;
-            if (salign[1] == 'right') field.selectedIndex = 2;
           }
 
           if( scontrolbar != null && scontrolbar[1] != null ) {
