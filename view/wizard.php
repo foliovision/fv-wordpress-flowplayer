@@ -920,7 +920,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         </div>
 
         <div class="fv-player-tab fv-player-tab-embeds" style="display: none">
-          <p>This page shows you where else this video is used.</p>
+          <p>This page shows you where else this player is used.</p>
           <table width="100%">
             <tr>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embedded_on" class="alignright"><?php _e('Embedded on', 'fv_flowplayer'); ?></label></th>
