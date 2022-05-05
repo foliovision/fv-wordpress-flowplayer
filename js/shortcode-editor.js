@@ -521,7 +521,7 @@ jQuery(function() {
         // TODO: Some better way?
         if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
           playlist_item_add();
-          jQuery('.fv-player-tab-playlist tr td').click();
+          jQuery('.fv-player-tab-playlist tr td').trigger('click');
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
@@ -3204,7 +3204,7 @@ jQuery(function() {
 
       $doc.trigger('fv_flowplayer_shortcode_item_switch', [ new_index ] );
 
-      $('a[data-tab=fv-player-tab-video-files]').click();
+      $('a[data-tab=fv-player-tab-video-files]').trigger('click');
 
       get_tabs('video-files').hide();
       var video_tab = get_tab(new_index,'video-files').show();
@@ -3279,7 +3279,7 @@ jQuery(function() {
 
       // show all the tabs previously hidden
       jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
-      jQuery('a[data-tab=fv-player-tab-playlist]').click();
+      jQuery('a[data-tab=fv-player-tab-playlist]').trigger('click');
 
       fv_player_editor.set_current_video_to_edit( -1 );
 
@@ -3320,11 +3320,11 @@ jQuery(function() {
       playlist_index();
 
       if(!jQuery('.fvp_item_video-thumbnail>img').length){
-        jQuery('#fv-player-list-list-view').click();
+        jQuery('#fv-player-list-list-view').trigger('click');
         jQuery('#fv-player-list-thumb-view').addClass('disabled');
         jQuery('#fv-player-list-thumb-view').attr('title',jQuery('#fv-player-list-thumb-view').data('title'));
       }else{
-        jQuery('#fv-player-list-thumb-view').click();
+        jQuery('#fv-player-list-thumb-view').trigger('click');
         jQuery('#fv-player-list-thumb-view').removeClass('disabled');
         jQuery('#fv-player-list-thumb-view').removeAttr('title');
       }
@@ -3332,7 +3332,7 @@ jQuery(function() {
       jQuery('.fv-player-tab-playlist').show();
 
       tabs_refresh();
-      
+
       reload_preview( current_video_to_edit );
 
       $doc.trigger('fv-player-editor-video-opened', [ item_index ] );
@@ -3353,7 +3353,7 @@ jQuery(function() {
         height: height
       };
     }
-    
+
     function reload_preview( video_id ) {
       el_spinner.show();
 
@@ -4547,7 +4547,7 @@ if( typeof(fv_player_editor_conf) != "undefined" ) {
 
 jQuery(document).on('click','.fv_player_splash_list_preview', function() {
   fv_player_editor.set_current_video_to_edit( jQuery(this).parents('.thumbs').find('.fv_player_splash_list_preview').index(this) );
-  jQuery(this).parents('tr').find('.fv-player-edit').click();
+  jQuery(this).parents('tr').find('.fv-player-edit').trigger('click');
 });
 jQuery(document).on('click','.column-shortcode input', function() {
   jQuery(this).select();
