@@ -884,15 +884,6 @@ div#fv-player-editor-field-children-align {
     transition: 0.1s background ease-in-out;
     height: auto;
 }
-#fv-player-shortcode-editor .components-panel__body .fv-components-panel__body-content {
-  display: none;
-}
-#fv-player-shortcode-editor .components-panel__body.is-opened button.components-panel__body-toggle svg {
-  transform: translateY(-50%);
-}
-#fv-player-shortcode-editor .components-panel__body.is-opened .fv-components-panel__body-content {
-  display: block;
-}
 
 
 /* Playlist */

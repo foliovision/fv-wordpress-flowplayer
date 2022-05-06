@@ -271,16 +271,9 @@
       }
     }
 
-    // Check if the field is enabled in Post Interface Options
-    $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
+    
 
-    if(
-      !$visible &&
-      (
-        !isset($fv_flowplayer_conf["interface"][$name]) ||
-        $fv_flowplayer_conf["interface"][$name] !== 'true'
-      )
-    ) {
+    if( !$visible ) {
       $class .= ' fv_player_interface_hide';
     }
 
@@ -335,12 +328,32 @@
     global $script_fv_player_editor_defaults;
     $script_fv_player_editor_defaults = array();
 
+    // Check if the field is enabled in Post Interface Options
+    $conf = get_option( 'fvwpflowplayer' );
+
     foreach( $settings AS $group => $group_options ) {
       $group_options = wp_parse_args( $group_options, array(
         'sort' => true,
       ) );
 
-      echo "<div class='components-panel__body fv-player-editor-options-".$group." is-opened'>\n";
+      // Determine if each field should be shown
+      // and if there is anything to show at all in this group
+      $have_visible_setting = false;
+      foreach( $group_options['items'] AS $k => $v ) {
+        if( isset($conf["interface"][$v['name']]) &&
+        $conf["interface"][$v['name']] == 'true' ) {
+          $group_options['items'][$k]['visible'] = true;
+          $have_visible_setting = true;
+        }
+
+        if( !empty($v['visible']) ) {
+          $have_visible_setting = true;
+        }
+      }
+
+      $class = $have_visible_setting ? 'is-open' : 'fv_player_interface_hide';
+
+      echo "<div class='components-panel__body fv-player-editor-options-".$group." ".$class."'>\n";
       
       if( !empty($group_options['label']) ) {
         echo "<h2 class='components-panel__body-title'><button type='button' aria-expanded='true' class='components-button components-panel__body-toggle'>".$group_options['label']."</button></h2>\n";
