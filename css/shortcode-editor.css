@@ -956,5 +956,7 @@ a.fvp_item_video-filename {
 	#fv-player-shortcode-editor.is-playlist-active #fv_wp_flowplayer_field_player_name{
 		display:none !important;
 	}
-	
+	#fv-player-shortcode-editor.is-singular-active h2.fv-player-playlist-item-title.nav-tab {
+    margin-top: 0 !important;
+  }
 }
