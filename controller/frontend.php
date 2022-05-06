@@ -54,7 +54,7 @@ function fv_flowplayer_get_js_translations() {
   7 => __('SWF file not found', 'fv-wordpress-flowplayer'),
   8 => __('Subtitles not found', 'fv-wordpress-flowplayer'),
   9 => __('Invalid RTMP URL', 'fv-wordpress-flowplayer'),
-  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv-wordpress-flowplayer'),  
+  10 => __('Unsupported video format.', 'fv-wordpress-flowplayer'),  
   11 => __('Click to watch the video', 'fv-wordpress-flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv-wordpress-flowplayer'),
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
@@ -107,7 +107,8 @@ function fv_flowplayer_get_js_translations() {
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
   'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
   'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
-  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer')
+  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
+  'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
 );
 
   return $aStrings;
@@ -412,7 +413,6 @@ function flowplayer_prepare_scripts() {
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_alternative_fullscreen') ) $aConf['mobile_alternative_fullscreen'] = $val;
-    if( $val = $fv_fp->_get_option('mobile_landscape_fullscreen') ) $aConf['mobile_landscape_fullscreen'] = $val;
 
     if ( $fv_fp->_get_option('video_position_save_enable') ) {
       $aConf['video_position_save_enable'] = $fv_fp->_get_option('video_position_save_enable');
@@ -684,6 +684,31 @@ function fv_player_footer_svg_rewind() {
   </g>
 </svg>
   <?php
+}
+
+add_action( 'wp_footer', 'fv_player_load_svg_buttons_everywhere' );
+
+function fv_player_load_svg_buttons_everywhere() {
+  global $fv_fp;
+  if( !$fv_fp->should_force_load_js() ) {
+    return;
+  }
+
+  foreach( array(
+    'no_picture',
+    'repeat',
+    'rewind'
+  ) AS $type ) {
+    if( $type == 'rewind' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
+    } else if( $type == 'repeat' || $type == 'no_picture' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_playlist', 101 );
+    }
+  }
+
+  if( function_exists('FV_Player_Pro') && method_exists( 'FV_Player_Pro', 'svg_chapters') ) {
+    add_action( 'wp_footer', array( FV_Player_Pro(), 'svg_chapters'), 101 );
+  }
 }
 
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );

@@ -58,16 +58,16 @@
   .flowplayer.is-fullscreen .fp-player {
     background-color: #333; }
   .flowplayer.is-fullscreen .fp-fullscreen:before {
-    content: "\e016"; }
+    content: "\e00f"; }
 
 .flowplayer.is-fullscreen.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-minimal .fp-fullscreen:before {
-  content: "\e216"; }
+  content: "\e30f"; }
 
 .flowplayer.is-fullscreen.fp-edgy .fp-fullscreen:before {
-  content: "\e116"; }
+  content: "\e10f"; }
 
 .flowplayer.is-fullscreen.fp-edgy.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-edgy.fp-minimal .fp-fullscreen:before {
-  content: "\e316"; }
+  content: "\e30f"; }
 
 .flowplayer.fake-fullscreen .fp-fullscreen:before { content: "\e002"; }
 .flowplayer.fake-fullscreen.fp-edgy .fp-fullscreen:before { content: "\e102"; }
@@ -103,6 +103,7 @@
 .flowplayer.is-inverted .fp-duration {display: none}
 .flowplayer.is-inverted .fp-remaining {display: block}
 .flowplayer.is-closeable .fp-header .fp-unload {display: block}
+.flowplayer.is-closeable.is-fullscreen:not(.fake-fullscreen) .fp-header .fp-unload {display: none}
 
 .flowplayer.is-error {
   background-color: #aaa; }
@@ -422,7 +423,7 @@
     transition: opacity .3s;
     padding-left: .65em; }
     .flowplayer .fp-header .fp-icon {
-      margin: .9em .9em 0 0; }
+      padding: .5em 1em }
       .flowplayer .fp-header .fp-icon.fp-active {
         color: #ec6c4c; }
     .flowplayer .fp-header .fp-fullscreen, .flowplayer .fp-header .fp-unload, .flowplayer .fp-airplay {
@@ -1130,7 +1131,7 @@
 /* reducing the spacing in .fp-header */
 .flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
 .flowplayer .fp-header .fp-icon { text-shadow: 0 0 10px rgba(0, 0, 0, 0.3) }
-.flowplayer:not(.is-touch.is-fullscreen) .fp-header .fp-icon { margin: .5em .5em 0 0;line-height: 1 }
+.flowplayer:not(.is-touch.is-fullscreen) .fp-header .fp-icon { padding: .5em .5em 0 0;line-height: 1 }
 
 .flowplayer.is-fullscreen{ font-size: 16px; max-height:100% !important; }
 .flowplayer .fp-controls .fp-fullscreen {display:none}

@@ -135,8 +135,8 @@ msgstr "Neplatná RTMP URL"
 
 #: controller/frontend.php:58
 #, fuzzy
-msgid "Unsupported video format. Try installing Adobe Flash."
-msgstr "Nepodporovaný video formát. Skúste nainštalovať Adobe Flash."
+msgid "Unsupported video format."
+msgstr "Nepodporovaný video formát."
 
 #: controller/frontend.php:59 models/flowplayer-frontend.php:218
 #: models/flowplayer-frontend.php:237

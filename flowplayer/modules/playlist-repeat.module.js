@@ -22,6 +22,7 @@ flowplayer( function(api,root) {
         
         jQuery('.fp-engine',root).slideToggle(20);
         jQuery(this).toggleClass('is-active fp-color-fill');
+        root.toggleClass('is-no-picture');
       });    
     }
     

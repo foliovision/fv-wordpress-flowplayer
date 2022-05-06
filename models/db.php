@@ -1152,6 +1152,8 @@ class FV_Player_Db {
         $id = $player->save($player_meta);
 
         if ($id) {
+          do_action('fv_player_db_save', $id);
+
           echo wp_json_encode( $this->db_load_player_data( $id ) );
         } else {
           wp_send_json( array( 'error' => 'Failed to save player.' ) );
@@ -1935,6 +1937,10 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
             ) );
 
             $meta->save();
+
+            // Make sure the player is no longer a Draft is used in a post
+            $player->setStatus('published');
+            $player->save();
           }
         }
 
