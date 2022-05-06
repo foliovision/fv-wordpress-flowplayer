@@ -330,6 +330,40 @@
 </div>
     <?php endif;
   }
+
+  function fv_player_editor_input_group( $settings ) {
+    global $script_fv_player_editor_defaults;
+    $script_fv_player_editor_defaults = array();
+
+    foreach( $settings AS $group => $group_options ) {
+      $group_options = wp_parse_args( $group_options, array(
+        'sort' => true,
+      ) );
+
+      echo "<div class='components-panel__body fv-player-editor-options-".$group." is-opened'>\n";
+      
+      if( !empty($group_options['label']) ) {
+        echo "<h2 class='components-panel__body-title'><button type='button' aria-expanded='true' class='components-button components-panel__body-toggle'>".$group_options['label']."</button></h2>\n";
+      }
+
+      if( $group_options['sort'] ) {
+        usort( $group_options['items'], 'fv_player_editor_input_sort' );
+      }
+
+      echo "<div class='fv-components-panel__body-content'>\n";
+      
+      foreach( $group_options['items'] AS $input ) {
+        if( isset($input['default']) ) {
+          $script_fv_player_editor_defaults[$input['name']] = $input['default'];
+        }
+
+        fv_player_editor_input( $input );
+
+      }
+      echo "</div><!-- .fv-components-panel__body-content -->\n";
+      echo "</div><!-- .components-panel__body -->\n";
+    }
+  }
   
   // Sort inputs alphabetically, but the one with sticky always wins
   function fv_player_editor_input_sort( $a, $b ) {
@@ -486,108 +520,101 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <?php
             $video_fields = apply_filters('fv_player_editor_video_fields', array(
               'video' => array(
-                array(
-                  'label' => __('Video URL', 'fv-wordpress-flowplayer'),
-                  'name' => 'src',
-                  'browser' => true,
-                  'type' => 'text',
-                  'visible' => true
-                ),
-                // TODO: Actually make these live
-                array(
-                  'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
-                  'name' => 'live',
-                ),
-                array(
-                  'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
-                  'name' => 'dvr',
-                ),
-                array(
-                  'label' => __('Audio Stream', 'fv-wordpress-flowplayer'),
-                  'name' => 'audio',
-                ),
-                array(
-                  'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
-                  'name' => 'advanced-settings', // TODO: Do not save
-                  'visible' => true,
-                  'children' => array(
-                    array(
-                      'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
-                      'name' => 'src1',
-                      'browser' => true,
-                      'type' => 'text',
-                      'visible' => true
-                    ),
-                    array(
-                      'label' => __('Alternative Format 2', 'fv-wordpress-flowplayer'),
-                      'name' => 'src2',
-                      'browser' => true,
-                      'type' => 'text',
-                      'visible' => true
-                    ),
-                    array(
-                      'label' => __('RTMP', 'fv-wordpress-flowplayer'),
-                      'name' => 'rtmp_show', // TODO: Do not save
-                      'visible' => true,
-                      'children' => array(
-                        array(
-                          'label' => __('Path', 'fv-wordpress-flowplayer'),
-                          'name' => 'rtmp_path',
-                          'type' => 'text',
-                          'visible' => true
-                        ),
-                        array(
-                          'label' => __('Server', 'fv-wordpress-flowplayer'),
-                          'name' => 'rtmp',
-                          'type' => 'text',
-                          'visible' => true
-                        ),
-                      )
+                'items' => array(
+                  array(
+                    'label' => __('Video Link', 'fv-wordpress-flowplayer'),
+                    'name' => 'src',
+                    'browser' => true,
+                    'type' => 'text',
+                    'visible' => true
+                  ),
+                  // TODO: Actually make these live
+                  array(
+                    'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
+                    'name' => 'live',
+                  ),
+                  array(
+                    'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
+                    'name' => 'dvr',
+                  ),
+                  array(
+                    'label' => __('Audio Stream', 'fv-wordpress-flowplayer'),
+                    'name' => 'audio',
+                  ),
+                  array(
+                    'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
+                    'name' => 'advanced-settings', // TODO: Do not save
+                    'visible' => true,
+                    'children' => array(
+                      array(
+                        'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
+                        'name' => 'src1',
+                        'browser' => true,
+                        'type' => 'text',
+                        'visible' => true
+                      ),
+                      array(
+                        'label' => __('Alternative Format 2', 'fv-wordpress-flowplayer'),
+                        'name' => 'src2',
+                        'browser' => true,
+                        'type' => 'text',
+                        'visible' => true
+                      ),
+                      array(
+                        'label' => __('RTMP', 'fv-wordpress-flowplayer'),
+                        'name' => 'rtmp_show', // TODO: Do not save
+                        'visible' => true,
+                        'children' => array(
+                          array(
+                            'label' => __('Path', 'fv-wordpress-flowplayer'),
+                            'name' => 'rtmp_path',
+                            'type' => 'text',
+                            'visible' => true
+                          ),
+                          array(
+                            'label' => __('Server', 'fv-wordpress-flowplayer'),
+                            'name' => 'rtmp',
+                            'type' => 'text',
+                            'visible' => true
+                          ),
+                        )
+                      ),
                     ),
                   ),
+                  array(
+                    'label' => __('Splash Screen', 'fv-wordpress-flowplayer'),
+                    'name' => 'splash',
+                    'browser' => true,
+                    'type' => 'text',
+                    'visible' => true,
+                    'description' => __('Will appear in place of the video before it plays.', 'fv-wordpress-flowplayer'),
+                  ),
+                  array(
+                    'label' => __('Title', 'fv-wordpress-flowplayer'),
+                    'name' => 'caption',
+                    'type' => 'text',
+                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
+                  ),
+                  array(
+                    'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
+                    'name' => 'splash_text',
+                    'type' => 'text',
+                    'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true',
+                    'description' => __('Will appear over the video before it plays.', 'fv-wordpress-flowplayer'),
+                  ),
+                  array(
+                    'label' => __('Synopsis', 'fv-wordpress-flowplayer'),
+                    'name' => 'synopsis',
+                    'type' => 'textarea',
+                    'visible' => isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true',
+                    'description' => __('Shows for the Vertical Season playlist style.', 'fv-wordpress-flowplayer'),
+                  )
                 ),
-                array(
-                  'label' => __('Splash Screen', 'fv-wordpress-flowplayer'),
-                  'name' => 'splash',
-                  'browser' => true,
-                  'type' => 'text',
-                  'visible' => true,
-                  'description' => __('Will appear in place of the video before it plays.', 'fv-wordpress-flowplayer'),
-                ),
-                array(
-                  'label' => __('Title', 'fv-wordpress-flowplayer'),
-                  'name' => 'caption',
-                  'type' => 'text',
-                  'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
-                ),
-                array(
-                  'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
-                  'name' => 'splash_text',
-                  'type' => 'text',
-                  'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true',
-                  'description' => __('Will appear over the video before it plays.', 'fv-wordpress-flowplayer'),
-                ),
-                array(
-                  'label' => __('Synopsis', 'fv-wordpress-flowplayer'),
-                  'name' => 'synopsis',
-                  'type' => 'textarea',
-                  'visible' => isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true',
-                  'description' => __('Shows for the Vertical Season playlist style.', 'fv-wordpress-flowplayer'),
-                )
+                'sort' => false
               )
             ) );
 
-            // TODO: Refactor, use same code as for $player_options
-            foreach( $video_fields AS $group => $inputs ) {
-              echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
-
-              //usort( $inputs, 'fv_player_editor_input_sort' );
-
-              foreach( $inputs AS $input ) {
-                fv_player_editor_input( $input );
-              }
-              echo "</div>\n";
-            }
+            fv_player_editor_input_group( $video_fields );
 
             // Legacy
             // TODO: Will these still actually work?
@@ -604,34 +631,27 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <?php
             $subtitle_fields = apply_filters('fv_player_editor_subtitle_fields', array(
               'subtitles' => array(
-                array(
-                  'label' => __('Subtitles URL', 'fv-wordpress-flowplayer'),
-                  'name' => 'subtitles',
-                  'browser' => true,
-                  'subtitle_language' => true,
-                  'type' => 'text',
-                  'visible' => true
+                'items' => array(
+                  array(
+                    'label' => __('Subtitles URL', 'fv-wordpress-flowplayer'),
+                    'name' => 'subtitles',
+                    'browser' => true,
+                    'subtitle_language' => true,
+                    'type' => 'text',
+                    'visible' => true,
+                  ),
+                  array(
+                    'label' => __('Add Another Language', 'fv-wordpress-flowplayer'),
+                    'name' => 'subtitles_add', // TODO: Do not save
+                    'type' => 'button',
+                    'visible' => true
+                  )
                 ),
-                array(
-                  'label' => __('Add Another Language', 'fv-wordpress-flowplayer'),
-                  'name' => 'subtitles_add', // TODO: Do not save
-                  'type' => 'button',
-                  'visible' => true
-                )
+                'sort' => false
               )
             ) );
 
-            // TODO: Refactor, use same code as for $player_options
-            foreach( $subtitle_fields AS $group => $inputs ) {
-              echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
-
-              //usort( $inputs, 'fv_player_editor_input_sort' );
-
-              foreach( $inputs AS $input ) {
-                fv_player_editor_input( $input );
-              }
-              echo "</div>\n";
-            }
+            fv_player_editor_input_group( $subtitle_fields );
 
             // Legacy
             // TODO: Will these still actually work?
@@ -736,29 +756,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             )
           ));
 
-
-            global $script_fv_player_editor_defaults;
-            $script_fv_player_editor_defaults = array();
-
-            foreach( $player_options AS $group => $group_options ) {
-              echo "<div class='components-panel__body fv-player-editor-options-".$group." is-opened'>\n";
-              echo "<h2 class='components-panel__body-title'><button type='button' aria-expanded='true' class='components-button components-panel__body-toggle'>".$group_options['label']."</button></h2>\n";
-              echo "<div class='fv-components-panel__body-content'>\n";
-              
-              usort( $group_options['items'], 'fv_player_editor_input_sort' );
-              
-              foreach( $group_options['items'] AS $input ) {
-                if( isset($input['default']) ) {
-                  $script_fv_player_editor_defaults[$input['name']] = $input['default'];
-                }
-
-                fv_player_editor_input( $input );
-
-              }
-              echo "</div><!-- .fv-components-panel__body-content -->\n";
-              echo "</div><!-- .components-panel__body -->\n";
-            }
-            ?>
+          fv_player_editor_input_group( $player_options );
+          ?>
 
           <table width="100%">            
             <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
@@ -790,73 +789,66 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <div class="fv-player-tab fv-player-tab-actions" style="display: none">
           <?php
           $actions = apply_filters('fv_player_editor_actions', array(
-            'actios' => array(
-              array(
-                'label' => __('End of Video Action', 'fv-wordpress-flowplayer'),
-                'name' => 'end_actions_show', // TODO: Do not save
-                'description' => __('What should happen at the end of the video.', 'fv-wordpress-flowplayer'),
-                'children' => array(
-                  array(
-                    'label' => __('Pick the action', 'fv-wordpress-flowplayer'),
-                    'name' => 'end_actions',
-                    'options' => array( // TODO: Make these work
-                      array('', 'Default'),
-                      array('no', 'Nothing'),
-                      array('redirect', 'Redirect'),
-                      array('loop', 'Loop'),
-                      array('popup', 'Show popup'),
-                      array('splashend', 'Show splash screen'),
-                      array('email_list', 'Collect Emails')
+            'actions' => array(
+              'items' => array(
+                array(
+                  'label' => __('End of Video Action', 'fv-wordpress-flowplayer'),
+                  'name' => 'end_actions_show', // TODO: Do not save
+                  'description' => __('What should happen at the end of the video.', 'fv-wordpress-flowplayer'),
+                  'children' => array(
+                    array(
+                      'label' => __('Pick the action', 'fv-wordpress-flowplayer'),
+                      'name' => 'end_actions',
+                      'options' => array( // TODO: Make these work
+                        array('', 'Default'),
+                        array('no', 'Nothing'),
+                        array('redirect', 'Redirect'),
+                        array('loop', 'Loop'),
+                        array('popup', 'Show popup'),
+                        array('splashend', 'Show splash screen'),
+                        array('email_list', 'Collect Emails')
+                      ),
+                      'type' => 'select'
+                    )
+                  ),
+                  'visible' => true
+                ),
+                array(
+                  'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
+                  'name' => 'ad_custom', // TODO: Do not save
+                  'description' => __('Add you custom over ad code.', 'fv-wordpress-flowplayer'),
+                  'children' => array(
+                    array(
+                      'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
+                      'name' => 'ad',
+                      'type' => 'textarea',
                     ),
-                    'type' => 'select'
-                  )
-                ),
-                'visible' => true
-              ),
-              array(
-                'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
-                'name' => 'ad_custom', // TODO: Do not save
-                'description' => __('Add you custom over ad code.', 'fv-wordpress-flowplayer'),
-                'children' => array(
-                  array(
-                    'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
-                    'name' => 'ad',
-                    'type' => 'textarea',
+                    array(
+                      'label' => __('Width', 'fv-wordpress-flowplayer'),
+                      'name' => 'ad_width',
+                      'type' => 'number'
+                    ),
+                    array(
+                      'label' => __('Height', 'fv-wordpress-flowplayer'),
+                      'name' => 'ad_height',
+                      'type' => 'number'
+                    )
                   ),
-                  array(
-                    'label' => __('Width', 'fv-wordpress-flowplayer'),
-                    'name' => 'ad_width',
-                    'type' => 'number'
-                  ),
-                  array(
-                    'label' => __('Height', 'fv-wordpress-flowplayer'),
-                    'name' => 'ad_height',
-                    'type' => 'number'
-                  )
+                  'visible' => true,
+                  'dependencies' => array( 'ad_skip' => false )
                 ),
-                'visible' => true,
-                'dependencies' => array( 'ad_skip' => false )
-              ),
-              array(
-                'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
-                'name' => 'ad_skip',
-                'description' => __('Video will autoplay when the page loads.', 'fv-wordpress-flowplayer'),
-                'visible' => true,
-                'dependencies' => array( 'ad_custom' => false )
-              ),
+                array(
+                  'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
+                  'name' => 'ad_skip',
+                  'description' => __('Video will autoplay when the page loads.', 'fv-wordpress-flowplayer'),
+                  'visible' => true,
+                  'dependencies' => array( 'ad_custom' => false )
+                ),
+              )
             )
           ) );
-          
-          foreach( $actions AS $group => $inputs ) {
-            echo "<div class='components-panel__body fv-player-editor-options-".$group."'>\n";
 
-            //usort( $inputs, 'fv_player_editor_input_sort' );
-
-            foreach( $inputs AS $input ) {
-              fv_player_editor_input( $input );
-            }
-            echo "</div>\n";
-          }
+          fv_player_editor_input_group( $actions );
           ?>
 
           <!--
