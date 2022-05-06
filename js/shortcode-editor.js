@@ -3460,7 +3460,7 @@ jQuery(function() {
       $el_editor.find('.fv-player-tabs > .fv-player-tab').each(function(){
         var bHideTab = true
         $(this).find('tr:not(.fv_player_actions_end-toggle):not(.submit-button-wrapper), .components-panel__body').each(function(){
-          if( $(this).css('display') === 'table-row' || $(this).css('display') == 'block' ){
+          if( $(this).css('display') === 'table' || $(this).css('display') === 'table-row' || $(this).css('display') == 'block' ){
             bHideTab = false;
             return false;
           }
