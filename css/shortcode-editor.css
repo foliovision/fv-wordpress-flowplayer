@@ -64,7 +64,7 @@
   overflow-x: hidden;
 }
 #fv-player-shortcode-editor-right{ float: left; width:57%; }
-#fv-player-shortcode-editor #fv_wp_flowplayer_field_player_name { width: 96%; margin: 0 0 6px; }
+
 .fv-player-tab{position:relative;}
 .fv-player-tabs #fv-player-list-thumb-toggle{ position:absolute;right:10px;text-align:right;top:9px; }
 #fv-player-list-thumb-toggle a{ text-decoration:none;margin-left:6px;color:#b4b9be; }
@@ -85,14 +85,14 @@
 .fv-player-tab-playlist a{cursor:pointer;}
 
 .fv-player-tab-playlist .fv-player-playlist-item{ border-spacing: 0 2px; }
-.fv-player-tab-playlist tbody td{ padding:3px 5px;height:50px;cursor:pointer; }
+.fv-player-tab-playlist tbody td{ cursor:pointer; }
 .fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{cursor:n-resize;}
 
-.fvp_item_video-side-by-side{display:inline-block;vertical-align:top;float: left;margin-right: 1%;}
+.fvp_item_video-side-by-side{display:inline-block;vertical-align:top;float: left;margin-right: 5px;}
 .fvp_item_video-filename {word-wrap: break-word;display: inline-block; max-width: 180px;}
 .hide-thumbnails .fvp_item_video-filename {max-width: 100%;}
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
-.fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){ width:300px; }
+.fv-player-tab-playlist > table > thead > tr > th:nth-child(2),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(2){ width:65%; }
 .fv-player-tab-playlist > table > thead{ display:block; }
 .fv-player-tab-playlist.hide-thumbnails .fvp_item_video-thumbnail{ display:none; }
 .fv-player-tab-playlist > table > tbody{ display:block;overflow:auto;max-height:calc(100vh - 270px); }
@@ -892,4 +892,84 @@ div#fv-player-editor-field-children-align {
 }
 #fv-player-shortcode-editor .components-panel__body.is-opened .fv-components-panel__body-content {
   display: block;
+}
+
+
+/* Playlist */
+
+#fv-player-shortcode-editor #fv_wp_flowplayer_field_player_name {
+    width: 65%;
+    margin: 0;
+    position: absolute;
+    margin-top: -48px;
+}
+#fv-player-shortcode-editor .fp-playlist-horizontal {
+    display: flex;
+    gap: 20px;
+    max-width: 700px;
+	justify-content: center;
+}
+
+table.widefat {
+    border: 0;
+    box-shadow: none;
+}
+a.fvp_item_video-filename {
+    margin-bottom: 5px;
+}
+#fv-player-shortcode-editor.is-singular-active h2.fv-player-playlist-item-title.nav-tab {
+    margin-top: 10px !important;
+
+    margin-left: 17px !important;
+    border-bottom: 0 !important;
+}
+#fv-player-shortcode-editor table.widefat tbody tr,#fv-player-shortcode-editor table.widefat thead tr {
+    width: 100%;
+    display: table;
+}
+
+.fvp_item_video-side-by-side:first-of-type {
+    width: auto;
+}
+.fvp_item_video-side-by-side {
+    display: inline-block;
+    vertical-align: top;
+    float: left;
+    margin-right: 5px;
+	width: 60%;
+}
+#fv-player-shortcode-editor .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.check-column) {
+    position: relative;
+    clear: both;
+    width: 65% !important;
+}
+#fv-player-shortcode-editor .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.column-primary)::before{
+	content:none;
+}
+@media only screen and (min-width:560px) and (max-width: 1160px) {
+	#fv-player-shortcode-editor.is-playlist-active #fv_wp_flowplayer_field_player_name {
+		width: 30%;
+		left: 0;
+		right: 0;
+		margin: auto;
+		position: absolute;
+		margin-top: -448px;
+	}
+	#fv-player-shortcode-editor.is-singular-active h2.fv-player-playlist-item-title.nav-tab {
+		position: absolute;
+	}
+	#fv-player-shortcode-editor.is-playlist-active #fv-player-shortcode-editor-left {
+		width: 100%;
+		height: 400px;
+	}
+	#fv-player-shortcode-editor.is-playlist-active #fv-player-shortcode-editor-right {
+		width: calc(100% - 1px);
+		height: calc(100% - 457px);
+	}
+}
+@media only screen and (max-width: 560px) {
+	#fv-player-shortcode-editor.is-playlist-active #fv_wp_flowplayer_field_player_name{
+		display:none !important;
+	}
+	
 }
