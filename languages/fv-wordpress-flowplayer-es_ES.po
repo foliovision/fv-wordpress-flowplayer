@@ -140,8 +140,8 @@ msgid "Invalid RTMP URL"
 msgstr "RTMP URL no válido"
 
 #: ../controller/frontend.php:58
-msgid "Unsupported video format. Try installing Adobe Flash."
-msgstr "El formato de vídeo sin soporte. Intenta instalar Adobe Flash."
+msgid "Unsupported video format."
+msgstr "El formato de vídeo sin soporte."
 
 #: ../controller/frontend.php:59 ../models/flowplayer-frontend.php:218
 #: ../models/flowplayer-frontend.php:237
