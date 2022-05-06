@@ -903,12 +903,6 @@ div#fv-player-editor-field-children-align {
     position: absolute;
     margin-top: -48px;
 }
-#fv-player-shortcode-editor .fp-playlist-horizontal {
-    display: flex;
-    gap: 20px;
-    max-width: 700px;
-	justify-content: center;
-}
 
 #fv-player-shortcode-editor table.widefat {
     border: 0;
