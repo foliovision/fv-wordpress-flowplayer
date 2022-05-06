@@ -910,7 +910,7 @@ div#fv-player-editor-field-children-align {
 	justify-content: center;
 }
 
-table.widefat {
+#fv-player-shortcode-editor table.widefat {
     border: 0;
     box-shadow: none;
 }
