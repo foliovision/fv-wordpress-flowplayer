@@ -872,9 +872,11 @@ abstract class FV_Player_Video_Encoder {
 
     // take path only if it's full URL
     $parsed = parse_url($target);
-    if( !empty($parsed['path']) ) {
-      $target = trim( $parsed['path'], '/' );
-    }
+
+    if( !empty($parsed['scheme']) ) $target = str_replace($parsed['scheme'].'://', '', $parsed);
+    if( !empty($parsed['hostname']) ) $target = str_replace($parsed['hostname'], '', $parsed);
+
+    $target = preg_replace( '~/$~', '', $target ); // remove trailing slash
 
     // sanitize filename
     $target = explode('/', $target);
