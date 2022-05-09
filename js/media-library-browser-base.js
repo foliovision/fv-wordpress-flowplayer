@@ -3,6 +3,7 @@ jQuery(function() {
     var current_folder = '',
       current_pending_path = '',
       current_pending_bucket = '',
+      current_term_id = false,
       $current_pending_tab = false,
       current_pending_refresh = false,
       is_uploading = false;
@@ -42,6 +43,14 @@ jQuery(function() {
 
       get_current_pending_refresh() {
         return current_pending_refresh;
+      },
+
+      get_current_term_id() {
+        return current_term_id;
+      },
+
+      set_current_term_id( term_id ) {
+        return current_term_id = term_id;
       },
 
       set_current_pending_refresh( refresh ) {
@@ -215,6 +224,8 @@ function fv_flowplayer_browser_browse(data, options) {
     }
 
     if(options && options.add_new_folder) {
+      fv_player_media_browser.set_current_term_id(options.current_term_id);
+
       var new_folder = jQuery(
       '<li class="attachment new-folder">'
       + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
