@@ -547,6 +547,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
     $this->initDB($wpdb);
 
+    // For a while https://foliovision.com/player/advanced/player-database used to say the $player_id should be passed as array
+    if( is_array($id) ) {
+      $id = array_pop($id);
+    }
+
     // don't load anything, if we've only created this instance
     // to initialize the database (this comes from list-table.php and unit tests)
     if ($id === -1) {
