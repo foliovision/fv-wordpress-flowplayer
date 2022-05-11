@@ -359,7 +359,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.22.727 - 2022/05/05 =
+= 7.5.22.727 - 2022/05/11 =
 
 * Mobile - "Force landscape orientation in fullscreen" is now always on and no longer a setting
 * Mobile - showing "To enjoy fullscreen swipe up to hide location bar." for iPhone users when location bar appears in fullscreen mode
@@ -368,6 +368,8 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 * Styling - fullscreen exit button is now easier to tap on mobile
 * Styling - mobile now has more spacing between timeline and control bar buttons
 * Video Position Saving - also remember the top position in the video
+* Video upload - Support folder creation for FV Player Coconut
+* Video upload - Support uploading into folders for FV Player Coconut
 * Bugfix - Editor - creating duplicate drafts
 * Bugfix - Editor - empty subtitles field appearing
 * Bugfix - Editor - missing action hook on player save, causing issues with FV Player Pay Per View
