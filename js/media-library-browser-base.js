@@ -214,7 +214,6 @@ function fv_flowplayer_browser_browse(data, options) {
     } else if(typeof data === 'object') {
       fv_flowplayer_scannedFolders = data.folders;
       fv_flowplayer_scannedFiles = data.files;
-
     }
 
     // Empty the old result and make the new one
@@ -341,7 +340,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
     // Generate the breadcrumbs
     var url = '';
-    if (filemanager.hasClass('searching')){
+    if (filemanager.hasClass('searching')) {
       url = '<span>Search results: </span>';
       fileList.removeClass('animated');
     } else {
@@ -369,13 +368,14 @@ function fv_flowplayer_browser_browse(data, options) {
     fv_flowplayer_media_browser_setColumns();
     fileList.hide().fadeIn();
 
-    // check if should refresh or if folder/bucket/tab changed then also change refresh and remove old one 
-    if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
-      if( fv_player_media_browser.get_current_pending_refresh() ) {
-        clearTimeout(fv_player_media_browser.get_current_pending_refresh());
-        fv_player_media_browser.set_current_pending_refresh(false);
-      }
+    // remove old timeout
+    if( fv_player_media_browser.get_current_pending_refresh() ) {
+      clearTimeout(fv_player_media_browser.get_current_pending_refresh());
+      fv_player_media_browser.set_current_pending_refresh(false);
+    }
 
+    // check if we should refresh when we have pending items and not currently uploading 
+    if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
       // update pending values
       fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
       fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
@@ -388,12 +388,6 @@ function fv_flowplayer_browser_browse(data, options) {
       }, 30000 );
 
       fv_player_media_browser.set_current_pending_refresh(refresh);
-
-    } else { // nothing pending, remove old refresh
-      if( fv_player_media_browser.get_current_pending_refresh() ) {
-        clearTimeout(fv_player_media_browser.get_current_pending_refresh());
-        fv_player_media_browser.set_current_pending_refresh(false);
-      }
     }
   }
 
