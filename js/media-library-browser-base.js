@@ -382,7 +382,9 @@ function fv_flowplayer_browser_browse(data, options) {
       fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
 
       var refresh = setTimeout( function() {
-        fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+        if( fv_player_media_browser.get_active_tab().attr('id') == fv_player_media_browser.get_current_pending_tab().attr('id') ) {
+          fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+        }
       }, 30000 );
 
       fv_player_media_browser.set_current_pending_refresh(refresh);
