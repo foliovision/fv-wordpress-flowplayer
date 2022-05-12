@@ -626,8 +626,8 @@ CREATE TABLE " . self::$db_table_name . " (
       $this->fill_properties($options);
 
       // add dates for newly created players
-      if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
-      if( empty($this->date_modified) ) $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+      if( empty($this->date_created) ) $this->date_created = date_format( date_create(), "Y-m-d H:i:s" );
+      if( empty($this->date_modified) ) $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
       // add author, if we're creating new player and not loading a player from DB for caching purposes
       if ( empty($options['author']) ) {
@@ -884,7 +884,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_values = array();
 
     // fill date(s)
-    $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+    $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
     if (!$is_update && empty($this->date_created) ) {
       $this->date_created = $this->date_modified;

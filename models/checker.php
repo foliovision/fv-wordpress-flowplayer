@@ -417,7 +417,7 @@ class FV_Player_Checker {
       if( $aMeta && is_array($aMeta) && count($aMeta) > 0) {
         $meta_values = '';
         foreach( $aMeta AS $values ) {
-          $meta_values .= implode( $values );
+          $meta_values .= implode("", $values);
         }
         if( preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_values, $meta_matches ) ) {
           $matches[0] = array_merge($matches[0], $meta_matches[0]);
