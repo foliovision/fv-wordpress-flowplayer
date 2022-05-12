@@ -371,35 +371,21 @@ function fv_flowplayer_browser_browse(data, options) {
 
     // check if should refresh or if folder/bucket/tab changed then also change refresh and remove old one 
     if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
-      if( !fv_player_media_browser.get_current_pending_path() ) {
-        fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
+      if( fv_player_media_browser.get_current_pending_refresh() ) {
+        clearTimeout(fv_player_media_browser.get_current_pending_refresh());
+        fv_player_media_browser.set_current_pending_refresh(false);
       }
 
-      if( !fv_player_media_browser.get_current_pending_bucket() ) {
-        fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
-      }
+      // update pending values
+      fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
+      fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
+      fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
 
-      if( !fv_player_media_browser.get_current_pending_tab() ) {
-        fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
-      }
+      var refresh = setTimeout( function() {
+        fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+      }, 30000 );
 
-      if( ( fv_player_media_browser.get_current_folder() != fv_player_media_browser.get_current_pending_path()) || ( fv_player_media_browser.get_current_bucket() != fv_player_media_browser.get_current_pending_bucket() ) || ( fv_player_media_browser.get_current_pending_tab().attr('id') != fv_player_media_browser.get_active_tab().attr('id') ) || !fv_player_media_browser.get_current_pending_refresh() ) { 
-        if( fv_player_media_browser.get_current_pending_refresh() ) {
-          clearTimeout(fv_player_media_browser.get_current_pending_refresh());
-          fv_player_media_browser.set_current_pending_refresh(false);
-        }
-
-        // update pending values
-        fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
-        fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
-        fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
-
-        var refresh = setTimeout( function() {
-          fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
-        }, 30000 );
-
-        fv_player_media_browser.set_current_pending_refresh(refresh);
-      }
+      fv_player_media_browser.set_current_pending_refresh(refresh);
 
     } else { // nothing pending, remove old refresh
       if( fv_player_media_browser.get_current_pending_refresh() ) {
