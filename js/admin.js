@@ -1,3 +1,4 @@
+/*global cm_settings */
 (function ($) {
   ('use strict');
   
@@ -174,7 +175,7 @@
     var settings = {
       animationSpeed: 0,
       changeDelay: 10,
-      letterCase: 'uppercase'      
+      letterCase: 'uppercase'
     }
     $('input.color').minicolors(settings);
     settings.opacity = true;
@@ -186,12 +187,33 @@
     $('form#wpfp_options').on('submit', function(e) {
       $('input.color-opacity').each( function() {
         var input = $(this);
-        if( opacity = input.minicolors('opacity') ) {          
+        if( opacity = input.minicolors('opacity') ) {
           var color = hexToRgb( input.val() );
           input.val( 'rgba('+color[0]+','+color[1]+','+color[2]+','+opacity+')' );
         }
       })
-    });    
+    });
+  });
+
+  $(document).ready( function() {
+    $("a[data-setting-change]").on('click', function(e) {
+      e.preventDefault();
+
+      var name = $(this).data('setting-change'),
+        hidden_input = $("[name='"+name+"']"),
+        password_input = $("[name='"+name.replace('_is_secret_', '')+"']");
+
+      if( hidden_input.val() == '1' ) {
+        hidden_input.val('0');
+        password_input.show();
+        $(this).text('Cancel');
+      } else {
+        hidden_input.val('1');
+        password_input.hide();
+        $(this).text('Change');
+      }
+
+    });
   });
   
   function color_inputs() {
