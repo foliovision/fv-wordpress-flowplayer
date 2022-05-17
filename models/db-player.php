@@ -600,9 +600,6 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->$key = $value === null ? $value : stripslashes($value);
         }
 
-        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
-        $this->id = $this->id_player;
-
         // add meta data
         $this->meta_data = $cached_player->getMetaData();
 
@@ -715,10 +712,6 @@ CREATE TABLE " . self::$db_table_name . " (
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
-        // change ID to ID_PLAYER, as ID is used as a shortcode property
-        if ($property == 'id') {
-          $property = 'id_player';
-        }
         $data[$property] = $value;
       }
     }

@@ -811,7 +811,7 @@ jQuery(function() {
             return;
           }
 
-          debug_log('player ID after save: '+response.id_player);
+          debug_log('player ID after save: '+response.id);
 
           current_player_object = response;
 
@@ -834,7 +834,7 @@ jQuery(function() {
 
               // Make sure you use store the new player ID already!
               if ( is_unsaved ) {
-                init_saved_player_fields( response.id_player );
+                init_saved_player_fields( response.id );
               }
 
               ajax( build_ajax_data(true) );
@@ -867,8 +867,8 @@ jQuery(function() {
               // add all the data and inputs to page that we need for an existing player
               if ( is_unsaved ) {
                 fv_player_editor.copy_player_button_toggle(false);
-                init_saved_player_fields( response.id_player );
-                current_player_db_id = response.id_player;
+                init_saved_player_fields( response.id );
+                current_player_db_id = response.id;
                 is_unsaved = false;
                 //is_draft_changed = false;
                 loading = false;
@@ -2873,7 +2873,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         var player = JSON.parse(response);
-        current_player_db_id = parseInt(player.id_player);
+        current_player_db_id = parseInt(player.id);
         if( current_player_db_id > 0 ) {
           var
             has_store_shortcode_args = false,
