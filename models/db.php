@@ -32,11 +32,14 @@ class FV_Player_Db {
     $stopwords;  // used in get_search_stopwords method
 
   public function __construct() {
-    add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
-    add_filter('fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
-    add_action('wp_head', array($this, 'cache_players_and_videos' ));
+    add_action( 'toplevel_page_fv_player', array($this, 'init_tables') );
+    add_action( 'load-settings_page_fvplayer', array($this, 'init_tables') );
     
-    add_action('save_post', array($this, 'store_post_ids' ));
+    add_filter( 'fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1 );
+    add_filter( 'fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
+    add_action( 'wp_head', array($this, 'cache_players_and_videos' ) );
+
+    add_action( 'save_post', array($this, 'store_post_ids' ) );
 
     add_action( 'wp_ajax_fv_player_db_load', array($this, 'open_player_for_editing') );
     add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
@@ -46,6 +49,13 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce, move into controller/editor.php
     add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
     add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') );
+  }
+
+  public function init_tables() {
+    FV_Player_Db_Player::initDB(true);
+    FV_Player_Db_Player_Meta::initDB(true);
+    FV_Player_Db_Video::initDB(true);
+    FV_Player_Db_Video_Meta::initDB(true);
   }
 
   public function getVideosCache() {
