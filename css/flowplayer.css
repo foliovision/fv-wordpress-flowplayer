@@ -2328,16 +2328,16 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   height: auto !important;
   position: static;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui {
   pointer-events: none;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui > * {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui > * {
   pointer-events: auto;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header {
   pointer-events: none;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header > * {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header > * {
   pointer-events: auto;
 }
 .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-left, .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-right {
