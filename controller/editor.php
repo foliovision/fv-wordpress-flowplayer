@@ -245,23 +245,28 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   if( !$url ) return; // no parsed url
 
-  $saved_featured_thumbnail_src = get_post_meta( $post_id, 'fv_player_featured_image_src', true );
-  $saved_featured_thumbnail_id = get_post_meta( $post_id, 'fv_player_featured_image_id', true );
+  // check if we already store thumbnail with current url
+  $args = array(
+    'post_type'  => 'attachment',
+    'meta_query' => array(
+      array(
+        'key'   => '_fv_player_featured_image_src',
+        'value' => $url,
+      )
+    )
+  );
+  
+  $posts = get_posts( $args );
 
-  if($saved_featured_thumbnail_src && $saved_featured_thumbnail_id ) {
-    if( strcmp($saved_featured_thumbnail_src, $url) === 0 ) { // check if url changed
-      $thumbnail_id = (int) $saved_featured_thumbnail_id; // not changed, use saved thumbnail id
-    }
-  }
+  $thumbnail_id = $posts[0]->ID;
 
   if( $thumbnail_id ) {
-    set_post_thumbnail( $post_id, $thumbnail_id );
+    set_post_thumbnail( $post_id, $thumbnail_id ); // use stored image
   } else {
-    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id);
+    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id); // upload new image
 
     if($thumbnail_id) {
-      update_post_meta( $post_id, 'fv_player_featured_image_src', $url );
-      update_post_meta( $post_id, 'fv_player_featured_image_id', $thumbnail_id );
+      update_post_meta( $thumbnail_id, '_fv_player_featured_image_src', $url );
       set_post_thumbnail( $post_id, $thumbnail_id );
     }
   }
