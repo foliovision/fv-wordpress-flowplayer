@@ -245,28 +245,25 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   if( !$url ) return; // no parsed url
 
-  // check if we already store thumbnail with current url
+  // Check if the splash image was already stored in Media Library
   $args = array(
     'post_type'  => 'attachment',
     'meta_query' => array(
       array(
-        'key'   => '_fv_player_featured_image_src',
+        'key'   => '_fv_player_splash_image_url',
         'value' => $url,
       )
     )
   );
-  
   $posts = get_posts( $args );
 
-  $thumbnail_id = $posts[0]->ID;
-
-  if( $thumbnail_id ) {
-    set_post_thumbnail( $post_id, $thumbnail_id ); // use stored image
+  if( !empty($posts[0]->ID) ) {
+    set_post_thumbnail( $post_id, $posts[0]->ID ); // use stored image
   } else {
     $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id); // upload new image
 
     if($thumbnail_id) {
-      update_post_meta( $thumbnail_id, '_fv_player_featured_image_src', $url );
+      update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
       set_post_thumbnail( $post_id, $thumbnail_id );
     }
   }
