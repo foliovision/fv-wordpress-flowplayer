@@ -210,7 +210,12 @@
       } else {
         hidden_input.val('1');
         password_input.hide();
-        $(this).text('Change');
+        if(password_input.val() || !$(this).data('is-empty') ) {
+          $(this).text('Change');
+        } else {
+          $(this).text('Add');
+        }
+        
       }
 
     });

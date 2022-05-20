@@ -409,7 +409,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           <?php if ( $secret ) { ?>
             <input name="<?php echo esc_attr($secret_key); ?>" value="1" type="hidden" />
             <span><?php echo $censored_val; ?></span>
-            <a href="#" data-setting-change="<?php echo esc_attr($secret_key); ?>" >Change</a>
+            <a href="#" data-is-empty="<?php if(empty($censored_val)) {echo '1';} else {echo '0';} ?>" data-setting-change="<?php echo esc_attr($secret_key); ?>" ><?php if(empty($censored_val)) {echo 'Add';} else {echo 'Change';}  ?></a>
            <?php } ?>
         </td>
       </tr>
