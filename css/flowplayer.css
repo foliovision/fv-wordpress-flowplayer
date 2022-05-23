@@ -24,9 +24,9 @@
 .fp-prevbtn:after, .fv-fp-prevbtn:after, .fp-nextbtn:before, .fv-fp-nextbtn:before { content: "\e007"; line-height: 1; vertical-align:middle; }
 
 .flowplayer.is-mouseover .fp-captions, .flowplayer.is-paused .fp-captions { bottom: 3em; }
-.flowplayer.is-loading .fp-engine { top: -9999em; }
-.flowplayer.is-poster .fp-engine,.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
-.flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header {filter: alpha(opacity=1); opacity: 1; }
+.flowplayer.is-loading .fp-engine,.flowplayer.is-poster .fp-engine,.flowplayer.is-chromecast .fp-engine,
+.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
+.flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header, .flowplayer .fp-engine {filter: alpha(opacity=1); opacity: 1; }
 .flowplayer.is-splash .fp-ui > * { display: none; }
 .flowplayer.forced-fullscreen.is-loading .fp-ui, .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header { display: block; }
 .flowplayer.is-splash .fp-ui > .fp-play, 
@@ -35,7 +35,6 @@
 .flowplayer.is-poster.is-loading .fp-ui > .fp-waiting {display: block}
 .flowplayer.is-splash.is-loading .fp-ui > .fp-play, 
 .flowplayer.is-poster.is-loading .fp-ui > .fp-play {display: none}
-.flowplayer.is-poster .fp-engine {left: -9999em; top: -9999em}
 
 .flowplayer.is-poster .fp-captions {display: none !important}
 .flowplayer.is-disabled .fp-color {background-color: #999}
@@ -195,11 +194,6 @@
     display: block; }
   .flowplayer.is-chromecast .fp-flash-disabled {
     display: none !important; }
-  .flowplayer.is-chromecast .fp-engine {
-    left: -9999em;
-    top: -9999em;
-    bottom: auto;
-    right: auto; }
 
 .flowplayer.fp-default-playlist .fp-prev, .flowplayer.fp-default-playlist .fp-next {
   position: absolute;
@@ -2334,16 +2328,16 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   height: auto !important;
   position: static;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui {
   pointer-events: none;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui > * {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui > * {
   pointer-events: auto;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header {
   pointer-events: none;
 }
-.flowplayer.is-tiny.is-fullscreen .fp-ui .fp-header > * {
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header > * {
   pointer-events: auto;
 }
 .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-left, .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-right {
