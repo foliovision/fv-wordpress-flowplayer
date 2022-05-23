@@ -217,6 +217,8 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   $url = false;
 
+  $title = '';
+
   if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
     $url = $splash[1];
   }
@@ -226,6 +228,10 @@ function fv_wp_flowplayer_featured_image($post_id) {
     $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
     if( !empty($atts['splash']) ) {
       $url = $atts['splash'];
+    }
+
+    if( !empty($atts['caption']) ) {
+      $title = $atts['caption'];
     }
   }
 
@@ -238,6 +244,9 @@ function fv_wp_flowplayer_featured_image($post_id) {
           if( !empty($atts['splash']) ) {
             $url = $atts['splash'];
           }
+          if( !empty($atts['caption']) ) {
+            $title = $atts['caption'];
+          }
         }
       }
     }
@@ -245,7 +254,10 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   if( !$url ) return; // no parsed url
 
-  // Check if the splash image was already stored in Media Library
+  if( empty($title) ) {
+    $title = $post->post_title;
+  }
+
   $args = array(
     'post_type'  => 'attachment',
     'meta_query' => array(
@@ -260,7 +272,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if( !empty($posts[0]->ID) ) {
     set_post_thumbnail( $post_id, $posts[0]->ID ); // use stored image
   } else {
-    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id); // upload new image
+    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title); // upload new image
 
     if($thumbnail_id) {
       update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
@@ -281,7 +293,7 @@ function fv_wp_flowplayer_construct_filename( $post_id ) {
   return $filename;
 }
 
-function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
+function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = false ) {
 
   $image_url = apply_filters( 'fv_flowplayer_splash', $image_url );
 
@@ -310,7 +322,11 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
     }
 
     // Construct a file name with extension
-    $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+    if( $title ) {
+      $new_filename = sanitize_file_name($title);
+    } else {
+      $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+    }
 
     // Save the image bits using the new filename    
     $upload = wp_upload_bits( $new_filename, null, $image_contents );    
