@@ -43,12 +43,9 @@ class FV_Player_Splash_Download {
     }
 
     $file_name = $title . '.jpg';
-
-    $file_path = $upload_path . $file_name;
     $file_path = download_url( $splash_url );
 
     if ( is_wp_error( $file_path ) ) {
-      @unlink( $file_path );
       return false;
     }
 
@@ -73,6 +70,7 @@ class FV_Player_Splash_Download {
     $file_return = wp_handle_sideload( $file, array( 'test_form' => false ) );
 
     if ( ! empty( $file_return['error'] ) ) {
+      @unlink( $file['tmp_name']);
       return false;
     }
 
