@@ -147,7 +147,7 @@ class FV_Player_lightbox {
   /*
    * Controls the stylesheet and script loading
    */
-  function enqueue() {
+  public function enqueue() {
     $this->bLoad = true;
   }
 
@@ -573,7 +573,7 @@ class FV_Player_lightbox {
    * Was it enqueued  with self::enqueue() ?
    */
   function should_load() {
-    return $this->bLoad;
+    return $this->bLoad || did_action('fv_player_force_load_lightbox');
   }
 
 }

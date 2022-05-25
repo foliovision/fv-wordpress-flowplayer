@@ -83,7 +83,7 @@ class FV_Player_Db_Player {
    * @return int
    */
   public function getAuthor() {
-    return $this->author;
+    return intval($this->author);
   }
 
   /**
@@ -410,14 +410,14 @@ class FV_Player_Db_Player {
   /**
    * Checks for DB tables existence and creates it as necessary.
    *
-   * @param $wpdb The global WordPress database object.
+   * @param $force Forces to run dbDelta.
    */
-  private function initDB($wpdb) {
-    global $fv_fp, $fv_wp_flowplayer_ver;
+  public static function initDB($force = false) {
+    global $wpdb, $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
-    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver || $force ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -545,7 +545,12 @@ CREATE TABLE " . self::$db_table_name . " (
       self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
-    $this->initDB($wpdb);
+    self::initDB();
+
+    // For a while https://foliovision.com/player/advanced/player-database used to say the $player_id should be passed as array
+    if( is_array($id) ) {
+      $id = array_pop($id);
+    }
 
     // don't load anything, if we've only created this instance
     // to initialize the database (this comes from list-table.php and unit tests)
@@ -594,9 +599,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
           $this->$key = $value === null ? $value : stripslashes($value);
         }
-
-        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
-        $this->id = $this->id_player;
 
         // add meta data
         $this->meta_data = $cached_player->getMetaData();
@@ -647,43 +649,6 @@ CREATE TABLE " . self::$db_table_name . " (
     // update cache, if changed
     if (isset($cache) && (!isset($all_cached) || !$all_cached)) {
       self::$DB_Instance->setPlayersCache($cache);
-    }
-  }
-
-  /**
-   * Retrieves total number of players in the database.
-   *
-   * @return int Returns the total number of players in database.
-   */
-  public static function getTotalPlayersCount() {
-    global $player_ids_when_searching, $wpdb;
-
-    self::init_db_name();
-
-    // make total the number of players cached, if we've used search
-    if (isset($_GET['s']) && $_GET['s']) {
-      if ($player_ids_when_searching) {
-        $total = count( $player_ids_when_searching );
-      } else {
-        $total = 0;
-      }
-    } else {
-      // if we don't yet have instance of FV_Player_Db_Player created the DB for players
-      // has not yet been created at all... try to init it first, then select totals
-      if (!self::$DB_Instance) {
-      	new FV_Player_Db_Player(-1);
-      }
-
-      $total = $wpdb->get_row( 'SELECT Count(*) AS Total FROM ' . self::$db_table_name );
-      if ( $total ) {
-        $total = $total->Total;
-      }
-    }
-
-    if ($total) {
-      return $total;
-    } else {
-      return 0;
     }
   }
 
@@ -783,10 +748,6 @@ CREATE TABLE " . self::$db_table_name . " (
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
-        // change ID to ID_PLAYER, as ID is used as a shortcode property
-        if ($property == 'id') {
-          $property = 'id_player';
-        }
         $data[$property] = $value;
       }
     }

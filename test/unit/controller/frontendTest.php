@@ -155,7 +155,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [7] => SWF file not found
     [8] => Subtitles not found
     [9] => Invalid RTMP URL
-    [10] => Unsupported video format. Try installing Adobe Flash.
+    [10] => Unsupported video format.
     [11] => Click to watch the video
     [12] => [This post contains video, click to play]
     [video_expired] => <h2>Video file expired.<br />Please reload the page and play it again.</h2>
@@ -209,6 +209,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [click_to_unmute] => Click to unmute
     [audio_button] => AUD
     [audio_menu] => Audio
+    [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array

@@ -61,6 +61,12 @@ flowplayer(function(api, root) {
 
   jQuery(window).on('resize',check_size);
 
+  if ('fonts' in document) {
+    api.one('load', function() {
+      document.fonts.load('1em flowplayer');
+    });
+  }
+
   api.on('ready fullscreen fullscreen-exit sticky sticky-exit', function(e) {
     setTimeout( function() {
       buttons_count = root.find('.fp-controls > strong:visible').length + root.find('.fp-controls > .fp-icon:visible').length;

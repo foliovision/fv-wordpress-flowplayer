@@ -410,7 +410,7 @@ abstract class FV_Player_Video_Encoder {
     $result = $this->job_submit($id);
 
     if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
-      require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
+      $this->include_listing_lib();
 
       ob_start();
       $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
@@ -450,7 +450,7 @@ abstract class FV_Player_Video_Encoder {
     $rows = array();
 
     if( count($ids) > 0 ) {
-      require_once dirname( __FILE__ ) . '/class.fv-player-encoder-list-table.php';
+      $this->include_listing_lib();
       // get html for processed rows
       foreach($ids as $id ) {
         ob_start();
@@ -529,31 +529,41 @@ abstract class FV_Player_Video_Encoder {
       // if we don't have current_video then we're on the players listing page, so we need to find and update
       // all players where our temporary "encoder_processing_" placeholder is used
       if ( !$fv_fp->current_video() ) {
-        while ( $vid = $FV_Player_Db->get_video_by_src( $this->encoder_id . '_processing_' . (int) $job_id ) ) {
-          // video processed, replace its SRC
-          $vid->set( 'src', $check['output']->src[0] );
+        $videos = $FV_Player_Db->query_videos( array( 
+          'fields_to_search' =>  array('src'), 
+          'search_string' => $this->encoder_id . '_processing_' . (int) $job_id, 
+          'like' => false, 
+          'and_or' => 'OR' 
+          )
+        );
 
-          // also replace its thumbnail / splash
-          if ( $check['output']->thumbnail ) {
-            $vid->set( 'splash', $check['output']->thumbnail );
-          } else if ( $check['output']->splash ) {
-            $vid->set( 'splash', $check['output']->splash );
-          }
-
-          // also set its timeline preview, if received
-          if ( $check['output']->timeline_previews ) {
-            $vid->updateMetaValue( 'timeline_previews', $check['output']->timeline_previews );
-          }
-
-          // save changes for this video
-          $vid->save();
-
-          // purge HTML caches for all posts where players containing this video are present
-          $players = $fv_fp->get_players_by_video_ids( $vid->getId() );
-          foreach ( $players as $player ) {
-            if ( $posts = $player->getMetaValue( 'post_id' ) ) {
-              foreach ( $posts as $post_id ) {
-                wp_update_post( array( 'ID' => $post_id ) );
+        if(!empty($videos)) {
+          foreach ( $videos as $video) {
+            // video processed, replace its SRC
+            $video->set( 'src', $check['output']->src[0] );
+  
+            // also replace its thumbnail / splash
+            if ( $check['output']->thumbnail ) {
+              $video->set( 'splash', $check['output']->thumbnail );
+            } else if ( $check['output']->splash ) {
+              $video->set( 'splash', $check['output']->splash );
+            }
+  
+            // also set its timeline preview, if received
+            if ( $check['output']->timeline_previews ) {
+              $video->updateMetaValue( 'timeline_previews', $check['output']->timeline_previews );
+            }
+  
+            // save changes for this video
+            $video->save();
+  
+            // purge HTML caches for all posts where players containing this video are present
+            $players = $fv_fp->get_players_by_video_ids( $video->getId() );
+            foreach ( $players as $player ) {
+              if ( $posts = $player->getMetaValue( 'post_id' ) ) {
+                foreach ( $posts as $post_id ) {
+                  wp_update_post( array( 'ID' => $post_id ) );
+                }
               }
             }
           }
@@ -862,9 +872,11 @@ abstract class FV_Player_Video_Encoder {
 
     // take path only if it's full URL
     $parsed = parse_url($target);
-    if( !empty($parsed['path']) ) {
-      $target = trim( $parsed['path'], '/' );
-    }
+
+    if( !empty($parsed['scheme']) ) $target = str_replace($parsed['scheme'].'://', '', $parsed);
+    if( !empty($parsed['hostname']) ) $target = str_replace($parsed['hostname'], '', $parsed);
+
+    $target = preg_replace( '~/$~', '', $target ); // remove trailing slash
 
     // sanitize filename
     $target = explode('/', $target);

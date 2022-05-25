@@ -35,6 +35,7 @@ class FV_Player_Position_Save {
       isset($aItem['sources'][0])
     ) {
       
+      // Try with the video ID first
       $try = array();
       if( $fv_fp->current_player() ) {
         $aVideos = $fv_fp->current_player()->getVideos();
@@ -42,11 +43,19 @@ class FV_Player_Position_Save {
           $try[] = $aVideos[$index]->getId();
         }
       }
+      // ...then try with the video filename
       $try[] = $this->get_extensionless_file_name($aItem['sources'][0]['src']);
 
       foreach( $try AS $name ) {
         if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
           $aItem['sources'][0]['position'] = intval($metaPosition);
+          break;
+        }
+      }
+
+      foreach( $try AS $name ) {
+        if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_top_position_' . $name, true ) ) {
+          $aItem['sources'][0]['top_position'] = intval($metaPosition);
           break;
         }
       }
@@ -86,23 +95,44 @@ class FV_Player_Position_Save {
     if ( is_user_logged_in() ) {
       $uid = get_current_user_id();
       if (isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
-        
         foreach ($times as $record) {
           $name = $this->get_extensionless_file_name($record['name']);
           if( intval($record['position']) == 0 ) {
             delete_user_meta($uid, 'fv_wp_flowplayer_position_'.$name );
           } else {
+            $position = floatval($record['position']);
+            $top_position = floatval($record['top_position']);
+            $previous_position = floatval( get_user_meta( $uid, 'fv_wp_flowplayer_position_'.$name, true ) );
+            $previous_top_position = floatval( get_user_meta( $uid, 'fv_wp_flowplayer_top_position_'.$name, true ) );
+            $saw = get_user_meta( $uid, 'fv_wp_flowplayer_saw_'.$name, true );
+
             update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
+
+            // Store the top position if user didn't see the full video
+            // and if it's the same or bigger than what it was before
+            // and if it's bigger than the last position
+            $max = max( array( $previous_top_position, $previous_position, $position, $top_position ) );
+            if( !$saw && $max >= $previous_top_position && $max > $position ) {
+              update_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name, $max);
+
+            // Otherwise get rid of it
+            } else {
+              delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name);
+            }
           }
           
+          // Did the user saw the full video?
           if( !empty($record['saw']) && $record['saw'] == true ) {
             update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
+            delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name );
           }
         }
         
+        // What are the videos which user saw in full length?
         if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
           foreach ($_POST['sawVideo'] as $record) {
             update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$this->get_extensionless_file_name($record['name']), true);
+            delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name );
           }
         }
         
@@ -145,11 +175,14 @@ class FV_Player_Position_Save {
       if( $player_id ) { // add id to data item if db player
         $attributes['data-player-id'] = $player_id;
 
-        $metaItem = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
+        $user_id = get_current_user_id();
+        if( $user_id ) {
+          $metaItem = get_user_meta( $user_id, 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
 
-        if ( $metaItem >= 0 ) {
-          // playlist item restore
-          $attributes['data-playlist_start'] = intval($metaItem) + 1; // playlist-start-position module starts from 0
+          if ( $metaItem >= 0 ) {
+            // playlist item restore
+            $attributes['data-playlist_start'] = intval($metaItem) + 1; // playlist-start-position module starts from 0
+          }
         }
       }
     }

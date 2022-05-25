@@ -1,7 +1,87 @@
+jQuery(function() {
+  window.fv_player_media_browser = (function($) {
+    var current_folder = '',
+      current_pending_path = '',
+      current_pending_bucket = '',
+      current_term_id = false,
+      $current_pending_tab = false,
+      current_pending_refresh = false,
+      is_uploading = false;
+  
+    return {
+      get_current_folder() {
+        return current_folder;
+      },
+  
+      set_current_folder( folder ) {
+        return current_folder = folder;
+      },
+
+      get_current_pending_path() {
+        return current_pending_path;
+      },
+
+      set_current_pending_path( path ) {
+        return current_pending_path = path;
+      },
+
+      get_current_pending_bucket() {
+        return current_pending_bucket;
+      },
+
+      set_current_pending_bucket( bucket ) {
+        return current_pending_bucket = bucket;
+      },
+
+      get_current_pending_tab() {
+        return $current_pending_tab;
+      },
+
+      set_current_pending_tab( tab ) {
+        return $current_pending_tab = tab;
+      },
+
+      get_current_pending_refresh() {
+        return current_pending_refresh;
+      },
+
+      get_current_term_id() {
+        return current_term_id;
+      },
+
+      set_current_term_id( term_id ) {
+        return current_term_id = term_id;
+      },
+
+      set_current_pending_refresh( refresh ) {
+        return current_pending_refresh = refresh;
+      },
+
+      get_upload_status() {
+        return is_uploading;
+      },
+
+      set_upload_status( uploading ) {
+        return is_uploading = uploading;
+      },
+
+      // TODO: fv_player_get_active_tab
+      get_current_bucket() {
+        return jQuery('#browser-dropdown').val()
+      },
+
+      get_active_tab() {
+        return jQuery('.media-menu-item.active:visible');
+      }
+    }
+  })(jQuery);
+})
+
 var
   fv_flowplayer_scannedFolders = [],
   fv_flowplayer_scannedFiles = [],
-
+  fv_flowplayer_current_pending_refresh = false,
+  fv_flowplayer_current_pending_path,
   // TODO: Use some public method instead
   // object where key->value pairs represent tabId->ajaxAssetsLoadingScript pairs
   // ... we use this to load assets (media files) from SDK of the correct browser integration
@@ -19,20 +99,16 @@ var
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
-  const
+  var
     width = jQuery('#__assets_browser').width(),
     idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
 
   if ( width ) {
-    const columns = Math.min( Math.round( width / idealColumnWidth ), 12 ) || 1;
+    var columns = Math.min( Math.round( width / idealColumnWidth ), 12 ) || 1;
     jQuery('#__assets_browser')
       .closest( '.media-frame-content' )
       .attr( 'data-columns', columns );
   }
-}
-
-function fv_player_get_active_tab() {
-  return jQuery( '.media-menu-item.active:visible' );
 }
 
 function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
@@ -47,21 +123,22 @@ function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonA
 // retrieves options and data for media browser and refreshes its content
 function fv_flowplayer_browser_browse(data, options) {
 
-  const
+  var
     filemanager = jQuery('.attachments-browser'),
     breadcrumbs = jQuery('.breadcrumbs'),
     fileList = filemanager.find('.data'),
     showBreadcrumbs = (options && options.breadcrumbs ? options.breadcrumbs : false);
 
-  var
-    currentPath = '',
+  var 
     breadcrumbsUrls = [];
+
+    fv_player_media_browser.set_current_folder('')
 
   // if we're appending data, don't do all this
   if (!options || !options.append) {
     jQuery(window).off('fv-player-browser-open-folder');
     jQuery(window).on('fv-player-browser-open-folder', function (e, path) {
-      currentPath = data.path;
+      fv_player_media_browser.set_current_folder(data.path);
 
       if (showBreadcrumbs) {
         breadcrumbsUrls.push(data.path);
@@ -96,8 +173,27 @@ function fv_flowplayer_browser_browse(data, options) {
     });
   }
 
+  function addFolderAjax($element, folder_name, options) {
+    var data = {
+      action: options.action,
+      nonce_add_new_folder: options.nonce_add_new_folder,
+      folder_name: folder_name,
+      current_path: fv_player_media_browser.get_current_folder()
+    };
+
+    jQuery.post(fv_player.ajaxurl, data, function (response) {
+      if(response.error) {
+        alert(response.error);
+      } else {
+        // refresh browser
+        fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+      }
+    });
+  }
+
   // Render the HTML for the file manager
   function render(data, options) {
+    var havePendingItems = false;
 
     fv_flowplayer_scannedFolders = [];
     fv_flowplayer_scannedFiles = [];
@@ -118,13 +214,34 @@ function fv_flowplayer_browser_browse(data, options) {
     } else if(typeof data === 'object') {
       fv_flowplayer_scannedFolders = data.folders;
       fv_flowplayer_scannedFiles = data.files;
-
     }
 
     // Empty the old result and make the new one
     // ... don't do this if we're appending data
     if (!options || !options.append) {
       fileList.empty().hide();
+    }
+
+    if(options && options.add_new_folder) {
+      fv_player_media_browser.set_current_term_id(options.current_term_id);
+
+      var new_folder = jQuery(
+      '<li class="attachment new-folder">'
+      + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
+      + '<div class="thumbnail">'
+      + '<span class="icon folder"></span>'
+      + '<div class="filename">'
+      + '<div>+ Add new category</div>'
+      + '</div>'
+      + '</div>'
+      + '</div>').on('click', function() {
+        var folder_name = prompt("Please enter folder name");
+        if(folder_name != null && folder_name.length > 1 ) {
+          addFolderAjax(jQuery(this), folder_name, options);
+        }
+      })
+
+      fileList.append(new_folder);
     }
 
     if(!fv_flowplayer_scannedFolders.length && !fv_flowplayer_scannedFiles.length) {
@@ -135,6 +252,12 @@ function fv_flowplayer_browser_browse(data, options) {
     }
 
     if(fv_flowplayer_scannedFolders.length) {
+      // sort folders alphabetically
+      fv_flowplayer_scannedFolders.sort(function(a, b) {
+        if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+        if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+        return 0;
+      });
 
       fv_flowplayer_scannedFolders.forEach(function(f) {
         var name = escapeHTML(f.name).replace(/\/$/,'');
@@ -158,7 +281,6 @@ function fv_flowplayer_browser_browse(data, options) {
     if(fv_flowplayer_scannedFiles.length) {
 
       fv_flowplayer_scannedFiles.forEach(function(f) {
-
         var
           name = escapeHTML(f.name),
           file = jQuery('<li tabindex="0" role="checkbox" aria-label="' + name + '" aria-checked="false" class="folders attachment save-ready"></li>'),
@@ -203,6 +325,10 @@ function fv_flowplayer_browser_browse(data, options) {
           '<span class="screen-reader-text">Deselect</span>' +
           '</button>');
 
+        if ( f.extra && f.extra.encoding_job_status && f.extra.encoding_job_status == 'processing' ) {
+          havePendingItems = true;
+        }
+
         file.appendTo(fileList);
       });
 
@@ -214,7 +340,7 @@ function fv_flowplayer_browser_browse(data, options) {
 
     // Generate the breadcrumbs
     var url = '';
-    if (filemanager.hasClass('searching')){
+    if (filemanager.hasClass('searching')) {
       url = '<span>Search results: </span>';
       fileList.removeClass('animated');
     } else {
@@ -241,6 +367,28 @@ function fv_flowplayer_browser_browse(data, options) {
     fileList.show();
     fv_flowplayer_media_browser_setColumns();
     fileList.hide().fadeIn();
+
+    // remove old timeout
+    if( fv_player_media_browser.get_current_pending_refresh() ) {
+      clearTimeout(fv_player_media_browser.get_current_pending_refresh());
+      fv_player_media_browser.set_current_pending_refresh(false);
+    }
+
+    // check if we should refresh when we have pending items and not currently uploading 
+    if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
+      // update pending values
+      fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
+      fv_player_media_browser.set_current_pending_tab( fv_player_media_browser.get_active_tab() );
+      fv_player_media_browser.set_current_pending_bucket( fv_player_media_browser.get_current_bucket() );
+
+      var refresh = setTimeout( function() {
+        if( fv_player_media_browser.get_active_tab().attr('id') == fv_player_media_browser.get_current_pending_tab().attr('id') ) {
+          fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+        }
+      }, 30000 );
+
+      fv_player_media_browser.set_current_pending_refresh(refresh);
+    }
   }
 
   // This function escapes special html characters in names
@@ -248,7 +396,7 @@ function fv_flowplayer_browser_browse(data, options) {
     return text.replace(/\&/g,'&amp;').replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
   }
 
-};
+}
 
 // adds new tab on top of the Media Library popup
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
@@ -361,18 +509,18 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
   } catch(e) {}
 
   return $tab;
-};
+}
 
 /*
  * Disable/enable core WordPress drag&drop uploader
  */
 function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
   var
-    overlay = jQuery('.media-frame-uploader')
+    overlay = jQuery('.media-frame-uploader'),
     overlay_content = jQuery('.media-modal .uploader-window'),
     overlay_title = overlay_content.find('.uploader-editor-title'),
     drop_targets = jQuery('[id^=__wp-uploader-id-'),
-    upload_supported = fv_player_get_active_tab().hasClass( 'upload_supported' );
+    upload_supported = fv_player_media_browser.get_active_tab().hasClass( 'upload_supported' );
 
   var original_title = overlay_title.data('original-overlay-title');
   if( !original_title ) {
@@ -417,7 +565,7 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
 function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
   // forward this event via a custom trigger which gets intercepted by our browsers that support file uploads
   // ... if we just returned false here without the custom trigger, we're basically prevent any drop event anywhere on the Media Browser dialog
-  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
+  jQuery( document ).trigger('media_browser_drop_event', [ fv_player_media_browser.get_active_tab().attr( 'id' ), e.originalEvent.dataTransfer.files ] );
   return false;
 }
 
@@ -879,7 +1027,7 @@ jQuery( function($) {
   // listen to a drop event on one of our browser tabs and hide the drop overlay
   // since WP does not do this for us apart from in its own upload tab
   $( document ).on( "media_browser_drop_event", function() {
-    if ( fv_player_get_active_tab().hasClass('upload_supported') ) {
+    if ( fv_player_media_browser.get_active_tab().hasClass('upload_supported') ) {
       $( '.media-modal .uploader-window' ).css({
         'display' : 'none',
         'opacity' : 0,

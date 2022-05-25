@@ -853,6 +853,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $aItem = isset($aPlayer['sources']) && isset($aPlayer['sources'][0]) ? $aPlayer['sources'][0] :  false;
     $sListStyle = !empty($aArgs['liststyle']) ? $aArgs['liststyle'] : false;
+
+    $sItemCaption = flowplayer::filter_possible_html($sItemCaption);
     
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
@@ -897,9 +899,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
         if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
-          $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='$sSplashImage' />";
+          $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='".esc_attr($sSplashImage)."' />";
         } else {
-          $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='$sSplashImage' />";
+          $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='".esc_attr($sSplashImage)."' />";
         }
         
       } else {
@@ -1582,6 +1584,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   public static function esc_caption( $caption ) {
     return str_replace( array(';','[',']'), array('\;','(',')'), $caption );
+  }
+
+  /*
+   * Use the heavy-duty WordPress HTML filtering if the value looks like it might be HTML
+   * 
+   * @param string $content
+   *
+   * @return string Filtered string
+   */
+  public static function filter_possible_html( $content ) {
+    if( stripos($content, '<') !== false || stripos($content, '>') !== false ) {
+      $content = wp_kses( $content, 'post' );
+    }
+    return $content;
   }
   
   
@@ -2489,7 +2505,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   // Also used by FV Player extensions
   function should_force_load_js() {
-    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']) || isset($_GET['elementor-preview']);
+    return $this->_get_option('js-everywhere') || isset($_GET['brizy-edit-iframe']) || isset($_GET['elementor-preview']) || did_action('fv_player_force_load_assets');
   }
 
   function template_preview() {

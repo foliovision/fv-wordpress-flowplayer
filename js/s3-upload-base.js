@@ -1,3 +1,5 @@
+/*global S3MultiUpload, fv_player_coconut_dos_upload_settings*/
+
 function fv_flowplayer_init_s3_uploader( options ) {
   var
     $ = jQuery,
@@ -45,11 +47,14 @@ function fv_flowplayer_init_s3_uploader( options ) {
       return;
     }
 
+    fv_player_media_browser.set_upload_status(true);
+
     $uploadButton.add( $cancelButton ).toggle();
     $progressDiv.text('');
 
     s3upload = new S3MultiUpload( file );
     s3upload.onServerError = function(command, jqXHR, textStatus, errorThrown) {
+      fv_player_media_browser.set_upload_status(false);
       $progressDiv.text("Upload failed with server error.");
       $progressBarDiv.hide();
       upload_error_callback();
@@ -58,6 +63,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     s3upload.onS3UploadError = function(xhr) {
       $progressDiv.text("Upload failed.");
+      fv_player_media_browser.set_upload_status(false);
       $progressBarDiv.hide();
       upload_error_callback();
       console.log( xhr );
@@ -84,6 +90,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     }
 
     s3upload.onUploadCompleted = function( data ) {
+      fv_player_media_browser.set_upload_status(false);
       $progressDiv.text(upload_success_message);
       $uploadButton.add( $cancelButton ).toggle();
       recreate_file_input( file_select_input_name, file_select_input_class );

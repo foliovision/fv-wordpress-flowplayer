@@ -467,7 +467,7 @@ class flowplayer_frontend extends flowplayer
         }
         $attributes['class'] .= ' no-svg is-paused '.$skin;
         $timeline_class = $this->_get_option(array($skin, 'design-timeline'));
-        if( $bIsAudio && $timeline_class == 'fp-minimal' ) {
+        if( $bIsAudio && ( $timeline_class == 'fp-minimal' || $timeline_class == 'fp-full' ) ) {
           $timeline_class = 'fp-slim';
         }
         $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
@@ -724,7 +724,7 @@ class flowplayer_frontend extends flowplayer
         
         if( !empty($this->aCurArgs['splash_text']) ) {
           $aSplashText = explode( ';', $this->aCurArgs['splash_text'] );         
-          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".$aSplashText[0]."</span></div>\n"; //  needed for soap customizations of play button!
+          $this->ret['html'] .= "<div class='fv-fp-splash-text'><span class='custom-play-button'>".flowplayer::filter_possible_html($aSplashText[0])."</span></div>\n"; //  needed for soap customizations of play button!
         }
 
         if( empty($this->aCurArgs['checker']) && !$this->_get_option('disable_videochecker') && current_user_can('manage_options') ) {
@@ -1243,15 +1243,19 @@ class flowplayer_frontend extends flowplayer
   
   
   function get_title() {
+    $title = false;
+
     if( !empty($this->aCurArgs['caption']) ) {
-      return trim($this->aCurArgs['caption']);
+      $title = $this->aCurArgs['caption'];
     }
     
     if( !empty($this->aCurArgs['title']) ) {
-      return trim($this->aCurArgs['title']);
+      $title = $this->aCurArgs['title'];
     }
-    
-    return false;
+
+    $title = flowplayer::filter_possible_html($title);
+    $title = trim($title);
+    return $title;
   }
   
   

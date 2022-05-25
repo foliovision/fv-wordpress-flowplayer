@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.9
+Tested up to: 6.0
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,41 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.22.727 - 2022/05/11 =
+
+* Mobile - "Force landscape orientation in fullscreen" is now always on and no longer a setting
+* Mobile - showing "To enjoy fullscreen swipe up to hide location bar." for iPhone users when location bar appears in fullscreen mode
+* Updating to Flowplayer 7.2.8
+* Styling - fullscreen exit button is now an X symbol
+* Styling - fullscreen exit button is now easier to tap on mobile
+* Styling - mobile now has more spacing between timeline and control bar buttons
+* Video Position Saving - also remember the top position in the video
+* Video upload - Support folder creation for FV Player Coconut
+* Video upload - Support uploading into folders for FV Player Coconut
+* Bugfix - Editor - creating duplicate drafts
+* Bugfix - Editor - empty subtitles field appearing
+* Bugfix - Editor - missing action hook on player save, causing issues with FV Player Pay Per View
+* Bugfix - "Load FV Flowplayer JS everywhere" setting - was not loading rewind/fastforward and playlist repeat buttons
+
+= 7.5.21.727 - 2022/04/07 =
+
+* Bugfix - Position saving - issues with position restore when multiple players on the page
+* Bugfix - CSS - ensure the controlbar fonts load before video starts playing
+* Bugfix - LearnDash LMS support - fix FV Player Pro video ads to not affect lesson completion button
+
+= 7.5.20.727 - 2022/03/25 =
+
+* Urgent Bugfix - video splash screens not disappearing for non-Pro users
+
+= 7.5.19.727 - 2022/03/24 =
+
+* Security - player editing permission checks for Contributors and Authors
+* Security - XSS fix - users with the Contributor role (or above) were able to insert rudimentary JavaScript into FV Player. Thanks to m0ze (Patchstack) for the report!
+* Autoplay - only remove splash once video really plays to prevent empty black video from showing
+* LearnDash LMS support - fix display issues with playlist
+* Bugfix - Position saving - skip playlist position restore for YouTube playlist - for now
+* Bugfix - Position saving - fix for invalid player index for non-logged in users
 
 = 7.5.18.727 - 2022/03/18 =
 

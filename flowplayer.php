@@ -2,8 +2,8 @@
 /*
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
-Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.7.
-Version: 7.5.18.727
+Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.8.
+Version: 7.5.22.728
 Author URI: http://foliovision.com/
 License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -27,8 +27,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.5.18.727';
-$fv_wp_flowplayer_core_ver = '7.2.7.2';
+$fv_wp_flowplayer_ver = '7.5.22.728.1';
+$fv_wp_flowplayer_core_ver = '7.2.8';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
@@ -112,7 +112,7 @@ include_once(dirname( __FILE__ ) . '/models/stats.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
-if( !function_exists( 'fv_player_bunny_stream_include' ) ) {
+if( !function_exists( 'fv_player_bunny_stream_include' ) && version_compare(PHP_VERSION, '5.2.17') >= 0 ) {
   function fv_player_bunny_stream_include() {
     do_action( 'fv_player_load_video_encoder_libs' );
     if ( class_exists( 'FV_Player_Video_Encoder' ) ) {
