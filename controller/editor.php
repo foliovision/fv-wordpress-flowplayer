@@ -207,19 +207,20 @@ function fv_wp_flowplayer_featured_image($post_id) {
     $post_id = $parent_id;
   }
 
+  // thumbnail already set
   $thumbnail_id = get_post_thumbnail_id($post_id);
   if( $thumbnail_id != 0 ) {
     return;
   }
-  
+
   $post = get_post($post_id);
-  
+
   $url = false;
-  
+
   if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
-     $url = $splash[1];
+    $url = $splash[1];
   }
-  
+
   if( !$url && preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
     global $FV_Player_Db;    
     $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
@@ -227,7 +228,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
       $url = $atts['splash'];
     }
   }
-    
+
   if( !$url && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $key => $aMeta ) {
       foreach( $aMeta AS $shortcode ) {
@@ -241,14 +242,32 @@ function fv_wp_flowplayer_featured_image($post_id) {
       }
     }
   }
-  
-  if( !$url ) return;
-  
-  $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id);
-  if($thumbnail_id){
-    set_post_thumbnail($post_id, $thumbnail_id);
+
+  if( !$url ) return; // no parsed url
+
+  // Check if the splash image was already stored in Media Library
+  $args = array(
+    'post_type'  => 'attachment',
+    'meta_query' => array(
+      array(
+        'key'   => '_fv_player_splash_image_url',
+        'value' => $url,
+      )
+    )
+  );
+  $posts = get_posts( $args );
+
+  if( !empty($posts[0]->ID) ) {
+    set_post_thumbnail( $post_id, $posts[0]->ID ); // use stored image
+  } else {
+    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id); // upload new image
+
+    if($thumbnail_id) {
+      update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
+      set_post_thumbnail( $post_id, $thumbnail_id );
+    }
   }
-  
+
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
