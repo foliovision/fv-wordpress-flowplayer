@@ -1167,13 +1167,10 @@ jQuery(function() {
                             }
                           }
                           break;
-
-                        case 'splash_attachment_id':
-                          if (json_data.splash_attachment_id) {
-                            $splash_attachment_id_element.val(json_data.splash_attachment_id).trigger('change');
-                            console.log('New attachment id', json_data.splash_attachment_id)
-                          }
-                          break;
+                      }
+                      if (json_data.splash_attachment_id) {
+                        $splash_attachment_id_element.val(json_data.splash_attachment_id).trigger('change');
+                        console.log('New attachment id', json_data.splash_attachment_id)
                       }
                     }
                   }

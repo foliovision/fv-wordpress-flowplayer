@@ -215,9 +215,9 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   $post = get_post($post_id);
 
-  $url = false;
-
   $title = '';
+  $url = false;
+  $splash_attachment_id = false;
 
   if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
     $url = $splash[1];
@@ -229,9 +229,11 @@ function fv_wp_flowplayer_featured_image($post_id) {
     if( !empty($atts['splash']) ) {
       $url = $atts['splash'];
     }
-
     if( !empty($atts['caption']) ) {
       $title = $atts['caption'];
+    }
+    if( !empty($atts['splash_attachment_id']) ) {
+      $splash_attachment_id = (int) $atts['splash_attachment_id'];
     }
   }
 
@@ -247,39 +249,17 @@ function fv_wp_flowplayer_featured_image($post_id) {
           if( !empty($atts['caption']) ) {
             $title = $atts['caption'];
           }
+          if( !empty($atts['splash_attachment_id']) ) {
+            $splash_attachment_id = (int) $atts['splash_attachment_id'];
+          }
         }
       }
     }
   }
 
-  if( !$url ) return; // no parsed url
+  if( !$splash_attachment_id ) return; // no attachment id found
 
-  if( empty($title) ) {
-    $title = $post->post_title;
-  }
-
-  $args = array(
-    'post_type'  => 'attachment',
-    'meta_query' => array(
-      array(
-        'key'   => '_fv_player_splash_image_url',
-        'value' => $url,
-      )
-    )
-  );
-  $posts = get_posts( $args );
-
-  if( !empty($posts[0]->ID) ) {
-    set_post_thumbnail( $post_id, $posts[0]->ID ); // use stored image
-  } else {
-    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title); // upload new image
-
-    if($thumbnail_id) {
-      update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
-      set_post_thumbnail( $post_id, $thumbnail_id );
-    }
-  }
-
+  set_post_thumbnail( $post_id, $splash_attachment_id ); // use stored image
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
