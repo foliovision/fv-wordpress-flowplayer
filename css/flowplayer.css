@@ -165,10 +165,6 @@
     filter: alpha(opacity=100);
     opacity: 1; } }
 
-.flowplayer.hls-multiple-audio .fp-chromecast {
-  display: none;
-}
-
 .flowplayer .fp-chromecast-engine {
   position: absolute;
   display: none;

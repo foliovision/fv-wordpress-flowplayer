@@ -54,7 +54,7 @@ flowplayer( function(api,root) {
       return;
     }
 
-    root.addClass('hls-multiple-audio');
+    root.find('.fp-chromecast').hide();
 
     hls_audio_button = jQuery('<strong class="fv-fp-hls">' + fv_flowplayer_translations.audio_button + '</strong>');
     hls_audio_menu = jQuery('<div class="fp-menu fv-fp-hls-menu"></div>').insertAfter( root.find('.fp-controls') );
@@ -126,7 +126,7 @@ flowplayer( function(api,root) {
   }
 
   function removeAudioMenu() {
-    root.removeClass('hls-multiple-audio');
+    root.find('.fp-chromecast').show();
     jQuery(hls_audio_menu).remove();
     jQuery(hls_audio_button).remove();
   }
