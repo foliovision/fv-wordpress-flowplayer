@@ -858,6 +858,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
+    $sItemCaptionOriginal = $sItemCaption;
+
     if( !empty($aArgs['members_only']) ) {
       $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
     } else {
@@ -979,7 +981,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $sHTML .= "</a>\n";
     
-    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
+    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaptionOriginal, $aPlayer, $index );
     
     return $sHTML;
   }
