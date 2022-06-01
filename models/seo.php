@@ -130,19 +130,20 @@ class FV_Player_SEO {
       }
     }
     
-    $this->can_seo = true;    
+    $this->can_seo = true;
     return $args;
   }
   
   function single_video_seo( $html, $fv_fp ) {
-    if( $this->can_seo ) {
-      if( empty($fv_fp->aCurArgs['playlist']) ) {
-        //  todo: use iframe or video link URL
-        $html .= "\n".$this->get_markup(!empty($fv_fp->aCurArgs['caption']) ? $fv_fp->aCurArgs['caption'] : '',false,$fv_fp->get_splash(),false)."\n";
-      }
+    if( !empty($fv_fp->aCurArgs['playlist']) || $this->video_ads_active($fv_fp->aCurArgs)  || !$this->can_seo ) {
+      return $html;
     }
+
+    // todo: use iframe or video link URL
+    $html .= "\n".$this->get_markup(!empty($fv_fp->aCurArgs['caption']) ? $fv_fp->aCurArgs['caption'] : '',false,$fv_fp->get_splash(),false)."\n";
+
     return $html;
-  }  
+  }
 
 }
 
