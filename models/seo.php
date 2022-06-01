@@ -13,7 +13,7 @@ class FV_Player_SEO {
   }
   
   function single_attributes( $attributes, $media, $fv_fp ) {
-    if( !empty($fv_fp->aCurArgs['playlist']) || !$this->can_seo ) {
+    if( !empty($fv_fp->aCurArgs['playlist']) || $this->video_ads_active($fv_fp->aCurArgs)  || !$this->can_seo ) {
       return $attributes;
     }
     
@@ -24,6 +24,30 @@ class FV_Player_SEO {
     return $attributes;
   }
   
+  function video_ads_active($args) {
+    $conf = get_option( 'fvwpflowplayer' );
+
+    // check globals ads
+    if(!empty($conf['pro']['video_ads_default'])) {
+      if( $conf['pro']['video_ads_default'] != 'no') return true;
+    } 
+
+    if( !empty($conf['pro']['video_ads_postroll_default']) ) {
+      if( $conf['pro']['video_ads_postroll_default'] != 'no' ) return true;
+    }
+
+    // check meta ads
+    if( !empty($args['preroll']) ) {
+      if( $args['preroll'] != 'no' ) return true;
+    }
+
+    if( !empty($args['postroll']) ) {
+      if( $args['postroll'] != 'no' ) return true;
+    }
+
+    return false;
+  }
+
   function get_markup( $title, $description, $splash, $url ) {
     if( !$title ) {
       $title = get_the_title();
