@@ -2219,7 +2219,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       if( $list_style == 'text' ) {
         $sClass .= ' fp-playlist-only-captions';
-      } else if( sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ) {
+      } else if( sizeof($aCaptions) > 0 && strlen(implode("",$aCaptions)) > 0 ) {
         $sClass .= ' fp-playlist-has-captions';
       }
     }
