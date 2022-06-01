@@ -1387,6 +1387,7 @@ function fv_flowplayer_admin_skin() {
   ?>
   <div style="clear: both"></div>
 <?php
+  do_action('fv_player_extensions_admin_load_assets');
 }
 
 
