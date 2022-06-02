@@ -60,8 +60,7 @@ class FV_Player_SEO {
     if( !$description && strlen($post_content) > 0 ) {
       $post_content = strip_shortcodes( $post_content );
       $post_content = strip_tags( $post_content );
-      $excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
-      $description = wp_trim_words( $post_content, '10', $excerpt_more );
+      $description = wp_trim_words( $post_content, '10' );
     }
     if( !$description ) {
       $description = get_option('blogdescription');
