@@ -1159,7 +1159,8 @@ class FV_Player_Db {
         if ($id) {
           do_action('fv_player_db_save', $id);
 
-          echo wp_json_encode( $this->db_load_player_data( $id ) );
+          $current_video_to_edit = isset($post_data['current_video_to_edit']) ? $post_data['current_video_to_edit'] : -1;
+          echo wp_json_encode( $this->db_load_player_data( $id, $current_video_to_edit ) );
         } else {
           wp_send_json( array( 'error' => 'Failed to save player.' ) );
         }
