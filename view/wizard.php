@@ -493,38 +493,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <a href="#" id="fv-player-list-list-view" ><span class="dashicons dashicons-list-view"><span class="screen-reader-text">List view</span></span></a>
             <a href="#" id="fv-player-list-thumb-view" class="active" data-title="<?php _e('Add splash images to enable thumbnail view', 'fv_flowplayer');?>"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
           </div>
-          <table class="wp-list-table widefat fixed striped media" width="100%">
-            <thead>
-              <tr>
-                <th><a>Video</a></th>
-                <th><a<?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] != 'true' ) echo ' class="fv_player_interface_hide"'; ?>>Title</a></th>
-                <!--<th>Dimension</th>
-                <th>Time</th>-->
-              </tr>  
-            </thead>
-            
-            
-            <tbody>
-              <tr>
-                <!--<td class="fvp_item_sort">&nbsp;&nbsp;&nbsp;</td>-->
-                <!--<td class="fvp_item_video"><strong class="has-media-icon">(new video)</strong></td>-->
-                <td class="title column-title" data-colname="File">		
-                  <div class="fvp_item_video-side-by-side">
-                    <a class="fvp_item_video-thumbnail"></a>
-                  </div>
-                  <div class="fvp_item_video-side-by-side">
-                    <a class="fvp_item_video-filename"></a><br>
-                    <a class="fvp_item_remove" role="button">Delete</a>
-                  </div>
-                </td>
-                
-                <td class="fvp_item_caption"><div<?php if( !isset($fv_flowplayer_conf["interface"]["playlist_captions"]) || $fv_flowplayer_conf["interface"]["playlist_captions"] != 'true' ) echo ' class="fv_player_interface_hide"'; ?>>-</div></td>
-                <!--<td class="fvp_item_dimension">-</td>-->
-                <!--<td class="fvp_item_time">-</td>-->
-                <!--<td class="fvp_item_remove"><div></div></td>-->
-              </tr>
-            </tbody>
-          </table>
+          <div id="fv-player-editor-playlist">
+              <div class="fv-player-editor-playlist-item">
+                <a class="fvp_item_video-thumbnail"></a>
+                <a class="fvp_item_video-filename"></a>
+                <a class="configure-video" href="#">Configure video</a>
+                <a class="fvp_item_remove" href="#">Delete</a>
+                <div class="fvp_item_caption">-</div>
+              </div>
+          </div>
 
         </div>
 

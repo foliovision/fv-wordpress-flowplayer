@@ -451,12 +451,14 @@ jQuery(function() {
       * Select playlist item
       * keywords: select item
       */
-      $doc.on('click','.fv-player-tab-playlist tr td', function(e) {
-        var new_index = $(this).parents('tr').attr('data-index');
+      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .configure-video', function(e) {
+        var new_index = $(this).parents('.fv-player-editor-playlist-item').attr('data-index');
 
         fv_player_editor.set_current_video_to_edit( new_index );
 
         playlist_item_show(new_index);
+
+        return false;
       });
 
       $doc.on('input','.fv_wp_flowplayer_field_width', function(e) {
@@ -485,7 +487,7 @@ jQuery(function() {
       * Remove playlist item
       * keywords: delete playlist items remove playlist items
       */
-      $doc.on('click','.fv-player-tab-playlist tr .fvp_item_remove', function(e) {
+      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_remove', function(e) {
         jQuery(this)
           .addClass('fvp_item_remove-confirm')
           .html('Are you sure?')
@@ -498,7 +500,7 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on('click','.fv-player-tab-playlist tr .fvp_item_remove-confirm', function(e) {
+      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_remove-confirm', function(e) {
         e.stopPropagation();
         var
           $parent = $(e.target).parents('[data-index]'),
@@ -521,7 +523,7 @@ jQuery(function() {
         // TODO: Some better way?
         if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
           playlist_item_add();
-          jQuery('.fv-player-tab-playlist tr td').trigger('click');
+          playlist_item_show(0);
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
@@ -530,15 +532,14 @@ jQuery(function() {
       /*
       *  Sort playlist
       */
-      // TODO: New markup
-      $('.fv-player-tab-playlist table tbody').sortable({
+      $('.fv-player-tab-playlist #fv-player-editor-playlist').sortable({
         start: function( event, ui ) {
           store_rtmp_server = get_field( 'rtmp', get_tab('first','video-files') ).val();
         },
         update: function( event, ui ) {
           $doc.trigger('fv-player-editor-sortable-update');
           var new_sort = [];
-          $('.fv-player-tab-playlist table tbody tr').each(function(){
+          $('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each(function(){
             var
               index = $(this).attr('data-index'),
               video_tab_item = get_tab(index,'video-files'),
@@ -653,7 +654,7 @@ jQuery(function() {
 
       });
 
-      template_playlist_item = jQuery('.fv-player-tab-playlist table tbody tr').parent().html();
+      template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
       template_video = get_tab('first','video-files').parent().html();
       template_subtitles = jQuery('.fv-fp-subtitle').parent().html();
       template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
@@ -1020,8 +1021,8 @@ jQuery(function() {
 
                 if (this.id == 'fv_wp_flowplayer_field_caption' && !updated_manually) {
                   // add spinners (loading indicators) to the playlist table
-                  if ($playlist_row.length) {
-                    $playlist_row.html('<div class="fv-player-shortcode-editor-small-spinner"></div>');
+                  if ($playlist_title.length) {
+                    $playlist_title.html('<div class="fv-player-shortcode-editor-small-spinner"></div>');
                   }
                 }
 
@@ -1056,8 +1057,8 @@ jQuery(function() {
                               $caption_element.closest('tr').show();
 
                               // update caption in playlist table
-                              if ($playlist_row.length) {
-                                $playlist_row.html('<div>' + json_data.name + '</div>');
+                              if ($playlist_title.length) {
+                                $playlist_title.html(json_data.name);
                               }
                             }
                           }
@@ -1222,12 +1223,12 @@ jQuery(function() {
 
                     // check if we still have this element on page
                     if ($element.closest("body").length > 0) {
-                      // get this element's table
+                      // update playlist item title in list
                       var
                         $parent_table = $element.closest('table'),
-                        $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="' + $parent_table.attr('data-index') + '"] td.fvp_item_caption');
+                        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.attr('data-index') + '"] div.fvp_item_caption');
 
-                      $playlist_row.html($caption_element.val());
+                      $playlist_title.html($caption_element.val());
                     }
                   }
 
@@ -1545,7 +1546,7 @@ jQuery(function() {
         jQuery(e).remove();
       } );
 
-      jQuery('.fv-player-tab-playlist table tbody tr').each( function(i,e) {
+      jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each( function(i,e) {
         if( i == 0 ) return;
         jQuery(e).remove();
       } );
@@ -2216,7 +2217,7 @@ jQuery(function() {
               // remove everything with index 0 and the initial video placeholder,
               // otherwise our indexing & previews wouldn't work correctly
               jQuery('[data-index="0"]').remove();
-              jQuery('.fv-player-tab-playlist table tbody tr').remove();
+              jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').remove();
               jQuery('.fv-player-tab-video-files table').remove();
 
               set_embeds(response['embeds']);
@@ -2420,7 +2421,7 @@ jQuery(function() {
             // as we have duplicate fields for them in 2 places (video tab and options tab)
             // and if there is only a single video, the video tab takes precedence,
             // otherwise it's the options tab
-            if ( $('.fv-player-tab-playlist table .ui-sortable-handle').length > 1) {
+            if ( $('.fv-player-tab-playlist #fv-player-editor-playlist .ui-sortable-handle').length > 1) {
               // multiple videos playlist, options tab values must be filled-in
               $('.fv-player-tab-options .fv_wp_flowplayer_field_width').val(response.width);
               $('.fv-player-tab-options .fv_wp_flowplayer_field_height').val(response.height)
@@ -2677,7 +2678,7 @@ jQuery(function() {
 
             var caption = aCaptions.shift();
             get_field("caption").val( caption );
-            playlist_row.find('.fvp_item_caption div').text( caption );
+            playlist_row.find('.fvp_item_caption').text( caption );
           }
 
           var aSplashText = false;
@@ -3094,13 +3095,13 @@ jQuery(function() {
     * keywords: add playlist item
     */
     function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
-      jQuery('.fv-player-tab-playlist table tbody').append(template_playlist_item);
+      jQuery('.fv-player-tab-playlist #fv-player-editor-playlist').append(template_playlist_item);
       var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
         return parseInt(jQuery(this).attr('data-index'), 10);
       }).get();
       var newIndex = Math.max(Math.max.apply(Math, ids) + 1,0);
 
-      var current = jQuery('.fv-player-tab-playlist table tbody tr').last();
+      var current = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').last();
       current.attr('data-index', newIndex);
       current.find('.fvp_item_video-filename').html( 'Video ' + (newIndex + 1) );
 
@@ -3252,7 +3253,7 @@ jQuery(function() {
     function playlist_index() {
       $doc.trigger('fv-player-editor-initial-indexing');
 
-      $('.fv-player-tab-playlist table tbody tr').each(function(){
+      $('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each(function(){
         $(this).attr('data-index', $(this).index() );
       });
 
@@ -3295,7 +3296,7 @@ jQuery(function() {
           currentUrl = 'Video ' + (jQuery(this).index() + 1);
         }
 
-        var playlist_row = jQuery('.fv-player-tab-playlist table tbody tr').eq( current.data('index') );
+        var playlist_row = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').eq( current.data('index') );
 
         var video_preview = get_field("splash",current).val(),
           playlist_img = jQuery('<img />')
@@ -3310,10 +3311,10 @@ jQuery(function() {
 
         playlist_row.find('.fvp_item_video-filename').text( video_name );
 
-        var playlist_row_div = playlist_row.find('.fvp_item_caption div');
+        var playlist_title = playlist_row.find('.fvp_item_caption');
         // do not put in caption if it's loading
-        if (!playlist_row_div.hasClass('fv-player-shortcode-editor-small-spinner')) {
-          playlist_row_div.text( get_field("caption",current).val() );
+        if (!playlist_title.hasClass('fv-player-shortcode-editor-small-spinner')) {
+          playlist_title.text( get_field("caption",current).val() );
         }
       });
 
@@ -3459,7 +3460,7 @@ jQuery(function() {
       $el_editor.find('a[data-tab]').removeClass('fv_player_interface_hide');
       $el_editor.find('.fv-player-tabs > .fv-player-tab').each(function(){
         var bHideTab = true
-        $(this).find('tr:not(.fv_player_actions_end-toggle):not(.submit-button-wrapper), .components-panel__body').each(function(){
+        $(this).find('.components-panel__body, .fv-player-editor-playlist-item').each(function(){
           if( $(this).css('display') === 'table' || $(this).css('display') === 'table-row' || $(this).css('display') == 'block' ){
             bHideTab = false;
             return false;
@@ -4007,7 +4008,7 @@ jQuery(function() {
        * Returns the number of videos in a playlist for the current player.
        */
       get_playlist_items_count: function() {
-        return jQuery('.title.column-title').length;
+        return jQuery('#fv-player-editor-playlist .fv-player-editor-playlist-item').length;
       },
       
       playlist_buttons_disable: function( reason ) {

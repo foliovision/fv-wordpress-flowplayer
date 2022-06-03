@@ -88,7 +88,6 @@
 .fv-player-tab-playlist tbody td{ cursor:pointer; }
 .fv-player-tab-playlist .fv-player-playlist-item tbody td:first-child{cursor:n-resize;}
 
-.fvp_item_video-side-by-side{display:inline-block;vertical-align:top;float: left;margin-right: 5px;}
 .fvp_item_video-filename {word-wrap: break-word;display: inline-block; max-width: 180px;}
 .hide-thumbnails .fvp_item_video-filename {max-width: 100%;}
 .fv-player-tab-playlist > table > thead > tr > th:nth-child(1),.fv-player-tab-playlist > table > tbody > tr > td:nth-child(1),
