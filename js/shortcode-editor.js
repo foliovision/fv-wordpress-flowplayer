@@ -491,7 +491,7 @@ jQuery(function() {
         e.stopPropagation();
 
         if( !confirm('Are you sure?') ) {
-        return false;
+          return false;
         }
 
         var
@@ -3289,7 +3289,9 @@ jQuery(function() {
             .attr('width', 120 )
             .attr('src', video_preview );
 
-        playlist_row.find('.fvp_item_video-thumbnail').html( video_preview.length ? playlist_img : '' );
+        playlist_row.find('.fvp_item_video-thumbnail')
+          .html( video_preview.length ? playlist_img : '' )
+          .toggleClass( 'no-img', !video_preview.length );
 
         var video_name = decodeURIComponent(currentUrl).split("/").pop();
         video_name = video_name.replace(/\+/g,' ');
@@ -3306,15 +3308,6 @@ jQuery(function() {
 
       playlist_index();
 
-      if(!jQuery('.fvp_item_video-thumbnail>img').length){
-        jQuery('#fv-player-list-list-view').trigger('click');
-        jQuery('#fv-player-list-thumb-view').addClass('disabled');
-        jQuery('#fv-player-list-thumb-view').attr('title',jQuery('#fv-player-list-thumb-view').data('title'));
-      }else{
-        jQuery('#fv-player-list-thumb-view').trigger('click');
-        jQuery('#fv-player-list-thumb-view').removeClass('disabled');
-        jQuery('#fv-player-list-thumb-view').removeAttr('title');
-      }
 
       jQuery('.fv-player-tab-playlist').show();
 
