@@ -488,20 +488,12 @@ jQuery(function() {
       * keywords: delete playlist items remove playlist items
       */
       $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_remove', function(e) {
-        jQuery(this)
-          .addClass('fvp_item_remove-confirm')
-          .html('Are you sure?')
-          .one('mouseleave', function() {
-            jQuery(this)
-              .removeClass('fvp_item_remove-confirm')
-              .html('Delete');
-          });
-
-        return false;
-      });
-
-      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_remove-confirm', function(e) {
         e.stopPropagation();
+
+        if( !confirm('Are you sure?') ) {
+        return false;
+        }
+
         var
           $parent = $(e.target).parents('[data-index]'),
           index = $parent.attr('data-index'),
