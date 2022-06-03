@@ -959,10 +959,10 @@ jQuery(function() {
         var
           $element = jQuery(this),
           $parent_table = $element.closest('table'),
-          $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="' + $parent_table.attr('data-index') + '"] td.fvp_item_caption'),
+          $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.attr('data-index') + '"] div.fvp_item_caption'),
           value = $element.val(),
           update_fields = null,
-          $chapters_element = $playlist_row = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
+          $chapters_element = $playlist_title = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
           $caption_element = $parent_table.find('#fv_wp_flowplayer_field_caption'),
           $splash_element = $parent_table.find('#fv_wp_flowplayer_field_splash'),
           $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash'),
@@ -2704,12 +2704,6 @@ jQuery(function() {
 
           jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
 
-          jQuery('.fv_wp_flowplayer_playlist_head').hover(
-            function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').show(); }, function() { jQuery(this).find('.fv_wp_flowplayer_playlist_remove').hide(); } );
-
-          //???
-          jQuery('#cboxContent').css('background','white');
-
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
               this.checked = 1;
@@ -3635,22 +3629,6 @@ jQuery(function() {
       return false;
     });
 
-    /**
-    * Removes playlist item
-    * Also stores the RTMP server of the first item as that's the only place where
-    * it's stored, so in case we are removing the first playlist item, we save it
-    * that way and then set it again for the first item. Uff.
-    *
-    * keywords: remove palylist item
-    */
-    $doc.on('click', '.fv_wp_flowplayer_playlist_remove', function() {
-      // TODO: Some method to get first playlist item data
-      store_rtmp_server = jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val();
-      $(this).parents('table').remove();
-      jQuery('#fv-flowplayer-playlist table:first .fv_wp_flowplayer_field_rtmp').val( store_rtmp_server );
-      return false;
-    });
-
     /*
     Extra fields to reveal when using a stream
     */
@@ -3768,11 +3746,11 @@ jQuery(function() {
       var
         $parent_row = $element.closest('tr'),
         $parent_table = $element.closest('table'),
-        $playlist_row = jQuery('.fv-player-tab-playlist table tr[data-index="' + $parent_table.data('index') + '"] td.fvp_item_caption'),
-        $playlist_row_spinner_div = $playlist_row.find('div.fv-player-shortcode-editor-small-spinner');
+        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.data('index') + '"] div.fvp_item_caption'),
+        $playlist_title_spinner_div = $playlist_title.find('div.fv-player-shortcode-editor-small-spinner');
 
-      if (this.id == 'fv_wp_flowplayer_field_caption' && $playlist_row_spinner_div.length > 0) {
-        $playlist_row_spinner_div.removeClass('fv-player-shortcode-editor-small-spinner');
+      if (this.id == 'fv_wp_flowplayer_field_caption' && $playlist_title_spinner_div.length > 0) {
+        $playlist_title_spinner_div.removeClass('fv-player-shortcode-editor-small-spinner');
       }
 
       if( this.id == 'fv_wp_flowplayer_field_splash' ) {
