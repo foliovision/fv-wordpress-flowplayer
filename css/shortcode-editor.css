@@ -153,7 +153,7 @@
 #fv-player-shortcode-editor-preview-spinner{z-index: 2; height: 100%; width: 100%; position: absolute}
 .fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
 .fv-player-playlist-item .fv-player-shortcode-editor-small-spinner {position: absolute; top: 4px; right: 123px;}
-.fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px;}
+.fvp_item_video-thumbnail img{max-width: 95px;max-height: 95px; aspect-ratio: 16/9; object-fit: cover;}
 
 #fv-player-shortcode-editor-preview-new-tab a {margin-top:256px;}
 
