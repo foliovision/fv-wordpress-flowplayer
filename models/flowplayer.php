@@ -895,8 +895,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     if( $sListStyle != 'text' ) {
-      $sHTML .= "<div class='fvp-playlist-thumb-img'>";
       if( $sSplashImage ) {
+        $sHTML .= "<div class='fvp-playlist-thumb-img'>";
         if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
           $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='".esc_attr($sSplashImage)."' />";
         } else {
@@ -904,7 +904,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
         
       } else {
-        $sHTML .= "<div class='fvp-playlist-thumb-img no-image'></div>";
+        $sHTML .= "<div class='fvp-playlist-thumb-img no-image'>";
       }
       
       if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
@@ -926,7 +926,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } else if( !empty($aItem['saw']) ) {
         $sHTML .= '<span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span>';
       }
-      $sHTML .= "</div>";
+      $sHTML .= "</div>"; // close .fvp-playlist-thumb-img
     }
     
     if( $sListStyle == 'season' ) {
