@@ -3352,6 +3352,17 @@ jQuery(function() {
     function reload_preview( video_id ) {
       el_spinner.show();
 
+      // It's possible that you put in the video source link and quickly click
+      // to add another playlist item - that way you end up with no current_player_db_id
+      if( current_player_db_id == - 1 ) {
+        debug_log('Nothing to preview, player still saving...');
+
+        setTimeout( function() {
+          reload_preview( video_id );
+        }, 1000 );
+        return;
+      }
+
       // load player data and reload preview of the full player
       // when we go back from editing a single video in a playlist
       fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
