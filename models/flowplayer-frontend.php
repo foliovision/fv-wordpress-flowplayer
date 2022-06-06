@@ -550,6 +550,12 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
+
+        // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
+        if( !wp_style_is('fv_flowplayer') ) {
+          $attributes['style'] = 'position:relative; ';
+        }
+
         if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext') ) ) {
           $attributes['style'] .= 'max-width: 100%; ';
         } else if( !$bIsAudio ) {
@@ -703,7 +709,12 @@ class flowplayer_frontend extends flowplayer
           if( is_numeric($splash_img) ) {
             $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
           } else {
-            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
+            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
+            // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
+            if( !wp_style_is('fv_flowplayer') ) {
+              $image .= ' style="position:absolute;top:0;width:100%"';
+            }
+            $image .= ' />';
           }
           
           $this->ret['html'] .= "\t".$image."\n"; 
