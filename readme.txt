@@ -30,7 +30,7 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * Ultra-efficient player: just 55.6kB of Javascript. Rest is loaded later when user is going to play the video. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers while HLS.js library gives you HLS playback on desktop browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
-* Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
+* Totally Brandable (requires license, free version includes the Flowplayer library logo). Stop selling YouTube and start selling yourself. Even design your own player.
 * Supports video intelligence video ads
 * Integration with the Coconut.co video encoding service - using a free addon plugin: https://foliovision.com/downloads/fv-player-coconut
 

@@ -176,6 +176,10 @@ var FV_Player_JS_Loader = /*#__PURE__*/function () {
   _proto2.triggerListener = function triggerListener() {
     /* Show the preload indicator once again */
     Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function (player) {
+      if( player.getAttribute('data-error') ) {
+        return;
+      }
+
       var preload = player.querySelector('.fp-preload');
 
       if (preload) {

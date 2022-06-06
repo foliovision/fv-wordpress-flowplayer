@@ -170,6 +170,10 @@ class FV_Player_JS_Loader {
 	triggerListener() {
 		/* Show the preload indicator once again */
 		Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function(player){
+			if( player.getAttribute('data-error') ) {
+        return;
+      }
+
 			var preload = player.querySelector('.fp-preload');
 			if( preload ) {
 				preload.style.display = 'block';
