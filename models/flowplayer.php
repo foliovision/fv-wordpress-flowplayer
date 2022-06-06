@@ -1363,11 +1363,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !$force && !$this->should_force_load_js() && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
-      
-      if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
-        $bFound = true;
-      }         
-      
+
+
       foreach( $posts AS $objPost ) {
         if( !empty($objPost->post_content) && (
             stripos($objPost->post_content,'[fvplayer') !== false ||
