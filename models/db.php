@@ -40,6 +40,7 @@ class FV_Player_Db {
     add_action( 'wp_head', array($this, 'cache_players_and_videos' ) );
 
     add_action( 'save_post', array($this, 'store_post_ids' ) );
+    add_action( 'fv_player_db_save', array($this, 'post_add_featured_image') );
 
     add_action( 'wp_ajax_fv_player_db_load', array($this, 'open_player_for_editing') );
     add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
@@ -1866,6 +1867,41 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     header('Content-Type: application/json');
     die(json_encode($json_data));
+  }
+
+  /**
+   * Check if each post the player is emebed on has featured image,
+   * if not the set first splash that is found.
+   *
+   * @param int $player_id
+   *
+   * @return void
+   */
+  public function post_add_featured_image( $player_id ) {
+    $objPlayer = new FV_Player_Db_Player( $player_id, array(), $this );
+    $posts = $objPlayer->getMetaValue('post_id'); // get posts where is player embeded
+    $splash_attachment_id = false;
+
+    if(empty($posts)) return; // no posts
+
+    // get first splash we can find
+    if( $objPlayer->getIsValid() ) {
+      foreach( $objPlayer->getVideos() AS $video ) {
+        if( $video->getSplashAttachmentId() ) {
+          $splash_attachment_id = (int) $video->getSplashAttachmentId();
+          break;
+        }
+      }
+    }
+
+    if(empty($splash_attachment_id)) return; // no splash id found
+
+    foreach( $posts as $post ) {
+      $post = intval($post);
+      if( !has_post_thumbnail($post) ) {
+        set_post_thumbnail( $post, $splash_attachment_id );
+      }
+    }
   }
 
   /**
