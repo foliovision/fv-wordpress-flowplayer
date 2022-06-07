@@ -201,6 +201,22 @@ add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
 
 
 add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
+add_action( 'fv_player_db_save', 'fv_wp_flowplaye_post_add_featured_image' );
+
+function fv_wp_flowplaye_post_add_featured_image( $player_id ) {
+  global $FV_Player_Db;
+  $objPlayer = new FV_Player_Db_Player( $player_id, array(), $FV_Player_Db );
+  $posts = $objPlayer->getMetaValue('post_id'); // get posts where  the player is embedded
+
+  if(empty($posts)) return; // no posts
+
+  foreach( $posts as $post_id ) {
+    $post_id = intval($post_id);
+    if( !has_post_thumbnail($post_id) ) {
+      fv_wp_flowplayer_featured_image($post_id);
+    }
+  }
+}
 
 function fv_wp_flowplayer_featured_image($post_id) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
