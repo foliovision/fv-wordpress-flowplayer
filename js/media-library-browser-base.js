@@ -161,6 +161,8 @@ function fv_flowplayer_browser_browse(data, options) {
     // which could originate from other browsers (and would generate duplicate AJAX calls)
     jQuery('#media-search-input').off('input');
     jQuery('#media-search-input').on('input', function (e) {
+      var searchVal = jQuery(this).val();
+
       // if we have old search timed task, cancel it and create a new one
       if (timedSearchTask > -1) {
         clearTimeout(timedSearchTask);
@@ -169,6 +171,13 @@ function fv_flowplayer_browser_browse(data, options) {
       timedSearchTask = setTimeout(function() {
         options.ajaxSearchCallback();
         timedSearchTask = -1;
+
+        var checkExist = setInterval(function() {
+          if (jQuery('#media-search-input').length) {
+            jQuery('#media-search-input').val(searchVal);
+            clearInterval(checkExist);
+          }
+       }, 100); // check every 100ms
       }, 1000);
     });
   }
