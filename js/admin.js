@@ -1,3 +1,4 @@
+/*global cm_settings*/
 (function ($) {
   ('use strict');
   
