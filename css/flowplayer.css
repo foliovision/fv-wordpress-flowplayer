@@ -1019,6 +1019,7 @@
 .flowplayer.fixed-controls.skin-custom {border: none}
 .flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop, .entry-content .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
+.flowplayer.has-abloop .fp-timestamp { bottom: 2em }
 
 .flowplayer.fp-slim.fp-full .fp-timeline {
     height: 3px; }
