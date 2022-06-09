@@ -501,23 +501,11 @@ function fv_player_lchecks() {
       delete_option('fv_wordpress_flowplayer_persistent_notices');
     }
 
-    if( isset($aCheck->expired) && $aCheck->expired && stripos( implode(get_option('active_plugins')), 'fv-player-pro' ) !== false ) {
-      add_filter( 'site_transient_update_plugins', 'fv_player_remove_update' );
-    }
   }
 }
 
-function fv_player_remove_update( $objUpdates ) {
-  if( !$objUpdates || !isset($objUpdates->response) || count($objUpdates->response) == 0 ) return $objUpdates;
 
-  foreach( $objUpdates->response AS $key => $objUpdate ) {
-    if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
-      unset($objUpdates->response[$key]);      
-    }
-  }
-  
-  return $objUpdates;
-}
+
 
 function fv_wp_flowplayer_admin_key_update() {
 	global $fv_fp;
