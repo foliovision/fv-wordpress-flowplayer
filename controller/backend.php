@@ -594,7 +594,7 @@ add_action( 'after_plugin_row_fv-wordpress-flowplayer/flowplayer.php', 'fv_wordp
 
 function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
   if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<tr class="active"><td>&nbsp;</td><td colspan="3"><strong>Your license for FV PLayer expired, to install updates please renew your license.</strong></td></tr>';
+    echo '<tr class="active"><td>&nbsp;</td><td colspan="3"><strong>'. __('Your license for FV PLayer expired, to install updates please renew your license','fv-wordpress-flowplayer').'</strong></td></tr>';
   }
 }
 
