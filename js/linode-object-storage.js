@@ -38,7 +38,7 @@ jQuery( function($) {
     });
 
     return false;
-  };
+  }
 
   $(document).on("mediaBrowserOpen", function (event) {
     fv_flowplayer_media_browser_add_tab('fv_flowplayer_linode_object_storage_browser_media_tab', 'Linode Object Storage', fv_flowplayer_linode_object_storage_browser_load_assets);
