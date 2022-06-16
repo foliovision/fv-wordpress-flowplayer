@@ -2,6 +2,7 @@
 
 abstract class FV_Player_Media_Browser {
 
+  public $browser_type = 'media_browser';
   public $ajax_action_name = false;
   private $s3_assets_loaded = false;
 
@@ -22,6 +23,7 @@ abstract class FV_Player_Media_Browser {
       $args = wp_parse_args($args ,array(
         'ajax_action_name' => false,
         'ajax_action_name_add_new_folder' => false,
+        'browser_type' => 'media_browser'
         )
       );
 
@@ -182,6 +184,8 @@ abstract class FV_Player_Media_Browser {
           $item['type'] = 'folder';
           $item['items'] = array();
         }
+
+        $item = apply_filters( 'fv_player_media_browser_item', $item, $this->browser_type );
 
         $output['items'][] = $item;
 
