@@ -99,6 +99,11 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     // TODO: Fix width
     // TODO: Add custom domain for CDN
     global $fv_fp;
+    
+    if( class_exists('FV_Player_Coconut') ) {
+      _e('FV Player Coconut is installed, this space will be used only as source.', 'fv-wordpress-flowplayer');
+    }
+  
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <?php
