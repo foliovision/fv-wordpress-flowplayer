@@ -1,4 +1,4 @@
-/*global fvwpflowplayer_helper_tag, fv_wp_flowplayer_re_edit, fv_wp_flowplayer_re_insert, fv_flowplayer_set_post_thumbnail_id, fv_flowplayer_set_post_thumbnail_nonce, */
+/*global fvwpflowplayer_helper_tag, fv_wp_flowplayer_re_edit, fv_player_preview_window, fv_wp_flowplayer_re_insert, fv_flowplayer_set_post_thumbnail_id, fv_flowplayer_set_post_thumbnail_nonce, */
 /*global FCKeditorAPI, setPostThumbnailL10n, send_to_editor, tinymce*/
 
 // What's here needs to stay global
@@ -4100,7 +4100,6 @@ function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
   switch (name) {
     case 'playlist_advance':
       return ((value == 'true' || value == 'on') ? 'on' : (value == 'default' || value == '') ? 'default' : 'off');
-      break;
 
     default: return value;
   }
@@ -4268,7 +4267,7 @@ function fv_wp_flowplayer_subtitle_parse_arg( args ) {
 
 
 function fv_wp_flowplayer_share_parse_arg( args ) {
-  var field = get_field("share")[0];
+  var field = fv_player_editor.get_field("share")[0];
   if (args[1] == 'yes' ) {
     field.selectedIndex = 1;
   } else if (args[1] == 'no' ) {
@@ -4276,9 +4275,9 @@ function fv_wp_flowplayer_share_parse_arg( args ) {
   } else {
     field.selectedIndex = 3;
     args = args[1].split(';');
-    if( typeof(args[0]) == "string" ) get_field('share_url').val(args[0]);
-    if( typeof(args[1]) == "string" ) get_field('share_title').val(args[1]);
-    get_field("share_custom").show();
+    if( typeof(args[0]) == "string" ) fv_player_editor.get_field('share_url').val(args[0]);
+    if( typeof(args[1]) == "string" ) fv_player_editor.get_field('share_title').val(args[1]);
+    fv_player_editor.get_field("share_custom").show();
   }
 }
 

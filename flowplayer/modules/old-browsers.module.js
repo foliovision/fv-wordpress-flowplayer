@@ -1,5 +1,6 @@
+/*global fv_flowplayer_browser_ff_m4v_array, fv_flowplayer_browser_chrome_fail_array, fv_flowplayer_browser_ie_array */
 function fv_flowplayer_browser_ff_m4v( hash ) {
-	if( flowplayer.support.browser && flowplayer.support.browser.mozilla && navigator.appVersion.indexOf("Win")!=-1 ) {
+	if( flowplayer.support.browser && flowplayer.support.browser.mozilla && navigator.userAgentData.platform.indexOf("Win") !=-1 ) {
 		jQuery('#wpfp_'+hash).attr('data-engine','flash');
 	}
 }
