@@ -201,9 +201,9 @@ add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
 
 
 add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
-add_action( 'fv_player_db_save', 'fv_wp_flowplaye_post_add_featured_image' );
+add_action( 'fv_player_db_save', 'fv_wp_flowplayer_post_add_featured_image' );
 
-function fv_wp_flowplaye_post_add_featured_image( $player_id ) {
+function fv_wp_flowplayer_post_add_featured_image( $player_id ) {
   global $FV_Player_Db;
   $objPlayer = new FV_Player_Db_Player( $player_id, array(), $FV_Player_Db );
   $posts = $objPlayer->getMetaValue('post_id'); // get posts where the player is embedded
@@ -231,54 +231,94 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   $post = get_post($post_id);
 
-  $players = get_post_meta($post_id, 'fv_player_featured_image_players', true);
+  $players = get_post_meta($post_id, '_fv_player_featured_image_players', true);
+
   if (!is_array($players)) {
     $players = array();
+    $players['splash_attachment_ids'] = array();
+    $players['splash_urls'] = array();
   }
 
+  $thumbnail_id = false;
   $splash_attachment_id = false;
+  $url = false;
+  $title = '';
 
-  if( preg_match_all('/\[fvplayer.*?id="(\d+)/', $post->post_content, $ids) ) { // parse [fvplayer id="..."] shortcode in post content
-    global $FV_Player_Db;
-    
-    foreach( $ids[1] as $player_id ) {
-      if(!in_array($player_id, $players)) { // this id was not used for splash
-        $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
-        
-        if( !empty($atts['splash_attachment_id']) ) {
-          $splash_attachment_id = (int) $atts['splash_attachment_id'];
-          $players[] = $player_id;
+  if( preg_match_all('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash_images) ) { // parse splash="..." in post content
+    // $url = $splash[1];
+    foreach($splash_images[1] as $src ) {
+      if(!in_array($src, $players['splash_urls'])) {
+        $url = $src;
+        $players['splash_urls'][] = $url;
 
-          update_post_meta($post_id, 'fv_player_featured_image_players', $players);
-  
-          break;
-        }
-      } else { // already used
-        continue;
+        update_post_meta($post_id, '_fv_player_featured_image_players', $players);
+
+        break;
       }
     }
   }
 
-  if( !$splash_attachment_id && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
+  if( !$url && preg_match_all('/\[fvplayer.*?id="(\d+)/', $post->post_content, $ids) ) { // parse [fvplayer id="..."] shortcode in post content
+    global $FV_Player_Db;
+
+    foreach( $ids[1] as $player_id ) {
+      $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
+
+      if( !empty($atts['caption']) ) {
+        $title = $atts['caption'];
+      }
+
+      if( !empty($atts['splash_attachment_id']) ) {
+        if( !in_array($player_id, $players['splash_attachment_ids'] ) ) {
+          $splash_attachment_id = (int) $atts['splash_attachment_id'];
+          $players['splash_attachment_ids'][] = $player_id;
+
+          update_post_meta($post_id, '_fv_player_featured_image_players', $players);
+        }
+      } else if( !empty($atts['splash']) ) {
+        $url = $atts['splash'];
+
+        $players['splash_urls'][] = $url;
+
+        update_post_meta($post_id, 'fv_player_featured_image_players', $players);
+      }
+
+      if($splash_attachment_id || $url) {
+        break;
+      }
+    }
+  }
+
+  if( !$url && !$splash_attachment_id && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $key => $aMeta ) {
       foreach( $aMeta AS $shortcode ) {
         if( preg_match_all('/\[fvplayer.*?id="(\d+)/', $shortcode, $ids) ) {
           global $FV_Player_Db;
 
           foreach( $ids[1] as $player_id ) {
-            if(!in_array($player_id, $players)) { // this id was not used for splash
-              $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
-              
-              if( !empty($atts['splash_attachment_id']) ) {
+            $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
+
+            if( !empty($atts['caption']) ) {
+              $title = $atts['caption'];
+            }
+
+            if( !empty($atts['splash_attachment_id']) ) {
+              if( !in_array($player_id, $players['splash_attachment_ids'] ) ) {
                 $splash_attachment_id = (int) $atts['splash_attachment_id'];
-                $players[] = $player_id;
-        
-                update_post_meta($post_id, 'fv_player_featured_image_players', $players);
-        
-                break 3;
+                $players['splash_attachment_ids'][] = $player_id;
+
+                update_post_meta($post_id, '_fv_player_featured_image_players', $players);
               }
-            } else { // already used
-              continue;
+            } else if( !empty($atts['splash']) ) {
+              $url = $atts['splash'];
+
+              $players['splash_urls'][] = $url;
+
+              update_post_meta($post_id, 'fv_player_featured_image_players', $players);
+            }
+
+            if($splash_attachment_id || $url) {
+              break 3;
             }
           }
         }
@@ -286,9 +326,35 @@ function fv_wp_flowplayer_featured_image($post_id) {
     }
   }
 
-  if( !$splash_attachment_id ) return; // no attachment id found
+  if( $splash_attachment_id ) {
+    $thumbnail_id = $splash_attachment_id; // use saved splash
+  } else if($url) {
+    $args = array(
+      'post_type'  => 'attachment',
+      'meta_query' => array(
+        array(
+          'key'   => '_fv_player_splash_image_url',
+          'value' => $url,
+        )
+      )
+    );
 
-  set_post_thumbnail( $post_id, $splash_attachment_id ); // use stored image
+    $posts = get_posts( $args );
+
+    if( !empty($posts[0]->ID) ) {
+      $thumbnail_id = $posts[0]->ID;
+    } else {
+      $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title);
+
+      if($thumbnail_id) {
+        update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
+      }
+    }
+  }
+
+  if( $thumbnail_id ) {
+    set_post_thumbnail( $post_id, $thumbnail_id );
+  }
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
