@@ -277,10 +277,11 @@ function fv_wp_flowplayer_featured_image($post_id) {
         }
       } else if( !empty($atts['splash']) ) {
         $url = $atts['splash'];
+        if(!in_array($url, $players['splash_urls'])) {
+          $players['splash_urls'][] = $url;
 
-        $players['splash_urls'][] = $url;
-
-        update_post_meta($post_id, 'fv_player_featured_image_players', $players);
+          update_post_meta($post_id, 'fv_player_featured_image_players', $players);
+        }
       }
 
       if($splash_attachment_id || $url) {
@@ -311,10 +312,11 @@ function fv_wp_flowplayer_featured_image($post_id) {
               }
             } else if( !empty($atts['splash']) ) {
               $url = $atts['splash'];
-
-              $players['splash_urls'][] = $url;
-
-              update_post_meta($post_id, 'fv_player_featured_image_players', $players);
+              if(!in_array($url, $players['splash_urls'])) {
+                $players['splash_urls'][] = $url;
+  
+                update_post_meta($post_id, 'fv_player_featured_image_players', $players);
+              }
             }
 
             if($splash_attachment_id || $url) {
