@@ -445,6 +445,20 @@ function fv_player_preload() {
       root.trigger('fv_player_loaded');
       // Seems like root.data('flowplayer') is only available after a while, it won't work without this delay
     }, 10 );
+
+    // Show the early error message
+    if( root.data('error') ) {
+      api.message( root.data('error') );
+
+      // Prevent loading any video
+      api.conf.clip = {
+        sources: [ { 'src' : false, 'type' : 'video/mp4' } ]
+      }
+      api.on( 'load', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    }
   });
   
   //sets height for embedded players 

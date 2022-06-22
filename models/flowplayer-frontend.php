@@ -268,7 +268,10 @@ class flowplayer_frontend extends flowplayer
       $playlist_items_external_html = false;
 
       // Do not put in video data if there is an error to avoid playback
-      if( empty($this->aCurArgs['error']) ) {
+      if( !empty($this->aCurArgs['error']) ) {
+        // Put in some minimal information to avoid JS errors
+        $attributes['data-item'] = $this->json_encode( array( 'sources' => array( array( 'src' => '', 'type' => '' ) ) ) );
+      } else {
         $attributes[ !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item' ] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
       }
     }
@@ -685,7 +688,7 @@ class flowplayer_frontend extends flowplayer
 
         // Tell the preload script to not try to load the player
         if( !empty($this->aCurArgs['error']) ) {
-          $attributes['data-error'] = true;
+          $attributes['data-error'] = $this->aCurArgs['error'];
         }
         
         add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );

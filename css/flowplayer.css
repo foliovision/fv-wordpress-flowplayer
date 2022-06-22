@@ -985,6 +985,9 @@
 .flowplayer .fp-message h2:before {
   display: none;
 }
+.flowplayer .fp-message a {
+  text-decoration: underline !important;
+}
 
 .flowplayer .fp-timeline.is-fp-dragging .fp-progress::after {
   content: "";
