@@ -449,6 +449,8 @@ function fv_player_preload() {
     // Show the early error message
     if( root.data('error') ) {
       api.message( root.data('error') );
+      root.find('.fp-controls').remove();
+      root.find('.fp-header').css('opacity', 1).show();
 
       // Prevent loading any video
       api.conf.clip = {
