@@ -218,6 +218,7 @@ function fv_wp_flowplayer_post_add_featured_image( $player_id ) {
   }
 }
 
+// Set featured image from splash arg or splash_attachment_id or splash meta attribute
 function fv_wp_flowplayer_featured_image($post_id) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
     $post_id = $parent_id;
@@ -249,7 +250,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   if( preg_match_all('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash_images) ) { // parse splash="..." in post content
     foreach($splash_images[1] as $src ) {
-      if(!in_array($src, $splash_urls)) {
+      if(!in_array($src, $splash_urls)) { // check if we already set this splash once
         $url = $src;
         $splash_urls[] = $url;
 
@@ -270,14 +271,14 @@ function fv_wp_flowplayer_featured_image($post_id) {
         $title = $atts['caption'];
       }
 
-      if( !empty($atts['splash_attachment_id']) ) {
+      if( !empty($atts['splash_attachment_id']) ) { // first check splash_attachment_id
         if( !in_array($player_id, $players) ) {
           $splash_attachment_id = (int) $atts['splash_attachment_id'];
           $players[] = $player_id;
 
           update_post_meta($post_id, '_fv_player_featured_image_players', $players);
         }
-      } else if( !empty($atts['splash']) ) {
+      } else if( !empty($atts['splash']) ) { // fallback to splash
         $url = $atts['splash'];
       }
 
@@ -287,6 +288,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
     }
   }
 
+  // search shortcodes in post meta
   if( !$url && !$splash_attachment_id && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $key => $aMeta ) {
       foreach( $aMeta AS $shortcode ) {
@@ -323,7 +325,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if( $splash_attachment_id ) {
     $thumbnail_id = $splash_attachment_id; // use saved splash
   } else if($url) {
-    $args = array(
+    $args = array( // check if splash was already downloaded
       'post_type'  => 'attachment',
       'meta_query' => array(
         array(
@@ -338,7 +340,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
     if( !empty($posts[0]->ID) ) {
       $thumbnail_id = $posts[0]->ID;
     } else {
-      $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title);
+      $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title); // download splash
 
       if($thumbnail_id) {
         update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
@@ -346,7 +348,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
     }
   }
 
-  if( $thumbnail_id ) {
+  if( $thumbnail_id ) { // set post thumbnail if we have thumbnail id
     set_post_thumbnail( $post_id, $thumbnail_id );
   }
 }
