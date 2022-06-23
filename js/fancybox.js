@@ -215,7 +215,7 @@ if( document.addEventListener ) {
   }, false);
 }
 
-// overriding default Flowplayer fullscreen function
+// Lightboxed player behavior improvements
 jQuery( function() {
   if( typeof(flowplayer) != "undefined" ) {
     flowplayer( function(api,root) {
@@ -249,6 +249,7 @@ jQuery( function() {
           }
         });
         
+        // overriding default Flowplayer fullscreen function
         if( flowplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
           api.fullscreen = function() {
             jQuery.fancybox.getInstance().FullScreen.toggle();
