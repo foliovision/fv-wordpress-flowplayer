@@ -114,7 +114,17 @@ function fv_player_settings_save() {
     
     global $fv_fp;
     if( method_exists($fv_fp,'_set_conf') ) {
-      $to_save = fv_player_handle_secrets($_POST, $fv_fp->conf);
+      if( 
+          // pro not installed or
+          !function_exists('FV_Player_Pro') ||
+           // pro installed and version is at least 7.5.25.728
+          ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') )
+        ) {
+        $to_save = fv_player_handle_secrets($_POST, $fv_fp->conf);
+      } else {
+        $to_save = $_POST;
+      }
+
       $fv_fp->_set_conf($to_save);
     } else {
       echo 'Error saving FV Flowplayer options.';
