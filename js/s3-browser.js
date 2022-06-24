@@ -73,7 +73,7 @@ jQuery( function($) {
     } );
 
     return false;
-  };
+  }
 
   $( document ).on( "mediaBrowserOpen", function(event) {
     fv_flowplayer_media_browser_add_tab('fv_flowplayer_s3_browser_media_tab', 'Amazon S3', fv_flowplayer_s3_browser_load_assets);

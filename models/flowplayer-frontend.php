@@ -266,7 +266,14 @@ class flowplayer_frontend extends flowplayer
     
     if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
       $playlist_items_external_html = false;
-      $attributes[ !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item' ] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
+
+      // Do not put in video data if there is an error to avoid playback
+      if( !empty($this->aCurArgs['error']) ) {
+        // Put in some minimal information to avoid JS errors
+        $attributes['data-item'] = $this->json_encode( array( 'sources' => array( array( 'src' => '', 'type' => '' ) ) ) );
+      } else {
+        $attributes[ !empty($this->aCurArgs['lazy']) ? 'data-item-lazy' : 'data-item' ] = $this->json_encode( apply_filters( 'fv_player_item', $aPlaylistItems[0], 0, $this->aCurArgs ) );
+      }
     }
     
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args', $this->aCurArgs, $this->hash, $media, $aPlaylistItems );
@@ -546,6 +553,12 @@ class flowplayer_frontend extends flowplayer
         }
         
         $attributes['style'] = '';
+
+        // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
+        if( !wp_style_is('fv_flowplayer') ) {
+          $attributes['style'] = 'position:relative; ';
+        }
+
         if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext') ) ) {
           $attributes['style'] .= 'max-width: 100%; ';
         } else if( !$bIsAudio ) {
@@ -672,6 +685,11 @@ class flowplayer_frontend extends flowplayer
         if( $ad_contents = $this->get_ad_code() ) {
           $attributes['data-ad'] = $this->json_encode( $ad_contents );
         }
+
+        // Tell the preload script to not try to load the player
+        if( !empty($this->aCurArgs['error']) ) {
+          $attributes['data-error'] = $this->aCurArgs['error'];
+        }
         
         add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
         
@@ -694,13 +712,21 @@ class flowplayer_frontend extends flowplayer
           if( is_numeric($splash_img) ) {
             $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
           } else {
-            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
+            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
+            // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
+            if( !wp_style_is('fv_flowplayer') ) {
+              $image .= ' style="position:absolute;top:0;width:100%"';
+            }
+            $image .= ' />';
           }
           
           $this->ret['html'] .= "\t".$image."\n"; 
         }
         
-        if( !$bIsAudio ) {
+        if( !empty($fv_fp->aCurArgs['error']) ) {
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
+
+        } else if( !$bIsAudio ) {
           $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
         }
         
@@ -712,7 +738,7 @@ class flowplayer_frontend extends flowplayer
         
         if( flowplayer::is_special_editor() ) {
           $this->ret['html'] .= '<div class="fp-ui"></div>';       
-        } else if( current_user_can('manage_options') && empty($this->aCurArgs['lazy']) && empty($this->aCurArgs['lightbox']) ) {
+        } else if( current_user_can('manage_options') && empty($this->aCurArgs['lazy']) && empty($this->aCurArgs['lightbox']) && empty($this->aCurArgs['error']) ) {
           $this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="https://foliovision.com/pro-support" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
         }
         

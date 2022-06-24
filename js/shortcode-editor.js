@@ -1,4 +1,4 @@
-/*global fvwpflowplayer_helper_tag, fv_wp_flowplayer_re_edit, fv_wp_flowplayer_re_insert, fv_flowplayer_set_post_thumbnail_id, fv_flowplayer_set_post_thumbnail_nonce, */
+/*global fvwpflowplayer_helper_tag, fv_wp_flowplayer_re_edit, fv_player_preview_window, fv_wp_flowplayer_re_insert, fv_flowplayer_set_post_thumbnail_id, fv_flowplayer_set_post_thumbnail_nonce, */
 /*global FCKeditorAPI, setPostThumbnailL10n, send_to_editor, tinymce*/
 
 // What's here needs to stay global
@@ -811,7 +811,7 @@ jQuery(function() {
             return;
           }
 
-          debug_log('player ID after save: '+response.id_player);
+          debug_log('player ID after save: '+response.id);
 
           current_player_object = response;
 
@@ -834,7 +834,7 @@ jQuery(function() {
 
               // Make sure you use store the new player ID already!
               if ( is_unsaved ) {
-                init_saved_player_fields( response.id_player );
+                init_saved_player_fields( response.id );
               }
 
               ajax( build_ajax_data(true) );
@@ -867,8 +867,8 @@ jQuery(function() {
               // add all the data and inputs to page that we need for an existing player
               if ( is_unsaved ) {
                 fv_player_editor.copy_player_button_toggle(false);
-                init_saved_player_fields( response.id_player );
-                current_player_db_id = response.id_player;
+                init_saved_player_fields( response.id );
+                current_player_db_id = response.id;
                 is_unsaved = false;
                 //is_draft_changed = false;
                 loading = false;
@@ -2873,7 +2873,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         var player = JSON.parse(response);
-        current_player_db_id = parseInt(player.id_player);
+        current_player_db_id = parseInt(player.id);
         if( current_player_db_id > 0 ) {
           var
             has_store_shortcode_args = false,
@@ -4086,7 +4086,6 @@ function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
   switch (name) {
     case 'playlist_advance':
       return ((value == 'true' || value == 'on') ? 'on' : (value == 'default' || value == '') ? 'default' : 'off');
-      break;
 
     default: return value;
   }
@@ -4254,7 +4253,7 @@ function fv_wp_flowplayer_subtitle_parse_arg( args ) {
 
 
 function fv_wp_flowplayer_share_parse_arg( args ) {
-  var field = get_field("share")[0];
+  var field = fv_player_editor.get_field("share")[0];
   if (args[1] == 'yes' ) {
     field.selectedIndex = 1;
   } else if (args[1] == 'no' ) {
@@ -4262,9 +4261,9 @@ function fv_wp_flowplayer_share_parse_arg( args ) {
   } else {
     field.selectedIndex = 3;
     args = args[1].split(';');
-    if( typeof(args[0]) == "string" ) get_field('share_url').val(args[0]);
-    if( typeof(args[1]) == "string" ) get_field('share_title').val(args[1]);
-    get_field("share_custom").show();
+    if( typeof(args[0]) == "string" ) fv_player_editor.get_field('share_url').val(args[0]);
+    if( typeof(args[1]) == "string" ) fv_player_editor.get_field('share_title').val(args[1]);
+    fv_player_editor.get_field("share_custom").show();
   }
 }
 

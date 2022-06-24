@@ -881,6 +881,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
     
+    $sItemCaptionOriginal = $sItemCaption;
+
     if( !empty($aArgs['members_only']) ) {
       $sHTML = "\t\t<a href='".esc_attr($aArgs['members_only'])."' data-fancybox>";
     } else {
@@ -1002,7 +1004,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $sHTML .= "</a>\n";
     
-    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );
+    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaptionOriginal, $aPlayer, $index );
     
     return $sHTML;
   }
@@ -1277,6 +1279,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
         $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
+        $css .= $sel." svg.fvp-icon { fill: ".$sDuration." !important; }\n";
       }
 
       if( $sBuffer ) {
@@ -1383,11 +1386,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( !$force && !$this->should_force_load_js() && isset($posts) && count($posts) > 0 ) {
       $bFound = false;
-      
-      if( $this->_get_option('parse_comments') ) { //  if video link parsing is enabled, we need to check if there might be a video somewhere
-        $bFound = true;
-      }         
-      
+
+
       foreach( $posts AS $objPost ) {
         if( !empty($objPost->post_content) && (
             stripos($objPost->post_content,'[fvplayer') !== false ||
@@ -2242,7 +2242,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
       if( $list_style == 'text' ) {
         $sClass .= ' fp-playlist-only-captions';
-      } else if( sizeof($aCaptions) > 0 && strlen(implode($aCaptions)) > 0 ) {
+      } else if( sizeof($aCaptions) > 0 && strlen(implode("",$aCaptions)) > 0 ) {
         $sClass .= ' fp-playlist-has-captions';
       }
     }

@@ -410,14 +410,14 @@ class FV_Player_Db_Player {
   /**
    * Checks for DB tables existence and creates it as necessary.
    *
-   * @param $wpdb The global WordPress database object.
+   * @param $force Forces to run dbDelta.
    */
-  private function initDB($wpdb) {
-    global $fv_fp, $fv_wp_flowplayer_ver;
+  public static function initDB($force = false) {
+    global $wpdb, $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
-    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver || $force ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -545,7 +545,7 @@ CREATE TABLE " . self::$db_table_name . " (
       self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
-    $this->initDB($wpdb);
+    self::initDB();
 
     // For a while https://foliovision.com/player/advanced/player-database used to say the $player_id should be passed as array
     if( is_array($id) ) {
@@ -600,9 +600,6 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->$key = $value === null ? $value : stripslashes($value);
         }
 
-        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
-        $this->id = $this->id_player;
-
         // add meta data
         $this->meta_data = $cached_player->getMetaData();
 
@@ -626,8 +623,8 @@ CREATE TABLE " . self::$db_table_name . " (
       $this->fill_properties($options);
 
       // add dates for newly created players
-      if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
-      if( empty($this->date_modified) ) $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+      if( empty($this->date_created) ) $this->date_created = date_format( date_create(), "Y-m-d H:i:s" );
+      if( empty($this->date_modified) ) $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
       // add author, if we're creating new player and not loading a player from DB for caching purposes
       if ( empty($options['author']) ) {
@@ -715,10 +712,6 @@ CREATE TABLE " . self::$db_table_name . " (
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
-        // change ID to ID_PLAYER, as ID is used as a shortcode property
-        if ($property == 'id') {
-          $property = 'id_player';
-        }
         $data[$property] = $value;
       }
     }
@@ -884,7 +877,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_values = array();
 
     // fill date(s)
-    $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+    $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
     if (!$is_update && empty($this->date_created) ) {
       $this->date_created = $this->date_modified;
