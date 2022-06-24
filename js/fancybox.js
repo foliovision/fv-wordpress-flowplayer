@@ -267,13 +267,6 @@ jQuery( function() {
           });
         }
 
-        // show lightbox if the player is started by some other way than clicking on the lightbox button - like chapter name
-        api.on('load resume', function (e,api,time) {
-          if( !api.lightbox_visible() ) {
-            jQuery.fancybox.open(jQuery(player))
-            fv_fancybox_check_size();
-          }
-        });
       }
     });
   }
