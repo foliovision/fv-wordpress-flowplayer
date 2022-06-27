@@ -394,7 +394,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( $secret ) {
       $censored_val = '';
       for ($i = 0; $i < strlen($val); $i++) {
-        if( $i < 2 ) {
+        // Reveal first and last 2 chars
+        if( $i < 2 || $i >= strlen($val) - 2 ) {
           $censored_val .= $val[$i];
         } else {
           $censored_val .= '*';
@@ -421,7 +422,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           <?php if ( $secret ): ?>
             <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
             <?php if(!empty($censored_val)): ?>
-              <span class="secret-preview"><?php echo $censored_val; ?></span>
+              <code class="secret-preview"><?php echo $censored_val; ?></code>
               <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key); ?>" >Change</a>
             <?php endif; ?>
           <?php endif; ?>
