@@ -85,7 +85,7 @@ add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flo
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
     if ( false === $closed )
-        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_flowplayer_mobile', 'fv_flowplayer_seo', 'fv_flowplayer_conversion', 'fv_player_pro' );
+        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_flowplayer_mobile', 'fv_flowplayer_seo', 'fv_flowplayer_privacy', 'fv_flowplayer_conversion', 'fv_player_pro', 'fv_flowplayer_skin_custom_css' );
 
     return $closed;
 }
