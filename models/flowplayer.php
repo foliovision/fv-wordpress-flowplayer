@@ -359,7 +359,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');
-    $secret         = (!empty($options['secret']) ? $options['secret'] : false);
+
+    // Only use fields with secret values obfuscated if FV Player Pro is not there or is ready for it
+    if(
+      !function_exists('FV_Player_Pro') ||
+      ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') )
+    ) {
+      $secret         = (!empty($options['secret']) ? $options['secret'] : false);
+
+    } else {
+      $secret = false;
+    }
 
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
