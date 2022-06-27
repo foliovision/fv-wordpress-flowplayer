@@ -358,7 +358,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
     $default        = (!empty($options['default']) ? $options['default'] : '');
-    $help           = (!empty($options['help']) ? $options['help'] : '');     
+    $help           = (!empty($options['help']) ? $options['help'] : '');
+
+    // Only use fields with secret values obfuscated if FV Player Pro is not there or is ready for it
+    if(
+      !function_exists('FV_Player_Pro') ||
+      ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') )
+    ) {
+      $secret         = (!empty($options['secret']) ? $options['secret'] : false);
+
+    } else {
+      $secret = false;
+    }
+
+    $secret         = (!empty($options['secret']) ? $options['secret'] : false);
 
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
@@ -366,6 +379,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     $saved_value = esc_attr( $this->_get_option($key) );
     if ( is_array( $key ) && count( $key ) > 1 ) {
+      if( $secret ) {
+        $secret_key  = $key[0] . '[_is_secret_' . $key[1] . ']'; // add _is_secret_ prefix to key
+      }
       $key = $key[0] . '[' . $key[1] . ']';
     }
     
@@ -373,20 +389,43 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // however in case of marginBottom you might wish to enter 0 and we need to accept that
     // so we just check if the default if a number and if it is, we allow even 0 value
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
+
+    // censor original value
+    if( $secret ) {
+      $censored_val = '';
+      for ($i = 0; $i < strlen($val); $i++) {
+        // Reveal first and last 2 chars
+        if( $i < 2 || $i >= strlen($val) - 2 ) {
+          $censored_val .= $val[$i];
+        } else {
+          $censored_val .= '*';
+        }
+      }
+      $val = '';
+    }
+
     ?>
       <tr>
         <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text"  value="<?php echo esc_attr($val); ?>"<?php
+          <input <?php echo $class_name; ?> <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
               }
             }
-          ?> />          
+          ?> />
           <?php if ( $help ) { ?>
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo $help; ?></span></p>
           <?php } ?>
+
+          <?php if ( $secret ): ?>
+            <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
+            <?php if(!empty($censored_val)): ?>
+              <code class="secret-preview"><?php echo $censored_val; ?></code>
+              <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key); ?>" >Change</a>
+            <?php endif; ?>
+          <?php endif; ?>
         </td>
       </tr>
 
@@ -671,8 +710,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   
-  public function _set_conf( $aNewOptions = false ) {
-    if( !$aNewOptions ) $aNewOptions = $_POST;
+  public function _set_conf( $aNewOptions ) {
     $sKey = !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
     
     //  make sure the preset Skin properties are not over-written
