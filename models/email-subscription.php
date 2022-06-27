@@ -233,7 +233,8 @@ class FV_Player_Email_Subscription {
         </td>
       </tr>
       <tr>
-        <td>          
+        <td>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
           <input type="button" value="<?php _e('Add More Lists', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-email_lists-add" />
         </td>
       </tr>
@@ -288,7 +289,7 @@ class FV_Player_Email_Subscription {
             var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.flowplayer::get_plugin_url().'/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
             shortcode = shortcode.replace(/#key#/,key);
             
-            var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>&fv_player_preview=' + b64EncodeUnicode(shortcode);
+            var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
             fv_player_open_preview_window(url);
           },
           error: function() {
