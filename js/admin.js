@@ -202,21 +202,21 @@
 
       var name = $(this).data('setting-change'),
         hidden_input = $("[name='"+name+"']"),
-        password_input = $("[name='"+name.replace('_is_secret_', '')+"']");
+        password_input = $("[name='"+name.replace('_is_secret_', '')+"']"),
+        secret_preview = $(this).siblings('.secret-preview');
 
       if( hidden_input.val() == '1' ) {
         hidden_input.val('0');
         password_input.show();
+        secret_preview.hide();
         $(this).text('Cancel');
       } else {
         hidden_input.val('1');
         password_input.hide();
         if(password_input.val() || !$(this).data('is-empty') ) {
           $(this).text('Change');
-        } else {
-          $(this).text('Add');
+          secret_preview.show();
         }
-        
       }
 
     });

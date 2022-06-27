@@ -378,8 +378,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // so we just check if the default if a number and if it is, we allow even 0 value
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
 
+    $can_show_secret_field = !function_exists('FV_Player_Pro') || ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') );
+
     // censor original value
-    if( $secret ) {
+    if( $secret && $can_show_secret_field ) {
       $censored_val = '';
       for ($i = 0; $i < strlen($val); $i++) {
         if( $i < 2 ) {
@@ -395,7 +397,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <tr>
         <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text" <?php if(!empty($secret)) echo 'style="display: none";' ?> value="<?php echo esc_attr($val); ?>"<?php
+          <input <?php echo $class_name; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -406,11 +408,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo $help; ?></span></p>
           <?php } ?>
 
-          <?php if ( $secret ) { ?>
-            <input name="<?php echo esc_attr($secret_key); ?>" value="1" type="hidden" />
-            <span><?php echo $censored_val; ?></span>
-            <a href="#" data-is-empty="<?php if(empty($censored_val)) {echo '1';} else {echo '0';} ?>" data-setting-change="<?php echo esc_attr($secret_key); ?>" ><?php if(empty($censored_val)) {echo 'Add';} else {echo 'Change';}  ?></a>
-           <?php } ?>
+          <?php if ( $secret && $can_show_secret_field ): ?>
+            <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
+            <?php if(!empty($censored_val)): ?>
+              <span class="secret-preview"><?php echo $censored_val; ?></span>
+              <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key); ?>" >Change</a>
+            <?php endif; ?>
+          <?php endif; ?>
         </td>
       </tr>
 
