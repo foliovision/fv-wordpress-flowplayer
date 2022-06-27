@@ -388,10 +388,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // so we just check if the default if a number and if it is, we allow even 0 value
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
 
-    $can_show_secret_field = !function_exists('FV_Player_Pro') || ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') );
-
     // censor original value
-    if( $secret && $can_show_secret_field ) {
+    if( $secret ) {
       $censored_val = '';
       for ($i = 0; $i < strlen($val); $i++) {
         if( $i < 2 ) {
@@ -418,7 +416,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo $help; ?></span></p>
           <?php } ?>
 
-          <?php if ( $secret && $can_show_secret_field ): ?>
+          <?php if ( $secret ): ?>
             <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
             <?php if(!empty($censored_val)): ?>
               <span class="secret-preview"><?php echo $censored_val; ?></span>
