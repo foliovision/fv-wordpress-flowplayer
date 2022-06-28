@@ -80,7 +80,9 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 
 
 
-
+/**
+ * Settings metaboxes close
+ */
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
@@ -91,6 +93,9 @@ function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
   return $closed;
 }
 
+/**
+ * Tools metaboxes close
+ */
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_tools', 'fv_flowplayer_settings_tools_closed_meta_boxes' );
 
 function fv_flowplayer_settings_tools_closed_meta_boxes( $closed ) {
@@ -101,6 +106,9 @@ function fv_flowplayer_settings_tools_closed_meta_boxes( $closed ) {
   return $closed;
 }
 
+/**
+ * Skin metaboxes close
+ */
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_skin', 'fv_flowplayer_settings_skin_closed_meta_boxes' );
 
 function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
@@ -111,6 +119,18 @@ function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
   return $closed;
 }
 
+/**
+ * Hosting metaboxes close
+ */
+add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_hosting', 'fv_flowplayer_settings_hosting_closed_meta_boxes' );
+
+function fv_flowplayer_settings_hosting_closed_meta_boxes( $closed ) {
+  if ( false === $closed ) {
+    $closed = array( 'fv_player_pro_vimeo', 'fv_player_pro_youtube' );
+  }
+
+  return $closed;
+}
 
 
 /*
