@@ -15,14 +15,14 @@ class FV_Player_Email_Subscription {
     
     add_action( 'wp_ajax_fv_player_email_subscription_save', array($this, 'save_settings') );
 
-    if( !empty($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
+    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer') {
       add_action('admin_init', array( $this, 'csv_export' ) );
     }
 
-    if( !empty($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
-      add_action('in_admin_header',array($this,'admin_export_screen'));
+    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer') {
+      add_action( 'admin_notices', array($this,'admin_export_screen') );
     }
-    
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'popup_preview' ), 10, 3 );
 
   }
@@ -553,7 +553,7 @@ class FV_Player_Email_Subscription {
     die(json_encode($result));
   }
 
-  function csv_export(){
+  function csv_export() {
     if( !current_user_can('manage_options') ) return;
     
     $list_id = intval($_GET['fv-email-export']);
