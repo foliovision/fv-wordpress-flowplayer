@@ -69,23 +69,23 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal\" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
-	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
-  <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
-<div class='fvp-share-bar'><ul class=\"fvp-sharing\">
-    <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/intent/tweet?text=Test+Blog+&url=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
+    $sample = <<< HTML
+<div id="wpfp_31180ef298e0fc79eff36d1114e09913" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" data-fv-embed="?fv_player_embed=1" style="max-width: 100%; " data-ratio="0.5625" data-save-position="yes">
+	<div class="fp-ratio" style="padding-top: 56.25%"></div>
+	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-rounded-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.a{fill:#000;opacity:0.65;}.b{fill:#fff;opacity:1.0;}</style></defs><title>play-rounded-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><path class="b" d="M35.942,35.2323c0-4.7289,3.3506-6.6637,7.446-4.2971L68.83,45.6235c4.0956,2.364,4.0956,6.2319,0,8.5977L43.388,68.91c-4.0954,2.364-7.446.43-7.446-4.2979Z" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
+<div class='fvp-share-bar'><ul class="fvp-sharing">
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=Test+Blog+&url=" target="_blank"></a></li>
+    <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank"></a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
-	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim\" rel=\"some-test-hash\">
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/1.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/2.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/3.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_31180ef298e0fc79eff36d1114e09913">
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/1.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/2.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/3.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 	</div>
+HTML;
 
-";
-    
-    $this->assertEquals( $this->fix_newlines($expect), $this->fix_newlines($output) );
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
   }
 
   // For logged in users the video position saving Ajax should affect the FV Player output - adding position to data-item
@@ -129,21 +129,23 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal\" data-fv-embed=\"?fv_player_embed=1\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
-	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
-  <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
-<div class='fvp-share-bar'><ul class=\"fvp-sharing\">
-    <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/intent/tweet?text=Test+Blog+&url=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
+    $sample = <<< HTML
+<div id="wpfp_245a181e8fd0e4cbe48d6e34cd579eda" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" data-fv-embed="?fv_player_embed=1" style="max-width: 100%; " data-ratio="0.5625" data-save-position="yes">
+	<div class="fp-ratio" style="padding-top: 56.25%"></div>
+	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-rounded-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.a{fill:#000;opacity:0.65;}.b{fill:#fff;opacity:1.0;}</style></defs><title>play-rounded-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><path class="b" d="M35.942,35.2323c0-4.7289,3.3506-6.6637,7.446-4.2971L68.83,45.6235c4.0956,2.364,4.0956,6.2319,0,8.5977L43.388,68.91c-4.0954,2.364-7.446.43-7.446-4.2979Z" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
+<div class='fvp-share-bar'><ul class="fvp-sharing">
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=Test+Blog+&url=" target="_blank"></a></li>
+    <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank"></a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
-	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim\" rel=\"some-test-hash\">
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/1.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/2.mp4\",\"type\":\"video\/mp4\",\"position\":12}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/3.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_245a181e8fd0e4cbe48d6e34cd579eda">
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/1.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/2.mp4","type":"video\/mp4","position":12,"top_position":32}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/3.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 	</div>
+HTML;
 
-";
+    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
 
     // another request, this time with lower top position being sent
     $this->_last_response = '';
@@ -204,23 +206,21 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     $post = get_post( $this->postID );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $expect = "<div id=\"some-test-hash\" class=\"flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal\" data-fv-embed=\"?fv_player_embed=2\" style=\"max-width: 100%; \" data-ratio=\"0.5625\" data-save-position=\"yes\">
-	<div class=\"fp-ratio\" style=\"padding-top: 56.25%\"></div>
-  <div class=\"fp-ui\"><noscript>Please enable JavaScript</noscript><div class=\"fp-preload\"><b></b><b></b><b></b><b></b></div></div>
-<div class='fvp-share-bar'><ul class=\"fvp-sharing\">
-    <li><a class=\"sharing-facebook\" href=\"https://www.facebook.com/sharer/sharer.php?u=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-twitter\" href=\"https://twitter.com/intent/tweet?text=Test+Blog+&url=\" target=\"_blank\"></a></li>
-    <li><a class=\"sharing-email\" href=\"mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20\" target=\"_blank\"></a></li></ul><div><label><a class=\"embed-code-toggle\" href=\"#\"><strong>Embed</strong></a></label></div><div class=\"embed-code\"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
+    $sample = <<< HTML
+<div id="wpfp_55754a50dd0a87c73e1de6be4f08b9a1" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" data-fv-embed="?fv_player_embed=2" style="max-width: 100%; " data-ratio="0.5625" data-save-position="yes">
+	<div class="fp-ratio" style="padding-top: 56.25%"></div>
+	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-rounded-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.a{fill:#000;opacity:0.65;}.b{fill:#fff;opacity:1.0;}</style></defs><title>play-rounded-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><path class="b" d="M35.942,35.2323c0-4.7289,3.3506-6.6637,7.446-4.2971L68.83,45.6235c4.0956,2.364,4.0956,6.2319,0,8.5977L43.388,68.91c-4.0954,2.364-7.446.43-7.446-4.2979Z" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
+<div class='fvp-share-bar'><ul class="fvp-sharing">
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=Test+Blog+&url=" target="_blank"></a></li>
+    <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank"></a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
-	<div class=\"fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim\" rel=\"some-test-hash\">
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/1.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/2.mp4\",\"type\":\"video\/mp4\",\"position\":12,\"saw\":true}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div><span class=\"fvp-progress-wrap\"><span class=\"fvp-progress\" style=\"width: 100%\"></span></span></div></a>
-		<a href='#' data-item='{\"sources\":[{\"src\":\"https:\/\/cdn.site.com\/3.mp4\",\"type\":\"video\/mp4\"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_55754a50dd0a87c73e1de6be4f08b9a1">
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/1.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/2.mp4","type":"video\/mp4","position":12,"saw":true}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div><span class="fvp-progress-wrap"><span class="fvp-progress" style="width: 100%"></span></span></div></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/3.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 	</div>
-
-";
-    
-    $this->assertEquals( $this->fix_newlines($expect), $this->fix_newlines($output) );
+HTML;
     
     $current_user;
   }

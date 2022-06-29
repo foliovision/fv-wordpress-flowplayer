@@ -15,14 +15,14 @@ class FV_Player_Email_Subscription {
     
     add_action( 'wp_ajax_fv_player_email_subscription_save', array($this, 'save_settings') );
 
-    if( !empty($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
+    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer') {
       add_action('admin_init', array( $this, 'csv_export' ) );
     }
 
-    if( !empty($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer'){
-      add_action('in_admin_header',array($this,'admin_export_screen'));
+    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer') {
+      add_action( 'admin_notices', array($this,'admin_export_screen') );
     }
-    
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'popup_preview' ), 10, 3 );
 
   }
@@ -233,7 +233,8 @@ class FV_Player_Email_Subscription {
         </td>
       </tr>
       <tr>
-        <td>          
+        <td>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
           <input type="button" value="<?php _e('Add More Lists', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-email_lists-add" />
         </td>
       </tr>
@@ -288,7 +289,7 @@ class FV_Player_Email_Subscription {
             var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.flowplayer::get_plugin_url().'/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
             shortcode = shortcode.replace(/#key#/,key);
             
-            var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>&fv_player_preview=' + b64EncodeUnicode(shortcode);
+            var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
             fv_player_open_preview_window(url);
           },
           error: function() {
@@ -552,7 +553,7 @@ class FV_Player_Email_Subscription {
     die(json_encode($result));
   }
 
-  function csv_export(){
+  function csv_export() {
     if( !current_user_can('manage_options') ) return;
     
     $list_id = intval($_GET['fv-email-export']);

@@ -204,12 +204,6 @@ jQuery(function() {
       return $el_editor.find(selector);
     }
 
-    function b64EncodeUnicode(str) {
-      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-        return String.fromCharCode('0x' + p1);
-      }));
-    }
-
     $doc.ready( function(){
       $el_editor = $('#fv-player-shortcode-editor');
 
@@ -4066,6 +4060,12 @@ jQuery(function() {
 
         return false;
       },
+
+      b64EncodeUnicode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+          return String.fromCharCode('0x' + p1);
+        }));
+      },
     };
 
   })(jQuery);
@@ -4196,7 +4196,7 @@ function fv_player_open_preview_window(url, width, height){
   height = Math.min(window.screen.availHeight * 0.80, height + 25);
   width = Math.min(window.screen.availWidth * 0.66, width + 100);
   
-  if(fv_player_preview_window == null || fv_player_preview_window.self == null || fv_player_preview_window.closed ){
+  if( typeof fv_player_preview_window == 'undefined' || fv_player_preview_window == null || fv_player_preview_window.self == null || fv_player_preview_window.closed ){
     fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes width=' + width + ' height=' + height);
   }else{
     fv_player_preview_window.location.assign(url);

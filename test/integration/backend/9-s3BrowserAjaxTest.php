@@ -23,7 +23,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
     parent::wpSetUpBeforeClass();
 
-    $fv_fp->_set_conf();
+    $fv_fp->_set_conf($_POST);
   }
 
   public function setUp() {

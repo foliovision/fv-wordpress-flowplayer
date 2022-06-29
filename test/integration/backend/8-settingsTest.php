@@ -31,7 +31,7 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
 
     $expect = file_get_contents(dirname(__FILE__).'/testSettingsScreen.html');
 
-    // file_put_contents( dirname(__FILE__) .'/testSettingsScreen.output.html', $output );
+    file_put_contents( dirname(__FILE__) .'/testSettingsScreen.output.html', $output );
 
     $expect = preg_replace('~"srclang".*?\.vtt"~', '"srclang":"/usr/bin/php","src":"http:\/\/example.org\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"', $expect);
     $output = preg_replace('~"srclang".*?\.vtt"~', '"srclang":"/usr/bin/php","src":"http:\/\/example.org\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"', $output);
