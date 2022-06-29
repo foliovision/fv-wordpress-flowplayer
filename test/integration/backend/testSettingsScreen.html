@@ -869,8 +869,9 @@ jQuery(document).ready(function($) {
             <tr>
         <td><label for="video_sitemap_meta">Sitemap Post Meta <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>:</label></td>
         <td>
-          <input  id="video_sitemap_meta" name="video_sitemap_meta" type="text"  value="" />          
+          <input   id="video_sitemap_meta" name="video_sitemap_meta" type="text" value="" />
                       <p class="description fv-player-admin-tooltip"><span class="info">You can enter post meta keys here, use <code>,</code> to separate multiple values.</span></p>
+          
                   </td>
       </tr>
 
@@ -1007,7 +1008,7 @@ jQuery(document).ready(function($) {
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="flowplayer-wrapper-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="flowplayer-wrapper-handle-order-higher-description">Move Player Skin box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="flowplayer-wrapper-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="flowplayer-wrapper-handle-order-lower-description">Move Player Skin box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Player Skin</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
 <style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
-    <div id="wpfp_4a230a17b9099da2453657748792a0a3" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" data-fvautoplay="-1" data-fv-embed="?fv_player_embed=1" style="max-width: 100%; " data-ratio="0.5625">
+    <div id="wpfp_e75f87ccb4cd18ab5a59d756ceeda8e1" class="flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" data-fvautoplay="-1" data-fv-embed="?fv_player_embed=1" style="max-width: 100%; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<img class="fp-splash" alt="Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee" src="https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&amp;mh=720" />
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-rounded-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.a{fill:#000;opacity:0.65;}.b{fill:#fff;opacity:1.0;}</style></defs><title>play-rounded-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><path class="b" d="M35.942,35.2323c0-4.7289,3.3506-6.6637,7.446-4.2971L68.83,45.6235c4.0956,2.364,4.0956,6.2319,0,8.5977L43.388,68.91c-4.0954,2.364-7.446.43-7.446-4.2979Z" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -1055,10 +1056,11 @@ jQuery(document).ready(function($) {
             <tr>
         <td><label for="skin-slim[progressColor]">Color:</label></td>
         <td>
-          <input  class="color" id="skin-slim[progressColor]" name="skin-slim[progressColor]" type="text"  value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
+          <input  class="color"  id="skin-slim[progressColor]" name="skin-slim[progressColor]" type="text" value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
-					.flowplayer .fp-color { background-color: #%val% !important }" />          
+					.flowplayer .fp-color { background-color: #%val% !important }" />
+          
                   </td>
       </tr>
 
@@ -1103,10 +1105,11 @@ jQuery(document).ready(function($) {
             <tr>
         <td><label for="skin-youtuby[progressColor]">Color:</label></td>
         <td>
-          <input  class="color" id="skin-youtuby[progressColor]" name="skin-youtuby[progressColor]" type="text"  value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
+          <input  class="color"  id="skin-youtuby[progressColor]" name="skin-youtuby[progressColor]" type="text" value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
-					.flowplayer .fp-color { background-color: #%val% !important }" />          
+					.flowplayer .fp-color { background-color: #%val% !important }" />
+          
                   </td>
       </tr>
 
@@ -1169,42 +1172,47 @@ jQuery(document).ready(function($) {
             <tr>
         <td><label for="skin-custom[borderColor]">Border color:</label></td>
         <td>
-          <input  class="color" id="skin-custom[borderColor]" name="skin-custom[borderColor]" type="text"  value="#666666" data-fv-preview=".flowplayer{border-color:#%val% !important;}" />          
+          <input  class="color"  id="skin-custom[borderColor]" name="skin-custom[borderColor]" type="text" value="#666666" data-fv-preview=".flowplayer{border-color:#%val% !important;}" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="skin-custom[marginBottom]">Bottom Margin:</label></td>
         <td>
-          <input  id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text"  value="" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
+          <input   id="skin-custom[marginBottom]" name="skin-custom[marginBottom]"  title="Enter value in em" type="text" value="" data-fv-preview=".flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
                 .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
                 .flowplayer.has-abloop { margin-bottom: %val%px !important; }
-                .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }" />          
+                .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="skin-custom[bufferColor]">Buffer:</label></td>
         <td>
-          <input  class="color" id="skin-custom[bufferColor]" name="skin-custom[bufferColor]" type="text"  value="#eeeeee" data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
-                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" />          
+          <input  class="color"  id="skin-custom[bufferColor]" name="skin-custom[bufferColor]" type="text" value="#eeeeee" data-fv-preview=".flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
+                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="skin-custom[canvas]">Canvas:</label></td>
         <td>
-          <input  class="color" id="skin-custom[canvas]" name="skin-custom[canvas]" type="text"  value="#000000" data-fv-preview=".flowplayer { background-color: #%val% !important; }" />          
+          <input  class="color"  id="skin-custom[canvas]" name="skin-custom[canvas]" type="text" value="#000000" data-fv-preview=".flowplayer { background-color: #%val% !important; }" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="skin-custom[backgroundColor]">Controlbar:</label></td>
         <td>
-          <input  class="color-opacity" id="skin-custom[backgroundColor]" name="skin-custom[backgroundColor]" type="text"  value="#333333" data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+          <input  class="color-opacity"  id="skin-custom[backgroundColor]" name="skin-custom[backgroundColor]" type="text" value="#333333" data-fv-preview=".flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
                  .fv_player_popup {  background: #%val% !important;}
                  .fvfp_admin_error_content {  background: #%val% !important; }
-                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }" />          
+                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }" />
+          
                   </td>
       </tr>
 
@@ -1235,27 +1243,30 @@ jQuery(document).ready(function($) {
           <tr>
         <td><label for="skin-custom[progressColor]">Progress:</label></td>
         <td>
-          <input  class="color" id="skin-custom[progressColor]" name="skin-custom[progressColor]" type="text"  value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
+          <input  class="color"  id="skin-custom[progressColor]" name="skin-custom[progressColor]" type="text" value="#bb0000" data-fv-preview=".flowplayer .fp-volumelevel { background-color: #%val% !important; }
           .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
           .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
-					.flowplayer .fp-color { background-color: #%val% !important }" />          
+					.flowplayer .fp-color { background-color: #%val% !important }" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="skin-custom[timeColor]">Time:</label></td>
         <td>
-          <input  class="color" id="skin-custom[timeColor]" name="skin-custom[timeColor]" type="text"  value="#eeeeee" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
-                  .fv-player-video-checker { color: #%val% !important; }" />          
+          <input  class="color"  id="skin-custom[timeColor]" name="skin-custom[timeColor]" type="text" value="#eeeeee" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
+                  .fv-player-video-checker { color: #%val% !important; }" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="skin-custom[durationColor]">Buttons:</label></td>
         <td>
-          <input  class="color" id="skin-custom[durationColor]" name="skin-custom[durationColor]" type="text"  value="#eeeeee" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
+          <input  class="color"  id="skin-custom[durationColor]" name="skin-custom[durationColor]" type="text" value="#eeeeee" data-fv-preview=".flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
                   .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }
-                  .flowplayer svg.fvp-icon { fill: #%val% !important; }" />          
+                  .flowplayer svg.fvp-icon { fill: #%val% !important; }" />
+          
                   </td>
       </tr>
 
@@ -1368,8 +1379,8 @@ jQuery(document).ready(function($) {
 <div class="postbox-header"><h2 class="hndle">Playlist</h2>
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_flowplayer_skin_playlist-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_skin_playlist-handle-order-higher-description">Move Playlist box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_flowplayer_skin_playlist-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_skin_playlist-handle-order-lower-description">Move Playlist box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Playlist</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
   <div class="flowplayer-wrapper">
-    <div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_4a230a17b9099da2453657748792a0a3">
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Foliovision Video","splash":"https:\/\/i.vimeocdn.com\/video\/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720","subtitles":[{"srclang":"\/usr\/bin\/php","src":"http:\/\/example.org\/wp-content\/plugins\/home\/michal\/Web\/Wordpress\/wp-content\/plugins\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"}]}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&amp;mh=720' /></div><h4><span>Foliovision Video</span></h4></a>
+    <div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_e75f87ccb4cd18ab5a59d756ceeda8e1">
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Foliovision Video","splash":"https:\/\/i.vimeocdn.com\/video\/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720","subtitles":[{"srclang":"en","label":"English","src":"http:\/\/example.org\/wp-content\/plugins\/srv\/users\/continuous-integration\/apps\/continuous-integration\/unit-testing\/fv-wordpress-flowplayer\/images\/test-subtitles.vtt"}]}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&amp;mh=720' /></div><h4><span>Foliovision Video</span></h4></a>
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Lapinthrope Extras - Roy Thompson Hall Dance","splash":"https:\/\/i.vimeocdn.com\/video\/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130"}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&amp;mh=130' /></div><h4><span>Lapinthrope Extras - Roy Thompson Hall Dance</span></h4></a>
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/player.vimeo.com\/external\/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005","type":"video\/mp4"}],"fv_title":"Romeo and Juliet Ballet Schloss Kittsee","splash":"https:\/\/i.vimeocdn.com\/video\/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130"}'><div class='fvp-playlist-thumb-img'><img  src='https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&amp;mh=130' /></div><h4><span>Romeo and Juliet Ballet Schloss Kittsee</span></h4></a>
 	</div>
@@ -1644,29 +1655,34 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             <tr>
         <td class="first"><label for="digitalocean_spaces[space]">Space Name:</label></td>
         <td>
-          <input  id="digitalocean_spaces[space]" name="digitalocean_spaces[space]" type="text"  value="" />          
+          <input   id="digitalocean_spaces[space]" name="digitalocean_spaces[space]" type="text" value="" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="digitalocean_spaces[endpoint]">Endpoint:</label></td>
         <td>
-          <input  id="digitalocean_spaces[endpoint]" name="digitalocean_spaces[endpoint]" type="text"  value="" />          
+          <input   id="digitalocean_spaces[endpoint]" name="digitalocean_spaces[endpoint]" type="text" value="" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="digitalocean_spaces[key]">Key:</label></td>
         <td>
-          <input  id="digitalocean_spaces[key]" name="digitalocean_spaces[key]" type="text"  value="" />          
+          <input   id="digitalocean_spaces[key]" name="digitalocean_spaces[key]" type="text" value="" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="digitalocean_spaces[secret]">Secret:</label></td>
         <td>
-          <input  id="digitalocean_spaces[secret]" name="digitalocean_spaces[secret]" type="text"  value="" />          
-                  </td>
+          <input   id="digitalocean_spaces[secret]" name="digitalocean_spaces[secret]" type="text" value="" />
+          
+                      <input name="digitalocean_spaces[_is_secret_secret]" value="0" type="hidden" />
+                              </td>
       </tr>
 
           <tr>
@@ -1684,29 +1700,34 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             <tr>
         <td class="first"><label for="linode_object_storage[space]">Storage Name:</label></td>
         <td>
-          <input  id="linode_object_storage[space]" name="linode_object_storage[space]" type="text"  value="" />          
+          <input   id="linode_object_storage[space]" name="linode_object_storage[space]" type="text" value="" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="linode_object_storage[endpoint]">Endpoint:</label></td>
         <td>
-          <input  id="linode_object_storage[endpoint]" name="linode_object_storage[endpoint]" type="text"  value="" />          
+          <input   id="linode_object_storage[endpoint]" name="linode_object_storage[endpoint]" type="text" value="" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="linode_object_storage[key]">Key:</label></td>
         <td>
-          <input  id="linode_object_storage[key]" name="linode_object_storage[key]" type="text"  value="" />          
+          <input   id="linode_object_storage[key]" name="linode_object_storage[key]" type="text" value="" />
+          
                   </td>
       </tr>
 
           <tr>
         <td><label for="linode_object_storage[secret]">Secret:</label></td>
         <td>
-          <input  id="linode_object_storage[secret]" name="linode_object_storage[secret]" type="text"  value="" />          
-                  </td>
+          <input   id="linode_object_storage[secret]" name="linode_object_storage[secret]" type="text" value="" />
+          
+                      <input name="linode_object_storage[_is_secret_secret]" value="0" type="hidden" />
+                              </td>
       </tr>
 
           <tr>
@@ -1932,7 +1953,8 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
         </td>
       </tr>
       <tr>
-        <td>          
+        <td>
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
           <input type="button" value="Add More Lists" class="button" id="fv-player-email_lists-add" />
         </td>
       </tr>
@@ -1977,7 +1999,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
         jQuery.ajax( {
           type: "POST",
           url: ajaxurl,
-          data: aInputs.serialize()+'&key='+key+'&action=fv_player_email_subscription_save&_wpnonce=77762f0c57',
+          data: aInputs.serialize()+'&key='+key+'&action=fv_player_email_subscription_save&_wpnonce=c9deb85c35',
           success: function(response) {
             button.css('visibility','hidden');
             button.prop('disabled', false);
@@ -1987,7 +2009,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
             var shortcode = '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="This is how the popup will appear at the end of a video"]';
             shortcode = shortcode.replace(/#key#/,key);
             
-            var url = 'http://example.org?fv_player_embed=1ca382fd08&fv_player_preview=' + b64EncodeUnicode(shortcode);
+            var url = 'http://example.org?fv_player_embed=fb6c31b85c&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
             fv_player_open_preview_window(url);
           },
           error: function() {
@@ -2227,22 +2249,22 @@ FV Player version:        7.5.22.728.3
 FV Player core version:   
 FV Player license:        
 
-WordPress Version:        5.9-alpha-51272-src
+WordPress Version:        5.8-alpha-50427-src
 Permalink Structure:      
 Active Theme:             WordPress Default 1.6
 
 Browser:                  none
-PHP Version:              7.4.3
-MySQL Version:            8.0.29
+PHP Version:              7.3.33
+MySQL Version:            5.7.37
 Web Server Info:          
 
 WordPress Memory Limit:   -1
 PHP Memory Limit:         -1
-PHP Upload Max Size:      2M
-PHP Post Max Size:        8M
-PHP Upload Max Filesize:  2M
+PHP Upload Max Size:      512M
+PHP Post Max Size:        1024M
+PHP Upload Max Filesize:  512M
 PHP Time Limit:           0
-PHP Max Input Vars:       1000
+PHP Max Input Vars:       5000
 PHP Arg Separator:        &
 PHP Allow URL File Open:  Yes
 PHP Extensions Installed: Array
@@ -2252,54 +2274,61 @@ PHP Extensions Installed: Array
     [2] => libxml
     [3] => openssl
     [4] => pcre
-    [5] => zlib
-    [6] => filter
-    [7] => hash
-    [8] => pcntl
-    [9] => Reflection
-    [10] => SPL
-    [11] => session
-    [12] => standard
-    [13] => sodium
-    [14] => mysqlnd
-    [15] => PDO
-    [16] => xml
-    [17] => bcmath
-    [18] => calendar
-    [19] => ctype
-    [20] => curl
-    [21] => dom
-    [22] => mbstring
-    [23] => FFI
-    [24] => fileinfo
-    [25] => ftp
-    [26] => gd
-    [27] => gettext
-    [28] => iconv
-    [29] => intl
-    [30] => json
-    [31] => exif
-    [32] => mysqli
-    [33] => pdo_mysql
-    [34] => Phar
-    [35] => posix
-    [36] => readline
-    [37] => shmop
-    [38] => SimpleXML
-    [39] => soap
-    [40] => sockets
-    [41] => ssh2
-    [42] => sysvmsg
-    [43] => sysvsem
-    [44] => sysvshm
-    [45] => tokenizer
-    [46] => xmlreader
-    [47] => xmlrpc
-    [48] => xmlwriter
-    [49] => xsl
-    [50] => zip
-    [51] => Zend OPcache
-    [52] => xdebug
+    [5] => sqlite3
+    [6] => zlib
+    [7] => calendar
+    [8] => ctype
+    [9] => dom
+    [10] => fileinfo
+    [11] => filter
+    [12] => ftp
+    [13] => hash
+    [14] => iconv
+    [15] => json
+    [16] => SPL
+    [17] => PDO
+    [18] => bz2
+    [19] => posix
+    [20] => readline
+    [21] => Reflection
+    [22] => session
+    [23] => SimpleXML
+    [24] => snmp
+    [25] => soap
+    [26] => sockets
+    [27] => sodium
+    [28] => standard
+    [29] => tokenizer
+    [30] => xml
+    [31] => xmlreader
+    [32] => xmlwriter
+    [33] => zip
+    [34] => mysqlnd
+    [35] => bcmath
+    [36] => Phar
+    [37] => curl
+    [38] => mbstring
+    [39] => gd
+    [40] => gettext
+    [41] => gmp
+    [42] => imap
+    [43] => intl
+    [44] => ldap
+    [45] => exif
+    [46] => mysqli
+    [47] => odbc
+    [48] => pcntl
+    [49] => pdo_dblib
+    [50] => pdo_mysql
+    [51] => PDO_ODBC
+    [52] => pdo_pgsql
+    [53] => pdo_sqlite
+    [54] => pgsql
+    [55] => shmop
+    [56] => tidy
+    [57] => xmlrpc
+    [58] => xsl
+    [59] => Zend OPcache
 )
 PHP MBString:             MB String extension is installed on server.
 
@@ -2448,7 +2477,7 @@ Array
     [video_meta_model_db_checked] => 7.5.22.728.3
     [player_meta_model_db_checked] => 7.5.22.728.3
     [version] => 7.5.22.728.3
-    [css_writeout-http-example-org] => 1656331613
+    [css_writeout-http-example-org] => 1656506464
 )
 
 DATABASE
@@ -2460,7 +2489,7 @@ fv_player_videometa not found!
 
 ### End System Info ###
 </textarea>
-<a class="button" href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-system-info&amp;_wpnonce=7169950a50">Export</a>
+<a class="button" href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-system-info&amp;_wpnonce=534d8d5ac5">Export</a>
     </div>
 </div>
 <div id="fv_flowplayer_conversion" class="postbox " >
@@ -2480,7 +2509,7 @@ fv_player_videometa not found!
         <td><label>Convert JW Player shortcodes to <code>[fvplayer]</code>:</label></td>
         <td>
           <p class="description">
-            <input type="button" class="button" value="Convert JW Player shortcodes" style="margin-top: 2ex;" onclick="if( confirm('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.') ) location.href='http://example.org/wp-admin/options-general.php?page=fvplayer&amp;convert_jwplayer=feed59f86e'; "/>
+            <input type="button" class="button" value="Convert JW Player shortcodes" style="margin-top: 2ex;" onclick="if( confirm('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.') ) location.href='http://example.org/wp-admin/options-general.php?page=fvplayer&amp;convert_jwplayer=d31e0f403a'; "/>
           </p>
         </td>
       </tr>
@@ -2492,7 +2521,7 @@ fv_player_videometa not found!
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_flowplayer_rollback-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_rollback-handle-order-higher-description">Move Rollback box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_flowplayer_rollback-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_rollback-handle-order-lower-description">Move Rollback box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Rollback</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
     <p>Are you having issues with version 7.5.22.728.3?</p>
     <p>You can go back to the last 7.4 version - without editor autosaving and JavaScript loading changes:</p>
-    <p><a href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-rollback&amp;version=7.4.47.727&amp;_wpnonce=ea3c17b0ee" class="button">Reinstall version 7.4.47.727</a></p>
+    <p><a href="http://example.org/wp-admin/options-general.php?page=fvplayer&amp;action=fv-player-rollback&amp;version=7.4.47.727&amp;_wpnonce=8e2ecf580c" class="button">Reinstall version 7.4.47.727</a></p>
   </div>
 </div>
 <div id="fv_flowplayer_uninstall" class="postbox " >
@@ -2633,7 +2662,7 @@ fv_player_videometa not found!
       <style>
       #fv_flowplayer_video_intelligence_revival { display: none }
       </style>
-    <input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="b51907793d" /><input type="hidden" name="_wp_http_referer" value="" />        
+    <input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="c7a5bda400" /><input type="hidden" name="_wp_http_referer" value="" />        
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
             <tr>
@@ -2667,7 +2696,7 @@ fv_player_videometa not found!
 <div id="fv_flowplayer_video_intelligence_account" class="postbox " >
 <div class="postbox-header"><h2 class="hndle">Account</h2>
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_flowplayer_video_intelligence_account-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_video_intelligence_account-handle-order-higher-description">Move Account box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_flowplayer_video_intelligence_account-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_flowplayer_video_intelligence_account-handle-order-lower-description">Move Account box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Account</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
-<input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="b51907793d" /><input type="hidden" name="_wp_http_referer" value="" />        
+<input type="hidden" id="nonce_fv_player_vi_install" name="nonce_fv_player_vi_install" value="c7a5bda400" /><input type="hidden" name="_wp_http_referer" value="" />        
         <table class="form-table2" style="margin: 5px; ">
           <tbody>
                                       <tr>
@@ -2733,7 +2762,7 @@ fv_player_videometa not found!
 </div>      </div>
             <div style="clear: both"></div>
     </div>
-    <input type="hidden" id="fv_flowplayer_settings_nonce" name="fv_flowplayer_settings_nonce" value="faf25b7756" /><input type="hidden" name="_wp_http_referer" value="" /><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="759cadc3db" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="0060d4ce20" />  </form>
+    <input type="hidden" id="fv_flowplayer_settings_nonce" name="fv_flowplayer_settings_nonce" value="28d755c1dc" /><input type="hidden" name="_wp_http_referer" value="" /><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="8434b98856" /><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="8d394d6d90" />  </form>
   
 </div>
 <script type="text/javascript" >
@@ -2815,7 +2844,7 @@ fv_player_videometa not found!
       var button = jQuery(this);
       button.siblings('img').eq(0).show();
 
-      jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: 'b53487d37a', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
+      jQuery.post( ajaxurl, { action: 'fv_wp_flowplayer_activate_extension', nonce: '69d9616389', plugin: jQuery(this).attr("data-plugin") }, function( response ) {
         button.siblings('img').eq(0).hide();
 
         var obj;
