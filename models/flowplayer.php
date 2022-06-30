@@ -345,6 +345,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
   }
 
+  public function _get_censored_val($val) {
+    $censored_val = '';
+
+    for ($i = 0; $i < strlen($val); $i++) {
+      // Reveal first and last 2 chars
+      if( $i < 2 || $i >= strlen($val) - 2 ) {
+        $censored_val .= $val[$i];
+      } else {
+        $censored_val .= '*';
+      }
+    }
+
+    return $censored_val;
+  }
 
   public function _get_input_text($options = array()) {
     // options must be an array
@@ -371,8 +385,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $secret = false;
     }
 
-    $secret         = (!empty($options['secret']) ? $options['secret'] : false);
-
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
     }
@@ -392,15 +404,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // censor original value
     if( $secret ) {
-      $censored_val = '';
-      for ($i = 0; $i < strlen($val); $i++) {
-        // Reveal first and last 2 chars
-        if( $i < 2 || $i >= strlen($val) - 2 ) {
-          $censored_val .= $val[$i];
-        } else {
-          $censored_val .= '*';
-        }
-      }
+      $censored_val = $this->_get_censored_val($val);
       $val = '';
     }
 
