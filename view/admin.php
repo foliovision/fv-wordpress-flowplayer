@@ -153,8 +153,29 @@ function fv_flowplayer_admin_amazon_options() {
             <td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_key', $key ) ) ); ?>" /></td>
         </tr>
         <tr<?php echo $amazon_tr_class; ?>>
+        <?php 
+          $secret = !function_exists('FV_Player_Pro') ||
+          ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') );
+          
+          $secret_key = "_is_secret_amazon_secret[]";
+          $val = $fv_fp->_get_option( array( 'amazon_secret', $key ) ) ; 
+
+          if( $secret ) {
+            $censored_val = $fv_fp->_get_censored_val( $val );
+            $val = '';
+          }
+  
+        ?>
             <td><label for="amazon_secret[]"><?php _e('Secret Access Key', 'fv-wordpress-flowplayer'); ?>:</label></td>
-            <td><input id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_secret', $key ) ) ); ?>" /></td>
+            <td><input  <?php if($secret && !empty($censored_val)) echo 'style="display: none;"' ?> id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr( $val ); ?>" />
+          <?php if( $secret ): ?>
+            <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
+            <?php if(!empty($censored_val)): ?>
+              <code class="secret-preview"><?php echo $censored_val; ?></code>
+              <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key.'-index-'.$key); ?>" >Change</a>
+            <?php endif; ?>
+          <?php endif; ?>
+          </td>
         </tr>
         <tr<?php echo $amazon_tr_class; ?>>
             <td colspan="2">
