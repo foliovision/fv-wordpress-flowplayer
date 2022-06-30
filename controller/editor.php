@@ -248,7 +248,23 @@ function fv_wp_flowplayer_featured_image($post_id) {
   $url = false;
   $title = '';
 
-  if( preg_match_all('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash_images) ) { // parse splash="..." in post content
+  // Search in post content
+  $search_context = $post->post_content;
+
+  // ...and also in post_meta
+  if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
+    foreach( $aMetas AS $aMeta ) {
+      foreach( $aMeta AS $meta_value ) {
+        if( preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
+          foreach( $shortcodes[0] AS $shortcode ) {
+            $search_context .= "\n\n".$shortcode;
+          }
+        }
+      }
+    }
+  }
+
+  if( preg_match_all('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $search_context, $splash_images) ) { // parse splash="..." in post content
     foreach($splash_images[1] as $src ) {
       if(!in_array($src, $splash_urls)) { // check if we already set this splash once
         $url = $src;
@@ -261,7 +277,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
     }
   }
 
-  if( !$url && preg_match_all('/\[fvplayer.*?id="(\d+)/', $post->post_content, $ids) ) { // parse [fvplayer id="..."] shortcode in post content
+  if( !$url && preg_match_all('/\[fvplayer.*?id="(\d+)/', $search_context, $ids) ) { // parse [fvplayer id="..."] shortcode in post content
     global $FV_Player_Db;
 
     foreach( $ids[1] as $player_id ) {
@@ -284,40 +300,6 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
       if($splash_attachment_id || $url) {
         break;
-      }
-    }
-  }
-
-  // search shortcodes in post meta
-  if( !$url && !$splash_attachment_id && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
-    foreach( $aMetas AS $key => $aMeta ) {
-      foreach( $aMeta AS $shortcode ) {
-        if( preg_match_all('/\[fvplayer.*?id="(\d+)/', $shortcode, $ids) ) {
-          global $FV_Player_Db;
-
-          foreach( $ids[1] as $player_id ) {
-            $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
-
-            if( !empty($atts['caption']) ) {
-              $title = $atts['caption'];
-            }
-
-            if( !empty($atts['splash_attachment_id']) ) {
-              if( !in_array($player_id, $players) ) {
-                $splash_attachment_id = (int) $atts['splash_attachment_id'];
-                $players[] = $player_id;
-
-                update_post_meta($post_id, '_fv_player_featured_image_players', $players);
-              }
-            } else if( !empty($atts['splash']) ) {
-              $url = $atts['splash'];
-            }
-
-            if($splash_attachment_id || $url) {
-              break 3;
-            }
-          }
-        }
       }
     }
   }
