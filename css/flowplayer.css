@@ -985,6 +985,9 @@
 .flowplayer .fp-message h2:before {
   display: none;
 }
+.flowplayer .fp-message a {
+  text-decoration: underline !important;
+}
 
 .flowplayer .fp-timeline.is-fp-dragging .fp-progress::after {
   content: "";
@@ -1790,7 +1793,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
 .flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:2.8em;height:2.8em }
 .flowplayer.fixed-controls.is-audio.fp-slim { height:2.8em }
-.flowplayer.is-audio .fv-ab-loop,.flowplayer.fixed-controls.is-audio .fv-ab-loop {bottom:-28px;padding-left:82px}
 .flowplayer.is-loading.is-audio .fp-controls { display:flex }
 .flowplayer.is-audio.is-loading .fp-playbtn {opacity:0}
 .flowplayer.is-audio.is-loading .fp-waiting {top:0;left:0;position:absolute}
