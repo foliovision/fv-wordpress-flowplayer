@@ -174,7 +174,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $key            = (!empty($options['key']) ? $options['key'] : '');
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $help           = (!empty($options['help']) ? $options['help'] : '');
-      $more           = (!empty($options['more']) ? $options['more'] : '');      
+      $more           = (!empty($options['more']) ? $options['more'] : '');
+      $disabled       = !empty($options['disabled']);
 
       if (!$key || !$name) {
         throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
@@ -206,6 +207,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                   <input type="hidden" name="<?php echo $key; ?>" value="false"/>
                   <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true"<?php
                     if ( $checked ) { echo ' checked="checked"'; }
+                    if ( $disabled ) { echo ' disabled'; }
 
                     if (isset($options) && isset($options['data']) && is_array($options['data'])) {
                         foreach ($options['data'] as $data_item => $data_value) {

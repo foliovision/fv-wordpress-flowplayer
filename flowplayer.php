@@ -87,6 +87,9 @@ if( is_admin() ) {
   include_once( dirname( __FILE__ ) . '/controller/settings.php' );
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
+  }
+ 
+  if( version_compare(phpversion(),'7.2.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
