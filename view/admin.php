@@ -118,7 +118,17 @@ function fv_flowplayer_admin_amazon_options() {
 					</tr>
           
           <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
-          <?php $fv_fp->_get_checkbox(__('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)', 's3_browser', __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer') ); ?>
+          <?php
+          $can_use_aws_sdk = version_compare(phpversion(),'7.2.5') != -1;
+          
+          $fv_fp->_get_checkbox( array(
+            'name' => __('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)',
+            'key' => 's3_browser',
+            'help' =>  !$can_use_aws_sdk ?
+              __('This function requires PHP >= 7.2.5, please contact your web host support.' , 'fv-wordpress-flowplayer')
+              : __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer'),
+            'disabled' => !$can_use_aws_sdk
+          ) ); ?>
           
           <?php do_action('fv_player_admin_amazon_options'); ?>
 <?php
