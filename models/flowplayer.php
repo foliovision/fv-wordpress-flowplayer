@@ -371,8 +371,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $secret = false;
     }
 
-    $secret         = (!empty($options['secret']) ? $options['secret'] : false);
-
     if (!$key || !$name) {
       throw new Exception('Both, "name" and "key" options need to be set for _get_input_text()!');
     }
