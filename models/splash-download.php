@@ -9,7 +9,7 @@ class FV_Player_Splash_Download {
 
   function splash_data($video, $post_id = false) {
     if( is_array($video) && !empty($video['thumbnail']) ) {
-      $splash_data = $this->download_splash( $video['thumbnail'] );
+      $splash_data = $this->download_splash( $video['thumbnail'], isset($video['name']) ? $video['name'] : false );
     
       if( !empty( $splash_data ) ) {
         $video['thumbnail'] = $splash_data['url'];
@@ -20,12 +20,18 @@ class FV_Player_Splash_Download {
     return $video;
   }
 
-  private function download_splash( $splash_url ) {
-    $title = $splash_url;
-
+  private function download_splash( $splash_url, $title ) {
     $limit = 128 - 5; // .jpeg
 
-    $title = $this->get_title_from_url($title);
+    if( empty($title) ) {
+      $arr = explode('/', $splash_url);
+      $title = end($arr);
+
+      if( preg_match( '/\.(png|jpg|jpeg|gif|webp)/', $title, $matches ) ) {
+        $title = pathinfo($title, PATHINFO_FILENAME); // remove file extension
+      }
+    }
+
     $title = sanitize_title($title);
 
     if( function_exists('mb_strinwidth') ) {
@@ -102,26 +108,6 @@ class FV_Player_Splash_Download {
       return array( 'url' => $img_url, 'attachment_id' => $attach_id ) ;
     }
 
-  }
-
-  private function get_title_from_url($url) {
-    $arr = explode('/', $url);
-    $caption = end($arr);
-
-    if( strpos($caption, ".m3u8") !== false ) {
-      unset($arr[count($arr)-1]);
-      $caption = end($arr);
-    }
-
-    $vid_replacements = array(
-      'watch?v=' => 'youtube-'
-    );  
-    $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
-
-    if( is_numeric($caption) && intval($caption) == $caption && stripos($url,'vimeo.com/') !== false ) {
-      $caption = "vimeo-".$caption;
-    } 
-    return urldecode($caption);
   }
 
 }
