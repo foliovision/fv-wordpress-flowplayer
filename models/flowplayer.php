@@ -367,7 +367,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $first_td_class = (!empty($options['first_td_class']) ? ' class="'.esc_attr($options['first_td_class']).'"' : '');
-    $class_name     = (!empty($options['class']) ? ' class="'.esc_attr($options['class']).'"' : '');
+    $class_name     = (!empty($options['class']) ? esc_attr($options['class']) : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
@@ -406,6 +406,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( $secret ) {
       $censored_val = $this->_get_censored_val($val);
       $val = '';
+      $class_name = ' class="code ' . $class_name . '"';
+    } else {
+      $class_name = ' class="' . $class_name . '"';
     }
 
     ?>
