@@ -1945,13 +1945,17 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   var fv_flowplayer_amazon_s3_count = 0;
   jQuery('#amazon-s3-add').on('click', function() {
     var new_inputs = jQuery('tr.amazon-s3-first').clone();
-    new_inputs.find('input').attr('value','');
+    new_inputs.find("[name='amazon_key[]']").val('');
+    new_inputs.find("[name='amazon_secret[]']").val('').show();
+    new_inputs.find("[name='_is_secret_amazon_secret[]']").val(0); // set val to 0 - save new
     new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
+    new_inputs.find(':selected').prop('selected',false); // unselect
+    new_inputs.find('.secret-preview').remove(); // remove secret preview
+    new_inputs.find("[data-setting-change]").remove(); // remove change link
     new_inputs.insertBefore('.amazon-s3-last');
-    new_inputs.find("[name='_is_secret_amazon_secret[]']").val(0);
     fv_flowplayer_amazon_s3_count++;
     return false;
-  } );
+  });
   
   function fv_fp_amazon_s3_remove(a) {
     jQuery( '.'+jQuery(a).parents('tr').attr('class') ).remove();
