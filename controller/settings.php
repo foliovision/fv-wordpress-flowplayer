@@ -137,7 +137,7 @@ function fv_player_settings_save() {
 
 function fv_player_handle_secrets($new, $old) {
   foreach( $new as $k => $v ) {
-    if (is_array($v) && strpos($k, '_is_secret_') !== 0 ) {
+    if (is_array($v) && strpos($k, '_is_secret_') !== 0 && isset($old[$k]) ) {
       // recursive call for nested settings
       $v = fv_player_handle_secrets($v, $old[$k]);
       $new[$k] = $v;
