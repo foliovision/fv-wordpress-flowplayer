@@ -248,7 +248,12 @@ class FV_Player_Checker {
               }
 
               foreach($streams as $item){
-                $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $remotefilename_encoded);
+                $item_url = $item;
+
+                // If the stream URL is relative, we need to take the master playlist URL, remove the filename part and put in the stream link
+                if( stripos( $item_url, 'http://' ) !== 0 && stripos( $item_url, 'https://' ) !== 0 ) {
+                  $item_url = preg_replace('/[^\/]*\.m3u8(\?.*)?/i', $item, $remotefilename_encoded);
+                }
                 if( $secured_url = $fv_fp->get_video_src( $item_url, array( 'dynamic' => true ) ) ) {
                   $item_url = $secured_url;
                 }
@@ -417,7 +422,7 @@ class FV_Player_Checker {
       if( $aMeta && is_array($aMeta) && count($aMeta) > 0) {
         $meta_values = '';
         foreach( $aMeta AS $values ) {
-          $meta_values .= implode( $values );
+          $meta_values .= implode("", $values);
         }
         if( preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_values, $meta_matches ) ) {
           $matches[0] = array_merge($matches[0], $meta_matches[0]);

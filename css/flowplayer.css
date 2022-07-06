@@ -24,9 +24,9 @@
 .fp-prevbtn:after, .fv-fp-prevbtn:after, .fp-nextbtn:before, .fv-fp-nextbtn:before { content: "\e007"; line-height: 1; vertical-align:middle; }
 
 .flowplayer.is-mouseover .fp-captions, .flowplayer.is-paused .fp-captions { bottom: 3em; }
-.flowplayer.is-loading .fp-engine { top: -9999em; }
-.flowplayer.is-poster .fp-engine,.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
-.flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header {filter: alpha(opacity=1); opacity: 1; }
+.flowplayer.is-loading .fp-engine,.flowplayer.is-poster .fp-engine,.flowplayer.is-chromecast .fp-engine,
+.flowplayer.is-loading .fp-ui .fp-header, .flowplayer.is-loading .fp-ui .fp-controls {filter: alpha(opacity=0); opacity: 0; }
+.flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header, .flowplayer .fp-engine {filter: alpha(opacity=1); opacity: 1; }
 .flowplayer.is-splash .fp-ui > * { display: none; }
 .flowplayer.forced-fullscreen.is-loading .fp-ui, .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header { display: block; }
 .flowplayer.is-splash .fp-ui > .fp-play, 
@@ -35,7 +35,6 @@
 .flowplayer.is-poster.is-loading .fp-ui > .fp-waiting {display: block}
 .flowplayer.is-splash.is-loading .fp-ui > .fp-play, 
 .flowplayer.is-poster.is-loading .fp-ui > .fp-play {display: none}
-.flowplayer.is-poster .fp-engine {left: -9999em; top: -9999em}
 
 .flowplayer.is-poster .fp-captions {display: none !important}
 .flowplayer.is-disabled .fp-color {background-color: #999}
@@ -58,16 +57,16 @@
   .flowplayer.is-fullscreen .fp-player {
     background-color: #333; }
   .flowplayer.is-fullscreen .fp-fullscreen:before {
-    content: "\e016"; }
+    content: "\e00f"; }
 
 .flowplayer.is-fullscreen.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-minimal .fp-fullscreen:before {
-  content: "\e216"; }
+  content: "\e30f"; }
 
 .flowplayer.is-fullscreen.fp-edgy .fp-fullscreen:before {
-  content: "\e116"; }
+  content: "\e10f"; }
 
 .flowplayer.is-fullscreen.fp-edgy.fp-outlined .fp-fullscreen:before, .flowplayer.is-fullscreen.fp-edgy.fp-minimal .fp-fullscreen:before {
-  content: "\e316"; }
+  content: "\e30f"; }
 
 .flowplayer.fake-fullscreen .fp-fullscreen:before { content: "\e002"; }
 .flowplayer.fake-fullscreen.fp-edgy .fp-fullscreen:before { content: "\e102"; }
@@ -103,6 +102,7 @@
 .flowplayer.is-inverted .fp-duration {display: none}
 .flowplayer.is-inverted .fp-remaining {display: block}
 .flowplayer.is-closeable .fp-header .fp-unload {display: block}
+.flowplayer.is-closeable.is-fullscreen:not(.fake-fullscreen) .fp-header .fp-unload {display: none}
 
 .flowplayer.is-error {
   background-color: #aaa; }
@@ -194,11 +194,6 @@
     display: block; }
   .flowplayer.is-chromecast .fp-flash-disabled {
     display: none !important; }
-  .flowplayer.is-chromecast .fp-engine {
-    left: -9999em;
-    top: -9999em;
-    bottom: auto;
-    right: auto; }
 
 .flowplayer.fp-default-playlist .fp-prev, .flowplayer.fp-default-playlist .fp-next {
   position: absolute;
@@ -422,7 +417,7 @@
     transition: opacity .3s;
     padding-left: .65em; }
     .flowplayer .fp-header .fp-icon {
-      margin: .9em .9em 0 0; }
+      padding: .5em 1em }
       .flowplayer .fp-header .fp-icon.fp-active {
         color: #ec6c4c; }
     .flowplayer .fp-header .fp-fullscreen, .flowplayer .fp-header .fp-unload, .flowplayer .fp-airplay {
@@ -616,7 +611,7 @@
     font-size: 90%;
     bottom: 1.4em;
     height: auto; }
-  .flowplayer .fp-timeline:hover .fp-timestamp {
+  .flowplayer:not(.is-touch) .fp-timeline:hover .fp-timestamp, .flowplayer .fp-timeline.is-fp-dragging .fp-timestamp {
     display: inline; }
   .flowplayer .fp-volume {
     display: -ms-flexbox;
@@ -990,6 +985,23 @@
 .flowplayer .fp-message h2:before {
   display: none;
 }
+.flowplayer .fp-message a {
+  text-decoration: underline !important;
+}
+
+.flowplayer .fp-timeline.is-fp-dragging .fp-progress::after {
+  content: "";
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+  height: 13px;
+  right: 0;
+  margin-right: -7px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+}
 
 .flowplayer.skin-slim.is-mouseover.is-ready .fp-ui, .flowplayer.skin-slim.is-paused.is-ready .fp-ui, #content .flowplayer.skin-slim.is-paused.is-ready .fp-ui {
     background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, .25)), color-stop(15%, transparent));
@@ -1010,19 +1022,24 @@
 .flowplayer.fixed-controls.skin-custom {border: none}
 .flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls.has-abloop, .entry-content .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
+.flowplayer.has-abloop .fp-timestamp { bottom: 2em }
 
-/* using fp-full and fp-slim at once should only make the timeline full width and nothings else should change */
-.flowplayer.fp-slim.fp-full .fp-controls {
-    height: 2.4em; }
 .flowplayer.fp-slim.fp-full .fp-timeline {
-  bottom: 2.4em;
     height: 3px; }
+
+.flowplayer.is-tiny.fp-full .fp-timeline {
+  bottom: 3.2em;
+}
+.flowplayer.is-tiny.fp-full .fp-controls {
+  height: 3.2em;
+  padding-top: .4em;
+}
 
 /*  stop the timeline becoming bold on hover and provide a workaround to make it easier to click  */
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline {
     height: 3px; }
 .flowplayer.fp-slim .fp-controls:hover .fp-timeline:before {
-    content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
+    content: ''; position: absolute; top:-1.3em; height:2em; left: 0; right: 0 }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider {
     height: .2em; }
 .flowplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
@@ -1040,7 +1057,8 @@
 .flowplayer.fixed-controls {margin-bottom: 4em}  
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
-.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.4em}
+.flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.8em}
+.flowplayer.fixed-controls.fp-full.fp-slim.is-tiny .fp-controls {bottom: -3.2em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 
 .flowplayer .fp-elapsed {min-width: 5.1ch}
@@ -1111,7 +1129,7 @@
 /* reducing the spacing in .fp-header */
 .flowplayer .fp-header { /*background-color: rgba(0, 0, 0, 0.5); height: 2em;*/ padding-left: 0 }
 .flowplayer .fp-header .fp-icon { text-shadow: 0 0 10px rgba(0, 0, 0, 0.3) }
-.flowplayer:not(.is-touch.is-fullscreen) .fp-header .fp-icon { margin: .5em .5em 0 0;line-height: 1 }
+.flowplayer:not(.is-touch.is-fullscreen) .fp-header .fp-icon { padding: .5em .5em 0 0;line-height: 1 }
 
 .flowplayer.is-fullscreen{ font-size: 16px; max-height:100% !important; }
 .flowplayer .fp-controls .fp-fullscreen {display:none}
@@ -1176,7 +1194,7 @@
 /* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
 .is-rtl.flowplayer .fvp-share-bar{left:auto;}
-.flowplayer .fvp-share-bar{font-size:12px}
+.flowplayer .fvp-share-bar, .flowplayer .fvp-share-bar label {font-size:12px}
 .flowplayer .fvp-share-bar textarea{width:400px;min-height:130px;font-family: "Lucida Console", Monaco, monospace; color:#777; white-space:nowrap; resize:none;overflow:hidden;border:0;outline:0;background-color:transparent;color:#ccc; border: 1px solid #888;}
 .flowplayer.is-embedding .fp-embed,.flowplayer.is-embedding .fvp-share-bar{display:block;opacity:1;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)}
 
@@ -1775,7 +1793,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
 .flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:2.8em;height:2.8em }
 .flowplayer.fixed-controls.is-audio.fp-slim { height:2.8em }
-.flowplayer.is-audio .fv-ab-loop,.flowplayer.fixed-controls.is-audio .fv-ab-loop {bottom:-28px;padding-left:82px}
 .flowplayer.is-loading.is-audio .fp-controls { display:flex }
 .flowplayer.is-audio.is-loading .fp-playbtn {opacity:0}
 .flowplayer.is-audio.is-loading .fp-waiting {top:0;left:0;position:absolute}
@@ -2304,6 +2321,33 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-minimal .fp-volumebtn-notice:before { content: "\e20d"; }
 .flowplayer.fp-edgy .fp-volumebtn-notice:before { content: "\e10d"; }
 .flowplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
+
+/* Better touch in fullscreen in portrait mode */
+.flowplayer.is-tiny.is-fullscreen .fp-player {
+  align-items: center;
+  display: flex;
+}
+.flowplayer.is-tiny.is-fullscreen .fp-engine {
+  height: auto !important;
+  position: static;
+}
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui {
+  pointer-events: none;
+}
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui > * {
+  pointer-events: auto;
+}
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header {
+  pointer-events: none;
+}
+.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header > * {
+  pointer-events: auto;
+}
+.flowplayer.is-tiny.is-fullscreen .fv-fp-tap-left, .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-right {
+  height: 50%;
+  margin: 0;
+  top: 25%;
+}
 
 /* Videos pending encoding */
 .fv-player-encoder-video-processing-modal {

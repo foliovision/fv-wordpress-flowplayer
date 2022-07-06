@@ -185,16 +185,16 @@ class FV_Player_Db_Video {
   }
 
   /**
-   * Checks for DB tables existence and creates it as necessary. It can add new table fields but remove them, which can result in the 'Unknown property for new DB video:' error
+   * Checks for DB tables existence and creates it as necessary.
    *
-   * @param $wpdb The global WordPress database object.
+   * @param $force Forces to run dbDelta.
    */
-  private function initDB($wpdb) {
-    global $fv_fp, $fv_wp_flowplayer_ver;
+  public static function initDB($force = false) {
+    global $wpdb, $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
-    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('video_model_db_checked') || $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver || $force ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -239,7 +239,7 @@ CREATE TABLE " . self::$db_table_name . " (
       self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
-    $this->initDB($wpdb);
+    self::initDB();
 
     // TODO: This should not be here at all
     $multiID = is_array($id);
@@ -448,6 +448,37 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     } else if ($meta_data === -1) {
       $this->meta_data = -1;
+    }
+  }
+
+  /**
+   * Searches for a player video via custom query.
+   * Used in plugins such as HLS which will
+   * provide video src data but not ID to search for.
+   *
+   * @param bool $like   The LIKE part for the database query. If false, exact match is used.
+   * @param null $fields Fields to return for this search. If null, all fields are returned.
+   *
+   * @return bool Returns true if any data were loaded, false otherwise.
+   */
+  public function searchBySrc($like = false, $fields = null) {
+    _deprecated_function( __FUNCTION__, '7.5.22', 'FV_Player_Db::query_videos' );
+
+    global $wpdb;
+
+    $row = $wpdb->get_row("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE `src` ". ($like ? 'LIKE "%'.esc_sql($this->src).'%"' : '="'.esc_sql($this->src).'"') ." ORDER BY id DESC");
+
+    if (!$row) {
+      return false;
+    } else {
+      // load up all values for this video
+      foreach ($row as $key => $value) {
+        if (property_exists($this, $key)) {
+          $this->$key = stripslashes($value);
+        }
+      }
+
+      return true;
     }
   }
 

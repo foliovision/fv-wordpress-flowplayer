@@ -1,3 +1,6 @@
+/*global fvwpflowplayer_helper_tag, fv_wp_flowplayer_re_edit, fv_player_preview_window, fv_wp_flowplayer_re_insert, fv_flowplayer_set_post_thumbnail_id, fv_flowplayer_set_post_thumbnail_nonce, */
+/*global FCKeditorAPI, setPostThumbnailL10n, send_to_editor, tinymce*/
+
 // What's here needs to stay global
 
 // used in FV Player Pro to add more matchers
@@ -20,6 +23,8 @@ jQuery(function() {
       $doc = $(document),
       $el_editor,
       $el_preview,
+      el_spinner,
+      el_preview_target,
       $el_save_complete = $('.fv-player-save-completed'),
       $el_save_error = $('.fv-player-save-error'),
       $el_save_error_p = $el_save_error.find('p'),
@@ -72,6 +77,8 @@ jQuery(function() {
 
     // are we currently saving data?
     is_saving = false,
+
+    fv_player_shortcode_editor_ajax,
 
     // used when editing shortcode in TinyMCE
     helper_tag = window.fvwpflowplayer_helper_tag,
@@ -197,12 +204,6 @@ jQuery(function() {
       return $el_editor.find(selector);
     }
 
-    function b64EncodeUnicode(str) {
-      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-        return String.fromCharCode('0x' + p1);
-      }));
-    }
-
     $doc.ready( function(){
       $el_editor = $('#fv-player-shortcode-editor');
 
@@ -213,7 +214,7 @@ jQuery(function() {
       el_preview_target = $('#fv-player-shortcode-editor-preview-target');
 
       var
-        next = false,
+        next = false, // track if the player data has changed while saving
         overlay_close_waiting_for_save = false,
         loading = true,
         int_keyup = false;
@@ -590,7 +591,7 @@ jQuery(function() {
 
         //When a file is selected, grab the URL and set it as the text field's value
         fv_flowplayer_uploader.on('select', function() {
-          attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
+          var attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
 
           $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
@@ -749,7 +750,7 @@ jQuery(function() {
 
         if( is_saving ) {
           debug_log('Still saving!');
-          next = ajax_data;
+          next = true;
           return;
         }
 
@@ -804,7 +805,7 @@ jQuery(function() {
             return;
           }
 
-          debug_log('player ID after save: '+response.id_player);
+          debug_log('player ID after save: '+response.id);
 
           current_player_object = response;
 
@@ -821,10 +822,16 @@ jQuery(function() {
               }
             });
 
+            // Did the data change while saving?
             if( next ) {
               debug_log('There is more to save...');
 
-              ajax(next);
+              // Make sure you use store the new player ID already!
+              if ( is_unsaved ) {
+                init_saved_player_fields( response.id );
+              }
+
+              ajax( build_ajax_data(true) );
               next = false;
             } else {
               is_saving = false;
@@ -854,8 +861,8 @@ jQuery(function() {
               // add all the data and inputs to page that we need for an existing player
               if ( is_unsaved ) {
                 fv_player_editor.copy_player_button_toggle(false);
-                init_saved_player_fields( response.id_player );
-                current_player_db_id = response.id_player;
+                init_saved_player_fields( response.id );
+                current_player_db_id = response.id;
                 is_unsaved = false;
                 //is_draft_changed = false;
                 loading = false;
@@ -2304,8 +2311,8 @@ jQuery(function() {
                   }
                 }
 
-                $video_data_tab = playlist_item_add(vids[x], false, subs);
-                $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
+                var $video_data_tab = playlist_item_add(vids[x], false, subs);
+                var $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
 
                 // add chapters and transcript
                 if (chapters){
@@ -2664,7 +2671,7 @@ jQuery(function() {
           if( sPlaylist ) {
             // check for all-numeric playlist items separated by commas
             // which outlines video IDs from a database
-            aPlaylist = sPlaylist[1].split(';');
+            var aPlaylist = sPlaylist[1].split(';');
             for (var i in aPlaylist) {
               playlist_item_add(aPlaylist[i], aCaptions[i], aSubtitles[i], aSplashText[i]);
             }
@@ -2860,7 +2867,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         var player = JSON.parse(response);
-        current_player_db_id = parseInt(player.id_player);
+        current_player_db_id = parseInt(player.id);
         if( current_player_db_id > 0 ) {
           var
             has_store_shortcode_args = false,
@@ -3849,20 +3856,49 @@ jQuery(function() {
       },
       
       /*
-      * Adds another language to subtitle menu
-      */
-      subtitle_language_add: function( sInput, sLang, iTabIndex, sId ) {
+       * Adds another language to subtitle menu
+       *
+       * @param {string}  sInput        Subtitle URL to load
+       * @param {string}  sLang         Subtitle language to use
+       * @param {int}     iTabIndex     Playlist item number when loading playlist for editing
+       * @param {int}     video_meta_id Subtitle row video meta ID
+       */
+      subtitle_language_add: function( sInput, sLang, iTabIndex, video_meta_id ) {
         if(!iTabIndex){
           var current = jQuery('.fv-player-tab-subtitles table:visible');
           iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
         }
         var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
-        oTab.append( template_subtitles );
 
-        var subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+        
+        var subElement = false;
+        
+        // If we are loading data, do we have an empty subtitle field?
+        if( sInput ) {
+          subElement = jQuery('.fv-fp-subtitle:last', oTab);
+          if( subElement.length ) {
+            if( get_field('subtitles',subElement).val() ) {
+              subElement = false;
+            }
+          }
+        }
 
-        if (typeof(sId) !== 'undefined') {
-          subElement.attr('data-id_subtitles', sId);
+        // If we do not have an empty subtitle field, add new
+        if( !subElement ) {
+          oTab.append( template_subtitles );
+          subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+
+          if( !sInput ) {
+            // force user to pick the language by removing the blank value and selecting what's first
+            subElement.find('select option[value=""]').remove();
+            setTimeout( function() {
+              subElement.find('select option').eq(0).prop('selected',true);
+            }, 0 );
+          }
+        }
+
+        if (typeof(video_meta_id) !== 'undefined') {
+          subElement.attr('data-id_subtitles', video_meta_id);
         }
 
         if( sInput ) {
@@ -3880,7 +3916,6 @@ jQuery(function() {
         }
 
         editor_resize();
-        return false;
       },
 
       /**
@@ -4025,6 +4060,12 @@ jQuery(function() {
 
         return false;
       },
+
+      b64EncodeUnicode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+          return String.fromCharCode('0x' + p1);
+        }));
+      },
     };
 
   })(jQuery);
@@ -4045,7 +4086,6 @@ function fv_wp_flowplayer_map_db_values_to_field_values(name, value) {
   switch (name) {
     case 'playlist_advance':
       return ((value == 'true' || value == 'on') ? 'on' : (value == 'default' || value == '') ? 'default' : 'off');
-      break;
 
     default: return value;
   }
@@ -4156,7 +4196,7 @@ function fv_player_open_preview_window(url, width, height){
   height = Math.min(window.screen.availHeight * 0.80, height + 25);
   width = Math.min(window.screen.availWidth * 0.66, width + 100);
   
-  if(fv_player_preview_window == null || fv_player_preview_window.self == null || fv_player_preview_window.closed ){
+  if( typeof fv_player_preview_window == 'undefined' || fv_player_preview_window == null || fv_player_preview_window.self == null || fv_player_preview_window.closed ){
     fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes width=' + width + ' height=' + height);
   }else{
     fv_player_preview_window.location.assign(url);
@@ -4213,7 +4253,7 @@ function fv_wp_flowplayer_subtitle_parse_arg( args ) {
 
 
 function fv_wp_flowplayer_share_parse_arg( args ) {
-  var field = get_field("share")[0];
+  var field = fv_player_editor.get_field("share")[0];
   if (args[1] == 'yes' ) {
     field.selectedIndex = 1;
   } else if (args[1] == 'no' ) {
@@ -4221,9 +4261,9 @@ function fv_wp_flowplayer_share_parse_arg( args ) {
   } else {
     field.selectedIndex = 3;
     args = args[1].split(';');
-    if( typeof(args[0]) == "string" ) get_field('share_url').val(args[0]);
-    if( typeof(args[1]) == "string" ) get_field('share_title').val(args[1]);
-    get_field("share_custom").show();
+    if( typeof(args[0]) == "string" ) fv_player_editor.get_field('share_url').val(args[0]);
+    if( typeof(args[1]) == "string" ) fv_player_editor.get_field('share_title').val(args[1]);
+    fv_player_editor.get_field("share_custom").show();
   }
 }
 

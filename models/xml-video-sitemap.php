@@ -36,7 +36,11 @@ class FV_Xml_Video_Sitemap {
     function get_meta_keys( $mode = false ) {
       global $fv_fp;
       if( !empty($fv_fp) && $fv_fp->_get_option('video_sitemap_meta') ) {
-        $keys = explode(',', esc_sql($fv_fp->_get_option('video_sitemap_meta')) );        
+        $keys = explode(',', esc_sql($fv_fp->_get_option('video_sitemap_meta')) );
+
+        $keys[] = '_elementor_data';
+        $keys = array_unique($keys);
+
         if( $mode == 'sql' ) return "'".implode("','",$keys)."'";
         return $keys;
       }

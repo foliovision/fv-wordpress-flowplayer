@@ -114,11 +114,48 @@ function fv_player_settings_save() {
     
     global $fv_fp;
     if( method_exists($fv_fp,'_set_conf') ) {
-      $fv_fp->_set_conf();    
+      if( 
+          // pro not installed or
+          !function_exists('FV_Player_Pro') ||
+           // pro installed and version is at least 7.5.25.728
+          ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') )
+        ) {
+        $to_save = fv_player_handle_secrets($_POST, $fv_fp->conf);
+      } else {
+        $to_save = $_POST;
+      }
+
+      $fv_fp->_set_conf($to_save);
     } else {
       echo 'Error saving FV Flowplayer options.';
     }
-  }  
+  }
+}
+
+
+
+
+function fv_player_handle_secrets($new, $old) {
+  foreach( $new as $k => $v ) {
+    if (is_array($v)) {
+      // recursive call for nested settings
+      $v = fv_player_handle_secrets($v, $old[$k]);
+      $new[$k] = $v;
+    }
+
+    if(strpos($k, '_is_secret_') === 0 ) {
+      $key = str_replace('_is_secret_', '', $k);
+
+      // 1 - keep original, 0 - use new
+      if($v == '1' && isset($old[$key])) {
+        $new[$key] = $old[$key];
+      }
+
+      unset($new[$k]); // remove _is_secret_
+    }
+  }
+
+  return $new;
 }
 
 

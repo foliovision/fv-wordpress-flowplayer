@@ -95,7 +95,6 @@ class FV_Player_Position_Save {
     if ( is_user_logged_in() ) {
       $uid = get_current_user_id();
       if (isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
-        var_dump($times);
         foreach ($times as $record) {
           $name = $this->get_extensionless_file_name($record['name']);
           if( intval($record['position']) == 0 ) {

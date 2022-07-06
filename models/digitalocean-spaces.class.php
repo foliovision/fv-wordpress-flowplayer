@@ -16,7 +16,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   // includes the Digital Ocean Spaces handling class itself
   public function include_dos_media_browser() {
-    if ( is_admin() && version_compare(phpversion(),'5.5.0') != -1 ) {
+    if ( is_admin() && version_compare(phpversion(),'7.2.5') != -1 ) {
       include( dirname( __FILE__ ) . '/digitalocean-spaces-browser.class.php' );
     }
   }
@@ -117,7 +117,8 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       ) );
       $fv_fp->_get_input_text( array(
         'key' => array($this->key,'secret'),
-        'name' => 'Secret'
+        'name' => 'Secret',
+        'secret' => true
       ) );
       ?>
       <tr>
