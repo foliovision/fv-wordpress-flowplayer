@@ -80,18 +80,44 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 
 
 
-
+/**
+ * Settings metaboxes close
+ */
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
-    if ( false === $closed )
-        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_flowplayer_mobile', 'fv_flowplayer_seo', 'fv_flowplayer_conversion', 'fv_player_pro' );
+  if ( false === $closed ) {
+    $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_flowplayer_mobile', 'fv_flowplayer_seo', 'fv_flowplayer_privacy');
+  }
 
-    return $closed;
+  return $closed;
 }
 
+/**
+ * Tools metaboxes close
+ */
+add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_tools', 'fv_flowplayer_settings_tools_closed_meta_boxes' );
 
+function fv_flowplayer_settings_tools_closed_meta_boxes( $closed ) {
+  if ( false === $closed ) {
+    $closed = array( 'fv_flowplayer_conversion' );
+  }
 
+  return $closed;
+}
+
+/**
+ * Skin metaboxes close
+ */
+add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_skin', 'fv_flowplayer_settings_skin_closed_meta_boxes' );
+
+function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
+  if ( false === $closed ) {
+    $closed = array( 'fv_flowplayer_skin_custom_css' );
+  }
+
+  return $closed;
+}
 
 /*
  *  Saving settings
