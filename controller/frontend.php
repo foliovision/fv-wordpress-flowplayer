@@ -54,7 +54,7 @@ function fv_flowplayer_get_js_translations() {
   7 => __('SWF file not found', 'fv-wordpress-flowplayer'),
   8 => __('Subtitles not found', 'fv-wordpress-flowplayer'),
   9 => __('Invalid RTMP URL', 'fv-wordpress-flowplayer'),
-  10 => __('Unsupported video format. Try installing Adobe Flash.', 'fv-wordpress-flowplayer'),  
+  10 => __('Unsupported video format.', 'fv-wordpress-flowplayer'),  
   11 => __('Click to watch the video', 'fv-wordpress-flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv-wordpress-flowplayer'),
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
@@ -107,7 +107,8 @@ function fv_flowplayer_get_js_translations() {
   'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-wordpress-flowplayer'),
   'click_to_unmute' => __('Click to unmute', 'fv-wordpress-flowplayer'),
   'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
-  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer')
+  'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
+  'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
 );
 
   return $aStrings;
@@ -412,7 +413,6 @@ function flowplayer_prepare_scripts() {
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_alternative_fullscreen') ) $aConf['mobile_alternative_fullscreen'] = $val;
-    if( $val = $fv_fp->_get_option('mobile_landscape_fullscreen') ) $aConf['mobile_landscape_fullscreen'] = $val;
 
     if ( $fv_fp->_get_option('video_position_save_enable') ) {
       $aConf['video_position_save_enable'] = $fv_fp->_get_option('video_position_save_enable');
@@ -675,15 +675,40 @@ function fv_player_footer_svg_rewind() {
   ?>
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="https://www.w3.org/2000/svg">
   <g id="fvp-rewind">
-    <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z"  fill="#fff"/><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" fill="#fff"/><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" fill="#fff"/>
+    <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z" /><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" /><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" />
   </g>
 </svg>
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" class="fvp-icon" xmlns="https://www.w3.org/2000/svg">
   <g id="fvp-forward">
-    <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z"  fill="#fff" transform="scale(-1,1) translate(-24,0)" /><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" fill="#fff" /><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" fill="#fff" />
+    <path d="M22.7 10.9c0 1.7-0.4 3.3-1.1 4.8 -0.7 1.5-1.8 2.8-3.2 3.8 -0.4 0.3-1.3-0.9-0.9-1.2 1.2-0.9 2.1-2 2.7-3.3 0.7-1.3 1-2.7 1-4.1 0-2.6-0.9-4.7-2.7-6.5 -1.8-1.8-4-2.7-6.5-2.7 -2.5 0-4.7 0.9-6.5 2.7 -1.8 1.8-2.7 4-2.7 6.5 0 2.4 0.8 4.5 2.5 6.3 1.7 1.8 3.7 2.7 6.1 2.9l-1.2-2c-0.2-0.3 0.9-1 1.1-0.7l2.3 3.7c0.2 0.3 0 0.6-0.2 0.7L9.5 23.8c-0.3 0.2-0.9-0.9-0.5-1.2l2.1-1.1c-2.7-0.2-5-1.4-6.9-3.4 -1.9-2-2.8-4.5-2.8-7.2 0-3 1.1-5.5 3.1-7.6C6.5 1.2 9 0.2 12 0.2c3 0 5.5 1.1 7.6 3.1C21.7 5.4 22.7 7.9 22.7 10.9z" transform="scale(-1,1) translate(-24,0)" /><path d="M8.1 15.1c-0.1 0-0.1 0-0.1-0.1V8C8 7.7 7.8 7.9 7.7 7.9L6.8 8.3C6.8 8.4 6.7 8.3 6.7 8.2L6.3 7.3C6.2 7.2 6.3 7.1 6.4 7.1l2.7-1.2c0.1 0 0.4 0 0.4 0.3v8.8c0 0.1 0 0.1-0.1 0.1H8.1z" /><path d="M17.7 10.6c0 2.9-1.3 4.7-3.5 4.7 -2.2 0-3.5-1.8-3.5-4.7s1.3-4.7 3.5-4.7C16.4 5.9 17.7 7.7 17.7 10.6zM12.3 10.6c0 2.1 0.7 3.4 2 3.4 1.3 0 2-1.2 2-3.4 0-2.1-0.7-3.4-2-3.4C13 7.2 12.3 8.5 12.3 10.6z" />
   </g>
 </svg>
   <?php
+}
+
+add_action( 'wp_footer', 'fv_player_load_svg_buttons_everywhere' );
+
+function fv_player_load_svg_buttons_everywhere() {
+  global $fv_fp;
+  if( !$fv_fp->should_force_load_js() ) {
+    return;
+  }
+
+  foreach( array(
+    'no_picture',
+    'repeat',
+    'rewind'
+  ) AS $type ) {
+    if( $type == 'rewind' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_rewind', 101 );
+    } else if( $type == 'repeat' || $type == 'no_picture' ) {
+      add_action( 'wp_footer', 'fv_player_footer_svg_playlist', 101 );
+    }
+  }
+
+  if( function_exists('FV_Player_Pro') && method_exists( 'FV_Player_Pro', 'svg_chapters') ) {
+    add_action( 'wp_footer', array( FV_Player_Pro(), 'svg_chapters'), 101 );
+  }
 }
 
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );

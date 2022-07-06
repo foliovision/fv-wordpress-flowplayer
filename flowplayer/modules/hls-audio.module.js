@@ -5,7 +5,6 @@ flowplayer( function(api,root) {
 
   root = jQuery(root);
   var hlsjs,
-    player,
     audioUXGroup,
     audioGroups,
     hls_audio_button,
@@ -54,6 +53,8 @@ flowplayer( function(api,root) {
     if (!audioUXGroup || audioUXGroup.length < 2) {
       return;
     }
+
+    root.find('.fp-chromecast').hide();
 
     hls_audio_button = jQuery('<strong class="fv-fp-hls">' + fv_flowplayer_translations.audio_button + '</strong>');
     hls_audio_menu = jQuery('<div class="fp-menu fv-fp-hls-menu"></div>').insertAfter( root.find('.fp-controls') );
@@ -124,7 +125,8 @@ flowplayer( function(api,root) {
     }
   }
 
-  function removeAudioMenu(){
+  function removeAudioMenu() {
+    root.find('.fp-chromecast').show();
     jQuery(hls_audio_menu).remove();
     jQuery(hls_audio_button).remove();
   }

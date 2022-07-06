@@ -13,7 +13,7 @@ class FV_Player_SEO {
   }
   
   function single_attributes( $attributes, $media, $fv_fp ) {
-    if( !empty($fv_fp->aCurArgs['playlist']) || !$this->can_seo ) {
+    if( !empty($fv_fp->aCurArgs['playlist']) || $this->video_ads_active($fv_fp->aCurArgs)  || !$this->can_seo ) {
       return $attributes;
     }
     
@@ -24,6 +24,30 @@ class FV_Player_SEO {
     return $attributes;
   }
   
+  function video_ads_active($args) {
+    $conf = get_option( 'fvwpflowplayer' );
+
+    // check globals ads
+    if(!empty($conf['pro']['video_ads_default'])) {
+      if( $conf['pro']['video_ads_default'] != 'no') return true;
+    } 
+
+    if( !empty($conf['pro']['video_ads_postroll_default']) ) {
+      if( $conf['pro']['video_ads_postroll_default'] != 'no' ) return true;
+    }
+
+    // check meta ads
+    if( !empty($args['preroll']) ) {
+      if( $args['preroll'] != 'no' ) return true;
+    }
+
+    if( !empty($args['postroll']) ) {
+      if( $args['postroll'] != 'no' ) return true;
+    }
+
+    return false;
+  }
+
   function get_markup( $title, $description, $splash, $url ) {
     if( !$title ) {
       $title = get_the_title();
@@ -36,8 +60,7 @@ class FV_Player_SEO {
     if( !$description && strlen($post_content) > 0 ) {
       $post_content = strip_shortcodes( $post_content );
       $post_content = strip_tags( $post_content );
-      $excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
-      $description = wp_trim_words( $post_content, '10', $excerpt_more );
+      $description = wp_trim_words( $post_content, 30 );
     }
     if( !$description ) {
       $description = get_option('blogdescription');
@@ -106,19 +129,20 @@ class FV_Player_SEO {
       }
     }
     
-    $this->can_seo = true;    
+    $this->can_seo = true;
     return $args;
   }
   
   function single_video_seo( $html, $fv_fp ) {
-    if( $this->can_seo ) {
-      if( empty($fv_fp->aCurArgs['playlist']) ) {
-        //  todo: use iframe or video link URL
-        $html .= "\n".$this->get_markup(!empty($fv_fp->aCurArgs['caption']) ? $fv_fp->aCurArgs['caption'] : '',false,$fv_fp->get_splash(),false)."\n";
-      }
+    if( !empty($fv_fp->aCurArgs['playlist']) || $this->video_ads_active($fv_fp->aCurArgs)  || !$this->can_seo ) {
+      return $html;
     }
+
+    // todo: use iframe or video link URL
+    $html .= "\n".$this->get_markup(!empty($fv_fp->aCurArgs['caption']) ? $fv_fp->aCurArgs['caption'] : '',false,$fv_fp->get_splash(),false)."\n";
+
     return $html;
-  }  
+  }
 
 }
 

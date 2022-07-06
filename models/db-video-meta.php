@@ -94,14 +94,14 @@ class FV_Player_Db_Video_Meta {
   /**
    * Checks for DB tables existence and creates it as necessary.
    *
-   * @param $wpdb The global WordPress database object.
+   * @param $force Forces to run dbDelta.
    */
-  private function initDB($wpdb) {
-    global $fv_fp, $fv_wp_flowplayer_ver;
+  public static function initDB($force = false) {
+    global $wpdb, $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
-    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('video_meta_model_db_checked') || $fv_fp->_get_option('video_meta_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('video_meta_model_db_checked') || $fv_fp->_get_option('video_meta_model_db_checked') != $fv_wp_flowplayer_ver || $force ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -152,7 +152,7 @@ CREATE TABLE " . self::$db_table_name . " (
       self::$DB_Instance = $DB_Cache;
     }
 
-    $this->initDB($wpdb);
+    self::initDB();
     $multiID = is_array($id);
 
     // don't load anything, if we've only created this instance

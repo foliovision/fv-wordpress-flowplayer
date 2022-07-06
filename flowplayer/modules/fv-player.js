@@ -95,7 +95,27 @@ function fv_player_videos_parse(args, root) {
   } catch(e) {
     return false;
   }
-  
+
+  // Do not feed WebM to Safari as it has problem with VP9 codec which might be used
+  if( flowplayer.support.browser.safari ) {
+    // Do we have any other format than WebM?
+    var have_non_webm = false;
+    jQuery(videos.sources).each( function(k,v) {
+      if( v.type != 'video/webm' ) {
+        have_non_webm = true;
+        return false;
+      }
+    });
+
+    if( have_non_webm ) {
+      jQuery(videos.sources).each( function(k,v) {
+        if( v.type == 'video/webm' ) {
+          delete(videos.sources[k]);
+        }
+      });
+    }
+  }
+
   var regex = new RegExp("[\\?&]fv_flowplayer_mobile=([^&#]*)");
 	var results = regex.exec(location.search);	
 	if(
@@ -142,9 +162,9 @@ jQuery(document).ready( function() {
       window.fv_video_intelligence_conf && !window.FV_Player_IMA ||
       window.fv_vast_conf && !window.FV_Player_IMA ||
       window.fv_player_pro && !window.FV_Flowplayer_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
-      window.fv_player_user_playlists && !fv_player_user_playlists.is_loaded ||
+      window.fv_player_user_playlists && !window.fv_player_user_playlists.is_loaded ||
       // if using FV Player JS Loader wait until all scripts have finished loading
-      window.FV_Player_JS_Loader_scripts_total && window.FV_Player_JS_Loader_scripts_loaded < FV_Player_JS_Loader_scripts_total
+      window.FV_Player_JS_Loader_scripts_total && window.FV_Player_JS_Loader_scripts_loaded < window.FV_Player_JS_Loader_scripts_total
     ) ) {      
       return;
     }
@@ -425,6 +445,22 @@ function fv_player_preload() {
       root.trigger('fv_player_loaded');
       // Seems like root.data('flowplayer') is only available after a while, it won't work without this delay
     }, 10 );
+
+    // Show the early error message
+    if( root.data('error') ) {
+      api.message( root.data('error') );
+      root.find('.fp-controls').remove();
+      root.find('.fp-header').css('opacity', 1).show();
+
+      // Prevent loading any video
+      api.conf.clip = {
+        sources: [ { 'src' : false, 'type' : 'video/mp4' } ]
+      }
+      api.on( 'load', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    }
   });
   
   //sets height for embedded players 
