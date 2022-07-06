@@ -503,6 +503,8 @@ function fv_player_lchecks() {
 
     if( isset($aCheck->expired) && $aCheck->expired && stripos( implode(get_option('active_plugins')), 'fv-player-pro' ) !== false ) {
       add_filter( 'site_transient_update_plugins', 'fv_player_remove_update' );
+    } else {
+      delete_option('fv_wordpress_flowplayer_expired_license_update_notice');
     }
   }
 }
@@ -512,7 +514,8 @@ function fv_player_remove_update( $objUpdates ) {
 
   foreach( $objUpdates->response AS $key => $objUpdate ) {
     if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
-      unset($objUpdates->response[$key]);      
+      unset($objUpdates->response[$key]);
+      update_option('fv_wordpress_flowplayer_expired_license_update_notice', true, false);
     }
   }
   
@@ -579,7 +582,21 @@ function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
   return false;
 }
 
+add_action('admin_notices', 'fv_wordpress_flowplayer_expired_license_update_notice');
 
+function fv_wordpress_flowplayer_expired_license_update_notice() {
+  if( get_current_screen()->base === 'update-core' && get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
+    echo '<div class="notice notice-error is-dismissible"><p>'.__('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-wordpress-flowplayer').'</p></div>';
+  }
+}
+
+add_action( 'after_plugin_row_fv-wordpress-flowplayer/flowplayer.php', 'fv_wordpress_flowplayer_expired_license_update_plugin_row', 0, 3 );
+
+function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
+  if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
+    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>'. __('To update FV Player please either renew your license or disable FV Player Pro.','fv-wordpress-flowplayer').'</p></div></td></tr>';
+  }
+}
 
 
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
