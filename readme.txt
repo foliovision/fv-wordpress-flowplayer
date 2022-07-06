@@ -359,6 +359,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.25.7210 - 2022/07/06 =
+
+* Using Freedom Video Player 7.2.10
+* AWS SDK update
+* CSS - make sure the seek buttons work with button color setting
+* Editor - download splash image from Vimeo or YouTube for FV Player Pro users
+* Featured image - only set once for each player in the post, allowing you to prevent the FV Player Splash Image from becoming the Featured Image anytime you save the post
+* Safari - avoid WebM , it might have VP9 - won't play
+* Security - hide sensitive information in settings pannels (the Secure Access Keys, requires FV Player Pro 7.5.25.727 if installed)
+* SEO - 30 instead of just 10 words for schema.org/description
+* Bugfix - PHP 8.1 deprecation fixes
+
 = 7.5.22.727 - 2022/05/11 =
 
 * Mobile - "Force landscape orientation in fullscreen" is now always on and no longer a setting
