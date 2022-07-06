@@ -347,6 +347,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
   }
 
+  public function _get_censored_val($val) {
+    $censored_val = '';
+
+    for ($i = 0; $i < strlen($val); $i++) {
+      // Reveal first and last 2 chars
+      if( $i < 2 || $i >= strlen($val) - 2 ) {
+        $censored_val .= $val[$i];
+      } else {
+        $censored_val .= '*';
+      }
+    }
+
+    return $censored_val;
+  }
 
   public function _get_input_text($options = array()) {
     // options must be an array
@@ -355,7 +369,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $first_td_class = (!empty($options['first_td_class']) ? ' class="'.esc_attr($options['first_td_class']).'"' : '');
-    $class_name     = (!empty($options['class']) ? ' class="'.esc_attr($options['class']).'"' : '');
+    $class_name     = (!empty($options['class']) ? esc_attr($options['class']) : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
@@ -392,16 +406,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // censor original value
     if( $secret ) {
-      $censored_val = '';
-      for ($i = 0; $i < strlen($val); $i++) {
-        // Reveal first and last 2 chars
-        if( $i < 2 || $i >= strlen($val) - 2 ) {
-          $censored_val .= $val[$i];
-        } else {
-          $censored_val .= '*';
-        }
-      }
+      $censored_val = $this->_get_censored_val($val);
       $val = '';
+      $class_name = ' class="code ' . $class_name . '"';
+    } else {
+      $class_name = ' class="' . $class_name . '"';
     }
 
     ?>
