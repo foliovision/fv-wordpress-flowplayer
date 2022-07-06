@@ -113,7 +113,12 @@ add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_skin', 'fv_f
 
 function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
   if ( false === $closed ) {
-    $closed = array( 'fv_flowplayer_skin_custom_css' );
+    global $fv_fp;
+    $customCSS = $fv_fp->_get_option('customCSS');
+
+    if( strlen( $customCSS ) === 0 ) {
+      $closed = array( 'fv_flowplayer_skin_custom_css' );
+    }
   }
 
   return $closed;
