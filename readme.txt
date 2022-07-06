@@ -359,7 +359,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.25.7210 - 2022/07/06 =
+= 7.5.26.7210 - 2022/07/06 =
 
 * Using Freedom Video Player 7.2.10
 * AWS SDK update

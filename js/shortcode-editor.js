@@ -1286,7 +1286,7 @@ jQuery(function() {
         shortcode     = shortcode.replace( /(width=[\'"])\d*([\'"])/, "$1320$2" );  // 320
         shortcode     = shortcode.replace( /(height=[\'"])\d*([\'"])/, "$1240$2" ); // 240
 
-        var url = fv_player_editor_conf.home_url + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + b64EncodeUnicode(shortcode);
+        var url = fv_player_editor_conf.home_url + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
         $.get(url, function(response) {
           wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
           $doc.trigger('fvp-preview-complete', [ shortcode, wrapper.data('key'), wrapper ] );
@@ -3981,7 +3981,7 @@ jQuery(function() {
         }
 
         console.log('fv_player_gutenberg_preview',parent,shortcode);
-        var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + b64EncodeUnicode( shortcode );
+        var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + fv_player_editor.b64EncodeUnicode( shortcode );
 
         // set timeout for the loading AJAX and wait a moment, as REACT will call this function
         // even when we click into the Gutenberg block without actually editing anything
