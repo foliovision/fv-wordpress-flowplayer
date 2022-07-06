@@ -592,9 +592,10 @@ jQuery(function() {
         //When a file is selected, grab the URL and set it as the text field's value
         fv_flowplayer_uploader.on('select', function() {
           var attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
+          var target_element = $('.fv_flowplayer_target');
 
-          $('.fv_flowplayer_target').val(attachment.url).trigger('change').trigger('keyup');
-          $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+          target_element.val(attachment.url).trigger('change').trigger('keyup');
+          target_element.removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
             if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
@@ -607,29 +608,35 @@ jQuery(function() {
               file_info_show( { duration: attachment.fileLength } );
             }
 
-          } else if( attachment.type == 'image' && typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
-            if( jQuery('#remove-post-thumbnail').length > 0 ){
-              return;
+          } else if( attachment.type == 'image' ) {
+            if( attachment.id ) {
+              // update splash attachent id
+              target_element.closest('table').find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(attachment.id);
             }
 
-            debug_log('Running set-post-thumbnail Ajax.');
-
-            jQuery.post(ajaxurl, {
-              action:"set-post-thumbnail",
-              post_id: fv_flowplayer_set_post_thumbnail_id,
-              thumbnail_id: attachment.id,
-              _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
-              cookie: encodeURIComponent(document.cookie)
-            }, function(str){
-              var win = window.dialogArguments || opener || parent || top;
-              if ( str == '0' ) {
-                alert( setPostThumbnailL10n.error );
-              } else {
-                jQuery('#postimagediv .inside').html(str);
-                jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+            if( typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
+              if( jQuery('#remove-post-thumbnail').length > 0 ) {
+                return;
               }
-            } );
 
+              debug_log('Running set-post-thumbnail Ajax.');
+
+              jQuery.post(ajaxurl, {
+                action:"set-post-thumbnail",
+                post_id: fv_flowplayer_set_post_thumbnail_id,
+                thumbnail_id: attachment.id,
+                _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
+                cookie: encodeURIComponent(document.cookie)
+              }, function(str){
+                var win = window.dialogArguments || opener || parent || top;
+                if ( str == '0' ) {
+                  alert( setPostThumbnailL10n.error );
+                } else {
+                  jQuery('#postimagediv .inside').html(str);
+                  jQuery('#postimagediv .inside #plupload-upload-ui').hide();
+                }
+              } );
+            }
           }
         });
 
@@ -946,6 +953,7 @@ jQuery(function() {
           $chapters_element = $playlist_row = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
           $caption_element = $parent_table.find('#fv_wp_flowplayer_field_caption'),
           $splash_element = $parent_table.find('#fv_wp_flowplayer_field_splash'),
+          $splash_attachment_id_element = $parent_table.find('#fv_wp_flowplayer_field_splash_attachment_id'),
           $auto_splash_element = $element.siblings('#fv_wp_flowplayer_field_auto_splash'),
           $auto_caption_element = $element.siblings('#fv_wp_flowplayer_field_auto_caption');
 
@@ -1153,6 +1161,10 @@ jQuery(function() {
                             }
                           }
                           break;
+                      }
+                      if (json_data.splash_attachment_id) {
+                        $splash_attachment_id_element.val(json_data.splash_attachment_id).trigger('change');
+                        console.log('New attachment id', json_data.splash_attachment_id)
                       }
                     }
                   }
@@ -3136,8 +3148,10 @@ jQuery(function() {
         }
 
         get_field('caption',new_item).val(objVid.caption);
+        get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
         get_field('splash',new_item).val(objVid.splash);
         get_field('splash_text',new_item).val(objVid.splash_text);
+        get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
 
         get_field('start',new_item).val(objVid.start);
         get_field('end',new_item).val(objVid.end);

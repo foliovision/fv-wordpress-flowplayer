@@ -201,7 +201,24 @@ add_action( 'save_post', 'fv_wp_flowplayer_save_post' );
 
 
 add_action( 'save_post', 'fv_wp_flowplayer_featured_image' , 10000 );
+add_action( 'fv_player_db_save', 'fv_wp_flowplayer_post_add_featured_image' );
 
+function fv_wp_flowplayer_post_add_featured_image( $player_id ) {
+  global $FV_Player_Db;
+  $objPlayer = new FV_Player_Db_Player( $player_id, array(), $FV_Player_Db );
+  $posts = $objPlayer->getMetaValue('post_id'); // get posts where the player is embedded
+
+  if(empty($posts)) return; // no posts
+
+  foreach( $posts as $post_id ) {
+    $post_id = intval($post_id);
+    if( !has_post_thumbnail($post_id) ) {
+      fv_wp_flowplayer_featured_image($post_id);
+    }
+  }
+}
+
+// Set featured image from splash arg or splash_attachment_id or splash meta attribute
 function fv_wp_flowplayer_featured_image($post_id) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
     $post_id = $parent_id;
@@ -215,59 +232,114 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   $post = get_post($post_id);
 
+  // We only allow each player to set the Featured Image once, so that user can still removed it
+  $featured_image_players = get_post_meta($post_id, '_fv_player_featured_image_players', true);
+  if( !is_array($featured_image_players) ) {
+    $featured_image_players = array();
+  }
+
+  // Same as above, only this time it's for the legacy [fvplayer src="..." splash="..."] shortcodes
+  $featured_image_splash_urls = get_post_meta($post_id, '_fv_player_featured_image_splash_urls', true);
+  if( !is_array($featured_image_splash_urls) ) {
+    $featured_image_splash_urls = array();
+  }
+
+  $thumbnail_id = false;
+  $splash_attachment_id = false;
   $url = false;
+  $title = '';
 
-  if( preg_match('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $post->post_content, $splash) ) { // parse splash="..." in post content
-    $url = $splash[1];
-  }
+  // Search in post content
+  $search_context = $post->post_content;
 
-  if( !$url && preg_match('/\[fvplayer.*?id="(\d+)/', $post->post_content, $id) ) { // parse [fvplayer id="..."] shortcode in post content
-    global $FV_Player_Db;    
-    $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
-    if( !empty($atts['splash']) ) {
-      $url = $atts['splash'];
-    }
-  }
-
-  if( !$url && $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
-    foreach( $aMetas AS $key => $aMeta ) {
-      foreach( $aMeta AS $shortcode ) {
-        if( preg_match('/\[fvplayer.*?id="(\d+)/', $shortcode, $id) ) {
-          global $FV_Player_Db;
-          $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $id[1] ) );
-          if( !empty($atts['splash']) ) {
-            $url = $atts['splash'];
+  // ...and also in post_meta
+  if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
+    foreach( $aMetas AS $aMeta ) {
+      foreach( $aMeta AS $meta_value ) {
+        if( preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
+          foreach( $shortcodes[0] AS $shortcode ) {
+            $search_context .= "\n\n".$shortcode;
           }
         }
       }
     }
   }
 
-  if( !$url ) return; // no parsed url
+  if( preg_match_all('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $search_context, $splash_images) ) { // parse splash="..." in post content
+    foreach($splash_images[1] as $src ) {
+      if(!in_array($src, $featured_image_splash_urls)) { // check if we already set this splash once
+        $url = $src;
+        $featured_image_splash_urls[] = $url;
 
-  // Check if the splash image was already stored in Media Library
-  $args = array(
-    'post_type'  => 'attachment',
-    'meta_query' => array(
-      array(
-        'key'   => '_fv_player_splash_image_url',
-        'value' => $url,
-      )
-    )
-  );
-  $posts = get_posts( $args );
+        update_post_meta($post_id, '_fv_player_featured_image_splash_urls', $featured_image_splash_urls);
 
-  if( !empty($posts[0]->ID) ) {
-    set_post_thumbnail( $post_id, $posts[0]->ID ); // use stored image
-  } else {
-    $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id); // upload new image
-
-    if($thumbnail_id) {
-      update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
-      set_post_thumbnail( $post_id, $thumbnail_id );
+        break;
+      }
     }
   }
 
+  if( !$url && preg_match_all('/\[fvplayer.*?id="(\d+)/', $search_context, $ids) ) { // parse [fvplayer id="..."] shortcode in post content
+    global $FV_Player_Db;
+
+    foreach( $ids[1] as $player_id ) {
+
+      // Did this player already set the Featured Image? If so, do not set it again
+      if( in_array($player_id, $featured_image_players) ) {
+        continue;
+      }
+
+      $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
+
+      if( !empty($atts['caption']) ) {
+        $title = $atts['caption'];
+      }
+
+      if( !empty($atts['splash_attachment_id']) ) { // first check splash_attachment_id
+        $splash_attachment_id = (int) $atts['splash_attachment_id'];
+
+      } else if( !empty($atts['splash']) ) { // fallback to splash
+        $url = $atts['splash'];
+      }
+
+      // If we found splash attachmend ID or URL remember that this player has set the Featured Image
+      if($splash_attachment_id || $url) {
+        $featured_image_players[] = $player_id;
+        update_post_meta($post_id, '_fv_player_featured_image_players', $featured_image_players);
+
+        break;
+      }
+    }
+  }
+
+  if( $splash_attachment_id ) {
+    $thumbnail_id = $splash_attachment_id; // use saved splash
+  } else if($url) {
+    $args = array( // check if splash was already downloaded
+      'post_type'  => 'attachment',
+      'meta_query' => array(
+        array(
+          'key'   => '_fv_player_splash_image_url',
+          'value' => $url,
+        )
+      )
+    );
+
+    $posts = get_posts( $args );
+
+    if( !empty($posts[0]->ID) ) {
+      $thumbnail_id = $posts[0]->ID;
+    } else {
+      $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title); // download splash
+
+      if($thumbnail_id) {
+        update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
+      }
+    }
+  }
+
+  if( $thumbnail_id ) { // set post thumbnail if we have thumbnail id
+    set_post_thumbnail( $post_id, $thumbnail_id );
+  }
 }
 
 function fv_wp_flowplayer_construct_filename( $post_id ) {
@@ -281,7 +353,7 @@ function fv_wp_flowplayer_construct_filename( $post_id ) {
   return $filename;
 }
 
-function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
+function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = false ) {
 
   $image_url = apply_filters( 'fv_flowplayer_splash', $image_url );
 
@@ -310,7 +382,11 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id ) {
     }
 
     // Construct a file name with extension
-    $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+    if( $title ) {
+      $new_filename = sanitize_file_name($title);
+    } else {
+      $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+    }
 
     // Save the image bits using the new filename    
     $upload = wp_upload_bits( $new_filename, null, $image_contents );    
