@@ -586,7 +586,7 @@ add_action('admin_notices', 'fv_wordpress_flowplayer_expired_license_update_noti
 
 function fv_wordpress_flowplayer_expired_license_update_notice() {
   if( get_current_screen()->base === 'update-core' && get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<div class="notice notice-error is-dismissible"><p>'.__('Your license for FV PLayer expired, to install updates please renew your license.', 'fv-wordpress-flowplayer').'</p></div>';
+    echo '<div class="notice notice-error is-dismissible"><p>'.__('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-wordpress-flowplayer').'</p></div>';
   }
 }
 
@@ -594,7 +594,7 @@ add_action( 'after_plugin_row_fv-wordpress-flowplayer/flowplayer.php', 'fv_wordp
 
 function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
   if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<tr class="active"><td>&nbsp;</td><td colspan="3"><strong>'. __('Your license for FV PLayer expired, to install updates please renew your license','fv-wordpress-flowplayer').'</strong></td></tr>';
+    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>'. __('To update FV Player please either renew your license or disable FV Player Pro.','fv-wordpress-flowplayer').'</p></div></td></tr>';
   }
 }
 
