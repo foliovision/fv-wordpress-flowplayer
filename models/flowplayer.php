@@ -186,7 +186,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $name = func_get_arg(0);
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
-      $more = ($args_num >= 4 ? func_get_arg(3) : false);      
+      $more = ($args_num >= 4 ? func_get_arg(3) : false);
+
+      $disabled = false;
+
     } else {
         throw new Exception('Invalid number of arguments passed to the _get_checkbox() method!');
     }

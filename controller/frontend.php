@@ -316,7 +316,7 @@ function flowplayer_content( $content ) {
 }
 
 function flowplayer_prepare_scripts() {
-  global $fv_fp, $fv_wp_flowplayer_ver;
+  global $fv_fp, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
   
   //  don't load script in Optimize Press 2 preview
   if( flowplayer::is_special_editor() ) {
@@ -350,7 +350,7 @@ function flowplayer_prepare_scripts() {
       $path = '/flowplayer/modules/flowplayer.js';
     }
     
-    $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_ver;
+    $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_core_ver;
     
     wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, $version, true );
     $aDependencies[] = 'flowplayer';
