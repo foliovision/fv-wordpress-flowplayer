@@ -13,7 +13,12 @@ global $fv_fp;
 .tabs-panel {
   max-width: 48em;
 }
-
+.form-table td.bunny_stream_api_access_key {
+  vertical-align: top;
+}
+td.bunny_stream_api_access_key .show-info {
+  display: none;
+}
 </style>
 
 <form method="POST">
@@ -53,9 +58,10 @@ global $fv_fp;
 
     $fv_fp->_get_input_text( array(
       'key' => array( 'bunny_stream', 'api_access_key' ),
-      'name' => __('API Access Key (Not Stored)', 'fv-player-bunny_stream'),
+      'name' => __('Please provide the API Access Key to finish this operation. FV Player will not store it', 'fv-player-bunny_stream'),
       'class' => 'regular-text code',
-      'help' => $help
+      'help' => $help,
+      'first_td_class' => 'bunny_stream_api_access_key'
     ) );
     ?>
     <tr id="fv-player-pro-compatibility" style="display: none;">
@@ -82,8 +88,12 @@ global $fv_fp;
       checkbox = jQuery('input[name="bunny_stream[video_token]"]:checkbox');
 
     // do not show
-    api_access_key_row.hide(); 
+    api_access_key_row.hide();
     security_token_row.hide();
+
+    if( checkbox.is(':checked') ) {
+      security_token_row.show();
+    }
 
     if(!pro_compatible) {
       checkbox.prop('checked', false);
