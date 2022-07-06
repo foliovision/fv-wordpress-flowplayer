@@ -365,6 +365,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         $message[] = 'Folder: ' .$args['outputs']['httpstream#above4k']['hls']['path'];
       }
 
+      if( $this->encoder_id == 'bunny_stream' && isset($args['target']) ) {
+        $message[] = 'Folder: ' . $args['target'];
+      }
+
       if( count( $message ) ) {
         $results[$key]->delete_confirmation_message = "\n\n".implode( "\n\n", $message );
       }
