@@ -137,7 +137,7 @@ function fv_player_settings_save() {
 
 function fv_player_handle_secrets($new, $old) {
   foreach( $new as $k => $v ) {
-    if (is_array($v)) {
+    if (is_array($v) && strpos($k, '_is_secret_') !== 0 && isset($old[$k]) ) {
       // recursive call for nested settings
       $v = fv_player_handle_secrets($v, $old[$k]);
       $new[$k] = $v;
@@ -146,10 +146,17 @@ function fv_player_handle_secrets($new, $old) {
     if(strpos($k, '_is_secret_') === 0 ) {
       $key = str_replace('_is_secret_', '', $k);
 
-      // 1 - keep original, 0 - use new
-      if($v == '1' && isset($old[$key])) {
-        $new[$key] = $old[$key];
-      }
+      if( isset($old[$key]) ) {
+        if(is_array($v)) { // array of values, 1 - keep original, 0 - use new
+          foreach( $v as $a_k => $a_v ) {
+            if( $a_v == '1' ) {
+              $new[$key][$a_k] = $old[$key][$a_k];
+            }
+          }
+        } else if($v == '1')  { // single value,  1 - keep original, 0 - use new
+          $new[$key] = $old[$key]; 
+        }
+      } 
 
       unset($new[$k]); // remove _is_secret_
     }

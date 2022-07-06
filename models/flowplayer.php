@@ -174,7 +174,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $key            = (!empty($options['key']) ? $options['key'] : '');
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $help           = (!empty($options['help']) ? $options['help'] : '');
-      $more           = (!empty($options['more']) ? $options['more'] : '');      
+      $more           = (!empty($options['more']) ? $options['more'] : '');
+      $disabled       = !empty($options['disabled']);
 
       if (!$key || !$name) {
         throw new Exception('Both, "name" and "key" options need to be set for _get_checkbox()!');
@@ -206,6 +207,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                   <input type="hidden" name="<?php echo $key; ?>" value="false"/>
                   <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true"<?php
                     if ( $checked ) { echo ' checked="checked"'; }
+                    if ( $disabled ) { echo ' disabled'; }
 
                     if (isset($options) && isset($options['data']) && is_array($options['data'])) {
                         foreach ($options['data'] as $data_item => $data_value) {
@@ -345,6 +347,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
   }
 
+  public function _get_censored_val($val) {
+    $censored_val = '';
+
+    for ($i = 0; $i < strlen($val); $i++) {
+      // Reveal first and last 2 chars
+      if( $i < 2 || $i >= strlen($val) - 2 ) {
+        $censored_val .= $val[$i];
+      } else {
+        $censored_val .= '*';
+      }
+    }
+
+    return $censored_val;
+  }
 
   public function _get_input_text($options = array()) {
     // options must be an array
@@ -353,7 +369,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $first_td_class = (!empty($options['first_td_class']) ? ' class="'.esc_attr($options['first_td_class']).'"' : '');
-    $class_name     = (!empty($options['class']) ? ' class="'.esc_attr($options['class']).'"' : '');
+    $class_name     = (!empty($options['class']) ? esc_attr($options['class']) : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
@@ -390,16 +406,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // censor original value
     if( $secret ) {
-      $censored_val = '';
-      for ($i = 0; $i < strlen($val); $i++) {
-        // Reveal first and last 2 chars
-        if( $i < 2 || $i >= strlen($val) - 2 ) {
-          $censored_val .= $val[$i];
-        } else {
-          $censored_val .= '*';
-        }
-      }
+      $censored_val = $this->_get_censored_val($val);
       $val = '';
+      $class_name = ' class="code ' . $class_name . '"';
+    } else {
+      $class_name = ' class="' . $class_name . '"';
     }
 
     ?>

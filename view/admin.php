@@ -118,7 +118,17 @@ function fv_flowplayer_admin_amazon_options() {
 					</tr>
           
           <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
-          <?php $fv_fp->_get_checkbox(__('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)', 's3_browser', __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer') ); ?>
+          <?php
+          $can_use_aws_sdk = version_compare(phpversion(),'7.2.5') != -1;
+          
+          $fv_fp->_get_checkbox( array(
+            'name' => __('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)',
+            'key' => 's3_browser',
+            'help' =>  !$can_use_aws_sdk ?
+              __('This function requires PHP >= 7.2.5, please contact your web host support.' , 'fv-wordpress-flowplayer')
+              : __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer'),
+            'disabled' => !$can_use_aws_sdk
+          ) ); ?>
           
           <?php do_action('fv_player_admin_amazon_options'); ?>
 <?php
@@ -153,8 +163,29 @@ function fv_flowplayer_admin_amazon_options() {
             <td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_key', $key ) ) ); ?>" /></td>
         </tr>
         <tr<?php echo $amazon_tr_class; ?>>
+        <?php 
+          $secret = !function_exists('FV_Player_Pro') ||
+          ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') );
+          
+          $secret_key = "_is_secret_amazon_secret[]";
+          $val = $fv_fp->_get_option( array( 'amazon_secret', $key ) ) ; 
+
+          if( $secret ) {
+            $censored_val = $fv_fp->_get_censored_val( $val );
+            $val = '';
+          }
+  
+        ?>
             <td><label for="amazon_secret[]"><?php _e('Secret Access Key', 'fv-wordpress-flowplayer'); ?>:</label></td>
-            <td><input id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_secret', $key ) ) ); ?>" /></td>
+            <td><input  <?php if($secret && !empty($censored_val)) echo 'style="display: none;"' ?> id="amazon_secret[]" name="amazon_secret[]" type="text" value="<?php echo esc_attr( $val ); ?>" />
+          <?php if( $secret ): ?>
+            <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
+            <?php if(!empty($censored_val)): ?>
+              <code class="secret-preview"><?php echo $censored_val; ?></code>
+              <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key.'-index-'.$key); ?>" >Change</a>
+            <?php endif; ?>
+          <?php endif; ?>
+          </td>
         </tr>
         <tr<?php echo $amazon_tr_class; ?>>
             <td colspan="2">
@@ -1923,16 +1954,21 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
   var fv_flowplayer_amazon_s3_count = 0;
   jQuery('#amazon-s3-add').on('click', function() {
-  	var new_inputs = jQuery('tr.amazon-s3-first').clone(); 	
-  	new_inputs.find('input').attr('value','');  	
-		new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
-  	new_inputs.insertBefore('.amazon-s3-last');
-  	fv_flowplayer_amazon_s3_count++;
-  	return false;
-  } );
+    var new_inputs = jQuery('tr.amazon-s3-first').clone();
+    new_inputs.find("[name='amazon_key[]']").val('');
+    new_inputs.find("[name='amazon_secret[]']").val('').show();
+    new_inputs.find("[name='_is_secret_amazon_secret[]']").val(0); // set val to 0 - save new
+    new_inputs.attr('class', new_inputs.attr('class') + '-' + fv_flowplayer_amazon_s3_count );
+    new_inputs.find(':selected').prop('selected',false); // unselect
+    new_inputs.find('.secret-preview').remove(); // remove secret preview
+    new_inputs.find("[data-setting-change]").remove(); // remove change link
+    new_inputs.insertBefore('.amazon-s3-last');
+    fv_flowplayer_amazon_s3_count++;
+    return false;
+  });
   
   function fv_fp_amazon_s3_remove(a) {
-  	jQuery( '.'+jQuery(a).parents('tr').attr('class') ).remove();
+    jQuery( '.'+jQuery(a).parents('tr').attr('class') ).remove();
   }
 </script>
 

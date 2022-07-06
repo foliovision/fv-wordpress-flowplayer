@@ -193,7 +193,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       </div>
       <div class="fv-player-tabs">
         
-        <div class="fv-player-tab fv-player-tab-playlist" style="">
+        <div class="fv-player-tab fv-player-tab-playlist">
           <div id="fv-player-list-thumb-toggle">
             <a href="#" id="fv-player-list-list-view" ><span class="dashicons dashicons-list-view"><span class="screen-reader-text">List view</span></span></a>
             <a href="#" id="fv-player-list-thumb-view" class="active" data-title="<?php _e('Add splash images to enable thumbnail view', 'fv_flowplayer');?>"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
@@ -315,6 +315,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <?php if ($allow_uploads == 'true') { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Image', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uploads splash image ?></td>
+                  <input type="hidden" name="fv_wp_flowplayer_field_splash_attachment_id" id="fv_wp_flowplayer_field_splash_attachment_id" value="">
               </tr>
               
               <tr class="<?php if (isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true') echo 'splash_text'; else echo 'fv_player_interface_hide'; ?> first-item-only" >

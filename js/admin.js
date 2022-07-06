@@ -201,10 +201,23 @@
       e.preventDefault();
 
       var name = $(this).data('setting-change'),
-        hidden_input = $("[name='"+name+"']"),
-        password_input = $("[name='"+name.replace('_is_secret_', '')+"']"),
-        secret_preview = $(this).siblings('.secret-preview');
+      index,
+      hidden_input,
+      password_input;
 
+      if(name.match(/-index-(\d)+$/)) {
+        var match = name.match(/-index-(\d)+$/);
+        index = parseInt(match[1]);
+        name = name.replace( match[0],'');
+        hidden_input = $("[name='"+name+"']").eq(index);
+        password_input = $("[name='"+name.replace('_is_secret_', '')+"']").eq(index);
+      } else {
+        hidden_input = $("[name='"+name+"']");
+        password_input = $("[name='"+name.replace('_is_secret_', '')+"']");
+      }
+
+      var secret_preview = $(this).siblings('.secret-preview');
+  
       if( hidden_input.val() == '1' ) {
         hidden_input.val('0');
         password_input.show();
