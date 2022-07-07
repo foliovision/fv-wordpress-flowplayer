@@ -1267,6 +1267,11 @@ class FV_Player_Db {
 
       $out = $this->db_load_player_data( $_POST['playerID'] );
 
+      if( empty($out['videos']) ) {
+        wp_send_json( array( 'error' => "Failed to load videos for this player." ) );
+        exit;
+      }
+
       header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
         echo json_encode($out);

@@ -1378,6 +1378,7 @@ jQuery(function() {
           return false;
         }*/
 
+        // TODO: Why !is_unsaved?
         if ( ( !is_unsaved || is_saving ) && has_draft_status && !is_fv_player_screen( editor_button_clicked ) ) {
           // TODO: change into notification bubble
           alert('Your new player was saved as a draft. To reopen it, open the editor again and use the "Pick existing player" button.');
@@ -2192,6 +2193,9 @@ jQuery(function() {
 
                 // The editor failed to load, it's not locked
                 edit_lock_removal[current_player_db_id] = 1;
+
+                // Prevent autosave notice from appearing
+                is_unsaved = true;
                 return;
               }
 
