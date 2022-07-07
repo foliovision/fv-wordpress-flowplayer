@@ -29,7 +29,8 @@ class FV_Player_Db {
     //$player_atts_cache = array(),
     $player_meta_cache = array(),
     $player_ids_when_searching,
-    $stopwords;  // used in get_search_stopwords method
+    $stopwords,  // used in get_search_stopwords method
+    $database_upgrade_queries = false;
 
   public function __construct() {
     add_action( 'toplevel_page_fv_player', array($this, 'init_tables') );
@@ -52,10 +53,23 @@ class FV_Player_Db {
   }
 
   public function init_tables() {
+    if( !defined('SAVEQUERIES') ) {
+      define( 'SAVEQUERIES', true );
+    }
+
+    global $wpdb;
+    $wpdb->queries = array();
+
     FV_Player_Db_Player::initDB(true);
     FV_Player_Db_Player_Meta::initDB(true);
     FV_Player_Db_Video::initDB(true);
     FV_Player_Db_Video_Meta::initDB(true);
+
+    $this->database_upgrade_queries = $wpdb->queries;
+  }
+
+  public function getDatabaseUpgradeStatus() {
+    return $this->database_upgrade_queries;
   }
 
   public function getVideosCache() {

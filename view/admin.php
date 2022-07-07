@@ -1694,6 +1694,17 @@ function fv_flowplayer_admin_usage() {
 }
 
 
+function fv_flowplayer_admin_database() {
+  ?>
+    <p>Here's the result of the last database upgrade check:</p>
+  <?php
+  global $FV_Player_Db;
+  foreach( $FV_Player_Db->getDatabaseUpgradeStatus() AS $query ) {
+    echo "<p><code>".$query[0]."</code></p>";
+  }
+}
+
+
 function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
@@ -1783,6 +1794,7 @@ if( !class_exists('FV_Player_Pro') ) {
 /* Tools tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings_tools', 'normal' );
+add_meta_box( 'fv_flowplayer_database', __('Database', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_database', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 

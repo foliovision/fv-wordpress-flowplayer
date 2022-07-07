@@ -417,6 +417,8 @@ class FV_Player_Db_Player {
 
     self::init_db_name();
 
+    $res = false;
+
     if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver || $force ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
@@ -461,9 +463,11 @@ CREATE TABLE " . self::$db_table_name . " (
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta( $sql );
+      $res = dbDelta( $sql );
       $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
     }
+
+    return $res;
   }
 
   /**
