@@ -788,6 +788,8 @@ jQuery(function() {
           return;
         }
 
+        var what_is_saving = ajax_save_this_please;
+
         is_saving = true;
         insert_button_toggle_disabled(true);
 
@@ -804,7 +806,19 @@ jQuery(function() {
         }, function(response) {
 
           if( response.error ) {
-            save_error_show( response.error )
+            if( response.fatal_error ) {
+              var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
+  
+              var overlay = overlay_show('error_saving');
+              overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+              overlay.find('[data-error]').html( response.error );
+    
+              jQuery('#fv_player_copy_to_clipboard').select();
+
+            } else {
+              save_error_show( response.error )
+            }
+
             el_spinner.hide();
             
             is_saving = false;
@@ -2870,7 +2884,18 @@ jQuery(function() {
       }, function(response) {
 
         if( response.error ) {
-          save_error_show(response.error);
+          if( response.error && response.fatal_error ) {
+            var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+  
+            var overlay = overlay_show('error_saving');
+            overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+            overlay.find('[data-error]').html( response.error );
+  
+            jQuery('#fv_player_copy_to_clipboard').select();
+  
+          } else {
+            save_error_show(response.error);
+          }
 
           el_spinner.hide();
           is_saving = false;
@@ -2946,7 +2971,7 @@ jQuery(function() {
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
         } else {
-          json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+          var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
 
           var overlay = overlay_show('error_saving');
           overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );

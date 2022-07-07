@@ -1085,6 +1085,11 @@ class FV_Player_Db {
             // save only if we're not requesting new instances for preview purposes
             if (!$data) {
               $id_video = $video->save( $video_meta );
+              if( !$id_video ) {
+                global $wpdb;
+                wp_send_json( array( 'fatal_error' => true, 'error' => 'Failed to save the video: '.$wpdb->last_error ) );
+                exit;
+              }
             } else {
               $video->link2meta( $video_meta );
             }
@@ -1151,7 +1156,8 @@ class FV_Player_Db {
 
           echo wp_json_encode( $this->db_load_player_data( $id ) );
         } else {
-          wp_send_json( array( 'error' => 'Failed to save player.' ) );
+          global $wpdb;
+          wp_send_json( array( 'fatal_error' => true, 'error' => 'Failed to save player: '.$wpdb->last_error ) );
         }
       } else {
         $player->link2meta( $player_meta );
