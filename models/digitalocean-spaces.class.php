@@ -55,10 +55,9 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     return $parts[0];
   }
 
-  // TODO: rename this method, it's soooooo confusing! it does NOT provide secure tokens, it CHECKS for their presence
   function get_secure_tokens() {
     global $fv_fp;
-    return $fv_fp->_get_option( array($this->key,'key' ) ) && $fv_fp->_get_option( array($this->key,'secret' ) );
+    return array( $fv_fp->_get_option( array($this->key,'secret' ) ) );
   }
 
   /*
@@ -136,6 +135,9 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   }
   
   function secure_link( $url, $secret, $ttl = false ) {
+
+    if( stripos($url,'X-Amz-Expires') !== false ) return $url;
+
     global $fv_fp;
     $key = $fv_fp->_get_option( array($this->key,'key' ) );
     $secret = $fv_fp->_get_option( array($this->key,'secret' ) );
