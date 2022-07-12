@@ -1247,8 +1247,18 @@ class flowplayer_frontend extends flowplayer
     }
     
     $sLink = get_permalink();
-    if( !isset($sPermalink) || empty($sPermalink) ) {       
-      $sPermalink = urlencode(get_permalink());
+    if( !isset($sPermalink) || empty($sPermalink) ) {
+      $sPermalink = get_permalink();
+
+      // If the player is on a category, tag or a tax page, but it's not in the loop yet, use the category/tag/tax link
+      if( !in_the_loop() && ( is_category() || is_tag() || is_tax() ) ) {
+        $term = get_queried_object();
+        if( $term && is_a( $term, 'WP_Term') ) {
+          $sPermalink = get_term_link($term);
+        }
+      }
+
+      $sPermalink = urlencode($sPermalink);
       $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
       $sTitle = urlencode( html_entity_decode( is_singular() ? get_the_title().' ' : get_bloginfo() ).' ');
     }
