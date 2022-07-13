@@ -1246,7 +1246,6 @@ class flowplayer_frontend extends flowplayer
       }
     }
     
-    $sLink = get_permalink();
     if( !isset($sPermalink) || empty($sPermalink) ) {
       $sPermalink = get_permalink();
 
@@ -1258,19 +1257,18 @@ class flowplayer_frontend extends flowplayer
         }
       }
 
-      $sPermalink = urlencode($sPermalink);
-      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.get_permalink() ) );
+      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$sPermalink ) );
       $sTitle = urlencode( html_entity_decode( is_singular() ? get_the_title().' ' : get_bloginfo() ).' ');
     }
 
           
     $sHTMLSharing = '<ul class="fvp-sharing">
-    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . $sPermalink . '" target="_blank"></a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=' . $sTitle .'&url='. $sPermalink . '" target="_blank"></a></li>
+    <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . urlencode($sPermalink) . '" target="_blank"></a></li>
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=' . $sTitle .'&url='. urlencode($sPermalink) . '" target="_blank"></a></li>
     <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank"></a></li></ul>';
     
     if( isset($post) && isset($post->ID) ) {
-      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sLink . '" target="_blank">Link</a></div>' : '';
+      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sPermalink . '" target="_blank">Link</a></div>' : '';
     } else {
       $sHTMLVideoLink = false;
     }
