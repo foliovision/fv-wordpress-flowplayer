@@ -1699,8 +1699,10 @@ function fv_flowplayer_admin_database() {
     <p>Here's the result of the last database upgrade check:</p>
   <?php
   global $FV_Player_Db;
-  foreach( $FV_Player_Db->getDatabaseUpgradeStatus() AS $query ) {
-    echo "<p><code>".$query[0]."</code></p>";
+  if( is_array($FV_Player_Db->getDatabaseUpgradeStatus()) ) {
+    foreach( $FV_Player_Db->getDatabaseUpgradeStatus() AS $query ) {
+      echo "<p><code>".$query[0]."</code></p>";
+    }
   }
 }
 
