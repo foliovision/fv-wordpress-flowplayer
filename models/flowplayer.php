@@ -1332,6 +1332,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       $css .= $sel. " .fp-bar span.chapter_passed{ background-color: ".$sProgress." !important; }\n";
+      $css .= $sel. " .fp-bar span.start_end_suggest{ background-color: ".$sProgress." !important; }\n";
       $css .= ".fv-player-buttons a.current { background-color: ".$sProgress." !important; }\n";
       $css .= "#content ".$sel.", ".$sel." { font-family: ".$this->_get_option(array($skin, 'font-face'))."; }\n";
       $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
