@@ -76,6 +76,9 @@ flowplayer( function(api,root) {
           reload_delay -= 1;
           delay -= 1;
 
+          // Put in the message again, as it might be altered else where
+          messageElement.innerHTML = message;
+
           if (reload_delay > 0 && messageElement) {
             messageElement.querySelector("span").innerHTML = secondsToDhms(delay);
           } else {

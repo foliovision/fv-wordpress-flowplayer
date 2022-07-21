@@ -8,6 +8,7 @@ flowplayer( function(api,root) {
   
   var video_tag = false,
     did_start_playing = false,
+    live_stream_check = false,
     are_waiting_already = 0; // make sure you wait for the event only on one event at a time
   
   // first we need to obtain the video element
@@ -28,11 +29,31 @@ flowplayer( function(api,root) {
         video_tag.on( "waiting", wait_for_stalled );
         
         // we use this to ensure the video tag has the event bound only once
-        video_tag.data('fv-ios-recovery',true);        
+        video_tag.data('fv-ios-recovery',true);
+      }
+
+      // If it's live stream there is no "waiting" event, so it never triggers
+      if( api.live && video.src.match(/m3u8|stream_loader/) ) {
+        console.log("FV Player: iOS video element is a live stream...");
+
+        clearInterval(live_stream_check);
+
+        live_stream_check = setTimeout( function() {
+          // Check if there is a valid HLS stream
+          jQuery.get( video.src, function( response ) {
+            if( !response.match(/#EXT/) ) {
+              console.log("FV Player: iOS video element live stream does not look like a HLS file, triggering error...");
+
+              // Trigger error, but use code 1 so that the reload routine will not be used
+              api.trigger('error', [api, { code: 1, video: api.video }]);
+            }
+          });
+        }, 5000 );
       }
 
       api.one('progress', function() {
         did_start_playing = true;
+        clearInterval(live_stream_check);
       });
     }
 
