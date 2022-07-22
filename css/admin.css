@@ -187,6 +187,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   z-index: 1000;
 }
 
+td a.fv-help-link {
+  margin-top: 16px !important;
+}
+
 /*
 Brizy editor support
 */
