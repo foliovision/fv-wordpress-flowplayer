@@ -1427,17 +1427,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       }
       
-      //  also check widgets - is there widget_fvplayer among active widgets?
-      if( !$bFound ) {
-        $aWidgets = get_option('sidebars_widgets');
-        if( isset($aWidgets['wp_inactive_widgets']) ) {
-          unset($aWidgets['wp_inactive_widgets']);
-        }
-        if( stripos(json_encode($aWidgets),'widget_fvplayer') !== false ) {
-          $bFound = true;
-        }
-      }
-      
       if( !$bFound ) {
         return;
       }
