@@ -1587,11 +1587,11 @@ function fv_flowplayer_admin_skin_sticky() {
 <?php
 }
 
-function fv_flowplayer_admin_usage() {
+function fv_flowplayer_admin_usage_old() {
 ?>
 				<table class="form-table">
 					<tr>
-						<td colspan="4">  
+						<td colspan="4">
 							<div class="column">					
 								<p><?php _e('Basic Setup', 'fv-wordpress-flowplayer'); ?>:</p>
 								<div class="clear"></div>
@@ -1692,6 +1692,302 @@ function fv_flowplayer_admin_usage() {
 				</table>
 <?php			
 }
+
+function fv_flowplayer_admin_usage() {
+  ?>
+     <table class="form-table">
+     <tr>
+       <td colspan="4">
+         <div class="column">
+           <ul class="embedmenu">
+            <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/why" title="Why FV Player?">Why FV Player?</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/integrations" title="FV Player Integrations">FV Player Integrations</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/player-pro-features" title="FV Player Features - Free vs Pro ">FV Player Features – Free vs Pro</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/comparison-table" title="WordPress Video Plugins Comparison">WordPress Video Plugins Comparison</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/fv-player-presto-comparison" title="FV Player vs. Presto Player – Feature Comparison List">FV Player vs. Presto Player – Feature Comparison List</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/sub-domains-and-multi-domains" title="Using FV Player with Sub-domains and Multi-Domains ">Sub-domains and Multi-Domains</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/getting-started" title="Getting Started">Getting Started</a>
+               <ul class="children">
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/getting-started/installation" title="FV Player Installation">Installation</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/installation/pro-extension" title="Installation - Pro extension">Installation – Pro extension</a></li>
+                   </ul>
+                 </li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/start-up-guide" title="Start up guide for explanation and basic settings">Start-up Guide</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/customizing-fv-player-skin" title="Customizing FV Player skin">Customizing FV Player Skin</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/media-video-library-browser" title="How to use the built-in Library Browser">Built-in Library Browser</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/fv-player-elementor-support" title="Using FV Player With Elementor Page Builder">Using FV Player With Elementor Page Builder</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/lms-player" title="Make Any LMS Work With FV Player">Make Any LMS Work With FV Player</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/page-builder-player" title="Make Any Page Builder Work With FV Player">Make Any Page Builder Work With FV Player</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/getting-started/how-player-widget" title="How to use FV Player Widget">FV Player Widget</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/playlists" title="Creating and Managing Playlists">Creating and Managing Playlists</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/playlists/creating-playlists" title="Creating Playlists with FV Player">Creating Playlists</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/faq" title="FV WordPress Flowplayer FAQ">FAQ</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/faq/css-tips-and-fixes" title="CSS Tips and Fixes">CSS Tips and Fixes</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/faq/version-1" title="FV WordPress Flowplayer 1.x FAQ">FV WordPress Flowplayer 1.x FAQ</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/settings" title="Setting Screens">Setting Screens</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/post-interface-settings" title="FV Player Post Interface Options">Post Interface Options</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/sitewide-fv-player-defaults" title="Sitewide FV Player Defaults">Sitewide FV Player Defaults</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/integrations-compatibility-options" title="Integrations/Compatibility Options">Integrations/Compatibility Options</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/mobile-settings-behaviors" title="Mobile Settings, Behaviors, and Limitations">Mobile Settings, Behaviors, and Limitations</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/end-of-video-actions" title="End of Video Actions">End of Video Actions</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/video-seo-schema-xml" title="Using Video SEO With FV Player Videos">Using Video SEO</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/optimize-javascript-loading" title="Optimizing FV Player Loading">Optimizing FV Player Loading</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-hosting" title="Video Hosting">Video Hosting</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player" title="Using YouTube with FV Player">YouTube</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo" title="How to Use Vimeo with WordPress">Vimeo</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/bunny-stream-player-integration" title="Using Bunny Stream With FV Player">Bunny Stream</a></li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-hosting/amazon-s3-guide" title="Serving Private Videos with Amazon S3 and WordPress">Amazon Web Services S3</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/amazon-s3-guide/fix-amazon-mime-type" title="How to set correct MIME type on videos in Amazon S3">Amazon S3 MIME Settings</a></li>
+                   </ul>
+                 </li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-enable-cors-headers" title="How to enable CORS headers for video hosting">How to enable CORS</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/fallback-video-hosting" title="How To Set Up Fallback Video Hosting">Fallback Video Hosting</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/rtmp-streams" title="How to use RTMP streams with Flash - Deprecated">RTMP Streams with Flash - Deprecated</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/video-hosting-google" title="Video Hosting on Google Drive - Deprecated">Google Drive - Deprecated</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features" title="Advanced features">Advanced features</a>
+               <ul class="children">
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features/playback" title="Playback Features">Playback Features</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/ab-loop-function" title="AB Loop Function">AB Loop Function</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/autoplay" title="Autoplay">Autoplay</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/using-lightbox" title="Using the Video Lightbox Effect">Video Lightbox Effect</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/speed-buttons" title="How to Use the Speed Buttons">Speed Buttons</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/custom-start-end-time" title="How to Use Custom Start/End Time">Custom Start/End Time</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/quality-switching" title="Setting Up Video Quality Switching">Video Quality Switching</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/are-still-watching-prompt" title="Are You Still Watching Prompt">Are You Still Watching Prompt</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/playback/video-position-saving" title="How To Use Video Position Saving">Video Position Saving</a></li>
+                   </ul>
+                 </li>
+                 <div class="clear"></div>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features/accessibility" title="Accessibility Features">Accessibility Features</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/subtitles" title="How to Use Subtitles">Subtitles</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/interactive-video-transcript" title="Interactive Video Transcript">Interactive Video Transcript</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/timeline-previews" title="Timeline Previews">Timeline Previews</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/vtt-chapters" title="Using VTT Chapters with FV Player">VTT Chapters</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/sticky-video" title="Sticky Video">Sticky Video</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/adding-title-and-splash-text" title="Adding Item Titles and Splash Text">Item Titles and Splash Text</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/alignment-settings" title="Alignment Settings">Alignment Settings</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/profile-videos" title="FV Player Profile Videos">FV Player Profile Videos</a></li>
+                   </ul>
+                 </li>
+                 <div class="clear"></div>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features/sharing" title="Sharing Options">Sharing Options</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/managing-sharing-buttons" title="Managing Social Sharing Buttons">Social Media Buttons</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/video-downloading-with-simple-history" title="Video Downloading With Simple History Support">Video Downloading With Simple History Support</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/creating-video-links" title="Creating Video Links in FV Player">Creating Video Links</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/email-subscription-form-popups" title="Email Subscription Form Pop-ups">Email Subscription Form Pop-ups</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/customing-email-sharing" title="Customizing the Email Sharing Text">Email Sharing</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/using-iframe-embedding" title="Using the Iframe Embedding">Iframe Embedding</a></li>
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security" title="Video Security">Video Security</a>
+               <ul class="children">
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/video-protection-methods" title="Video Protection Methods">Video Protection Methods</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/video-protection-methods/protecting-video-from-downloading" title="How to Protect Your Videos from Being Downloaded">Protect Videos From Downloading</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/video-protection-methods/signed-urls-hls-protection" title="How to Protect your HLS Streams with URL Tokens">Protect HLS Streams with URL Tokens</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/video-protection-methods/cookie-protection" title="Protecting HLS Videos with Cookies ">Protecting HLS Videos with Cookies</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/video-protection-methods/secure-videos-security" title="How to secure your videos with Vimeo Security">Vimeo Security Add-on</a></li>
+                   </ul>
+                 </li>
+                 <div class="clear"></div>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/cdn" title="CDN Options">CDN Options</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/cdn/using-bunnycdn-with-fvplayer-pro" title="Using BunnyCDN with FV Player">BunnyCDN</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/cdn/serving-private-cloudfront" title="Serving Private Videos via CloudFront in WordPress">CloudFront</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/cdn/using-keycdn-with-fvplayer" title="Using KeyCDN With FV Player">KeyCDN</a></li>
+                   </ul>
+                 </li>
+                 <div class="clear"></div>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/drm-watermarking" title="DRM Watermarking">DRM Watermarking</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/drm-watermarking/protecting-videos-with-drm-text" title="Protecting Videos With DRM Text">Protecting Videos With DRM Text</a></li>
+                   </ul>
+                 </li>
+                 <div class="clear"></div>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/encoding" title="Secure Video Encoding ">Secure Video Encoding</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/encrypted-hls-coconut" title="How to Set up Encrypted HLS with Coconut">Encrypted HLS with Coconut Setup</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/encrypt-encode-videos-wordpress" title="How to encrypt videos directly in WordPress with Coconut">Encrypted HLS with Coconut End User Guide</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/mediaconvert-encrypted-hls-guide" title="AWS MediaConvert Encrypted HLS Guide">AWS MediaConvert Encrypted HLS Guide</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/mediaconvert-end-user-guide" title="AWS MediaConvert End User guide">AWS MediaConvert End User guide</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/hls-stream" title="How to setup encrypted HLS stream with Amazon Elastic Transcoder - Deprecated">Amazon Elastic Transcoder Encrypted HLS Setup- Deprecated</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/aws-hls-end-user-guide" title="AWS Elastic Transcoder End User Guide - Deprecated">AWS Elastic Transcoder End User Guide – Deprecated</a></li>
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+           </ul>
+         </div>
+         <div class="column">
+           <ul class="embedmenu">
+            <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning" title="Video Membership, Pay Per View and eLearning">Video Membership, Pay Per View and eLearning</a>
+               <ul class="children">
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/ppv" title="FV Player Pay Per View">FV Player Pay Per View</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/ppv/woocommerce" title="How to use FV Player Pay Per View for WooCommerce">FV Player Pay Per View for WooCommerce</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/ppv/how-to" title="How to use FV Player Pay Per View With Easy Digital Downloads">FV Player Pay Per View for Easy Digital Downloads</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/ppv/sell-video-subscriptions-wordpress" title="How To Sell Video Subscriptions With Restrict Content">Video Subscriptions With Restrict Content</a></li>
+                   </ul>
+                 </li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/membership" title="Membership Sites">Membership Sites</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/membership/rcp-integration" title="How to create membership site with RCP and FV Player">Membership Site with Restrict Content Pro</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/membership/membership-fv-player-compatible" title="Popular Membership Plugins Compatible with FV Player">Popular Membership Plugins Compatible with FV Player</a></li>
+                   </ul>
+                 </li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/elearning" title="WordPress eLearning">WordPress eLearning</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/elearning/learndash-progression-player" title="Using LearnDash And Video Progression with FV Player">LearnDash And Video Progression</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/elearning/tutor-lms-video-player" title="How To Use FV Player With Tutor LMS">Tutor LMS</a></li>
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid" title="FV Player VAST/VPAID">FV Player VAST/VPAID</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/how-to-use-vast" title="How to use VAST / VPAID with video player FV Player VAST">How to Use FV Player VAST</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/using-fv-vast-outside-wordpress" title="Using FV Player VAST Outside of WordPress">FV Player VAST Outside of WordPress</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/using-exoclick-ads" title="Using ExoClick Ads With FV Player">ExoClick Ads</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/tracking-vast-with-analytics" title="Tracking VAST and VPAID Ads With Google Analytics">Tracking VAST and VPAID Ads With Google Analytics</a></li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/vast-vpaid-tools" title="VAST/VPAID Tools">VAST/VPAID Tools</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/vast-vpaid-tools/url-tags" title="FV Player VAST - How to use url tags with VAST and VPAID">Using URL Tags</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/vast-vpaid-tools/errors-causes-resolutions" title="VAST Errors - Causes &amp; Resolutions">VAST Errors – Causes &amp; Resolutions</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/vast-vpaid-tools/tester" title="VAST Tester">VAST Tester</a></li>
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/tools" title="Tools">Tools</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/tools/migration-wizard" title="How to Use FV Player Migration Wizard">FV Player Migration Wizard</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/tools/how-shortcode-conversion-tool" title="How To Use The Shortcode Conversion tool">Shortcode Conversion tool</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/tools/rollback-player-version" title="How To Rollback FV Player Version">Version Rollback For FV Player</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/tools/how-to-completely-remove-fv-player" title="How To Completely Remove FV Player">Complete Uninstall</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/live-streaming" title="Live Streaming">Live Streaming</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/live-streaming/live-streaming-youtube" title="Live Streaming With YouTube">Live Streaming With YouTube</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/live-streaming/stream-with-viloud" title="Live Streaming With Viloud">Live Streaming With Viloud</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/live-streaming/live-streaming-vimeo" title="Live Streaming With Vimeo">Live Streaming With Vimeo</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/analytics" title="Analytics">Analytics</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/analytics/playback-stats" title="Playback Stats">Playback Stats</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/analytics/google-analytics-videos-4" title="Using Google Analytics 4 with FV Player">Google Analytics 4</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/analytics/google-analytics-fv-player" title="Using Google Universal Analytics with FV Player">Google Universal Analytics</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/analytics/matomo-analytics-fv-player" title="Using Matomo Analytics with FV Player">Matomo Analytics</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-ads" title="Video Advertising">Video Advertising</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/advertising-with-fv-flowplayer" title="Advertising Options with FV Player">Advertising Options with FV Player</a></li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools" title="Built-in Advertising Tools">Built-in Advertising Tools</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools/using-preroll-postroll-ads" title="Custom Video Ads in FV Player (pre-roll and post-roll)">Custom Video Ads in FV Player (pre-roll and post-roll)</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools/adding-popup-ads" title="Overlay Ads in FV Player">Overlay Ads in FV Player</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools/setting-up-html-popups" title="Video Actions: HTML Pop-ups">Video Actions: HTML Pop-ups</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools/setting-up-html-popup" title="Setting Up the HTML Pop-up Feature">Setting Up the HTML Pop-up Feature</a></li>
+                   </ul>
+                 </li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-ads/google-ads" title="Google Ads">Google Ads</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/google-ads/google-advertising-options" title="Google Video Advertising Options">Google Video Advertising Options</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/google-ads/incorporating-google-adsense" title="Incorporating Google Ads (AdSense)">Incorporating Google Ads (AdSense)</a></li>
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/casting" title="Casting Options">Casting Options</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/casting/chromecast" title="Using FV Player with Chromecast">Chromecast</a></li>
+               </ul>
+             </li>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/audio" title="Audio Player">Audio Player</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/audio/audio-tracks-player" title="How to Use Audio Tracks in FV Player">Audio Tracks in FV Player</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/audio/multiple-audio-tracks-player" title="How to Use Multiple Audio Tracks with FV Player">Multiple Audio Tracks</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/troubleshooting" title="Troubleshooting">Troubleshooting</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/how-to-use-video-checker" title="How to Use the Built-in Video Checker">How to Use the Built-in Video Checker</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/switching-fv-player-pro-to-beta" title="Switching FV Player Pro to Beta">Switching FV Player Pro to Beta</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/compatibility" title="Flowplayer Compatibility - Incompatible Plugins">Incompatible Plugins and Scripts</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/troubleshooting-javascript-errors" title="Troubleshooting Javascript Errors">Troubleshooting Javascript Errors</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/encoding" title="Video Encoding for HTML 5">Video Encoding for HTML 5</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/hls" title="Using HLS With FV Player">Using HLS With FV Player</a></li>
+               </ul>
+             </li>
+             <div class="clear"></div>
+             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/developers" title="For Developers">For Developers</a>
+               <ul class="children">
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/player-database" title="How to use FV Player Database">FV Player Database</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/shortcode-parameters" title="List of Shortcode Parameters">List of Shortcode Parameters</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/video-custom-fields" title="Setting up Video Custom Fields">Video Custom Fields</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/staging-sites-developers" title="Staging Sites For Developers">Staging Sites For Developers</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/using-fv-player-with-amp" title="Using FV Player With AMP">AMP</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/player-minify-plugins" title="Using FV Player with Minify Plugins">Minify Plugins</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/api-programming" title="Programmer's Guide">Programmer’s Guide</a></li>
+                 <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/video-position-storing" title="Video Position Storing">Video Position Storing</a></li>
+                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/developers/changelog" title="Changelog">Changelog</a>
+                   <ul class="children">
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/changelog/fv-player-pro" title="FV Player Pro Changelog">FV Player Pro Changelog</a></li>
+                     <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/changelog/player-vast-changelog" title="FV Player VAST Changelog">FV Player VAST Changelog</a></li>
+                   </ul>
+                 </li>
+               </ul>
+             </li>
+           </ul>
+         </div>
+       </td>
+       <td></td>
+     </tr>
+   </table>
+  <?php
+  }
 
 
 function fv_flowplayer_admin_database() {
