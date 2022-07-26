@@ -926,41 +926,6 @@
 	20% { transform: scale(1, 2) }
 	40% {	transform: scale(1) }
 }
-.fp-preload {
-	transition: opacity .3s .1s;
-	position: static;
-	top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-	margin: auto;
-	opacity: 0;
-  display: block;
-	height: 0
-}
-.flowplayer .fp-ui .fp-preload {
-	margin: auto;
-}
-.flowplayer.is-splash .fp-preload, .flowplayer.is-poster .fp-preload, .fp-waiting .fp-preload {
-	position: absolute;
-  display: block;
-	height: 2em;
-	opacity: .8
-}
-.fp-preload b {
-	animation: waiting 1s ease-in-out infinite;
-	box-shadow: 0 0 .5rem #222;
-	background-color: white;
-	display: inline-block;
-	border-radius: .1em;
-	margin: 0 .2em;
-	height: 2em;
-	width: .4em
-}
-.fp-preload b:nth-child(1) { animation-delay: 0 }
-.fp-preload b:nth-child(2) { animation-delay: .1s }
-.fp-preload b:nth-child(3) { animation-delay: .15s }
-.fp-preload b:nth-child(4) { animation-delay: .25s }
 
 .flowplayer .fp-bar > *.fp-buffer, .flowplayer .fp-bar-slider > *.fp-buffer {
   max-width: 100%; }
@@ -1800,20 +1765,6 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio.is-loading.fp-default-playlist .fp-waiting svg {left: 2.5em}
 .flowplayer.is-audio .fp-bar {background-color: #ccc}
 
-.flowplayer.is-audio.is-loading .fp-preload {
-  z-index: 10;
-  left: 0.3em;
-  top: 3.2em;
-  width: 2.7em;
-}
-
-.flowplayer.is-audio.is-loading .fp-preload b {
-  margin: 0 .15em;
-  height: 0.9em;
-  width: 0.35em;
-}
-
-
 .flowplayer.is-audio .fp-fullscreen,.flowplayer.is-audio .fp-ratio,.flowplayer.is-audio.is-splash .fp-timeline-tooltip {display:none}
 .flowplayer.is-audio.is-error {border:0;margin-bottom:50px}
 .flowplayer.is-audio.is-error h2,.entry-content .flowplayer.is-audio.is-error h2 {margin:0}
@@ -1884,7 +1835,7 @@ div.fp-player.is-sticky-right-bottom {
   top: auto;
 }
 
-/* Media Queries - done */        
+/* Media Queries - done */
 
 @media (max-width: 56.1875em){
   .flowplayer .fp-captions br{display:block}
