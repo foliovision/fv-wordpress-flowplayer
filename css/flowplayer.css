@@ -921,12 +921,6 @@
 /*
  *  FV Player Additions
  */
-@keyframes waiting {
-	0% { transform: scale(1) }
-	20% { transform: scale(1, 2) }
-	40% {	transform: scale(1) }
-}
-
 .flowplayer .fp-bar > *.fp-buffer, .flowplayer .fp-bar-slider > *.fp-buffer {
   max-width: 100%; }
 .flowplayer.is-live .fp-buffer {
