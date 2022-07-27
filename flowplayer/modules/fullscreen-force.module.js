@@ -125,7 +125,7 @@ flowplayer(function(api, root) {
   var show_iphone_notice_timeout = false;
 
   // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
-  if( flowplayer.support.iOS && !flowplayer.support.fullscreen ) {
+  if( flowplayer.support.iOS && !flowplayer.support.fullscreen && !flowplayer.conf.native_fullscreen ) {
     api.on('fullscreen', show_iphone_notice );
     window.addEventListener('resize', show_iphone_notice );
     window.addEventListener('resize', function() {
