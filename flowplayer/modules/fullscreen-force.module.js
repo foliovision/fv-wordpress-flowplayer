@@ -112,7 +112,7 @@ flowplayer(function(api, root) {
     }
   }
   
-  if( flowplayer.support.android && window.screen && window.screen.orientation ) {
+  if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
       if( is_portrait_video(api) ) { 
         screen.orientation.lock("portrait-primary");
