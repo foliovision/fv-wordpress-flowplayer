@@ -18,6 +18,15 @@ flowplayer(function(api, root) {
     restore = "0.5";
   }
   
+  root.on('wheel','.fp-volume', function(e) {
+    var delta = e.originalEvent.deltaY;
+
+    if (delta > 0) api.volume(api.volumeLevel - 0.15); // going down
+    else api.volume(api.volumeLevel + 0.15); // going up
+  
+    return false;
+  });
+
   root.on('mousedown touchstart','.fp-volumebtn', function(e) {
     var volumebtn = jQuery(this);
 
