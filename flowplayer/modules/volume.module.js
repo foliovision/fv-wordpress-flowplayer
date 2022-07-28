@@ -11,6 +11,8 @@ flowplayer(function(api, root) {
   root = jQuery(root);
   var bean = flowplayer.bean;
   
+  var fp_ui = root.find('.fp-ui');
+
   // Restore volume on click on the speaker icon
   var restore = flowplayer.conf.default_volume;
   // Watch out, the website default might be to use a zero volume!
@@ -18,7 +20,7 @@ flowplayer(function(api, root) {
     restore = "0.5";
   }
   
-  root.on('wheel','.fp-volume', function(e) {
+  fp_ui.on('wheel','.fp-volume', function(e) {
     var delta = e.originalEvent.deltaY;
 
     if (delta > 0) api.volume(api.volumeLevel - 0.15); // going down
