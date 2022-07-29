@@ -9,23 +9,26 @@
  */
 flowplayer(function(api, root) {
   root = jQuery(root);
-  var bean = flowplayer.bean;
-  
-  var fp_ui = root.find('.fp-ui');
+  var bean = flowplayer.bean,
+    fp_ui = root.find('.fp-ui');
 
   // Restore volume on click on the speaker icon
   var restore = flowplayer.conf.default_volume;
+
   // Watch out, the website default might be to use a zero volume!
   if( restore == 0 ) {
     restore = "0.5";
   }
   
+  // Control volume using mouse wheel
   fp_ui.on('wheel','.fp-volume', function(e) {
     var delta = e.originalEvent.deltaY;
 
     if (delta > 0) api.volume(api.volumeLevel - 0.15); // going down
     else api.volume(api.volumeLevel + 0.15); // going up
-  
+
+    restore = api.volumeLevel;
+
     return false;
   });
 
@@ -50,7 +53,6 @@ flowplayer(function(api, root) {
       restore = api.volumeLevel;
     }
   })
-
 
   // Mute
   api.on('volume', function(e,api) {
