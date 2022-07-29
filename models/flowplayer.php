@@ -1373,13 +1373,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
-        $sCSS = "bottom: 30px; left: 15px";
+        $sCSS = "bottom: 30px !important; left: 15px !important;";
       } else if( $value == 'bottom-right' ) {
-        $sCSS = "bottom: 30px; right: 15px; left: auto";
+        $sCSS = "bottom: 30px !important; right: 15px !important; left: auto !important";
       } else if( $value == 'top-left' ) {
-        $sCSS = "top: 30px; left: 15px; bottom: auto";
+        $sCSS = "top: 30px !important; left: 15px !important; bottom: auto !important";
       } else if( $value == 'top-right' ) {
-        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
+        $sCSS = "top: 30px !important; right: 15px !important; bottom: auto !important; left: auto !important";
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       

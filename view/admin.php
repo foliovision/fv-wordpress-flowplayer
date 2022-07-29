@@ -282,22 +282,12 @@ function fv_flowplayer_admin_default_options() {
                 <p class="description">
                   <input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo esc_attr( $fv_fp->_get_option('googleanalytics') ); ?>" placeholder="<?php _e('Will be automatically loaded when playing a video.', 'fv-wordpress-flowplayer'); ?>" />
                 </p>
-							</td>
-						</tr>
-						<tr>
-							<td><label for="logo">Logo:</label></td>
-							<td>
-                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php
-            $aCheck = false;
-            if( flowplayer::is_licensed() ) {
-              $aCheck = get_transient( 'fv_flowplayer_license' );
-            }
-            if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) {
-              _e('You have a valid FV Flowplayer license, you can put up your logo here', 'fv-wordpress-flowplayer');
-            } else {
-              _e('You need to have a FV Flowplayer license to use it', 'fv-wordpress-flowplayer');
-            }
-            ?>" />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="logo">Logo:</label></td>
+              <td>
+                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php  _e('Paste logo url or upload image to show custom logo on player.', 'fv-wordpress-flowplayer'); ?>"/>
 
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select Logo" />
 
