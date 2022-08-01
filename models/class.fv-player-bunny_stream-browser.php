@@ -18,16 +18,51 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
         'lib_id' => $fv_fp->_get_option( array('bunny_stream','lib_id') ),
         'api_key' => $fv_fp->_get_option( array('bunny_stream','api_key') ),
         'job_submit_nonce' => wp_create_nonce('fv_player_bunny_stream'),
+        'nonce_add_new_folder' => wp_create_nonce('fv_player_bunny_stream_add_new_folder')
       ));
     }
   }
 
   function register() {
     add_action( $this->ajax_action_name, array($this, 'load_assets') );
+    add_action( $this->ajax_action_name_add_new_folder, array($this, 'add_new_folder_ajax' ) );
   }
 
   // Legacy
   function init_for_gutenberg() {}
+
+  function add_new_folder_ajax() {
+    if( defined('DOING_AJAX') && ( !isset( $_POST['nonce_add_new_folder'] ) || !wp_verify_nonce( $_POST['nonce_add_new_folder'], 'fv_player_bunny_stream_add_new_folder' ) ) ) {
+      wp_send_json( array('error' => 'Bad nonce') );
+    }
+
+    $output = array();
+
+    $name = sanitize_text_field($_POST['folder_name']); // new collection to create
+
+    $guid = $this->get_collection_guid_by_name($name); // check if collection already exists
+
+    if( empty($guid) ) {
+      global $fv_fp;
+
+      $api = new FV_Player_Bunny_Stream_API();
+      
+      $endpoint = 'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections';
+
+      $response = $api->api_call( $endpoint, array('name' => $name), 'POST' );
+
+      if( is_wp_error($response) ) {
+        $output['error'] = $response->get_error_message();
+      } else {
+        $output['guid'] = $response->guid;
+      }
+
+    } else {
+      $output['error'] = 'Error - collection ' . $name . ' does already exists';
+    }
+
+    wp_send_json( $output );
+  }
 
   function get_all_collections() {
     global $fv_fp;
@@ -80,7 +115,12 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $body['type'] = 'folder';
     $body['items'] = array();
 
-    $path = isset($_POST['path']) ? str_replace('Home/', '', $_POST['path']) : false;
+    if( isset($_POST['path']) ) {
+      $path = str_replace('Home/', '', $_POST['path']); // remove Home/
+      $path = rtrim($path, '/'); // remove ending /
+    } else {
+      $path = false;
+    }
 
     // query default videos or concrete collection library
     if( $path ) {
@@ -90,7 +130,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       $result_collection = $this->get_all_collections();
 
       if( !is_wp_error( $result_collection ) ) {
-        foreach( $result_collection->items as $collection ) {
+        foreach( $result_collection->items as $collection ) { // add collections as folders
           $body['items'][] = array(
             'name' => $collection->name,
             'path' => 'Home/' . $collection->name,
@@ -203,6 +243,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
 }
 
-new FV_Player_Bunny_Stream_Browser( 'wp_ajax_load_bunny_stream_jobs' );
+new FV_Player_Bunny_Stream_Browser( array( 'ajax_action_name' => 'wp_ajax_load_bunny_stream_jobs', 'ajax_action_name_add_new_folder' => 'wp_ajax_add_bunny_stream_new_folder') );
 
 endif;

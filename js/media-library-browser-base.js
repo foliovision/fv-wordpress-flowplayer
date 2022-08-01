@@ -231,7 +231,7 @@ function fv_flowplayer_browser_browse(data, options) {
       + '<div class="thumbnail">'
       + '<span class="icon folder"></span>'
       + '<div class="filename">'
-      + '<div>+ Add new category</div>'
+      + '<div>+ '+options.add_new_folder_text+'</div>'
       + '</div>'
       + '</div>'
       + '</div>').on('click', function() {

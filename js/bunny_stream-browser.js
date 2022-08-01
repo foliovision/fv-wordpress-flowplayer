@@ -115,6 +115,10 @@ jQuery( function($) {
 
         fv_flowplayer_browser_browse( ret.items, {
           breadcrumbs: 1,
+          action: 'add_bunny_stream_new_folder',
+          add_new_folder: 1,
+          add_new_folder_text: 'Add new collection',
+          nonce_add_new_folder: fv_player_bunny_stream_upload_settings.nonce_add_new_folder,
           noFileName: true,
           append: appending,
           extraAttachmentClass: 'fullsize',
