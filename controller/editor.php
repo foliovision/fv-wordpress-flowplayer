@@ -232,16 +232,13 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   $post = get_post($post_id);
 
-  // We only allow each player to set the Featured Image once, so that user can still removed it
-  $featured_image_players = get_post_meta($post_id, '_fv_player_featured_image_players', true);
-  if( !is_array($featured_image_players) ) {
-    $featured_image_players = array();
-  }
+  // Delete old meta
+  delete_post_meta($post_id, '_fv_player_featured_image_players');
+  delete_post_meta($post_id, '_fv_player_featured_image_splash_urls');
 
-  // Same as above, only this time it's for the legacy [fvplayer src="..." splash="..."] shortcodes
-  $featured_image_splash_urls = get_post_meta($post_id, '_fv_player_featured_image_splash_urls', true);
-  if( !is_array($featured_image_splash_urls) ) {
-    $featured_image_splash_urls = array();
+  // We allow featured image to be set only once for each post
+  if( get_post_meta($post_id, '_fv_player_featured_image_set', true) ) {
+    return;
   }
 
   $thumbnail_id = false;
@@ -267,12 +264,8 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
   if( preg_match_all('/(?:splash=\\\?")([^"]*.(?:jpg|gif|png))/', $search_context, $splash_images) ) { // parse splash="..." in post content
     foreach($splash_images[1] as $src ) {
-      if(!in_array($src, $featured_image_splash_urls)) { // check if we already set this splash once
+      if( !empty($src) ) {
         $url = $src;
-        $featured_image_splash_urls[] = $url;
-
-        update_post_meta($post_id, '_fv_player_featured_image_splash_urls', $featured_image_splash_urls);
-
         break;
       }
     }
@@ -282,12 +275,6 @@ function fv_wp_flowplayer_featured_image($post_id) {
     global $FV_Player_Db;
 
     foreach( $ids[1] as $player_id ) {
-
-      // Did this player already set the Featured Image? If so, do not set it again
-      if( in_array($player_id, $featured_image_players) ) {
-        continue;
-      }
-
       $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
 
       if( !empty($atts['caption']) ) {
@@ -303,9 +290,6 @@ function fv_wp_flowplayer_featured_image($post_id) {
 
       // If we found splash attachmend ID or URL remember that this player has set the Featured Image
       if($splash_attachment_id || $url) {
-        $featured_image_players[] = $player_id;
-        update_post_meta($post_id, '_fv_player_featured_image_players', $featured_image_players);
-
         break;
       }
     }
@@ -338,6 +322,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   }
 
   if( $thumbnail_id ) { // set post thumbnail if we have thumbnail id
+    update_post_meta($post_id, '_fv_player_featured_image_set', $thumbnail_id);
     set_post_thumbnail( $post_id, $thumbnail_id );
   }
 }
