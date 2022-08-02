@@ -1595,7 +1595,7 @@ function fv_flowplayer_admin_usage() {
          <div class="column">
            <ul class="embedmenu">
             <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/why" title="Why FV Player?">Why FV Player?</a>
+             <li class="page_item page_item_has_children"><p>Why FV Player?</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/integrations" title="FV Player Integrations">FV Player Integrations</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/why/player-pro-features" title="FV Player Features - Free vs Pro ">FV Player Features – Free vs Pro</a></li>
@@ -1605,7 +1605,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/getting-started" title="Getting Started">Getting Started</a>
+             <li class="page_item page_item_has_children"><p>Getting Started</p>
                <ul class="children">
                  <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/getting-started/installation" title="FV Player Installation">Installation</a>
                    <ul class="children">
@@ -1622,20 +1622,21 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/playlists" title="Creating and Managing Playlists">Creating and Managing Playlists</a>
+             <li class="page_item page_item_has_children"><p>Creating and Managing Playlists</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/playlists/creating-playlists" title="Creating Playlists with FV Player">Creating Playlists</a></li>
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/faq" title="FV WordPress Flowplayer FAQ">FAQ</a>
+             <li class="page_item page_item_has_children">
+              <p>FAQ</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/faq/css-tips-and-fixes" title="CSS Tips and Fixes">CSS Tips and Fixes</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/faq/version-1" title="FV WordPress Flowplayer 1.x FAQ">FV WordPress Flowplayer 1.x FAQ</a></li>
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/settings" title="Setting Screens">Setting Screens</a>
+             <li class="page_item page_item_has_children"><p>Setting Screens</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/post-interface-settings" title="FV Player Post Interface Options">Post Interface Options</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/settings/sitewide-fv-player-defaults" title="Sitewide FV Player Defaults">Sitewide FV Player Defaults</a></li>
@@ -1647,7 +1648,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-hosting" title="Video Hosting">Video Hosting</a>
+             <li class="page_item page_item_has_children"><p>Video Hosting</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/youtube-with-fv-player" title="Using YouTube with FV Player">YouTube</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-hosting/how-to-use-vimeo" title="How to Use Vimeo with WordPress">Vimeo</a></li>
@@ -1664,7 +1665,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features" title="Advanced features">Advanced features</a>
+             <li class="page_item page_item_has_children"><p>Advanced features</p>
                <ul class="children">
                  <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features/playback" title="Playback Features">Playback Features</a>
                    <ul class="children">
@@ -1679,7 +1680,7 @@ function fv_flowplayer_admin_usage() {
                    </ul>
                  </li>
                  <div class="clear"></div>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features/accessibility" title="Accessibility Features">Accessibility Features</a>
+                 <li class="page_item page_item_has_children"><p>Accessibility Features</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/subtitles" title="How to Use Subtitles">Subtitles</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/accessibility/interactive-video-transcript" title="Interactive Video Transcript">Interactive Video Transcript</a></li>
@@ -1692,7 +1693,7 @@ function fv_flowplayer_admin_usage() {
                    </ul>
                  </li>
                  <div class="clear"></div>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/features/sharing" title="Sharing Options">Sharing Options</a>
+                 <li class="page_item page_item_has_children"><p>Sharing Options</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/managing-sharing-buttons" title="Managing Social Sharing Buttons">Social Media Buttons</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/features/sharing/video-downloading-with-simple-history" title="Video Downloading With Simple History Support">Video Downloading With Simple History Support</a></li>
@@ -1705,7 +1706,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security" title="Video Security">Video Security</a>
+             <li class="page_item page_item_has_children"><p>Video Security</p>
                <ul class="children">
                  <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/video-protection-methods" title="Video Protection Methods">Video Protection Methods</a>
                    <ul class="children">
@@ -1716,7 +1717,7 @@ function fv_flowplayer_admin_usage() {
                    </ul>
                  </li>
                  <div class="clear"></div>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/cdn" title="CDN Options">CDN Options</a>
+                 <li class="page_item page_item_has_children"><p>CDN Options</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/cdn/using-bunnycdn-with-fvplayer-pro" title="Using BunnyCDN with FV Player">BunnyCDN</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/cdn/serving-private-cloudfront" title="Serving Private Videos via CloudFront in WordPress">CloudFront</a></li>
@@ -1724,13 +1725,13 @@ function fv_flowplayer_admin_usage() {
                    </ul>
                  </li>
                  <div class="clear"></div>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/drm-watermarking" title="DRM Watermarking">DRM Watermarking</a>
+                 <li class="page_item page_item_has_children"><p>DRM Watermarking</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/drm-watermarking/protecting-videos-with-drm-text" title="Protecting Videos With DRM Text">Protecting Videos With DRM Text</a></li>
                    </ul>
                  </li>
                  <div class="clear"></div>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-security/encoding" title="Secure Video Encoding ">Secure Video Encoding</a>
+                 <li class="page_item page_item_has_children"><p>Secure Video Encoding</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/encrypted-hls-coconut" title="How to Set up Encrypted HLS with Coconut">Encrypted HLS with Coconut Setup</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-security/encoding/encrypt-encode-videos-wordpress" title="How to encrypt videos directly in WordPress with Coconut">Encrypted HLS with Coconut End User Guide</a></li>
@@ -1747,7 +1748,7 @@ function fv_flowplayer_admin_usage() {
          <div class="column">
            <ul class="embedmenu">
             <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning" title="Video Membership, Pay Per View and eLearning">Video Membership, Pay Per View and eLearning</a>
+             <li class="page_item page_item_has_children"><p>Video Membership, Pay Per View and eLearning</p>
                <ul class="children">
                  <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/ppv" title="FV Player Pay Per View">FV Player Pay Per View</a>
                    <ul class="children">
@@ -1756,13 +1757,13 @@ function fv_flowplayer_admin_usage() {
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/ppv/sell-video-subscriptions-wordpress" title="How To Sell Video Subscriptions With Restrict Content">Video Subscriptions With Restrict Content</a></li>
                    </ul>
                  </li>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/membership" title="Membership Sites">Membership Sites</a>
+                 <li class="page_item page_item_has_children"><p>Membership Sites</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/membership/rcp-integration" title="How to create membership site with RCP and FV Player">Membership Site with Restrict Content Pro</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/membership/membership-fv-player-compatible" title="Popular Membership Plugins Compatible with FV Player">Popular Membership Plugins Compatible with FV Player</a></li>
                    </ul>
                  </li>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/elearning" title="WordPress eLearning">WordPress eLearning</a>
+                 <li class="page_item page_item_has_children"><p>WordPress eLearning</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/elearning/learndash-progression-player" title="Using LearnDash And Video Progression with FV Player">LearnDash And Video Progression</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/membership-ppv-elearning/elearning/tutor-lms-video-player" title="How To Use FV Player With Tutor LMS">Tutor LMS</a></li>
@@ -1771,7 +1772,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid" title="FV Player VAST/VPAID">FV Player VAST/VPAID</a>
+             <li class="page_item page_item_has_children"><p>FV Player VAST/VPAID</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/how-to-use-vast" title="How to use VAST / VPAID with video player FV Player VAST">How to Use FV Player VAST</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/fv-player-vast-vpaid/using-fv-vast-outside-wordpress" title="Using FV Player VAST Outside of WordPress">FV Player VAST Outside of WordPress</a></li>
@@ -1787,7 +1788,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/tools" title="Tools">Tools</a>
+             <li class="page_item page_item_has_children"><p>Tools</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/tools/migration-wizard" title="How to Use FV Player Migration Wizard">FV Player Migration Wizard</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/tools/how-shortcode-conversion-tool" title="How To Use The Shortcode Conversion tool">Shortcode Conversion tool</a></li>
@@ -1796,7 +1797,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/live-streaming" title="Live Streaming">Live Streaming</a>
+             <li class="page_item page_item_has_children"><p>Live Streaming</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/live-streaming/live-streaming-youtube" title="Live Streaming With YouTube">Live Streaming With YouTube</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/live-streaming/stream-with-viloud" title="Live Streaming With Viloud">Live Streaming With Viloud</a></li>
@@ -1804,7 +1805,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/analytics" title="Analytics">Analytics</a>
+             <li class="page_item page_item_has_children"><p>Analytics</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/analytics/playback-stats" title="Playback Stats">Playback Stats</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/analytics/google-analytics-videos-4" title="Using Google Analytics 4 with FV Player">Google Analytics 4</a></li>
@@ -1813,7 +1814,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-ads" title="Video Advertising">Video Advertising</a>
+             <li class="page_item page_item_has_children"><p>Video Advertising</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/advertising-with-fv-flowplayer" title="Advertising Options with FV Player">Advertising Options with FV Player</a></li>
                  <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools" title="Built-in Advertising Tools">Built-in Advertising Tools</a>
@@ -1824,7 +1825,7 @@ function fv_flowplayer_admin_usage() {
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/built-advertising-tools/setting-up-html-popup" title="Setting Up the HTML Pop-up Feature">Setting Up the HTML Pop-up Feature</a></li>
                    </ul>
                  </li>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/video-ads/google-ads" title="Google Ads">Google Ads</a>
+                 <li class="page_item page_item_has_children"><p>Google Ads</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/google-ads/google-advertising-options" title="Google Video Advertising Options">Google Video Advertising Options</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/video-ads/google-ads/incorporating-google-adsense" title="Incorporating Google Ads (AdSense)">Incorporating Google Ads (AdSense)</a></li>
@@ -1833,19 +1834,19 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/casting" title="Casting Options">Casting Options</a>
+             <li class="page_item page_item_has_children"><p>Casting Options</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/casting/chromecast" title="Using FV Player with Chromecast">Chromecast</a></li>
                </ul>
              </li>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/audio" title="Audio Player">Audio Player</a>
+             <li class="page_item page_item_has_children"><p>Audio Player</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/audio/audio-tracks-player" title="How to Use Audio Tracks in FV Player">Audio Tracks in FV Player</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/audio/multiple-audio-tracks-player" title="How to Use Multiple Audio Tracks with FV Player">Multiple Audio Tracks</a></li>
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/troubleshooting" title="Troubleshooting">Troubleshooting</a>
+             <li class="page_item page_item_has_children"><p>Troubleshooting</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/how-to-use-video-checker" title="How to Use the Built-in Video Checker">How to Use the Built-in Video Checker</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/troubleshooting/switching-fv-player-pro-to-beta" title="Switching FV Player Pro to Beta">Switching FV Player Pro to Beta</a></li>
@@ -1856,7 +1857,7 @@ function fv_flowplayer_admin_usage() {
                </ul>
              </li>
              <div class="clear"></div>
-             <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/developers" title="For Developers">For Developers</a>
+             <li class="page_item page_item_has_children"><p>For Developers</p>
                <ul class="children">
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/player-database" title="How to use FV Player Database">FV Player Database</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/shortcode-parameters" title="List of Shortcode Parameters">List of Shortcode Parameters</a></li>
@@ -1866,7 +1867,7 @@ function fv_flowplayer_admin_usage() {
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/player-minify-plugins" title="Using FV Player with Minify Plugins">Minify Plugins</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/api-programming" title="Programmer's Guide">Programmer’s Guide</a></li>
                  <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/video-position-storing" title="Video Position Storing">Video Position Storing</a></li>
-                 <li class="page_item page_item_has_children"><a target="_blank" href="https://foliovision.com/player/developers/changelog" title="Changelog">Changelog</a>
+                 <li class="page_item page_item_has_children"><p>Changelog</p>
                    <ul class="children">
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/changelog/fv-player-pro" title="FV Player Pro Changelog">FV Player Pro Changelog</a></li>
                      <li class="page_item"><a target="_blank" href="https://foliovision.com/player/developers/changelog/player-vast-changelog" title="FV Player VAST Changelog">FV Player VAST Changelog</a></li>
