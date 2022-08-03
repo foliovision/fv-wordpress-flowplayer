@@ -46,12 +46,8 @@ jQuery( function($) {
       var searchVal = $('#media-search-input').val();
 
       // show overlay if we're not appending, otherwise append the overlay and then remove it
-      if (firstLoad) {
-        $media_frame_content.html($overlay_div);
-      } else {
-        jQuery('#overlay-loader-li div').html($overlay_div);
-      }
-
+      $media_frame_content.html($overlay_div);
+    
       if (searchVal) {
         ajax_data['search'] = searchVal;
       } else {
@@ -66,17 +62,16 @@ jQuery( function($) {
       jQuery.post(ajaxurl, ajax_data, function(ret) {
         // don't overwrite the page if we've shown the browser for the first time already
         // ... instead, we'll be either clearing and rewriting the UL or appending data to it
-        if (firstLoad) {
-          var renderOptions = {};
+        var renderOptions = {};
 
-          // add errors, if any
-          if (ret.err) {
-            renderOptions['errorMsg'] = ret.err;
-          }
+        // add errors, if any
+        if (ret.err) {
+          renderOptions['errorMsg'] = ret.err;
+        }
 
-          $media_frame_content.html( renderBrowserPlaceholderHTML(renderOptions) );
+        $media_frame_content.html( renderBrowserPlaceholderHTML(renderOptions) );
 
-        } else if (!appending && !allLoaded) {
+       if (!appending && !allLoaded) {
           // clear the UL if we're not appending
           jQuery('#__assets_browser').find('li').remove();
         }

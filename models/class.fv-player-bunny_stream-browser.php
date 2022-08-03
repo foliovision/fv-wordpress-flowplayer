@@ -38,7 +38,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
     $output = array();
 
-    $name = sanitize_text_field($_POST['folder_name']); // new collection to create
+    $name = $_POST['folder_name']; // new collection to create
 
     $guid = $this->get_collection_guid_by_name($name); // check if collection already exists
 
