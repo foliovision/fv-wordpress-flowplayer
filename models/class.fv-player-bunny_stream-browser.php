@@ -117,6 +117,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $body['items'] = array();
 
     if( isset($_POST['path']) ) {
+      $_POST['path'] = stripslashes($_POST['path']);
       $path = str_replace('Home/', '', $_POST['path']); // remove Home/
       $path = rtrim($path, '/'); // remove ending /
     } else {
@@ -126,7 +127,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     // query default videos or concrete collection library
     if( $path ) {
       $query_string['collection'] = $this->get_collection_guid_by_name($path);
-      $body['path'] = sanitize_text_field( $_POST['path'] );
+      $body['path'] = $_POST['path'];
     } else { // no colledction_id load collections
       $result_collection = $this->get_all_collections();
 

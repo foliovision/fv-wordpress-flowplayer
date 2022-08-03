@@ -117,7 +117,7 @@ jQuery( function($) {
       nonce: fv_player_bunny_stream_upload_settings.job_submit_nonce,
       source: file.name,
       target: file.name,
-      collection_id: jQuery('#browser-dropdown').val(),
+      collection_id: jQuery('#browser-dropdown').val(), //TODO: use fv_player_media_browser.get_current_folder
       no_source_verify: 1,
       ignore_duplicates: 1,
     }).done( function( data ) {
