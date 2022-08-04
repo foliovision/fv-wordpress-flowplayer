@@ -89,7 +89,7 @@ jQuery( function($) {
       if ( response && typeof( response ) == 'object' && response.success ) {
         // everything worked out fine, file is uploaded
         // reload Bunny Stream tab
-        $('#fv_player_bunny_stream_browser_media_tab').click();
+        fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
         $progressDiv.text( upload_success_message );
       } else {
         $progressDiv.text( "Upload failed with server error: " + ( response && typeof( response ) == 'object' && response.message ? response.message : response ) );
