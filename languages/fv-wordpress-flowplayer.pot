@@ -300,13 +300,13 @@ msgstr ""
 
 #: controller/settings.php:231
 msgid ""
-"<p>This new version includes several improvements:</p>\n"
-"      <ul style='list-style-type: revert; margin-left: 3em'>\n"
-"        <li>Editor autosave and preview improvements</li>\n"
-"        <li>FV Player Video Play Stats</li>\n"
-"        <li>Improved player JavaScript loading</li>\n"
-"        <li>Multiple video playback improvements</li>\n"
-"      </ul>\n"
+"<p>This new version includes several improvements:</p>\n"
+"      <ul style='list-style-type: revert; margin-left: 3em'>\n"
+"        <li>Editor autosave and preview improvements</li>\n"
+"        <li>FV Player Video Play Stats</li>\n"
+"        <li>Improved player JavaScript loading</li>\n"
+"        <li>Multiple video playback improvements</li>\n"
+"      </ul>\n"
 "      <p>You can read more about it in our <a href='https://foliovision.com/?p=137472' target='_blank'>blog announcement</a>.</p>"
 msgstr ""
 
@@ -372,14 +372,6 @@ msgstr ""
 
 #: models/cdn.class.php:175, models/digitalocean-spaces.class.php:125, models/email-subscription.php:111, models/linode-object-storage.class.php:82, view/admin.php:75, view/admin.php:205, view/admin.php:393, view/admin.php:661, view/admin.php:678, view/admin.php:693, view/admin.php:709, view/admin.php:760, view/admin.php:829, view/admin.php:884, view/admin.php:1115, view/admin.php:1463, view/admin.php:1491, view/admin.php:1532, view/admin.php:1572, view/admin.php:1719
 msgid "Save All Changes"
-msgstr ""
-
-#: models/conversion/conversion-base.class.php:174
-msgid "Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well."
-msgstr ""
-
-#: models/conversion/shortcode2DB.class.php:13
-msgid "This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes."
 msgstr ""
 
 #: models/custom-videos.php:262, models/custom-videos.php:402, models/list-table.php:70
@@ -2192,4 +2184,12 @@ msgstr ""
 
 #: view/wizard.php:481
 msgid ", then use the drop down menu above."
+msgstr ""
+
+#: models/conversion/conversion-base.class.php:174
+msgid "Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well."
+msgstr ""
+
+#: models/conversion/shortcode2DB.class.php:13
+msgid "This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes."
 msgstr ""
