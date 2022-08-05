@@ -135,6 +135,8 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       $cdn_hostname = 'https://' . $fv_fp->_get_option( array('bunny_stream','cdn_hostname') ) . '/';
 
       foreach ($result->items as $video) {
+        if( !$path && !empty($video->collectionId) ) continue; // do not list videos with collection when no collection selected
+
         $item = array(
           'link' => $cdn_hostname . $video->guid . '/playlist.m3u8',
           'name' => $video->title,
