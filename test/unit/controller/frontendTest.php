@@ -120,6 +120,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [safety_resize] => 1
     [volume] => 0.7
     [default_volume] => 0.7
+    [mobile_landscape_fullscreen] => 1
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
