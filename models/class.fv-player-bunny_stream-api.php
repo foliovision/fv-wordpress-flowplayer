@@ -18,11 +18,13 @@ class FV_Player_Bunny_Stream_API {
     }
   }
 
-  public function get_all_collections() {
+  public function get_all_collections( $search = false ) {
     global $fv_fp;
 
     $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
     $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
+
+    if( $search ) $query_string['search'] = $search;
 
     $endpoint = add_query_arg(
       $query_string,

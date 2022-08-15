@@ -95,11 +95,11 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $api = new FV_Player_Bunny_Stream_API();
 
     // query default videos or concrete collection library
-    if( $path ) {
+    if( $path && !isset($query_string['search']) ) {
       $query_string['collection'] = $api->get_collection_guid_by_name($path);
       $body['path'] = $_POST['path'];
     } else { // no colledction_id load collections
-      $result_collection = $api->get_all_collections();
+      $result_collection = $api->get_all_collections( $query_string['search'] ? $query_string['search'] : false );
 
       if( !is_wp_error( $result_collection ) ) {
         foreach( $result_collection->items as $collection ) { // add collections as folders
