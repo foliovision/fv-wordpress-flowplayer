@@ -393,10 +393,8 @@
 var fvwpflowplayer_helper_tag = '<?php echo $fv_flowplayer_helper_tag ?>';
 var fv_wp_flowplayer_re_edit = /\[[^\]]*?<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>.*?[^\\]\]/mi;
 var fv_wp_flowplayer_re_insert = /<<?php echo $fv_flowplayer_helper_tag; ?>[^>]*?rel="FCKFVWPFlowplayerPlaceholder"[^>]*?>.*?<\/<?php echo $fv_flowplayer_helper_tag; ?>>/gi;
-<?php global $fv_fp; if( $fv_fp->_get_option('postthumbnail') || $fv_fp->_get_option( array('integrations','featured_img') ) ) : ?>
 var fv_flowplayer_set_post_thumbnail_id = <?php echo $post_id; ?>;
 var fv_flowplayer_set_post_thumbnail_nonce = '<?php echo wp_create_nonce( "set_post_thumbnail-$post_id" ); ?>';
-<?php endif; ?>
 var fv_flowplayer_preview_nonce = '<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>';
 var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </script>
@@ -444,6 +442,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     </div>
     
     <div id="fv-player-editor-error_saving-overlay" class="fv-player-editor-overlay">
+      <p data-error></p>
       <p>An unexpected error has occurred. Please copy the player raw data below and <a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">submit a support ticket to Foliovision</a></p>
       <textarea name="fv_player_copy_to_clipboard" rows="15"></textarea>
       <br />
@@ -488,7 +487,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       </div>
       <div class="fv-player-tabs">
         
-        <div class="fv-player-tab fv-player-tab-playlist" style="">
+        <div class="fv-player-tab fv-player-tab-playlist">
           <div id="fv-player-list-thumb-toggle">
             <a href="#" id="fv-player-list-list-view" ><span class="dashicons dashicons-list-view"><span class="screen-reader-text">List view</span></span></a>
             <a href="#" id="fv-player-list-thumb-view" class="active" data-title="<?php _e('Add splash images to enable thumbnail view', 'fv_flowplayer');?>"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
@@ -579,6 +578,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'visible' => true,
                     'description' => __('Will appear in place of the video before it plays.', 'fv-wordpress-flowplayer'),
                   ),
+                  // TODO: Add fv_wp_flowplayer_field_splash_attachment_id as hidden field 
                   array(
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
                     'name' => 'caption',

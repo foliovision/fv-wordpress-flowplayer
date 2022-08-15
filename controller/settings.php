@@ -80,18 +80,49 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
 
 
 
-
+/**
+ * Settings metaboxes close
+ */
 add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings', 'fv_wp_flowplayer_closed_meta_boxes' );
 
 function fv_wp_flowplayer_closed_meta_boxes( $closed ) {
-    if ( false === $closed )
-        $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_flowplayer_mobile', 'fv_flowplayer_seo', 'fv_flowplayer_conversion', 'fv_player_pro' );
+  if ( false === $closed ) {
+    $closed = array( 'fv_flowplayer_amazon_options', 'fv_flowplayer_interface_options', 'fv_flowplayer_default_options', 'fv_flowplayer_ads', 'fv_flowplayer_integrations', 'fv_flowplayer_mobile', 'fv_flowplayer_seo', 'fv_flowplayer_privacy');
+  }
 
-    return $closed;
+  return $closed;
 }
 
+/**
+ * Tools metaboxes close
+ */
+add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_tools', 'fv_flowplayer_settings_tools_closed_meta_boxes' );
 
+function fv_flowplayer_settings_tools_closed_meta_boxes( $closed ) {
+  if ( false === $closed ) {
+    $closed = array( 'fv_flowplayer_conversion' );
+  }
 
+  return $closed;
+}
+
+/**
+ * Skin metaboxes close
+ */
+add_filter( 'get_user_option_closedpostboxes_fv_flowplayer_settings_skin', 'fv_flowplayer_settings_skin_closed_meta_boxes' );
+
+function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
+  if ( false === $closed ) {
+    global $fv_fp;
+    $customCSS = $fv_fp->_get_option('customCSS');
+
+    if( strlen( $customCSS ) === 0 ) {
+      $closed = array( 'fv_flowplayer_skin_custom_css' );
+    }
+  }
+
+  return $closed;
+}
 
 /*
  *  Saving settings
@@ -114,11 +145,55 @@ function fv_player_settings_save() {
     
     global $fv_fp;
     if( method_exists($fv_fp,'_set_conf') ) {
-      $fv_fp->_set_conf();    
+      if( 
+          // pro not installed or
+          !function_exists('FV_Player_Pro') ||
+           // pro installed and version is at least 7.5.25.728
+          ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') )
+        ) {
+        $to_save = fv_player_handle_secrets($_POST, $fv_fp->conf);
+      } else {
+        $to_save = $_POST;
+      }
+
+      $fv_fp->_set_conf($to_save);
     } else {
       echo 'Error saving FV Flowplayer options.';
     }
-  }  
+  }
+}
+
+
+
+
+function fv_player_handle_secrets($new, $old) {
+  foreach( $new as $k => $v ) {
+    if (is_array($v) && strpos($k, '_is_secret_') !== 0 && isset($old[$k]) ) {
+      // recursive call for nested settings
+      $v = fv_player_handle_secrets($v, $old[$k]);
+      $new[$k] = $v;
+    }
+
+    if(strpos($k, '_is_secret_') === 0 ) {
+      $key = str_replace('_is_secret_', '', $k);
+
+      if( isset($old[$key]) ) {
+        if(is_array($v)) { // array of values, 1 - keep original, 0 - use new
+          foreach( $v as $a_k => $a_v ) {
+            if( $a_v == '1' ) {
+              $new[$key][$a_k] = $old[$key][$a_k];
+            }
+          }
+        } else if($v == '1')  { // single value,  1 - keep original, 0 - use new
+          $new[$key] = $old[$key]; 
+        }
+      } 
+
+      unset($new[$k]); // remove _is_secret_
+    }
+  }
+
+  return $new;
 }
 
 

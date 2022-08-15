@@ -42,6 +42,7 @@
     "fv_flowplayer_media_browser_add_tab": true,
     "fv_flowplayer_browser_add_load_more_button": true,
     "fv_flowplayer_browser_browse": true,
+    "fv_player_media_browser": true,
     "fv_wp_flowplayer_submit": true,
     "fv_wp_flowplayer_dialog_resize": true,
     "fv_player_lightbox": true,

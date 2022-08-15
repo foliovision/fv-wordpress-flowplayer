@@ -387,9 +387,6 @@ function fv_player_admin_update() {
     do_action( 'fv_player_update' );
 
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
-   if(!empty($aOptions['version']) ) {
-      $aOptions['chromecast'] = true;
-    }
 
     if( !empty($aOptions['version']) && $aOptions['version'] == '6.0.5.20' && $aOptions['playlist_advance'] == 'true' ) { //  version 6.0.5 used reverse logic for this option!
       $aOptions['playlist_advance'] = false;
@@ -506,6 +503,8 @@ function fv_player_lchecks() {
 
     if( isset($aCheck->expired) && $aCheck->expired && stripos( implode(get_option('active_plugins')), 'fv-player-pro' ) !== false ) {
       add_filter( 'site_transient_update_plugins', 'fv_player_remove_update' );
+    } else {
+      delete_option('fv_wordpress_flowplayer_expired_license_update_notice');
     }
   }
 }
@@ -515,7 +514,8 @@ function fv_player_remove_update( $objUpdates ) {
 
   foreach( $objUpdates->response AS $key => $objUpdate ) {
     if( stripos($key,'fv-wordpress-flowplayer') === 0 ) {
-      unset($objUpdates->response[$key]);      
+      unset($objUpdates->response[$key]);
+      update_option('fv_wordpress_flowplayer_expired_license_update_notice', true, false);
     }
   }
   
@@ -582,7 +582,21 @@ function fv_wp_flowplayer_change_transient_expiration( $transient_name, $time ){
   return false;
 }
 
+add_action('admin_notices', 'fv_wordpress_flowplayer_expired_license_update_notice');
 
+function fv_wordpress_flowplayer_expired_license_update_notice() {
+  if( get_current_screen()->base === 'update-core' && get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
+    echo '<div class="notice notice-error is-dismissible"><p>'.__('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-wordpress-flowplayer').'</p></div>';
+  }
+}
+
+add_action( 'after_plugin_row_fv-wordpress-flowplayer/flowplayer.php', 'fv_wordpress_flowplayer_expired_license_update_plugin_row', 0, 3 );
+
+function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
+  if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
+    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>'. __('To update FV Player please either renew your license or disable FV Player Pro.','fv-wordpress-flowplayer').'</p></div></td></tr>';
+  }
+}
 
 
 add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
@@ -851,4 +865,35 @@ function fv_player_load_video_encoder_libs() {
   include_once( dirname( __FILE__ ).'/../models/video-encoder/video-encoder.php');
   require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-base.php' );
   require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-step-base.php' );
+}
+
+/**
+ * Attachment edit - show attached posts
+ */
+add_action( 'attachment_submitbox_misc_actions', 'fv_player_submitbox_misc_actions' );
+
+function fv_player_submitbox_misc_actions( $attachment ) {
+  global $pagenow, $typenow;
+
+  // We only want to run the code on a specific page
+  if( $pagenow != 'post.php' || $typenow != 'attachment' ) {
+    return;
+  }
+
+  global $fv_fp;
+
+  $video_id = get_post_meta( $attachment->ID, 'fv_player_video_id', true );
+
+  if( !empty($video_id) ) {
+    $players = $fv_fp->get_players_by_video_ids( $video_id );
+
+    // Iterate players and create html with name and link to player
+    foreach( $players as $player ) {
+      ?>
+        <div class="misc-pub-section misc-pub-attachment">
+          FV Player splash screen: <strong><a href="<?php echo esc_url( admin_url( 'admin.php?page=fv_player&id='. $player->getId() ) ); ?>"><?php echo esc_html( $player->getPlayerNameWithFallback() ); ?></a></strong>
+        </div>
+      <?php
+    }
+  }
 }

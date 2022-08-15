@@ -127,6 +127,10 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
           $item['extra']['title'] = $video->title;
         }
 
+        if( !empty($item['splash']) ) {
+          $item['splash'] = apply_filters('fv_flowplayer_splash', $item['splash'] );
+        }
+
         $body['items'][] = $item;
       }
     }

@@ -95,7 +95,7 @@ final class FV_Player_Controller extends TestCase {
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
-Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=1.2.3.4 footer? 1
+Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=7.2.10 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
 Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3 footer? 1
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
@@ -120,6 +120,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [safety_resize] => 1
     [volume] => 0.7
     [default_volume] => 0.7
+    [mobile_landscape_fullscreen] => 1
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
@@ -155,7 +156,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [7] => SWF file not found
     [8] => Subtitles not found
     [9] => Invalid RTMP URL
-    [10] => Unsupported video format. Try installing Adobe Flash.
+    [10] => Unsupported video format.
     [11] => Click to watch the video
     [12] => [This post contains video, click to play]
     [video_expired] => <h2>Video file expired.<br />Please reload the page and play it again.</h2>
@@ -209,6 +210,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [click_to_unmute] => Click to unmute
     [audio_button] => AUD
     [audio_menu] => Audio
+    [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array

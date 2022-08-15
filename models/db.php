@@ -29,14 +29,18 @@ class FV_Player_Db {
     //$player_atts_cache = array(),
     $player_meta_cache = array(),
     $player_ids_when_searching,
-    $stopwords;  // used in get_search_stopwords method
+    $stopwords,  // used in get_search_stopwords method
+    $database_upgrade_queries = false;
 
   public function __construct() {
-    add_filter('fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1);
-    add_filter('fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
-    add_action('wp_head', array($this, 'cache_players_and_videos' ));
+    add_action( 'toplevel_page_fv_player', array($this, 'init_tables') );
+    add_action( 'load-settings_page_fvplayer', array($this, 'init_tables') );
     
-    add_action('save_post', array($this, 'store_post_ids' ));
+    add_filter( 'fv_flowplayer_args_pre', array($this, 'getPlayerAttsFromDb'), 5, 1 );
+    add_filter( 'fv_player_item_pre', array($this, 'setCurrentVideoAndPlayer' ), 1, 3 );
+    add_action( 'wp_head', array($this, 'cache_players_and_videos' ) );
+
+    add_action( 'save_post', array($this, 'store_post_ids' ) );
 
     add_action( 'wp_ajax_fv_player_db_load', array($this, 'open_player_for_editing') );
     add_action( 'wp_ajax_fv_player_db_export', array($this, 'export_player_data') );
@@ -46,6 +50,26 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce, move into controller/editor.php
     add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
     add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') );
+  }
+
+  public function init_tables() {
+    if( !defined('SAVEQUERIES') ) {
+      define( 'SAVEQUERIES', true );
+    }
+
+    global $wpdb;
+    $wpdb->queries = array();
+
+    FV_Player_Db_Player::initDB(true);
+    FV_Player_Db_Player_Meta::initDB(true);
+    FV_Player_Db_Video::initDB(true);
+    FV_Player_Db_Video_Meta::initDB(true);
+
+    $this->database_upgrade_queries = $wpdb->queries;
+  }
+
+  public function getDatabaseUpgradeStatus() {
+    return $this->database_upgrade_queries;
   }
 
   public function getVideosCache() {
@@ -395,7 +419,7 @@ class FV_Player_Db {
 
           // no player name, we'll assemble it from video captions and/or sources
           if (!$result_row->player_name) {
-            $result_row->player_name = array();
+            $result_row->player_name = $player->getPlayerNameWithFallback();
           }
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
@@ -408,13 +432,8 @@ class FV_Player_Db {
             $caption = $video->getCaption();
             if( !$caption ) {
               $caption = $video->getCaptionFromSrc();
-            }            
-            
-            // assemble video name, if there's no player name
-            if (is_array($result_row->player_name)) {
-              $result_row->player_name[] = $caption;
             }
-
+            
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
               // use splash with caption / filename in a span
@@ -429,16 +448,6 @@ class FV_Player_Db {
               if( !isset($result_row->stats_play) ) $result_row->stats_play = 0;
               $result_row->stats_play += intval($video->getMetaValue('stats_play',true)); // todo: lower SQL count
             }
-          }
-
-          // join name items, if present
-          if (is_array($result_row->player_name)) {
-            $result_row->player_name = join(', ', $result_row->player_name);
-          }
-
-          // add "Draft" at the end of player, if in draft status
-          if ( $player->getStatus() == 'draft' ) {
-            $result_row->player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
           }
 
           // join thumbnails
@@ -1095,6 +1104,11 @@ class FV_Player_Db {
             // save only if we're not requesting new instances for preview purposes
             if (!$data) {
               $id_video = $video->save( $video_meta );
+              if( !$id_video ) {
+                global $wpdb;
+                wp_send_json( array( 'fatal_error' => true, 'error' => 'Failed to save the video: '.$wpdb->last_error ) );
+                exit;
+              }
             } else {
               $video->link2meta( $video_meta );
             }
@@ -1162,7 +1176,8 @@ class FV_Player_Db {
           $current_video_to_edit = isset($post_data['current_video_to_edit']) ? $post_data['current_video_to_edit'] : -1;
           echo wp_json_encode( $this->db_load_player_data( $id, $current_video_to_edit ) );
         } else {
-          wp_send_json( array( 'error' => 'Failed to save player.' ) );
+          global $wpdb;
+          wp_send_json( array( 'fatal_error' => true, 'error' => 'Failed to save player: '.$wpdb->last_error ) );
         }
       } else {
         $player->link2meta( $player_meta );
@@ -1277,6 +1292,11 @@ class FV_Player_Db {
       }
 
       $out = $this->db_load_player_data( $_POST['playerID'], $_POST['current_video_to_edit'] );
+
+      if( empty($out['videos']) ) {
+        wp_send_json( array( 'error' => "Failed to load videos for this player." ) );
+        exit;
+      }
 
       header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
@@ -1393,12 +1413,12 @@ class FV_Player_Db {
 count(subtitles.id) as subtitles_count,
 count(cues.id) as cues_count,
 count(chapters.id) as chapters_count,
-count(transcript.id) as transcript_count';
+count(meta_transcript.id) as transcript_count';
         $meta_counts_join = 'JOIN `'.FV_Player_Db_Video::get_db_table_name().'` AS v on FIND_IN_SET(v.id, p.videos)
 LEFT JOIN `'.$meta_table.'` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
-LEFT JOIN `'.$meta_table.'` AS cues ON v.id = cues.id_video AND cues.meta_key like "cues%"
-LEFT JOIN `'.$meta_table.'` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = "chapters"
-LEFT JOIN `'.$meta_table.'` AS transcript ON v.id = transcript.id_video AND transcript.meta_key = "transcript"
+LEFT JOIN `'.$meta_table.'` AS cues ON v.id = cues.id_video AND cues.meta_key like \'cues%\'
+LEFT JOIN `'.$meta_table.'` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = \'chapters\'
+LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key = \'transcript\'
 ';
       }
 
@@ -1943,6 +1963,10 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
             ) );
 
             $meta->save();
+
+            // Make sure the player is no longer a Draft is used in a post
+            $player->setStatus('published');
+            $player->save();
           }
         }
 

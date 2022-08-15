@@ -1,3 +1,5 @@
+/*global cm_settings */
+
 (function ($) {
   ('use strict');
   
@@ -174,7 +176,7 @@
     var settings = {
       animationSpeed: 0,
       changeDelay: 10,
-      letterCase: 'uppercase'      
+      letterCase: 'uppercase'
     }
     $('input.color').minicolors(settings);
     settings.opacity = true;
@@ -186,12 +188,51 @@
     $('form#wpfp_options').on('submit', function(e) {
       $('input.color-opacity').each( function() {
         var input = $(this);
-        if( opacity = input.minicolors('opacity') ) {          
+        if( opacity = input.minicolors('opacity') ) {
           var color = hexToRgb( input.val() );
           input.val( 'rgba('+color[0]+','+color[1]+','+color[2]+','+opacity+')' );
         }
       })
-    });    
+    });
+  });
+
+  $(document).ready( function() {
+    $("a[data-setting-change]").on('click', function(e) {
+      e.preventDefault();
+
+      var name = $(this).data('setting-change'),
+      index,
+      hidden_input,
+      password_input;
+
+      if(name.match(/-index-(\d)+$/)) {
+        var match = name.match(/-index-(\d)+$/);
+        index = parseInt(match[1]);
+        name = name.replace( match[0],'');
+        hidden_input = $("[name='"+name+"']").eq(index);
+        password_input = $("[name='"+name.replace('_is_secret_', '')+"']").eq(index);
+      } else {
+        hidden_input = $("[name='"+name+"']");
+        password_input = $("[name='"+name.replace('_is_secret_', '')+"']");
+      }
+
+      var secret_preview = $(this).siblings('.secret-preview');
+  
+      if( hidden_input.val() == '1' ) {
+        hidden_input.val('0');
+        password_input.show();
+        secret_preview.hide();
+        $(this).text('Cancel');
+      } else {
+        hidden_input.val('1');
+        password_input.hide();
+        if(password_input.val() || !$(this).data('is-empty') ) {
+          $(this).text('Change');
+          secret_preview.show();
+        }
+      }
+
+    });
   });
   
   function color_inputs() {

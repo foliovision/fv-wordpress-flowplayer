@@ -377,17 +377,32 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
           }
 
           foreach( $_POST['bunny_stream'] AS $k => $v ) {
+            if(strcmp($k,'video_token') === 0 && empty($_POST['bunny_stream']['api_access_key'])) { // video token enabled but no api_access_key provided
+              if(isset($fv_fp->conf['bunny_stream'][$k]) && $v != $fv_fp->conf['bunny_stream'][$k] ) { // and setting changed
+                // then unset option
+                unset($_POST['bunny_stream'][$k]);
+                unset($fv_fp->conf['bunny_stream'][$k]);
+
+                echo "<div class='error'><p>No API Access Key provided to enable or disable Token Authentication.</p></div>";
+
+                continue;
+              }
+            }
+
+            if(in_array($k, array('api_access_key'))) continue; // do not store
+
             $fv_fp->conf['bunny_stream'][$k] = trim($v);
           }
 
           $fv_fp->_set_conf( $fv_fp->conf );
+
+          do_action('fv_player_bunny_stream_settings_saved', $_POST);
 
           echo "<div class='updated'><p>Settings saved</p></div>";
 
         }
       } else {
         echo "<div class='error'><p>Nonce error.</p></div>";
-
       }
     }
 
@@ -482,6 +497,15 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   function getFILE() {
     return __FILE__;
   }
+
+  function fv_player_pro_compatible() {
+    if( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','', FV_Player_Pro()->version ) , '7.5.19.727', '>=' ) ) {
+      return true;
+    }
+
+    return false;
+  }
+
 }
 
 function FV_Player_Bunny_Stream() {

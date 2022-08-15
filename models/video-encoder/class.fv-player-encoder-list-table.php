@@ -19,7 +19,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     $this->args = wp_parse_args( $args, array( 'per_page' => 25 ) );
 
     if ( empty($args['encoder_id']) ) {
-        throw new Exception('Constructor to FV_Player_List_Table is missing "encoder_id" key in its $args array.');
+      throw new Exception('Constructor to FV_Player_List_Table is missing "encoder_id" key in its $args array.');
     }
 
     if ( empty($args['table_name']) ) {
@@ -98,9 +98,9 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     }
     ?>
     <p class="search-box">
-      <label class="screen-reader-text" for="<?php echo $input_id ?>">Search players:</label>
+      <label class="screen-reader-text" for="<?php echo $input_id ?>">Search jobs:</label>
       <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>" />
-      <?php submit_button( "Search players", 'button', false, false, array('ID' => 'search-submit') ); ?><br/>
+      <?php submit_button( "Search jobs", 'button', false, false, array('ID' => 'search-submit') ); ?><br/>
     </p>
     <?php
   }
@@ -255,6 +255,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
 
     $aWhere = array();
     $aWhere[] = "type = '{$this->encoder_id}'";
+    if( !empty($_GET['s']) ) {
+      $search = sanitize_text_field($_GET['s']);
+      $aWhere[] = "source LIKE '%".$search."%'";
+    }
 
     $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
 
@@ -302,22 +306,23 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     if( $args['status'] == 'pending' ) $aWhere[] = "status = 'pending'";
     if( $args['status'] == 'complete' ) $aWhere[] = "status = 'complete'";
     if( $args['status'] == 'error' ) $aWhere[] = "status = 'error'";
-    
+
     if( $args['s'] ) {
-      // TODO: Search SQL
+      $search = sanitize_text_field($args['s']);
+      $aWhere[] = "source LIKE '%".$search."%'";
     }
-    
+
     $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
-    
+
     $order = esc_sql($args['order']);
     $order_by = esc_sql($args['orderby']);
 
     $per_page = intval($this->args['per_page']);
     $offset = ( $args['paged'] - 1 ) * $per_page;
-    
+
     global $wpdb;
     $sql = "SELECT * FROM {$this->table_name} $where ORDER BY $order_by $order LIMIT $offset, $per_page";
-    
+
     // get embeded players using id from job
     $sql_2 = "SELECT j.id, m.id_video, p.id AS player_id FROM {$this->table_name} AS j
       JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON j.id = m.meta_value
@@ -358,6 +363,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         $message[] = 'Folder: ' .$args['outputs']['httpstream']['hls']['path'];
       } else if ( isset($args['outputs']['httpstream#above4k']) ) {
         $message[] = 'Folder: ' .$args['outputs']['httpstream#above4k']['hls']['path'];
+      }
+
+      if( $this->encoder_id == 'bunny_stream' && isset($args['target']) ) {
+        $message[] = 'Folder: ' . $args['target'];
       }
 
       if( count( $message ) ) {

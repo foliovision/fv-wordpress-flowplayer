@@ -410,14 +410,16 @@ class FV_Player_Db_Player {
   /**
    * Checks for DB tables existence and creates it as necessary.
    *
-   * @param $wpdb The global WordPress database object.
+   * @param $force Forces to run dbDelta.
    */
-  private function initDB($wpdb) {
-    global $fv_fp, $fv_wp_flowplayer_ver;
+  public static function initDB($force = false) {
+    global $wpdb, $fv_fp, $fv_wp_flowplayer_ver;
 
     self::init_db_name();
 
-    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+    $res = false;
+
+    if( defined('PHPUnitTestMode') || !$fv_fp->_get_option('player_model_db_checked') || $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver || $force ) {
       $sql = "
 CREATE TABLE " . self::$db_table_name . " (
   id bigint(20) unsigned NOT NULL auto_increment,
@@ -461,9 +463,11 @@ CREATE TABLE " . self::$db_table_name . " (
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-      dbDelta( $sql );
+      $res = dbDelta( $sql );
       $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
     }
+
+    return $res;
   }
 
   /**
@@ -545,7 +549,12 @@ CREATE TABLE " . self::$db_table_name . " (
       self::$DB_Instance = $DB_Cache = $FV_Player_Db;
     }
 
-    $this->initDB($wpdb);
+    self::initDB();
+
+    // For a while https://foliovision.com/player/advanced/player-database used to say the $player_id should be passed as array
+    if( is_array($id) ) {
+      $id = array_pop($id);
+    }
 
     // don't load anything, if we've only created this instance
     // to initialize the database (this comes from list-table.php and unit tests)
@@ -595,9 +604,6 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->$key = $value === null ? $value : stripslashes($value);
         }
 
-        // fill the player ID, as it's been set as id_player instead of id due to how it came from DB
-        $this->id = $this->id_player;
-
         // add meta data
         $this->meta_data = $cached_player->getMetaData();
 
@@ -621,8 +627,8 @@ CREATE TABLE " . self::$db_table_name . " (
       $this->fill_properties($options);
 
       // add dates for newly created players
-      if( empty($this->date_created) ) $this->date_created = strftime( '%Y-%m-%d %H:%M:%S', time() );
-      if( empty($this->date_modified) ) $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+      if( empty($this->date_created) ) $this->date_created = date_format( date_create(), "Y-m-d H:i:s" );
+      if( empty($this->date_modified) ) $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
       // add author, if we're creating new player and not loading a player from DB for caching purposes
       if ( empty($options['author']) ) {
@@ -702,6 +708,42 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Returns player name, if its empty then its assembled from video captions and /or sources
+   *
+   * @return string player name from getter or assembled name
+   */
+  public function getPlayerNameWithFallback() {
+    $player_name = $this->getPlayerName();
+
+    // player name is present - return it
+    if( !empty( $player_name ) ) {
+      return $player_name;
+    }
+
+    // else assemble player name
+    $player_name = array();
+
+    foreach( $this->getVideos() as $video ) {
+      $caption = $video->getCaption();
+      if( !$caption ) {
+        $caption = $video->getCaptionFromSrc();
+      }
+
+      $player_name[] = $caption;
+    }
+
+    // join name items
+    $player_name = join(', ', $player_name);
+
+    // add "Draft" at the end of player, if in draft status
+    if ( $this->getStatus() == 'draft' ) {
+      $player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
+    }
+
+    return $player_name;
+  }
+
+  /**
    * Returns all global options data for this player.
    *
    * @return array Returns all global options data for this player.
@@ -710,10 +752,6 @@ CREATE TABLE " . self::$db_table_name . " (
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
-        // change ID to ID_PLAYER, as ID is used as a shortcode property
-        if ($property == 'id') {
-          $property = 'id_player';
-        }
         $data[$property] = $value;
       }
     }
@@ -879,7 +917,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_values = array();
 
     // fill date(s)
-    $this->date_modified = strftime( '%Y-%m-%d %H:%M:%S', time() );
+    $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
     if (!$is_update && empty($this->date_created) ) {
       $this->date_created = $this->date_modified;

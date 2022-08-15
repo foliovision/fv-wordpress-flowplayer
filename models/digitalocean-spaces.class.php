@@ -16,7 +16,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   // includes the Digital Ocean Spaces handling class itself
   public function include_dos_media_browser() {
-    if ( is_admin() && version_compare(phpversion(),'5.5.0') != -1 ) {
+    if ( is_admin() && version_compare(phpversion(),'7.2.5') != -1 ) {
       include( dirname( __FILE__ ) . '/digitalocean-spaces-browser.class.php' );
     }
   }
@@ -55,10 +55,9 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     return $parts[0];
   }
 
-  // TODO: rename this method, it's soooooo confusing! it does NOT provide secure tokens, it CHECKS for their presence
   function get_secure_tokens() {
     global $fv_fp;
-    return $fv_fp->_get_option( array($this->key,'key' ) ) && $fv_fp->_get_option( array($this->key,'secret' ) );
+    return array( $fv_fp->_get_option( array($this->key,'secret' ) ) );
   }
 
   /*
@@ -117,7 +116,8 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       ) );
       $fv_fp->_get_input_text( array(
         'key' => array($this->key,'secret'),
-        'name' => 'Secret'
+        'name' => 'Secret',
+        'secret' => true
       ) );
       ?>
       <tr>
@@ -135,6 +135,9 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   }
   
   function secure_link( $url, $secret, $ttl = false ) {
+
+    if( stripos($url,'X-Amz-Expires') !== false ) return $url;
+
     global $fv_fp;
     $key = $fv_fp->_get_option( array($this->key,'key' ) );
     $secret = $fv_fp->_get_option( array($this->key,'secret' ) );
@@ -142,17 +145,19 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $endpoint = explode('.',$endpoint);
     $endpoint = $endpoint[0];
     
-    /*$path = preg_replace( '~.*?//.*?/~', '/', $url );
-    $expires = time() + ( $ttl ? $ttl : apply_filters('fv_player_secure_link_timeout', 900) );
-    $md5 = base64_encode(md5($path . $secret . $expires, true));
-    $md5 = strtr($md5, '+/', '-_');
-    $md5 = str_replace('=', '', $md5);
-    $url = str_replace( $path, $path."?token=".$md5."&expire=".$expires, $url );*/
-    
     $time = $ttl ? $ttl : apply_filters('fv_player_secure_link_timeout', 900);
-          
+
     $url_components = parse_url($url);
-    
+
+    $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
+  
+    $url_components['path'] = rawurlencode($url_components['path']);
+    $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
+    $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
+    $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
+    $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
+    $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
+
     $sXAMZDate = gmdate('Ymd\THis\Z');
     $sDate = gmdate('Ymd');
     $sCredentialScope = $sDate."/".$endpoint."/s3/aws4_request"; //  todo: variable

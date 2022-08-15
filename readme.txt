@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 5.9
+Tested up to: 6.0
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -30,7 +30,7 @@ FV Player is a free, easy-to-use, and complete solution for embedding FLV or MP4
 * Ultra-efficient player: just 55.6kB of Javascript. Rest is loaded later when user is going to play the video. You can extend FV Player using just HTML and CSS, leaving the JavaScript heavy lifting up to us.
 * 98% Browser coverage. Built-in Flash fallback will get the job done on older browsers while HLS.js library gives you HLS playback on desktop browsers.
 * Full support for Amazon S3, Cloudfront and other CDN's.
-* Totally Brandable. Stop selling YouTube and start selling yourself. Even design your own player.
+* Totally Brandable (requires license, free version includes the Flowplayer library logo). Stop selling YouTube and start selling yourself. Even design your own player.
 * Supports video intelligence video ads
 * Integration with the Coconut.co video encoding service - using a free addon plugin: https://foliovision.com/downloads/fv-player-coconut
 
@@ -358,6 +358,34 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.26.7210 - 2022/07/06 =
+
+* Using Freedom Video Player 7.2.10
+* AWS SDK update
+* CSS - make sure the seek buttons work with button color setting
+* Editor - download splash image from Vimeo or YouTube for FV Player Pro users
+* Featured image - only set once for each player in the post, allowing you to prevent the FV Player Splash Image from becoming the Featured Image anytime you save the post
+* Safari - avoid WebM , it might have VP9 - won't play
+* Security - hide sensitive information in settings pannels (the Secure Access Keys, requires FV Player Pro 7.5.25.727 if installed)
+* SEO - 30 instead of just 10 words for schema.org/description
+* Bugfix - PHP 8.1 deprecation fixes
+
+= 7.5.22.727 - 2022/05/11 =
+
+* Mobile - "Force landscape orientation in fullscreen" is now always on and no longer a setting
+* Mobile - showing "To enjoy fullscreen swipe up to hide location bar." for iPhone users when location bar appears in fullscreen mode
+* Updating to Flowplayer 7.2.8
+* Styling - fullscreen exit button is now an X symbol
+* Styling - fullscreen exit button is now easier to tap on mobile
+* Styling - mobile now has more spacing between timeline and control bar buttons
+* Video Position Saving - also remember the top position in the video
+* Video upload - Support folder creation for FV Player Coconut
+* Video upload - Support uploading into folders for FV Player Coconut
+* Bugfix - Editor - creating duplicate drafts
+* Bugfix - Editor - empty subtitles field appearing
+* Bugfix - Editor - missing action hook on player save, causing issues with FV Player Pay Per View
+* Bugfix - "Load FV Flowplayer JS everywhere" setting - was not loading rewind/fastforward and playlist repeat buttons
 
 = 7.5.21.727 - 2022/04/07 =
 
