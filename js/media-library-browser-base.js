@@ -847,6 +847,8 @@ jQuery( function($) {
       activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
 
+    $('#media-search-input').val(''); // remove search when clicked on folder
+
     // coming directly from a link
     if (this.tagName == 'A') {
       // disable Choose button
