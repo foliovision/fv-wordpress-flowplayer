@@ -184,7 +184,7 @@
 
     $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
     ?>
-  <div <?php echo $id; ?> class="components-base-control">      
+  <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
       <textarea class="components-textarea-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" rows="4"></textarea>
@@ -232,6 +232,20 @@
       <?php endif; ?>
     </div>
   </div>
+    <?php
+  }
+
+  function fv_player_editor_hidden( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $field_id = $id;
+    } else {
+      $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
+    }
+
+    ?>
+     <input type="hidden" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>"/>
     <?php
   }
 
@@ -292,17 +306,19 @@
     <?php endif;
 
     if( !$type || $type == 'checkbox' ) {
-      fv_player_editor_checkbox( $args );     
+      fv_player_editor_checkbox( $args );
     } else if( $type == 'text' ) {
-      fv_player_editor_textfield( $args );     
+      fv_player_editor_textfield( $args );
     } else if( $type == 'number' ) {
-      fv_player_editor_numfield( $args );     
+      fv_player_editor_numfield( $args );
     } else if( $type == 'select' ) {
-      fv_player_editor_select( $args );     
+      fv_player_editor_select( $args );
     } else if( $type == 'button' ) {
-      fv_player_editor_button( $args );     
+      fv_player_editor_button( $args );
     } else if( $type == 'textarea' ) {
-      fv_player_editor_textarea( $args );     
+      fv_player_editor_textarea( $args );
+    } else if( $type == 'hidden' ) {
+      fv_player_editor_hidden( $args );
     }
 
     if( !empty($args['description']) ) : ?>
@@ -578,7 +594,10 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'visible' => true,
                     'description' => __('Will appear in place of the video before it plays.', 'fv-wordpress-flowplayer'),
                   ),
-                  // TODO: Add fv_wp_flowplayer_field_splash_attachment_id as hidden field 
+                  array(
+                    'name' => 'splash_attachment_id',
+                    'type' => 'hidden',
+                  ),
                   array(
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
                     'name' => 'caption',
