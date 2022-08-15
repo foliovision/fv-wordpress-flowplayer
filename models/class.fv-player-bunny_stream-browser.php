@@ -95,7 +95,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $api = new FV_Player_Bunny_Stream_API();
 
     // query default videos or concrete collection library
-    if( $path && !isset($query_string['search']) ) {
+    if( $path ) {
       $query_string['collection'] = $api->get_collection_guid_by_name($path);
       $body['path'] = $_POST['path'];
     } else { // no colledction_id load collections

@@ -621,7 +621,7 @@ function renderBrowserPlaceholderHTML(options) {
 
   html += '<div class="media-toolbar-primary search-form">' +
     '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
-    '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
+    '<input type="search" placeholder="'+ (options.searchMsg ? options.searchMsg : 'Search media items...') +'" id="media-search-input" class="search">' +
     '</div>' +
     '</div>' +
     '\t\t<div class="breadcrumbs"></div>\n' +

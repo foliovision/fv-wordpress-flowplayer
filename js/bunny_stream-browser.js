@@ -62,7 +62,9 @@ jQuery( function($) {
       jQuery.post(ajaxurl, ajax_data, function(ret) {
         // don't overwrite the page if we've shown the browser for the first time already
         // ... instead, we'll be either clearing and rewriting the UL or appending data to it
-        var renderOptions = {};
+        var renderOptions = {
+          searchMsg: "Search in current collection..."
+        };
 
         // add errors, if any
         if (ret.err) {
@@ -125,24 +127,6 @@ jQuery( function($) {
           },
           loadMoreButtonAction: (ret.is_last_page ? false : loadMoreFunction)
         } );
-
-        // if we have any items returned in a processing state, auto-refresh the Coconut tab every 30 seconds
-        if ( ret.items && ret.items.items ) {
-          for ( var item of ret.items.items ) {
-            if ( item.extra && item.extra.encoding_job_status && item.extra.encoding_job_status == 'processing' ) {
-              havePendingItems = true;
-            }
-          }
-        }
-
-        if ( havePendingItems ) {
-          setTimeout( function() {
-            // only reload tab if the tab is actually still visible and active
-            var $tab = $( '#fv_player_bunny_stream_browser_media_tab' );
-            if ( $tab.is(':visible') && $tab.hasClass('active') )
-              fv_player_bunny_stream_browser_load_assets();
-          }, 30000 );
-        }
 
         appending = false;
       } );
