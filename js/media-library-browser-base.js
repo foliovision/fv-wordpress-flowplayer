@@ -138,6 +138,7 @@ function fv_flowplayer_browser_browse(data, options) {
   if (!options || !options.append) {
     jQuery(window).off('fv-player-browser-open-folder');
     jQuery(window).on('fv-player-browser-open-folder', function (e, path) {
+
       fv_player_media_browser.set_current_folder(data.path);
 
       if (showBreadcrumbs) {
@@ -485,6 +486,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
             localStorage.setItem('fv_player_last_tab_selected', tabId);
           }
         } catch(e) {}
+
+        jQuery('#media-search-input').val('');
 
         // hide the Drop files to upload modal initially
         jQuery('.media-modal .uploader-window').css({
