@@ -197,16 +197,17 @@ function fv_flowplayer_admin_amazon_options() {
             </td>
         </tr>
 <?php
-			endforeach;
-?>							
-					<tr class="amazon-s3-last"><td colspan="2"></td></tr>	
-					<tr>    		
-						<td colspan="4">
-							<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-							<input type="button" id="amazon-s3-add" class="button" value="<?php _e('Add more Amazon S3 secure buckets', 'fv-wordpress-flowplayer'); ?>" />
-						</td>
-					</tr>   					                                 
-				</table>
+      endforeach;
+?>
+          <tr class="amazon-s3-last"><td colspan="2"></td></tr>	
+          <tr>
+            <td colspan="4">
+              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <input type="button" id="amazon-s3-add" class="button" value="<?php _e('Add more Amazon S3 secure buckets', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="button fv-help-link" href="https://foliovision.com/player/video-hosting/amazon-s3-guide" target="_blank">Help</a>
+            </td>
+          </tr>
+        </table>
 <?php 
 }
 
