@@ -3378,7 +3378,7 @@ jQuery(function() {
     }
 
     function reload_preview( video_index ) {
-      if( !current_player_object.videos[video_index] ) {
+      if( video_index > -1 && !current_player_object.videos[video_index] ) {
         reset_preview();
         return;
       }
