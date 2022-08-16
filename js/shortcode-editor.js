@@ -3403,13 +3403,13 @@ jQuery(function() {
           el_preview_target.html( response.html )
           $doc.trigger('fvp-preview-complete');
         }
-      }).error(function(xhr) {
+      }).fail(function(xhr) {
         if (xhr.status == 404) {
           overlay_show('message', 'The requested player could not be found. Please try again.');
         } else {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
         }
-      }).complete(function() {
+      }).always(function() {
         el_spinner.hide();
       });
     }
