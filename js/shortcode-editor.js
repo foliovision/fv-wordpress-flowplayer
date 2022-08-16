@@ -1552,7 +1552,8 @@ jQuery(function() {
       jQuery("#add_format_wrapper").show();
       jQuery(".add_rtmp_wrapper").show();
       jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").hide();
-      $el_preview.attr('class','preview-no');
+
+      reset_preview();
 
       jQuery('.fv-player-tab-video-files [data-playlist-item]').each( function(i,e) {
         if( i == 0 ) return;
@@ -3376,7 +3377,12 @@ jQuery(function() {
       };
     }
 
-    function reload_preview( video_id ) {
+    function reload_preview( video_index ) {
+      if( !current_player_object.videos[video_index] ) {
+        reset_preview();
+        return;
+      }
+
       el_spinner.show();
 
       // It's possible that you put in the video source link and quickly click
@@ -3385,7 +3391,7 @@ jQuery(function() {
         debug_log('Nothing to preview, player still saving...');
 
         setTimeout( function() {
-          reload_preview( video_id );
+          reload_preview( video_index );
         }, 1000 );
         return;
       }
@@ -3396,7 +3402,7 @@ jQuery(function() {
         action : 'fv_player_db_load',
         nonce : fv_player_editor_conf.db_load_nonce,
         playerID :  current_player_db_id,
-        current_video_to_edit: video_id,
+        current_video_to_edit: video_index,
       }, function(response) {
         if ( response.html ) {
           // auto-refresh preview
@@ -3419,6 +3425,10 @@ jQuery(function() {
       current_player_object = false;
       current_video_db_id = -1;
       item_index = 0;
+    }
+
+    function reset_preview() {
+      $el_preview.attr('class','preview-no');
     }
 
     function set_post_editor_content( html ) {
