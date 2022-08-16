@@ -514,7 +514,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <a class="fvp_item_video-filename"></a>
                 <a class="configure-video" href="#">Configure video</a>
                 <a class="fvp_item_remove" href="#"><span class="dashicons dashicons-trash"></span></a>
-                <div class="fvp_item_caption">-</div>
               </div>
           </div>
 

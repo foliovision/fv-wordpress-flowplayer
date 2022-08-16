@@ -966,10 +966,10 @@ jQuery(function() {
         var
           $element = jQuery(this),
           $parent_table = $element.closest('table'),
-          $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.attr('data-index') + '"] div.fvp_item_caption'),
+          $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.attr('data-index') + '"] div.fvp_item_video-filename'),
           value = $element.val(),
           update_fields = null,
-          $chapters_element = $playlist_title = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
+          $chapters_element = jQuery('.fv-player-tab-subtitles table[data-index="' + $parent_table.attr('data-index') + '"] #fv_wp_flowplayer_field_chapters'),
           $caption_element = $parent_table.find('#fv_wp_flowplayer_field_caption'),
           $splash_element = $parent_table.find('#fv_wp_flowplayer_field_splash'),
           $splash_attachment_id_element = $parent_table.find('#fv_wp_flowplayer_field_splash_attachment_id'),
@@ -1238,7 +1238,7 @@ jQuery(function() {
                       // update playlist item title in list
                       var
                         $parent_table = $element.closest('table'),
-                        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.attr('data-index') + '"] div.fvp_item_caption');
+                        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.attr('data-index') + '"] div.fvp_item_video-filename');
 
                       $playlist_title.html($caption_element.val());
                     }
@@ -2694,7 +2694,9 @@ jQuery(function() {
 
             var caption = aCaptions.shift();
             get_field("caption").val( caption );
-            playlist_row.find('.fvp_item_caption').text( caption );
+            if( caption ) {
+              playlist_row.find('.fvp_item_video-filename').text( caption );
+            }
           }
 
           var aSplashText = false;
@@ -3124,7 +3126,7 @@ jQuery(function() {
 
       var current = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').last();
       current.attr('data-index', newIndex);
-      current.find('.fvp_item_video-filename').html( 'Video ' + (newIndex + 1) );
+      current.find('.fvp_item_video-filename').text( 'Video ' + (newIndex + 1) );
 
       jQuery('.fv-player-tab-video-files').append(template_video);
       var new_item = get_tab('last','video-files');
@@ -3334,12 +3336,15 @@ jQuery(function() {
         video_name = video_name.replace(/\+/g,' ');
         video_name = video_name.replace(/watch\?v=/,'YouTube: ');
 
-        playlist_row.find('.fvp_item_video-filename').text( video_name );
+        var playlist_title = playlist_row.find('.fvp_item_video-filename');
+        playlist_title.text( video_name );
 
-        var playlist_title = playlist_row.find('.fvp_item_caption');
         // do not put in caption if it's loading
         if (!playlist_title.hasClass('fv-player-shortcode-editor-small-spinner')) {
-          playlist_title.text( get_field("caption",current).val() );
+          var caption = get_field("caption",current).val();
+          if( caption ) {
+            playlist_title.text( caption );
+          }
         }
       });
 
@@ -3779,7 +3784,7 @@ jQuery(function() {
       var
         $parent_row = $element.closest('tr'),
         $parent_table = $element.closest('table'),
-        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.data('index') + '"] div.fvp_item_caption'),
+        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.data('index') + '"] div.fvp_item_video-filename'),
         $playlist_title_spinner_div = $playlist_title.find('div.fv-player-shortcode-editor-small-spinner');
 
       if (this.id == 'fv_wp_flowplayer_field_caption' && $playlist_title_spinner_div.length > 0) {
