@@ -3128,6 +3128,7 @@ jQuery(function() {
       var current = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').last();
       current.attr('data-index', newIndex);
       current.find('.fvp_item_video-filename').text( 'Video ' + (newIndex + 1) );
+      current.find('.fvp_item_video-duration').text( '' );
 
       jQuery('.fv-player-tab-video-files').append(template_video);
       var new_item = get_tab('last','video-files');
@@ -3347,6 +3348,15 @@ jQuery(function() {
             playlist_title.text( caption );
           }
         }
+
+        var duration_seconds = fv_player_editor.get_playlist_video_meta_value( 'duration', jQuery(this).index() );
+        var duration_hms = '';
+        if( duration_seconds ) {
+          duration_hms = new Date(duration_seconds * 1000).toISOString().substr(11, 8);
+          duration_hms = duration_hms.replace( /^00:/, '' );
+        }
+
+        playlist_row.find('.fvp_item_video-duration').text( duration_hms );
       });
 
       playlist_index();
@@ -3884,6 +3894,31 @@ jQuery(function() {
 
       get_field( key, where ) {
         return get_field( key, where );
+      },
+
+      get_playlist_video_meta( meta_key, index ) {
+        var video_object = current_player_object.videos[index],
+          video_meta = false;
+
+        if( video_object ) {
+          $( video_object.meta ).each( function(k,v) {
+            if( v.meta_key == meta_key ) {
+              video_meta = v;
+              return false;
+            }
+          } );
+        }
+        return video_meta;
+      },
+
+      get_playlist_video_meta_value( meta_key, index ) {
+        var video_meta = this.get_playlist_video_meta( meta_key, index );
+
+        if( video_meta ) {
+          return video_meta.meta_value;
+        }
+
+        return false;
       },
 
       get_shortcode_remains: function() {
