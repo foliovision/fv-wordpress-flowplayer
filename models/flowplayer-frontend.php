@@ -288,22 +288,46 @@ class flowplayer_frontend extends flowplayer
     $res = apply_filters( 'fv_flowplayer_playlist_style', false, $this->aCurArgs, $aPlaylistItems, $aSplashScreens, $aCaptions );
     if( $res ) {
       return $res;
-    }  
-    
+    }
+
 
     /*
      * Playlist Start Position Splash Screen
      */
     global $fv_fp;
 
-    if (isset($this->aCurArgs['playlist_start']) && $fv_fp && method_exists($fv_fp, 'current_player') && $fv_fp->current_player() && $fv_fp->current_player()->getVideos()) {
-      foreach ($fv_fp->current_player()->getVideos() as $video_index => $video) {
-        if ($video_index + 1 == $this->aCurArgs['playlist_start']) {
-          $splash_img = $video->getSplash();
-          break;
+    if (isset($this->aCurArgs['playlist_start']) ) {
+      if( $fv_fp && method_exists($fv_fp, 'current_player') && $fv_fp->current_player() && $fv_fp->current_player()->getVideos() ) { // DB player
+        foreach ($fv_fp->current_player()->getVideos() as $video_index => $video) {
+          if ($video_index + 1 == $this->aCurArgs['playlist_start']) {
+            $splash_img = $video->getSplash();
+            break;
+          }
         }
+      } else if( isset($this->aCurArgs['playlist']) ) { // Shortcode player
+        $playlist_items = explode(';', $this->aCurArgs['playlist']);
+
+        foreach( $playlist_items as $index => $item ) {
+          if( $index + 1 == $this->aCurArgs['playlist_start'] ) {
+            if( $this->aCurArgs['playlist_start'] == 1 ) { // first item
+              if( isset($this->aCurArgs['splash']) && ( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~', $this->aCurArgs['splash']) || stripos($this->aCurArgs['splash'], 'i.vimeocdn.com') !== false ) ) {
+                $splash_img = $this->aCurArgs['splash'];
+              }
+            } else {
+              $item_data = explode(',', $item); // parse splash
+
+              foreach( $item_data as $data) {
+                if( preg_match('~\.(png|gif|jpg|jpe|jpeg)($|\?)~', $data) || stripos($data, 'i.vimeocdn.com') !== false) {
+                  $splash_img = $data;
+                  break 2;
+                }
+              }
+            }
+          }
+        }
+
       }
-    }
+    } 
 
     /*
      *  Video player tabs
@@ -1400,4 +1424,3 @@ HTML;
   
   
 }
-
