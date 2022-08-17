@@ -866,8 +866,16 @@ jQuery(function() {
                 }
               }
 
+              if( auto_splash ) {
+                get_field('auto_splash', video_tab ).val( auto_splash );
+              }
+
               if( v.caption && ( !title_field.val() || auto_caption ) ) {
                 title_field.val( v.caption );
+              }
+
+              if( auto_caption ) {
+                get_field('auto_caption', video_tab ).val( auto_caption );
               }
 
             });
@@ -1217,13 +1225,9 @@ jQuery(function() {
       // if error / message overlay is visible, hide it
       overlay_hide();
 
-      // remove hidden meta data inputs
-      jQuery('input[name="fv_wp_flowplayer_field_duration"], input[name="fv_wp_flowplayer_field_auto_splash"], input[name="fv_wp_flowplayer_field_auto_caption"]').remove();
-
       // TODO: Adjust for new code
       jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
 
-   
         // Reset the HLS stream checkboxes (Live, DVR, ...)
         show_stream_fields_worker( jQuery(this), [], [] );
       });
@@ -1958,11 +1962,12 @@ jQuery(function() {
 
               // used several times below, so it's in a function
               function set_player_field(key, value, id, video_table_index) {
+
                 var
                   real_key = fv_wp_flowplayer_map_names_to_editor_fields(key),
                   real_val = fv_wp_flowplayer_map_db_values_to_field_values(key, value),
                   // try ID first
-                  $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab table[data-id_video=' + video_table_index + '] ' : '') + '#' + real_key);
+                  $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '#' + real_key);
 
                 // special processing for end video actions
                 if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
@@ -1975,7 +1980,7 @@ jQuery(function() {
 
                 if (!$element.length) {
                   // no element with this ID found, we need to go for a name
-                  $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab table[data-id_video=' + video_table_index + '] ' : '') + '[name="' + real_key + '"]');
+                  $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '[name="' + real_key + '"]');
                 }
 
                 // player and video IDs wouldn't have corresponding fields
@@ -2082,20 +2087,8 @@ jQuery(function() {
 
                 if (video_meta.length) {
                   for (var i in video_meta) {
-                    // video duration hidden input
-                    if (['duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(video_meta[i].meta_key) > -1) {
-                      var meta_el = jQuery('<input />')
-                        .attr('type', 'hidden' )
-                        .attr('name', 'fv_wp_flowplayer_field_'+video_meta[i].meta_key )
-                        .attr('id', 'fv_wp_flowplayer_field_'+video_meta[i].meta_key )
-                        .attr('value', video_meta[i].meta_value )
-                        .attr('data-id', video_meta[i].id );
-
-                      $video_data_tab.find('#fv_wp_flowplayer_field_src').after(meta_el);
-                    } else {
-                      // predefined meta input with field already existing in the dialog
-                      set_player_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
-                    }
+                    // predefined meta input with field already existing in the dialog
+                    set_player_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
                   }
                 }
 
@@ -3505,45 +3498,33 @@ jQuery(function() {
     */
     // TODO: Fix for new code
     $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_caption', function() {
-      // remove spinner from playlist table row, if present
-      var $element = jQuery(this);
+      var $element = jQuery(this),
+        $input;
 
       // if this element already has data set, don't do any of the selections below
       if (typeof($element.data('fv_player_user_updated')) != 'undefined') {
         return;
       }
 
-      var
-        $parent_row = $element.closest('tr'),
-        $parent_table = $element.closest('table'),
-        $playlist_title = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item[data-index="' + $parent_table.data('index') + '"] div.fvp_item_video-filename'),
-        $playlist_title_spinner_div = $playlist_title.find('div.fv-player-shortcode-editor-small-spinner');
-
-      if (this.id == 'fv_wp_flowplayer_field_caption' && $playlist_title_spinner_div.length > 0) {
-        $playlist_title_spinner_div.removeClass('fv-player-shortcode-editor-small-spinner');
-      }
-
       if( this.id == 'fv_wp_flowplayer_field_splash' ) {
-        var $input = $parent_table.find('#fv_wp_flowplayer_field_auto_splash');
-        var $meta_key = 'auto_splash';
+        $input = get_field('auto_splash', true);
       } else {
-        var $input = $parent_table.find('#fv_wp_flowplayer_field_auto_caption');
-        var $meta_key = 'auto_caption';
+        $input = get_field('auto_caption', true);
       }
 
-      if( typeof($element.data('fv_player_user_updated')) == 'undefined' && $input.length > 0 ) {
-        $input.val('');
+      if( $input.length > 0 ) {
+        $input.val(0);
 
-        fv_flowplayer_insertUpdateOrDeleteVideoMeta({
-          element: $input,
-          meta_section: 'video',
-          meta_key: $meta_key,
-          handle_delete: true
-        });
+        // fv_flowplayer_insertUpdateOrDeleteVideoMeta({
+        //   element: $input,
+        //   meta_section: 'video',
+        //   meta_key: $meta_key,
+        //   handle_delete: true
+        // });
+
+        console.log(this.id+' has been updated manually!');
       }
 
-      console.log(this.id+' has been updated manually!');
-      $element.data('fv_player_user_updated', 1);
     });
 
     // Public stuff

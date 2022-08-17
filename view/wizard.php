@@ -533,6 +533,14 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'type' => 'text',
                     'visible' => true
                   ),
+                  array(
+                    'name' => 'auto_splash',
+                    'type' => 'hidden',
+                  ),
+                  array(
+                    'name' => 'auto_caption',
+                    'type' => 'hidden',
+                  ),
                   // TODO: Actually make these live
                   array(
                     'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
