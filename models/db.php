@@ -47,7 +47,6 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_player_db_import', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
     add_action( 'wp_ajax_fv_player_db_remove', array($this, 'remove_player') );
-    add_action( 'wp_ajax_fv_wp_flowplayer_retrieve_video_data', array($this, 'retrieve_video_data') ); // todo: nonce, move into controller/editor.php
     add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
     add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') );
   }
@@ -1824,60 +1823,6 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     } else {
       die('no valid player ID found, cloning unsuccessful');
     }
-  }
-
-  /**
-   * AJAX method to retrieve video caption, splash screen and duration.
-   * Also returns current timestamp, so we can store the last check date in DB.
-   */
-  public function retrieve_video_data() {
-    if (!isset($_POST['video_url'])) {
-      exit;
-    }
-    
-    $url = $_POST['video_url'];
-
-    $json_data = apply_filters('fv_player_meta_data', $url, false);
-    if ($json_data !== false && is_array($json_data) ) {
-      header('Content-Type: application/json');
-      $json_data['ts'] = time();
-      die(json_encode($json_data));
-    }
-
-    // add last update timestamp & duration
-    $json_data = array(
-      'ts' => time()
-    );
-
-    // was only the file path provided?
-    $parsed = parse_url($url);
-    if( count($parsed) == 1 && !empty($parsed['path']) ) {
-      // then user the WordPress home URL
-      $url = home_url($url);
-      // but remove the "path" if WordPress runs in a folder
-      $wordpress_home = parse_url(home_url());
-      if( !empty($wordpress_home['path']) ) {
-        $url = str_replace( $wordpress_home['path'], '', $url );
-      }
-    }
-
-    // only run the actual check for real URLs
-    if( filter_var($url, FILTER_VALIDATE_URL) ) {
-      // add duration
-      global $FV_Player_Checker, $fv_fp;
-      if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
-        $url = $secured_url;
-      }
-      
-      $check = $FV_Player_Checker->check_mimetype(array($url), false, true);
-      $json_data['error'] = $check['error'];
-      $json_data['duration'] = $check['duration'];
-      $json_data['is_live'] = $check['is_live'];
-      $json_data['is_audio'] = $check['is_audio'];
-    }
-
-    header('Content-Type: application/json');
-    die(json_encode($json_data));
   }
 
   /**

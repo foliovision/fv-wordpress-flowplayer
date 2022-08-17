@@ -653,12 +653,111 @@ CREATE TABLE " . self::$db_table_name . " (
   public function save($meta_data = array()) {
     global $wpdb;
 
-    // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
-    $data_values = array();
 
+    $video_url = $this->getSrc();
+
+    /*
+     * Check video duration, fetch splash screen and title 
+     */
+    $last_video_meta_check = $this->getMetaValue( 'last_video_meta_check', true );
+    $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
+
+    // Check video duration, or even splash image and title if it was not checked previously
+    // TODO: What if the video source has changed?
+    if(
+      !$last_video_meta_check ||
+      $last_video_meta_check + 900 < time() ||
+      strcasecmp( $video_url, $last_video_meta_check_src ) != 0
+    ) {
+
+      // Check if FV Player Pro can fetch the video splash, title and duration
+      $video_data = apply_filters('fv_player_meta_data', $video_url, false);
+
+      // No information obtained, do a basic check
+      if( !is_array($video_data) ) {
+        $video_data = array();
+
+        // was only the file path provided?
+        $parsed = parse_url($video_url);
+        if( count($parsed) == 1 && !empty($parsed['path']) ) {
+          // then user the WordPress home URL
+          $video_url = home_url($video_url);
+          // but remove the "path" if WordPress runs in a folder
+          $wordpress_home = parse_url(home_url());
+          if( !empty($wordpress_home['path']) ) {
+            $video_url = str_replace( $wordpress_home['path'], '', $video_url );
+          }
+        }
+
+        // only run the actual check for real URLs
+        if( filter_var($video_url, FILTER_VALIDATE_URL) ) {
+          // add duration
+          global $FV_Player_Checker, $fv_fp;
+          if( $secured_url = $fv_fp->get_video_src( $video_url, array( 'dynamic' => true ) ) ) {
+            $video_url = $secured_url;
+          }
+          
+          $check = $FV_Player_Checker->check_mimetype( array($video_url), false, true );
+          $video_data['error'] = $check['error'];
+          $video_data['duration'] = $check['duration'];
+          $video_data['is_live'] = $check['is_live'];
+          $video_data['is_audio'] = $check['is_audio'];
+        }
+      }
+      
+      if( is_array($video_data) ) {
+        // TODO: process chapters and also error, is_live, is_audio
+        // TODO: check caption, splash, chapters, auto_splash, auto_caption and also error, is_live, is_audio
+
+        $meta_data[] = array(
+          'meta_key' => 'last_video_meta_check',
+          'meta_value' => time(),
+        );
+
+        $meta_data[] = array(
+          'meta_key' => 'last_video_meta_check_src',
+          'meta_value' => $video_url,
+        );
+
+        if( !empty($video_data['duration']) ) {
+          $meta_data[] = array(
+            'meta_key' => 'duration',
+            'meta_value' => $video_data['duration'],
+          );
+        }
+
+        if( !empty($video_data['name']) && (
+          !$this->getCaption() || $this->getMetaValue( 'auto_caption', true )
+        ) ) {
+          $this->caption = $video_data['name'];
+
+          $meta_data[] = array(
+            'meta_key' => 'auto_caption',
+            'meta_value' => 1,
+          );
+        }
+
+        if( !empty($video_data['thumbnail']) && (
+          !$this->getSplash() || $this->getMetaValue( 'auto_splash', true )
+        ) ) {
+          $this->splash = $video_data['thumbnail'];
+
+          $meta_data[] = array(
+            'meta_key' => 'auto_splash',
+            'meta_value' => 1,
+          );
+        }
+
+        if( !empty($video_data['splash_attachment_id']) ) {
+          $this->splash_attachment_id = $video_data['splash_attachment_id'];
+        }
+      }
+    }
+
+    /*
+     * If the splash has changed make sure the old Media Library item is no longer linked (postmeta) to this video
+     */
     $splash_attachment_id = $this->getSplashAttachmentId();
 
     if( $is_update ) {
@@ -677,6 +776,13 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       }
     }
+
+    /*
+     * Prepare SQL
+     */
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
+    $data_keys   = array();
+    $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
