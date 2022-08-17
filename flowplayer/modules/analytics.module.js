@@ -196,6 +196,7 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
   if( typeof(gtag) != "undefined" ) {
     if( is_ga_4( api ) ) {
       gtag("event", event, {
+        'video_title': name,
         'video_current_time': api.video.time,
         'video_provider': engineType,
         'video_duration': api.video.duration,
