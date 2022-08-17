@@ -858,6 +858,14 @@ jQuery(function() {
                 auto_splash = fv_player_editor.get_playlist_video_meta_value('auto_splash', k ),
                 auto_caption = fv_player_editor.get_playlist_video_meta_value('auto_caption', k );
 
+              if( get_field('auto_splash', video_tab ).val() == '0' ) {
+                auto_splash = false;
+              }
+
+              if( get_field('auto_caption', video_tab ).val() == '0' ) {
+                auto_caption = false;
+              }
+
               if( v.splash && ( !splash_field.val() || auto_splash ) ) {
                 splash_field.val( v.splash );
 
