@@ -705,8 +705,17 @@ CREATE TABLE " . self::$db_table_name . " (
           $video_data['is_audio'] = $check['is_audio'];
         }
       }
-      
+
       if( is_array($video_data) ) {
+        $video_data = wp_parse_args( $video_data, 
+          array(
+            'error' => false,
+            'duration' => false,
+            'is_live' => false,
+            'is_audio' => false
+          )
+        );
+
         // TODO: process chapters and also error, is_live, is_audio
         // TODO: check caption, splash, chapters, auto_splash, auto_caption and also error, is_live, is_audio
 
@@ -720,11 +729,24 @@ CREATE TABLE " . self::$db_table_name . " (
           'meta_value' => $video_url,
         );
 
-        if( !empty($video_data['duration']) ) {
+        if( $video_data['duration'] ) {
           $meta_data[] = array(
             'meta_key' => 'duration',
             'meta_value' => $video_data['duration'],
           );
+        } else {
+          $key = array_search('duration', array_column($meta_data, 'meta_key'));
+          unset($meta_data[$key]);
+        }
+
+        if( $video_data['is_live'] ) {
+          $meta_data[] = array(
+            'meta_key' => 'live',
+            'meta_value' => true,
+          );
+        } else {
+          $key = array_search('live', array_column($meta_data, 'meta_key'));
+          unset($meta_data[$key]);
         }
 
         if( !empty($video_data['name']) && (

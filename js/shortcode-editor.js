@@ -405,29 +405,9 @@ jQuery(function() {
       $('#fv-player-shortcode-editor').on( 'click', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
-          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' ),
-          compare = checked ? 1 : 0;
+          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
 
-        wrap.toggleClass( 'is-checked', checked );
-
-        wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
-
-        if( window.fv_player_editor_dependencies[name] ) {
-          jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
-            
-            jQuery.each( inputs, function(k,input_name) {
-              var field_wrap = $('#fv-player-editor-field-wrap-'+input_name);
-
-              // TODO: What should be saved when it's enabled?
-              field_wrap.toggleClass( 'is-visible-dependency', value == compare );
-              field_wrap.toggleClass( 'is-hidden-dependency', value != compare );
-            });
-          });
-        }
-
-        // TODO: What should be saved when it's all hidden?
-        $('#fv-player-editor-field-children-'+name).toggle( checked );
-
+          checkbox_toggle_worker(wrap, name, checked);
       });
 
       /*
@@ -852,11 +832,19 @@ jQuery(function() {
                */
               // TODO: Populate chapters, error, is_live, is_audio, encryption key
               var video_tab = get_tab( k, 'video-files' ),
-                splash_field = get_field('splash', video_tab ),
-                splash_attachment_id_field = get_field('splash_attachment_id', video_tab ),
-                title_field = get_field('caption', video_tab ),
-                auto_splash = fv_player_editor.get_playlist_video_meta_value('auto_splash', k ),
-                auto_caption = fv_player_editor.get_playlist_video_meta_value('auto_caption', k );
+                splash_field = get_field( 'splash', video_tab ),
+                splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
+                title_field = get_field( 'caption', video_tab ),
+                auto_splash = fv_player_editor.get_playlist_video_meta_value( 'auto_splash', k ),
+                auto_caption = fv_player_editor.get_playlist_video_meta_value( 'auto_caption', k );
+
+              if( get_field('auto_splash', video_tab ).val() == '0' ) {
+                auto_splash = false;
+              }
+
+              if( get_field('auto_caption', video_tab ).val() == '0' ) {
+                auto_caption = false;
+              }
 
               if( v.splash && ( !splash_field.val() || auto_splash ) ) {
                 splash_field.val( v.splash );
@@ -877,6 +865,8 @@ jQuery(function() {
               if( auto_caption ) {
                 get_field('auto_caption', video_tab ).val( auto_caption );
               }
+
+              show_stream_fields_worker();
 
             });
 
@@ -1229,7 +1219,7 @@ jQuery(function() {
       jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
 
         // Reset the HLS stream checkboxes (Live, DVR, ...)
-        show_stream_fields_worker( jQuery(this), [], [] );
+        // show_stream_fields_worker();
       });
 
       jQuery('#fv_wp_flowplayer_field_player_name').show();
@@ -3394,55 +3384,47 @@ jQuery(function() {
     /*
     Extra fields to reveal when using a MPD or RTMP stream
     */
-    $doc.on('keyup', '[name=fv_wp_flowplayer_field_src], [name=fv_wp_flowplayer_field_rtmp_path]', show_stream_fields );
-    $doc.on('fv_flowplayer_shortcode_item_switch fv_flowplayer_shortcode_new', show_stream_fields );
+    $doc.on('fv_flowplayer_shortcode_item_switch fv_flowplayer_shortcode_new', show_stream_fields_worker );
 
-    // TODO: Fix for new code
-    function show_stream_fields(e,index) {
-      // on keyup
-      var src = jQuery(this).val(),
-        item = jQuery(this).parents('[data-playlist-item]');
+    function show_stream_fields_worker( index = 0 ) {
 
-      // on fv_flowplayer_shortcode_item_switch
-      if( typeof(index) != "undefined" ) {
-        item = get_tab(index,'video-files');
-        src = get_field( 'src', item ).val();
-      }
-
-      // on fv_flowplayer_shortcode_new
-      if( item.length == 0 ) item = get_tab( 0, 'video-files' );
-
-      // TODO: Gradually get rid of this and detect each stream type instead
-      var is_stream = item.find('[name=fv_wp_flowplayer_field_rtmp_path]').val() || src.match(/rtmp:/) || src.match(/\.mpd/),
-        is_vimeo_live = fv_player_editor_conf.have_fv_player_vimeo_live && src.match(/vimeo\.com\//);
-    
-      var show = [];
-      if( !!is_stream ) show = [ 'audio', 'dvr', 'live' ];
-      if( !!is_vimeo_live ) show = [ 'live' ];
-      
-      show_stream_fields_worker( item, show );
-    }
-
-    function show_stream_fields_worker(item, to_show, to_check) {
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
-        var field = item.find('[name=fv_wp_flowplayer_field_'+v+']'),
-          is_checked = field.prop('checked');
 
-        // We show the checkbox if it's to be shown or if it's checked
-        field.closest('tr').toggle( is_checked || to_show && to_show.indexOf(v) != -1 );
-        
-        // If it's not already checked we check it or not check it based on args
-        if( !is_checked ) {
-          field.prop( 'checked', to_check && to_check.indexOf(v) != -1 );
-        }
+        var field = get_field(v, true),
+          meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false;
+
+        field.prop('checked', !!meta);
+        field.closest('.fv_player_interface_hide').toggle(!!meta);
+
+        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
       
-      // DVR should be always shown for live streams
-      if( item.find('[name=fv_wp_flowplayer_field_live]').prop('checked') ) {
-        item.find('[name=fv_wp_flowplayer_field_dvr]').closest('tr').show();
-      }
     }
     
+    function checkbox_toggle_worker( wrap, name, checked ) {
+      var compare = checked ? 1 : 0;
+
+      wrap.toggleClass( 'is-checked', checked );
+
+      wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
+
+      if( window.fv_player_editor_dependencies[name] ) {
+        jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
+          
+          jQuery.each( inputs, function(k,input_name) {
+            var field_wrap = $('#fv-player-editor-field-wrap-'+input_name);
+
+            // TODO: What should be saved when it's enabled?
+            field_wrap.toggleClass( 'is-visible-dependency', value == compare );
+            field_wrap.toggleClass( 'is-hidden-dependency', value != compare );
+          });
+        });
+      }
+
+      // TODO: What should be saved when it's all hidden?
+      $('#fv-player-editor-field-children-'+name).toggle( checked );
+    }
+
     function show_end_actions( e, value ) {
       // redirect, popup and email_list
       var type = jQuery('#fv_wp_flowplayer_field_end_actions').val();
@@ -3456,7 +3438,7 @@ jQuery(function() {
       }
 
       // The field id is different for popup
-      if( type == 'popup' ){
+      if( type == 'popup' ) {
         var field = jQuery('#fv_wp_flowplayer_field_' + type + '_id');
         field.parents('tr').show();
         if( value ) {
