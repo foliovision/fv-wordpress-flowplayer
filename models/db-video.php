@@ -729,6 +729,16 @@ CREATE TABLE " . self::$db_table_name . " (
           'meta_value' => $video_url,
         );
 
+        if( $video_data['error'] ) {
+          $meta_data[] = array(
+            'meta_key' => 'error',
+            'meta_value' => $video_data['error'],
+          );
+        } else {
+          $key = array_search('error', array_column($meta_data, 'meta_key'));
+          unset($meta_data[$key]);
+        }
+
         if( $video_data['duration'] ) {
           $meta_data[] = array(
             'meta_key' => 'duration',

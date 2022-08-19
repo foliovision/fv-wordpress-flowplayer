@@ -208,6 +208,10 @@ class FV_Player_Checker {
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
             $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
+            if( is_wp_error($request) ) {
+              return array( 'error' => $request->get_error_message() );
+            }
+
             $response = wp_remote_retrieve_body( $request );
             $playlist = false;
             $duration = 0;
@@ -219,7 +223,7 @@ class FV_Player_Checker {
               foreach($segments[1] as $segment_item){
                 $duration += $segment_item;
               }
-            }else{
+            } else {
               $lines = explode( "\n", $response );
 
               $streams = array();
@@ -257,7 +261,13 @@ class FV_Player_Checker {
                 if( $secured_url = $fv_fp->get_video_src( $item_url, array( 'dynamic' => true ) ) ) {
                   $item_url = $secured_url;
                 }
+
                 $request = wp_remote_get($item_url);
+
+                if( is_wp_error($request) ) {
+                  return array( 'error' => $request->get_error_message() );
+                }
+
                 $playlist_item = wp_remote_retrieve_body( $request );
 
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
