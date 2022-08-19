@@ -924,6 +924,10 @@ jQuery(function() {
                 loading = false;
                 ajax_save_this_please = false;
               }
+
+              // Set the current data as previous to let auto-saving detect changes
+              // For new player this will have video and player IDs
+              ajax_save_previous = build_ajax_data(true);
             }
           } catch(e) {
             error(e);
