@@ -3408,7 +3408,10 @@ jQuery(function() {
       var error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false;
 
       if( error ) {
-        save_error_show(error);
+        jQuery('#fv_wp_flowplayer_field_video_notice').text('Video error: ' + error);
+        jQuery('#fv-player-editor-field-wrap-video-notice').show();
+      } else {
+        jQuery('#fv-player-editor-field-wrap-video-notice').hide();
       }
 
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
@@ -3416,7 +3419,7 @@ jQuery(function() {
         var field = get_field(v, true),
           meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false;
 
-        field.prop('checked', !!meta );
+        field.prop('checked', !!meta);
         field.closest('.fv_player_interface_hide').toggle(!!meta);
 
         checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
