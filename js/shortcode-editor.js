@@ -874,7 +874,7 @@ jQuery(function() {
                 get_field('auto_caption', video_tab ).val( auto_caption );
               }
 
-              show_stream_fields_worker();
+              show_stream_fields_worker(k);
 
             });
 
@@ -3392,20 +3392,26 @@ jQuery(function() {
     /*
     Extra fields to reveal when using a MPD or RTMP stream
     */
-    $doc.on('fv_flowplayer_shortcode_item_switch fv_flowplayer_shortcode_new', show_stream_fields_worker );
+    $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
+      show_stream_fields_worker(index);
+    });
+
+    $doc.on('fv_flowplayer_shortcode_new', function() {
+      show_stream_fields_worker(0);
+    });
 
     function show_stream_fields_worker( index = 0 ) {
 
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
-          meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false,
-          error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false;
+          meta = fv_player_editor.get_playlist_video_meta_value( v, index ),
+          error = fv_player_editor.get_playlist_video_meta_value( 'error', index );
 
-        field.prop('checked', !!meta && !!error );
-        field.closest('.fv_player_interface_hide').toggle(!!meta || !!error);
+        field.prop('checked', meta && !error );
+        field.closest('.fv_player_interface_hide').toggle(meta || !!error);
 
-        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta && !!error );
+        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, meta && !error );
       });
       
     }
@@ -4140,7 +4146,7 @@ function fv_flowplayer_insertUpdateOrDeletePlayerMeta(options) {
       options.insert_callback();
     }
   }
-};
+}
 
 /**
  * Automatically handles new, updated or removed video meta data
@@ -4239,7 +4245,7 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta(options) {
       }
     }
   }
-};
+}
 
 
 
