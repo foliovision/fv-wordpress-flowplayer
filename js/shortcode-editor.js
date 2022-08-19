@@ -3405,8 +3405,8 @@ jQuery(function() {
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
-          meta = fv_player_editor.get_playlist_video_meta_value( v, index ),
-          error = fv_player_editor.get_playlist_video_meta_value( 'error', index );
+          meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false,
+          error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false;
 
         field.prop('checked', meta && !error );
         field.closest('.fv_player_interface_hide').toggle(meta || !!error);
