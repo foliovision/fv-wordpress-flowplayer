@@ -846,6 +846,14 @@ jQuery(function() {
                 auto_caption = false;
               }
 
+              if( get_field('auto_splash', video_tab ).val() == '0' ) {
+                auto_splash = false;
+              }
+
+              if( get_field('auto_caption', video_tab ).val() == '0' ) {
+                auto_caption = false;
+              }
+
               if( v.splash && ( !splash_field.val() || auto_splash ) ) {
                 splash_field.val( v.splash );
 
