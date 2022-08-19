@@ -876,7 +876,7 @@ jQuery(function() {
               }
 
               if( duration ) {
-                var video_info = get_field('video_info', video_tab).html('<b>Video duration:</b> ' + duration);
+                var video_info = get_field('video_info', video_tab).html('<b>Duration:</b> ' + fv_player_time_hms(duration));
                 video_info.parents('#fv-player-editor-field-wrap-video_info').removeClass('fv_player_interface_hide');
               } else {
                 get_field('video_info', video_tab).parents('#fv-player-editor-field-wrap-video_info').addClass('fv_player_interface_hide');
