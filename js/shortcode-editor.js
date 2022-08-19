@@ -3401,17 +3401,21 @@ jQuery(function() {
     });
 
     function show_stream_fields_worker( index = 0 ) {
+      var error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false;
+
+      if( error ) {
+        save_error_show(error);
+      }
 
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
-          meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false,
-          error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false;
+          meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false;
 
-        field.prop('checked', meta && !error );
-        field.closest('.fv_player_interface_hide').toggle(meta || !!error);
+        field.prop('checked', !!meta );
+        field.closest('.fv_player_interface_hide').toggle(!!meta);
 
-        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, meta && !error );
+        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
       
     }
