@@ -249,6 +249,24 @@
     <?php
   }
 
+  function fv_player_editor_notice_info( $args ) {
+    extract($args);
+
+    if( $id ) {
+      $id = ' id="'.$id.'"';
+    }
+
+    $field_class = esc_attr('fv_wp_flowplayer_field_'.$name);
+
+    ?>
+  <div <?php echo $id; ?> class="components-base-control">
+    <div class="components-base-control__field">
+      <p class="components-form-token-field__help <?php echo $field_class; ?>"></p>
+    </div>
+  </div>
+    <?php
+  }
+
   function fv_player_editor_input( $args, $is_child = false ) {
     $args = wp_parse_args( $args, array(
                           'browser' => false,
@@ -319,6 +337,8 @@
       fv_player_editor_textarea( $args );
     } else if( $type == 'hidden' ) {
       fv_player_editor_hidden( $args );
+    } else if( $type == 'notice_info' ) {
+      fv_player_editor_notice_info( $args );
     }
 
     if( !empty($args['description']) ) : ?>
@@ -381,16 +401,6 @@
 
       echo "<div class='fv-components-panel__body-content'>\n";
       
-      if( $group == 'video' ) {
-        ?>
-         <div id="fv-player-editor-field-wrap-video-notice" class="components-base-control fv_player_interface_hide">
-          <div class="components-base-control__field">
-            <p class="components-textarea-control__input" id="fv_wp_flowplayer_field_video_notice">Video notice</p>
-          </div>
-        </div>
-        <?php
-      }
-
       foreach( $group_options['items'] AS $input ) {
         if( isset($input['default']) ) {
           $script_fv_player_editor_defaults[$input['name']] = $input['default'];
@@ -399,6 +409,7 @@
         fv_player_editor_input( $input );
 
       }
+
       echo "</div><!-- .fv-components-panel__body-content -->\n";
       echo "</div><!-- .components-panel__body -->\n";
     }
@@ -542,6 +553,14 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'browser' => true,
                     'type' => 'text',
                     'visible' => true
+                  ),
+                  array(
+                    'name' => 'video_info',
+                    'type' => 'notice_info'
+                  ),
+                  array(
+                    'name' => 'video_notice',
+                    'type' => 'notice_info'
                   ),
                   array(
                     'name' => 'auto_splash',
