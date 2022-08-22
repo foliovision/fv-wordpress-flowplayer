@@ -208,3 +208,18 @@ td.aligntop > label { margin-top:4px; }
 #fv_flowplayer_video_intelligence img {
   width: 95%;
 }
+
+#dashboard-widgets #fv_flowplayer_usage h3 {
+	font-size: 1.3em;
+}
+#fv_flowplayer_usage .usage-section {
+	width: 48%;
+	float: left;
+	margin-bottom: 2em;
+	margin-right: 2%;
+	list-style-type: none;
+	display: inline-block;
+}
+#fv_flowplayer_usage .usage-section:nth-child(2n+1) {
+	clear: both;
+}
