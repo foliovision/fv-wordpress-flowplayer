@@ -570,6 +570,10 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'name' => 'auto_caption',
                     'type' => 'hidden',
                   ),
+                  array(
+                    'name' => 'encoding_job_id',
+                    'type' => 'hidden'
+                  ),
                   // TODO: Actually make these live
                   array(
                     'label' => __('Live Stream', 'fv-wordpress-flowplayer'),

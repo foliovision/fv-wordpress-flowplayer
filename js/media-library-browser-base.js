@@ -774,14 +774,14 @@ jQuery( function($) {
     var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);
       
     if( splash && are_we_picking_the_video ) {
-      var splash_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_splash');
+      var splash_input = fv_player_editor.get_field('splash', true);
       if( splash_input.val() == '' ) {
         splash_input.val(splash);
       }
     }
     
     if( !is_trailer ) {
-      var hlskey_field = $url_input.closest('table').find('#fv_wp_flowplayer_hlskey');
+      var hlskey_field = fv_player_editor.get_field('hlskey', true);
       if( extra && extra.hlskey ) {
         hlskey_field.val(extra.hlskey);
         hlskey_field.closest('tr').show();
@@ -789,8 +789,7 @@ jQuery( function($) {
         hlskey_field.val('');
       }
   
-      var data_index = $url_input.parents('table').data('index');
-      var timeline_previews_field = jQuery('table[data-index="'+data_index+'"]').find('#fv_wp_timeline_preview');
+      var timeline_previews_field = fv_player_editor.get_field('timeline_preview', true);
       if( extra && extra.timeline_previews ) {
         timeline_previews_field.val(extra.timeline_previews);
       } else {
@@ -799,14 +798,14 @@ jQuery( function($) {
     }
 
     // TODO: Proper API!
-    var encoding_job_id_field = $url_input.closest('table').find('#fv_wp_flowplayer_field_encoding_job_id');
+    var encoding_job_id_field = fv_player_editor.get_field('encoding_job_id', true);
     if( extra && extra.encoding_job_id ) {
       encoding_job_id_field.val(extra.encoding_job_id);
     } else {
       encoding_job_id_field.val('');
     }
     
-    var audio_checkbox = $url_input.closest('table').find('#fv_wp_flowplayer_field_audio');
+    var audio_checkbox = fv_player_editor.get_field('audio', true);
     if( extra && extra.mime ) {
       if( extra.mime.indexOf('audio') !== -1 ) {
         audio_checkbox.prop( "checked", true );
@@ -816,7 +815,7 @@ jQuery( function($) {
     }
     
     if( extra && extra.title ) {
-      var title_input = $url_input.parents('table').find('#fv_wp_flowplayer_field_caption');
+      var title_input = fv_player_editor.get_field('caption', true);
       if( title_input.val() == '' ) {
         title_input.val(extra.title);
         title_input.closest('tr').show();
