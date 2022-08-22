@@ -836,7 +836,8 @@ jQuery(function() {
                 splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                 title_field = get_field( 'caption', video_tab ),
                 auto_splash = fv_player_editor.get_playlist_video_meta_value( 'auto_splash', k ),
-                auto_caption = fv_player_editor.get_playlist_video_meta_value( 'auto_caption', k );
+                auto_caption = fv_player_editor.get_playlist_video_meta_value( 'auto_caption', k ),
+                duration = fv_player_editor.get_playlist_video_meta_value( 'duration', k );
 
               if( get_field('auto_splash', video_tab ).val() == '0' ) {
                 auto_splash = false;
@@ -872,6 +873,13 @@ jQuery(function() {
 
               if( auto_caption ) {
                 get_field('auto_caption', video_tab ).val( auto_caption );
+              }
+
+              if( duration ) {
+                var video_info = get_field('video_info', video_tab).html('<b>Duration:</b> ' + fv_player_time_hms(duration));
+                video_info.parents('#fv-player-editor-field-wrap-video_info').removeClass('fv_player_interface_hide');
+              } else {
+                get_field('video_info', video_tab).parents('#fv-player-editor-field-wrap-video_info').addClass('fv_player_interface_hide');
               }
 
               show_stream_fields_worker(k);
@@ -1226,13 +1234,6 @@ jQuery(function() {
     function editor_init() {
       // if error / message overlay is visible, hide it
       overlay_hide();
-
-      // TODO: Adjust for new code
-      jQuery('input[name="fv_wp_flowplayer_field_src"]').each(function() {
-
-        // Reset the HLS stream checkboxes (Live, DVR, ...)
-        // show_stream_fields_worker();
-      });
 
       jQuery('#fv_wp_flowplayer_field_player_name').show();
 
@@ -3405,10 +3406,23 @@ jQuery(function() {
     });
 
     function show_stream_fields_worker( index = 0 ) {
-      var error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false;
+      var error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false,
+        video_tab = get_tab(index,'video-files'),
+        ecnrypted = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'encrypted', index ) : false;
 
       if( error ) {
-        save_error_show(error);
+        var video_notice = get_field('video_notice', video_tab).html('<b>Video error:</b> ' + error);
+        video_notice.parents('#fv-player-editor-field-wrap-video_notice').removeClass('fv_player_interface_hide');
+      } else {
+        get_field('video_notice', video_tab).parents('#fv-player-editor-field-wrap-video_notice').addClass('fv_player_interface_hide');
+      }
+
+      // hlskey
+      var hlskey = get_field('hlskey', true);
+      if( ecnrypted || hlskey.val() ) {
+        hlskey.closest('.fv_player_interface_hide').show();
+      } else {
+        hlskey.closest('.fv_player_interface_hide').hide();
       }
 
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
@@ -3416,7 +3430,7 @@ jQuery(function() {
         var field = get_field(v, true),
           meta = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( v, index ) : false;
 
-        field.prop('checked', !!meta );
+        field.prop('checked', !!meta);
         field.closest('.fv_player_interface_hide').toggle(!!meta);
 
         checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );

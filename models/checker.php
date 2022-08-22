@@ -201,6 +201,7 @@ class FV_Player_Checker {
           }
 
           $is_audio = false;
+          $is_encrypted = false;
 
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
             $is_audio = -1; // We do not know if it's audio only yet
@@ -272,6 +273,7 @@ class FV_Player_Checker {
 
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
                   $is_live = stripos( $playlist_item, '#EXT-X-ENDLIST' ) === false;
+                  $is_encrypted = stripos( $playlist_item, '#EXT-X-KEY' ) !== false;
 
                   foreach($segments[1] as $segment_item){
                     $duration += $segment_item;
@@ -299,6 +301,7 @@ class FV_Player_Checker {
           $fv_flowplayer_meta['duration'] = $time;
           $fv_flowplayer_meta['is_live'] = $is_live;
           $fv_flowplayer_meta['is_audio'] = $is_audio;
+          $fv_flowplayer_meta['is_encrypted'] = $is_encrypted;
           $fv_flowplayer_meta['etag'] = isset($headers['headers']['etag']) ? $headers['headers']['etag'] : false;  //  todo: check!
           $fv_flowplayer_meta['date'] = time();
           $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
