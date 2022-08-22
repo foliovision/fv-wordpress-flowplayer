@@ -359,7 +359,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.52.27.7210 - 2022/08/22 =
+= 7.5.27.7210 - 2022/08/22 =
 
 * CSS - do not preload in header if FV Player is in one of the Widgets and not in page content
 * CSS - fix subtitles position on mobile when controlbar visible
