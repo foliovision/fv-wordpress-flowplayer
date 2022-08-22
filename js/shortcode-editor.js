@@ -3407,13 +3407,22 @@ jQuery(function() {
 
     function show_stream_fields_worker( index = 0 ) {
       var error = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'error', index ) : false,
-        video_tab = get_tab(index,'video-files');
+        video_tab = get_tab(index,'video-files'),
+        ecnrypted = fv_player_editor.get_current_player_object() ? fv_player_editor.get_playlist_video_meta_value( 'encrypted', index ) : false;
 
       if( error ) {
         var video_notice = get_field('video_notice', video_tab).html('<b>Video error:</b> ' + error);
         video_notice.parents('#fv-player-editor-field-wrap-video_notice').removeClass('fv_player_interface_hide');
       } else {
         get_field('video_notice', video_tab).parents('#fv-player-editor-field-wrap-video_notice').addClass('fv_player_interface_hide');
+      }
+
+      // hlskey
+      var hlskey = get_field('hlskey', true);
+      if( ecnrypted || hlskey.val() ) {
+        hlskey.closest('.fv_player_interface_hide').show();
+      } else {
+        hlskey.closest('.fv_player_interface_hide').hide();
       }
 
       jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {

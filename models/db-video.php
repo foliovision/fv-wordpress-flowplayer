@@ -703,6 +703,7 @@ CREATE TABLE " . self::$db_table_name . " (
           $video_data['duration'] = $check['duration'];
           $video_data['is_live'] = $check['is_live'];
           $video_data['is_audio'] = $check['is_audio'];
+          $video_data['is_encrypted'] = $check['is_encrypted'];
         }
       }
 
@@ -756,6 +757,16 @@ CREATE TABLE " . self::$db_table_name . " (
           );
         } else {
           $key = array_search('live', array_column($meta_data, 'meta_key'));
+          unset($meta_data[$key]);
+        }
+
+        if( $video_data['is_encrypted'] ) {
+          $meta_data[] = array(
+            'meta_key' => 'encrypted',
+            'meta_value' => true,
+          );
+        } else {
+          $key = array_search('encrypted', array_column($meta_data, 'meta_key'));
           unset($meta_data[$key]);
         }
 
