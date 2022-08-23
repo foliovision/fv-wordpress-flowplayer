@@ -272,6 +272,8 @@ CREATE TABLE " . self::$db_table_name . " (
         
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
+            if( !is_string($value) ) $value = '';
+
             $this->$key = strip_tags( stripslashes($value) );
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
