@@ -342,6 +342,12 @@ class FV_Player_Checker {
             continue;
           }
 
+          $error_count = $objVideo->getMetaValue('error_count',true);
+
+          if( $error_count && intval($error_count) > 5 ) {
+            continue;
+          }
+
           // TODO: This should change to a proper filter at once
           $meta_data = apply_filters('fv_player_meta_data', $url, false);
 
@@ -368,9 +374,23 @@ class FV_Player_Checker {
           $objVideo->updateMetaValue('last_video_meta_check', time());
           
           if( $meta_data['duration'] ) {
-            $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );         
+            $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );
           }
-          
+
+          if( $meta_data['error'] ) {
+            $objVideo->updateMetaValue( 'error', $meta_data['error'] );
+
+            $error_count = $objVideo->getMetaValue( 'error_count', true );
+            if( !$error_count ) {
+              $error_count = 0;
+            }
+            $objVideo->updateMetaValue( 'error_count', $error_count + 1 );
+
+          } else {
+            $objVideo->deleteMetaValue( 'error' );
+            $objVideo->deleteMetaValue( 'error_count' );
+          }
+
         }
       }
     }

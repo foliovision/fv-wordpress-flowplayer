@@ -128,6 +128,11 @@ function fv_player_videos_parse(args, root) {
 	) {
     var fv_fp_mobile = false;
     jQuery(videos.sources).each( function(k,v) {
+      // Not sure why, but v would report as undefined on iPhone
+      if( !v ) {
+        return false;
+      }
+
       if(v.mobile) {
         videos.sources[k] = videos.sources[0];
         videos.sources[0] = v;

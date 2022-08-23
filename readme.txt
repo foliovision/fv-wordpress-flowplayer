@@ -359,6 +359,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.27.7210 - 2022/08/22 =
+
+* CSS - do not preload in header if FV Player is in one of the Widgets and not in page content
+* CSS - fix subtitles position on mobile when controlbar visible
+* Editor - show save errors
+* Featured Image - FV Player will only use it's splash image if there is no Featured Image only once per post - making it easy to remove if you do not want it
+* Updating settings help screen and help links
+* Bugfix - Bunny Stream video splash images not showing in job browser when using FV Player Pro function for URL tokens
+* Bugfix - iOS video recovery - was not working for HLS live streams
+* Bugfix - Preloading - fix play button not appearing for Slim and YouTuby skins
+* Bugfix - reducing database row size
+
 = 7.5.26.7210 - 2022/07/06 =
 
 * Using Freedom Video Player 7.2.10
