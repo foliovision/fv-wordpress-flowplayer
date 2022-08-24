@@ -1204,7 +1204,7 @@ jQuery(function() {
         }
 
         // close the dialog if confirmed
-        $.fn.fv_player_box.oldClose();
+        // $.fn.fv_player_box.oldClose();
 
         // reset variables
         is_unsaved = true;
