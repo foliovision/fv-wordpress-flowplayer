@@ -458,6 +458,38 @@ jQuery(function() {
       });
 
       /*
+      * Show edit input
+      * keywords: edit playlist items edit playlist items
+      */
+      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-edit', function(e) {
+        e.stopPropagation();
+
+        var
+          $parent = $(e.target).parents('[data-index]'),
+          index = $parent.attr('data-index'),
+          id = get_tab(index,'video-files').attr('data-id_video'),
+          input = $parent.find('.fvp_item_video-edit-input');
+
+        if( id ) input.toggle();
+      });
+
+      /*
+      * Edit caption
+      * keywords: edit caption playlist items edit caption playlist items
+      */
+      $doc.on('keyup','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-edit-input', function(e) {
+        e.stopPropagation();
+
+        var
+          $parent = $(e.target).parents('[data-index]'),
+          index = $parent.attr('data-index'),
+          video_tab = get_tab(index, 'video-files'),
+          id = video_tab.attr('data-id_video');
+
+        if( id ) get_field('caption', get_tab(index, 'video-files')).val(jQuery(this).val()).trigger('keyup');
+      });
+
+      /*
       * Remove playlist item
       * keywords: delete playlist items remove playlist items
       */
