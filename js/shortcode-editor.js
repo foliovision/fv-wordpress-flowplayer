@@ -466,11 +466,11 @@ jQuery(function() {
 
         var
           $parent = $(e.target).parents('[data-index]'),
-          index = $parent.attr('data-index'),
-          id = get_tab(index,'video-files').attr('data-id_video'),
+          filename = $parent.find('.fvp_item_video-filename'),
           input = $parent.find('.fvp_item_video-edit-input');
 
-        if( id ) input.toggle();
+        filename.toggle();
+        input.val(filename.text()).toggle();
       });
 
       /*
@@ -483,13 +483,10 @@ jQuery(function() {
         var
           $parent = $(e.target).parents('[data-index]'),
           index = $parent.attr('data-index'),
-          video_tab = get_tab(index, 'video-files'),
-          id = video_tab.attr('data-id_video');
+          video_tab = get_tab(index, 'video-files');
 
-        if( id ) {
-          $parent.find('.fvp_item_video-filename').text(jQuery(this).val());
-          get_field('caption', get_tab(index, 'video-files')).val(jQuery(this).val()).trigger('keyup');
-        } 
+        $parent.find('.fvp_item_video-filename').text(jQuery(this).val());
+        get_field('caption', video_tab).val(jQuery(this).val()).trigger('keyup');
       });
 
       /*
