@@ -486,7 +486,10 @@ jQuery(function() {
           video_tab = get_tab(index, 'video-files'),
           id = video_tab.attr('data-id_video');
 
-        if( id ) get_field('caption', get_tab(index, 'video-files')).val(jQuery(this).val()).trigger('keyup');
+        if( id ) {
+          $parent.find('.fvp_item_video-filename').text(jQuery(this).val());
+          get_field('caption', get_tab(index, 'video-files')).val(jQuery(this).val()).trigger('keyup');
+        } 
       });
 
       /*
