@@ -97,22 +97,17 @@ function fv_player_videos_parse(args, root) {
   }
 
   // Do not feed WebM to Safari as it has problem with VP9 codec which might be used
-  if( flowplayer.support.browser.safari ) {
+  if (flowplayer.support.browser.safari) {
     // Do we have any other format than WebM?
-    var have_non_webm = false;
-    jQuery(videos.sources).each( function(k,v) {
-      if( v.type != 'video/webm' ) {
-        have_non_webm = true;
-        return false;
+    var sources_without_webm = [];
+    jQuery(videos.sources).each(function (k, v) {
+      if (v.type != 'video/webm') {
+        sources_without_webm.push(v);
       }
     });
 
-    if( have_non_webm ) {
-      jQuery(videos.sources).each( function(k,v) {
-        if( v.type == 'video/webm' ) {
-          delete(videos.sources[k]);
-        }
-      });
+    if ( sources_without_webm.length > 0 ) {
+      videos.sources = sources_without_webm;
     }
   }
 
