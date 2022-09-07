@@ -1168,6 +1168,9 @@
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
 .flowplayer.is-fullscreen .fp-player{background-color:#000}
 
+.flowplayer.is-fullscreen .fp-controls {
+  bottom: env(safe-area-inset-bottom)
+}
 
 /* error icon */
 .is-error.flowplayer .fp-player:before {
