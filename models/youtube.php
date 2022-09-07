@@ -2,7 +2,17 @@
 
 class FV_Player_YouTube {
 
+  static $instance = null;
+
   var $bYoutube = false;
+
+  public static function _get_instance() {
+    if( !self::$instance ) {
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+  }
 
   function __construct() {
 
@@ -356,4 +366,8 @@ class FV_Player_YouTube {
 
 }
 
-new FV_Player_YouTube();
+function FV_Player_YouTube() {
+  return FV_Player_YouTube::_get_instance();
+}
+
+FV_Player_YouTube();
