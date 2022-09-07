@@ -109,6 +109,8 @@ function fv_flowplayer_get_js_translations() {
   'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
   'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
   'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
+  'invalid_youtube' => __('Invalid Youtube video ID.', 'fv-player-pro'),
+  'video_loaded' => __('Video loaded, click to play.', 'fv-player-pro'),
 );
 
   return $aStrings;
