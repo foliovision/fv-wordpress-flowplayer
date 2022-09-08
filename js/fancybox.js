@@ -48,6 +48,14 @@ jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 jQuery.fancybox.defaults.afterLoad = fv_fancybox_check_size;
 jQuery.fancybox.defaults.hash = false;
 jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
+jQuery.fancybox.defaults.afterShow = function() {
+  history.pushState( { fv_player_lightbox: true }, false, location.href );
+}
+jQuery.fancybox.defaults.afterClose = function() {
+  if( history.state && history.state.fv_player_lightbox ) {
+    history.back();
+  }
+}
 
 jQuery.fancybox.defaults.onThumbsShow = function() {
   jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
@@ -345,4 +353,8 @@ jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', 
   }
   fv_fancybox_check_size();
   return false;
+});
+
+window.addEventListener( 'popstate', function() {
+  jQuery.fancybox.close();
 });
