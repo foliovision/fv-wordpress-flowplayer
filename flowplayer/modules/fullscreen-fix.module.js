@@ -148,5 +148,8 @@ flowplayer(function(player, root) {
 });
 
 window.addEventListener( 'popstate', function() {
-  flowplayer('.is-fullscreen.is-ready').fullscreen( false );
+  var instance = flowplayer('.is-fullscreen.is-ready');
+  if( instance ) {
+    instance.fullscreen( false );
+  }
 });
