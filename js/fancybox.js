@@ -48,14 +48,6 @@ jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 jQuery.fancybox.defaults.afterLoad = fv_fancybox_check_size;
 jQuery.fancybox.defaults.hash = false;
 jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
-jQuery.fancybox.defaults.afterShow = function() {
-  history.pushState( { fv_player_lightbox: true }, false, location.href );
-}
-jQuery.fancybox.defaults.afterClose = function() {
-  if( history.state && history.state.fv_player_lightbox ) {
-    history.back();
-  }
-}
 
 jQuery.fancybox.defaults.onThumbsShow = function() {
   jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
@@ -204,6 +196,17 @@ function fv_lightbox_flowplayer_shutdown(e) {
 }
 
 jQuery(document).on('afterShow.fb afterClose.fb', fv_lightbox_flowplayer_shutdown);
+
+jQuery(document).on('afterShow.fb', function( e, instance ) {
+	history.pushState( { fv_player_lightbox: instance.id }, false, location.href );
+});
+
+jQuery(document).on('afterClose.fb', function( e, instance ) {
+  if( history.state && history.state.fv_player_lightbox == instance.id ) {
+    window.fv_player_fancbox_closing = true;
+    history.back();
+  }
+});
 
 jQuery(window).on( "resize", fv_fancybox_check_size);
 
@@ -355,6 +358,13 @@ jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', 
   return false;
 });
 
-window.addEventListener( 'popstate', function() {
-  jQuery.fancybox.close();
+window.addEventListener( 'popstate', function(e) {
+  if( window.fv_player_fancbox_closing ) {
+    window.fv_player_fancbox_closing = false;
+    return;
+  }
+
+  if( e.state.fv_player_lightbox ) {
+    jQuery.fancybox.close();
+  }
 });
