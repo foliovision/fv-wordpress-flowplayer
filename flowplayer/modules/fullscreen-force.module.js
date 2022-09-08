@@ -185,5 +185,5 @@ flowplayer(function(api, root) {
 });
 
 window.addEventListener( 'popstate', function() {
-  flowplayer().fakeFullscreen( false );
+  flowplayer('.fake-fullscreen').fakeFullscreen( false );
 });
