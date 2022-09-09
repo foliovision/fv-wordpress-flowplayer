@@ -599,13 +599,17 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fullscreen'] = 'false';
         }
         
-        if( !$bIsAudio && stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
-          $ratio = round( intval($height) / intval($width), 4);   
+        if( !$bIsAudio ) {
+          if( stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
+            $ratio = round( intval($height) / intval($width), 4);
+          } else {
+            $ratio = 9/16;
+          }
           $this->fRatio = $ratio;
-  
+
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
         }
-        
+
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
           $attributes['data-live'] = 'true';
         }
