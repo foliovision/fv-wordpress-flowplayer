@@ -112,7 +112,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .amazon-s3-first .fv_fp_amazon_remove { display: none; }
 .form-table2 td p { line-height: 20px; }
 .meta-box-sortables input[type=text] { width: 100%; }
-#wpfp_options .meta-box-sortables input.button-primary, #wpfp_options .meta-box-sortables input.button { margin-top: 16px }
+#wpfp_options .meta-box-sortables input.button-primary, #wpfp_options .meta-box-sortables input.button, #wpfp_options .meta-box-sortables a.button { margin-top: 16px }
 #wpfp_options input.button.no-margin { margin-top: 0px }
 .meta-box-sortables input.small, .meta-box-sortables select.small { width: 16%; }
 .meta-box-sortables input.medium { width: 50%; }
@@ -207,4 +207,19 @@ td.aligntop > label { margin-top:4px; }
 }
 #fv_flowplayer_video_intelligence img {
   width: 95%;
+}
+
+#dashboard-widgets #fv_flowplayer_usage h3 {
+	font-size: 1.3em;
+}
+#fv_flowplayer_usage .usage-section {
+	width: 48%;
+	float: left;
+	margin-bottom: 2em;
+	margin-right: 2%;
+	list-style-type: none;
+	display: inline-block;
+}
+#fv_flowplayer_usage .usage-section:nth-child(2n+1) {
+	clear: both;
 }

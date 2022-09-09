@@ -95,7 +95,7 @@ final class FV_Player_Controller extends TestCase {
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
-Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=7.2.10 footer? 1
+Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=7.2.11 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
 Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3 footer? 1
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
@@ -120,6 +120,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [safety_resize] => 1
     [volume] => 0.7
     [default_volume] => 0.7
+    [mobile_landscape_fullscreen] => 1
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380

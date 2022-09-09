@@ -1068,7 +1068,7 @@
 .flowplayer.is-small .fp-captions p{font-size:14px !important;line-height:20px !important}
 
 .flowplayer.is-tiny .fp-captions{line-height:12px !important; bottom: .2em}
-.flowplayer.is-tiny.is-mouseover .fp-captions, .flowplayer.is-tiny.is-paused .fp-captions {bottom: 3em}
+.flowplayer.is-tiny.is-mouseover .fp-captions, .flowplayer.is-tiny.is-paused .fp-captions {bottom: 4em}
 .flowplayer.is-tiny .fp-captions p{font-size:11px !important;line-height:18px !important;-webkit-text-shadow:0 0 2px #666;-moz-text-shadow:0 0 2px #666;text-shadow:0 0 2px #666}
 /* Fullscreen captions on large screens */
 @media (min-width: 64.063em) {
@@ -1129,6 +1129,9 @@
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
 .flowplayer.is-fullscreen .fp-player{background-color:#000}
 
+.flowplayer.is-fullscreen .fp-controls {
+  bottom: env(safe-area-inset-bottom)
+}
 
 /* error icon */
 .is-error.flowplayer .fp-player:before {
@@ -2339,4 +2342,35 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer .fv-player-encoder-video-processing-modal p {
   width: 100%;
   max-width: 100%;
+}
+
+.flowplayer.is-youtube {
+  background-size: cover;
+}
+.flowplayer.is-youtube .fp-chromecast{
+  display: none;
+}
+.flowplayer.is-youtube .fp-splash,
+.flowplayer.is-youtube .fp-player .fp-splash { /*  for mobile loading */
+  object-fit: cover;
+}
+.flowplayer.is-loading.is-youtube .fp-ui, .flowplayer.is-ready.is-youtube .fp-ui {
+  pointer-events: none;
+}
+.flowplayer.is-touch.is-ready.is-youtube .fp-ui {
+  pointer-events: auto;
+}
+/* todo: this needs to be disabled for mobile */
+.flowplayer.is-youtube .fp-pause {
+  display: none;
+}
+.flowplayer.is-loading.is-youtube .fp-ui div, .flowplayer.is-loading.is-youtube .fp-ui a, .flowplayer.is-ready.is-youtube .fp-ui div, .flowplayer.is-ready.is-youtube .fp-ui a {
+  pointer-events: auto;
+}
+.flowplayer.is-ready.is-youtube.is-cva .fp-ui {
+  pointer-events: auto;
+}
+iframe#youtube.fp-engine {
+  height: 100%;
+  width: 100%;
 }

@@ -52,8 +52,8 @@ flowplayer(function(api, root) {
     if(width <= 320) { // remove volue bar on narrow players
       root.addClass('no-volume fp-mute');
     } else {
-      if( !had_no_volume ) root.removeClass('no-volume');
-      if( !had_fp_mute ) root.removeClass('fp-mute');
+      if( !had_no_volume && flowplayer.support.volume ) root.removeClass('no-volume');
+      if( !had_fp_mute && flowplayer.support.volume ) root.removeClass('fp-mute');
     }
   }
 
@@ -90,6 +90,8 @@ jQuery(window).on('resize tabsactivate',function(){
 }).trigger('resize');
 
 flowplayer(function(api, root) {
+  root = jQuery(root);
+
   /*
    *  Chrome 55>= video download button fix 
    */  
@@ -106,7 +108,6 @@ flowplayer(function(api, root) {
   /*
    *  Splash dimension bugfix
    */
-  root = jQuery(root);
   var image_src = root.css('background-image')
   if( image_src ) {
     image_src = image_src.replace(/url\((['"])?(.*?)\1\)/gi, '$2').split(',');
@@ -123,6 +124,26 @@ flowplayer(function(api, root) {
     }
     
   }
+
+  /*
+   * YouTube player class
+   */
+  var is_youtube = false;
+  jQuery(api.conf.playlist).each( function(k,v) {
+    if( v.sources[0].type.match(/youtube/) ) is_youtube = true;
+  });
+  
+  if( is_youtube ) {      
+    root.addClass('is-youtube');
+  }
+  
+  api.bind("ready", function (e,api,video) {    
+    if( video.type == 'video/youtube' ) {
+      root.addClass('is-youtube');
+    } else {
+      root.removeClass('is-youtube');
+    }
+  });
 });
 
 /*
@@ -132,7 +153,7 @@ flowplayer(function(api, root) {
   $(window).on('resize',function(){
     var iframe = $('iframe[id][src][height][width]'); 
     iframe.each(function(){
-      if( $(this).attr('id').match(/(fv_vimeo_)|(fv_ytplayer_)/) && $(this).width() <= $(this).attr('width') )
+      if( $(this).attr('id').match(/fv_vimeo_/) && $(this).width() <= $(this).attr('width') )
         $(this).height( $(this).width() * $(this).attr('height') / $(this).attr('width') );
     })
     

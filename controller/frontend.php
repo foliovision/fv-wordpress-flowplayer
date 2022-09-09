@@ -109,6 +109,8 @@ function fv_flowplayer_get_js_translations() {
   'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
   'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
   'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
+  'invalid_youtube' => __('Invalid Youtube video ID.', 'fv-player-pro'),
+  'video_loaded' => __('Video loaded, click to play.', 'fv-player-pro'),
 );
 
   return $aStrings;
@@ -414,6 +416,7 @@ function flowplayer_prepare_scripts() {
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_alternative_fullscreen') ) $aConf['mobile_alternative_fullscreen'] = $val;
+    $aConf['mobile_landscape_fullscreen'] = true;
 
     if ( $fv_fp->_get_option('video_position_save_enable') ) {
       $aConf['video_position_save_enable'] = $fv_fp->_get_option('video_position_save_enable');
@@ -442,7 +445,11 @@ function flowplayer_prepare_scripts() {
     }
     $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js?ver='.$fv_wp_flowplayer_ver;
     $aConf['script_dash_js_version'] = '2.7';
-        
+
+    if( $fv_fp->should_force_load_js() || FV_Player_YouTube()->bYoutube || did_action('fv_player_extensions_admin_load_assets') ) {
+      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/fv-player-youtube.dev.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
