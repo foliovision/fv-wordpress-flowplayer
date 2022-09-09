@@ -52,8 +52,8 @@ flowplayer(function(api, root) {
     if(width <= 320) { // remove volue bar on narrow players
       root.addClass('no-volume fp-mute');
     } else {
-      if( !had_no_volume ) root.removeClass('no-volume');
-      if( !had_fp_mute ) root.removeClass('fp-mute');
+      if( !had_no_volume && flowplayer.support.volume ) root.removeClass('no-volume');
+      if( !had_fp_mute && flowplayer.support.volume ) root.removeClass('fp-mute');
     }
   }
 
