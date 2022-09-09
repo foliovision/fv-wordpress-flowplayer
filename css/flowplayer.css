@@ -2375,3 +2375,34 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   width: 100%;
   max-width: 100%;
 }
+
+.flowplayer.is-youtube {
+  background-size: cover;
+}
+.flowplayer.is-youtube .fp-chromecast{
+  display: none;
+}
+.flowplayer.is-youtube .fp-splash,
+.flowplayer.is-youtube .fp-player .fp-splash { /*  for mobile loading */
+  object-fit: cover;
+}
+.flowplayer.is-loading.is-youtube .fp-ui, .flowplayer.is-ready.is-youtube .fp-ui {
+  pointer-events: none;
+}
+.flowplayer.is-touch.is-ready.is-youtube .fp-ui {
+  pointer-events: auto;
+}
+/* todo: this needs to be disabled for mobile */
+.flowplayer.is-youtube .fp-pause {
+  display: none;
+}
+.flowplayer.is-loading.is-youtube .fp-ui div, .flowplayer.is-loading.is-youtube .fp-ui a, .flowplayer.is-ready.is-youtube .fp-ui div, .flowplayer.is-ready.is-youtube .fp-ui a {
+  pointer-events: auto;
+}
+.flowplayer.is-ready.is-youtube.is-cva .fp-ui {
+  pointer-events: auto;
+}
+iframe#youtube.fp-engine {
+  height: 100%;
+  width: 100%;
+}
