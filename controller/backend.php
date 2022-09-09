@@ -1,6 +1,6 @@
 <?php 
 
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback  
+/*  FV Wordpress Flowplayer - HTML5 video player  
     Copyright (C) 2013  Foliovision
 		
     This program is free software: you can redistribute it and/or modify

@@ -12,7 +12,7 @@ License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-/* FV Player - HTML5 video player with Flash fallback  
+/* FV Player - HTML5 video player  
 	Copyright (C) 2020  Foliovision
 		
 	This program is free software: you can redistribute it and/or modify
