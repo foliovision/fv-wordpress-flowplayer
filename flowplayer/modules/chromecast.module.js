@@ -1,4 +1,4 @@
-/*global chrome*/
+/*global chrome, fv_player_log*/
 
 // copy of the original function with some mods
 flowplayer(function(api, root) {
@@ -298,7 +298,7 @@ flowplayer(function(api, root) {
       
       jQuery(trigger).show();
     } else {
-      FV_Flowplayer_Pro.log('FV Player: Can\'t find media source suitable for Chromecast!');
+      fv_player_log('FV Player: Can\'t find media source suitable for Chromecast!');
       jQuery(trigger).hide();
     }
 

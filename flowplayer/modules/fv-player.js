@@ -1096,3 +1096,17 @@ function fv_player_doCopy(text) {
     throw new Error('Unsuccessfull');
   }
 }
+
+function fv_player_log( message, variable ) {
+  if( fv_flowplayer_conf.debug && typeof(console) != "undefined" && typeof(console.log) == "function" )  {
+    if( variable ) {
+      console.log(message, variable);
+    } else {
+      console.log(message);
+    }
+  }
+
+  if( fv_flowplayer_conf.debug && typeof(window.location.search) != "undefined" && window.location.search.match(/fvfp/) ) {
+    jQuery('body').prepend(message+'<br />');
+  }    
+}
