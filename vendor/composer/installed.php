@@ -5,9 +5,9 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '97cc523912e96e960c8f134abdeab6c6fd0e0bdf',
+        'reference' => '3127ba0e41e10f777b262d00d081fc1b47ffa5db',
         'name' => '__root__',
-        'dev' => true,
+        'dev' => false,
     ),
     'versions' => array(
         '__root__' => array(
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '97cc523912e96e960c8f134abdeab6c6fd0e0bdf',
+            'reference' => '3127ba0e41e10f777b262d00d081fc1b47ffa5db',
             'dev_requirement' => false,
         ),
         'aws/aws-crt-php' => array(
@@ -29,25 +29,13 @@
             'dev_requirement' => false,
         ),
         'aws/aws-sdk-php' => array(
-            'pretty_version' => '3.235.3',
-            'version' => '3.235.3.0',
+            'pretty_version' => '3.235.4',
+            'version' => '3.235.4.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../aws/aws-sdk-php',
             'aliases' => array(),
-            'reference' => 'd14bf468240f5bd8a0754b8a8248ff219ebada02',
+            'reference' => '4adc3ba34f1666c13a2a35894e225bd47e8af7c4',
             'dev_requirement' => false,
-        ),
-        'cordoval/hamcrest-php' => array(
-            'dev_requirement' => true,
-            'replaced' => array(
-                0 => '*',
-            ),
-        ),
-        'davedevelopment/hamcrest-php' => array(
-            'dev_requirement' => true,
-            'replaced' => array(
-                0 => '*',
-            ),
         ),
         'guzzlehttp/guzzle' => array(
             'pretty_version' => '7.5.0',
@@ -75,30 +63,6 @@
             'aliases' => array(),
             'reference' => '69568e4293f4fa993f3b0e51c9723e1e17c41379',
             'dev_requirement' => false,
-        ),
-        'hamcrest/hamcrest-php' => array(
-            'pretty_version' => 'v2.0.1',
-            'version' => '2.0.1.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../hamcrest/hamcrest-php',
-            'aliases' => array(),
-            'reference' => '8c3d0a3f6af734494ad8f6fbbee0ba92422859f3',
-            'dev_requirement' => true,
-        ),
-        'kodova/hamcrest-php' => array(
-            'dev_requirement' => true,
-            'replaced' => array(
-                0 => '*',
-            ),
-        ),
-        'mockery/mockery' => array(
-            'pretty_version' => '1.3.6',
-            'version' => '1.3.6.0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../mockery/mockery',
-            'aliases' => array(),
-            'reference' => 'dc206df4fa314a50bbb81cf72239a305c5bbd5c0',
-            'dev_requirement' => true,
         ),
         'mtdowling/jmespath.php' => array(
             'pretty_version' => '2.6.1',
