@@ -6,6 +6,8 @@ class FV_Player_YouTube {
 
   var $bYoutube = false;
 
+  var $fTimeSpent_AutoSplash = 0;
+
   public static function _get_instance() {
     if( !self::$instance ) {
       self::$instance = new self();

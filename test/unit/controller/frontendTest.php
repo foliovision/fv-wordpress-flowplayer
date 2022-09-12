@@ -99,6 +99,7 @@ Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
 Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3 footer? 1
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
+Registering fv-player-youtube for fv-wordpress-flowplayer/flowplayer/fv-player-youtube.dev.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fv_fullscreen] => 1
@@ -211,6 +212,8 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [audio_button] => AUD
     [audio_menu] => Audio
     [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
+    [invalid_youtube] => Invalid Youtube video ID.
+    [video_loaded] => Video loaded, click to play.
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array
