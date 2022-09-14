@@ -446,7 +446,11 @@ function flowplayer_prepare_scripts() {
     $aConf['script_dash_js_version'] = '2.7';
 
     if( $fv_fp->should_force_load_js() || FV_Player_YouTube()->bYoutube || did_action('fv_player_extensions_admin_load_assets') ) {
-      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/fv-player-youtube.dev.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      $youtube_js = 'fv-player-youtube.min.js';
+      
+      if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $youtube_js = 'fv-player-youtube.dev.js';
+
+      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/' . $youtube_js , array('flowplayer'), $fv_wp_flowplayer_ver, true );
     }
 
     if( $fv_fp->_get_option('googleanalytics') ) {
@@ -766,7 +770,7 @@ function fv_player_js_loader_load() {
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
   $filesystem = new WP_Filesystem_Direct( new StdClass() );
   
-  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.babel.js' );
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.min.js' );
   
   // remove /* comments */
   $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
