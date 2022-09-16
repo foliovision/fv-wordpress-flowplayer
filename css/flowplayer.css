@@ -350,7 +350,7 @@
   zoom: 1 !important;
   width: 100%;
   display: inline-block; }
-  .flowplayer .fp-hidden {
+  .flowplayer .fp-hidden, .flowplayer strong.fp-hidden {
     display: none; }
   .flowplayer .fp-shown {
     display: block !important; }
