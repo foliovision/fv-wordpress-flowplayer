@@ -843,3 +843,20 @@ function fv_player_wp_rocket_used_css( $safelist ) {
   $safelist[] = '/wp-content/plugins/fv-player-*';
   return $safelist;
 }
+
+
+/*
+ * SiteGround Security "Lock and Protect System Folders" exclusion
+ * 
+ * The plugins normally blocks direct PHP calls in wp-content folder, we allow track.php requests for FV Player tracking this way
+ * Unfortunately it uses simple rule like <Files track.php> so we cannot include the folder name.
+ */
+add_filter( 'sgs_whitelist_wp_content' , 'fv_player_sgs_whitelist_wp_content' );
+
+function fv_player_sgs_whitelist_wp_content( $exclusions ) {
+  global $fv_fp;
+  if( $fv_fp->_get_option('video_stats_enable') ) {
+    $exclusions[] = 'track.php';
+  }
+  return $exclusions;
+}
