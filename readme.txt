@@ -359,6 +359,19 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.29.7210 - 2022/09/20 =
+
+* AWS SDK update and size reduction
+* Full-featured YouTube player (moved in from FV Player Pro)
+* HLS.js - upgrade to 1.2.3 to fix playback on iOS 16
+* iPhone - avoid accidental drag of on-screen home button when in fullscreen
+* Seek back/forward button on controlbar - allowing for DVR live streams
+* SiteGround Security - putting track.php on their exclusions list 
+* Bugfix - Dash.js Safari autoplay fix
+* Bugfix - fixing missing "no play" icon
+* Bugfix - Preloading - fix player not appearing when using 100% width and height, assuming 16:9 aspect ratio
+* Bugfix - Volume control appearing for iOS 16 where it's not possible to control volume using JavaScript
+
 = 7.5.27.7210 - 2022/08/22 =
 
 * CSS - do not preload in header if FV Player is in one of the Widgets and not in page content

@@ -494,7 +494,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/flowplayer.php:2627, models/flowplayer.php:2617
+#: models/flowplayer.php:2630, models/flowplayer.php:2620
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
