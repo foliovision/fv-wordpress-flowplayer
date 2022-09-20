@@ -95,11 +95,11 @@ final class FV_Player_Controller extends TestCase {
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
-Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=7.2.11 footer? 1
+Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=1.2.3.4 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
-Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3 footer? 1
+Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4 footer? 1
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
-Registering fv-player-youtube for fv-wordpress-flowplayer/flowplayer/fv-player-youtube.dev.js?ver=1.2.3.4 footer? 1
+Registering fv-player-youtube for fv-wordpress-flowplayer/flowplayer/fv-player-youtube.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fv_fullscreen] => 1
@@ -126,7 +126,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_place] => right-bottom
     [sticky_width] => 380
     [sticky_min_width] => 1020
-    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3
+    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
     [script_dash_js_version] => 2.7
     [chromecast] => 
@@ -228,6 +228,8 @@ Localizing fv_player_lightbox with fv_player_lightbox = Array
 )
 
 ";  
+
+    $output = preg_replace( '~\?ver=[0-9.]+~', '?ver=1.2.3.4', $output );
       
     /*$aOut = explode( "\n", preg_replace( '~\r\n~', "\n", $output) );  
     $aExpected = explode( "\n", preg_replace( '~\r\n~', "\n", $expected ) );
