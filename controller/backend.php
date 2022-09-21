@@ -138,8 +138,9 @@ function fv_wp_flowplayer_check_template() {
     }
     
     if( class_exists( 'SiteGround_Optimizer\Options\Options' ) && method_exists( 'SiteGround_Optimizer\Options\Options', 'is_enabled' ) ) {
-      $classname = 'SiteGround_Optimizer\Options\Options';
-      if( $classname::is_enabled( 'siteground_optimizer_combine_javascript' ) ) {
+
+      // Avoiding PHP 5.2 lint errors
+      if( call_user_func_array( array( 'SiteGround_Optimizer\Options\Options', 'is_enabled' ), array( 'siteground_optimizer_combine_javascript' ) ) ) {
         $errors[] = "You are using <strong>SiteGround Optimizer</strong> with \"Combine JavaScript Files\" enabled. The template check might not be accurate. Please check your videos manually.";
 
         $combine_js_warning = true;
