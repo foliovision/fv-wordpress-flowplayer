@@ -861,3 +861,17 @@ function fv_player_sgs_whitelist_wp_content( $exclusions ) {
   }
   return $exclusions;
 }
+
+
+/*
+ * SiteGround Optimizer unfortunately does not process the scripts enqueued after wp_head has finished.
+ * So then "Defer Render-blocking JavaScript" does not defer FV Player but it defect jQuery.
+ * So we have to make sure jQuery is not defered as FV Player scripts depend on it.
+ * There are no issues when using "Combine JavaScript Files"
+ */
+add_filter( 'sgo_js_async_exclude', 'fv_player_sgo_js_async_exclude' );
+
+function fv_player_sgo_js_async_exclude( $excluded_scripts ) {
+  $excluded_scripts[] = 'jquery-core';
+  return $excluded_scripts;
+}
