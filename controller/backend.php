@@ -126,19 +126,29 @@ function fv_wp_flowplayer_check_template() {
         die();
       }
     }
-    
+
+    $combine_js_warning = false;
+
     if( function_exists( 'w3_instance' ) && $minify = w3_instance('W3_Plugin_Minify') ) {			
       if( $minify->_config->get_boolean('minify.js.enable') ) {
         $errors[] = "You are using <strong>W3 Total Cache</strong> with JS Minify enabled. The template check might not be accurate. Please check your videos manually.";
-        $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-        echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+
+        $combine_js_warning = true;
       }
-    }    
+    }
+    
+    if( class_exists( 'SiteGround_Optimizer\Options\Options' ) && method_exists( 'SiteGround_Optimizer\Options\Options', 'is_enabled' ) ) {			
+      if( SiteGround_Optimizer\Options\Options::is_enabled( 'siteground_optimizer_combine_javascript' ) ) {
+        $errors[] = "You are using <strong>SiteGround Optimizer</strong> with \"Combine JavaScript Files\" enabled. The template check might not be accurate. Please check your videos manually.";
+
+        $combine_js_warning = true;
+      }
+    }
     
     $ok[] = __('We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
     
     $response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
-    
+
     //	check Flowplayer scripts
     preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
     if( count($flowplayer_scripts[1]) > 0 ) {
@@ -156,7 +166,7 @@ function fv_wp_flowplayer_check_template() {
           $errors[] = "<p>It appears there are <strong>stripping the query string versions</strong> as <code>$flowplayer_script</code> appears without the plugin version number.</p><p>Some site speed analysis tools recommend doing so, but it means you loose control over what version of plugin files is cached (in users' browsers and on CDN). That way users hang on to the old plugin files and might experience visual or functional issues with FV Player (and any other plugin).</p><p>You can read all the details in our article: <a href='https://foliovision.com/2017/06/wordpress-cdn-best-practices' target='_blank'>How to use WordPress with CDN<a>.</p>";	
         }
       }
-    } else if( count($flowplayer_scripts[1]) < 1 ) {
+    } else if( !$combine_js_warning && count($flowplayer_scripts[1]) < 1 ) {
       $errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your template's header.php file if it contains wp_head() function call and footer.php should contain wp_footer()!";			
     }
     
