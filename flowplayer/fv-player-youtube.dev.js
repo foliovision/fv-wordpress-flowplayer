@@ -1,4 +1,9 @@
-/*global YT, fv_player_log */
+/*global YT, fv_player_log, fv_player_track */
+
+/*
+ * Moved in from FV Player Pro
+ * For full comit history check foliovision/fv-player-pro/blob/517cb6ef122e507f6ba7744e591b3825a643abe4/beta/js/youtube.module.js
+ */
 
 if( fv_flowplayer_conf.youtube ) {
   var tag = document.createElement('script');
@@ -294,8 +299,14 @@ if( typeof(flowplayer) != "undefined" ) {
           var src = player.video.index > 0 ? player.conf.playlist[player.video.index].sources[0].src : player.conf.clip.sources[0].src;
           
           fv_player_track( player, false, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", "YouTube video removed", src );
-          
-          if( player.conf.clip.sources.length > 1 ) {
+
+          // Unfortunately the player had to enter the ready state to get this far
+          // So we act as if it's the splash state - means no controls
+          root.addClass('is-splash');
+
+          // If it's not a playlist or there are other sources trigger error
+          // In case of other sources FV Player Alternative Sources will play the other source
+          if( player.conf.playlist.length == 0 || player.conf.clip.sources.length > 1 ) {
             player.trigger('error', [ player, { code: 4, video: player.video } ] );
             
           } else {
