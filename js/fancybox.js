@@ -48,6 +48,7 @@ jQuery.fancybox.defaults.caption = fv_player_colorbox_title;
 jQuery.fancybox.defaults.afterLoad = fv_fancybox_check_size;
 jQuery.fancybox.defaults.hash = false;
 jQuery.fancybox.defaults.buttons = ["slideShow","fullScreen","thumbs","close"];
+jQuery.fancybox.defaults.preventCaptionOverlap = false;
 
 jQuery.fancybox.defaults.onThumbsShow = function() {
   jQuery(jQuery.fancybox.getInstance().group).each( function(k,v) {
