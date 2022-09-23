@@ -128,7 +128,6 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_min_width] => 1020
     [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
-    [script_dash_js_version] => 2.7
     [chromecast] => 
     [hlsjs] => Array
         (
@@ -229,7 +228,7 @@ Localizing fv_player_lightbox with fv_player_lightbox = Array
 
 ";  
 
-    $output = preg_replace( '~\?ver=[0-9.]+~', '?ver=1.2.3.4', $output );
+    $output = preg_replace( '~\?ver=[0-9.mod-]+~', '?ver=1.2.3.4', $output );
       
     /*$aOut = explode( "\n", preg_replace( '~\r\n~', "\n", $output) );  
     $aExpected = explode( "\n", preg_replace( '~\r\n~', "\n", $expected ) );
