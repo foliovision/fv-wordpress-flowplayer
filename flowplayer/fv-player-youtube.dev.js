@@ -1,5 +1,8 @@
 /*global YT, fv_player_log, fv_player_track */
 
+/*eslint no-inner-declarations: 0*/
+/*eslint no-cond-assign: 0*/
+
 /*
  * Moved in from FV Player Pro
  * For full comit history check foliovision/fv-player-pro/blob/517cb6ef122e507f6ba7744e591b3825a643abe4/beta/js/youtube.module.js
@@ -17,13 +20,14 @@ if( fv_flowplayer_conf.youtube ) {
 if( typeof(flowplayer) != "undefined" ) {
   
   function fv_player_pro_youtube_get_video_id( src ) {
-    if( aMatch = src.match(/(?:\?|&)v=([a-zA-Z0-9_\-]+)(?:\?|$|&)/) ){
+    var aMatch;
+    if( aMatch = src.match(/(?:\?|&)v=([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
     }
-    if( aMatch = src.match(/youtu.be\/([a-zA-Z0-9_\-]+)(?:\?|$|&)/) ){
+    if( aMatch = src.match(/youtu.be\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
     }
-    if( aMatch = src.match(/embed\/([a-zA-Z0-9_\-]+)(?:\?|$|&)/) ){
+    if( aMatch = src.match(/embed\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
     }  
     return false;
@@ -106,8 +110,7 @@ if( typeof(flowplayer) != "undefined" ) {
         jQuery('.fp-ui',root).css('background-image','');
         jQuery('.fp-ui',root).append('<div class="wpfp_custom_popup fp-notice-load" style="height: 100%"><div class="wpfp_custom_popup_content">' + fv_flowplayer_translations.video_loaded + '</div></div>'); //  we show this so that we can capture the user click
         
-        var i = player.video.index;
-        jQuery('.fp-notice-load').one( 'click', function(e) {                                            
+        jQuery('.fp-notice-load').one( 'click', function()  {
           jQuery('.fp-notice-load',root).remove();
           
           //var api = jQuery(root).data('flowplayer');
@@ -332,7 +335,7 @@ if( typeof(flowplayer) != "undefined" ) {
         }
         
         
-        function onApiChange(e) {
+        function onApiChange() {
           player.one('ready progress', function() { //  exp: primary issue here is that the event fires multiple times for each video. And also Flowplayer won't remove the subtitles button/menu when you switch videos            
             
             if( youtube.getOptions().indexOf('captions') > -1 ) {
@@ -353,7 +356,6 @@ if( typeof(flowplayer) != "undefined" ) {
               
               //  core FP createUIElements()
               var common = flowplayer.common;
-              var bean = flowplayer.bean;
               wrap = common.find('.fp-captions', root)[0];
               var wrap = common.find('.fp-subtitle', root)[0];
               wrap = wrap || common.appendTo(common.createElement('div', {'class': 'fp-captions'}), common.find('.fp-player', root)[0]);
@@ -397,7 +399,7 @@ if( typeof(flowplayer) != "undefined" ) {
         }
         
         
-        function onReady(e) {
+        function onReady() {
           // YouTube doesn't tell us if it's a live stream
           // but it seems when you check the duration in this moment
           // it gives 0 on live streams
@@ -651,13 +653,11 @@ if( typeof(flowplayer) != "undefined" ) {
                    'hd720': 'hd'
                }
             },
-            bean = flowplayer.bean,
             common = flowplayer.common,
             intUIUpdate = false,
             isMobile = fv_player_pro_youtube_is_mobile(),
             loadVideo,
             root = jQuery(root),
-            videoTag,
             youtube,
             live_stream_start_time = 0;
 
@@ -675,8 +675,6 @@ if( typeof(flowplayer) != "undefined" ) {
                   //  todo: trigger error event in a normal way?
                   return;
                 }
-
-                var is_playlist = jQuery('[rel='+jQuery(root).attr('id')+']').find('.is-active').length;  //  exp: ugly way of detecign if the playback was initiated via playlist clik
                 
                 if( youtube ) {//console.log('YT already loaded');
                   if( !flowplayer.support.dataload && !flowplayer.support.inlineVideo  ) {  //  exp: for old iOS
@@ -742,7 +740,7 @@ if( typeof(flowplayer) != "undefined" ) {
                     var iframe = jQuery('.fp-engine.fvyoutube-engine',root);
                     iframe[0].allowFullscreen = false;
                     /* in Chrome it's possible to double click the video entery YouTube fullscreen that way. Cancelling the event won't help, so here is a pseudo-fix */
-                    iframe.on("webkitfullscreenchange", function(e) {
+                    iframe.on("webkitfullscreenchange", function() {
                       if (document.webkitCancelFullScreen) {
                         document.webkitCancelFullScreen();
                       }
@@ -756,8 +754,6 @@ if( typeof(flowplayer) != "undefined" ) {
                 var FS_ENTER = "fullscreen",
                   FS_EXIT = "fullscreen-exit",
                   FS_SUPPORT = flowplayer.support.fullscreen,
-                  ua = navigator.userAgent.toLowerCase(),
-                  IS_SAFARI = /(safari)[ \/]([\w.]+)/.exec(ua) && !/(chrome)[ \/]([\w.]+)/.exec(ua),
                   win = window,
                   scrollX,
                   scrollY;
