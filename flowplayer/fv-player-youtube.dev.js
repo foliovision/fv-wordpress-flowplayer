@@ -946,7 +946,13 @@ if( typeof(flowplayer) != "undefined" ) {
     
     flowplayer( function(api,root) {
       if( jQuery(root).hasClass('lightboxed') ) return;
-      if( fv_player_pro_youtube_is_mobile() ) fv_player_pro_youtube_preload(root,api);
+
+      if( fv_player_pro_youtube_is_mobile() ) {
+        // Give Flowplayer a bit of time to finish initializing, like the unload event for splash state players has to finish
+        setTimeout( function() {
+          fv_player_pro_youtube_preload(root,api);
+        });
+      }
     });
     
     jQuery(document).ready( function() {
