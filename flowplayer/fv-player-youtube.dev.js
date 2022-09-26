@@ -30,6 +30,9 @@ if( typeof(flowplayer) != "undefined" ) {
     if( aMatch = src.match(/embed\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
     }  
+    if( aMatch = src.match(/shorts\/([a-zA-Z0-9_-]+)/) ){
+      return aMatch[1];  
+    }  
     return false;
   }
   
