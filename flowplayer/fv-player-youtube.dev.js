@@ -390,8 +390,21 @@ if( typeof(flowplayer) != "undefined" ) {
                 jQuery(this).addClass('fp-selected');
                 
                 if( aSubtitles[jQuery(this).data('yt-subtitle-index')] ) {
+                  // Was the NL option in use?
+                  if( root.data('fv-player-youtube-nl') == undefined ) {
+                    root.data('fv-player-youtube-nl', root.hasClass('is-youtube-nl') );
+                  }
+
+                  // Do not use the NL mode as it would prevent the subtitles from showing
+                  root.removeClass('is-youtube-nl');
+
                   youtube.setOption('captions','track',{"languageCode": aSubtitles[jQuery(this).data('yt-subtitle-index')].languageCode});
                 } else {
+                  if( root.data('fv-player-youtube-nl') ) {
+                    // Back to NL if it was enabled before
+                    root.addClass('is-youtube-nl');
+                  }
+
                   youtube.unloadModule("captions");
                 }
                 
