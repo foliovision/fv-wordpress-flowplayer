@@ -80,7 +80,9 @@ flowplayer(function(player, root) {
        } else {
           ['exitFullscreen', 'webkitCancelFullScreen', 'mozCancelFullScreen', 'msExitFullscreen'].forEach(function(fName) {
             if (typeof document[fName] === 'function') {
-              document[fName]();
+              if( document.fullscreenElement ) {
+                document[fName]();
+              }
             }
           });
        }
@@ -109,6 +111,9 @@ flowplayer(function(player, root) {
       if (!FS_SUPPORT) common.css(root, 'position', 'fixed');
       player.isFullscreen = true;
 
+      // Add fullscreen video to navigation history, with the fv_player_fullscreen state variable
+      history.pushState( { fv_player_fullscreen: true }, false, location.href );
+
    }).on(FS_EXIT, function() {
       var oldOpacity;
       common.toggleClass(root, 'fp-minimal', common.hasClass(root, 'fp-minimal-fullscreen'));
@@ -125,7 +130,13 @@ flowplayer(function(player, root) {
 
       if( player.engine.engineName != 'fvyoutube' ){ // youtube scroll ignore
         win.scrollTo(scrollX, scrollY);
-      } 
+      }
+
+      // If the history state variable fv_player_fullscreen is present, we need to go back in history to remove that extra history entry
+      if( history.state && history.state.fv_player_fullscreen ) {
+        history.back();
+      }
+
    }).on('unload', function() {
      if (player.isFullscreen) player.fullscreen();
    });
@@ -134,4 +145,11 @@ flowplayer(function(player, root) {
      FULL_PLAYER = null;
      common.removeNode(wrapper);
    });
+});
+
+window.addEventListener( 'popstate', function() {
+  var instance = flowplayer('.is-fullscreen.is-ready');
+  if( instance ) {
+    instance.fullscreen( false );
+  }
 });

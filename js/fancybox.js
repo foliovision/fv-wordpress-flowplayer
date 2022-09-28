@@ -205,6 +205,17 @@ function fv_lightbox_flowplayer_shutdown(e) {
 
 jQuery(document).on('afterShow.fb afterClose.fb', fv_lightbox_flowplayer_shutdown);
 
+jQuery(document).on('afterShow.fb', function( e, instance ) {
+	history.pushState( { fv_player_lightbox: instance.id }, false, location.href );
+});
+
+jQuery(document).on('afterClose.fb', function( e, instance ) {
+  if( history.state && history.state.fv_player_lightbox == instance.id ) {
+    window.fv_player_fancbox_closing = true;
+    history.back();
+  }
+});
+
 jQuery(window).on( "resize", fv_fancybox_check_size);
 
 if( document.addEventListener ) {
@@ -352,4 +363,15 @@ jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', 
   }
   fv_fancybox_check_size();
   return false;
+});
+
+window.addEventListener( 'popstate', function(e) {
+  if( window.fv_player_fancbox_closing ) {
+    window.fv_player_fancbox_closing = false;
+    return;
+  }
+
+  if( e.state.fv_player_lightbox ) {
+    jQuery.fancybox.close();
+  }
 });

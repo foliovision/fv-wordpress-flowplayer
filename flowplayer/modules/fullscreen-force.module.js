@@ -104,10 +104,18 @@ flowplayer(function(api, root) {
       api.isFakeFullscreen = flag;
       api.trigger( flag ? 'fakefullscreen' : 'fakefullscreen-exit', [api] );
       root.toggleClass('is-fullscreen fake-fullscreen forced-fullscreen',flag)
-      if( flag ) {        
+      if( flag ) {
         root.css('position','fixed');
+
+        // Add fullscreen to navigation history, with the fv_player_fake_fullscreen state variable
+        history.pushState( { fv_player_fake_fullscreen: true }, false, location.href );
       } else {
         root.css('position',position);
+
+        // If the history state variable fv_player_fake_fullscreen is present, we need to go back in history to remove that extra history entry
+        if( history.state && history.state.fv_player_fake_fullscreen ) {
+          history.back();
+        }
       }
     }
   }
@@ -174,4 +182,11 @@ flowplayer(function(api, root) {
     }
   }
   
+});
+
+window.addEventListener( 'popstate', function() {
+  var instance = flowplayer('.fake-fullscreen');
+  if( instance ) {
+    instance.fakeFullscreen( false );
+  }
 });
