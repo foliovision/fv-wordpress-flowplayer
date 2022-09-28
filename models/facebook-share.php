@@ -13,6 +13,12 @@ class FV_Player_Facebook_Share {
     if (!isset($fv_fp->conf['integrations']) || !isset($fv_fp->conf['integrations']['facebook_sharing']) || $fv_fp->conf['integrations']['facebook_sharing'] !== 'true' || !is_singular())
       return;
 
+    // Shortcodes are normally not supported in bbPress Topics so we skip these,
+    // as all the sample shortcodes in our support forums would turn up in OG
+    if( 'topic' == $post->post_type ) {
+      return;
+    }
+
     $content = $post->post_content;
 
     $matches = array();
