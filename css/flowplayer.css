@@ -2071,12 +2071,12 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 
 .flowplayer .fp-controls .fv-fp-prevbtn,
 .flowplayer .fp-controls .fv-fp-nextbtn {
-	margin: 0 .4em .2em;
-	display: flex;
-	vertical-align: middle;
+    margin: 0 .2em 0 .4em;
+    display: flex;
+    vertical-align: middle;
 }
 .flowplayer .fp-controls .fv-fp-nextbtn {
-	margin: 0 .4em .2em .2em;
+    margin: 0 .4em 0 .2em;
 }
 .flowplayer.is-audio .fp-controls .fp-playbtn {
 	margin: 0 .2em 0 .4em;
@@ -2090,12 +2090,12 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 	border-left: 1px solid #fff;
 }
 .fv-fp-prevbtn:after {
-	content: "\e107";
+	content: "\e007";
 	font-size: 1.2em;
 	display: inline-block;
 	line-height: 1;
-	-webkit-transform: scale(-1);
-	transform: scale(-1);
+	-webkit-transform: scale(-1.00,1.00);
+	transform: scale(-1.00,1.00);
 }
 
 .fv-fp-nextbtn:before {
