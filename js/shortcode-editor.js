@@ -110,6 +110,8 @@ jQuery(function() {
     // player directly after we close the editor
     fv_player_preview_loading = false,
 
+    is_editing_playlist_item_title = false,
+
     // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
     // ... this will be shown in place of the "Saved!" message bottom overlay and it will always show only the first error in this object,
     //     as to not overload the user and UI with errors. Once that error is corrected, it gets removed from this object and next one (if any) is shown.
@@ -461,7 +463,7 @@ jQuery(function() {
       * Show edit input
       * keywords: edit playlist items edit playlist items
       */
-      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-edit', function(e) {
+      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-filename', function(e) {
         e.stopPropagation();
 
         var
@@ -469,8 +471,24 @@ jQuery(function() {
           filename = $parent.find('.fvp_item_video-filename'),
           input = $parent.find('.fvp_item_video-edit-input');
 
-        filename.toggle();
-        input.val(filename.text()).toggle();
+        filename.hide();
+        input.val(filename.text()).show();
+
+        is_editing_playlist_item_title = true;
+      });
+
+      // Clicking anywhere it the editor should close the playlist item title editing
+      $el_editor.on( 'click', function(e) {
+        if( is_editing_playlist_item_title ) {
+          // Except the title input box
+          if( jQuery(e.target).hasClass('fvp_item_video-edit-input') ) {
+            return;
+          }
+
+          is_editing_playlist_item_title = false;
+
+          title_editor_close();
+        }
       });
 
       /*
@@ -3542,6 +3560,11 @@ jQuery(function() {
         $deleted_video_meta_element.val('');
         $deleted_player_meta_element.val('');
       }
+    }
+
+    function title_editor_close() {
+      $('.fv-player-editor-playlist-item .fvp_item_video-filename').show();
+      $('.fv-player-editor-playlist-item .fvp_item_video-edit-input').hide();
     }
 
     /*
