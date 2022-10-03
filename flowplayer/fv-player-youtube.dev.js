@@ -9,9 +9,17 @@
  */
 
 if( fv_flowplayer_conf.youtube ) {
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
+  // If jQuery is already present use it to load the API as it won't show in browser as if the page is loading
+  // This is important if YouTube has issues in your location, it might just time out while loading
+  if( window.aaajQuery ) {
+    jQuery.getScript("https://www.youtube.com/iframe_api");
+
+  // ...loading it this way show the browser loading indicator for the tab
+  } else {
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+  }
 }
 
   
@@ -29,7 +37,7 @@ if( typeof(flowplayer) != "undefined" ) {
     }
     if( aMatch = src.match(/embed\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
-    }  
+    }
     if( aMatch = src.match(/shorts\/([a-zA-Z0-9_-]+)/) ){
       return aMatch[1];  
     }  
@@ -197,11 +205,11 @@ if( typeof(flowplayer) != "undefined" ) {
       //if( root.find('.fake-video') ) return; // don't preload if FV Player VAST has decided to put in bogus video tag for the video ad
       
       api.loading = true;      
-      root.addClass('is-loading');      
-      
+      root.addClass('is-loading');
+
       var common = flowplayer.common,
         video_id = api.conf.item ? fv_player_pro_youtube_get_video_id(api.conf.item.sources[0].src) : fv_player_pro_youtube_get_video_id(api.conf.clip.sources[0].src); // exp: not sury why api.conf.clip sometimes fails?!
-      
+
       common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
       var wrapperTag = common.createElement("div");    
       wrapperTag.className = 'fp-engine fvyoutube-engine';
@@ -691,7 +699,7 @@ if( typeof(flowplayer) != "undefined" ) {
                   //  todo: trigger error event in a normal way?
                   return;
                 }
-                
+
                 if( youtube ) {//console.log('YT already loaded');
                   if( !flowplayer.support.dataload && !flowplayer.support.inlineVideo  ) {  //  exp: for old iOS
                     youtube.cueVideoById( video_id, 0, 'default' );
@@ -742,6 +750,10 @@ if( typeof(flowplayer) != "undefined" ) {
                     }
                     
                     clearInterval(intLoad);
+
+                    /*var had_youtube_before = 
+                      jQuery('presto-player[src*=\\.youtube\\.com], presto-player[src*=\\.youtu\\.be], presto-player[src*=\\.youtube-nocookie\\.com]').length ||
+                      jQuery('iframe[src*=\\.youtube\\.com], iframe[src*=\\.youtu\\.be], iframe[src*=\\.youtube-nocookie\\.com]').length;*/
                     
                     youtube = new YT.Player(
                       wrapperTag,
@@ -753,6 +765,16 @@ if( typeof(flowplayer) != "undefined" ) {
                       })
                     );
                                         
+                    /*if( had_youtube_before ) {
+                      //youtube.loadVideoById( video_id, 0, 'default' );
+
+                      setTimeout( function() {
+                        onReady();        
+                      },1000);
+                    }
+
+                    console.log(youtube);*/
+             
                     var iframe = jQuery('.fp-engine.fvyoutube-engine',root);
                     iframe[0].allowFullscreen = false;
                     /* in Chrome it's possible to double click the video entery YouTube fullscreen that way. Cancelling the event won't help, so here is a pseudo-fix */
