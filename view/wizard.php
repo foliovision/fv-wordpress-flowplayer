@@ -531,9 +531,11 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           </div>
           <div id="fv-player-editor-playlist">
               <div class="fv-player-editor-playlist-item">
+                <span class="fv-player-editor-playlist-move-up"></span>
+                <span class="fv-player-editor-playlist-move-handle"></span>
+                <span class="fv-player-editor-playlist-move-down"></span>
                 <a class="fvp_item_video-thumbnail"></a>
                 <span class="fvp_item_video-filename"></span>
-                <a class="fvp_item_video-edit"><span class="dashicons dashicons-edit"></span></a>
                 <input class="fvp_item_video-edit-input" type="text" style="display: none;">
                 <span class="fvp_item_video-duration"></span>
                 <a class="configure-video" href="#">Configure video</a>
