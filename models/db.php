@@ -1319,7 +1319,7 @@ class FV_Player_Db {
   public function query_players( $args ) {
     $args = wp_parse_args( $args, array(
       'author_id' => false,
-      'ids' => false,
+      'ids' => false, // should not be used together with count
       'offset' => false,
       'order' => false,
       'order_by' => false,
@@ -1342,6 +1342,11 @@ class FV_Player_Db {
       if (!$this->isPlayerCached($id_value)) {
         $query_ids[ $id_key ] = (int) $id_value;
       }
+    }
+
+    // Are we querying players by IDs, but is it all already cached?
+    if( count($ids) > 0 && count($query_ids) == 0 ) {
+      return;
     }
 
     // load multiple players via their IDs but a single query and return their values

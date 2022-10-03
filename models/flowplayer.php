@@ -870,7 +870,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
             }
+          } else if( strcmp( $v['type'], 'video/youtube') === 0 ) {
+            continue;
           }
+
           $aTest_media[] = $temp_media;
         }
       }

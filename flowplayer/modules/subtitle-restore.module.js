@@ -13,7 +13,7 @@ flowplayer( function(api,root) {
 
   // restore subtitle on ready event
   api.on('ready', function(e,api,video) {
-    if( root.find('strong.fp-cc').is(":visible") ) {
+    if( video.subtitles && video.subtitles.length ) {
       if( ls.fv_player_subtitle && api.video.subtitles.length ) { // check if we have subtitles to restore
         if ( ls.fv_player_subtitle === 'none' ) { // none is saved, disable subtitles
           api.disableSubtitles();

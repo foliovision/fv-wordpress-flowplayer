@@ -97,22 +97,17 @@ function fv_player_videos_parse(args, root) {
   }
 
   // Do not feed WebM to Safari as it has problem with VP9 codec which might be used
-  if( flowplayer.support.browser.safari ) {
+  if (flowplayer.support.browser.safari) {
     // Do we have any other format than WebM?
-    var have_non_webm = false;
-    jQuery(videos.sources).each( function(k,v) {
-      if( v.type != 'video/webm' ) {
-        have_non_webm = true;
-        return false;
+    var sources_without_webm = [];
+    jQuery(videos.sources).each(function (k, v) {
+      if (v.type != 'video/webm') {
+        sources_without_webm.push(v);
       }
     });
 
-    if( have_non_webm ) {
-      jQuery(videos.sources).each( function(k,v) {
-        if( v.type == 'video/webm' ) {
-          delete(videos.sources[k]);
-        }
-      });
+    if ( sources_without_webm.length > 0 ) {
+      videos.sources = sources_without_webm;
     }
   }
 
@@ -1100,4 +1095,18 @@ function fv_player_doCopy(text) {
   } catch (err) {
     throw new Error('Unsuccessfull');
   }
+}
+
+function fv_player_log( message, variable ) {
+  if( fv_flowplayer_conf.debug && typeof(console) != "undefined" && typeof(console.log) == "function" )  {
+    if( variable ) {
+      console.log(message, variable);
+    } else {
+      console.log(message);
+    }
+  }
+
+  if( fv_flowplayer_conf.debug && typeof(window.location.search) != "undefined" && window.location.search.match(/fvfp/) ) {
+    jQuery('body').prepend(message+'<br />');
+  }    
 }
