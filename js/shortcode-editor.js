@@ -452,7 +452,7 @@ jQuery(function() {
         e.stopPropagation();
 
         var
-          $parent = $(e.target).parents('[data-index]'),
+          $parent = $(e.target).closest('[data-index]'),
           filename = $parent.find('.fvp_item_video-filename'),
           wrap = $parent.find('.fvp_item_video-title-wrap'),
           input = $parent.find('.fvp_item_video-edit-input');
@@ -538,40 +538,60 @@ jQuery(function() {
         start: function( event, ui ) {
           store_rtmp_server = get_field( 'rtmp', get_tab('first','video-files') ).val();
         },
-        update: function( event, ui ) {
-          $doc.trigger('fv-player-editor-sortable-update');
-          var new_sort = [];
-          $('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each(function(){
-            var
-              index = $(this).attr('data-index'),
-              video_tab_item = get_tab(index,'video-files'),
-              subtitle_tab_item = get_tab(index,'subtitles');
-
-            new_sort.push({
-              video_tab_item : video_tab_item.clone(),
-              subtitle_tab_item : subtitle_tab_item.clone()
-            });
-
-            video_tab_item.remove();
-            subtitle_tab_item.remove();
-          });
-
-          $.each(new_sort, function(k,v) {
-            $('.fv-player-tab-video-files').append(v.video_tab_item);
-            $('.fv-player-tab-subtitles').append(v.subtitle_tab_item);
-          });
-
-          get_field( 'rtmp', get_tab('first','video-files') ).val( store_rtmp_server );
-
-          playlist_index();
-
-          $doc.trigger('fv_flowplayer_shortcode_item_sort');
-
-        },
+        update: playlist_sortable_update,
         axis: 'y',
         handle: '.fv-player-editor-playlist-move-handle',
         containment: ".fv-player-tab-playlist"
       });
+
+      $doc.on('click','.fv-player-editor-playlist-item .fv-player-editor-playlist-move-up, .fv-player-editor-playlist-item .fv-player-editor-playlist-move-down', function(e) {
+        var button = $(e.target),
+          item = button.closest('[data-index]');
+
+        if( button.hasClass('fv-player-editor-playlist-move-up') ) {
+          item.fadeOut( 250, function() {
+            item.insertBefore( item.prev() );
+            item.fadeIn( 250, playlist_sortable_update );
+          });
+
+        } else {
+          item.fadeOut( 250, function() {
+            item.insertAfter( item.next() );
+            item.fadeIn( 250, playlist_sortable_update );
+          });
+        }
+
+      });
+
+      function playlist_sortable_update() {
+        $doc.trigger('fv-player-editor-sortable-update');
+        var new_sort = [];
+        $('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each(function(){
+          var
+            index = $(this).attr('data-index'),
+            video_tab_item = get_tab(index,'video-files'),
+            subtitle_tab_item = get_tab(index,'subtitles');
+
+          new_sort.push({
+            video_tab_item : video_tab_item.clone(),
+            subtitle_tab_item : subtitle_tab_item.clone()
+          });
+
+          video_tab_item.remove();
+          subtitle_tab_item.remove();
+        });
+
+        $.each(new_sort, function(k,v) {
+          $('.fv-player-tab-video-files').append(v.video_tab_item);
+          $('.fv-player-tab-subtitles').append(v.subtitle_tab_item);
+        });
+
+        get_field( 'rtmp', get_tab('first','video-files') ).val( store_rtmp_server );
+
+        playlist_index();
+
+        $doc.trigger('fv_flowplayer_shortcode_item_sort');
+      }
 
       /*
       * Uploader
