@@ -542,6 +542,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <a class="fvp_item_remove" href="#"><span class="dashicons dashicons-trash"></span></a>
               </div>
           </div>
+          <a class="playlist_add">+</a>
 
         </div>
 
@@ -979,7 +980,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
         <div id="fv-player-editor-modal-bottom">
           <a class="button-primary fv_player_field_insert-button"><?php _e('Insert', 'fv_flowplayer'); ?></a>
-          <a class="playlist_add button hide-if-singular-active"><?php _e(' + Add playlist item', 'fv_flowplayer');?></a>
           <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
 
           <?php
