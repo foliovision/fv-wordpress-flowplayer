@@ -3276,7 +3276,7 @@ jQuery(function() {
       $el_editor.find('.fv-player-tabs > .fv-player-tab').each(function(){
         var bHideTab = true
         $(this).find('.components-panel__body, .fv-player-editor-playlist-item').each(function(){
-          if( $(this).css('display') === 'table' || $(this).css('display') === 'table-row' || $(this).css('display') == 'block' ){
+          if( $(this).css('display') === 'block' || $(this).css('display') === 'flex' ){
             bHideTab = false;
             return false;
           }
