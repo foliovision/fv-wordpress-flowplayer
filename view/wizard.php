@@ -531,14 +531,18 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           </div>
           <div id="fv-player-editor-playlist">
               <div class="fv-player-editor-playlist-item">
-                <span class="fv-player-editor-playlist-move-up"></span>
-                <span class="fv-player-editor-playlist-move-handle"></span>
-                <span class="fv-player-editor-playlist-move-down"></span>
+                <div class="fv-player-editor-playlist-move">
+                  <span class="fv-player-editor-playlist-move-up dashicons dashicons-arrow-up-alt2"></span>
+                  <span class="fv-player-editor-playlist-move-handle"></span>
+                  <span class="fv-player-editor-playlist-move-down dashicons dashicons-arrow-down-alt2"></span>
+                </div>
                 <a class="fvp_item_video-thumbnail"></a>
-                <span class="fvp_item_video-filename"></span>
+                <div class="fvp_item_video-title-wrap">
+                  <span class="fvp_item_video-filename"></span>
+                  <a class="configure-video" href="#">Configure video</a>
+                </div>
                 <input class="fvp_item_video-edit-input" type="text" style="display: none;">
                 <span class="fvp_item_video-duration"></span>
-                <a class="configure-video" href="#">Configure video</a>
                 <a class="fvp_item_remove" href="#"><span class="dashicons dashicons-trash"></span></a>
               </div>
           </div>

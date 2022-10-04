@@ -469,9 +469,10 @@ jQuery(function() {
         var
           $parent = $(e.target).parents('[data-index]'),
           filename = $parent.find('.fvp_item_video-filename'),
+          wrap = $parent.find('.fvp_item_video-title-wrap'),
           input = $parent.find('.fvp_item_video-edit-input');
 
-        filename.hide();
+        wrap.hide();
         input.val(filename.text()).show();
 
         is_editing_playlist_item_title = true;
@@ -3563,7 +3564,7 @@ jQuery(function() {
     }
 
     function title_editor_close() {
-      $('.fv-player-editor-playlist-item .fvp_item_video-filename').show();
+      $('.fv-player-editor-playlist-item .fvp_item_video-title-wrap').show();
       $('.fv-player-editor-playlist-item .fvp_item_video-edit-input').hide();
     }
 
