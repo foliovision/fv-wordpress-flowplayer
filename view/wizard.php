@@ -525,10 +525,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div class="fv-player-tabs">
         
         <div class="fv-player-tab fv-player-tab-playlist">
-          <div id="fv-player-list-thumb-toggle">
-            <a href="#" id="fv-player-list-list-view" ><span class="dashicons dashicons-list-view"><span class="screen-reader-text">List view</span></span></a>
-            <a href="#" id="fv-player-list-thumb-view" class="active" data-title="<?php _e('Add splash images to enable thumbnail view', 'fv_flowplayer');?>"><span class="dashicons dashicons-exerpt-view"><span class="screen-reader-text">Thumbnail view</span></span></a>
-          </div>
           <div id="fv-player-editor-playlist">
               <div class="fv-player-editor-playlist-item">
                 <div class="fv-player-editor-playlist-move">

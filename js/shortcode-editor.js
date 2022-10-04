@@ -445,21 +445,6 @@ jQuery(function() {
       })
 
       /*
-      * Playlist view thumbnail toggle
-      */
-      var list_style_toggles = $('#fv-player-list-thumb-toggle > a');
-      list_style_toggles.on( 'click', function(){
-        var button = $(this);
-        if( button.hasClass('disabled') ) return;
-
-        list_style_toggles.removeClass('active');
-        $('.fv-player-tab-playlist').toggleClass( 'hide-thumbnails', button.attr('id') === 'fv-player-list-list-view' );
-        button.addClass('active');
-
-        return false;
-      });
-
-      /*
       * Show edit input
       * keywords: edit playlist items edit playlist items
       */
@@ -515,7 +500,7 @@ jQuery(function() {
       $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_remove', function(e) {
         e.stopPropagation();
 
-        if( !confirm('Are you sure?') ) {
+        if( !confirm('Would you like to remove this video?') ) {
           return false;
         }
 
