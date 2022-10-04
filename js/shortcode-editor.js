@@ -427,7 +427,7 @@ jQuery(function() {
       * Select playlist item
       * keywords: select item
       */
-      $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .configure-video', function(e) {
+      $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function(e) {
         var new_index = $(this).parents('.fv-player-editor-playlist-item').attr('data-index');
 
         fv_player_editor.set_current_video_to_edit( new_index );
@@ -584,7 +584,7 @@ jQuery(function() {
 
         },
         axis: 'y',
-        //handle: '.fvp_item_sort',
+        handle: '.fv-player-editor-playlist-move-handle',
         containment: ".fv-player-tab-playlist"
       });
 
