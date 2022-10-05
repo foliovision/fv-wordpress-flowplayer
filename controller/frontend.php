@@ -873,3 +873,18 @@ function fv_player_sgo_js_async_exclude( $excluded_scripts ) {
   $excluded_scripts[] = 'jquery-core';
   return $excluded_scripts;
 }
+
+/*
+ * Some themes do not remove shortcodes when showing excerpts.
+ * So we remove [fvplayer...] as in excerpt it would only show "Please enable JavaScript" kind of message.
+ */
+
+// Learnify, this filter seems to run for excerpts only, see learnify_show_post_content()
+add_filter( 'learnify_filter_post_content', 'fv_player_remove_for_excerpt' );
+
+function fv_player_remove_for_excerpt( $post_content ) {
+  if( is_archive() ) {
+    $post_content = preg_replace( '~\[fvplayer.*?\]~', '', $post_content );
+  }
+  return $post_content;
+}
