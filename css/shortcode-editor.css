@@ -1050,11 +1050,10 @@ a.fvp_item_video-filename {
   color: #757575;
   text-decoration: none;
   display: none;
-  background: #fdf7f9;
-  border-radius: 8px;
-  padding: 1px 7px;
   position: absolute;
   bottom: 8px;
+  font-size: 9px;
+  text-transform: uppercase;
 }
 
 .fvp_item_remove {
@@ -1089,7 +1088,7 @@ a.fvp_item_video-filename {
   color: #757575;
   line-height: 1;
   font-family: monospace;
-  background: #fdf7f9;
+  background: #f7f7f7;
 }
 
 #fv-player-shortcode-editor .ui-sortable-placeholder {
