@@ -1000,7 +1000,6 @@ a.fvp_item_video-filename {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  flex: 100%;
 }
 
 .fvp_item_video-thumbnail {
@@ -1056,7 +1055,6 @@ a.fvp_item_video-filename {
   padding: 1px 7px;
   position: absolute;
   bottom: 8px;
-  font-size: 0.7em;
 }
 
 .fvp_item_remove {
@@ -1073,14 +1071,14 @@ a.fvp_item_video-filename {
 .fvp_item_video-title-wrap {
   display: flex;
   flex-grow: 1;
-  flex-wrap: wrap;
-  align-content: flex-end;
-  align-items: center;
+  align-self: flex-start;
+  align-items: flex-end;
+  height: 50px;
 }
 
 .playlist_add {
   justify-content: center;
-  margin: 0 auto;
+  margin-left: 10px;
   border-radius: 999px;
   font-size: 1.5em;
   font-weight: 500;
@@ -1090,6 +1088,7 @@ a.fvp_item_video-filename {
   align-items: center;
   color: #757575;
   line-height: 1;
+  font-family: monospace;
   background: #fdf7f9;
 }
 
