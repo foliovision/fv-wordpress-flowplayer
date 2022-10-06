@@ -1005,6 +1005,7 @@ a.fvp_item_video-filename {
 .fvp_item_video-thumbnail {
   margin-right: 10px;
   line-height: 0;
+  flex-shrink: 0;
 }
 
 .ui-sortable {
@@ -1073,6 +1074,11 @@ a.fvp_item_video-filename {
   align-self: flex-start;
   align-items: flex-end;
   height: 50px;
+  margin-right: 10px;
+}
+
+.fvp_item_video-edit-input {
+  margin-right: 10px;
 }
 
 .playlist_add {
