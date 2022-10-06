@@ -3157,23 +3157,15 @@ jQuery(function() {
     }
 
     function reload_preview( video_index ) {
-      if( video_index > -1 && !current_player_object.videos[video_index] ) {
+      if(
+        video_index > -1 && ( !current_player_object.videos || !current_player_object.videos[video_index] ) ||
+        video_index== -1 && !current_player_object.videos
+      ) {
         reset_preview();
         return;
       }
 
       el_spinner.show();
-
-      // It's possible that you put in the video source link and quickly click
-      // to add another playlist item - that way you end up with no current_player_db_id
-      if( current_player_db_id == - 1 ) {
-        debug_log('Nothing to preview, player still saving...');
-
-        setTimeout( function() {
-          reload_preview( video_index );
-        }, 1000 );
-        return;
-      }
 
       // load player data and reload preview of the full player
       // when we go back from editing a single video in a playlist
@@ -3673,7 +3665,7 @@ jQuery(function() {
       },
 
       get_playlist_video_meta( meta_key, index ) {
-        var video_object = current_player_object.videos[index],
+        var video_object = current_player_object.videos && current_player_object.videos[index],
           video_meta = false;
 
         if( video_object ) {
