@@ -2331,7 +2331,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   align-items: center;
   display: flex;
 }
-.flowplayer.is-tiny.is-fullscreen:not(.is-youtube-nl) .fp-engine {
+.flowplayer.is-tiny.is-fullscreen:not(.is-youtube) .fp-engine {
   height: auto !important;
   position: static;
 }
