@@ -458,7 +458,7 @@ jQuery(function() {
           input = $parent.find('.fvp_item_video-edit-input');
 
         wrap.hide();
-        input.val(filename.text()).show();
+        input.val(filename.text()).show().focus();
 
         is_editing_playlist_item_title = true;
       });
@@ -483,6 +483,11 @@ jQuery(function() {
       */
       $doc.on('keyup','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-edit-input', function(e) {
         e.stopPropagation();
+
+        if( e.key == "Enter" ) {
+          title_editor_close();
+          return;
+        }
 
         var
           $parent = $(e.target).parents('[data-index]'),
