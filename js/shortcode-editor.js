@@ -2882,7 +2882,9 @@ jQuery(function() {
     * keywords: add playlist item
     */
     function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
-      jQuery('.fv-player-tab-playlist #fv-player-editor-playlist').append(template_playlist_item);
+      var new_playlist_item = $(template_playlist_item);
+      $('.fv-player-tab-playlist #fv-player-editor-playlist').append(new_playlist_item);
+
       var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
         return parseInt(jQuery(this).attr('data-index'), 10);
       }).get();
@@ -2971,6 +2973,10 @@ jQuery(function() {
         if( sSplashText ) {
           get_field('splash_text',new_item).val(sSplashText);
         }
+       
+      // new item
+      } else {
+        new_playlist_item.find('.fvp_item_video-thumbnail').addClass( 'no-img' );
       }
 
       // fire up an update event if we're adding an empty template, which means this function is called
@@ -3151,23 +3157,15 @@ jQuery(function() {
     }
 
     function reload_preview( video_index ) {
-      if( video_index > -1 && !current_player_object.videos[video_index] ) {
+      if(
+        video_index > -1 && ( !current_player_object.videos || !current_player_object.videos[video_index] ) ||
+        video_index== -1 && !current_player_object.videos
+      ) {
         reset_preview();
         return;
       }
 
       el_spinner.show();
-
-      // It's possible that you put in the video source link and quickly click
-      // to add another playlist item - that way you end up with no current_player_db_id
-      if( current_player_db_id == - 1 ) {
-        debug_log('Nothing to preview, player still saving...');
-
-        setTimeout( function() {
-          reload_preview( video_index );
-        }, 1000 );
-        return;
-      }
 
       // load player data and reload preview of the full player
       // when we go back from editing a single video in a playlist
@@ -3667,7 +3665,7 @@ jQuery(function() {
       },
 
       get_playlist_video_meta( meta_key, index ) {
-        var video_object = current_player_object.videos[index],
+        var video_object = current_player_object.videos && current_player_object.videos[index],
           video_meta = false;
 
         if( video_object ) {
