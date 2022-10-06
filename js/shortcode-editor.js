@@ -2882,7 +2882,9 @@ jQuery(function() {
     * keywords: add playlist item
     */
     function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
-      jQuery('.fv-player-tab-playlist #fv-player-editor-playlist').append(template_playlist_item);
+      var new_playlist_item = $(template_playlist_item);
+      $('.fv-player-tab-playlist #fv-player-editor-playlist').append(new_playlist_item);
+
       var ids = jQuery('.fv-player-tab-playlist [data-index]').map(function() {
         return parseInt(jQuery(this).attr('data-index'), 10);
       }).get();
@@ -2971,6 +2973,10 @@ jQuery(function() {
         if( sSplashText ) {
           get_field('splash_text',new_item).val(sSplashText);
         }
+       
+      // new item
+      } else {
+        new_playlist_item.find('.fvp_item_video-thumbnail').addClass( 'no-img' );
       }
 
       // fire up an update event if we're adding an empty template, which means this function is called
