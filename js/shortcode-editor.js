@@ -3623,6 +3623,10 @@ jQuery(function() {
     return {
       add_notice,
 
+      reload_preview( index ) {
+        return reload_preview(index);
+      },
+
       fv_wp_flowplayer_dialog_resize,
 
       get_current_player_db_id() {
@@ -3668,6 +3672,10 @@ jQuery(function() {
           return current_player_object.videos[item_index];
         }
         return false;
+      },
+
+      get_current_video_index() {
+        return item_index;
       },
 
       get_current_video_db_id() {

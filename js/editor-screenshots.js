@@ -139,6 +139,8 @@
         console.log('FV Player Editor Screenshots: Video won\'t play with crossOrigin="anonymous"');
 
         show_error();
+
+        fv_player_editor.reload_preview(fv_player_editor.get_current_video_index());
       }
     });
 
