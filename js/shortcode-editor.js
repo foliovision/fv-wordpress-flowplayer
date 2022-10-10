@@ -2756,6 +2756,10 @@ jQuery(function() {
 
     }
 
+    function fv_wp_flowplayer_dialog_resize() {
+      debug_log('Deprecated fv_wp_flowplayer_dialog_resize() call.');
+    }
+
     function file_info_hide() {
       jQuery('#fv_wp_flowplayer_file_info').hide();
       jQuery('#fv_wp_flowplayer_file_info td').html('');
@@ -3619,7 +3623,7 @@ jQuery(function() {
     return {
       add_notice,
 
-      remove_notices,
+      fv_wp_flowplayer_dialog_resize,
 
       get_current_player_db_id() {
         return current_player_db_id;
@@ -3977,7 +3981,9 @@ function fv_wp_delete_video_meta_record(id) {
   }
 }
 
-function fv_wp_flowplayer_dialog_resize() {}
+function fv_wp_flowplayer_dialog_resize() {
+  fv_player_editor.fv_wp_flowplayer_dialog_resize();
+}
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
   // multiselect element
