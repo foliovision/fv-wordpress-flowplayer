@@ -8,7 +8,6 @@
     root = jQuery(root);
     var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
-      message = jQuery('.fv-messages'),
       title ='';
 
     // where to seek when trying to setup the crossOrigin attribute for video
@@ -28,14 +27,14 @@
       return img.src ;
     }
 
-    button.on('click', function(){
+    button.on('click', function() {
       try {
-        button.prop("disabled",true);
+        button.prop("disabled", true);
 
         var screenshot = takeScreenshot(),
           item = jQuery('.fv-player-playlist-item[data-index="'+index+'"]');
 
-        spinner.insertAfter( item.find('#fv_wp_flowplayer_field_splash') );
+        spinner.insertAfter( item.find('#fv_wp_flowplayer_field_splash') ); // TODO: fix position
 
         // Check title
         if(item.find('#fv_wp_flowplayer_field_caption').val()){
@@ -82,11 +81,11 @@
           splashInput.trigger('keyup');
         }
         if(response.error) {
-          message.html('<div class="error"><p>'+response.error+'</p></div>');
+          fv_player_editor.add_notice('error', response.error, 2500);
           fv_player_editor.fv_wp_flowplayer_dialog_resize()
         }
         spinner.remove();
-        button.prop("disabled",false);
+        button.prop("disabled", false);
 
         // trigger preview
         fv_wp_flowplayer_submit('refresh-button');
@@ -97,8 +96,7 @@
     });
 
     // Compatibility test
-    api.bind('ready', function(e,api) {
-    if(jQuery('#fv_player_boxLoadedContent').length == 1) {
+    api.on('ready', function(e,api) {
       var src = jQuery('[name="fv_wp_flowplayer_field_src"]:visible').val(), // check using visible src
         should_show = true;
 
@@ -114,11 +112,10 @@
           try {
             takeScreenshot();
           } catch(err) {
-            button.prop("disabled",true);
+            button.prop("disabled", true);
           }
         }
       }
-    }
     });
 
     // Resume video after setting crossOrigin
@@ -151,7 +148,6 @@
       var index = typeof(api.video.index) != "undefined" ? api.video.index : 0;
 
       api.error = api.loading = false;
-      jQuery(root).find('.fp-message').remove();
       jQuery(root).removeClass("is-error").addClass("is-mouseover");
 
       if( api.conf.playlist.length ) {
@@ -164,25 +160,23 @@
 
     function show_error() {
       spinner.remove();
-      button.prop("disabled",false);
-      message.html(fv_player_editor_translations.screenshot_cors_error);
+      button.prop("disabled", false);
+      fv_player_editor.add_notice('error', fv_player_editor_translations.screenshot_cors_error, 2500);
       fv_wp_flowplayer_dialog_resize();
     }
 
   });
 
-  // Remove button, spinner, message
+  // Remove button, spinner
   jQuery(document).on('fv_flowplayer_player_editor_reset', function() {
     jQuery('#fv-splash-screen-button').remove();
     jQuery('#fv-editor-screenshot-spinner').remove();
-    jQuery('.fv-messages').empty();
     index = 0;
   });
 
   jQuery(document).on('fvp-preview-complete', function() {
     jQuery('#fv-splash-screen-button').remove();
     jQuery('#fv-editor-screenshot-spinner').remove();
-    jQuery('.fv-messages').empty();
   });
 
   // Video index

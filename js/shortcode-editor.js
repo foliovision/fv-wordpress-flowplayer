@@ -126,7 +126,7 @@ jQuery(function() {
       var notice = $('<div class="fv-player-editor-notice fv-player-editor-notice_'+id+'">'+msg+'</div>' );
       $el_notices.append( notice );
 
-      if( typeof(options) == 'number' ) {
+      if( typeof(timeout) == 'number' ) {
         setTimeout( function() {
           notice.fadeOut();
         }, timeout );
@@ -3618,6 +3618,8 @@ jQuery(function() {
     // Public stuff
     return {
       add_notice,
+
+      remove_notices,
 
       get_current_player_db_id() {
         return current_player_db_id;
