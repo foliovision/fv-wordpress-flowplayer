@@ -120,7 +120,7 @@ jQuery(function() {
      * 
      * @param {string}  id
      * @param {string}  msg
-     * @return {int}    timeout Duration for which it should appear or omit for persistent message      
+     * @param {int}    [timeout] Duration for which it should appear or omit for persistent message      
      */
     function add_notice( id, msg, timeout ) {
       var notice = $('<div class="fv-player-editor-notice fv-player-editor-notice_'+id+'">'+msg+'</div>' );
