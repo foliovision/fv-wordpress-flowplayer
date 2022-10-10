@@ -25,9 +25,7 @@ jQuery(function() {
       $el_preview,
       el_spinner,
       el_preview_target,
-      $el_save_complete = $('.fv-player-save-completed'),
-      $el_save_error = $('.fv-player-save-error'),
-      $el_save_error_p = $el_save_error.find('p'),
+      $el_notices = $('#fv-player-editor-notices'),
 
     // data to save in Ajax
     ajax_save_this_please = false,
@@ -116,6 +114,24 @@ jQuery(function() {
     // ... this will be shown in place of the "Saved!" message bottom overlay and it will always show only the first error in this object,
     //     as to not overload the user and UI with errors. Once that error is corrected, it gets removed from this object and next one (if any) is shown.
     errors = {};
+
+    /**
+     * Adds a notice at the bottom of player. Used for successful save and save errors. Notices are removed on successful save.
+     * 
+     * @param {string}  id
+     * @param {string}  msg
+     * @param {int}    [timeout] Duration for which it should appear or omit for persistent message      
+     */
+    function add_notice( id, msg, timeout ) {
+      var notice = $('<div class="fv-player-editor-notice fv-player-editor-notice_'+id+'">'+msg+'</div>' );
+      $el_notices.append( notice );
+
+      if( typeof(timeout) == 'number' ) {
+        setTimeout( function() {
+          notice.fadeOut();
+        }, timeout );
+      }
+    }
 
 
     /**
@@ -826,7 +842,7 @@ jQuery(function() {
         // show error overlay if we have errors
         var err = fv_player_editor.has_errors();
         if ( err ) {
-          save_error_show( err );
+          add_notice( 'error', err );
           return;
         }
 
@@ -837,7 +853,7 @@ jQuery(function() {
 
         el_spinner.show();
 
-        save_error_hide();
+        remove_notices();
 
         // add current video that we're editing into the save data
         ajax_save_this_please['current_video_to_edit'] = current_video_to_edit;
@@ -861,7 +877,7 @@ jQuery(function() {
               jQuery('#fv_player_copy_to_clipboard').select();
 
             } else {
-              save_error_show( response.error )
+              add_notice( 'error', response.error );
             }
 
             el_spinner.hide();
@@ -965,7 +981,7 @@ jQuery(function() {
 
               el_spinner.hide();
 
-              $el_save_complete.show().delay( 2500 ).fadeOut(400);
+              add_notice( 'success', 'Saved!', 2500 );
 
               // close the overlay, if we're waiting for the save
               if (overlay_close_waiting_for_save) {
@@ -1003,7 +1019,7 @@ jQuery(function() {
           }
 
         }, 'json' ).fail( function() {
-          save_error_show();
+          add_notice( 'error', 'Error saving changes.' );
           
           el_spinner.hide();
           
@@ -1295,6 +1311,8 @@ jQuery(function() {
     function editor_init() {
       // if error / message overlay is visible, hide it
       overlay_hide();
+
+      remove_notices();
 
       jQuery('#fv_wp_flowplayer_field_player_name').show();
 
@@ -2646,7 +2664,7 @@ jQuery(function() {
             jQuery('#fv_player_copy_to_clipboard').select();
   
           } else {
-            save_error_show(response.error);
+            add_notice( 'error', response.error )
           }
 
           el_spinner.hide();
@@ -2736,6 +2754,10 @@ jQuery(function() {
 
       return;
 
+    }
+
+    function fv_wp_flowplayer_dialog_resize() {
+      debug_log('Deprecated fv_wp_flowplayer_dialog_resize() call.');
     }
 
     function file_info_hide() {
@@ -3196,6 +3218,10 @@ jQuery(function() {
       });
     }
 
+    function remove_notices() {
+      $el_notices.html('');
+    }
+
     function reset_editor_ids() {
       current_player_db_id = -1;
       current_player_object = false;
@@ -3243,23 +3269,6 @@ jQuery(function() {
         overlayDiv.find('p').html( message );
       }
       return overlayDiv;
-    }
-
-    /**
-     * Show save error message
-     * 
-     * @param {string} message optional mesage 
-     */
-    function save_error_show( message = 'Error saving changes.' ) {
-      $el_save_error_p.text( message );
-      $el_save_error.show();
-    }
-
-    /**
-     * Hide save error message
-     */
-    function save_error_hide() {
-      $el_save_error.hide();
     }
 
     /**
@@ -3612,6 +3621,10 @@ jQuery(function() {
 
     // Public stuff
     return {
+      add_notice,
+
+      fv_wp_flowplayer_dialog_resize,
+
       get_current_player_db_id() {
         return current_player_db_id;
       },
@@ -3968,7 +3981,9 @@ function fv_wp_delete_video_meta_record(id) {
   }
 }
 
-function fv_wp_flowplayer_dialog_resize() {}
+function fv_wp_flowplayer_dialog_resize() {
+  fv_player_editor.fv_wp_flowplayer_dialog_resize();
+}
 
 function fv_wp_flowplayer_get_correct_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
   // multiselect element

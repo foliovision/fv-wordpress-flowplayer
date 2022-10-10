@@ -62,7 +62,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_translations', array(
     'embed_notice' => __('Embed feature not supported in editor preview', 'fv-wordpress-flowplayer'),
     'link_notice' => __('Link feature not supported in editor preview', 'fv-wordpress-flowplayer'),
-    'screenshot_cors_error' => __('<div class="error"><p>Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.</p></div>', 'fv-wordpress-flowplayer'),
+    'screenshot_cors_error' => __('Cannot obtain video screenshot, please make sure the video is served with <a href="https://foliovision.com/player/video-hosting/hls#hls-js">CORS headers</a>.', 'fv-wordpress-flowplayer'),
   ) );
 
   wp_localize_script( 'fvwpflowplayer-editor-screenshots', 'fv_player_editor_conf_screenshots', array(
