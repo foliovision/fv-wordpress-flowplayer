@@ -1205,33 +1205,6 @@ msgid ""
 "use this setting."
 msgstr ""
 
-#: view/admin.php:582
-msgid "Scan video length"
-msgstr ""
-
-#: view/admin.php:587
-msgid "Turn off if you experience issues when saving posts!"
-msgstr ""
-
-#: view/admin.php:588
-msgid "Turn on to enable video duration scanning."
-msgstr ""
-
-#: view/admin.php:601
-#, php-format
-msgid "Currently %d videos in database and %s posts in queue."
-msgstr ""
-
-#: view/admin.php:603
-#, php-format
-msgid "Currently %d videos in database."
-msgstr ""
-
-#: view/admin.php:605
-#, php-format
-msgid "Currently %s posts in queue."
-msgstr ""
-
 #: view/admin.php:620
 msgid "Use iframe embedding"
 msgstr ""

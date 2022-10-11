@@ -1287,33 +1287,6 @@ msgstr ""
 "su bufferTime a 0 para canales en vivo, pero si su canal no se lo ve de "
 "manera fluida, podrá usar estas configuraciones"
 
-#: ../view/admin.php:582
-msgid "Scan video length"
-msgstr "Medir la duración de vídeo"
-
-#: ../view/admin.php:587
-msgid "Turn off if you experience issues when saving posts!"
-msgstr ""
-
-#: ../view/admin.php:588
-msgid "Turn on to enable video duration scanning."
-msgstr "Encienda la habilitación de vídeo durante el análisis."
-
-#: ../view/admin.php:601
-#, php-format
-msgid "Currently %d videos in database and %s posts in queue."
-msgstr "Actualmente  %d vídeos en base de datos y %s publicaciones en cola."
-
-#: ../view/admin.php:603
-#, php-format
-msgid "Currently %d videos in database."
-msgstr "Actualmente %d vídeos."
-
-#: ../view/admin.php:605
-#, php-format
-msgid "Currently %s posts in queue."
-msgstr "Actualmente %s publicaciones en cola."
-
 #: ../view/admin.php:620
 msgid "Use iframe embedding"
 msgstr ""

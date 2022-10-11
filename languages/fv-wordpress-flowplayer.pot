@@ -1214,30 +1214,6 @@ msgstr ""
 msgid "Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting."
 msgstr ""
 
-#: view/admin.php:630
-msgid "Scan video length"
-msgstr ""
-
-#: view/admin.php:635
-msgid "Turn off if you experience issues when saving posts!"
-msgstr ""
-
-#: view/admin.php:636
-msgid "Turn on to enable video duration scanning."
-msgstr ""
-
-#: view/admin.php:655
-msgid "Currently %s posts in queue."
-msgstr ""
-
-#: view/admin.php:653
-msgid "Currently %d videos in database."
-msgstr ""
-
-#: view/admin.php:651
-msgid "Currently %d videos in database and %s posts in queue."
-msgstr ""
-
 #: view/admin.php:686
 msgid "Use native fullscreen on mobile"
 msgstr ""

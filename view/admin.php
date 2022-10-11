@@ -625,39 +625,6 @@ function fv_flowplayer_admin_integrations() {
 					<?php if( $fv_fp->_get_option('engine') ) $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', __('Provides greater compatibility.', 'fv-wordpress-flowplayer'), __('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('rtmp-live-buffer') ) $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
 
-          <tr>
-						<td class="first"><label for="db_duration"><?php _e('Scan video length', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
-						<td>
-              <p class="description">
-                <input type="hidden" name="db_duration" value="false" />
-                <input type="checkbox" name="db_duration" id="db_duration" value="true" <?php if( $fv_fp->_get_option('db_duration') ) echo 'checked="checked"'; ?> />
-                <?php _e('Turn off if you experience issues when saving posts!','fv-wordpress-flowplayer'); ?>
-                <span class="more"><?php _e('Turn on to enable video duration scanning.', 'fv-wordpress-flowplayer'); ?>
-                <?php
-                global $wpdb;
-                $iCount = $wpdb->get_var( "SELECT count(meta_id) FROM $wpdb->postmeta WHERE meta_key LIKE '_fv_flowplayer_%'" );
-                $aQueue = FV_Player_Checker::queue_get();
-                $iQueue = count($aQueue);
-                $htmlQueue = 0;
-                if( $iQueue > 0 ) {
-                  $htmlQueue = "<a href='#' onclick='jQuery(this).siblings(\"span\").toggle(); return false'>$iQueue</a> <span style='display: none'>(";
-                  foreach( $aQueue as $k => $i ) {
-                    $htmlQueue .= "<a href='".get_edit_post_link($k)."'>$k</a> ";
-                  }
-                  $htmlQueue .= ") <a href='".site_url()."/wp-admin/options-general.php?page=fvplayer&fv_flowplayer_checker'>Scan now!</a></span>";
-                }
-                if( $iCount && $iQueue ) {
-                  printf(__('Currently %d videos in database and %s posts in queue.', 'fv-wordpress-flowplayer'), $iCount, $htmlQueue);
-                } else if( $iCount ) {
-                  printf(__("Currently %d videos in database.", 'fv-wordpress-flowplayer'), $iCount);
-                } else if( $iQueue ) {
-                  printf(__("Currently %s posts in queue.", 'fv-wordpress-flowplayer'), $htmlQueue);
-                }
-                ?>
-                </span> <a href="#" class="show-more">(&hellip;)</a>
-              </p>
-            </td>
-          </tr>
           <!--<tr>
             <td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
             <td>

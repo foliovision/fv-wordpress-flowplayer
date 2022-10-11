@@ -419,13 +419,8 @@ class FV_Player_Checker {
   
   
   function cron_init() {
-    global $fv_fp;      
-    if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) {
       if ( !wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
         wp_schedule_event( time(), '5minutes', 'fv_flowplayer_checker_event' );
-      }
-    } else if( wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
-      wp_clear_scheduled_hook( 'fv_flowplayer_checker_event' );
     }
   }
 
@@ -556,21 +551,6 @@ class FV_Player_Checker {
     $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
     $aQueue[$post_id] = true;
     update_option( 'fv_flowplayer_checker_queue', $aQueue );
-  }
-  
-  
-  
-  
-  public static function queue_add_all() {
-    global $wpdb;
-    if( $aPosts = $wpdb->get_col( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_content LIKE '%[fvplayer%' ORDER BY post_date DESC" ) ) {
-      $aQueue = array();
-      foreach( $aPosts AS $iPostId ) {
-        $aQueue[$iPostId] = true;
-      }
-      update_option( 'fv_flowplayer_checker_queue', $aQueue );
-    }
-    
   }
   
   

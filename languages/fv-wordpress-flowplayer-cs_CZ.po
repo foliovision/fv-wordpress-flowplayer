@@ -1284,33 +1284,6 @@ msgstr ""
 "bufferTime na 0 pro živé streamy, ale pokud váš stream není hladký, můžete "
 "použít toto nastavení."
 
-#: ../view/admin.php:582
-msgid "Scan video length"
-msgstr "Zjistuj délku videa"
-
-#: ../view/admin.php:587
-msgid "Turn off if you experience issues when saving posts!"
-msgstr ""
-
-#: ../view/admin.php:588
-msgid "Turn on to enable video duration scanning."
-msgstr "Zapnutím umožníte zistovaní trvání videa. "
-
-#: ../view/admin.php:601
-#, php-format
-msgid "Currently %d videos in database and %s posts in queue."
-msgstr "Aktuálně %d videí v databázi a %s příspěvků ve frontě."
-
-#: ../view/admin.php:603
-#, php-format
-msgid "Currently %d videos in database."
-msgstr "Aktuálně %d videí v databázi."
-
-#: ../view/admin.php:605
-#, php-format
-msgid "Currently %s posts in queue."
-msgstr "Aktuálně %s příspěvků ve frontě."
-
 #: ../view/admin.php:620
 msgid "Use iframe embedding"
 msgstr "Použít iframe vkládání"

@@ -768,11 +768,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
     
-    if( isset($aNewOptions['db_duration']) && $aNewOptions['db_duration'] == "true" && ( !isset($aOldOptions['db_duration']) || $aOldOptions['db_duration'] == "false" ) ) {
-      global $FV_Player_Checker;
-      $FV_Player_Checker->queue_add_all();
-    }
-    
     if( !isset($aNewOptions['pro']) || !is_array($aNewOptions['pro']) ) {
       $aNewOptions['pro'] = array();
     }
@@ -1837,8 +1832,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public static function get_duration_playlist( $caption ) {
-    global $fv_fp;
-    if( !$fv_fp->_get_option('db_duration') || !$caption ) return $caption;
+    if( !$caption ) return $caption;
     
     global $post;
     $aArgs = func_get_args();
@@ -1855,8 +1849,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   public static function get_duration_video( $content ) {
-    global $fv_fp, $post;    
-    if( !$post || !$fv_fp->_get_option('db_duration') ) return $content;
+    global $post;    
+    if( !$post ) return $content;
 
     $aArgs = func_get_args();
     if( $sDuration = flowplayer::get_duration( $post->ID, $aArgs[1]->aCurArgs['src']) ) {

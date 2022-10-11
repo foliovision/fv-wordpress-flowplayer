@@ -1286,34 +1286,6 @@ msgstr ""
 "den bufferTime auf 0 für Live-Streams zu setzen, aber wenn Ihr Stream nicht "
 "glatt ist, können Sie diese Einstellung verwenden."
 
-#: view/admin.php:582
-msgid "Scan video length"
-msgstr "Videolauflänge abrufen"
-
-#: view/admin.php:587
-msgid "Turn off if you experience issues when saving posts!"
-msgstr ""
-
-#: view/admin.php:588
-msgid "Turn on to enable video duration scanning."
-msgstr "Anschalten, um es zu ermöglichen, die Video Dauer zu ermitteln."
-
-#: view/admin.php:601
-#, php-format
-msgid "Currently %d videos in database and %s posts in queue."
-msgstr ""
-"Aktuell %d Videos in der Datenbank und %s Beiträge in der Warteschlange."
-
-#: view/admin.php:603
-#, php-format
-msgid "Currently %d videos in database."
-msgstr "Aktuell %d Videos in der Datenbank."
-
-#: view/admin.php:605
-#, php-format
-msgid "Currently %s posts in queue."
-msgstr "Aktuell %s Beiträge in der Warteschlange."
-
 #: view/admin.php:620
 msgid "Use iframe embedding"
 msgstr "Iframe embed verwenden"
