@@ -1069,10 +1069,6 @@ msgstr ""
 "programadores"
 
 #: ../view/admin.php:532
-msgid "Always use fixed size player"
-msgstr "Utiliza siempre el reproductor de tamaño fijo."
-
-#: ../view/admin.php:532
 msgid "Enable to force video size at cost of loosing the video responsiveness."
 msgstr ""
 "Habilitar para forzar el tamaño del vídeo a costa de perder receptividad."

@@ -1070,10 +1070,6 @@ msgstr ""
 "Folgende Optionen sind passend für Webseitenentwickler und Programmierer."
 
 #: view/admin.php:532
-msgid "Always use fixed size player"
-msgstr "Immer die feste Spielergröße verwenden"
-
-#: view/admin.php:532
 msgid "Enable to force video size at cost of loosing the video responsiveness."
 msgstr ""
 "Aktivieren, um die Videogröße zu Lasten der Video Reaktionszeit zu forcieren."

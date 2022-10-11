@@ -1095,10 +1095,6 @@ msgid "Following options are suitable for web developers and programmers."
 msgstr ""
 
 #: view/admin.php:585
-msgid "Always use fixed size player"
-msgstr ""
-
-#: view/admin.php:585
 msgid "Enable to force video size at cost of loosing the video responsiveness."
 msgstr ""
 
