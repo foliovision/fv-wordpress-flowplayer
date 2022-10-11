@@ -576,12 +576,9 @@ class flowplayer_frontend extends flowplayer
           if( intval($height) == 0 ) $height = '100%';
           $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
           $cssHeight = stripos($height,'%') !== false ? $height : $height. 'px';          
-          if( $this->_get_option('fixed_size') ) {
-            $attributes['style'] .= 'width: ' . $cssWidth . '; height: ' . $cssHeight . '; ';
-          } else {
+
             $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
           }
-        }
         
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);        
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
