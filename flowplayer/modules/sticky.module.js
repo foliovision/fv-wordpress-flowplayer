@@ -87,7 +87,9 @@
       $playerDiv.css("width", stickyWidth);
       $playerDiv.css("height", stickyHeight);
       $playerDiv.css("max-height", stickyHeight);
-      
+
+      sanitize_parent_elements(true);
+
       api.is_sticky = true;
       api.trigger( 'sticky', [ api ] );
     }
@@ -101,8 +103,10 @@
     $playerDiv.css("height", "");
     $playerDiv.css("max-height", "");
     $playerDiv.parent(".flowplayer").removeClass("is-stickable");
-    
+
     if( api.is_sticky ) {
+      sanitize_parent_elements();
+
       api.is_sticky = false;
       api.trigger( 'sticky-exit', [ api ] );
     }
@@ -125,6 +129,23 @@
       fv_player_sticky_class_add();
     } else {
       fv_player_sticky_class_remove();
+    }
+  }
+
+  /* 
+   * Video will not be sticky if one of the parent elements it using CSS transform,
+   * so we get rid of it here. We put it back too!
+   */
+  function sanitize_parent_elements( add ) {
+    var parent = root;
+    while (parent) {
+      try {
+        var styles = getComputedStyle(parent);
+        if( styles.transform ) {
+          parent.style.transform = add ? 'none' : '';
+        }
+      } catch(e) {}
+      parent = parent.parentNode;
     }
   }
 });
