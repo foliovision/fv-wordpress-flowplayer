@@ -27,6 +27,7 @@ const bugReport = 'https://foliovision.com/support';
 // const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
 const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
 const youtubeJS = './flowplayer/fv-player-youtube.dev.js';
+const dashJS = './flowplayer/fv-player-dashjs.dev.js';
 const loaderJS = './flowplayer/fv-player-loader.dev.js'
 const projectPHPWatchFiles = ['*.php', './controller/**/*.php', './models/**/*.php', './view/**/*.php'];
 
@@ -43,7 +44,7 @@ function jsModulesMinify() {
 }
 
 function jsFilessMinify() {
-  return src([youtubeJS, loaderJS])
+  return src([dashJS, youtubeJS, loaderJS])
     .pipe(babel({"presets": [
       ["@babel/preset-env", {"modules": false} ]
     ]}))

@@ -437,12 +437,20 @@ function flowplayer_prepare_scripts() {
     }
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.2.3';
 
-    $dashjs_version = $fv_wp_flowplayer_ver.'-3.2.2-mod';
+    $dashjs_version = '3.2.2-mod';
         
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
-      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $dashjs_version, true );
+      wp_enqueue_script( 'dashjs', flowplayer::get_plugin_url().'/flowplayer/dash.mediaplayer.min.js', array('flowplayer'), $dashjs_version, true );
+
+      $fv_player_dashjs = 'fv-player-dashjs.min.js';
+      if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $fv_player_dashjs = 'fv-player-dashjs.dev.js';
+
+      wp_enqueue_script( 'fv-player-dash', flowplayer::get_plugin_url().'/flowplayer/'.$fv_player_dashjs, array('dashjs'), $fv_wp_flowplayer_ver, true );
     }
-    $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js?ver='.$dashjs_version;
+
+    // Used by FV Player Pro in case Dash.js was not loaded for the page
+    $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/dash.mediaplayer.min.js?ver='.$dashjs_version;
+    $aConf['script_dash_js_engine'] = flowplayer::get_plugin_url().'/flowplayer/'.$fv_player_dashjs.'?ver='.$fv_wp_flowplayer_ver;
 
     if( $fv_fp->should_force_load_js() || FV_Player_YouTube()->bYoutube || did_action('fv_player_extensions_admin_load_assets') ) {
       $youtube_js = 'fv-player-youtube.min.js';
