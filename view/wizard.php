@@ -998,9 +998,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     
     <div style="clear: both"></div>
 
-    <div class="fv-player-save-notice fv-player-save-completed" style="display: none"><p>Saved!</p></div>
-    <div class="fv-player-save-notice fv-player-save-error" style="display: none"><p>Error saving changes.</p></div>
-    <div class="fv-messages"></div>   
+    <div id="fv-player-editor-notices"></div>
   </div>
 </div>
 

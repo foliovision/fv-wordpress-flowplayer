@@ -147,6 +147,7 @@ flowplayer(function(player, root) {
    /*
     * iPhone fullscreen is CSS-based and it can't work if the parent elements use CSS transform
     * So we get rid of these rules even entering fullscreen and put them back when leaving
+    * We also reset the z-index as with that the fixed position elements would appear on top of the video
     */
    function sanitize_parent_elements( add ) {
      var parent = root;
@@ -156,6 +157,9 @@ flowplayer(function(player, root) {
          if( styles.transform ) {
            parent.style.transform = add ? 'none' : '';
          }
+         if( styles.zIndex ) {
+          parent.style.zIndex = add ? 'auto' : '';
+        }
        } catch(e) {}
        parent = parent.parentNode;
      }
