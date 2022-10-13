@@ -87,7 +87,7 @@ abstract class FV_Player_CDN {
 
             global $fv_fp, $post;
             if( !empty($fv_fp) && method_exists($fv_fp,'current_video') && $fv_fp->current_video() ) {
-              $ttl = intval( $fv_fp->current_video()->getMetaValue('duration',true ) );
+              $ttl = intval( $fv_fp->current_video()->getDuration() );
             } else if( !empty($post) && !empty($post->ID) ) {
               if( $sDuration = flowplayer::get_duration( $post->ID, $url, true ) ) {
                 $ttl = intval($sDuration);

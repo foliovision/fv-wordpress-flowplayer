@@ -34,6 +34,9 @@ class FV_Player_Db_Video {
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
+    $duration,
+    $live,
+    $last_check,
     $meta_data = null, // object of this video's meta data
     $ignored_video_fields = array(
       'vr', // VR is a meta value, so it should not be stored globally per-player
@@ -76,9 +79,14 @@ class FV_Player_Db_Video {
   }
   
   /**
-   * @return string
+   * @return int
    */
   public function getDuration() {
+    if( $this->duration ) {
+      return intval($this->duration);
+    }
+
+    // TODO: Conversion process
     return intval($this->getMetaValue('duration',true));
   }
 
@@ -87,6 +95,20 @@ class FV_Player_Db_Video {
    */
   public function getEnd() {
     return flowplayer::hms_to_seconds($this->end);
+  }
+
+  /**
+   * @return int
+   */
+  public function getLastCheck() {
+    return strtotime($this->last_check);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getLive() {
+    return $this->live > 0;
   }
 
   /**
@@ -220,6 +242,9 @@ CREATE TABLE " . self::$db_table_name . " (
   rtmp varchar(128) NOT NULL,
   rtmp_path varchar(128) NOT NULL,
   start varchar(16) NOT NULL,
+  duration int(11) NOT NULL,
+  live int(1) NOT NULL,
+  last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (id),
   KEY src (src(191)),
   KEY caption (caption(191))
@@ -662,7 +687,7 @@ CREATE TABLE " . self::$db_table_name . " (
     /*
      * Check video duration, fetch splash screen and title 
      */
-    $last_video_meta_check = $this->getMetaValue( 'last_video_meta_check', true );
+    $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
 
     // Check video duration, or even splash image and title if it was not checked previously
@@ -722,10 +747,7 @@ CREATE TABLE " . self::$db_table_name . " (
         // TODO: process chapters and also error, is_live, is_audio
         // TODO: check caption, splash, chapters, auto_splash, auto_caption and also error, is_live, is_audio
 
-        $meta_data[] = array(
-          'meta_key' => 'last_video_meta_check',
-          'meta_value' => time(),
-        );
+        $this->last_check = current_time( 'mysql', true );
 
         $meta_data[] = array(
           'meta_key' => 'last_video_meta_check_src',
@@ -743,26 +765,26 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         if( $video_data['duration'] ) {
-          $meta_data[] = array(
-            'meta_key' => 'duration',
-            'meta_value' => $video_data['duration'],
-          );
-        } else {
+          $this->duration = $video_data['duration'];
+
+          // Remove the legacy value stored in video meta
+          // TODO: Conversion process
           $key = array_search('duration', array_column($meta_data, 'meta_key'));
           unset($meta_data[$key]);
+        } else {
+          $this->duration = 0;
         }
 
         if( $video_data['is_live'] ) {
-          $meta_data[] = array(
-            'meta_key' => 'live',
-            'meta_value' => true,
-          );
+          $this->live = true;
         } else {
-          $key = array_search('live', array_column($meta_data, 'meta_key'));
-          unset($meta_data[$key]);
+          $this->live = false;
         }
 
-        if( $video_data['is_encrypted'] ) {
+        // Remove the legacy value stored in video meta
+        // TODO: Conversion process
+        $live_key = array_search('live', array_column($meta_data, 'meta_key'));
+        unset($meta_data[$live_key]);
           $meta_data[] = array(
             'meta_key' => 'encrypted',
             'meta_value' => true,

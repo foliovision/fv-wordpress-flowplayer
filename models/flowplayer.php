@@ -1804,7 +1804,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     if( $fv_fp->_get_option('player_model_db_checked') && $fv_fp->_get_option('player_meta_model_db_checked') && $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
       global $wpdb;
-      $tDuration = intval( $wpdb->get_var( "SELECT vm.meta_value FROM {$wpdb->prefix}fv_player_playermeta AS pm JOIN {$wpdb->prefix}fv_player_players AS p ON p.id = pm.id_player JOIN {$wpdb->prefix}fv_player_videos AS v ON FIND_IN_SET(v.id, p.videos) > 0 JOIN {$wpdb->prefix}fv_player_videometa AS vm ON v.id = vm.id_video WHERE pm.meta_key = 'post_id' AND pm.meta_value = ".intval($post_id)." AND vm.meta_key = 'duration' ORDER BY CAST(vm.meta_value AS UNSIGNED) DESC LIMIT 1" ) );
+      $tDuration = intval( $wpdb->get_var( "SELECT v.duration FROM {$wpdb->prefix}fv_player_playermeta AS pm JOIN {$wpdb->prefix}fv_player_players AS p ON p.id = pm.id_player JOIN {$wpdb->prefix}fv_player_videos AS v ON FIND_IN_SET(v.id, p.videos) > 0 WHERE pm.meta_key = 'post_id' AND pm.meta_value = ".intval($post_id)." ORDER BY v.duration DESC LIMIT 1" ) );
+
       if( $tDuration > 3600 ) {
         return gmdate( "H:i:s", $tDuration );
       } else if( $tDuration > 0 ) {

@@ -325,22 +325,15 @@ class FV_Player_Checker {
   function checker_cron() {
     global $fv_fp;
     if( $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
-      // get all video IDs for which there is no duration meta_key or where the duration is "h"
+
+      // get all video IDs for which the duration is zero and are not live streams and were not checked in last day
       global $wpdb;
-      $aVideos = $wpdb->get_results( "SELECT id, src FROM `{$wpdb->prefix}fv_player_videos` as v left join ( select id_video, meta_value from {$wpdb->prefix}fv_player_videometa WHERE meta_key = 'duration' ) as m ON v.id = m.id_video where m.id_video IS NULL OR m.meta_value = 'h' ORDER BY id DESC" );
+      $aVideos = $wpdb->get_col( "SELECT id FROM `{$wpdb->prefix}fv_player_videos` WHERE duration = 0 AND live = 0 AND DATE_SUB( UTC_TIMESTAMP(), INTERVAL 1 DAY ) > last_check ORDER BY id DESC" );
       
       if( $aVideos ) {
-        foreach( $aVideos AS $objVideo ) {
-          $id = $objVideo->id;
-          $url = $objVideo->src;
-          
           global $FV_Player_Db;
-          $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
-          $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
-          
-          if( $last_check && intval($last_check) + 86400 > time() ) {
-            continue;
-          }
+        foreach( $aVideos AS $video_id ) {
+          $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
 
           $error_count = $objVideo->getMetaValue('error_count',true);
 

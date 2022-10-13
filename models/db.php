@@ -168,7 +168,9 @@ class FV_Player_Db {
       if( $id = $vid_obj->getId() ) {
         $aItem['id'] = $id;
       }
-      
+      if( $id = $vid_obj->getLive() ) {
+        $aItem['live'] = 'true';
+      }
       if( $start = $vid_obj->getStart() ) {
         $aItem['fv_start'] = $start;
       }
@@ -1939,8 +1941,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
   public static function get_player_duration( $id ) {
     global $wpdb;
-    return $wpdb->get_var( "SELECT sum(vm.meta_value) FROM {$wpdb->prefix}fv_player_videometa AS vm JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) WHERE p.id = ".intval($id)." AND vm.meta_key = 'duration'" );
-    
+    return $wpdb->get_var( $wpdb->prepare( "SELECT sum(v.duration) FROM {$wpdb->prefix}fv_player_videos AS v JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(v.id, p.videos) WHERE p.id = %d", $id ) );
   }
 
   /**
