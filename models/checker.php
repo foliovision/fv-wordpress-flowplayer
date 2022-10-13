@@ -229,6 +229,9 @@ class FV_Player_Checker {
 
               $streams = array();
               $had_ext_x_stream_inf = false;
+              $resoluton_x_max = 0;
+              $resoluton_y_max = 0;
+
               foreach( $lines AS $line ) {
                 // last line was starting with #EXT-X-STREAM-INF:
                 if( stripos($line,'#') !== 0 && $had_ext_x_stream_inf ) {
@@ -246,6 +249,14 @@ class FV_Player_Checker {
                   
                   // ...or we found a video track, then we are sure it's not audio stream
                   if( stripos($line,'RESOLUTION=') !== false ) {
+                    if( preg_match( '~RESOLUTION=(\d+)x(\d+)~', $line, $resoluton ) ) {
+                      if( $resoluton[1] > $resoluton_x_max ) {
+                        $resoluton_x_max = $resoluton[1];
+                      }
+                      if( $resoluton[2] > $resoluton_y_max ) {
+                        $resoluton_y_max = $resoluton[2];
+                      }
+                    }
                     $is_audio = false;
                   }
                 }

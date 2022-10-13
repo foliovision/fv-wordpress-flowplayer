@@ -480,7 +480,7 @@ body.is-fv-player-editor-modal-open {
   padding-bottom: 0;
 }
 
-#fv_flowplayer_admin_tabs .nav-tab-active, #fv-player-shortcode-editor-right .nav-tab-active {
+#fv-player-shortcode-editor-right .nav-tab-active {
   background-color: #ffffff !important;
   border-bottom: 4px solid #007cba !important;
 }
@@ -1008,7 +1008,7 @@ a.fvp_item_video-filename {
   flex-shrink: 0;
 }
 
-.ui-sortable {
+#fv-player-shortcode-editor .ui-sortable {
   padding: 10px;
 }
 
