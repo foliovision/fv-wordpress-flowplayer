@@ -13,7 +13,7 @@
 .fp-embed:before { content: "\e004"; color: #fff; }
 .fp-chromecast:before { content: "\e005"; }
 .fp-email:before { content: "\e006"; }
-.fp-playbtn:before { content: "\e007"; line-height: 1; vertical-align:middle; }
+.fp-playbtn:before {content: "\e007"; display: flex; line-height: 0; }
 .fp-share:before { content: "\e009"; }
 .fp-share2:before { content: "\e00a"; }
 .fp-twitter:before { content: "\e00c"; color: #1da1f2; }
@@ -656,9 +656,9 @@
          -moz-user-select: none;
           -ms-user-select: none;
               user-select: none;
-      -webkit-transform: scale(1.1);
-          -ms-transform: scale(1.1);
-              transform: scale(1.1); }
+      -webkit-transform: scale(1.0);
+          -ms-transform: scale(1.0);
+              transform: scale(1.0); }
       .flowplayer .fp-bar-slider em:hover {
         -webkit-transform: scaleY(1.35);
             -ms-transform: scaleY(1.35);
@@ -1062,7 +1062,7 @@
 .flowplayer.fixed-controls.fp-full.fp-slim.is-tiny .fp-controls {bottom: -3.2em}
 .flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 
-.flowplayer .fp-elapsed {min-width: 5.1ch}
+.flowplayer .fp-elapsed {min-width: 5.1ch; line-height: 1em;}
 .flowplayer.is-long .fp-elapsed {min-width: 7.1ch}
 
 .flowplayer.is-fullscreen.is-splash.is-error .fp-header {
@@ -2407,3 +2407,5 @@ iframe#youtube.fp-engine {
   height: 100%;
   width: 100%;
 }
+
+.fp-duration { line-height: 1em; }
