@@ -34,6 +34,9 @@ class FV_Player_Db_Video {
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
+    $width,
+    $height,
+    $aspect_ratio,
     $duration,
     $live,
     $last_check,
@@ -52,6 +55,13 @@ class FV_Player_Db_Video {
   public function getId() {
     return $this->id;
   }
+
+  /**
+   * @return float
+   */
+  public function getAspectRatio() {
+    return floatval($this->aspect_ratio);
+  }  
 
   /**
    * @return string
@@ -95,6 +105,13 @@ class FV_Player_Db_Video {
    */
   public function getEnd() {
     return flowplayer::hms_to_seconds($this->end);
+  }
+
+  /**
+   * @return int
+   */
+  public function getHeight() {
+    return intval($this->height);
   }
 
   /**
@@ -182,6 +199,13 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * @return int
+   */
+  public function getWidth() {
+    return intval($this->width);
+  }
+
+  /**
    * @return bool
    */
   public function getIsValid() {
@@ -242,6 +266,9 @@ CREATE TABLE " . self::$db_table_name . " (
   rtmp varchar(128) NOT NULL,
   rtmp_path varchar(128) NOT NULL,
   start varchar(16) NOT NULL,
+  width int(11) NOT NULL,
+  height int(11) NOT NULL,
+  aspect_ratio varchar(8) NOT NULL,
   duration int(11) NOT NULL,
   live int(1) NOT NULL,
   last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -724,13 +751,22 @@ CREATE TABLE " . self::$db_table_name . " (
           if( $secured_url = $fv_fp->get_video_src( $video_url, array( 'dynamic' => true ) ) ) {
             $video_url = $secured_url;
           }
-          
+
           $check = $FV_Player_Checker->check_mimetype( array($video_url), false, true );
-          $video_data['error'] = $check['error'];
-          $video_data['duration'] = $check['duration'];
-          $video_data['is_live'] = $check['is_live'];
-          $video_data['is_audio'] = $check['is_audio'];
-          $video_data['is_encrypted'] = $check['is_encrypted'];
+          foreach( array(
+            'aspect_ratio',
+            'duration',
+            'error',
+            'height',
+            'is_audio',
+            'is_encrypted',
+            'is_live',
+            'width'
+          ) AS $key ) {
+            if( !empty($check[$key]) ) {
+              $video_data[$key] = $check[$key];
+            }
+          }
         }
       }
 
@@ -740,7 +776,10 @@ CREATE TABLE " . self::$db_table_name . " (
             'error' => false,
             'duration' => false,
             'is_live' => false,
-            'is_audio' => false
+            'is_audio' => false,
+            'width' => false,
+            'height' => false,
+            'aspect_ratio' => false
           )
         );
 
@@ -764,6 +803,26 @@ CREATE TABLE " . self::$db_table_name . " (
           unset($meta_data[$key]);
         }
 
+        if( $video_data['width'] ) {
+          $this->width = intval($video_data['width']);
+        } else {
+          $this->width = false;
+        }
+
+        if( $video_data['height'] ) {
+          $this->height = intval($video_data['height']);
+        } else {
+          $this->height = false;
+        }
+
+        if( $video_data['aspect_ratio'] ) {
+          $this->aspect_ratio = round( floatval($video_data['aspect_ratio']), 4 );
+        } else if( intval($this->width) > 0  && $this->height ) {
+          $this->aspect_ratio = round( $this->height/$this->width, 4 );
+        } else {
+          $this->aspect_ratio = false;
+        }
+
         if( $video_data['duration'] ) {
           $this->duration = $video_data['duration'];
 
@@ -785,6 +844,8 @@ CREATE TABLE " . self::$db_table_name . " (
         // TODO: Conversion process
         $live_key = array_search('live', array_column($meta_data, 'meta_key'));
         unset($meta_data[$live_key]);
+
+        if( !empty($video_data['is_encrypted']) ) {
           $meta_data[] = array(
             'meta_key' => 'encrypted',
             'meta_value' => true,

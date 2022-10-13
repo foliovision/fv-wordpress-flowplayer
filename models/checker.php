@@ -196,11 +196,21 @@ class FV_Player_Checker {
 
         if( (isset($meta_action) && $meta_action == 'check_time') || $force_is_cron ) {
           $time = false;
+          $width = false;
+          $height = false;
+
           if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
             $time = $ThisFileInfo['playtime_seconds'];    	
           }
+          if( !empty($ThisFileInfo['video']['resolution_x']) ) {
+            $width = intval($ThisFileInfo['video']['resolution_x']);
+          }
+          if( !empty($ThisFileInfo['video']['resolution_y']) ) {
+            $height = intval($ThisFileInfo['video']['resolution_y']);
+          }
 
           $is_audio = false;
+          $is_live = false;
           $is_encrypted = false;
 
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
@@ -263,6 +273,9 @@ class FV_Player_Checker {
                 
               }
 
+              $width = $resoluton_x_max;
+              $height = $resoluton_y_max;
+
               foreach($streams as $item){
                 $item_url = $item;
 
@@ -310,6 +323,8 @@ class FV_Player_Checker {
          
           $fv_flowplayer_meta['error'] = $error;
           $fv_flowplayer_meta['duration'] = $time;
+          $fv_flowplayer_meta['width'] = $width;
+          $fv_flowplayer_meta['height'] = $height;
           $fv_flowplayer_meta['is_live'] = $is_live;
           $fv_flowplayer_meta['is_audio'] = $is_audio;
           $fv_flowplayer_meta['is_encrypted'] = $is_encrypted;
@@ -352,48 +367,7 @@ class FV_Player_Checker {
             continue;
           }
 
-          // TODO: This should change to a proper filter at once
-          $meta_data = apply_filters('fv_player_meta_data', $url, false);
-
-          if( $meta_data == false || is_string($meta_data) && strcmp($meta_data,$url) == 0 ) {
-            if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
-              $url = $secured_url;
-            }
-
-            if( $check = $this->check_mimetype(array($url), false, true) ) {
-              $meta_data = $check;
-            }
-
-          }
-  
-          if( !empty($meta_data['thumbnail']) ) {
-            if( !$objVideo->getSplash() || $objVideo->getMetaValue('auto_splash',true) ) {
-              $video_object = new FV_Player_Db_Video( $objVideo->getId(), array(), $FV_Player_Db );
-              $video_object->link2db( $objVideo->getId() );
-              $video_object->set( 'splash', $meta_data['thumbnail'] );
-              $video_object->save();
-            }
-          }
-          
-          $objVideo->updateMetaValue('last_video_meta_check', time());
-          
-          if( $meta_data['duration'] ) {
-            $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );
-          }
-
-          if( $meta_data['error'] ) {
-            $objVideo->updateMetaValue( 'error', $meta_data['error'] );
-
-            $error_count = $objVideo->getMetaValue( 'error_count', true );
-            if( !$error_count ) {
-              $error_count = 0;
-            }
-            $objVideo->updateMetaValue( 'error_count', $error_count + 1 );
-
-          } else {
-            $objVideo->deleteMetaValue( 'error' );
-            $objVideo->deleteMetaValue( 'error_count' );
-          }
+          $objVideo->save();
 
         }
       }
