@@ -212,6 +212,28 @@ class FV_Player_List_Table extends WP_List_Table {
     <?php
   }
   
+  function get_columns() {
+    $cols = array(
+      //'cb'             => '<input type="checkbox" />',
+      'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
+      'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
+      'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
+      'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
+      'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
+      'subtitles_count'  => __( 'Subtitles', 'fv-wordpress-flowplayer' ),
+      'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
+      'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
+      'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' )
+    );
+
+    global $fv_fp;
+    if( $fv_fp->_get_option('video_stats_enable') ) {
+      $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
+    }
+
+    return $cols;
+  }
+
   public function get_sortable_columns() {
     return array(
       'id'               => array( 'id', true ),
@@ -345,6 +367,8 @@ class FV_Player_List_Table extends WP_List_Table {
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
+
+    if(!empty($this->args['player_id'])) $single_id = $this->args['player_id'];
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;
