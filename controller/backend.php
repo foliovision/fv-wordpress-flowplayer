@@ -909,3 +909,29 @@ function fv_player_submitbox_misc_actions( $attachment ) {
     }
   }
 }
+
+/**
+ * Admin add new player row by ajax
+ */
+add_action('wp_ajax_fv_player_table_new_row', 'fv_player_table_new_row');
+
+function fv_player_table_new_row() {
+  if( isset($_POST['playerID']) && isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-table_new_row_nonce-".get_current_user_id() ) ) {
+    $table = new FV_Player_List_Table( array(
+        'player_id' => intval($_POST['playerID']),
+        'per_page' => 25
+      ) 
+    );
+
+    ob_start();
+
+    $table->prepare_items();
+    $table->views();
+    $table->advanced_filters();
+    $table->display();
+
+    $output = ob_get_clean();
+
+    echo $output;
+  }
+}
