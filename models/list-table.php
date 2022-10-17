@@ -213,25 +213,8 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   function get_columns() {
-    $cols = array(
-      //'cb'             => '<input type="checkbox" />',
-      'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
-      'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
-      'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
-      'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
-      'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
-      'subtitles_count'  => __( 'Subtitles', 'fv-wordpress-flowplayer' ),
-      'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
-      'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
-      'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' )
-    );
-
-    global $fv_fp;
-    if( $fv_fp->_get_option('video_stats_enable') ) {
-      $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
-    }
-
-    return $cols;
+    global $FV_Player_List_Table_View;
+    return $FV_Player_List_Table_View->screen_columns();
   }
 
   public function get_sortable_columns() {
