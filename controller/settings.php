@@ -156,6 +156,8 @@ function fv_player_settings_save() {
         $to_save = $_POST;
       }
 
+      $to_save = apply_filters('fv_player_settings_save', $to_save);
+
       $fv_fp->_set_conf($to_save);
     } else {
       echo 'Error saving FV Flowplayer options.';
