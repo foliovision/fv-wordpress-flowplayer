@@ -1732,24 +1732,28 @@ jQuery(function() {
           fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
         }
       } else if( current_player_db_id > -1 ) {
-        var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
-        if( playerRow.length == 0 ) {
+        var placehoder = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
+        if( placehoder.length == 0 ) {
           var firstRow = $('#the-list tr:first'),
             newRow = firstRow.clone();
 
           newRow.find('td').html('');
-          playerRow = newRow.find('td').eq(0);
+          placehoder = newRow.find('td').eq(0);
 
           firstRow.before( newRow )
         }
 
-        playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
-        $.get(
-          fv_player_editor_conf.admin_url + '&id=' + current_player_db_id,
-          function (response) {
-            playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
-          });
+        jQuery.post( ajaxurl, {
+          action : 'fv_player_table_new_row',
+          nonce : fv_player_editor_conf.table_new_row_nonce,
+          playerID :  current_player_db_id
+        }, function(response) {
+          var row = jQuery(response).find('#the-list tr');
+          jQuery('#the-list').prepend(row);
+          placehoder.parent('tr').remove();
+        });
 
+        placehoder.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
       }
 
       // we need to do this now to make sure Heartbeat gets the correct data

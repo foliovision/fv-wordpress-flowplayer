@@ -212,6 +212,11 @@ class FV_Player_List_Table extends WP_List_Table {
     <?php
   }
   
+  function get_columns() {
+    global $FV_Player_List_Table_View;
+    return $FV_Player_List_Table_View->screen_columns();
+  }
+
   public function get_sortable_columns() {
     return array(
       'id'               => array( 'id', true ),
@@ -345,6 +350,8 @@ class FV_Player_List_Table extends WP_List_Table {
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
+
+    if(!empty($this->args['player_id'])) $single_id = $this->args['player_id'];
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;
