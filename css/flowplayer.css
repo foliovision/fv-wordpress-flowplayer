@@ -425,22 +425,6 @@
 .freedomplayer.fp-edgy.fp-outlined .fp-nextbtn:before, .freedomplayer.fp-edgy.fp-minimal .fp-nextbtn:before {
   content: "\e312"; }
 
-.freedomplayer.no-svg .fp-ui .fp-header, .freedomplayer.no-svg .fp-ui .fp-controls {
-  background-color: #333; }
-
-.freedomplayer.no-svg .fp-ui .fp-play.fp-visible {
-  background-color: #ccc;
-  position: absolute;
-  padding-top: 17%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0; }
-  .freedomplayer.no-svg .fp-ui .fp-play.fp-visible svg {
-    display: none; }
-  .freedomplayer.no-svg .fp-ui .fp-play.fp-visible .fp-playbtn {
-    display: inline; }
-
 .freedomplayer .fp-player, .freedomplayer .fp-ui, .freedomplayer .fp-header, .freedomplayer .fp-captions, .freedomplayer .fp-controls {
   position: absolute;
   width: 100%; }
@@ -1067,6 +1051,7 @@
   height: 0 !important;
   overflow: hidden !important;
   position: absolute; }
+
 
 
 /*
@@ -2415,45 +2400,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   visibility: hidden;
 }
 
-.flowplayer .fv-fp-tap-left,
-.flowplayer .fv-fp-tap-right {
-  top: 0;
-  left: 0;
-  width: 45%;
-  height: calc( 100% - 6em );
-  margin: 3em 0;
-  position: absolute;
-  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  touch-action: pan-x pan-y pinch-zoom;
-}
-.flowplayer .fv-fp-tap-right {
-  left: auto;
-  right: 0;  
-}
-.flowplayer .fv-fp-tap-left span,
-.flowplayer .fv-fp-tap-right span {
-  font-size: 1.5em;
-  opacity: 0;
-  position: relative;
-  top: 25%;
-}
-.flowplayer .fv-fp-tap-left.is-active span,
-.flowplayer .fv-fp-tap-right.is-active span {
-  animation: fv-player-tap-left-right 0.5s ease-out;
-}
-@keyframes fv-player-tap-left-right {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-.flowplayer.no-controlbar .fv-fp-tap-left,
-.flowplayer.no-controlbar .fv-fp-tap-right {
-  display: none;
-}
-
 /* Click to unmute */
 .flowplayer .fp-message-muted { opacity: 0; text-align: center }
 .flowplayer.is-mouse-over .fp-message-muted { opacity: 1 }
@@ -2485,11 +2431,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 }
 .flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header > * {
   pointer-events: auto;
-}
-.flowplayer.is-tiny.is-fullscreen .fv-fp-tap-left, .flowplayer.is-tiny.is-fullscreen .fv-fp-tap-right {
-  height: 50%;
-  margin: 0;
-  top: 25%;
 }
 
 /* Videos pending encoding */

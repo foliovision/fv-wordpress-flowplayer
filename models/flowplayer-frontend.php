@@ -469,7 +469,7 @@ class flowplayer_frontend extends flowplayer
           $bIsAudio = false;
         }
         
-        $attributes['class'] = 'flowplayer no-brand is-splash';
+        $attributes['class'] = 'freedomplayer flowplayer no-brand is-splash';
         
         if( !empty($this->aCurArgs['skin']) ) {
           $skin = 'skin-'.$this->aCurArgs['skin'];
