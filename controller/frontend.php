@@ -345,9 +345,9 @@ function flowplayer_prepare_scripts() {
     $aConf = array( 'fv_fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
 
     // Load base Flowplayer library
-    $path = '/flowplayer/modules/flowplayer.min.js';
-    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
-      $path = '/flowplayer/modules/flowplayer.js';
+    $path = '/flowplayer/modules/freedomplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/freedomplayer.js') ) {
+      $path = '/flowplayer/modules/freedomplayer.js';
     }
     
     $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_core_ver;

@@ -219,12 +219,12 @@ function fv_wp_flowplayer_check_script_version( $url ) {
   }
 
   // when using SCRIPT_DEBUG
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=' ) !== false ) {
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/freedomplayer.min.js?ver=' ) !== false ) {
 		return 1;
   }
   
   // when using SCRIPT_DEBUG with Google PageSpeed module
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js,qver=' ) !== false ) {
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/freedomplayer.min.js,qver=' ) !== false ) {
     return 1;
   }
 
