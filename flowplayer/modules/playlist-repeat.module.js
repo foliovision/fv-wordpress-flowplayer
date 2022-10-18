@@ -171,7 +171,7 @@ flowplayer( function(api,root) {
           api.seek(api.video.time-10);
         });
 
-        button_rewind.toggle(!api.video.live);
+        button_rewind.toggle( !api.video.live || api.video.dvr );
       }
 
       if( root.find('.fv-fp-forward').length == 0 ) {
@@ -184,7 +184,7 @@ flowplayer( function(api,root) {
           api.seek(api.video.time+10);
         });
 
-        button_forward.toggle(!api.video.live);
+        button_forward.toggle( !api.video.live || api.video.dvr );
       }
     }
 

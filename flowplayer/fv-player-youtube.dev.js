@@ -1,9 +1,25 @@
-/*global YT, fv_player_log */
+/*global YT, fv_player_log, fv_player_track */
+
+/*eslint no-inner-declarations: 0*/
+/*eslint no-cond-assign: 0*/
+
+/*
+ * Moved in from FV Player Pro
+ * For full comit history check foliovision/fv-player-pro/blob/517cb6ef122e507f6ba7744e591b3825a643abe4/beta/js/youtube.module.js
+ */
 
 if( fv_flowplayer_conf.youtube ) {
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
+  // If jQuery is already present use it to load the API as it won't show in browser as if the page is loading
+  // This is important if YouTube has issues in your location, it might just time out while loading
+  if( window.aaajQuery ) {
+    jQuery.getScript("https://www.youtube.com/iframe_api");
+
+  // ...loading it this way show the browser loading indicator for the tab
+  } else {
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+  }
 }
 
   
@@ -12,13 +28,17 @@ if( fv_flowplayer_conf.youtube ) {
 if( typeof(flowplayer) != "undefined" ) {
   
   function fv_player_pro_youtube_get_video_id( src ) {
-    if( aMatch = src.match(/(?:\?|&)v=([a-zA-Z0-9_\-]+)(?:\?|$|&)/) ){
+    var aMatch;
+    if( aMatch = src.match(/(?:\?|&)v=([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
     }
-    if( aMatch = src.match(/youtu.be\/([a-zA-Z0-9_\-]+)(?:\?|$|&)/) ){
+    if( aMatch = src.match(/youtu.be\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];  
     }
-    if( aMatch = src.match(/embed\/([a-zA-Z0-9_\-]+)(?:\?|$|&)/) ){
+    if( aMatch = src.match(/embed\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
+      return aMatch[1];  
+    }
+    if( aMatch = src.match(/shorts\/([a-zA-Z0-9_-]+)/) ){
       return aMatch[1];  
     }  
     return false;
@@ -101,8 +121,7 @@ if( typeof(flowplayer) != "undefined" ) {
         jQuery('.fp-ui',root).css('background-image','');
         jQuery('.fp-ui',root).append('<div class="wpfp_custom_popup fp-notice-load" style="height: 100%"><div class="wpfp_custom_popup_content">' + fv_flowplayer_translations.video_loaded + '</div></div>'); //  we show this so that we can capture the user click
         
-        var i = player.video.index;
-        jQuery('.fp-notice-load').one( 'click', function(e) {                                            
+        jQuery('.fp-notice-load').one( 'click', function()  {
           jQuery('.fp-notice-load',root).remove();
           
           //var api = jQuery(root).data('flowplayer');
@@ -186,11 +205,11 @@ if( typeof(flowplayer) != "undefined" ) {
       //if( root.find('.fake-video') ) return; // don't preload if FV Player VAST has decided to put in bogus video tag for the video ad
       
       api.loading = true;      
-      root.addClass('is-loading');      
-      
+      root.addClass('is-loading');
+
       var common = flowplayer.common,
         video_id = api.conf.item ? fv_player_pro_youtube_get_video_id(api.conf.item.sources[0].src) : fv_player_pro_youtube_get_video_id(api.conf.clip.sources[0].src); // exp: not sury why api.conf.clip sometimes fails?!
-      
+
       common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
       var wrapperTag = common.createElement("div");    
       wrapperTag.className = 'fp-engine fvyoutube-engine';
@@ -294,8 +313,14 @@ if( typeof(flowplayer) != "undefined" ) {
           var src = player.video.index > 0 ? player.conf.playlist[player.video.index].sources[0].src : player.conf.clip.sources[0].src;
           
           fv_player_track( player, false, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", "YouTube video removed", src );
-          
-          if( player.conf.clip.sources.length > 1 ) {
+
+          // Unfortunately the player had to enter the ready state to get this far
+          // So we act as if it's the splash state - means no controls
+          root.addClass('is-splash');
+
+          // If it's not a playlist or there are other sources trigger error
+          // In case of other sources FV Player Alternative Sources will play the other source
+          if( player.conf.playlist.length == 0 || player.conf.clip.sources.length > 1 ) {
             player.trigger('error', [ player, { code: 4, video: player.video } ] );
             
           } else {
@@ -321,7 +346,7 @@ if( typeof(flowplayer) != "undefined" ) {
         }
         
         
-        function onApiChange(e) {
+        function onApiChange() {
           player.one('ready progress', function() { //  exp: primary issue here is that the event fires multiple times for each video. And also Flowplayer won't remove the subtitles button/menu when you switch videos            
             
             if( youtube.getOptions().indexOf('captions') > -1 ) {
@@ -342,7 +367,6 @@ if( typeof(flowplayer) != "undefined" ) {
               
               //  core FP createUIElements()
               var common = flowplayer.common;
-              var bean = flowplayer.bean;
               wrap = common.find('.fp-captions', root)[0];
               var wrap = common.find('.fp-subtitle', root)[0];
               wrap = wrap || common.appendTo(common.createElement('div', {'class': 'fp-captions'}), common.find('.fp-player', root)[0]);
@@ -374,8 +398,21 @@ if( typeof(flowplayer) != "undefined" ) {
                 jQuery(this).addClass('fp-selected');
                 
                 if( aSubtitles[jQuery(this).data('yt-subtitle-index')] ) {
+                  // Was the NL option in use?
+                  if( root.data('fv-player-youtube-nl') == undefined ) {
+                    root.data('fv-player-youtube-nl', root.hasClass('is-youtube-nl') );
+                  }
+
+                  // Do not use the NL mode as it would prevent the subtitles from showing
+                  root.removeClass('is-youtube-nl');
+
                   youtube.setOption('captions','track',{"languageCode": aSubtitles[jQuery(this).data('yt-subtitle-index')].languageCode});
                 } else {
+                  if( root.data('fv-player-youtube-nl') ) {
+                    // Back to NL if it was enabled before
+                    root.addClass('is-youtube-nl');
+                  }
+
                   youtube.unloadModule("captions");
                 }
                 
@@ -386,7 +423,7 @@ if( typeof(flowplayer) != "undefined" ) {
         }
         
         
-        function onReady(e) {
+        function onReady() {
           // YouTube doesn't tell us if it's a live stream
           // but it seems when you check the duration in this moment
           // it gives 0 on live streams
@@ -640,13 +677,11 @@ if( typeof(flowplayer) != "undefined" ) {
                    'hd720': 'hd'
                }
             },
-            bean = flowplayer.bean,
             common = flowplayer.common,
             intUIUpdate = false,
             isMobile = fv_player_pro_youtube_is_mobile(),
             loadVideo,
             root = jQuery(root),
-            videoTag,
             youtube,
             live_stream_start_time = 0;
 
@@ -665,8 +700,6 @@ if( typeof(flowplayer) != "undefined" ) {
                   return;
                 }
 
-                var is_playlist = jQuery('[rel='+jQuery(root).attr('id')+']').find('.is-active').length;  //  exp: ugly way of detecign if the playback was initiated via playlist clik
-                
                 if( youtube ) {//console.log('YT already loaded');
                   if( !flowplayer.support.dataload && !flowplayer.support.inlineVideo  ) {  //  exp: for old iOS
                     youtube.cueVideoById( video_id, 0, 'default' );
@@ -717,6 +750,10 @@ if( typeof(flowplayer) != "undefined" ) {
                     }
                     
                     clearInterval(intLoad);
+
+                    /*var had_youtube_before = 
+                      jQuery('presto-player[src*=\\.youtube\\.com], presto-player[src*=\\.youtu\\.be], presto-player[src*=\\.youtube-nocookie\\.com]').length ||
+                      jQuery('iframe[src*=\\.youtube\\.com], iframe[src*=\\.youtu\\.be], iframe[src*=\\.youtube-nocookie\\.com]').length;*/
                     
                     youtube = new YT.Player(
                       wrapperTag,
@@ -728,10 +765,20 @@ if( typeof(flowplayer) != "undefined" ) {
                       })
                     );
                                         
+                    /*if( had_youtube_before ) {
+                      //youtube.loadVideoById( video_id, 0, 'default' );
+
+                      setTimeout( function() {
+                        onReady();        
+                      },1000);
+                    }
+
+                    console.log(youtube);*/
+             
                     var iframe = jQuery('.fp-engine.fvyoutube-engine',root);
                     iframe[0].allowFullscreen = false;
                     /* in Chrome it's possible to double click the video entery YouTube fullscreen that way. Cancelling the event won't help, so here is a pseudo-fix */
-                    iframe.on("webkitfullscreenchange", function(e) {
+                    iframe.on("webkitfullscreenchange", function() {
                       if (document.webkitCancelFullScreen) {
                         document.webkitCancelFullScreen();
                       }
@@ -745,8 +792,6 @@ if( typeof(flowplayer) != "undefined" ) {
                 var FS_ENTER = "fullscreen",
                   FS_EXIT = "fullscreen-exit",
                   FS_SUPPORT = flowplayer.support.fullscreen,
-                  ua = navigator.userAgent.toLowerCase(),
-                  IS_SAFARI = /(safari)[ \/]([\w.]+)/.exec(ua) && !/(chrome)[ \/]([\w.]+)/.exec(ua),
                   win = window,
                   scrollX,
                   scrollY;
@@ -936,7 +981,13 @@ if( typeof(flowplayer) != "undefined" ) {
     
     flowplayer( function(api,root) {
       if( jQuery(root).hasClass('lightboxed') ) return;
-      if( fv_player_pro_youtube_is_mobile() ) fv_player_pro_youtube_preload(root,api);
+
+      if( fv_player_pro_youtube_is_mobile() ) {
+        // Give Flowplayer a bit of time to finish initializing, like the unload event for splash state players has to finish
+        setTimeout( function() {
+          fv_player_pro_youtube_preload(root,api);
+        });
+      }
     });
     
     jQuery(document).ready( function() {
