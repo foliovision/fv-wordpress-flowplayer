@@ -99,6 +99,8 @@ if( is_admin() ) {
   include_once(dirname( __FILE__ ) . '/models/conversion.php');
   include_once( dirname( __FILE__ ) .'/models/splash-download.php');
 
+  include_once( dirname( __FILE__ ) . '/view/fv-player.php' );
+
   register_deactivation_hook( __FILE__, 'flowplayer_deactivate' );
 }
 
