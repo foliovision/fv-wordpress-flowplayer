@@ -131,7 +131,7 @@
   .freedomplayer.is-loading .fp-waiting svg, .freedomplayer.is-loading .fp-waiting p, .freedomplayer.is-seeking .fp-waiting svg, .freedomplayer.is-seeking .fp-waiting p {
     opacity: 1; }
 
-.freedomplayer.is-loading .fp-play, .freedomplayer.is-seeking .fp-play {
+.freedomplayer.is-loading .fp-play, .freedomplayer.is-loading .fp-pause, .freedomplayer.is-seeking .fp-play, .freedomplayer.is-seeking .fp-pause {
   display: none !important; }
 
 .freedomplayer.is-disabled .fp-play, .freedomplayer.is-disabled .fp-pause, .freedomplayer.is-disabled .fp-fullscreen {
