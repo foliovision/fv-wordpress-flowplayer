@@ -652,9 +652,13 @@ jQuery(document).ready(function($) {
   });
 
   // no sorting of settings boxes please
-  setTimeout( function() {
-    jQuery('#normal-sortables').sortable( "disable" )
-  }, 0 );
+  var fv_player_no_sortable = setInterval( function() {
+    try {
+      jQuery('#normal-sortables').sortable( "disable" )
+
+      clearInterval(fv_player_no_sortable);
+    } catch(e) {}
+  }, 10 );
 
 });
 </script>
