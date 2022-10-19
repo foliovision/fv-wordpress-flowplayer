@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'WP_List_Table' ) ) {
   require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
-
+  
 class FV_Player_List_Table extends WP_List_Table {
 
   public $args;
@@ -22,13 +22,14 @@ class FV_Player_List_Table extends WP_List_Table {
   
   private $dropdown_cache = false;
 
-  public function __construct( $args ) {
+  public function __construct( $args = array() ) {
     $this->args = $args;
     //var_dump($args);
     parent::__construct( array(
       'singular' => 'Log entry',
       'plural'   => 'Log entries',
       'ajax'     => false,
+      'screen'   => !empty($args['screen']) ? $args['screen'] : false
     ) );
 
     // initialize video and video meta objects, so if there are no video tables created in the DB,
