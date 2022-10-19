@@ -441,7 +441,8 @@
   background-size: contain;
   zoom: 1 !important;
   width: 100%;
-  display: inline-block; }
+  display: inline-block;
+  -webkit-tap-highlight-color: transparent; }
   .freedomplayer .fp-hidden, .freedomplayer strong.fp-hidden {
     display: none; }
   .freedomplayer .fp-shown {
@@ -625,6 +626,10 @@
   .freedomplayer .fp-forward {
     left: auto;
     right: 0; }
+    .freedomplayer .fp-forward svg {
+      margin-left: 0; }
+  .freedomplayer .fp-rewind svg {
+    margin-right: 0; }
   .freedomplayer.is-mouseover.is-ready .fp-forward, .freedomplayer.is-mouseover.is-ready .fp-rewind {
     display: block; }
     .freedomplayer.is-mouseover.is-ready .fp-forward svg, .freedomplayer.is-mouseover.is-ready .fp-rewind svg {
