@@ -1847,6 +1847,9 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer a.fp-sticky:before {  
   content: "\e10f";
 }
+.flowplayer.is-fullscreen a.fp-sticky {
+  display: none;
+}
 div.fp-player.is-sticky {
   transform: translateX(-20px);
   -ms-transform: translateX(-20px);
