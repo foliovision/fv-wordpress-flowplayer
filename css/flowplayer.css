@@ -34,20 +34,6 @@
   display: flex;
   line-height: 0; }
 
-.fp-share:before {
-  content: "\e009"; }
-
-.fp-share2:before {
-  content: "\e00a"; }
-
-.fp-twitter:before {
-  content: "\e00c";
-  color: #1da1f2; }
-
-.fp-facebook:before {
-  content: "\e00a";
-  color: #3b5998; }
-
 .fp-volumebtn:before {
   content: "\e00b"; }
 
@@ -338,9 +324,6 @@
 .freedomplayer.fp-edgy .fp-checked:before {
   content: "\e103"; }
 
-.freedomplayer.fp-edgy .fp-embed:before {
-  content: "\e104"; }
-
 .freedomplayer.fp-edgy .fp-chromecast:before {
   content: "\e105"; }
 
@@ -349,18 +332,6 @@
 
 .freedomplayer.fp-edgy .fp-playbtn:before {
   content: "\e107"; }
-
-.freedomplayer.fp-edgy .fp-share:before {
-  content: "\e109"; }
-
-.freedomplayer.fp-edgy .fp-share2:before {
-  content: "\e10a"; }
-
-.freedomplayer.fp-edgy .fp-twitter:before {
-  content: "\e10c"; }
-
-.freedomplayer.fp-edgy .fp-facebook:before {
-  content: "\e10a"; }
 
 .freedomplayer.fp-edgy .fp-volumebtn:before {
   content: "\e10b"; }
@@ -386,9 +357,6 @@
 .freedomplayer.fp-edgy.fp-outlined .fp-checked:before, .freedomplayer.fp-edgy.fp-minimal .fp-checked:before {
   content: "\e303"; }
 
-.freedomplayer.fp-edgy.fp-outlined .fp-embed:before, .freedomplayer.fp-edgy.fp-minimal .fp-embed:before {
-  content: "\e304"; }
-
 .freedomplayer.fp-edgy.fp-outlined .fp-chromecast:before, .freedomplayer.fp-edgy.fp-minimal .fp-chromecast:before {
   content: "\e305"; }
 
@@ -397,18 +365,6 @@
 
 .freedomplayer.fp-edgy.fp-outlined .fp-playbtn:before, .freedomplayer.fp-edgy.fp-minimal .fp-playbtn:before {
   content: "\e307"; }
-
-.freedomplayer.fp-edgy.fp-outlined .fp-share:before, .freedomplayer.fp-edgy.fp-minimal .fp-share:before {
-  content: "\e309"; }
-
-.freedomplayer.fp-edgy.fp-outlined .fp-share2:before, .freedomplayer.fp-edgy.fp-minimal .fp-share2:before {
-  content: "\e30a"; }
-
-.freedomplayer.fp-edgy.fp-outlined .fp-twitter:before, .freedomplayer.fp-edgy.fp-minimal .fp-twitter:before {
-  content: "\e30c"; }
-
-.freedomplayer.fp-edgy.fp-outlined .fp-facebook:before, .freedomplayer.fp-edgy.fp-minimal .fp-facebook:before {
-  content: "\e30a"; }
 
 .freedomplayer.fp-edgy.fp-outlined .fp-volumebtn:before, .freedomplayer.fp-edgy.fp-minimal .fp-volumebtn:before {
   content: "\e30b"; }
@@ -920,13 +876,6 @@
       white-space: nowrap; }
   .freedomplayer .fp-subtitle-menu {
     width: auto; }
-  .freedomplayer .fp-share-menu {
-    width: 9em;
-    padding-bottom: 0.2em; }
-    .freedomplayer .fp-share-menu.fp-active {
-      bottom: auto; }
-    .freedomplayer .fp-share-menu a, .freedomplayer .fp-share-menu strong {
-      text-align: left; }
   .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-outlined .fp-waiting svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-waiting svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-waiting svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-waiting svg.fp-pause-rounded-fill {
     display: none; }
   .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-outlined .fp-waiting svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-waiting svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-waiting svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-waiting svg.fp-pause-rounded-outline {
@@ -937,22 +886,12 @@
     content: "\e202"; }
   .freedomplayer.fp-outlined .fp-checked:before, .freedomplayer.fp-minimal .fp-checked:before {
     content: "\e203"; }
-  .freedomplayer.fp-outlined .fp-embed:before, .freedomplayer.fp-minimal .fp-embed:before {
-    content: "\e204"; }
   .freedomplayer.fp-outlined .fp-chromecast:before, .freedomplayer.fp-minimal .fp-chromecast:before {
     content: "\e205"; }
   .freedomplayer.fp-outlined .fp-email:before, .freedomplayer.fp-minimal .fp-email:before {
     content: "\e206"; }
   .freedomplayer.fp-outlined .fp-playbtn:before, .freedomplayer.fp-minimal .fp-playbtn:before {
     content: "\e207"; }
-  .freedomplayer.fp-outlined .fp-share:before, .freedomplayer.fp-minimal .fp-share:before {
-    content: "\e209"; }
-  .freedomplayer.fp-outlined .fp-share2:before, .freedomplayer.fp-minimal .fp-share2:before {
-    content: "\e20a"; }
-  .freedomplayer.fp-outlined .fp-twitter:before, .freedomplayer.fp-minimal .fp-twitter:before {
-    content: "\e20c"; }
-  .freedomplayer.fp-outlined .fp-facebook:before, .freedomplayer.fp-minimal .fp-facebook:before {
-    content: "\e20a"; }
   .freedomplayer.fp-outlined .fp-volumebtn:before, .freedomplayer.fp-minimal .fp-volumebtn:before {
     content: "\e20b"; }
   .freedomplayer.fp-outlined .fp-volume-off:before, .freedomplayer.fp-minimal .fp-volume-off:before {
