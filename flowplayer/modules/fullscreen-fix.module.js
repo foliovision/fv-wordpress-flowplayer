@@ -106,7 +106,12 @@ flowplayer(function(player, root) {
       common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
       common.removeClass(root, 'fp-minimal');
 
-      if (!FS_SUPPORT) common.css(root, 'position', 'fixed');
+      if (!FS_SUPPORT) {
+        common.css(root, 'position', 'fixed');
+
+        sanitize_parent_elements(true);
+      }
+
       player.isFullscreen = true;
 
    }).on(FS_EXIT, function() {
@@ -117,7 +122,11 @@ flowplayer(function(player, root) {
         oldOpacity = root.css('opacity') || '';
         common.css(root, 'opacity', 0);
       }
-      if (!FS_SUPPORT) common.css(root, 'position', '');
+      if (!FS_SUPPORT) {
+        common.css(root, 'position', '');
+
+        sanitize_parent_elements(false);
+      }
 
       common.removeClass(root, 'is-fullscreen');
       if (!FS_SUPPORT && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
@@ -134,4 +143,25 @@ flowplayer(function(player, root) {
      FULL_PLAYER = null;
      common.removeNode(wrapper);
    });
+
+   /*
+    * iPhone fullscreen is CSS-based and it can't work if the parent elements use CSS transform
+    * So we get rid of these rules even entering fullscreen and put them back when leaving
+    * We also reset the z-index as with that the fixed position elements would appear on top of the video
+    */
+   function sanitize_parent_elements( add ) {
+     var parent = root;
+     while (parent) {
+       try {
+         var styles = getComputedStyle(parent);
+         if( styles.transform ) {
+           parent.style.transform = add ? 'none' : '';
+         }
+         if( styles.zIndex ) {
+          parent.style.zIndex = add ? 'auto' : '';
+        }
+       } catch(e) {}
+       parent = parent.parentNode;
+     }
+   }
 });

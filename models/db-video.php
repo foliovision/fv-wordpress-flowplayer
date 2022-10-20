@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback
+/*  FV Wordpress Flowplayer - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -272,6 +272,8 @@ CREATE TABLE " . self::$db_table_name . " (
         
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
+            if( !is_string($value) ) $value = '';
+
             $this->$key = strip_tags( stripslashes($value) );
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
@@ -717,6 +719,10 @@ CREATE TABLE " . self::$db_table_name . " (
             $existing_meta_ids[$existing->getId()] = true;
           }
         }
+
+        // Clear previous checker error
+        $this->deleteMetaValue( 'error' );
+        $this->deleteMetaValue( 'error_count' );
         
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
@@ -831,5 +837,36 @@ CREATE TABLE " . self::$db_table_name . " (
       var_export($wpdb->last_query);*/
       return false;
     }
+  }
+
+/**
+   * Updates or instert a video meta row
+   *
+   * @param string $key   The meta key
+   * @param string $value Option meta value to remove
+   *
+   * @throws Exception    When the underlying Meta object throws.
+   *
+   * @return int          Returns number of removed meta rows
+   * 
+   */
+  public function deleteMetaValue( $key, $value = false ) {
+    $deleted = 0;
+    $data = $this->getMetaData();
+
+    if( count($data) ) {      
+      foreach( $data as $meta_object ) {
+        if(
+          $meta_object->getMetaKey() == $key &&
+          ( !$value || $meta_object->getMetaValue() == $value )
+        ) {
+          if( $meta_object->delete() ) {
+            $deleted++;
+          }
+        }
+      }
+    }
+
+    return $deleted;
   }
 }

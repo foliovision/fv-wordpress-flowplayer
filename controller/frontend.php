@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+/*  FV Wordpress Flowplayer - HTML5 video player    
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -40,8 +40,6 @@ function fv_flowplayer_ap_action_init(){
 add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
-  
-  $sWhy = __(' <a target="_blank" href="https://foliovision.com/2017/05/issues-with-vimeo-on-android">Why?</a>','fv-wordpress-flowplayer');
   
   $aStrings = array(
   0 => '',
@@ -85,8 +83,8 @@ function fv_flowplayer_get_js_translations() {
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
-  'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer').$sWhy,
-  'warning_samsungbrowser' => __('You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer').$sWhy,
+  'warning_unstable_android' => __('You are using an old Android device. If you experience issues with the video please use <a href="https://play.google.com/store/apps/details?id=org.mozilla.firefox">Firefox</a>.','fv-wordpress-flowplayer'),
+  'warning_samsungbrowser' => __('You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
   'warning_old_safari' => __('You are using an old Safari browser. If you experience issues with the video please use <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> or other modern browser.','fv-wordpress-flowplayer'),
   'warning_old_chrome' => __('You are using an old Chrome browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
   'warning_old_firefox' => __('You are using an old Firefox browser. Please make sure you use the latest version.','fv-wordpress-flowplayer'),
@@ -109,6 +107,8 @@ function fv_flowplayer_get_js_translations() {
   'audio_button' => __('AUD', 'fv-wordpress-flowplayer'),
   'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
   'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
+  'invalid_youtube' => __('Invalid Youtube video ID.', 'fv-player-pro'),
+  'video_loaded' => __('Video loaded, click to play.', 'fv-player-pro'),
 );
 
   return $aStrings;
@@ -328,26 +328,26 @@ function flowplayer_prepare_scripts() {
      $fv_fp->should_force_load_js() ||
      isset($_GET['fv_wp_flowplayer_check_template']) 
   ){
-    
+
     $aDependencies = array('jquery');
     if( $fv_fp->should_force_load_js() || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
-    
+
     if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
-    
+
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
-  
+
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
-    $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
-    
+    $sLogo = $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
+
     $aConf = array( 'fv_fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
-    
+
     // Load base Flowplayer library
-    $path = '/flowplayer/modules/flowplayer.min.js';
-    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
-      $path = '/flowplayer/modules/flowplayer.js';
+    $path = '/flowplayer/freedomplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../flowplayer/freedomplayer.js') ) {
+      $path = '/flowplayer/freedomplayer.js';
     }
     
     $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_core_ver;
@@ -400,6 +400,7 @@ function flowplayer_prepare_scripts() {
     if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') ) {
       $aConf['video_checker_site'] = home_url();
     }
+
     if( $sLogo ) $aConf['logo'] = $sLogo;
 
     // Used to restore volume, removed in JS if volume stored in browser localStorage    
@@ -433,16 +434,25 @@ function flowplayer_prepare_scripts() {
     }
     
     if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.1.3', true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.2.3', true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.1.3';
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.2.3';
+
+    $dashjs_version = $fv_wp_flowplayer_ver.'-3.2.2-mod';
         
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
-      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $dashjs_version, true );
     }
-    $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js?ver='.$fv_wp_flowplayer_ver;
-    $aConf['script_dash_js_version'] = '2.7';
-        
+    $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js?ver='.$dashjs_version;
+
+    if( $fv_fp->should_force_load_js() || FV_Player_YouTube()->bYoutube || did_action('fv_player_extensions_admin_load_assets') ) {
+      $youtube_js = 'fv-player-youtube.min.js';
+      
+      if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $youtube_js = 'fv-player-youtube.dev.js';
+
+      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/' . $youtube_js , array('flowplayer'), $fv_wp_flowplayer_ver, true );
+    }
+
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
@@ -760,7 +770,7 @@ function fv_player_js_loader_load() {
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
   $filesystem = new WP_Filesystem_Direct( new StdClass() );
   
-  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.babel.js' );
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.min.js' );
   
   // remove /* comments */
   $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
@@ -832,4 +842,50 @@ function fv_player_wp_rocket_used_css( $safelist ) {
   $safelist[] = '/wp-content/plugins/fv-wordpress-flowplayer*';
   $safelist[] = '/wp-content/plugins/fv-player-*';
   return $safelist;
+}
+
+
+/*
+ * SiteGround Security "Lock and Protect System Folders" exclusion
+ * 
+ * The plugins normally blocks direct PHP calls in wp-content folder, we allow track.php requests for FV Player tracking this way
+ * Unfortunately it uses simple rule like <Files track.php> so we cannot include the folder name.
+ */
+add_filter( 'sgs_whitelist_wp_content' , 'fv_player_sgs_whitelist_wp_content' );
+
+function fv_player_sgs_whitelist_wp_content( $exclusions ) {
+  global $fv_fp;
+  if( $fv_fp->_get_option('video_stats_enable') ) {
+    $exclusions[] = 'track.php';
+  }
+  return $exclusions;
+}
+
+
+/*
+ * SiteGround Optimizer unfortunately does not process the scripts enqueued after wp_head has finished.
+ * So then "Defer Render-blocking JavaScript" does not defer FV Player but it defect jQuery.
+ * So we have to make sure jQuery is not defered as FV Player scripts depend on it.
+ * There are no issues when using "Combine JavaScript Files"
+ */
+add_filter( 'sgo_js_async_exclude', 'fv_player_sgo_js_async_exclude' );
+
+function fv_player_sgo_js_async_exclude( $excluded_scripts ) {
+  $excluded_scripts[] = 'jquery-core';
+  return $excluded_scripts;
+}
+
+/*
+ * Some themes do not remove shortcodes when showing excerpts.
+ * So we remove [fvplayer...] as in excerpt it would only show "Please enable JavaScript" kind of message.
+ */
+
+// Learnify, this filter seems to run for excerpts only, see learnify_show_post_content()
+add_filter( 'learnify_filter_post_content', 'fv_player_remove_for_excerpt' );
+
+function fv_player_remove_for_excerpt( $post_content ) {
+  if( is_archive() ) {
+    $post_content = preg_replace( '~\[fvplayer.*?\]~', '', $post_content );
+  }
+  return $post_content;
 }

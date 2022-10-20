@@ -19,7 +19,7 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
     
     add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://vimeo.com/255317467" playlist="https://vimeo.com/192934117" caption=";Talking about FV Player"]');
     add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://vimeo.com/255370388"]');
-    add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://www.youtube.com/watch?v=6ZfuNTqbHE8"]]');
+    add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://www.youtube.com/watch?v=6ZfuNTqbHE8"]');
     
     $profileuser = get_user_to_edit($this->userID);
     

@@ -4,7 +4,8 @@
 #content .flowplayer.is-mouseover.is-ready:not(.is-audio) .fv-player-video-checker small,
 .flowplayer.is-mouseover.is-ready:not(.is-audio) .fv-player-video-checker small,
 #content .flowplayer.is-ready.is-paused:not(.is-audio) .fv-player-video-checker small,
-.flowplayer.is-ready.is-paused:not(.is-audio) .fv-player-video-checker small { top: 3em }
+.flowplayer.is-ready.is-paused:not(.is-audio) .fv-player-video-checker small,
+.flowplayer.is-error:not(.is-audio) .fv-player-video-checker small { top: 3em }
 #content .flowplayer .fv-player-video-checker.is-open small,
 .flowplayer .fv-player-video-checker.is-open small,
 #content .flowplayer.has-video-checker .fv-player-video-checker.is-open small,

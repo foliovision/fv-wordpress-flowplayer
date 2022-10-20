@@ -871,7 +871,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
             }
+          } else if( strcmp( $v['type'], 'video/youtube') === 0 ) {
+            continue;
           }
+
           $aTest_media[] = $temp_media;
         }
       }
@@ -1373,13 +1376,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
-        $sCSS = "bottom: 30px; left: 15px";
+        $sCSS = "bottom: 30px; left: 15px;";
       } else if( $value == 'bottom-right' ) {
-        $sCSS = "bottom: 30px; right: 15px; left: auto";
+        $sCSS = "bottom: 30px; right: 15px; left: auto;";
       } else if( $value == 'top-left' ) {
-        $sCSS = "top: 30px; left: 15px; bottom: auto";
+        $sCSS = "top: 30px; left: 15px; bottom: auto;";
       } else if( $value == 'top-right' ) {
-        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto";
+        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto;";
       }
       ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
       

@@ -54,6 +54,8 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
           e.preventDefault();
           fv_player_notice(root,fv_flowplayer_translations.link_copied,2000);
         });
+
+        return false;
       })
     }
   })

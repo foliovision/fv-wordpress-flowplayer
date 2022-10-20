@@ -2,7 +2,7 @@
   "name": "fv-wordpress-flowplayer",
   "version": "1.0.0",
   "license": "GPL-3.0",
-  "description": "Extension for FV Player - Wordpress's most reliable, easy to use and feature-rich video player.",
+  "description": "FV Player - Wordpress's most reliable, easy to use and feature-rich video player.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "npx npm-force-resolutions"
@@ -25,6 +25,7 @@
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
+    "gulp-rename": "^2.0.0",
     "gulp-sort": "^2.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-uglify": "^3.0.2",

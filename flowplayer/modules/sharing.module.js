@@ -111,10 +111,7 @@ flowplayer( function(api,root) {
   api.one("ready", function (e, api, video) {
     root.find('.fp-chromecast').insertAfter( root.find('.fp-header .fp-fullscreen') );
   });
-  
-  // replacing loading SVG with CSS animation
-  root.find('.fp-waiting').html('<div class="fp-preload"><b></b><b></b><b></b><b></b></div>');    
-  
+
   var id = root.attr('id'),
     alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen,
     events_enter = 'fakefullscreen',
