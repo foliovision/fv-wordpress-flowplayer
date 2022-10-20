@@ -1035,7 +1035,7 @@ var fv_player_clipboard = function(text, successCallback, errorCallback) {
     navigator.clipboard.writeText(text).then(function() {
         successCallback();
       }, function() {
-        errorCallback();
+        if( typeof(errorCallback) != "undefined" ) errorCallback();
       }
     );
     return;
@@ -1045,7 +1045,7 @@ var fv_player_clipboard = function(text, successCallback, errorCallback) {
     if( fv_player_doCopy(text) ) {
       successCallback();
     } else {
-      errorCallback();
+      if( typeof(errorCallback) != "undefined" ) errorCallback();
     }
     
   } catch (e) {
