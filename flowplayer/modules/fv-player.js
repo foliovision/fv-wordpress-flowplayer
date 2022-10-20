@@ -204,7 +204,8 @@ function fv_player_preload() {
 
     root = jQuery(root);
     var fp_player = root.find('.fp-player');
-    var splash_click = false;
+    var splash_click = false,
+      was_splash = api.conf.splash;
 
     if( root.hasClass('fixed-controls') ) {
       root.find('.fp-controls').on('click', function(e) {
@@ -361,7 +362,7 @@ function fv_player_preload() {
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
 
         // Ensure the splash is only removed once the video really really starts playing when using autoplay
-        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') ) {
+        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash ) {
           api.one('progress', function() {
             splash_img.remove();
             splash_text.remove();
