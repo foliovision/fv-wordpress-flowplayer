@@ -96,6 +96,11 @@ function fv_player_videos_parse(args, root) {
     return false;
   }
 
+  // replace ?anything={random} in the URL with ?anything={actual random number}
+  jQuery(videos.sources).each(function (k, v) {
+    videos.sources[k].src = v.src.replace( /(\?[a-z]+=){random}/, '$1'+Math.random() );
+  });
+
   // Do not feed WebM to Safari as it has problem with VP9 codec which might be used
   if (flowplayer.support.browser.safari) {
     // Do we have any other format than WebM?
