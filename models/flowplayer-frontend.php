@@ -469,7 +469,13 @@ class flowplayer_frontend extends flowplayer
           $bIsAudio = false;
         }
         
-        $attributes['class'] = 'freedomplayer flowplayer no-brand is-splash';
+        if( $this->_get_option('preload') ) {
+          $splash_preload_class = 'is-poster';
+        } else {
+          $splash_preload_class = 'is-splash';
+        }
+
+        $attributes['class'] = 'freedomplayer flowplayer no-brand ' . $splash_preload_class;
         
         if( !empty($this->aCurArgs['skin']) ) {
           $skin = 'skin-'.$this->aCurArgs['skin'];
