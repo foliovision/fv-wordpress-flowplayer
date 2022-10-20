@@ -447,10 +447,14 @@ function flowplayer_prepare_scripts() {
 
     if( $fv_fp->should_force_load_js() || FV_Player_YouTube()->bYoutube || did_action('fv_player_extensions_admin_load_assets') ) {
       $youtube_js = 'fv-player-youtube.min.js';
-      
-      if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $youtube_js = 'fv-player-youtube.dev.js';
+      $youtube_ver = $fv_wp_flowplayer_ver;
 
-      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/' . $youtube_js , array('flowplayer'), $fv_wp_flowplayer_ver, true );
+      if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
+        $youtube_js = 'fv-player-youtube.dev.js';
+        $youtube_ver = filemtime( dirname(__FILE__).'/../flowplayer/'.$youtube_js );
+      }
+
+      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/' . $youtube_js , array('flowplayer'), $youtube_ver, true );
     }
 
     if( $fv_fp->_get_option('googleanalytics') ) {
