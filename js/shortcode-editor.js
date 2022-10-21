@@ -261,8 +261,6 @@ jQuery(function() {
           e.preventDefault();
 
           $.fv_player_box( {
-            href: "#fv-player-shortcode-editor",
-            title: 'Add FV Player',
             onComplete : editor_open,
             onClosed : editor_close,
             onOpen: lightbox_open
@@ -276,9 +274,6 @@ jQuery(function() {
 
           e.preventDefault();
           $.fv_player_box( {
-            href: "#fv-player-shortcode-editor",
-            inline: true,
-            title: 'Export FV Player',
             onComplete : function() {
               overlay_show('loading');
 
@@ -309,9 +304,6 @@ jQuery(function() {
 
           e.preventDefault();
           $.fv_player_box( {
-            href: "#fv-player-shortcode-editor",
-            inline: true,
-            title: 'Import FV Player(s)',
             onComplete : function() {
               overlay_show('import');
             },
