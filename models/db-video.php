@@ -269,7 +269,7 @@ CREATE TABLE " . self::$db_table_name . " (
   width int(11) NOT NULL,
   height int(11) NOT NULL,
   aspect_ratio varchar(8) NOT NULL,
-  duration int(11) NOT NULL,
+  duration decimal(7,2) NOT NULL,
   live int(1) NOT NULL,
   last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (id),
