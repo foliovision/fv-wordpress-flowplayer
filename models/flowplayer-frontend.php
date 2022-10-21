@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+/*  FV Wordpress Flowplayer - HTML5 video player    
     Copyright (C) 2015  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -475,7 +475,13 @@ class flowplayer_frontend extends flowplayer
           $bIsAudio = false;
         }
         
-        $attributes['class'] = 'flowplayer no-brand is-splash';
+        if( $this->_get_option('preload') ) {
+          $splash_preload_class = 'is-poster';
+        } else {
+          $splash_preload_class = 'is-splash';
+        }
+
+        $attributes['class'] = 'freedomplayer flowplayer no-brand ' . $splash_preload_class;
         
         if( !empty($this->aCurArgs['skin']) ) {
           $skin = 'skin-'.$this->aCurArgs['skin'];

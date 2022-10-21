@@ -96,6 +96,11 @@ function fv_player_videos_parse(args, root) {
     return false;
   }
 
+  // replace ?anything={random} in the URL with ?anything={actual random number}
+  jQuery(videos.sources).each(function (k, v) {
+    videos.sources[k].src = v.src.replace( /(\?[a-z]+=){random}/, '$1'+Math.random() );
+  });
+
   // Do not feed WebM to Safari as it has problem with VP9 codec which might be used
   if (flowplayer.support.browser.safari) {
     // Do we have any other format than WebM?
@@ -199,7 +204,8 @@ function fv_player_preload() {
 
     root = jQuery(root);
     var fp_player = root.find('.fp-player');
-    var splash_click = false;
+    var splash_click = false,
+      was_splash = api.conf.splash;
 
     if( root.hasClass('fixed-controls') ) {
       root.find('.fp-controls').on('click', function(e) {
@@ -356,7 +362,7 @@ function fv_player_preload() {
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
 
         // Ensure the splash is only removed once the video really really starts playing when using autoplay
-        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') ) {
+        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash ) {
           api.one('progress', function() {
             splash_img.remove();
             splash_text.remove();
@@ -1035,7 +1041,7 @@ var fv_player_clipboard = function(text, successCallback, errorCallback) {
     navigator.clipboard.writeText(text).then(function() {
         successCallback();
       }, function() {
-        errorCallback();
+        if( typeof(errorCallback) != "undefined" ) errorCallback();
       }
     );
     return;
@@ -1045,7 +1051,7 @@ var fv_player_clipboard = function(text, successCallback, errorCallback) {
     if( fv_player_doCopy(text) ) {
       successCallback();
     } else {
-      errorCallback();
+      if( typeof(errorCallback) != "undefined" ) errorCallback();
     }
     
   } catch (e) {

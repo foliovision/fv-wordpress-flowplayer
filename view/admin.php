@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+/*  FV Wordpress Flowplayer - HTML5 video player    
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -237,7 +237,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
             </tr>
             
-            <?php $fv_fp->_get_checkbox(__('Auto Buffering', 'fv-wordpress-flowplayer'), 'auto_buffering', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Preloading', 'fv-wordpress-flowplayer'), 'preload', __('Works for first 2 videos on the page only, to preserve your bandwidth.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Controlbar Always Visible', 'fv-wordpress-flowplayer'), 'show_controlbar' ); ?>
             <tr>
               <td><label for="width"><?php _e('Default Video Size', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -288,18 +288,8 @@ function fv_flowplayer_admin_default_options() {
             <tr>
               <td><label for="logo">Logo:</label></td>
               <td>
-                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php
-            $aCheck = false;
-            if( flowplayer::is_licensed() ) {
-              $aCheck = get_transient( 'fv_flowplayer_license' );
-            }
-            if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) {
-              _e('You have a valid FV Flowplayer license, you can put up your logo here', 'fv-wordpress-flowplayer');
-            } else {
-              _e('You need to have a FV Flowplayer license to use it', 'fv-wordpress-flowplayer');
-            }
-            ?>" />
 
+                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php  _e('Paste logo url or upload image to show custom logo on player.', 'fv-wordpress-flowplayer'); ?>"/>
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select Logo" />
 
                 <?php

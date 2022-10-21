@@ -10,7 +10,8 @@ flowplayer( function(api,root) {
     return;
   }
 
-  var hlsjs;
+  var hlsjs,
+    was_splash = api.conf.splash;
 
   // this is the proper place to pick the initial HLS video quality 
   flowplayer.engine('hlsjs-lite').plugin(function(params) {
@@ -133,17 +134,21 @@ flowplayer( function(api,root) {
 
       // with HLS.js the stream might not be playing even after receiving the ready event
       // like when the decryption key is loading, so we need to indicate it's loading
+      // but only do this if the player was using splash setup, with preloading
+      // the ready event would already occur, but no progress until the video is started by click
       // TODO: What about fixing that ready event instead? Core Flowplayer 7.2.8?
-      root.addClass('is-loading');
-      api.loading = true;
+      if( was_splash ) {
+        root.addClass('is-loading');
+        api.loading = true;
 
-      // once we get a progress event we know it's really playing
-      api.one('progress', function() {
-        if( api.loading ) {
-          root.removeClass('is-loading');
-          api.loading = false;
-        }
-      });
+        // once we get a progress event we know it's really playing
+        api.one('progress', function() {
+          if( api.loading ) {
+            root.removeClass('is-loading');
+            api.loading = false;
+          }
+        });
+      }
 
       if( api.video.qualities && api.video.qualities.length > 2 ) {
         var qswitch = -1;

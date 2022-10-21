@@ -25,6 +25,7 @@ const bugReport = 'https://foliovision.com/support';
 // files to check
 // const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
 // const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
+const freedomPlayerCSS = ['./css/freedomplayer.css', './css/freedomplayer-additions.css'];
 const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
 const youtubeJS = './flowplayer/fv-player-youtube.dev.js';
 const dashJS = './flowplayer/fv-player-dashjs.dev.js';
@@ -57,6 +58,14 @@ function jsFilessMinify() {
   );
 }
 
+function cssFreedomPlayer() {
+  return src(freedomPlayerCSS)
+    .pipe(concat('freedomplayer.min.css'))
+    .pipe(autoprefixer())
+    .pipe(cleanCSS())
+    .pipe(dest('./css/'));
+}
+
 // generate .pot file
 function potFileGenerate() {
   return src(projectPHPWatchFiles)
@@ -77,7 +86,7 @@ function zipProject() {
   return src([
     "**/*",
     "!node_modules{,/**}",
-    // "!vendor{,/**}",
+    // "!vendor{,/**}", // keep vendor
     "!test{,**}",
     "!.*",
     "!gulpfile.js",
@@ -93,8 +102,9 @@ function zipProject() {
 // export tasks
 exports.zip = zipProject;
 exports.pot = potFileGenerate;
+exports.cssplayer = cssFreedomPlayer;
 exports.jsmodules = jsModulesMinify;
 exports.jsfiles = jsFilessMinify;
 exports.js = parallel( jsModulesMinify, jsFilessMinify );
 
-exports.default = series( parallel(jsModulesMinify, jsFilessMinify, potFileGenerate) , zipProject )
+exports.default = series( parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );

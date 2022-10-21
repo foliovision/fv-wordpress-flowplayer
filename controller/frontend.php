@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
+/*  FV Wordpress Flowplayer - HTML5 video player    
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -328,26 +328,26 @@ function flowplayer_prepare_scripts() {
      $fv_fp->should_force_load_js() ||
      isset($_GET['fv_wp_flowplayer_check_template']) 
   ){
-    
+
     $aDependencies = array('jquery');
     if( $fv_fp->should_force_load_js() || $fv_fp->load_tabs ) {
       wp_enqueue_script('jquery-ui-tabs', false, array('jquery','jquery-ui-core'), $fv_wp_flowplayer_ver, true);
       $aDependencies[] = 'jquery-ui-tabs';
     }
-    
+
     if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
-    
+
     $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
-  
+
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
-    $sLogo = $sCommercialKey && $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
-    
+    $sLogo = $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
+
     $aConf = array( 'fv_fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
-    
+
     // Load base Flowplayer library
-    $path = '/flowplayer/modules/flowplayer.min.js';
-    if( file_exists(dirname(__FILE__).'/../flowplayer/modules/flowplayer.js') ) {
-      $path = '/flowplayer/modules/flowplayer.js';
+    $path = '/flowplayer/freedomplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../flowplayer/freedomplayer.js') ) {
+      $path = '/flowplayer/freedomplayer.js';
     }
     
     $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_core_ver;
@@ -400,6 +400,7 @@ function flowplayer_prepare_scripts() {
     if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') ) {
       $aConf['video_checker_site'] = home_url();
     }
+
     if( $sLogo ) $aConf['logo'] = $sLogo;
 
     // Used to restore volume, removed in JS if volume stored in browser localStorage    

@@ -25,6 +25,7 @@
     "ajaxurl": true,
     "tinyMCE": true,
     "flowplayer": true,
+    "freedomplayer": true,
     "fv_player": true,
     "fv_player_pro": true,
     "fv_player_editor_pro": true,

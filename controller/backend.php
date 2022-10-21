@@ -1,6 +1,6 @@
 <?php 
 
-/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback  
+/*  FV Wordpress Flowplayer - HTML5 video player  
     Copyright (C) 2013  Foliovision
 		
     This program is free software: you can redistribute it and/or modify
@@ -152,24 +152,24 @@ function fv_wp_flowplayer_check_template() {
     $response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
 
     //	check Flowplayer scripts
-    preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?flowplayer[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $flowplayer_scripts );
-    if( count($flowplayer_scripts[1]) > 0 ) {
-      if( count($flowplayer_scripts[1]) > 1 ) {
-        $errors[] = "It appears there are <strong>multiple</strong> Flowplayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.";
+    preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?freedomplayer[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $freedomplayer_scripts );
+    if( count($freedomplayer_scripts[1]) > 0 ) {
+      if( count($freedomplayer_scripts[1]) > 1 ) {
+        $errors[] = "It appears there are <strong>multiple</strong> FreedomPlayer scripts on your site, your videos might not be playing, please check. There might be some other plugin adding the script.";
       }
-      foreach( $flowplayer_scripts[1] AS $flowplayer_script ) {
+      foreach( $freedomplayer_scripts[1] AS $flowplayer_script ) {
         $check = fv_wp_flowplayer_check_script_version( $flowplayer_script );
         if( $check == - 1 ) {
           $errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
         } else if( $check == 1 ) {
-          $ok[] = __('FV Flowplayer script found: ', 'fv-wordpress-flowplayer') . "<code>$flowplayer_script</code>!";
+          $ok[] = __('FV Player script found: ', 'fv-wordpress-flowplayer') . "<code>$flowplayer_script</code>!";
           $fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
         } else if( $check == 0 ) {
           $errors[] = "<p>It appears there are <strong>stripping the query string versions</strong> as <code>$flowplayer_script</code> appears without the plugin version number.</p><p>Some site speed analysis tools recommend doing so, but it means you loose control over what version of plugin files is cached (in users' browsers and on CDN). That way users hang on to the old plugin files and might experience visual or functional issues with FV Player (and any other plugin).</p><p>You can read all the details in our article: <a href='https://foliovision.com/2017/06/wordpress-cdn-best-practices' target='_blank'>How to use WordPress with CDN<a>.</p>";	
         }
       }
-    } else if( !$combine_js_warning && count($flowplayer_scripts[1]) < 1 ) {
-      $errors[] = "It appears there are <strong>no</strong> Flowplayer scripts on your site, your videos might not be playing, please check. Check your template's header.php file if it contains wp_head() function call and footer.php should contain wp_footer()!";			
+    } else if( !$combine_js_warning && count($freedomplayer_scripts[1]) < 1 ) {
+      $errors[] = "It appears there are <strong>no</strong> FreedomPlayer scripts on your site, your videos might not be playing, please check. Check your template's header.php file if it contains wp_head() function call and footer.php should contain wp_footer()!";			
     }
     
 
@@ -219,12 +219,12 @@ function fv_wp_flowplayer_check_script_version( $url ) {
   }
 
   // when using SCRIPT_DEBUG
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=' ) !== false ) {
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/freedomplayer.min.js?ver=' ) !== false ) {
 		return 1;
   }
   
   // when using SCRIPT_DEBUG with Google PageSpeed module
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js,qver=' ) !== false ) {
+  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/freedomplayer.min.js,qver=' ) !== false ) {
     return 1;
   }
 
