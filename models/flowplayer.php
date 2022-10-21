@@ -1441,7 +1441,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sURLAdditions = FV_FP_RELATIVE_PATH.'/css/freedomplayer-additions.css';
     }
 
-    if( !$this->_get_option('css_disable') && $this->_get_option($this->css_option()) ) {
+    if( !( $this->_get_option('css_disable') || defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) && $this->_get_option($this->css_option()) ) {
       if( @file_exists($this->css_path()) ) {
         $sURL = $this->css_path('url');
         $sVer = $this->_get_option($this->css_option());
