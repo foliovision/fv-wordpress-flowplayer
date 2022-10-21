@@ -521,7 +521,7 @@ if( typeof(flowplayer) != "undefined" ) {
               player.trigger( "pause", [player] );  //  not sure why but Flowplayer HTML5 engine triggers pause event before the video finishes
               player.trigger( "finish", [player] );
               
-              jQuery('.fvyoutube-engine',root).hide(); //  todo: should only work on end of playlist exp: once this triggers on iPad 7.0.3, you can't show it again?
+              jQuery('.fvyoutube-engine',root).hide();
               
               jQuery('.fv-pf-yt-temp2',root).show();
               jQuery('.fp-ui',root).show();
