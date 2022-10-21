@@ -2420,10 +2420,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-touch.is-ready.is-youtube .fp-ui {
   pointer-events: auto;
 }
-/* todo: this needs to be disabled for mobile */
-.flowplayer.is-youtube .fp-pause {
-  display: none;
-}
 .flowplayer.is-loading.is-youtube .fp-ui div, .flowplayer.is-loading.is-youtube .fp-ui a, .flowplayer.is-ready.is-youtube .fp-ui div, .flowplayer.is-ready.is-youtube .fp-ui a {
   pointer-events: auto;
 }
