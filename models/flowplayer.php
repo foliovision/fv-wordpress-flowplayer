@@ -1441,7 +1441,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sURLAdditions = FV_FP_RELATIVE_PATH.'/css/freedomplayer-additions.css';
     }
 
-    if( !$this->_get_option('css_disable') && $this->_get_option($this->css_option()) ) {
+    if( !( $this->_get_option('css_disable') || defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) && $this->_get_option($this->css_option()) ) {
       if( @file_exists($this->css_path()) ) {
         $sURL = $this->css_path('url');
         $sVer = $this->_get_option($this->css_option());
@@ -1543,15 +1543,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     ob_start();
     $this->css_generate(true);
     
-    $sCSS = "\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
-    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/flowplayer.css' ) ) {
+    $sCSS = "\n\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();    
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/freedomplayer.min.css' ) ) {
       return false;
     }
 
     $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
-    if( !$wp_filesystem->put_contents( $filename, "/*\nFV Flowplayer custom styles\n\nWarning: This file is not mean to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n*/\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
+    if( !$wp_filesystem->put_contents( $filename, "/*\n * FV Player custom styles\n *\n * Warning: This file should not to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n */\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
       return false;
     } else {
       $aOptions[$this->css_option()] = date('U');
