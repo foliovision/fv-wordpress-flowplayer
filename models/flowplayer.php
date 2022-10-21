@@ -1441,6 +1441,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $this->bCSSInline = true;
     $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
     $sVer = $fv_wp_flowplayer_ver;
+    if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
+      $sVer = filemtime( dirname(__FILE__).'/../css/flowplayer.css' );
+    }
 
     if( !$this->_get_option('css_disable') && $this->_get_option($this->css_option()) ) {      
       if( @file_exists($this->css_path()) ) {
