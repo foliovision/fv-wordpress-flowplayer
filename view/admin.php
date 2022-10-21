@@ -441,9 +441,13 @@ jQuery(document).ready(function($) {
   });
 
   // no sorting of settings boxes please
-  setTimeout( function() {
-    jQuery('#normal-sortables').sortable( "disable" )
-  }, 0 );
+  var fv_player_no_sortable = setInterval( function() {
+    try {
+      jQuery('#normal-sortables').sortable( "disable" )
+
+      clearInterval(fv_player_no_sortable);
+    } catch(e) {}
+  }, 10 );
 
 });
 </script>
@@ -2178,8 +2182,19 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 		// close postboxes that should be closed
 		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+
 		// postboxes setup
-		postboxes.add_postbox_toggles('fv_flowplayer_settings');
+    setTimeout( function() {
+      // check if not already initialized
+      if( jQuery('.fv-metabox-holder #normal-sortables.ui-sortable').length == 0 ) {
+  		  postboxes.add_postbox_toggles('fv_flowplayer_settings');
+
+        // Prevent other plugins from interferring
+        postboxes.add_postbox_toggles = function() {
+          console.log('FV Player Settings screen prevented duplciate add_postbox_toggles call!');
+        }
+      }
+    }, 100 );
 
     jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);

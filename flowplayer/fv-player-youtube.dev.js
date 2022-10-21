@@ -476,7 +476,7 @@ if( typeof(flowplayer) != "undefined" ) {
         
         
         function onStateChange(e) {//console.log('onStateChange '+e.data+' '+ ( e.target ? jQuery('.flowplayer').index(jQuery(e.target.getIframe()).parents('.flowplayer')) : false ) );
-          if( !isMobile && root.find('.fv-fp-no-picture.is-active').length == 0 ) jQuery('.fvyoutube-engine',root).show();
+          if( root.find('.fv-fp-no-picture.is-active').length == 0 ) jQuery('.fvyoutube-engine',root).show();
 
           switch (e.data) {          
             case -1:  //  exp: means "unstarted", runs for playlist item change
@@ -512,14 +512,16 @@ if( typeof(flowplayer) != "undefined" ) {
             case YT.PlayerState.ENDED:  //  0
               player.playing = false;
               
-              //  todo: end time is missing 1 second
+              // TODO: Sometimes the end time is missing 1 second to match the duration
+              // However the same issue appears on https://www.youtube.com/watch?v=QRS8MkLhQmM
+              // where the video loads as having duration of 1:37 which then changes to 1:36 in a second
               clearInterval(intUIUpdate);
               intUIUpdate = false;
-              
+
               player.trigger( "pause", [player] );  //  not sure why but Flowplayer HTML5 engine triggers pause event before the video finishes
               player.trigger( "finish", [player] );
               
-              if( !isMobile ) jQuery('.fvyoutube-engine',root).hide(); //  todo: should only work on end of playlist exp: once this triggers on iPad 7.0.3, you can't show it again?
+              jQuery('.fvyoutube-engine',root).hide();
               
               jQuery('.fv-pf-yt-temp2',root).show();
               jQuery('.fp-ui',root).show();
