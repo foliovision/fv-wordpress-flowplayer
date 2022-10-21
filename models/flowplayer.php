@@ -1439,23 +1439,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     global $fv_wp_flowplayer_ver;
     $this->bCSSInline = true;
-    $sURL = FV_FP_RELATIVE_PATH.'/css/flowplayer.css';
+    $sURL = FV_FP_RELATIVE_PATH.'/css/freedomplayer.min.css';
     $sVer = $fv_wp_flowplayer_ver;
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      $sVer = filemtime( dirname(__FILE__).'/../css/flowplayer.css' );
+      $sVer = filemtime( dirname(__FILE__).'/../css/freedomplayer.css' );
+      $sVerAdditions = filemtime( dirname(__FILE__).'/../css/freedomplayer-additions.css' );
+
+      $sURL = FV_FP_RELATIVE_PATH.'/css/freedomplayer.css';
+      $sURLAdditions = FV_FP_RELATIVE_PATH.'/css/freedomplayer-additions.css';
     }
 
-    if( !$this->_get_option('css_disable') && $this->_get_option($this->css_option()) ) {      
+    if( !$this->_get_option('css_disable') && $this->_get_option($this->css_option()) ) {
       if( @file_exists($this->css_path()) ) {
         $sURL = $this->css_path('url');
         $sVer = $this->_get_option($this->css_option());
         $this->bCSSInline = false;
+        $sURLAdditions = null;
       }
     }
     
     if( is_admin() &&  did_action('admin_footer') ) {
-      echo "<link rel='stylesheet' id='fv_flowplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
-      echo "<link rel='stylesheet' id='fv_flowplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";            
+      echo "<link rel='stylesheet' id='fv_freedomplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
+      if(isset($sURLAdditions)) echo "<link rel='stylesheet' id='fv_freedomplayer-css-additions'  href='".esc_attr($sURLAdditions)."?ver=".$sVerAdditions."' type='text/css' media='all' />\n";
+      echo "<link rel='stylesheet' id='fv_freedomplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";
       
       if( $this->bCSSInline ) {
         $this->css_generate(false);
@@ -1465,10 +1471,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $aDeps = array();
       if( class_exists('OptimizePress_Default_Assets') ) $aDeps = array('optimizepress-default'); //  make sure the CSS loads after optimizePressPlugin
       
-      wp_enqueue_style( 'fv_flowplayer', $sURL, $aDeps, $sVer );
-      
-      if(is_user_logged_in()){        
-        wp_enqueue_style( 'fv_flowplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+      wp_enqueue_style( 'fv_freedomplayer', $sURL, $aDeps, $sVer );
+      if(isset($sURLAdditions)) wp_enqueue_style( 'fv_freedomplayer_additions', $sURLAdditions, array('fv_freedomplayer'), $sVerAdditions );
+
+      if(is_user_logged_in()){
+        wp_enqueue_style( 'fv_freedomplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
       }
       
       if( $this->bCSSInline ) {
