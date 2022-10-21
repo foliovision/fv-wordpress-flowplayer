@@ -270,7 +270,7 @@ CREATE TABLE " . self::$db_table_name . " (
   height int(11) NOT NULL,
   aspect_ratio varchar(8) NOT NULL,
   duration decimal(7,2) NOT NULL,
-  live int(1) NOT NULL,
+  live tinyint(1) NOT NULL,
   last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (id),
   KEY src (src(191)),
@@ -278,11 +278,31 @@ CREATE TABLE " . self::$db_table_name . " (
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
-      
+  
+      if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
+        self::meta2TableConversion();
+      }
+
       $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
     }
 
     return $res;
+  }
+
+  private static function meta2TableConversion() {
+    global $wpdb;
+
+    $table = self::$db_table_name;
+    $meta_table = $wpdb->prefix.'fv_player_videometa';
+
+    // update duration
+    $res_duration = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
+
+    // update live
+    $res_live = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
+
+    // update last_check
+    $res_last_check = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = m.meta_value WHERE meta_key = 'last_check' AND (meta_value IS NOT NULL OR meta_value != '')");
   }
 
   /**
