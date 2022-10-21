@@ -46,7 +46,7 @@
           props.setAttributes( { content: newContent } );
 
           if( last_shortcode[props.clientId] != content ) {
-            fv_player_editor.gutenberg_preview(newContent);
+            fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'), newContent );
             last_shortcode[props.clientId] = newContent;
           }
         }

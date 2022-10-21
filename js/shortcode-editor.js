@@ -114,7 +114,7 @@ jQuery(function() {
 
     // used in Gutenberg preview to store a preview timeout task due to REACT not being fast enough to allow us previewing
     // player directly after we close the editor
-    fv_player_preview_loading = false,
+    gutenberg_previews_loading = {},
 
     // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
     // ... this will be shown in place of the "Saved!" message bottom overlay and it will always show only the first error in this object,
@@ -4003,23 +4003,26 @@ jQuery(function() {
        * @param shortcode The actual player shortcode to generate the preview from.
        */
       gutenberg_preview: function( parent, shortcode ) {
-        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined') {
+        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
           return;
-        } else if (fv_player_preview_loading !== false) {
-          clearTimeout(fv_player_preview_loading);
         }
 
-        console.log('fv_player_gutenberg_preview',parent,shortcode);
+        var id = parent[0].id;
+        
+        if (gutenberg_previews_loading[id] !== false) {
+          clearTimeout(gutenberg_previews_loading[id]);
+        }
+
         var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + fv_player_editor.b64EncodeUnicode( shortcode );
 
         // set timeout for the loading AJAX and wait a moment, as REACT will call this function
         // even when we click into the Gutenberg block without actually editing anything
         // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
-        fv_player_preview_loading = setTimeout(function() {
+        gutenberg_previews_loading[id] = setTimeout(function() {
           jQuery.get(url, function(response) {
             jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
           } ).always(function() {
-            fv_player_preview_loading = false;
+            gutenberg_previews_loading[id] = false;
           })
         }, 1500);
       },
