@@ -279,9 +279,8 @@ CREATE TABLE " . self::$db_table_name . " (
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
   
-      if(!$fv_fp->_get_option('video_model_converted_meta_to_table')) {
+      if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::meta2TableConversion();
-        $fv_fp->_set_option('video_model_converted_meta_to_table', $fv_wp_flowplayer_ver);
       }
 
       $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
