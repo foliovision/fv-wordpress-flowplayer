@@ -27,8 +27,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.5.26.7210';
-$fv_wp_flowplayer_core_ver = '7.2.10';
+$fv_wp_flowplayer_ver = '7.5.29.7212.7';
+$fv_wp_flowplayer_core_ver = '7.2.12';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
@@ -112,6 +112,8 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+
+include_once(dirname( __FILE__ ) . '/models/youtube.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 

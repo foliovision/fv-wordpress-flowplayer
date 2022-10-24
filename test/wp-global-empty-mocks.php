@@ -232,6 +232,6 @@ global $fv_wp_flowplayer_ver;
 $fv_wp_flowplayer_ver = '1.2.3.4';
 
 global $fv_wp_flowplayer_core_ver;
-$fv_wp_flowplayer_core_ver = '7.2.10';
+$fv_wp_flowplayer_core_ver = '7.2.11';
 
 define( 'WP_CONTENT_URL', 'https://site.com/wp-content' );

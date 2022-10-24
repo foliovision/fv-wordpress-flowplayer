@@ -4,7 +4,7 @@ class FV_Player_lightbox {
 
   static $instance = null;
 
-  private $lightboxHtml;
+  private $lightboxHtml = '';
   
   public $bLoad = false;
 

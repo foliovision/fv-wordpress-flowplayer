@@ -97,12 +97,6 @@ msgstr ""
 msgid "Error uploading image data:"
 msgstr ""
 
-#: ../controller/frontend.php:45
-msgid ""
-" <a target=\"_blank\" href=\"https://foliovision.com/2017/05/issues-with-"
-"vimeo-on-android\">Why?</a>"
-msgstr ""
-
 #: ../controller/frontend.php:49
 msgid "Video loading aborted"
 msgstr "Nahrávaní videa zrušeno"

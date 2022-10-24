@@ -95,10 +95,11 @@ final class FV_Player_Controller extends TestCase {
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3.4
-Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=7.2.10 footer? 1
+Registering flowplayer for fv-wordpress-flowplayer/flowplayer/modules/flowplayer.min.js?ver=1.2.3.4 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
-Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3 footer? 1
+Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4 footer? 1
 Registering flowplayer-dash for fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4 footer? 1
+Registering fv-player-youtube for fv-wordpress-flowplayer/flowplayer/fv-player-youtube.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fv_fullscreen] => 1
@@ -120,13 +121,13 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [safety_resize] => 1
     [volume] => 0.7
     [default_volume] => 0.7
+    [mobile_landscape_fullscreen] => 1
     [sticky_video] => 
     [sticky_place] => right-bottom
     [sticky_width] => 380
     [sticky_min_width] => 1020
-    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.1.3
+    [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/flowplayer.dashjs.min.js?ver=1.2.3.4
-    [script_dash_js_version] => 2.7
     [chromecast] => 
     [hlsjs] => Array
         (
@@ -186,8 +187,8 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [subtitles_disabled] => Subtitles disabled
     [subtitles_switched] => Subtitles switched to 
     [warning_iphone_subs] => This video has subtitles, that are not supported on your device.
-    [warning_unstable_android] => You are using an old Android device. If you experience issues with the video please use <a href=\"https://play.google.com/store/apps/details?id=org.mozilla.firefox\">Firefox</a>. <a target=\"_blank\" href=\"https://foliovision.com/2017/05/issues-with-vimeo-on-android\">Why?</a>
-    [warning_samsungbrowser] => You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser. <a target=\"_blank\" href=\"https://foliovision.com/2017/05/issues-with-vimeo-on-android\">Why?</a>
+    [warning_unstable_android] => You are using an old Android device. If you experience issues with the video please use <a href=\"https://play.google.com/store/apps/details?id=org.mozilla.firefox\">Firefox</a>.
+    [warning_samsungbrowser] => You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser.
     [warning_old_safari] => You are using an old Safari browser. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser.
     [warning_old_chrome] => You are using an old Chrome browser. Please make sure you use the latest version.
     [warning_old_firefox] => You are using an old Firefox browser. Please make sure you use the latest version.
@@ -210,6 +211,8 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [audio_button] => AUD
     [audio_menu] => Audio
     [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
+    [invalid_youtube] => Invalid Youtube video ID.
+    [video_loaded] => Video loaded, click to play.
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array
@@ -224,6 +227,8 @@ Localizing fv_player_lightbox with fv_player_lightbox = Array
 )
 
 ";  
+
+    $output = preg_replace( '~\?ver=[0-9.mod-]+~', '?ver=1.2.3.4', $output );
       
     /*$aOut = explode( "\n", preg_replace( '~\r\n~', "\n", $output) );  
     $aExpected = explode( "\n", preg_replace( '~\r\n~', "\n", $expected ) );
