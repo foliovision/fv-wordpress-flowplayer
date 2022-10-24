@@ -286,6 +286,8 @@ class FV_Player_JS_Loader {
 						
 					} else {
 						console.log('First click on player');
+						el.classList.remove('is-poster');
+						el.classList.add('is-splash');
 						
 						el.setAttribute( 'data-fvautoplay', 0 );
 					}
