@@ -110,12 +110,9 @@ jQuery( function($) {
           jQuery('#overlay-loader-li').remove();
         }
 
-        fv_flowplayer_browser_browse( ret.items, {
+        var args = {
           breadcrumbs: 1,
           action: 'add_bunny_stream_new_folder',
-          add_new_folder: 1,
-          add_new_folder_text: 'Add new collection',
-          nonce_add_new_folder: fv_player_bunny_stream_upload_settings.nonce_add_new_folder,
           noFileName: true,
           append: appending,
           extraAttachmentClass: 'fullsize',
@@ -126,7 +123,16 @@ jQuery( function($) {
             getBunnyStreamData();
           },
           loadMoreButtonAction: (ret.is_last_page ? false : loadMoreFunction)
-        } );
+        }
+
+        // show add new collection button only in Home/ folder
+        if( typeof ajax_data['path'] == 'undefined' || ( ajax_data['path'] && ajax_data['path'] == 'Home/' ) ) {
+          args.add_new_folder = 1;
+          args.add_new_folder_text = 'Add new collection';
+          args.nonce_add_new_folder = fv_player_bunny_stream_upload_settings.nonce_add_new_folder;
+        }
+
+        fv_flowplayer_browser_browse(ret.items, args);
 
         appending = false;
       } );
