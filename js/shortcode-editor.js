@@ -3142,8 +3142,12 @@ jQuery(function() {
         var duration_seconds = fv_player_editor.get_playlist_video_meta_value( 'duration', jQuery(this).index() );
         var duration_hms = '';
         if( duration_seconds ) {
-          duration_hms = new Date(duration_seconds * 1000).toISOString().substr(11, 8);
-          duration_hms = duration_hms.replace( /^00:/, '' );
+          try {
+            duration_hms = new Date(duration_seconds * 1000).toISOString().substr(11, 8);
+            duration_hms = duration_hms.replace( /^00:/, '' );
+          } catch(e) {
+            debug_log( 'Invalid date', duration_seconds );
+          }
         }
 
         playlist_row.find('.fvp_item_video-duration').text( duration_hms );
