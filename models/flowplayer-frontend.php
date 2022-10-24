@@ -113,6 +113,9 @@ class flowplayer_frontend extends flowplayer
     if (!empty($args['liststyle'])) {
       $this->aCurArgs['liststyle'] = $args['liststyle'];
     }
+    if ( isset($args['lightbox']) ) {
+      $this->aCurArgs['lightbox'] = $args['lightbox'];
+    }
 
     // load attributes from player into $this->aCurArgs if we're receiving
     // preview POST data, as they are not all present here yet

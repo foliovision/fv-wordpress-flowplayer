@@ -909,7 +909,7 @@ class FV_Player_Db {
       $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
     }
 
-    $args = array( 'id' => $fv_fp->current_player()->getId() );
+    $args = array( 'id' => $fv_fp->current_player()->getId(), 'lightbox' => false );
     if( $current_video_to_edit > -1 ) {
       $args['current_video_to_edit'] = $current_video_to_edit;
     }
