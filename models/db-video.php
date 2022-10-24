@@ -302,7 +302,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $res_live = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
 
     // update last_check
-    $res_last_check = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = m.meta_value WHERE meta_key = 'last_check' AND (meta_value IS NOT NULL OR meta_value != '')");
+    $res_last_check = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
+
+    // backup old meta
+    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'duration_backup' WHERE meta_key = 'duration'");
+    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'live_backup' WHERE meta_key = 'live'");
+    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'last_video_meta_check_backup' WHERE meta_key = 'last_video_meta_check'");
   }
 
   /**
