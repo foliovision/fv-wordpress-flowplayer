@@ -559,6 +559,7 @@ function fv_player_load( forced_el ) {
       // without this none of the root element data attributes would be processed
       conf = flowplayer.extend(conf, root.data());
       forced_api = flowplayer( root[0], conf );
+      root.data('freedomplayer',forced_api);
       root.data('flowplayer',forced_api);
     }
   } );
