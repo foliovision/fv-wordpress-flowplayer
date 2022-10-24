@@ -309,7 +309,7 @@ class FV_Player_lightbox {
           $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
 
           // add all the new classes
-          $html = str_replace( 'class="flowplayer ', 'class="flowplayer ' . implode(' ', $add_classes ). ' ' , $html );
+          $html = str_replace( 'class="freedomplayer ', 'class="freedomplayer ' . implode(' ', $add_classes ). ' ' , $html );
 
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );

@@ -83,7 +83,7 @@ jQuery(document).ready(function() {
     console.log('FV Player: Falling back to fancyBox '+jQuery.fancybox.version+' load by some other plugin');
     
     jQuery('[id^=fv_flowplayer_][id$=_lightbox_starter]').each( function() {
-      var player = jQuery(jQuery(this).attr('href')).find('.flowplayer');
+      var player = jQuery(jQuery(this).attr('href')).find('.freedomplayer');
       jQuery(this).fancybox({
         width: parseInt(player.css('max-width')),
         height: parseInt(player.css('max-height')),
@@ -102,7 +102,7 @@ jQuery(document).ready(function() {
 function fv_fancybox_check_size() {
   var
     $player_wrap = jQuery('.fancybox-slide--current .fv_player_lightbox_hidden'),
-    $player = jQuery('.fancybox-slide--current .flowplayer:visible'),
+    $player = jQuery('.fancybox-slide--current .freedomplayer:visible'),
     $caption = jQuery('.fancybox-caption'),
     $infobar = jQuery('.fancybox-infobar'),
     $toolbar = jQuery('.fancybox-toolbar'),
@@ -167,12 +167,12 @@ function fv_fancybox_check_size() {
 }
 
 function fv_lightbox_flowplayer_shutdown(e) {
-  jQuery('.flowplayer').each( function() {
+  jQuery('.freedomplayer').each( function() {
     var
       $e = jQuery(this),
       player_id = $e.attr('id'),
       was_paused = false,
-      api = $e.data("flowplayer");
+      api = $e.data("freedomplayer");
 
     if( typeof(api) == "undefined") {
       return;
@@ -225,8 +225,8 @@ if( document.addEventListener ) {
 
 // Lightboxed player behavior improvements
 jQuery( function() {
-  if( typeof(flowplayer) != "undefined" ) {
-    flowplayer( function(api,root) {
+  if( typeof(freedomplayer) != "undefined" ) {
+    freedomplayer( function(api,root) {
       root = jQuery(root);
 
       var lightbox_wrap = root.closest('.fv_player_lightbox_hidden');
@@ -257,7 +257,7 @@ jQuery( function() {
         });
         
         // overriding default Flowplayer fullscreen function
-        if( flowplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
+        if( freedomplayer.support.fullscreen ) { // todo: should also work for YouTube on desktop
           api.fullscreen = function() {
             jQuery.fancybox.getInstance().FullScreen.toggle();
           };
@@ -288,7 +288,7 @@ jQuery(document).ajaxComplete(fv_player_lightbox_bind);
 
 function fv_player_lightbox_bind(){
     
-  jQuery(".flowplayer.lightbox-starter").each( function() {
+  jQuery(".freedomplayer.lightbox-starter").each( function() {
     var player = jQuery(this);
     if( parseInt(player.css('width')) < 10 || parseInt(player.css('height')) < 10 ) {
       //if (!parseInt(origRatio, 10))
@@ -306,7 +306,7 @@ function fv_player_lightbox_bind(){
   
 }
 
-jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-link', function() {  
+jQuery(document).on('click', '.freedomplayer.lightbox-starter, .fv-player-lightbox-link', function() {  
   var ref = jQuery(this).data('src') || jQuery(this).attr('href'),
     playlist = jQuery(this).closest('.fv-player-lightbox-text-playlist'),
     index = 0;
@@ -316,8 +316,8 @@ jQuery(document).on('click', '.flowplayer.lightbox-starter, .fv-player-lightbox-
     index = playlist.find('a').index( this );
   }
   
-  var api = jQuery(ref).find('.flowplayer').data('flowplayer');
-  if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
+  var api = jQuery(ref).find('.freedomplayer').data('freedomplayer');
+  if( !freedomplayer.support.firstframe || freedomplayer.support.iOS || freedomplayer.support.android ) {
     if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
   }
   if( index == 0 && api.splash ) {
@@ -337,11 +337,11 @@ jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', 
   var playlist = jQuery(this).closest('.fp-playlist-external'),
     player = jQuery('#'+playlist.attr('rel')),
     ref = player.data('src') || player.attr('href'),
-    api = jQuery(ref).find('.flowplayer').data('flowplayer'),
+    api = jQuery(ref).find('.freedomplayer').data('freedomplayer'),
     index = playlist.find('a').index( this );
     
   jQuery.fancybox.open(player);
-  if( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android ) {
+  if( !freedomplayer.support.firstframe || freedomplayer.support.iOS || freedomplayer.support.android ) {
     if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
   }
   
