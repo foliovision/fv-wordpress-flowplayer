@@ -1068,14 +1068,14 @@ class FV_Player_Db {
                 $new_meta = array(
                   'meta_key' => $meta_type,
                   'meta_value' => $file['value']
-              );
+                );
 
                 if (!empty($file['id'])) {
                   $new_meta['id'] = $file['id'];
-              }
+                }
 
                 $video_meta[] = $new_meta;
-            }
+              }
             }
 
             // call a filter which is server by plugins to augment
