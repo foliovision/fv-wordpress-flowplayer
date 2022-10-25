@@ -261,7 +261,7 @@
     ?>
   <div <?php echo $id; ?> class="components-base-control">
     <div class="components-base-control__field">
-      <p class="components-form-token-field__help <?php echo $field_class; ?>"></p>
+      <ul class="<?php echo $field_class; ?>"></ul>
     </div>
   </div>
     <?php
@@ -561,10 +561,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'name' => 'video_info',
-                    'type' => 'notice_info'
-                  ),
-                  array(
-                    'name' => 'video_notice',
                     'type' => 'notice_info'
                   ),
                   array(

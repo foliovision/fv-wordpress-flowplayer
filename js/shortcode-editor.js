@@ -204,6 +204,13 @@ jQuery(function() {
       return video_meta;
     }
 
+    function get_playlist_video_object( index ) {
+      if( current_player_object.videos[index] ) {
+        return current_player_object.videos[index]
+      }
+      return false;
+    }
+
     function get_playlist_video_meta_value( meta_key, index ) {
       var video_meta = get_playlist_video_meta( meta_key, index );
 
@@ -872,7 +879,7 @@ jQuery(function() {
         var
           ajax_data = build_ajax_data(true),
           db_data_loading = true;
-console.log('ajax_data',ajax_data);
+
         for ( var item in ajax_data.videos ) {
           // we have video data already loaded from DB,
           // ... this is the only way to see if we actually have
@@ -993,8 +1000,7 @@ console.log('ajax_data',ajax_data);
                 splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                 title_field = get_field( 'caption', video_tab ),
                 auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                auto_caption = get_playlist_video_meta_value( 'auto_caption', k ),
-                duration = get_playlist_video_meta_value( 'duration', k );
+                auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
 
               if( get_field('auto_splash', video_tab ).val() == '0' ) {
                 auto_splash = false;
@@ -1032,15 +1038,8 @@ console.log('ajax_data',ajax_data);
                 get_field('auto_caption', video_tab ).val( auto_caption );
               }
 
-              if( duration ) {
-                var video_info = get_field('video_info', video_tab).html('<b>Duration:</b> ' + fv_player_time_hms(duration));
-                video_info.parents('#fv-player-editor-field-wrap-video_info').removeClass('fv_player_interface_hide');
-              } else {
-                get_field('video_info', video_tab).parents('#fv-player-editor-field-wrap-video_info').addClass('fv_player_interface_hide');
-              }
-
+              show_video_details(k);
               show_stream_fields_worker(k);
-
             });
 
             // Did the data change while saving?
@@ -2847,6 +2846,7 @@ console.log('ajax_data',ajax_data);
       jQuery('#fv_wp_flowplayer_file_info td').html('');
     }
 
+    // TODO: Is this needed?
     function file_info_show( args ) {
       
       var html = '';
@@ -3243,19 +3243,8 @@ console.log('ajax_data',ajax_data);
           }
         }
 
-        // TODO: !!!
-        var duration_seconds = fv_player_editor.get_playlist_video_meta_value( 'duration', jQuery(this).index() );
-        var duration_hms = '';
-        if( duration_seconds ) {
-          try {
-            duration_hms = new Date(duration_seconds * 1000).toISOString().substr(11, 8);
-            duration_hms = duration_hms.replace( /^00:/, '' );
-          } catch(e) {
-            debug_log( 'Invalid date', duration_seconds );
-          }
-        }
-
-        playlist_row.find('.fvp_item_video-duration').text( duration_hms );
+        var video = get_playlist_video_object( jQuery(this).index() );
+        playlist_row.find('.fvp_item_video-duration').text( seconds_to_hms( video.duration ) );
       });
 
       playlist_index();
@@ -3334,6 +3323,15 @@ console.log('ajax_data',ajax_data);
 
     function reset_preview() {
       $el_preview.attr('class','preview-no');
+    }
+
+    function seconds_to_hms( seconds ) {
+      try {
+        var duration_hms = new Date(seconds * 1000).toISOString().substr(11, 8);
+        return duration_hms.replace( /^00:/, '' );
+      } catch(e) {
+        return false;
+      }
     }
 
     function set_current_video_to_edit( index ) {
@@ -3573,28 +3571,21 @@ console.log('ajax_data',ajax_data);
     Extra fields to reveal when using a MPD or RTMP stream
     */
     $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
+      show_video_details(index);
       show_stream_fields_worker(index);
     });
 
     $doc.on('fv_flowplayer_shortcode_new', function() {
+      show_video_details(0);
       show_stream_fields_worker(0);
     });
 
     function show_stream_fields_worker( index = 0 ) {
-      var error = get_current_player_object() ? get_playlist_video_meta_value( 'error', index ) : false,
-        video_tab = get_tab(index,'video-files'),
-        ecnrypted = get_current_player_object() ? get_playlist_video_meta_value( 'encrypted', index ) : false;
-
-      if( error ) {
-        var video_notice = get_field('video_notice', video_tab).html('<b>Video error:</b> ' + error);
-        video_notice.parents('#fv-player-editor-field-wrap-video_notice').removeClass('fv_player_interface_hide');
-      } else {
-        get_field('video_notice', video_tab).parents('#fv-player-editor-field-wrap-video_notice').addClass('fv_player_interface_hide');
-      }
+      var encrypted = get_current_player_object() ? get_playlist_video_meta_value( 'encrypted', index ) : false;
 
       // hlskey
       var hlskey = get_field('hlskey', true);
-      if( ecnrypted || hlskey.val() ) {
+      if( encrypted || hlskey.val() ) {
         hlskey.closest('.fv_player_interface_hide').show();
       } else {
         hlskey.closest('.fv_player_interface_hide').hide();
@@ -3610,6 +3601,39 @@ console.log('ajax_data',ajax_data);
 
         checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
+      
+    }
+
+    function show_video_details( index = 0 ) {
+      var video_tab = get_tab(index,'video-files'),
+        video = get_playlist_video_object( index ),
+        error = get_playlist_video_meta_value( 'error', index )
+
+      var video_info = get_field('video_info', video_tab),
+        show = false;
+
+      video_info.html('');
+
+      if( video.duration > 0 ) {
+        video_info.append( '<li><b>Duration:</b> ' + seconds_to_hms(video.duration) + '</li>' );
+        show = true;
+      }
+      if( video.width > 0 && video.height > 0 ) {
+        video_info.append( '<li><b>Dimensions:</b> ' + video.width  + 'x' + video.height + ' pixels</li>' );
+        show = true;
+      } 
+      if( video.aspect_ratio ) {
+        video_info.append( '<li><b>Aspect Ratio:</b> ' + video.aspect_ratio  + '</li>' );
+        show = true;
+      }
+      if( error ) {
+        video_info.append( '<li><b>Error:</b> ' + error  + '</li>' );
+        show = true;
+      }
+
+      if( show ) {
+        video_info.closest('.fv_player_interface_hide').removeClass('fv_player_interface_hide');
+      }
       
     }
     
@@ -3765,6 +3789,8 @@ console.log('ajax_data',ajax_data);
       get_playlist_video_meta,
 
       get_playlist_video_meta_value,
+
+      get_playlist_video_object,
 
       get_shortcode_remains: function() {
         return shortcode_remains;
