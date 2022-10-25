@@ -825,7 +825,9 @@ CREATE TABLE " . self::$db_table_name . " (
           );
         } else {
           $key = array_search('error', array_column($meta_data, 'meta_key'));
-          unset($meta_data[$key]);
+          if( $key !== false ) {
+            unset($meta_data[$key]);
+          }
         }
 
         if( $video_data['width'] ) {
@@ -854,7 +856,9 @@ CREATE TABLE " . self::$db_table_name . " (
           // Remove the legacy value stored in video meta
           // TODO: Conversion process
           $key = array_search('duration', array_column($meta_data, 'meta_key'));
-          unset($meta_data[$key]);
+          if( $key !== false ) {
+            unset($meta_data[$key]);
+          }
         } else {
           $this->duration = 0;
         }
@@ -868,7 +872,9 @@ CREATE TABLE " . self::$db_table_name . " (
         // Remove the legacy value stored in video meta
         // TODO: Conversion process
         $live_key = array_search('live', array_column($meta_data, 'meta_key'));
-        unset($meta_data[$live_key]);
+        if( $live_key !== false ) {
+          unset($meta_data[$live_key]);
+        }
 
         if( !empty($video_data['is_encrypted']) ) {
           $meta_data[] = array(
@@ -877,7 +883,9 @@ CREATE TABLE " . self::$db_table_name . " (
           );
         } else {
           $key = array_search('encrypted', array_column($meta_data, 'meta_key'));
-          unset($meta_data[$key]);
+          if( $key !== false ) {
+            unset($meta_data[$key]);
+          }
         }
 
         if( !empty($video_data['name']) && (
