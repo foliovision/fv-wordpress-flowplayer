@@ -1058,32 +1058,24 @@ class FV_Player_Db {
               }
             }
 
-            // add chapters
-            if (!empty($post_data['video_meta']['chapters'][$video_index]['file']['value'])) {
-              $chapters = array(
-                'meta_key' =>'chapters',
-                'meta_value' => $post_data['video_meta']['chapters'][$video_index]['file']['value']
+            // add chapters and transcript
+            foreach( array(
+              'chapters',
+              'transcript'
+            ) AS $meta_type ) {
+              if (!empty($post_data['video_meta'][$meta_type][$video_index]['file']['value'])) {
+                $file = $post_data['video_meta'][$meta_type][$video_index]['file'];
+                $new_meta = array(
+                  'meta_key' => $meta_type,
+                  'meta_value' => $file['value']
               );
 
-              if (!empty($post_data['video_meta']['chapters'][$video_index]['file']['id'])) {
-                $chapters['id'] = $post_data['video_meta']['chapters'][$video_index]['file']['id'];
+                if (!empty($file['id'])) {
+                  $new_meta['id'] = $file['id'];
               }
 
-              $video_meta[] = $chapters;
+                $video_meta[] = $new_meta;
             }
-
-            // add transcript
-            if (!empty($post_data['video_meta']['transcript'][$video_index]['file']['value'])) {
-              $transcript = array(
-                'meta_key' =>'transcript',
-                'meta_value' => $post_data['video_meta']['transcript'][$video_index]['file']['value']
-              );
-
-              if (!empty($post_data['video_meta']['transcript'][$video_index]['file']['id'])) {
-                $transcript['id'] = $post_data['video_meta']['transcript'][$video_index]['file']['id'];
-              }
-
-              $video_meta[] = $transcript;
             }
 
             // call a filter which is server by plugins to augment
