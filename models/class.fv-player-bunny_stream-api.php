@@ -18,6 +18,38 @@ class FV_Player_Bunny_Stream_API {
     }
   }
 
+  public function get_all_collections( $search = false ) {
+    global $fv_fp;
+
+    $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
+    $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
+
+    if( $search ) $query_string['search'] = $search;
+
+    $endpoint = add_query_arg(
+      $query_string,
+      'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections'
+    );
+
+    $result_collection = $this->api_call( $endpoint );
+
+    return $result_collection;
+  }
+
+  function get_collection_guid_by_name($name) {
+    $result_collection = $this->get_all_collections();
+
+    if( !is_wp_error( $result_collection ) ) {
+      foreach ( $result_collection->items as $collection ) {
+        if( strcmp($name, $collection->name) === 0 ) {
+          return $collection->guid;
+        }
+      }
+    }
+
+    return false;
+  }
+
   public function api_call( $endpoint, $args = array(), $method = 'GET' ) {
     if( $method == 'POST' ) {
       $response = wp_remote_post( $endpoint, array(

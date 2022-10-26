@@ -138,6 +138,7 @@ function fv_flowplayer_browser_browse(data, options) {
   if (!options || !options.append) {
     jQuery(window).off('fv-player-browser-open-folder');
     jQuery(window).on('fv-player-browser-open-folder', function (e, path) {
+
       fv_player_media_browser.set_current_folder(data.path);
 
       if (showBreadcrumbs) {
@@ -161,6 +162,8 @@ function fv_flowplayer_browser_browse(data, options) {
     // which could originate from other browsers (and would generate duplicate AJAX calls)
     jQuery('#media-search-input').off('input');
     jQuery('#media-search-input').on('input', function (e) {
+      var searchVal = jQuery(this).val();
+
       // if we have old search timed task, cancel it and create a new one
       if (timedSearchTask > -1) {
         clearTimeout(timedSearchTask);
@@ -169,6 +172,13 @@ function fv_flowplayer_browser_browse(data, options) {
       timedSearchTask = setTimeout(function() {
         options.ajaxSearchCallback();
         timedSearchTask = -1;
+
+        var checkExist = setInterval(function() {
+          if (jQuery('#media-search-input').length) {
+            jQuery('#media-search-input').val(searchVal);
+            clearInterval(checkExist);
+          }
+       }, 100); // check every 100ms
       }, 1000);
     });
   }
@@ -231,7 +241,7 @@ function fv_flowplayer_browser_browse(data, options) {
       + '<div class="thumbnail">'
       + '<span class="icon folder"></span>'
       + '<div class="filename">'
-      + '<div>+ Add new category</div>'
+      + '<div>+ '+ (options.add_new_folder_text ? options.add_new_folder_text : 'Add new category')+ '</div>'
       + '</div>'
       + '</div>'
       + '</div>').on('click', function() {
@@ -477,6 +487,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
           }
         } catch(e) {}
 
+        jQuery('#media-search-input').val('');
+
         // hide the Drop files to upload modal initially
         jQuery('.media-modal .uploader-window').css({
           'display' : 'none',
@@ -612,7 +624,7 @@ function renderBrowserPlaceholderHTML(options) {
 
   html += '<div class="media-toolbar-primary search-form">' +
     '<label for="media-search-input" class="screen-reader-text">Search Media</label>' +
-    '<input type="search" placeholder="Search media items..." id="media-search-input" class="search">' +
+    '<input type="search" placeholder="'+ (options.searchMsg ? options.searchMsg : 'Search media items...') +'" id="media-search-input" class="search">' +
     '</div>' +
     '</div>' +
     '\t\t<div class="breadcrumbs"></div>\n' +
@@ -837,6 +849,8 @@ jQuery( function($) {
     var
       activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
+
+    $('#media-search-input').val(''); // remove search when clicked on folder
 
     // coming directly from a link
     if (this.tagName == 'A') {

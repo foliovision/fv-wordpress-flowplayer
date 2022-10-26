@@ -1,7 +1,8 @@
 jQuery( function($) {
   var firstLoad = true;
 
-  function fv_player_bunny_stream_browser_load_assets() {
+  function fv_player_bunny_stream_browser_load_assets(dropdown_val, link) {
+
     var
       $this = jQuery(this),
       $media_frame_content = jQuery('.media-frame-content:visible'),
@@ -17,11 +18,15 @@ jQuery( function($) {
       appending = false,
       allLoaded = false;
 
+      if( link ) {
+        ajax_data['path'] = link;
+      }
+
     if( window.fv_flowplayer_browser_get_function ) {
       fv_flowplayer_browser_get_function[ 'fv_player_bunny_stream_browser_media_tab' ] = fv_player_bunny_stream_browser_load_assets;
     }
 
-    $this.addClass('active').siblings().removeClass('active')
+    $this.addClass('active').siblings().removeClass('active');
 
     function loadMoreFunction(force) {
       if ((!appending && !allLoaded) || force === true) {
@@ -41,12 +46,8 @@ jQuery( function($) {
       var searchVal = $('#media-search-input').val();
 
       // show overlay if we're not appending, otherwise append the overlay and then remove it
-      if (firstLoad) {
-        $media_frame_content.html($overlay_div);
-      } else {
-        jQuery('#overlay-loader-li div').html($overlay_div);
-      }
-
+      $media_frame_content.html($overlay_div);
+    
       if (searchVal) {
         ajax_data['search'] = searchVal;
       } else {
@@ -55,61 +56,24 @@ jQuery( function($) {
 
       ajax_data['page'] = page;
 
-       // check if we have any collection selected
-       var collectionVal = jQuery('#browser-dropdown').val(),
-        collectionName = jQuery('#browser-dropdown option:selected').text();
-
-      if (collectionVal != -1) {
-        ajax_data['collection_id'] = collectionVal;
-        ajax_data['collection_name'] = collectionName;
-      } else {
-        delete(ajax_data['collection_id']);
-        delete(ajax_data['collection_name']);
-      }
-
       ajax_data['appending'] = (appending ? 1 : 0);
       ajax_data['firstLoad'] = (firstLoad ? 1 : 0);
 
       jQuery.post(ajaxurl, ajax_data, function(ret) {
         // don't overwrite the page if we've shown the browser for the first time already
         // ... instead, we'll be either clearing and rewriting the UL or appending data to it
-        if (firstLoad) {
-          var
-          renderOptions = {
-            'dropdownItems' : [],
-            'dropdownItemSelected' : ret.active_collection_link,
-            'dropdownDefaultOption' : {
-              'value' : -1,
-              'text' : 'Choose Collection...'
-            }
-          };
+        var renderOptions = {
+          searchMsg: "Search in current collection..."
+        };
 
-          // fill dropdown options
-          for (var i in ret.collections) {
-            renderOptions.dropdownItems.push({
-              'value' : ret.collections[i].link,
-              'text' : ret.collections[i].name
-            });
-          }
+        // add errors, if any
+        if (ret.err) {
+          renderOptions['errorMsg'] = ret.err;
+        }
 
-          // add errors, if any
-          if (ret.err) {
-            renderOptions['errorMsg'] = ret.err;
-          }
+        $media_frame_content.html( renderBrowserPlaceholderHTML(renderOptions) );
 
-          $media_frame_content.html( renderBrowserPlaceholderHTML(renderOptions) );
-
-          // add change event listener to the playlists dropdown
-          jQuery('#browser-dropdown').on('change', function() {
-            allLoaded = false;
-            appending = false;
-            page = 1;
-            // disable Choose button
-            jQuery('.media-button-select').prop('disabled', 'disabled');
-            // load collection contents
-            fv_player_bunny_stream_browser_load_assets();
-          });
-        } else if (!appending && !allLoaded) {
+       if (!appending && !allLoaded) {
           // clear the UL if we're not appending
           jQuery('#__assets_browser').find('li').remove();
         }
@@ -146,7 +110,9 @@ jQuery( function($) {
           jQuery('#overlay-loader-li').remove();
         }
 
-        fv_flowplayer_browser_browse( ret.items, {
+        var args = {
+          breadcrumbs: 1,
+          action: 'add_bunny_stream_new_folder',
           noFileName: true,
           append: appending,
           extraAttachmentClass: 'fullsize',
@@ -157,25 +123,16 @@ jQuery( function($) {
             getBunnyStreamData();
           },
           loadMoreButtonAction: (ret.is_last_page ? false : loadMoreFunction)
-        } );
-
-        // if we have any items returned in a processing state, auto-refresh the Coconut tab every 30 seconds
-        if ( ret.items && ret.items.items ) {
-          for ( var item of ret.items.items ) {
-            if ( item.extra && item.extra.encoding_job_status && item.extra.encoding_job_status == 'processing' ) {
-              havePendingItems = true;
-            }
-          }
         }
 
-        if ( havePendingItems ) {
-          setTimeout( function() {
-            // only reload tab if the tab is actually still visible and active
-            var $tab = $( '#fv_player_bunny_stream_browser_media_tab' );
-            if ( $tab.is(':visible') && $tab.hasClass('active') )
-              fv_player_bunny_stream_browser_load_assets();
-          }, 30000 );
+        // show add new collection button only in Home/ folder
+        if( typeof ajax_data['path'] == 'undefined' || ( ajax_data['path'] && ajax_data['path'] == 'Home/' ) ) {
+          args.add_new_folder = 1;
+          args.add_new_folder_text = 'Add new collection';
+          args.nonce_add_new_folder = fv_player_bunny_stream_upload_settings.nonce_add_new_folder;
         }
+
+        fv_flowplayer_browser_browse(ret.items, args);
 
         appending = false;
       } );
@@ -183,7 +140,7 @@ jQuery( function($) {
 
     getBunnyStreamData();
     return false;
-  };
+  }
 
   $( document ).on( "mediaBrowserOpen", function(event) {
     var tabId = 'fv_player_bunny_stream_browser_media_tab';
