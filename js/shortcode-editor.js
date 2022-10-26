@@ -55,9 +55,6 @@ jQuery(function() {
     // whether we're editing a single video (true) or showing a playlist view (false)
     editing_video_details = false,
 
-    // which playlist item we're currently editing, set to -1 if we're showing playlist view
-    item_index = 0,
-
     // are we currently saving data?
     is_saving = false,
 
@@ -198,10 +195,10 @@ jQuery(function() {
     }
 
     function get_current_video_object() {
-      if( item_index == -1 ) return false;
+      if( current_video_to_edit == -1 ) return false;
 
-      if( current_player_object.videos && current_player_object.videos[item_index] ) {
-        return current_player_object.videos[item_index];
+      if( current_player_object.videos && current_player_object.videos[current_video_to_edit] ) {
+        return current_player_object.videos[current_video_to_edit];
       }
       return false;
     }
@@ -263,7 +260,7 @@ jQuery(function() {
         selector = '.' + map_names_to_editor_fields(key) + ', [name=' + map_names_to_editor_fields(key) + ']';
 
       if( typeof(where) == 'boolean' && where ) {
-        where = jQuery('.fv-player-tab [data-index='+item_index+']');
+        where = jQuery('.fv-player-tab [data-index='+current_video_to_edit+']');
         element = where.find(selector);
 
       } else if( where && typeof(where) == "object" ) {
@@ -1206,7 +1203,7 @@ jQuery(function() {
                 item.attr('data-id_video',v.id);
               }
 
-              if( k == item_index ) {
+              if( k == current_video_to_edit ) {
                 debug_log('current_video_db_id after save: '+v.id);
                 current_video_db_id = v.id;
               }
@@ -1961,7 +1958,7 @@ jQuery(function() {
           if (data['videos'][i]['src'] || data['videos'][i]['src1'] || !data['videos'][i]['src2']) {
             // if we should show preview of a single video only, add that video here,
             // otherwise add all videos here
-            if (!single_video_showing || x == item_index) {
+            if (!single_video_showing || x == current_video_to_edit) {
               data_videos_new[x++] = data['videos'][i];
             } else {
               x++;
@@ -3340,7 +3337,7 @@ jQuery(function() {
     Show a certain playlist item, it's Video and Subtitles tab
     */
     function playlist_item_show( new_index ) {
-      item_index = new_index;
+      set_current_video_to_edit( new_index );
 
       editing_video_details = true;
       $el_editor.attr('class','is-playlist is-singular-active');
@@ -3388,7 +3385,7 @@ jQuery(function() {
 
       reload_preview( current_video_to_edit );
 
-      $doc.trigger('fv-player-editor-video-opened', [ item_index ] );
+      $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
     }
 
     /**
@@ -3415,7 +3412,6 @@ jQuery(function() {
     * keywords: show playlist
     */
     function playlist_show() {
-      item_index = -1;
       current_video_db_id = -1;
       debug_log('current_video_db_id: '+current_video_db_id);
 
@@ -3479,7 +3475,7 @@ jQuery(function() {
 
       reload_preview( current_video_to_edit );
 
-      $doc.trigger('fv-player-editor-video-opened', [ item_index ] );
+      $doc.trigger('fv-player-editor-video-opened', [ current_video_to_edit ] );
 
       return false;
     }
@@ -3541,7 +3537,6 @@ jQuery(function() {
       current_player_db_id = -1;
       current_player_object = false;
       current_video_db_id = -1;
-      item_index = 0;
     }
 
     function reset_preview() {
@@ -4179,7 +4174,7 @@ jQuery(function() {
       get_current_video_object,
 
       get_current_video_index() {
-        return item_index;
+        return current_video_to_edit;
       },
 
       get_current_video_db_id() {
