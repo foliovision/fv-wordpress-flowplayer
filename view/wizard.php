@@ -320,7 +320,7 @@
     // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field
     
     if( !$is_child ) : ?>
-<div id="fv-player-editor-field-wrap-<?php echo $name; ?>" class="components-base-control <?php echo $class; ?>">
+<div class="components-base-control fv-player-editor-field-wrap-<?php echo $name; ?> <?php echo $class; ?>">
     <?php endif;
 
     if( !$type || $type == 'checkbox' ) {

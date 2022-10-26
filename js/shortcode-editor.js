@@ -961,7 +961,6 @@ jQuery(function() {
                 _ajax_nonce: fv_flowplayer_set_post_thumbnail_nonce,
                 cookie: encodeURIComponent(document.cookie)
               }, function(str){
-                var win = window.dialogArguments || opener || parent || top;
                 if ( str == '0' ) {
                   alert( setPostThumbnailL10n.error );
                 } else {
@@ -980,7 +979,7 @@ jQuery(function() {
 
       template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
       template_video = get_tab('first','video-files').parent().html();
-      template_subtitles = jQuery('.fv-fp-subtitle').parent().html();
+      template_subtitles = jQuery('.fv-player-editor-field-wrap-subtitles').html();
       template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
 
       /*
@@ -3702,19 +3701,17 @@ jQuery(function() {
      * @param {int}     iTabIndex     Playlist item number when loading playlist for editing
      * @param {int}     video_meta_id Subtitle row video meta ID
      */
-    function subtitle_language_add( sInput, sLang, iTabIndex, video_meta_id ) {debugger;
-      if(!iTabIndex){
-        // TODO: New markup
-        var current = jQuery('.fv-player-tab-subtitles table:visible');
-        iTabIndex = current.length && current.data('index') ? current.data('index') : 0;
+    function subtitle_language_add( sInput, sLang, iTabIndex, video_meta_id ) {
+      if( typeof(iTabIndex) == "undefined" ){
+        iTabIndex = current_video_to_edit;
       }
-      var oTab = jQuery('.fv-fp-subtitles').eq(iTabIndex);
+      var oTab = get_tab( iTabIndex, 'subtitles' );
 
       var subElement = false;
       
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
-        subElement = jQuery('.fv-fp-subtitle:last', oTab);
+        subElement = $('.fv-player-editor-field-wrap-subtitles:last', oTab);
         if( subElement.length ) {
           if( get_field('subtitles',subElement).val() ) {
             subElement = false;
@@ -3724,8 +3721,8 @@ jQuery(function() {
 
       // If we do not have an empty subtitle field, add new
       if( !subElement ) {
-        oTab.append( template_subtitles );
-        subElement = jQuery('.fv-fp-subtitle:last' , oTab);
+        $('.fv-player-editor-field-wrap-subtitles:last', oTab).after( template_subtitles );
+        subElement = $('.fv-player-editor-field-wrap-subtitles:last' , oTab);
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
