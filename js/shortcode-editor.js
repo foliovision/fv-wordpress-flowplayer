@@ -26,6 +26,10 @@ jQuery(function() {
     current_video_db_id = -1,
     current_video_to_edit = -1,
 
+    deleted_videos = [],
+    deleted_video_meta = [],
+    deleted_player_meta = [],
+
     // stores the button which was clicked to open the editor
     editor_button_clicked = 0,
 
@@ -136,26 +140,6 @@ jQuery(function() {
         'fv_wp_flowplayer_field_synopsis',
         'fv_wp_flowplayer_field_audio'
       ].indexOf(fieldName) > -1;
-    }
-
-    function delete_player_meta_record(id) {
-      var $element = jQuery('#fv-player-deleted_player_meta');
-    
-      if ($element.val()) {
-        $element.val($element.val() + ',' + id);
-      } else  {
-        $element.val(id);
-      }
-    }
-
-    function delete_video_meta_record(id) {
-      var $element = jQuery('#fv-player-deleted_video_meta');
-    
-      if ($element.val()) {
-        $element.val($element.val() + ',' + id);
-      } else  {
-        $element.val(id);
-      }
     }
 
     function get_current_player_db_id() {
@@ -349,7 +333,6 @@ jQuery(function() {
      function insertUpdateOrDeletePlayerMeta(options) {
       var
         $element = jQuery(options.element),
-        $deleted_meta_element = jQuery('#fv-player-deleted_player_meta'),
         optionsHaveNoValue = false, // will become true for dropdown options without values
         $valueLessOptions = null,
         isDropdown = $element.get(0).nodeName == 'SELECT',
@@ -381,11 +364,7 @@ jQuery(function() {
         // only delete this meta if delete was not prevented via options
         // and if there was no value specified, otherwise update
         if ((!options.handle_delete || options.handle_delete !== false) && !value) {
-          if ($deleted_meta_element.val()) {
-            $deleted_meta_element.val($deleted_meta_element.val() + ',' + $element.data('id'));
-          } else {
-            $deleted_meta_element.val($element.data('id'));
-          }
+          deleted_player_meta.push( $element.data('id') );
 
           $element
             .removeData('id')
@@ -449,7 +428,6 @@ jQuery(function() {
      function insertUpdateOrDeleteVideoMeta(options) {
       var
         $element = jQuery(options.element),
-        $deleted_meta_element = jQuery('#fv-player-deleted_video_meta'),
         optionsHaveNoValue = false, // will become true for dropdown options without values
         $valueLessOptions = null,
         isDropdown = $element.get(0).nodeName == 'SELECT',
@@ -480,11 +458,7 @@ jQuery(function() {
         // only delete this meta if delete was not prevented via options
         // and if there was no value specified, otherwise update
         if ((!options.handle_delete || options.handle_delete !== false) && !$element.val()) {
-          if ($deleted_meta_element.val()) {
-            $deleted_meta_element.val($deleted_meta_element.val() + ',' + $element.data('id'));
-          } else {
-            $deleted_meta_element.val($element.data('id'));
-          }
+          deleted_video_meta.push( $element.data('id') );
 
           $element
             .removeData('id')
@@ -833,14 +807,9 @@ jQuery(function() {
         var
           $parent = $(e.target).parents('[data-index]'),
           index = $parent.attr('data-index'),
-          id = get_tab(index,'video-files').attr('data-id_video'),
-          $deleted_videos_element = $('#fv-player-deleted_videos');
+          id = get_tab(index,'video-files').attr('data-id_video');
 
-        if (id && $deleted_videos_element.val()) {
-          $deleted_videos_element.val($deleted_videos_element.val() + ',' + id);
-        } else {
-          $deleted_videos_element.val(id);
-        }
+        deleted_videos.push(id);
 
         $parent.remove();
         get_tab(index,'video-files').remove();
@@ -1264,9 +1233,8 @@ jQuery(function() {
             if( next ) {
               debug_log('There is more to save...');
 
-              // Make sure you use store the new player ID already!
               if ( is_unsaved ) {
-                init_saved_player_fields( response.id );
+                init_saved_player_fields();
               }
 
               ajax( build_ajax_data(true) );
@@ -1299,7 +1267,7 @@ jQuery(function() {
               // add all the data and inputs to page that we need for an existing player
               if ( is_unsaved ) {
                 copy_player_button_toggle(false);
-                init_saved_player_fields( response.id );
+                init_saved_player_fields();
                 current_player_db_id = response.id;
                 is_unsaved = false;
                 //is_draft_changed = false;
@@ -1970,13 +1938,10 @@ jQuery(function() {
       }
 
       // add player ID and deleted elements for a DB update
-      var $updateElement = jQuery('#fv-player-id_player');
-      if ($updateElement.length) {
-        data['update'] = $updateElement.val();
-        data['deleted_videos'] = jQuery('#fv-player-deleted_videos').val();
-        data['deleted_video_meta'] = jQuery('#fv-player-deleted_video_meta').val();
-        data['deleted_player_meta'] = jQuery('#fv-player-deleted_player_meta').val();
-      }
+      data['update'] = current_player_db_id;
+      data['deleted_videos'] = deleted_videos.join(',');
+      data['deleted_video_meta'] = deleted_video_meta.join(',');
+      data['deleted_player_meta'] = deleted_player_meta.join(',');
 
       return data;
     }
@@ -3888,7 +3853,7 @@ jQuery(function() {
         id = $parent.attr('data-id_subtitles')
 
       if (id) {
-        delete_video_meta_record(id);
+        deleted_video_meta.push(id);
       }
 
       // if it's not the last subtitle, remove it completely
@@ -4086,32 +4051,10 @@ jQuery(function() {
       }
     }
 
-    function init_saved_player_fields( id_player ) {
-      // TODO: This should not be using inputs
-      var
-        $id_player_element = $('#fv-player-id_player'),
-        $deleted_videos_element = $('#fv-player-deleted_videos'),
-        $deleted_video_meta_element = $('#fv-player-deleted_video_meta'),
-        $deleted_player_meta_element = $('#fv-player-deleted_player_meta');
-
-      if (!$id_player_element.length) {
-        // add player ID as a hidden field
-        $el_editor.append('<input type="hidden" name="id_player" id="fv-player-id_player" value="' + id_player + '" />');
-
-        // add removed video IDs as a hidden field
-        $el_editor.append('<input type="hidden" name="deleted_videos" id="fv-player-deleted_videos" />');
-
-        // add removed video meta IDs as a hidden field
-        $el_editor.append('<input type="hidden" name="deleted_video_meta" id="fv-player-deleted_video_meta" />');
-
-        // add removed player meta IDs as a hidden field
-        $el_editor.append('<input type="hidden" name="deleted_player_meta" id="fv-player-deleted_player_meta" />');
-      } else {
-        $id_player_element.val( id_player );
-        $deleted_videos_element.val('');
-        $deleted_video_meta_element.val('');
-        $deleted_player_meta_element.val('');
-      }
+    function init_saved_player_fields() {
+      deleted_videos = [];
+      deleted_video_meta = [];
+      deleted_player_meta = [];
     }
 
     function title_editor_close() {
