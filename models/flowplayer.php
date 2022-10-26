@@ -1026,7 +1026,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     
     $sHTML .= "</a>\n";
     
-    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaptionOriginal, $aPlayer, $index );
+    $sHTML = apply_filters( 'fv_player_item_html', $sHTML, $aArgs, $sSplashImage, $sItemCaptionOriginal, $aPlayer, $index, $tDuration );
     
     return $sHTML;
   }

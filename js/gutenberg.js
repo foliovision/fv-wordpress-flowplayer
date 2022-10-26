@@ -1,5 +1,6 @@
 ( function() {
-  var el = wp.element.createElement;
+  var el = wp.element.createElement,
+    last_shortcode = false;
   
   wp.blocks.registerBlockType( 'fv-player-gutenberg/basic', {
       title: 'FV Player',
@@ -32,12 +33,22 @@
         var content = props.attributes.content;
 
         setTimeout( function() {
+          if( last_shortcode == content ) {
+            return;
+          }
+
           fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'),content);
+
+          last_shortcode = content;
         }, 100 );
 
         function onChangeContent( newContent ) {
-          fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'), newContent );
           props.setAttributes( { content: newContent } );
+
+          if( last_shortcode != content ) {
+            fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'), newContent );
+            last_shortcode = newContent;
+          }
         }
         
         return el('div', {

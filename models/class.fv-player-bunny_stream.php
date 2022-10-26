@@ -269,13 +269,21 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       'title' => $target_name,
     );
 
+    require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php');
+
+    $api = new FV_Player_Bunny_Stream_API();
+
     // check if we have collection
-    if( isset( $_POST['collection_id'] ) && strcmp( $_POST['collection_id'], '-1' ) !== 0 ) {
-      $body['collectionId'] = $_POST['collection_id'];
+    if( isset( $_POST['collection_name'] ) ) {
+      $collection_name = strip_tags( stripslashes( $_POST['collection_name'] ) );
+      $collection_name = str_replace('Home/', '', $collection_name);
+      $collection_name = rtrim($collection_name, '/');
+
+      $guid = $api->get_collection_guid_by_name($collection_name);
+
+      if($guid) $body['collectionId'] = $guid;
     }
 
-    require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php');
-    $api = new FV_Player_Bunny_Stream_API();
     $job = $api->api_call(
             'https://video.bunnycdn.com/library/' . $fv_fp->_get_option( array('bunny_stream','lib_id') ) . '/videos',
             $body,

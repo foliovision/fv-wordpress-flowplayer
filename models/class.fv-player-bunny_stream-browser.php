@@ -18,16 +18,52 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
         'lib_id' => $fv_fp->_get_option( array('bunny_stream','lib_id') ),
         'api_key' => $fv_fp->_get_option( array('bunny_stream','api_key') ),
         'job_submit_nonce' => wp_create_nonce('fv_player_bunny_stream'),
+        'nonce_add_new_folder' => wp_create_nonce('fv_player_bunny_stream_add_new_folder')
       ));
     }
   }
 
   function register() {
     add_action( $this->ajax_action_name, array($this, 'load_assets') );
+    add_action( $this->ajax_action_name_add_new_folder, array($this, 'add_new_folder_ajax' ) );
   }
 
   // Legacy
   function init_for_gutenberg() {}
+
+  function add_new_folder_ajax() {
+    if( defined('DOING_AJAX') && ( !isset( $_POST['nonce_add_new_folder'] ) || !wp_verify_nonce( $_POST['nonce_add_new_folder'], 'fv_player_bunny_stream_add_new_folder' ) ) ) {
+      wp_send_json( array('error' => 'Bad nonce') );
+    }
+
+    $output = array();
+
+    $name = strip_tags($_POST['folder_name']); // new collection to create
+    $name = stripslashes($name);
+
+    $api = new FV_Player_Bunny_Stream_API();
+
+    $guid = $api->get_collection_guid_by_name($name); // check if collection already exists
+
+    if( empty($guid) ) {
+      global $fv_fp;
+
+      $endpoint = 'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections';
+
+      $response = $api->api_call( $endpoint, array('name' => $name), 'POST' );
+
+      if( is_wp_error($response) ) {
+        $output['error'] = $response->get_error_message();
+      } else {
+        $output['guid'] = $response->guid;
+      }
+
+    } else {
+      $output['error'] = 'Error - collection ' . $name . ' does already exists';
+    }
+
+    wp_send_json( $output );
+  }
 
   function get_formatted_assets_data() {
     global $fv_fp, $wpdb;
@@ -35,18 +71,45 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM " . FV_Player_Bunny_Stream()->get_table_name() );
     $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
-    // load videos based from the library
-    $api = new FV_Player_Bunny_Stream_API();
-
     $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
     $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
     if( !empty($_POST['search']) ) {
       $query_string['search'] = $_POST['search'];
     }
 
+    // prepare base folder
+    $body = array();
+    $body['name'] = 'Home';
+    $body['path'] = 'Home/';
+    $body['type'] = 'folder';
+    $body['items'] = array();
+
+    if( isset($_POST['path']) ) {
+      $_POST['path'] = strip_tags( stripslashes($_POST['path']) );
+      $path = str_replace('Home/', '', $_POST['path']); // remove Home/
+      $path = rtrim($path, '/'); // remove ending /
+    } else {
+      $path = false;
+    }
+
+    $api = new FV_Player_Bunny_Stream_API();
+
     // query default videos or concrete collection library
-    if( isset($_POST['collection_id']) ) {
-      $query_string['collection'] = $_POST['collection_id'];
+    if( $path ) {
+      $query_string['collection'] = $api->get_collection_guid_by_name($path);
+      $body['path'] = $_POST['path'];
+    } else { // no colledction_id load collections
+      $result_collection = $api->get_all_collections( $query_string['search'] ? $query_string['search'] : false );
+
+      if( !is_wp_error( $result_collection ) ) {
+        foreach( $result_collection->items as $collection ) { // add collections as folders
+          $body['items'][] = array(
+            'name' => $collection->name,
+            'path' => 'Home/' . $collection->name,
+            'type' => 'folder'
+          );
+        }
+      }
     }
 
     $endpoint = add_query_arg(
@@ -65,13 +128,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $result->time = time();
     $video_data_more_pages_exist = ( $result->totalItems > ( $result->currentPage * $result->itemsPerPage ) );
 
-    // prepare base folder
-    $body = array();
-    $body['name'] = 'Home';
-    $body['path'] = 'Home/';
-    $body['type'] = 'folder';
-    $body['items'] = array();
-
     // prepare result for browser
     // ... $result will be a return-value array instead of an object if there was an error
     if ( !is_array( $result ) ) {
@@ -79,6 +135,8 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       $cdn_hostname = 'https://' . $fv_fp->_get_option( array('bunny_stream','cdn_hostname') ) . '/';
 
       foreach ($result->items as $video) {
+        if( !$path && !empty($video->collectionId) ) continue; // do not list videos with collection when no collection selected
+
         $item = array(
           'link' => $cdn_hostname . $video->guid . '/playlist.m3u8',
           'name' => $video->title,
@@ -135,35 +193,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       }
     }
 
-    // get collections for list
-    if( $_POST['firstLoad'] == 1 ) {
-      $collections = array();
-
-      $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
-      $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
-
-      $endpoint = add_query_arg(
-        $query_string,
-        'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections'
-      );
-
-      $result_collection = $api->api_call( $endpoint );
-
-      if( !is_wp_error( $result_collection ) ) {
-        foreach( $result_collection->items as $collection ) {
-          $item_collection = array(
-            'link' => $collection->guid,
-            'name' => $collection->name
-          );
-
-          $collections[ $collection->name ] = $item_collection;
-        }
-      }
-
-      // sort collections by name
-      ksort( $collections, SORT_NATURAL | SORT_FLAG_CASE );
-    }
-
     $json_final = array(
       'items' => $body,
       'is_last_page' => !$video_data_more_pages_exist,
@@ -172,10 +201,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     // ... $result will be a return-value array instead of an object if there was an error
     if ( is_array($result) ) {
       $json_final['err'] = $result['error'];
-    }
-
-    if ($_POST['firstLoad'] == 1) {
-      $json_final['collections'] = $collections;
     }
 
     return $json_final;
@@ -190,6 +215,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
 }
 
-new FV_Player_Bunny_Stream_Browser( 'wp_ajax_load_bunny_stream_jobs' );
+new FV_Player_Bunny_Stream_Browser( array( 'ajax_action_name' => 'wp_ajax_load_bunny_stream_jobs', 'ajax_action_name_add_new_folder' => 'wp_ajax_add_bunny_stream_new_folder') );
 
 endif;
