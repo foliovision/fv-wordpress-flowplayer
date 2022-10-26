@@ -684,7 +684,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               'subtitles' => array(
                 'items' => array(
                   array(
-                    'label' => __('Subtitles URL', 'fv-wordpress-flowplayer'),
+                    'label' => __('Subtitles', 'fv-wordpress-flowplayer'),
                     'name' => 'subtitles',
                     'browser' => true,
                     'subtitle_language' => true,

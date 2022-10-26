@@ -128,6 +128,8 @@ class FV_Player_List_Table_View {
   <?php 
     fv_player_shortcode_editor_scripts_enqueue();
     fv_wp_flowplayer_edit_form_after_editor();
+
+    wp_enqueue_script( 'fv-player-list-view', flowplayer::get_plugin_url().'/js/list-table.js', array('jquery'), filemtime( dirname(__FILE__).'/../js/list-table.js' ), true );
   }  
 }
 
