@@ -205,7 +205,7 @@ jQuery(function() {
     }
 
     function get_playlist_video_object( index ) {
-      if( current_player_object.videos[index] ) {
+      if( current_player_object.videos && current_player_object.videos[index] ) {
         return current_player_object.videos[index]
       }
       return false;
