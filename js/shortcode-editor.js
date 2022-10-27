@@ -333,8 +333,6 @@ jQuery(function() {
      function insertUpdateOrDeletePlayerMeta(options) {
       var
         $element = jQuery(options.element),
-        optionsHaveNoValue = false, // will become true for dropdown options without values
-        $valueLessOptions = null,
         isDropdown = $element.get(0).nodeName == 'SELECT',
         value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
 
@@ -345,18 +343,7 @@ jQuery(function() {
 
       // check for a select without any option values, in which case we'll use their text
       if (isDropdown) {
-        $valueLessOptions = $element.find('option:not([value])');
-        if ($valueLessOptions.length == $element.get(0).length) {
-          optionsHaveNoValue = true;
-        }
-
-        var opt_value = map_dropdown_value(optionsHaveNoValue, $valueLessOptions, $element.get(0));
-        // if there were any problems, just set value to ''
-        if (opt_value === false) {
-          value = '';
-        } else {
-          value = opt_value.toLowerCase();
-        }
+        value = map_dropdown_value( $element );
       }
 
       // check whether to update or delete this meta
@@ -428,8 +415,6 @@ jQuery(function() {
      function insertUpdateOrDeleteVideoMeta(options) {
       var
         $element = jQuery(options.element),
-        optionsHaveNoValue = false, // will become true for dropdown options without values
-        $valueLessOptions = null,
         isDropdown = $element.get(0).nodeName == 'SELECT',
         value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
       // don't do anything if we've not found the actual element
@@ -439,18 +424,7 @@ jQuery(function() {
 
       // check for a select without any option values, in which case we'll use their text
       if (isDropdown) {
-        $valueLessOptions = $element.find('option:not([value])');
-        if ($valueLessOptions.length == $element.get(0).length) {
-          optionsHaveNoValue = true;
-        }
-
-        var opt_value = map_dropdown_value(optionsHaveNoValue, $valueLessOptions, $element.get(0));
-        // if there were any problems, just set value to ''
-        if (opt_value === false) {
-          value = '';
-        } else {
-          value = opt_value.toLowerCase();
-        }
+        value = map_dropdown_value( $element );
       }
 
       // check whether to update or delete this meta
@@ -1736,22 +1710,12 @@ jQuery(function() {
             var
               $this               = jQuery(this),
               $parent_tr          = $this.closest('tr'),
-              optionsHaveNoValue = false, // will become true for dropdown options without values
-              $valueLessOptions   = null,
               isDropdown          = this.nodeName == 'SELECT';
 
             // exceptions for selectively hidden fields, i.e. empty tabs with no content etc.
             if ($parent_tr.hasClass('fv_player_interface_hide') && $parent_tr.css('display') == 'none') {
               //return;
               // why? hidden tabs would have no content... have you tested this? maybe we should return the return? :-P
-            }
-
-            // check for a select without any option values, in which case we'll use their text
-            if (isDropdown) {
-              $valueLessOptions = $this.find('option:not([value])');
-              if ($valueLessOptions.length == this.length) {
-                optionsHaveNoValue = true;
-              }
             }
 
             var m;
@@ -1792,13 +1756,7 @@ jQuery(function() {
                   // ordinary video field
                   // check dropdown for its value based on values in it
                   if (isDropdown) {
-                    var opt_value = map_dropdown_value(optionsHaveNoValue, $valueLessOptions, this);
-                    // if there were any problems, just return an empty object
-                    if (opt_value === false) {
-                      return {};
-                    } else {
-                      data['videos'][save_index][m[1]] = opt_value;
-                    }
+                    data['videos'][save_index][m[1]] = map_dropdown_value( $this );
                   } else {
                     data['videos'][save_index][m[1]] = this.value;
                   }
@@ -1873,7 +1831,7 @@ jQuery(function() {
                 } else {
                   // check dropdown for its value based on values in it
                   if (isDropdown) {
-                    let opt_value = map_dropdown_value(optionsHaveNoValue, $valueLessOptions, this);
+                    let opt_value = map_dropdown_value( $this );
                     // if there were any problems, just return an empty object
                     if (opt_value === false) {
                       return {};
@@ -3126,11 +3084,15 @@ jQuery(function() {
       }
     }
 
-    function map_dropdown_value(optionsHaveNoValue, $valueLessOptions, dropdown_element) {
+    function map_dropdown_value( dropdown_element ) {
+      var $valueLessOptions = dropdown_element.find('option:not([value])'),
+        value = dropdown_element[0].value.toLowerCase(),
+        index = dropdown_element[0].selectedIndex;
+
       // multiselect element
-      if(dropdown_element.multiple) {
+      if(dropdown_element[0].multiple) {
         var selected = [],
-          options = dropdown_element && dropdown_element.options,
+          options = dropdown_element[0].options,
           opt;
       
         for (var i=0, iLen=options.length; i<iLen; i++) {
@@ -3143,24 +3105,14 @@ jQuery(function() {
         }
     
         return selected.length ? selected.join(',') : '';
-      } else if ($valueLessOptions.length) { // at least one option is value-less
-        if (optionsHaveNoValue) {
-          // all options are value-less - the first one is always default and should be sent as ''
-          return (dropdown_element.selectedIndex === 0 ? '' : dropdown_element.value);
-        } else {
-          // some options are value-less
-          if ($valueLessOptions.length > 1) {
-            // multiple value-less options, while some other options do have a value - this should never be
-            console.log('ERROR - Unhandled exception occurred while trying to get player values: more than 1 value-less options found');
-            return false;
-          } else {
-            // single option is value-less (
-            return (dropdown_element.selectedIndex === 0 ? '' : dropdown_element.value);
-          }
-        }
+
+      } else if ( $valueLessOptions.length ) { // at least one option is value-less
+        // the first one is always default and should be sent as ''
+        return index === 0 ? '' : value;
+
       } else {
         // normal dropdown - all options have a value, return this.value (option's own value)
-        return dropdown_element.value;
+        return value;
       }
     }
 
