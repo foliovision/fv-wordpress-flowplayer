@@ -261,7 +261,7 @@
 
   /* CodeMirror */
   jQuery(function($) {
-    if( $('#customCSS').length ) {
+    if( $('#customCSS').length && wp.codeEditor ) {
       wp.codeEditor.initialize($('#customCSS'), cm_settings);
     }
   });
