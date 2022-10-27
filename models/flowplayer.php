@@ -1340,7 +1340,38 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
-      
+
+    <?php if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
+      .flowplayer .fp-play.fp-visible svg {
+        opacity: 0;
+      }
+      .fp-play:before {
+        background-image: url(<?php echo $this->_get_option('play_icon'); ?>);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 6em;
+        height: 6em;
+        content: ' ';
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: auto;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all .2s;
+      }
+      .flowplayer.is-small .fp-play:before, .flowplayer.is-tiny .fp-play:before {
+        max-height: 30%;
+      }
+      .fp-play.fp-visible:before {
+        opacity: 1;
+        transform: scale(1);
+      }
+    <?php endif; ?>
+
     .wpfp_custom_background { display: none; }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }

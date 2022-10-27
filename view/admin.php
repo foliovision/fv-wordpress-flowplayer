@@ -1446,6 +1446,32 @@ function fv_flowplayer_admin_skin_playlist() {
 }
 
 
+function  fv_flowplayer_admin_custom_icons() {
+  global $fv_fp;
+
+  ?>
+     <table class="form-table2">
+      <tbody>
+      <tr>
+        <td class="first"><label for="sticky_video">Custom Play Icon:</label></td>
+        <td>
+          <p class="description">
+          <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php  _e('Paste icon url or upload image to show custom play icon on player.', 'fv-wordpress-flowplayer'); ?>"/>
+          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select Play Icon" />
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
+        </td>
+      </tr>
+      </tbody>
+     </table>
+     <div style="clear: both"></div>
+  <?php
+}
+
 function fv_flowplayer_admin_custom_css() {
   global $fv_fp;
   $customCSS = $fv_fp->_get_option('customCSS');
@@ -1925,6 +1951,7 @@ if( !class_exists('FV_Player_Pro') ) {
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
+add_meta_box( 'fv_flowplayer_custom_icons', __('Custom Icons', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_custom_icons', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_custom_css', __('Custom CSS', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_custom_css', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_sticky', 'fv_flowplayer_settings_skin', 'normal' );
