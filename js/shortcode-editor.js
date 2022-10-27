@@ -4032,19 +4032,15 @@ jQuery(function() {
 
       jQuery('.fv_player_actions_end-toggle').hide().find('[name]').val('');
 
-      var field = jQuery('#fv_wp_flowplayer_field_' + type);
-      field.parents('tr').show();
-      if( value ) {
-        field.val(value);
-      }
-
       // The field id is different for popup
       if( type == 'popup' ) {
-        var field = jQuery('#fv_wp_flowplayer_field_' + type + '_id');
+        type = 'popup_id';
+      }
+
+      var field = jQuery('#fv_wp_flowplayer_field_' + type);
         field.parents('tr').show();
         if( value ) {
           field.val(value);
-        }
       }
     }
 
