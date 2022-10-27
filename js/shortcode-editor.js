@@ -1780,30 +1780,20 @@ jQuery(function() {
                   }
                 }
 
-                // subtitles tab, chapters input
-                else if ($this.attr('name') == 'fv_wp_flowplayer_field_chapters') {
-                  if (!data['video_meta']['chapters'][save_index]) {
-                    data['video_meta']['chapters'][save_index] = {};
+                // subtitles tab, chapters and transcript input
+                else if (
+                  $this.attr('name') == 'fv_wp_flowplayer_field_chapters' ||
+                  $this.attr('name') == 'fv_wp_flowplayer_field_transcript'
+                ) {
+                  let key = $this.attr('name').replace(/fv_wp_flowplayer_field_/, '');
+
+                  if (!data['video_meta'][key][save_index]) {
+                    data['video_meta'][key][save_index] = {};
                   }
 
                   insertUpdateOrDeleteVideoMeta({
                     data: data,
-                    meta_section: 'chapters',
-                    meta_key: 'file',
-                    meta_index: save_index,
-                    element: $this
-                  });
-                }
-
-                // subtitles tab, transcript input
-                else if ( $this.attr('name') == 'fv_wp_flowplayer_field_transcript' ) {
-                  if (!data['video_meta']['transcript'][save_index]) {
-                    data['video_meta']['transcript'][save_index] = {};
-                  }
-
-                  insertUpdateOrDeleteVideoMeta({
-                    data: data,
-                    meta_section: 'transcript',
+                    meta_section: key,
                     meta_key: 'file',
                     meta_index: save_index,
                     element: $this
