@@ -3444,20 +3444,6 @@ jQuery(function() {
       return false;
     }
 
-    function preview_dimensions() {
-      var width = parseInt( get_field('width').val() ) || 460;
-      var height = parseInt( get_field('height').val() ) || 300;
-      if ($el_preview.length && $el_preview.width() < width) {
-        height = Math.round(height * ($el_preview.width() / width));
-        width = $el_preview.width();
-      }
-
-      return {
-        width: width,
-        height: height
-      };
-    }
-
     function reload_preview( video_index ) {
       if(
         video_index > -1 && ( !current_player_object.videos || !current_player_object.videos[video_index] ) ||
