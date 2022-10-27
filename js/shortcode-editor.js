@@ -1813,58 +1813,26 @@ jQuery(function() {
 
               // all other tabs
               else {
+                let player_attribute_value = this.value;
                 if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
-                  // some player attributes are meta data
-                  if (check_for_player_meta_field(m[1])) {
-                    // meta data input
-                    insertUpdateOrDeletePlayerMeta({
-                      data: data,
-                      meta_section: 'player',
-                      meta_key: get_field_name(m[1]),
-                      element: this,
-                      handle_delete: false
-                    });
-                  } else {
-                    // ordinary player attribute
-                    data[m[1]] = (this.type.toLowerCase() == 'checkbox' ? this.checked ? 'true' : '' : this.value);
-                  }
+                  player_attribute_value = this.checked ? 'true' : '';
+
+                } else if (isDropdown) {
+                  player_attribute_value = map_dropdown_value( $this );
+                }
+
+                if (check_for_player_meta_field(m[1])) {
+                  // meta data input
+                  insertUpdateOrDeletePlayerMeta({
+                    data: data,
+                    meta_section: 'player',
+                    meta_key: get_field_name(m[1]),
+                    element: this,
+                    handle_delete: false
+                  });
                 } else {
-                  // check dropdown for its value based on values in it
-                  if (isDropdown) {
-                    let opt_value = map_dropdown_value( $this );
-                    // if there were any problems, just return an empty object
-                    if (opt_value === false) {
-                      return {};
-                    } else {
-                      if (check_for_player_meta_field(m[1])) {
-                        // meta data input
-                        insertUpdateOrDeletePlayerMeta({
-                          data: data,
-                          meta_section: 'player',
-                          meta_key: get_field_name(m[1]),
-                          element: this,
-                          handle_delete: false
-                        });
-                      } else {
-                        // ordinary player attribute
-                        data[m[1]] = opt_value.toLowerCase();
-                      }
-                    }
-                  } else {
-                    if (check_for_player_meta_field(m[1])) {
-                      // meta data input
-                      insertUpdateOrDeletePlayerMeta({
-                        data: data,
-                        meta_section: 'player',
-                        meta_key: get_field_name(m[1]),
-                        element: this,
-                        handle_delete: false
-                      });
-                    } else {
-                      // ordinary player attribute
-                      data[m[1]] = this.value;
-                    }
-                  }
+                    // ordinary player attribute
+                  data[m[1]] = player_attribute_value;
                 }
               }
             }
