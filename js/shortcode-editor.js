@@ -21,9 +21,9 @@ jQuery(function() {
     // last saved data to detect changes for auto-saving
     ajax_save_previous = false,
 
-    current_player_db_id = -1,
+    current_player_db_id = 0,
     current_player_object = false,
-    current_video_db_id = -1,
+    current_video_db_id = 0,
     current_video_to_edit = -1,
 
     deleted_videos = [],
@@ -2017,9 +2017,9 @@ jQuery(function() {
       }
 
       // we need to do this now to make sure Heartbeat gets the correct data
-      if (current_player_db_id > -1 ){
+      if (current_player_db_id > 0 ){
         edit_lock_removal[current_player_db_id] = 1;
-        current_player_db_id = -1;
+        current_player_db_id = 0;
       }
 
       editor_init();
@@ -2840,8 +2840,8 @@ jQuery(function() {
       var player_was_non_db = (current_player_db_id > -1 ? false : true);
 
       // unmark DB player ID as being currently edited
-      if ( current_player_db_id > -1 ) {
-        current_player_db_id = -1;
+      if ( current_player_db_id > 0 ) {
+        current_player_db_id = 0;
       }
 
       // if player should be in published state, add it into the AJAX data
@@ -3376,7 +3376,7 @@ jQuery(function() {
     * keywords: show playlist
     */
     function playlist_show() {
-      current_video_db_id = -1;
+      current_video_db_id = 0;
       debug_log('current_video_db_id: '+current_video_db_id);
 
       editing_video_details = false;
@@ -3484,9 +3484,9 @@ jQuery(function() {
     }
 
     function reset_editor_ids() {
-      current_player_db_id = -1;
+      current_player_db_id = 0;
       current_player_object = false;
-      current_video_db_id = -1;
+      current_video_db_id = 0;
     }
 
     function reset_preview() {
