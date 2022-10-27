@@ -1873,7 +1873,7 @@ jQuery(function() {
                 } else {
                   // check dropdown for its value based on values in it
                   if (isDropdown) {
-                    var opt_value = map_dropdown_value(optionsHaveNoValue, $valueLessOptions, this);
+                    let opt_value = map_dropdown_value(optionsHaveNoValue, $valueLessOptions, this);
                     // if there were any problems, just return an empty object
                     if (opt_value === false) {
                       return {};
@@ -2153,7 +2153,7 @@ jQuery(function() {
           instance_tinymce.settings.validate = false;
           if (editor_content.match(fv_wp_flowplayer_re_insert) == null) {
             var tags = ['b', 'span', 'div'];
-            for (var i in tags) {
+            for ( let i in tags) {
               instance_tinymce.execCommand('mceInsertContent', false, '<' + tags[i] + ' data-mce-bogus="1" rel="FCKFVWPFlowplayerPlaceholder"></' + tags[i] + '>');
               editor_content = instance_tinymce.getContent();
 
@@ -2311,7 +2311,7 @@ jQuery(function() {
                 if (key !== 'videos') {
                   // in case of meta data, proceed with each player meta one by one
                   if (key == 'meta') {
-                    for (var i in response[key]) {
+                    for ( let i in response[key]) {
                       set_editor_field(response[key][i]['meta_key'], response[key][i]['meta_value'], response[key][i]['id']);
                     }
                   } else {
@@ -2376,7 +2376,7 @@ jQuery(function() {
                 }
 
                 if (video_meta.length) {
-                  for (var i in video_meta) {
+                  for ( let i in video_meta) {
                     // predefined meta input with field already existing in the dialog
                     set_editor_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
                   }
@@ -2497,7 +2497,7 @@ jQuery(function() {
 
           var ssubtitles = shortcode_parse_arg( shortcode, 'subtitles' );
           var aSubtitlesLangs = shortcode.match(/subtitles_[a-z][a-z]+/g);
-          for( var i in aSubtitlesLangs ){  //  move
+          for( let i in aSubtitlesLangs ){  //  move
             shortcode_parse_arg( shortcode, aSubtitlesLangs[i], false, shortcode_subtitle_parse_arg );
           }
           if(!aSubtitlesLangs){ //  move
@@ -2672,13 +2672,13 @@ jQuery(function() {
           }
 
           if( splaylist_advance != null && splaylist_advance[1] != null ) {
-            var field = get_field("playlist_advance")[0];
+            let field = get_field("playlist_advance")[0];
             if (splaylist_advance[1] == 'true') field.selectedIndex = 1;
             if (splaylist_advance[1] == 'false') field.selectedIndex = 2;
           }
 
           if( scontrolbar != null && scontrolbar[1] != null ) {
-            var field = get_field("controlbar")[0];
+            let field = get_field("controlbar")[0];
             if (scontrolbar[1] == 'yes' || scontrolbar[1] == 'show' ) field.selectedIndex = 1;
             if (scontrolbar[1] == 'no' || scontrolbar[1] == 'hide' ) field.selectedIndex = 2;
           }
@@ -2706,7 +2706,7 @@ jQuery(function() {
             // check for all-numeric playlist items separated by commas
             // which outlines video IDs from a database
             var aPlaylist = sPlaylist[1].split(';');
-            for (var i in aPlaylist) {
+            for ( let i in aPlaylist) {
               playlist_item_add(aPlaylist[i], aCaptions[i], aSubtitles[i], aSplashText[i]);
             }
           }
@@ -2737,15 +2737,15 @@ jQuery(function() {
 
         store_shortcode_args = {};
         always_keep_shortcode_args = {};
-        for( var i in fv_player_editor_conf.shortcode_args_to_preserve ) {
-          var value = shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
+        for( let i in fv_player_editor_conf.shortcode_args_to_preserve ) {
+          let value = shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_to_preserve[i] );
           if (value && value[1]) {
             store_shortcode_args[fv_player_editor_conf.shortcode_args_to_preserve[i]] = value[1];
           }
         }
 
-        for( var i in fv_player_editor_conf.shortcode_args_not_db_compatible ) {
-          var value = shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_not_db_compatible[i] );
+        for( let i in fv_player_editor_conf.shortcode_args_not_db_compatible ) {
+          let value = shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_not_db_compatible[i] );
           if (value && value[1]) {
             always_keep_shortcode_args[fv_player_editor_conf.shortcode_args_not_db_compatible[i]] = value[1];
           }
@@ -3259,7 +3259,7 @@ jQuery(function() {
       } else if( input ) {
         var aInput = input.split(',');
         var count = 0;
-        for( var i in aInput ) {
+        for( let i in aInput ) {
           if( aInput[i].match(/^rtmp:/) ) {
             get_field('rtmp_path',new_item).val(aInput[i].replace(/^rtmp:/,''));
           } else if( aInput[i].match(/\.(jpg|png|gif|jpe|jpeg)(?:\?.*?)?$/) ) {
