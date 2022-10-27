@@ -1404,7 +1404,7 @@ jQuery(function() {
         fv_show_video(wrapper);
       }
 
-      $doc.on('click','.fv-player-editor-remove', function(e) {console.log('.fv-player-editor-remove');
+      $doc.on('click','.fv-player-editor-remove', function() {console.log('.fv-player-editor-remove');
         var wrapper = $(this).parents('.fv-player-editor-wrapper');
         if( $('[data-key='+wrapper.data('key')+']').length == 1 ) { //  if there is only single video
           wrapper.find('.fv-player-editor-field').val('');
@@ -1416,7 +1416,7 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on('click','.fv-player-editor-more', function(e) {
+      $doc.on('click','.fv-player-editor-more', function() {
         var wrapper = $(this).parents('.fv-player-editor-wrapper');
         var new_wrapper = wrapper.clone();
         new_wrapper.find('.fv-player-editor-field').val('');
@@ -1427,7 +1427,7 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on( 'click', '.fv-player-shortcode-copy', function(e) {
+      $doc.on( 'click', '.fv-player-shortcode-copy', function() {
         var button = $(this);
         fv_player_clipboard( $(this).parents('tr').find('.fv-player-shortcode-input').val(), function() {
           button.html('Coppied to clipboard!');
