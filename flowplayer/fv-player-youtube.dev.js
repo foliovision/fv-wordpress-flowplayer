@@ -11,7 +11,7 @@
 if( fv_flowplayer_conf.youtube ) {
   // If jQuery is already present use it to load the API as it won't show in browser as if the page is loading
   // This is important if YouTube has issues in your location, it might just time out while loading
-  if( window.aaajQuery ) {
+  if( window.jQuery ) {
     jQuery.getScript("https://www.youtube.com/iframe_api");
 
   // ...loading it this way show the browser loading indicator for the tab
