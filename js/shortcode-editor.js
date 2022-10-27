@@ -3884,7 +3884,7 @@ jQuery(function() {
         jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
           
           jQuery.each( inputs, function(k,input_name) {
-            var field_wrap = $('#fv-player-editor-field-wrap-'+input_name);
+            var field_wrap = $('.fv-player-editor-field-wrap-'+input_name);
 
             // TODO: What should be saved when it's enabled?
             field_wrap.toggleClass( 'is-visible-dependency', value == compare );
