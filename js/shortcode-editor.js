@@ -953,7 +953,7 @@ jQuery(function() {
 
       template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
       template_video = get_tab('first','video-files').parent().html();
-      template_subtitles = jQuery('.fv-player-editor-field-wrap-subtitles').html();
+      template_subtitles = jQuery('.fv-player-editor-field-wrap-subtitles').prop('outerHTML')
       template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
 
       /*
@@ -3592,8 +3592,8 @@ jQuery(function() {
 
       // If we do not have an empty subtitle field, add new
       if( !subElement ) {
-        $('.fv-player-editor-field-wrap-subtitles:last', oTab).after( template_subtitles );
-        subElement = $('.fv-player-editor-field-wrap-subtitles:last' , oTab);
+        subElement = $(template_subtitles);
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-subtitles:last', oTab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
