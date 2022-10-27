@@ -53,7 +53,7 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
         fv_player_clipboard( jQuery(this).attr('href'), function() {
           fv_player_notice(root,fv_flowplayer_translations.link_copied,2000);
           }, function() {
-            fv_player_notice(root,fv_flowplayer_translations.error_copy_clipboar,2000);
+            fv_player_notice(root,fv_flowplayer_translations.error_copy_clipboard,2000);
           }
         );
       })
