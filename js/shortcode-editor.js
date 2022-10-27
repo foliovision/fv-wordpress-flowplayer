@@ -3748,7 +3748,7 @@ jQuery(function() {
         if( sLang == 'mo' ) sLang = 'ro';
         if( sLang == 'sh' ) sLang = 'sr';
 
-        get_field('subtitles_lang',subElement).val(sLang).change();
+        get_field('subtitles_lang',subElement).val(sLang).trigger('change');
       }
     }
 
