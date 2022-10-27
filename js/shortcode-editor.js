@@ -601,7 +601,7 @@ jQuery(function() {
           return false;
         });
 
-        $doc.on( 'click', '.fv-player-remove', function(e) {
+        $doc.on( 'click', '.fv-player-remove', function() {
           jQuery(this)
             .addClass('fv-player-remove-confirm')
             .removeClass('fv-player-remove')
@@ -616,7 +616,7 @@ jQuery(function() {
           return false;
         });
 
-        $doc.on( 'click', '.fv-player-remove-confirm', function(e) {
+        $doc.on( 'click', '.fv-player-remove-confirm', function() {
           var
             $element = $(this),
             $element_td = $element.parent(),
@@ -655,7 +655,7 @@ jQuery(function() {
           return false;
         });
 
-        $doc.on( 'click', '.fv-player-clone', function(e) {
+        $doc.on( 'click', '.fv-player-clone', function() {
           var $element = jQuery(this),
             $spinner = $('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
@@ -722,7 +722,7 @@ jQuery(function() {
       * Select playlist item
       * keywords: select item
       */
-      $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function(e) {
+      $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function() {
         var new_index = $(this).parents('.fv-player-editor-playlist-item').attr('data-index');
 
         set_current_video_to_edit( new_index );
@@ -830,7 +830,7 @@ jQuery(function() {
       *  Sort playlist
       */
       $('.fv-player-tab-playlist #fv-player-editor-playlist').sortable({
-        start: function( event, ui ) {
+        start: function() {
           store_rtmp_server = get_field( 'rtmp', get_tab('first','video-files') ).val();
         },
         update: playlist_sortable_update,
@@ -992,7 +992,7 @@ jQuery(function() {
       /*
       * Preview iframe dialog resize
       */
-      $doc.on('fvp-preview-complete',function(e){
+      $doc.on('fvp-preview-complete',function() {
         $el_preview.attr('class','preview-show');
       });
 
@@ -1046,7 +1046,7 @@ jQuery(function() {
       $doc.on('fv_flowplayer_shortcode_item_sort', save );
       $doc.on('fv_flowplayer_shortcode_item_delete', save );
 
-      function save(e){
+      function save() {
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
         // ... but if we're creating a new player from scratch, let's ignore it and save data anyway
