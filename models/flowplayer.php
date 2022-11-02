@@ -1341,12 +1341,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
 
-    <?php if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
+    <?php if ( $this->_get_option('logo') ) : ?>
       .flowplayer .fp-play.fp-visible svg {
         opacity: 0;
       }
       .fp-play:before {
-        background-image: url(<?php echo $this->_get_option('play_icon'); ?>);
+        background-image: url("<?php echo esc_url($this->_get_option('play_icon')); ?>");
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;

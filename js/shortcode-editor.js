@@ -953,7 +953,7 @@ jQuery(function() {
 
       template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
       template_video = get_tab('first','video-files').parent().html();
-      template_subtitles = jQuery('.fv-player-editor-field-wrap-subtitles').html();
+      template_subtitles = jQuery('.fv-player-editor-field-wrap-subtitles').prop('outerHTML')
       template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
 
       /*
@@ -1947,12 +1947,12 @@ jQuery(function() {
     * removes previous values from editor
     * fills new values from shortcode
     *
-    * @param {int} db_id Optional, force load of specified player ID
+    * @param {int} selected_player_id Optional, force load of specified player ID using "Pick existing player"
     */
-    function editor_open(db_id) {
-      $('#fv_player_box').removeAttr('tabindex');
-
+    function editor_open( selected_player_id ) {
+      if( !selected_player_id ) {
       editor_init();
+      }
 
       // remove any DB data IDs that may be left in the form
       $el_editor.find('[data-id]').removeData('id').removeAttr('data-id');
@@ -1986,9 +1986,19 @@ jQuery(function() {
 
       var
         field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
-        is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length;
+        is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length,
+        shortcode = false,
+        shortcode_parse_fix = false;
 
-      if (!db_id) {
+      // if we've got a numeric DB ID passed to this function, use it directly
+      // but don't replace editor_content, since we'll need that to be actually updated
+      // rather then set to a player ID
+      if (selected_player_id) {
+        debug_log('Loading for player id: '+selected_player_id );
+
+        shortcode = 'fvplayer id="' + selected_player_id + '"';
+
+      } else {
         // Edit button on wp-admin -> FV Player screen
         if (is_fv_player_screen_edit(editor_button_clicked)) {
           current_player_db_id = $(editor_button_clicked).data('player_id');
@@ -1997,7 +2007,7 @@ jQuery(function() {
 
           // create an artificial shortcode from which we can extract the actual player ID later below
           editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-          shortcode = [editor_content];
+          shortcode = editor_content;
         }
         
         // Add new button on wp-admin -> FV Player screen
@@ -2037,7 +2047,7 @@ jQuery(function() {
               var matched = sliced_content.match(/^\[fvplayer[^\[\]]*]?/);
               // found the shortcode!
               if (matched) {
-                shortcode = matched;
+                shortcode = matched[0];
               }
 
               break;
@@ -2047,8 +2057,6 @@ jQuery(function() {
           }
           // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
           editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
-
-
         }
 
         // Foliopress WYSIWYG
@@ -2085,70 +2093,36 @@ jQuery(function() {
           }
           instance_tinymce.settings.validate = true;
         }
-      }
 
-      var content = editor_content.replace(/\n/g, '\uffff');
-
-      // if we've got a numeric DB ID passed to this function, use it directly
-      // but don't replace editor_content, since we'll need that to be actually updated
-      // rather then set to a player ID
-      if (db_id) {
-        debug_log('Loading for player id: '+db_id );
-
-        content = db_id;
-
-        // we loose the #fvp_placeholder# placeholder in TinyMCE text mode, so let's re-add it here
-        if (typeof (FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
-          var position = jQuery('#content:not([aria-hidden=true])').prop('selectionStart');
-
-          // look for start of shortcode
-          for (var start = position; start--; start >= 0) {
-            if (editor_content[start] == '[') {
-              var sliced_content = editor_content.slice(start);
-              var matched = sliced_content.match(/^\[fvplayer[^\[\]]*]?/);
-              // found the shortcode!
-              if (matched) {
-                shortcode = matched;
-              }
-
-              break;
-            } else if (editor_content[start] == ']') {
-              break
-            }
-          }
-          // TODO: It would be better to use #fv_player_editor_{random number}# and remember it for the editing session
-          editor_content = editor_content.slice(0, position) + '#fvp_placeholder#' + editor_content.slice(position);
-        }
-      }
-
-      if(typeof(shortcode) == 'undefined'){
-        if (!db_id) {
-          var shortcode = content.match( fv_wp_flowplayer_re_edit );
-
+        if( !shortcode ){
+          let content = editor_content.replace(/\n/g, '\uffff');
           // Gutenberg
           if (is_gutenberg) {
-            shortcode = [ content ];
+            shortcode = content;
+          } else {
+            let match = content.match( fv_wp_flowplayer_re_edit );
+            if( match ) {
+              shortcode = match[0];
           }
-        } else {
-          var shortcode = ['fvplayer id="' + db_id + '"'];
         }
+      }
+
       }
 
       // remove visual editor placeholders etc.
-      if (shortcode && shortcode[0]) {
-        shortcode = shortcode[0]
+      if (shortcode) {
+        shortcode = shortcode
           .replace(/^\[|]+$/gm, '')
           .replace(fv_wp_flowplayer_re_insert, '')
           .replace(/\\'/g, '&#039;');
       }
 
-      if( shortcode != null && typeof(shortcode) != 'undefined' && typeof(shortcode[0]) != 'undefined') {
+      if( shortcode ) {
         debug_log('Loading shortcode: '+shortcode );
 
         // check for new, DB-based player shortcode
         var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
-          var
             shortcode_parse_fix = shortcode
               .replace(/(popup|ad)='[^']*?'/g, '')
               .replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
@@ -2333,9 +2307,10 @@ jQuery(function() {
             // insert the player code into the editor
             // ... also, keep the Pick existing player button showing, if we decided to choose
             //     a different player
-            if (db_id) {
+            if ( selected_player_id ) {
               insert_button_toggle(true);
               copy_player_button_toggle(true);
+
             } else if ( response.status == 'draft' ) {
               // show Save / Insert button, as we're still
               // in draft mode for this player
@@ -2372,7 +2347,7 @@ jQuery(function() {
             // insert the player code into the editor
             // ... also, keep the Pick existing player button showing, if we decided to choose
             //     a different player
-            if (db_id) {
+            if ( selected_player_id ) {
               insert_button_toggle(true);
               copy_player_button_toggle(true);
             }
@@ -2382,7 +2357,7 @@ jQuery(function() {
 
           $doc.trigger('fv-player-editor-non-db-shortcode');
           // ordinary text shortcode in the editor
-          var shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
+          shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
           shortcode_parse_fix = shortcode_parse_fix.replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
           shortcode_remains = shortcode_parse_fix.replace( /^\S+\s*?/, '' );
 
@@ -3617,8 +3592,8 @@ jQuery(function() {
 
       // If we do not have an empty subtitle field, add new
       if( !subElement ) {
-        $('.fv-player-editor-field-wrap-subtitles:last', oTab).after( template_subtitles );
-        subElement = $('.fv-player-editor-field-wrap-subtitles:last' , oTab);
+        subElement = $(template_subtitles);
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-subtitles:last', oTab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
