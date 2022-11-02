@@ -1951,7 +1951,7 @@ jQuery(function() {
     */
     function editor_open( selected_player_id ) {
       if( !selected_player_id ) {
-      editor_init();
+        editor_init();
       }
 
       // remove any DB data IDs that may be left in the form
@@ -2103,9 +2103,9 @@ jQuery(function() {
             let match = content.match( fv_wp_flowplayer_re_edit );
             if( match ) {
               shortcode = match[0];
+            }
           }
         }
-      }
 
       }
 
@@ -2123,7 +2123,7 @@ jQuery(function() {
         // check for new, DB-based player shortcode
         var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
-            shortcode_parse_fix = shortcode
+          shortcode_parse_fix = shortcode
               .replace(/(popup|ad)='[^']*?'/g, '')
               .replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
 
@@ -3909,9 +3909,9 @@ jQuery(function() {
       }
 
       var field = jQuery('#fv_wp_flowplayer_field_' + type);
-        field.parents('tr').show();
-        if( value ) {
-          field.val(value);
+      field.parents('tr').show();
+      if( value ) {
+        field.val(value);
       }
     }
 
