@@ -37,7 +37,9 @@
             return;
           }
 
-          fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'),content);
+          if( window.fv_player_editor ) {
+            fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'),content);
+          }
 
           last_shortcode[props.clientId] = content;
         }, 100 );
@@ -46,7 +48,9 @@
           props.setAttributes( { content: newContent } );
 
           if( last_shortcode[props.clientId] != content ) {
-            fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'), newContent );
+            if( window.fv_player_editor ) {
+              fv_player_editor.gutenberg_preview( jQuery('[data-block='+props.clientId+']'), newContent );
+            }
             last_shortcode[props.clientId] = newContent;
           }
         }
