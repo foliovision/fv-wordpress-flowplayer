@@ -270,6 +270,45 @@ jQuery(function() {
 
             clearInterval(site_editor_load);
 
+            var styles = jQuery('link[id*=fv_flowplayer], link[id*=fv-player').clone();
+            site_editor_iframe.find('body').append( styles );
+
+            var script_urls = [];
+            var scripts = jQuery('script[src*=jquery-core], script[id^=flowplayer], script[id*=fv-player], script[id*=fv_player]').not('[id*=gutenberg], [id*=browser], [id*=video-checker]');
+            scripts.each( function() {
+              var script = jQuery(this);
+              if( script.attr('src') ) {
+                script_urls.push( script.attr('src') );
+              } else {
+                site_editor_iframe.find('body').append( jQuery('<script>', { text: script.text() } ) );
+              }
+            });
+
+            var scriptIncrementor = 0;
+
+            var script = site_editor_iframe[0].createElement("script");
+            script.type = "text/javascript";
+            script.src = script_urls[scriptIncrementor];
+            site_editor_iframe[0].head.appendChild(script);
+            script.addEventListener("load", function () {
+              loadNextScript();
+              scriptIncrementor++;
+            });
+
+            // this function adds event listener to the scripts passed to it and does not allow next script load until previous one has been loaded!
+            function loadNextScript() {
+              if (scriptIncrementor != script_urls.length - 1) {
+                var script = site_editor_iframe[0].createElement("script");
+                script.type = "text/javascript";
+                script.src = script_urls[scriptIncrementor + 1];
+                site_editor_iframe[0].head.appendChild(script);
+                script.addEventListener("load", function () {
+                  loadNextScript();
+                  scriptIncrementor++;
+                });
+              }
+            }
+
             site_editor_iframe.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
 
               editor_button_clicked = this;
