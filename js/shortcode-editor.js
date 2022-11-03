@@ -4032,6 +4032,12 @@ jQuery(function() {
        * @param shortcode The actual player shortcode to generate the preview from.
        */
       gutenberg_preview: function( parent, shortcode ) {
+        // No preview if the element is in the Site Editor iframe
+        // The iframe would have to load all the FV Player JS and CSS
+        if( jQuery(parent).closest('body').hasClass('block-editor-iframe__body') ) {
+          return;
+        }
+
         if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
           return;
         }
