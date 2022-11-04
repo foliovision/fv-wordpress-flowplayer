@@ -182,4 +182,4 @@ window.addEventListener( 'popstate', function() {
   if( instance ) {
     instance.fullscreen( false );
   }
-}
+} );
