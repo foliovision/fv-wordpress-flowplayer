@@ -500,7 +500,7 @@ if (!Date.now) {
       },
 
       restorePlaylistItem = function(e, api) {
-        if ( typeof api == 'undefined' || api.conf.playlist.length == 0 ) return;
+        if ( typeof api == 'undefined' || api.conf.playlist.length == 0 || api.conf.prevent_position_restore ) return;
 
         var item_index = -1;
 
