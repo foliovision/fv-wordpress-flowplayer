@@ -114,7 +114,7 @@ jQuery(function() {
 
     // used in Gutenberg preview to store a preview timeout task due to REACT not being fast enough to allow us previewing
     // player directly after we close the editor
-    fv_player_preview_loading = false,
+    gutenberg_previews_loading = {},
 
     // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
     // ... this will be shown in place of the "Saved!" message bottom overlay and it will always show only the first error in this object,
@@ -262,6 +262,35 @@ jQuery(function() {
           } );
           widget_id = $(this).data().number;
         });
+
+        var site_editor_load = setInterval( function() {
+          var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
+          if( site_editor_iframe.length ) {
+            debug_log( 'Site editor found!');
+
+            clearInterval(site_editor_load);
+
+            site_editor_iframe.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
+
+              editor_button_clicked = this;
+              e.preventDefault();
+              $.fv_player_box( {
+                top: "100px",
+                initialWidth: 1100,
+                initialHeight: 50,
+                width:"1100px",
+                height:"100px",
+                href: "#fv-player-shortcode-editor",
+                inline: true,
+                title: 'Add FV Player',
+                onComplete : editor_open,
+                onClosed : editor_close,
+                onOpen: lightbox_open
+              } );
+              widget_id = $(this).data().number;
+            });
+          }
+        }, 1000 );
 
         $doc.on( 'click', '.fv-player-export', function(e) {
           var $element = jQuery(this);
@@ -4003,23 +4032,32 @@ jQuery(function() {
        * @param shortcode The actual player shortcode to generate the preview from.
        */
       gutenberg_preview: function( parent, shortcode ) {
-        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined') {
+        // No preview if the element is in the Site Editor iframe
+        // The iframe would have to load all the FV Player JS and CSS
+        if( jQuery(parent).closest('body').hasClass('block-editor-iframe__body') ) {
           return;
-        } else if (fv_player_preview_loading !== false) {
-          clearTimeout(fv_player_preview_loading);
         }
 
-        console.log('fv_player_gutenberg_preview',parent,shortcode);
+        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
+          return;
+        }
+
+        var id = parent[0].id;
+        
+        if (gutenberg_previews_loading[id] !== false) {
+          clearTimeout(gutenberg_previews_loading[id]);
+        }
+
         var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + fv_player_editor.b64EncodeUnicode( shortcode );
 
         // set timeout for the loading AJAX and wait a moment, as REACT will call this function
         // even when we click into the Gutenberg block without actually editing anything
         // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
-        fv_player_preview_loading = setTimeout(function() {
+        gutenberg_previews_loading[id] = setTimeout(function() {
           jQuery.get(url, function(response) {
             jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
           } ).always(function() {
-            fv_player_preview_loading = false;
+            gutenberg_previews_loading[id] = false;
           })
         }, 1500);
       },

@@ -451,9 +451,13 @@ jQuery(document).ready(function($) {
   });
 
   // no sorting of settings boxes please
-  setTimeout( function() {
-    jQuery('#normal-sortables').sortable( "disable" )
-  }, 0 );
+  var fv_player_no_sortable = setInterval( function() {
+    try {
+      jQuery('#normal-sortables').sortable( "disable" )
+
+      clearInterval(fv_player_no_sortable);
+    } catch(e) {}
+  }, 10 );
 
 });
 </script>
@@ -685,7 +689,9 @@ function fv_flowplayer_admin_mobile() {
         <table class="form-table2">
           <?php $fv_fp->_get_checkbox(__('Use native fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_native_fullscreen', __('Stops popups, ads or subtitles from working, but provides faster interface. We set this for Android < 4.4 and iOS < 7 automatically.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Force fullscreen on mobile', 'fv-wordpress-flowplayer'), 'mobile_force_fullscreen', __('Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback.', 'fv-wordpress-flowplayer')  ); ?>
-          <?php $fv_fp->_get_checkbox(__('Alternative iOS fullscreen mode', 'fv-wordpress-flowplayer'), 'mobile_alternative_fullscreen', __("Works for iOS < 12 which doesn't support HTML5 fullscreen. Only use if you see site elements such as header bar ovelaying the player in fullscreen on iOS.", 'fv-wordpress-flowplayer')  ); ?>
+          <?php
+          $fv_fp->_get_checkbox(__('Alternative iPhone fullscreen mode', 'fv-wordpress-flowplayer'), 'mobile_alternative_fullscreen', __("Use if you see site elements such as floating header bar ovelaying the player when in fullscreen.", 'fv-wordpress-flowplayer')  );
+          ?>
           <tr>
             <td colspan="4">
               <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -705,6 +711,7 @@ function fv_flowplayer_admin_privacy() {
           <tr>
             <td colspan="4">
               <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="button fv-help-link" href="https://foliovision.com/2021/12/private-video-no-cookies" target="_blank">Help</a>
             </td>
           </tr>
         </table>
@@ -1494,7 +1501,7 @@ function fv_flowplayer_admin_custom_css() {
   border: 1px solid #ddd;
   }
 </style>
- <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for someusefull CSS tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
+ <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for usefull appearance tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
  <table class="form-table2">
     <tr>
       <td colspan="2">
@@ -2185,8 +2192,19 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
 		// close postboxes that should be closed
 		jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');
+
 		// postboxes setup
-		postboxes.add_postbox_toggles('fv_flowplayer_settings');
+    setTimeout( function() {
+      // check if not already initialized
+      if( jQuery('.fv-metabox-holder #normal-sortables.ui-sortable').length == 0 ) {
+  		  postboxes.add_postbox_toggles('fv_flowplayer_settings');
+
+        // Prevent other plugins from interferring
+        postboxes.add_postbox_toggles = function() {
+          console.log('FV Player Settings screen prevented duplciate add_postbox_toggles call!');
+        }
+      }
+    }, 100 );
 
     jQuery('.fv_wp_flowplayer_activate_extension').on('click', function() {  //  todo: block multiple clicks
       var button = jQuery(this);

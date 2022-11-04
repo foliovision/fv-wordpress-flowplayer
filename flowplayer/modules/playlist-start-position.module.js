@@ -12,6 +12,12 @@ flowplayer( function(api,root) {
       // Do not go to the playlist item if it's ad
       // TODO: Have it pick the previous video
       if( typeof(api.conf.playlist[start_index].click) == "undefined" ) {
+
+        // In case of HLS.js this flag is present and the api.play() which uses api.load() does not execute
+        if( api.engine && api.engine.engineName == 'hlsjs-lite' ) {
+          api.loading = false;
+        }
+
         api.play(start_index);
       }
       $root.data('position_changed', 1);

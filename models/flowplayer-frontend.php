@@ -149,7 +149,6 @@ class flowplayer_frontend extends flowplayer
     $this->sHTMLAfter = false;
     $player_type = 'video';
     $rtmp = false;
-    $youtube = false;
     $vimeo = false;
     $wistia = false;
     $scripts_after = '';
@@ -200,18 +199,6 @@ class flowplayer_frontend extends flowplayer
         if( $fv_flowplayer_meta && isset($fv_flowplayer_meta[sanitize_title($media_item)]['time']) ) {
           $this->expire_time = $fv_flowplayer_meta[sanitize_title($media_item)]['time'];
         }
-      }
-    }
-    
-    if( preg_match( "~(youtu\.be/|(?:youtube\.com|youtube-nocookie\.com)/(watch\?(.*&)?v=|(embed|v)/))([^\?&\"'>]+)~i", $media, $aYoutube ) ) {
-      if( isset($aYoutube[5]) ) {
-        $youtube = $aYoutube[5];
-        $player_type = 'youtube';
-      }
-    } else if( preg_match( "~^[a-zA-Z0-9-_]{11}$~", $media, $aYoutube ) ) {
-      if( isset($aYoutube[0]) ) {
-        $youtube = $aYoutube[0];
-        $player_type = 'youtube';
       }
     }
 
@@ -599,13 +586,17 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fullscreen'] = 'false';
         }
         
-        if( !$bIsAudio && stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
-          $ratio = round( intval($height) / intval($width), 4);   
+        if( !$bIsAudio ) {
+          if( stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
+            $ratio = round( intval($height) / intval($width), 4);
+          } else {
+            $ratio = 9/16;
+          }
           $this->fRatio = $ratio;
-  
+
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
         }
-        
+
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
           $attributes['data-live'] = 'true';
         }
@@ -788,18 +779,6 @@ class flowplayer_frontend extends flowplayer
         }        
         
     } //  end Video player
-    
-    
-    /*
-     *  Youtube player
-     */
-    else if( $player_type == 'youtube' ) {
-        
-      $sAutoplay = ($autoplay > -1) ? 'autoplay=1&amp;' : '';
-      $this->ret['html'] .= "<iframe id='fv_ytplayer_{$this->hash}' type='text/html' width='{$width}' height='{$height}'
-    src='//www.youtube.com/embed/$youtube?{$sAutoplay}origin=".urlencode(get_permalink())."' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>\n";
-      
-    }
     
     
     /*
