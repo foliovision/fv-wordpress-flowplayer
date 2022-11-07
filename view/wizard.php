@@ -205,7 +205,7 @@
   <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
-      <?php if( $subtitle_language ) : ?>
+      <?php if( $subtitle_language ): ?>
         <div class="field-with-language">
           <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
             <option value=""><?php _e('Pick language', 'fv_flowplayer'); ?></option>
@@ -221,8 +221,12 @@
           </select>
       <?php endif; ?>
     
-      <input class="components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
-      
+      <?php if($browser):?>
+        <div class="fv_player_editor_url_shortened" id="<?php echo "fv_player_editor_url_field_" . $name ; ?>"></div>
+      <?php endif; ?>
+
+      <input class="<?php if($browser) echo "fv_player_interface_hide fv_player_editor_url_field "; ?>components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
+
       <?php if( $subtitle_language ) : ?>
         </div><!-- /.field-with-language-->
       <?php endif; ?>

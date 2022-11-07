@@ -3804,6 +3804,81 @@ jQuery(function() {
     });
 
     /*
+    Editor short links
+    */
+
+    // click on shortened preveew, show original input and hide preview
+    $doc.on('click', '.fv_player_editor_url_shortened', function() {
+      var preview = jQuery(this),
+        original_field = preview.next('.fv_player_editor_url_field');
+
+      preview.addClass('fv_player_interface_hide');
+      preview.attr('title', '');
+      preview.find('.dashicons-edit').remove();
+      preview.siblings('.components-button').show();
+      original_field.removeClass('fv_player_interface_hide');
+      original_field.focus();
+
+      // TODO: detect click outside
+    });
+
+    // focus lost from input
+    $doc.on('change', '.fv_player_editor_url_field', function() {
+      show_short_link(jQuery(this));
+    });
+
+    $doc.on('fv_player_editor_finished', function() {
+      jQuery('.fv_player_editor_url_field').each(function(index, item) {
+        show_short_link(jQuery(item))
+      });
+    });
+
+    function show_short_link(original_field) {
+      var preview = original_field.prev('.fv_player_editor_url_shortened'),
+        original_value = original_field.val();
+
+      if( !original_value ) { // no value, hide preview
+        original_field.removeClass('fv_player_interface_hide');
+        preview.addClass('fv_player_interface_hide');
+      } else {
+        original_field.addClass('fv_player_interface_hide');
+        preview.removeClass('fv_player_interface_hide');
+        preview.attr('title', original_value);
+        preview.html(shorten_original_link(original_value)); // shorten preview link
+        preview.append(jQuery('<span class="dashicons dashicons-edit"></span>')); // add dashicon
+        preview.siblings('.components-button').hide(); // hide media library button
+      }
+    }
+
+    function shorten_original_link(original_link) {
+      if(!original_link) return original_link;
+
+      var short_link = original_link.trim(),
+        parts = short_link.split('/'),
+        filename = parts[parts.length - 1];
+
+      parts = parts.filter(function(value) {
+        return (value && value != 'http:' && value != 'https:' );
+      })
+
+      // AWS
+      if(original_link.indexOf('.amazonaws.com/') != -1 ) {  
+        var bucket_name = original_link.match(/https:\/\/(.*?)\.s3\./); // get bucket name from domain name
+        if( bucket_name ) {
+          short_link = bucket_name[1] + '<span>&hellip;</span>' + filename;
+        }
+      // HLS
+      } else if( filename.indexOf('.m3u8') != -1 ) { 
+        short_link = parts[0] + '<span>&hellip;</span>' + parts[parts.length - 2] + '<span>&hellip;</span>' + filename;
+      // mp4, png, vtt
+      } else if(parts.length > 2) { 
+        short_link = parts[0] + '<span>&hellip;</span>' + filename;
+      }
+
+      return short_link;
+    }
+
+    /*
     Extra fields to reveal when using a MPD or RTMP stream
     */
     $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
