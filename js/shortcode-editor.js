@@ -9,10 +9,10 @@ jQuery(function() {
 
     var
       $doc = $(document),
-      $el_editor,
-      $el_preview,
-      el_spinner,
-      el_preview_target,
+      $el_editor = $('#fv-player-shortcode-editor'),
+      $el_preview = $('#fv-player-shortcode-editor-preview'),
+      el_spinner = $('#fv-player-shortcode-editor-preview-spinner'),
+      el_preview_target = $('#fv-player-shortcode-editor-preview-target'),
       $el_notices = $('#fv-player-editor-notices'),
 
     // data to save in Ajax
@@ -480,14 +480,6 @@ jQuery(function() {
     }
 
     $doc.ready( function(){
-      $el_editor = $('#fv-player-shortcode-editor');
-
-      $el_preview = $('#fv-player-shortcode-editor-preview');
-
-      el_spinner = $('#fv-player-shortcode-editor-preview-spinner');
-
-      el_preview_target = $('#fv-player-shortcode-editor-preview-target');
-
       var
         next = false, // track if the player data has changed while saving
         overlay_close_waiting_for_save = false,
@@ -3806,20 +3798,36 @@ jQuery(function() {
     /*
     Editor short links
     */
+    var shortened_field_edited = false, // store field that if being edited
+      shortened_field_button = false; // store Media Library button for the field
 
     // click on shortened preveew, show original input and hide preview
     $doc.on('click', '.fv_player_editor_url_shortened', function() {
       var preview = jQuery(this),
-        original_field = preview.next('.fv_player_editor_url_field');
+        wrap = preview.closest('.components-base-control__field');
+
+      shortened_field_edited = preview.next('.fv_player_editor_url_field')
+      shortened_field_button = wrap.find('.add_media')
 
       preview.addClass('fv_player_interface_hide');
       preview.attr('title', '');
-      preview.find('.dashicons-edit').remove();
       preview.siblings('.components-button').show();
-      original_field.removeClass('fv_player_interface_hide');
-      original_field.focus();
+      shortened_field_edited.removeClass('fv_player_interface_hide');
+      shortened_field_edited.focus();
+    });
 
-      // TODO: detect click outside
+    // Clicking outside of the edited field should close the field editing
+    $el_editor.on( 'click', function(e) {
+      if( shortened_field_edited ) {
+        if(
+          !$(e.target).hasClass('fv_player_editor_url_shortened') &&
+          !$(e.target).parent().hasClass('fv_player_editor_url_shortened') &&
+          !shortened_field_edited.is(e.target) &&
+          !shortened_field_button.is(e.target)
+        ) {
+          show_short_link( shortened_field_edited ); 
+        }
+      }
     });
 
     // focus lost from input
@@ -3837,6 +3845,9 @@ jQuery(function() {
       var preview = original_field.prev('.fv_player_editor_url_shortened'),
         original_value = original_field.val();
 
+      shortened_field_edited = false;
+      shortened_field_button = false; 
+
       if( !original_value ) { // no value, hide preview
         original_field.removeClass('fv_player_interface_hide');
         preview.addClass('fv_player_interface_hide');
@@ -3844,8 +3855,7 @@ jQuery(function() {
         original_field.addClass('fv_player_interface_hide');
         preview.removeClass('fv_player_interface_hide');
         preview.attr('title', original_value);
-        preview.html(shorten_original_link(original_value)); // shorten preview link
-        preview.append(jQuery('<span class="dashicons dashicons-edit"></span>')); // add dashicon
+        preview.find('.link-preview').html(shorten_original_link(original_value)); // shorten preview link
         preview.siblings('.components-button').hide(); // hide media library button
       }
     }

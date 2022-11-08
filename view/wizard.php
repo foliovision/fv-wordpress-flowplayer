@@ -222,7 +222,10 @@
       <?php endif; ?>
     
       <?php if($browser):?>
-        <div class="fv_player_editor_url_shortened" id="<?php echo "fv_player_editor_url_field_" . $name ; ?>"></div>
+        <div class="fv_player_editor_url_shortened" id="<?php echo "fv_player_editor_url_field_" . $name ; ?>">
+          <span class="link-preview"></span>
+          <span class="dashicons dashicons-edit"></span>
+        </div>
       <?php endif; ?>
 
       <input class="<?php if($browser) echo "fv_player_interface_hide fv_player_editor_url_field "; ?>components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
