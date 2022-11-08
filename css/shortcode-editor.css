@@ -299,13 +299,25 @@ a #add-format, a #add-rtmp {
 }
 #fv-player-shortcode-editor input[type="text"],
 #fv-player-shortcode-editor input[type="number"],
-#fv-player-shortcode-editor select {
+#fv-player-shortcode-editor select,
+.fv_player_editor_url_shortened {
+  font-size: 14px;
 	padding: 0 8px;
 	/* inherits font size 14px */
 	line-height: 2; /* 28px */
 	/* Only necessary for IE11 */
 	min-height: 36px;
 	width:100%;
+}
+.fv_player_editor_url_shortened {
+  margin: 4px 2px;
+}
+.fv_player_editor_url_shortened .dashicons {
+  cursor: pointer;
+}
+.fv_player_editor_url_shortened .link-preview span.path,
+.fv_player_editor_url_shortened .link-preview span.sep {
+  color: #aaa;
 }
 
 #fv-player-shortcode-editor .fv-player-playlist-item-title, #fv-player-shortcode-editor .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }

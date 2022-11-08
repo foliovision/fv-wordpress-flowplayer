@@ -3862,30 +3862,45 @@ jQuery(function() {
 
     function shorten_original_link(original_link) {
       if(!original_link) return original_link;
+      
+      let parts = original_link.trim().split('/'),
+        is_hls = parts[parts.length - 1].indexOf('.m3u8') != -1,
+        new_parts = [];
+      
+      $(parts).each( function(k,v) {
+        let c = '';
+        // filename
+        if( k == parts.length - 1 ) {
+          // if it's HLS hilight the extension only
+          if( is_hls ) {
+            let filename_parts = v.split('.');
+            if( filename_parts.length == 2 ) {
+              new_parts.push( '<span class="path">'+filename_parts[0]+'.</span><span>'+filename_parts[1]+'</span>' );
+              return true;
+            }
+          }
 
-      var short_link = original_link.trim(),
-        parts = short_link.split('/'),
-        filename = parts[parts.length - 1];
-
-      parts = parts.filter(function(value) {
-        return (value && value != 'http:' && value != 'https:' );
-      })
-
-      // AWS
-      if(original_link.indexOf('.amazonaws.com/') != -1 ) {  
-        var bucket_name = original_link.match(/https:\/\/(.*?)\.s3\./); // get bucket name from domain name
-        if( bucket_name ) {
-          short_link = bucket_name[1] + '<span>&hellip;</span>' + filename;
+        // HLS filename - use the directory name
+        } else if( is_hls && k == parts.length - 2 ) {
+          
+        // domain
+        } else if ( k == 2 ) {
+          // hilight bucket name for AWS
+          let domain_parts = v.split('.');
+          if( domain_parts.length > 1 && domain_parts[1].indexOf('s3') == 0 ) {
+            let bucket_name = domain_parts[0];
+            delete(domain_parts[0])
+            new_parts.push( '<span>'+bucket_name+'</span><span class="path">'+domain_parts.join('.')+'</span>' );
+            return true;
+          }
+        } else {
+          c = ' class="path"';
         }
-      // HLS
-      } else if( filename.indexOf('.m3u8') != -1 ) { 
-        short_link = parts[0] + '<span>&hellip;</span>' + parts[parts.length - 2] + '<span>&hellip;</span>' + filename;
-      // mp4, png, vtt
-      } else if(parts.length > 2) { 
-        short_link = parts[0] + '<span>&hellip;</span>' + filename;
-      }
 
-      return short_link;
+        new_parts.push( '<span'+c+'>'+v+'</span>' );
+      });
+
+      return new_parts.join('<span class="sep">/</span>');
     }
 
     /*
