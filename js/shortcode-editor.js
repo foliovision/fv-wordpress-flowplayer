@@ -1191,9 +1191,9 @@ jQuery(function() {
                 get_field('auto_caption', video_tab ).val( auto_caption );
               }
 
+              // The Ajax save can give us some video details and it detects stream type so we refresh that information here 
               show_video_details(k);
               show_stream_fields_worker(k);
-              show_rtmp_fields();
             });
 
             // Did the data change while saving?
@@ -3091,13 +3091,13 @@ jQuery(function() {
 
         new_item.attr('data-id_video', objVid.id);
         get_field('src',new_item).val(objVid.src);
-          get_field('src1',new_item).val(objVid.src1);
-          get_field('src2',new_item).val(objVid.src2);
+        get_field('src1',new_item).val(objVid.src1);
+        get_field('src2',new_item).val(objVid.src2);
 
         get_field('mobile',new_item).val(objVid.mobile);
 
-          get_field('rtmp',new_item).val(objVid.rtmp);
-          get_field('rtmp_path',new_item).val(objVid.rtmp_path);
+        get_field('rtmp',new_item).val(objVid.rtmp);
+        get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
         get_field('caption',new_item).val(objVid.caption);
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
@@ -3852,17 +3852,29 @@ jQuery(function() {
     $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
       show_video_details(index);
       show_stream_fields_worker(index);
+      show_advanced_fields();
       show_rtmp_fields();
     });
 
     $doc.on('fv_flowplayer_shortcode_new', function() {
       show_video_details(0);
       show_stream_fields_worker(0);
+      show_advanced_fields();
       show_rtmp_fields();
     });
 
+    function show_advanced_fields() {
+      var video_object = get_current_video_object(),
+        is_enabled = video_object.mobile || video_object.src1 || video_object.src2
+
+      get_field( 'advanced-settings', true )
+        .prop('checked', is_enabled)
+        .trigger('change');
+    }
+
     function show_rtmp_fields() {
-      let is_enabled = get_field('rtmp',true).val().length > 0 || get_field('rtmp_path',true).val().length > 0;
+      var video_object = get_current_video_object(),
+        is_enabled = video_object.rtmp || video_object.rtmp_path
 
       get_field( 'rtmp_show', true )
         .prop('checked', is_enabled)
@@ -3937,10 +3949,12 @@ jQuery(function() {
 
       wrap.toggleClass( 'is-checked', checked );
 
-      // If the checkox is checked it must be visible
-      wrap
-        .closest('.fv-player-editor-children-wrap')
-        .toggleClass('fv_player_interface_hide', !checked);
+      // If the checkox is checked its parents must be visible
+      if( checked ) {
+        wrap
+          .closest('.fv-player-editor-children-wrap')
+          .removeClass('fv_player_interface_hide');
+      }
 
       wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
 
@@ -3948,7 +3962,7 @@ jQuery(function() {
         jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
           
           jQuery.each( inputs, function(k,input_name) {
-            var field_wrap = $('.fv-player-editor-field-wrap-'+input_name);
+            let field_wrap = $('.fv-player-editor-field-wrap-'+input_name);
 
             // TODO: What should be saved when it's enabled?
             field_wrap.toggleClass( 'is-visible-dependency', value == compare );
@@ -3958,7 +3972,7 @@ jQuery(function() {
       }
 
       // TODO: What should be saved when it's all hidden?
-      $('#fv-player-editor-field-children-'+name).toggle( checked );
+      $('.fv-player-editor-field-children-'+name).toggle( checked );
     }
 
     function show_end_actions( e, value ) {

@@ -356,7 +356,7 @@
       <?php endif;
     
       if( $children ) : ?>
-        <div id="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
+        <div class="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
           <?php
           foreach( $children AS $child_input ) {
             fv_player_editor_input( $child_input, true );
