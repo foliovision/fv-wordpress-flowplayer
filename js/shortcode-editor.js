@@ -665,7 +665,7 @@ jQuery(function() {
       }
 
       // Gutenberg style checkboxes
-      $('#fv-player-shortcode-editor').on( 'click', '.components-form-toggle input[type=checkbox]', function() {
+      $el_editor.on( 'change', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
           name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
@@ -1950,17 +1950,22 @@ jQuery(function() {
       $doc.trigger('fv_flowplayer_player_editor_reset');
 
       // reset content of any input fields, except what has .extra-field
-      $el_editor.find("input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
-      $el_editor.find("textarea").each( function() { jQuery(this).val( '' ) } );
+      $el_editor.find("input:not(.extra-field), textarea").each( function() {
+        $(this)
+          .val( '' )
+          .prop( 'checked', false )
+          .trigger( 'change' );
+      } );
+
       $el_editor.find('select:not([multiple])').prop('selectedIndex',0); // select first index, ignore multiselect - let it be handled separately
 
       $el_editor.find(".fv_player_field_insert-button").text( 'Insert' );
       
       if( window.fv_player_editor_defaults ) {
         jQuery.each( window.fv_player_editor_defaults, function(k,v) {
-          var checkbox = $el_editor.find('#fv_wp_flowplayer_field_'+k+'[type=checkbox]');
+          var checkbox = $el_editor.find('[name=fv_wp_flowplayer_field_'+k+'][type=checkbox]');
           if( checkbox.length ) {
-            checkbox.attr( 'checked', !!v ); 
+            checkbox.prop( 'checked', !!v ).trigger( 'change' );
             
             var wrap = checkbox.closest('.components-form-toggle');
             wrap.toggleClass( 'is-checked is-default', !!v );
@@ -3404,11 +3409,9 @@ jQuery(function() {
             });
           }
         } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
-          if (real_val === '1' || real_val === 'on' || real_val === 'true') {
-            $element.prop('checked',true);
-          } else {
-            $element.prop('checked',false);
-          }
+          let checked = real_val === '1' || real_val === 'on' || real_val === 'true';
+          $element.prop( 'checked', checked ).trigger('change');
+
         } else {
           $element.val(real_val);
         }
