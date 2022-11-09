@@ -602,6 +602,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'visible' => true,
                     'children' => array(
                       array(
+                        'label' => __('Mobile Video', 'fv-wordpress-flowplayer'),
+                        'name' => 'mobile',
+                        'browser' => true,
+                        'type' => 'text',
+                        'visible' => isset($fv_flowplayer_conf["interface"]["mobile"]) && $fv_flowplayer_conf["interface"]["mobile"] == 'true',
+                      ),                      
+                      array(
                         'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
                         'name' => 'src1',
                         'browser' => true,
