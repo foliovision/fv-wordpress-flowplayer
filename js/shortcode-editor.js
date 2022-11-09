@@ -3823,7 +3823,7 @@ jQuery(function() {
       show_short_link(jQuery(this));
     });
 
-    $doc.on('fv_player_editor_finished', function() {
+    $doc.on('fv_player_editor_finished fv_flowplayer_shortcode_item_switch', function() {
       jQuery('.fv_player_editor_url_field').each(function(index, item) {
         show_short_link(jQuery(item))
       });
