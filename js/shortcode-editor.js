@@ -1908,7 +1908,7 @@ jQuery(function() {
           var gutenbergTextarea = ($fv_player_gutenberg[0].tagName == 'TEXTAREA' ? $fv_player_gutenberg[0] : $fv_player_gutenberg.find('textarea').first()[0]);
           fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
         }
-      } else if( current_player_db_id > -1 ) {
+      } else if( current_player_db_id > 0 ) {
         var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
         if( playerRow.length == 0 ) {
           var firstRow = $('#the-list tr:first'),
