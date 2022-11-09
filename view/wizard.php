@@ -57,7 +57,6 @@
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
-                          'live' => true,
                           'name' => '',
                           'playlist_label' => false,
                          ) );
@@ -72,15 +71,13 @@
       $class = ' class="'.$class.'"';
     }
     
-    $live = !$live ? ' data-live-update="false"' : '';
-    
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
     
     ?>
       <tr<?php echo $id.$class; ?>>
         <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
         <td class="field">
-          <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?>>
+          <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>">
             <?php foreach( $dropdown AS $option ) : ?>
               <?php if( is_array($option) ) : ?>
                 <option value="<?php echo $option[0]; ?>"><?php _e( $option[1], 'fv_flowplayer' ); ?></option>
@@ -103,7 +100,7 @@
     }
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
-    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>" <?php echo $live; ?>><?php _e( $label, 'fv_flowplayer'); ?></a>
+    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>"><?php _e( $label, 'fv_flowplayer'); ?></a>
   </div>
     <?php
   }
@@ -117,7 +114,7 @@
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
     <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
-      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?><?php /*if( $default ) echo ' checked="checked"';*/ ?> />
+      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>" />
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
@@ -284,7 +281,6 @@
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
-                          'live' => true,
                           'name' => '',
                           'options' => array(),
                           'playlist_label' => false,
@@ -319,8 +315,6 @@
     if( $scope == 'playlist' ) {
       $class .= ' hide-if-singular';
     }
-
-    $live = !$live ? ' data-live-update="false"' : '';
 
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
 
@@ -941,7 +935,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               'name' => 'email_list',
               'class' => 'fv_player_actions_end-toggle',
               'dropdown' =>$aLists,
-              'live' => false ) );
+          ) );
         }
         ?>
         <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
