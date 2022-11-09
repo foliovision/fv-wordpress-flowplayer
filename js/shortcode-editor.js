@@ -1192,6 +1192,7 @@ jQuery(function() {
 
               show_video_details(k);
               show_stream_fields_worker(k);
+              show_rtmp_fields();
             });
 
             // Did the data change while saving?
@@ -1577,7 +1578,6 @@ jQuery(function() {
       jQuery(".fv_wp_flowplayer_field_src1_wrapper").hide();
       jQuery("#fv_wp_flowplayer_field_src1_uploader").hide();
       jQuery("#add_format_wrapper").show();
-      jQuery(".add_rtmp_wrapper").show();
       jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").hide();
 
       reset_preview();
@@ -2398,16 +2398,14 @@ jQuery(function() {
           var iadwidth = shortcode_parse_arg( shortcode, 'ad_width' );
           var iadheight = shortcode_parse_arg( shortcode, 'ad_height' );
 
-
+          // TODO: Test if RTMP is shown
           if( srcrtmp != null && srcrtmp[1] != null ) {
             jQuery(".fv_wp_flowplayer_field_rtmp").val( srcrtmp[1] );
             jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").show();
-            jQuery(".add_rtmp_wrapper").hide();
           }
           if( srcrtmp_path != null && srcrtmp_path[1] != null ) {
             jQuery(".fv_wp_flowplayer_field_rtmp_path").val( srcrtmp_path[1] );
             jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").show();
-            jQuery(".add_rtmp_wrapper").hide();
           }
           var playlist_row = jQuery('.fv-player-tab-playlist tbody tr:first')
 
@@ -2695,6 +2693,7 @@ jQuery(function() {
         }
       }
 
+      // TODO: Tell people they only have RTMP
       var field_rtmp = get_field("rtmp"),
         field_rtmp_path = get_field("rtmp_path")
 
@@ -3105,12 +3104,8 @@ jQuery(function() {
         }
         get_field('mobile',new_item).val(objVid.mobile);
 
-        if( objVid.rtmp || objVid.rtmp_path ) {
           get_field('rtmp',new_item).val(objVid.rtmp);
           get_field('rtmp_path',new_item).val(objVid.rtmp_path);
-          get_field('rtmp_wrapper',new_item).show();
-          new_item.find(".add_rtmp_wrapper").hide();
-        }
 
         get_field('caption',new_item).val(objVid.caption);
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
@@ -3209,11 +3204,6 @@ jQuery(function() {
 
         $el_editor.attr('class','is-singular is-singular-active');
       }
-
-      // Show or hide RTMP fields if they are filled in
-      var rtmp_not_provided = get_field('rtmp_path',video_tab).val().length === 0 && get_field('rtmp',video_tab).val().length === 0;
-      get_field('rtmp_wrapper',video_tab).toggle( !rtmp_not_provided );
-      $('.add_rtmp_wrapper',video_tab).toggle( rtmp_not_provided );
 
       // As Flowplayer only lets us set RTMP server for the first video in playlist, prefill it for this new item as well
       if(new_index > 1){
@@ -3687,16 +3677,6 @@ jQuery(function() {
     });
 
     /*
-    Click on Add RTMP
-    */
-    $doc.on('click', '.add_rtmp_wrapper a', function() {
-      var item = $(this).parents('.fv-player-playlist-item');
-      get_field("rtmp_wrapper", item).show();
-      item.find(".add_rtmp_wrapper").hide();
-      return false;
-    });
-
-    /*
     Click on Add Another Language (of Subtitles)
     */
     $doc.on('click', '#fv_wp_flowplayer_field_subtitles_add', function() {
@@ -3904,17 +3884,33 @@ jQuery(function() {
     }
 
     /*
-    Extra fields to reveal when using a MPD or RTMP stream
+    Extra fields to reveal when using a HLS or MPD stream
     */
     $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
       show_video_details(index);
       show_stream_fields_worker(index);
+      show_rtmp_fields();
     });
 
     $doc.on('fv_flowplayer_shortcode_new', function() {
       show_video_details(0);
       show_stream_fields_worker(0);
+      show_rtmp_fields();
     });
+
+    function show_rtmp_fields() {
+      let is_enabled = get_field('rtmp',true).val().length > 0 || get_field('rtmp_path',true).val().length > 0;
+
+      get_field( 'rtmp_show', true )
+        .prop('checked', is_enabled)
+        .trigger('change');
+
+      if( is_enabled ) {
+        get_field( 'advanced-settings', true )
+          .prop('checked', true)
+          .trigger('change');
+      }
+    }
 
     function show_stream_fields_worker( index = 0 ) {
       var encrypted = get_current_player_object() ? get_playlist_video_meta_value( 'encrypted', index ) : false;
@@ -3977,6 +3973,11 @@ jQuery(function() {
       var compare = checked ? 1 : 0;
 
       wrap.toggleClass( 'is-checked', checked );
+
+      // If the checkox is checked it must be visible
+      wrap
+        .closest('.fv-player-editor-children-wrap')
+        .toggleClass('fv_player_interface_hide', !checked);
 
       wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
 

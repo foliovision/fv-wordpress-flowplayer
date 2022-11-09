@@ -4,7 +4,7 @@ WordPress's most reliable, easy to use and feature-rich video player. Supports r
 
 * Core video engine: open source Flowplayer 7. 
 * Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
-* Supported video streaming formats are HLS (Flash and JavaScript fallback available for incompatible devices), MPEG DASH and RTMP.
+* Supported video streaming formats are HLS (JavaScript fallback available for incompatible devices) and MPEG DASH.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 
 ## Documentation 

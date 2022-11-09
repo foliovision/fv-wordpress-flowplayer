@@ -318,47 +318,51 @@
 
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
 
-    // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field
-    
-    if( !$is_child ) : ?>
-<div class="components-base-control fv-player-editor-field-wrap-<?php echo $name; ?> <?php echo $class; ?>">
-    <?php endif;
-
-    if( !$type || $type == 'checkbox' ) {
-      fv_player_editor_checkbox( $args );
-    } else if( $type == 'text' ) {
-      fv_player_editor_textfield( $args );
-    } else if( $type == 'number' ) {
-      fv_player_editor_numfield( $args );
-    } else if( $type == 'select' ) {
-      fv_player_editor_select( $args );
-    } else if( $type == 'button' ) {
-      fv_player_editor_button( $args );
-    } else if( $type == 'textarea' ) {
-      fv_player_editor_textarea( $args );
-    } else if( $type == 'hidden' ) {
-      fv_player_editor_hidden( $args );
-    } else if( $type == 'notice_info' ) {
-      fv_player_editor_notice_info( $args );
+    if( !$is_child ) {
+      $class .= ' components-base-control';
     }
 
-    if( !empty($args['description']) ) : ?>
-      <p class="components-form-token-field__help"><?php echo $args['description']; ?></p>
-    <?php endif;
-  
-    if( $children ) : ?>
-      <div id="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
-        <?php
-        foreach( $children AS $child_input ) {
-          fv_player_editor_input( $child_input, true );
-        }
-        ?>
-      </div>
-    <?php endif;
+    if( $children ) {
+      $class .= ' fv-player-editor-children-wrap';
+    }
+
+    ?>
+    <div class="fv-player-editor-field-wrap-<?php echo $name; ?><?php echo $class; ?>">
+      <?php
+
+      if( !$type || $type == 'checkbox' ) {
+        fv_player_editor_checkbox( $args );
+      } else if( $type == 'text' ) {
+        fv_player_editor_textfield( $args );
+      } else if( $type == 'number' ) {
+        fv_player_editor_numfield( $args );
+      } else if( $type == 'select' ) {
+        fv_player_editor_select( $args );
+      } else if( $type == 'button' ) {
+        fv_player_editor_button( $args );
+      } else if( $type == 'textarea' ) {
+        fv_player_editor_textarea( $args );
+      } else if( $type == 'hidden' ) {
+        fv_player_editor_hidden( $args );
+      } else if( $type == 'notice_info' ) {
+        fv_player_editor_notice_info( $args );
+      }
+
+      if( !empty($args['description']) ) : ?>
+        <p class="components-form-token-field__help"><?php echo $args['description']; ?></p>
+      <?php endif;
     
-    if( !$is_child ) : ?>
-</div>
-    <?php endif;
+      if( $children ) : ?>
+        <div id="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
+          <?php
+          foreach( $children AS $child_input ) {
+            fv_player_editor_input( $child_input, true );
+          }
+          ?>
+        </div>
+      <?php endif; ?>
+    </div>
+    <?php
   }
 
   function fv_player_editor_input_group( $settings ) {
@@ -611,7 +615,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       array(
                         'label' => __('RTMP', 'fv-wordpress-flowplayer'),
                         'name' => 'rtmp_show', // TODO: Do not save
-                        'visible' => true,
+                        'visible' => false,
                         'children' => array(
                           array(
                             'label' => __('Path', 'fv-wordpress-flowplayer'),
