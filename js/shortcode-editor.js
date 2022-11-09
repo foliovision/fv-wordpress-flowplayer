@@ -1701,14 +1701,7 @@ jQuery(function() {
           $inputs.each(function() {
             var
               $this               = jQuery(this),
-              $parent_tr          = $this.closest('tr'),
               isDropdown          = this.nodeName == 'SELECT';
-
-            // exceptions for selectively hidden fields, i.e. empty tabs with no content etc.
-            if ($parent_tr.hasClass('fv_player_interface_hide') && $parent_tr.css('display') == 'none') {
-              //return;
-              // why? hidden tabs would have no content... have you tested this? maybe we should return the return? :-P
-            }
 
             var m;
             while ((m = regex.exec(this.name)) !== null) {
@@ -1959,9 +1952,7 @@ jQuery(function() {
       $el_editor.find("input:not(.extra-field)").each( function() { jQuery(this).val( '' ); jQuery(this).attr( 'checked', false ) } );
       $el_editor.find("textarea").each( function() { jQuery(this).val( '' ) } );
       $el_editor.find('select:not([multiple])').prop('selectedIndex',0); // select first index, ignore multiselect - let it be handled separately
-      $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
-      $el_editor.find("[name=fv_wp_flowplayer_field_caption]").each( function() { jQuery(this).val( '' ) } );
-      $el_editor.find("[name=fv_wp_flowplayer_field_splash_text]").each( function() { jQuery(this).val( '' ) } );
+
       $el_editor.find(".fv_player_field_insert-button").text( 'Insert' );
       
       if( window.fv_player_editor_defaults ) {
@@ -2731,7 +2722,7 @@ jQuery(function() {
         ajax_data['status'] = 'published';
       }
 
-      debug_log('Running fv_player_db_save Ajax.');
+      debug_log('Running fv_player_db_save Ajax on submit.');
 
       // add current video that we're editing into the save data
       ajax_data['current_video_to_edit'] = current_video_to_edit;
