@@ -1809,19 +1809,19 @@ jQuery(function() {
 
                 } else if (isDropdown) {
                   player_attribute_value = map_dropdown_value( $this );
-                  }
+                }
 
-                      if (check_for_player_meta_field(m[1])) {
-                        // meta data input
-                        insertUpdateOrDeletePlayerMeta({
-                          data: data,
-                          meta_section: 'player',
-                          meta_key: get_field_name(m[1]),
-                          element: this,
-                          handle_delete: false
-                        });
-                      } else {
-                        // ordinary player attribute
+                if (check_for_player_meta_field(m[1])) {
+                  // meta data input
+                  insertUpdateOrDeletePlayerMeta({
+                    data: data,
+                    meta_section: 'player',
+                    meta_key: get_field_name(m[1]),
+                    element: this,
+                    handle_delete: false
+                  });
+                } else {
+                    // ordinary player attribute
                   data[m[1]] = player_attribute_value;
                 }
               }
@@ -1951,7 +1951,7 @@ jQuery(function() {
     */
     function editor_open( selected_player_id ) {
       if( !selected_player_id ) {
-      editor_init();
+        editor_init();
       }
 
       // remove any DB data IDs that may be left in the form
@@ -2103,9 +2103,9 @@ jQuery(function() {
             let match = content.match( fv_wp_flowplayer_re_edit );
             if( match ) {
               shortcode = match[0];
+            }
           }
         }
-      }
 
       }
 
@@ -2123,7 +2123,7 @@ jQuery(function() {
         // check for new, DB-based player shortcode
         var result = /fvplayer.* id="([\d,]+)"/g.exec(shortcode);
         if (result !== null) {
-            shortcode_parse_fix = shortcode
+          shortcode_parse_fix = shortcode
               .replace(/(popup|ad)='[^']*?'/g, '')
               .replace(/(popup|ad)="(.*?[^\\\\/])"/g, '');
 
@@ -3909,9 +3909,9 @@ jQuery(function() {
       }
 
       var field = jQuery('#fv_wp_flowplayer_field_' + type);
-        field.parents('tr').show();
-        if( value ) {
-          field.val(value);
+      field.parents('tr').show();
+      if( value ) {
+        field.val(value);
       }
     }
 
