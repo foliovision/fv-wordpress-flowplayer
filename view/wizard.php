@@ -652,7 +652,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
                     'name' => 'caption',
                     'type' => 'text',
-                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
+                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true',
+                    'description' => __('Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-wordpress-flowplayer'),
                   ),
                   array(
                     'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
