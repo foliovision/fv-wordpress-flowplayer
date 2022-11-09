@@ -114,7 +114,7 @@
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
     <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
-      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>" />
+      <input class="components-form-toggle__input<?php if( $no_data ) echo ' no-data'; ?>" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>" />
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
@@ -282,6 +282,7 @@
                           'id' => false,
                           'label' => '',
                           'name' => '',
+                          'no_data' => false, // do not save any data based on this input
                           'options' => array(),
                           'playlist_label' => false,
                           'scope' => false,
@@ -595,7 +596,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
-                    'name' => 'advanced-settings', // TODO: Do not save
+                    'name' => 'advanced-settings',
+                    'no_data' => true,
                     'visible' => true,
                     'children' => array(
                       array(
@@ -614,7 +616,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       ),
                       array(
                         'label' => __('RTMP', 'fv-wordpress-flowplayer'),
-                        'name' => 'rtmp_show', // TODO: Do not save
+                        'name' => 'rtmp_show',
+                        'no_data' => true,
                         'visible' => false,
                         'children' => array(
                           array(

@@ -982,10 +982,10 @@ jQuery(function() {
 
       $doc.on("change", "#fv-player-shortcode-editor-right input, #fv-player-shortcode-editor-right select", save );
 
-      $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea", function() {
+      $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea", function(e) {
         clearTimeout(int_keyup);
         int_keyup = setTimeout( function() {
-          save();
+          save(e);
         }, 500 );
       });
 
@@ -1014,12 +1014,19 @@ jQuery(function() {
       $doc.on('fv_flowplayer_shortcode_item_sort', save );
       $doc.on('fv_flowplayer_shortcode_item_delete', save );
 
-      function save() {
+      /*
+       * @param {object} [e] The event handle is invoked by input change event
+       */
+      function save(e) {
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
         if ( loading ) {
             return;
           }
+
+        // Skips the interface toggles (Advanced Settings, RTMP)
+        if( e && $(e.target).hasClass('no-data') ) {
+          return;
         }
 
         var
@@ -1688,7 +1695,7 @@ jQuery(function() {
         $input_groups.each(function() {
           // only videos, subtitles tabs have tables, so we only need to search for their inputs when working with those
           var
-            $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea') : jQuery(this)),
+            $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea').not('.no-data') : jQuery(this).not('.no-data') ),
             table_index = jQuery(this).data('index');
           save_index++;
 
