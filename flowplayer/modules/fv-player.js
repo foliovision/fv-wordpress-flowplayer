@@ -923,10 +923,14 @@ function fv_autoplay_exec(){
         if( !playlist.hasOwnProperty(item) ) continue;
 
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
-        if( hash === id && autoplay ){
+        if( hash === id && autoplay ) {
+          if( api.conf.playlist.length > 0 ) api.conf.playlist[item].prevent_position_restore = true;
+          else api.conf.clip.prevent_position_restore = true; 
+          
           console.log('fv_autoplay_exec for '+id,item);
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
+
           return false;
         }
       }
@@ -935,10 +939,14 @@ function fv_autoplay_exec(){
         if( !playlist.hasOwnProperty(item) ) continue;
 
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
-        if( hash === src  && autoplay ){
+        if( hash === src  && autoplay ) {
+          if( api.conf.playlist.length > 0 ) api.conf.playlist[item].prevent_position_restore = true;
+          else api.conf.clip.prevent_position_restore = true; 
+
           console.log('fv_autoplay_exec for '+src,item);
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
+
           return false;
         }
       }
