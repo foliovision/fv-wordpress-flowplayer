@@ -1807,6 +1807,19 @@ jQuery(function() {
                     handle_delete: false
                   });
                 } else {
+                  // Is there a default value for the setting?
+                  let field = m[1].replace(/fv_wp_flowplayer_field_/, '');
+                  if( typeof(window.fv_player_editor_defaults[field]) != "undefined" ) {
+                    // Is it the same? Do not save.
+                    if( window.fv_player_editor_defaults[field] == this.checked ) {
+                      continue;
+
+                    // Should it be off while default is on? Save literal false
+                    } else if( window.fv_player_editor_defaults[field] && !this.checked ) {
+                      player_attribute_value = 'false'; 
+                    }
+                  }
+
                     // ordinary player attribute
                   data[m[1]] = player_attribute_value;
                 }

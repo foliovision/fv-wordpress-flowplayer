@@ -19,6 +19,8 @@
   global $fv_wp_flowplayer_ver, $fv_fp;
   global $post;
   $post_id = isset($post->ID) ? $post->ID : 0;
+
+  $script_fv_player_editor_defaults = array();
   
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
   
@@ -368,7 +370,6 @@
 
   function fv_player_editor_input_group( $settings ) {
     global $script_fv_player_editor_defaults;
-    $script_fv_player_editor_defaults = array();
 
     // Check if the field is enabled in Post Interface Options
     $conf = get_option( 'fvwpflowplayer' );
@@ -1011,6 +1012,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 global $script_fv_player_editor_defaults;
 global $script_fv_player_editor_dependencies;
 
-echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>";
-echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>";
+echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>\n";
+echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>\n";
 ?>
