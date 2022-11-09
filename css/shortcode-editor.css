@@ -19,7 +19,6 @@
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
 #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; margin: 1px 2px; height: 27px; padding-left: 5px }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
-#fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp { visibility: hidden; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: hidden; }
@@ -27,7 +26,6 @@
 /*#fv-flowplayer-playlist table .button { display: none; }*/
 #fv-flowplayer-playlist table:first-child tr.video-size { display: table-row; }
 #fv-flowplayer-playlist table:first-child .hint { display: inline; }
-#fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_add_format_wrapper { display: table-row; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }

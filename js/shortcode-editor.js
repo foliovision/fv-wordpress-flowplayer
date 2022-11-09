@@ -1574,13 +1574,6 @@ jQuery(function() {
 
       file_info_hide();
 
-      jQuery(".fv_wp_flowplayer_field_src2_wrapper").hide();
-      jQuery("#fv_wp_flowplayer_field_src2_uploader").hide();
-      jQuery(".fv_wp_flowplayer_field_src1_wrapper").hide();
-      jQuery("#fv_wp_flowplayer_field_src1_uploader").hide();
-      jQuery("#add_format_wrapper").show();
-      jQuery(".fv_wp_flowplayer_field_rtmp_wrapper").hide();
-
       reset_preview();
 
       jQuery('.fv-player-tab-video-files [data-playlist-item]').each( function(i,e) {
@@ -2423,13 +2416,8 @@ jQuery(function() {
             document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
           if( srcurl1 != null && srcurl1[1] != null ) {
             document.getElementById("fv_wp_flowplayer_field_src1").value = srcurl1[1];
-            jQuery(".fv_wp_flowplayer_field_src1_wrapper").css( 'display', 'table-row' );
-            //document.getElementById("fv_wp_flowplayer_field_src1_uploader").style.display = 'table-row';
             if( srcurl2 != null && srcurl2[1] != null ) {
               document.getElementById("fv_wp_flowplayer_field_src2").value = srcurl2[1];
-              jQuery(".fv_wp_flowplayer_field_src2_wrapper").css( 'display', 'table-row' );
-              //document.getElementById("fv_wp_flowplayer_field_src2_uploader").style.display = 'table-row';
-              document.getElementById("add_format_wrapper").style.display = 'none';
             }
           }
 
@@ -3103,15 +3091,9 @@ jQuery(function() {
 
         new_item.attr('data-id_video', objVid.id);
         get_field('src',new_item).val(objVid.src);
-        if( objVid.src1 ) {
           get_field('src1',new_item).val(objVid.src1);
-          get_field('src1_wrapper',new_item).css( 'display', 'table-row' );
-        }
-        if( objVid.src2 ) {
           get_field('src2',new_item).val(objVid.src2);
-          get_field('src2_wrapper',new_item).css( 'display', 'table-row' );
-          new_item.find('#fv_wp_flowplayer_add_format_wrapper').show();
-        }
+
         get_field('mobile',new_item).val(objVid.mobile);
 
           get_field('rtmp',new_item).val(objVid.rtmp);
@@ -3656,33 +3638,6 @@ jQuery(function() {
     /*
     Click handlers
     */
-
-    /*
-    Click on Add another format
-    */
-    $doc.on('click', '#add_format_wrapper a', function() {
-      if ( get_field("src").val() != '' ) {
-        if ( get_field("src1_wrapper").is(":visible") ) {
-          if ( get_field("src1").val() != '' ) {
-            get_field("src2_wrapper").show();
-            get_field("src2_uploader").show();
-            $("#add_format_wrapper").hide();
-          }
-          else {
-            alert('Please enter the file name of your second video file.');
-          }
-        }
-        else {
-          get_field("src1_wrapper").show();
-          get_field("src1_uploader").show();
-        }
-      }
-      else {
-        alert('Please enter the file name of your video file.');
-      }
-      
-      return false;
-    });
 
     /*
     Click on Add Another Language (of Subtitles)
