@@ -992,6 +992,8 @@ jQuery(function() {
       $doc.on('fv_flowplayer_shortcode_new fv-player-editor-non-db-shortcode', function() {
         insert_button_toggle(true);
         copy_player_button_toggle(true);
+
+        loading = false;
       });
 
       $doc.on('fv_flowplayer_video_meta_load', function() {
@@ -1015,18 +1017,10 @@ jQuery(function() {
       function save() {
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
-        // ... but if we're creating a new player from scratch, let's ignore it and save data anyway
-        //     if we actually have any data to save
         if ( loading ) {
-          if ( !is_unsaved ) {
             return;
-          } else {
-            // we're not loading existing player but creating a new one
-            loading = false;
           }
         }
-
-        //console.log('Change?',e.type,e.currentTarget);
 
         var
           ajax_data = build_ajax_data(true),
