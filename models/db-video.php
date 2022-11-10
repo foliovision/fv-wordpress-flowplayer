@@ -492,9 +492,12 @@ CREATE TABLE " . self::$db_table_name . " (
 
   /**
    * Makes this video linked to a record in database.
+   * 
    * This is used when loading multiple videos in the constructor,
    * so we can return them as objects from the DB and any saving will
    * not insert their duplicates.
+   * 
+   * Also used when updating video via editor, so we keep certain fields.
    *
    * @param int  $id        The DB ID to which we'll link this video.
    * @param bool $load_meta If true, the meta data will be loaded for the video from database.
@@ -504,6 +507,32 @@ CREATE TABLE " . self::$db_table_name . " (
    */
   public function link2db($id, $load_meta = false) {
     $this->id = (int) $id;
+
+    // Some fields are not present in editor and need to load from DB
+    $fields = array(
+      'width',
+      'height',
+      'aspect_ratio',
+      'duration',
+      'last_check'
+    );
+
+    $missing_something = false;
+    foreach( $fields AS $field ) {
+      if( empty($this->$field) ) {
+        $missing_something = true;
+        break;
+      }
+    }
+
+    if( $missing_something ) {
+      $objVideo = new FV_Player_Db_Video( $id, array(), self::$DB_Instance );
+      foreach( $fields AS $field ) {
+        if( empty($this->$field) ) {
+          $this->$field = $objVideo->$field;
+        }
+      }
+    }
 
     if ($load_meta) {
       $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($id)), self::$DB_Instance);
@@ -914,6 +943,13 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->splash_attachment_id = $video_data['splash_attachment_id'];
         }
       }
+
+    // Meta fields which are not in editor and must be retained
+    } else {
+      $meta_data[] = array(
+        'meta_key' => 'last_video_meta_check_src',
+        'meta_value' => $video_url,
+      );
     }
 
     /*
