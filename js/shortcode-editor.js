@@ -3270,6 +3270,50 @@ jQuery(function() {
       });
     }
 
+    // fills playlist editor table from individual video items
+    function playlist_refresh() {
+
+      // fills playlist editor table from individual video items
+      let video_files = jQuery('.fv-player-tab-video-files [data-playlist-item]');
+      video_files.each( function( k, v ) {
+        let current = jQuery(v);
+
+        let currentUrl = get_field("src",current).val();
+        if(!currentUrl.length){
+          currentUrl = 'Video ' + (k + 1);
+        }
+
+        let playlist_row = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').eq( current.data('index') );
+
+        let video_preview = get_field("splash",current).val(),
+          playlist_img = jQuery('<img />')
+            .attr('width', 120 )
+            .attr('src', video_preview );
+
+        playlist_row.find('.fvp_item_video-thumbnail')
+          .html( video_preview.length ? playlist_img : '' )
+          .toggleClass( 'no-img', !video_preview.length );
+
+        let video_name = decodeURIComponent(currentUrl).split("/").pop();
+        video_name = video_name.replace(/\+/g,' ');
+        video_name = video_name.replace(/watch\?v=/,'YouTube: ');
+
+        let playlist_title = playlist_row.find('.fvp_item_video-filename');
+        playlist_title.text( video_name );
+
+        // do not put in caption if it's loading
+        if (!playlist_title.hasClass('fv-player-shortcode-editor-small-spinner')) {
+          let caption = get_field("caption",current).val();
+          if( caption ) {
+            playlist_title.text( caption );
+          }
+        }
+
+        let video = get_playlist_video_object( k );
+        playlist_row.find('.fvp_item_video-duration').text( seconds_to_hms( video.duration ) );
+      });
+    }
+
     /*
     * Displays playlist editor
     * keywords: show playlist
@@ -3289,48 +3333,9 @@ jQuery(function() {
 
       playlist_index();
 
-      // fills playlist editor table from individual video items
-      var video_files = jQuery('.fv-player-tab-video-files [data-playlist-item]');
-      video_files.each( function() {
-        var current = jQuery(this);
-
-        var currentUrl = get_field("src",current).val();
-        if(!currentUrl.length){
-          currentUrl = 'Video ' + (jQuery(this).index() + 1);
-        }
-
-        var playlist_row = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').eq( current.data('index') );
-
-        var video_preview = get_field("splash",current).val(),
-          playlist_img = jQuery('<img />')
-            .attr('width', 120 )
-            .attr('src', video_preview );
-
-        playlist_row.find('.fvp_item_video-thumbnail')
-          .html( video_preview.length ? playlist_img : '' )
-          .toggleClass( 'no-img', !video_preview.length );
-
-        var video_name = decodeURIComponent(currentUrl).split("/").pop();
-        video_name = video_name.replace(/\+/g,' ');
-        video_name = video_name.replace(/watch\?v=/,'YouTube: ');
-
-        var playlist_title = playlist_row.find('.fvp_item_video-filename');
-        playlist_title.text( video_name );
-
-        // do not put in caption if it's loading
-        if (!playlist_title.hasClass('fv-player-shortcode-editor-small-spinner')) {
-          var caption = get_field("caption",current).val();
-          if( caption ) {
-            playlist_title.text( caption );
-          }
-        }
-
-        var video = get_playlist_video_object( jQuery(this).index() );
-        playlist_row.find('.fvp_item_video-duration').text( seconds_to_hms( video.duration ) );
-      });
+      playlist_refresh();
 
       playlist_index();
-
 
       jQuery('.fv-player-tab-playlist').show();
 
