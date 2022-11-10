@@ -1186,14 +1186,17 @@ jQuery(function() {
                 get_field('auto_caption', video_tab ).val( auto_caption );
               }
 
-              // The Ajax save can give us some video details and it detects stream type so we refresh that information here
-              if( current_video_to_edit > -1 ) {
+              // The Ajax save can give us some video details and it detects stream type so we refresh that information here if we are editing that video
+              if( current_video_to_edit == k ) {
                 show_video_details(k);
                 show_stream_fields_worker(k);
-              } else {
-                playlist_show();
               }
             });
+
+            // If we are in playlist view, we refresh the list too
+            if( current_video_to_edit > 1 ) {
+              playlist_refresh();
+            }
 
             // Did the data change while saving?
             if( next ) {
