@@ -1440,7 +1440,9 @@ jQuery(function() {
           return false;
         }
 
-        return playlist_show();
+        playlist_show();
+
+        reload_preview( current_video_to_edit );
       });
 
       // prevent closing of the overlay if we have unsaved data
@@ -3323,7 +3325,6 @@ jQuery(function() {
     */
     function playlist_show() {
       current_video_db_id = 0;
-      debug_log('current_video_db_id: '+current_video_db_id);
 
       editing_video_details = false;
       $el_editor.attr('class','is-playlist-active');
@@ -3343,8 +3344,6 @@ jQuery(function() {
       jQuery('.fv-player-tab-playlist').show();
 
       tabs_refresh();
-
-      reload_preview( current_video_to_edit );
 
       $doc.trigger('fv-player-editor-video-opened', [ current_video_to_edit ] );
 
