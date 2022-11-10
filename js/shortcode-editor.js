@@ -2770,8 +2770,7 @@ jQuery(function() {
         is_unsaved = false;
         //is_draft_changed = false;
 
-        var player = JSON.parse(response);
-        current_player_db_id = parseInt(player.id);
+        current_player_db_id = parseInt(response.id);
         if( current_player_db_id > 0 ) {
           var
             has_store_shortcode_args = false,
