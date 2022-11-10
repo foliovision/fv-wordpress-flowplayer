@@ -3455,6 +3455,11 @@ jQuery(function() {
           }
         } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
           let checked = real_val === '1' || real_val === 'on' || real_val === 'true';
+
+          // Is the value empty and is there default?
+          if( real_val == '' && typeof(window.fv_player_editor_defaults[key]) != "undefined" ) {
+            return;
+          }
           $element.prop( 'checked', checked ).trigger('change');
 
         } else {
