@@ -31,8 +31,6 @@ class FV_Player_Checker {
 
   
   public static function check_headers( $headers, $remotefilename, $random, $args = false ) {
-    global $fv_fp;
-    
     $args = wp_parse_args( $args, array( 'talk_bad_mime' => 'Video served with a bad mime type' , 'wrap'=>'p' ) );
   
     $sOutput = '';
@@ -125,14 +123,12 @@ class FV_Player_Checker {
       $all_sources = $URLs;
 
       foreach( $all_sources AS $source ) {
-        if( preg_match( '!^rtmp://!', $source, $match ) ) {
-          $found_rtmp = true;
-        } else if( !isset($media) && !preg_match( '!\.(m3u8ALLOW|m3uALLOW|avi)$!', $source) ) {
+        if( preg_match( '~^https?://~', $source, $match ) ) {
           $media = $source;
+          break;
         }
       }
 
-      //$random = rand( 0, 10000 );
       $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( $_POST['hash'] ) ) : false;
       if( isset($media) ) {
         $remotefilename = $media;
@@ -146,7 +142,6 @@ class FV_Player_Checker {
         $getID3 = new getID3;     
         
         if( function_exists('curl_init') ) {
-          $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
   
           //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
           $upload_dir = wp_upload_dir();      
