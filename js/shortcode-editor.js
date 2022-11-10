@@ -689,12 +689,7 @@ jQuery(function() {
       * keywords: select item
       */
       $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function() {
-        var new_index = $(this).parents('.fv-player-editor-playlist-item').attr('data-index');
-
-        set_current_video_to_edit( new_index );
-
-        playlist_item_show(new_index);
-
+        playlist_item_show( $(this).parents('.fv-player-editor-playlist-item').attr('data-index') );
         return false;
       });
 
@@ -2607,7 +2602,6 @@ jQuery(function() {
             });
           }
 
-
           if(sPlaylist){
             playlist_show();
           } else {
@@ -2636,6 +2630,8 @@ jQuery(function() {
 
       } else {
         debug_log('New player...' );
+
+        playlist_item_show(0);
 
         jQuery(document).trigger('fv_flowplayer_shortcode_new');
         shortcode_remains = '';
@@ -4132,6 +4128,7 @@ jQuery(function() {
 
       insertUpdateOrDeleteVideoMeta,
 
+      // Allows external entities to set which video will be edited once the editor opens
       set_current_video_to_edit,
 
       set_edit_lock_removal( val ) {
