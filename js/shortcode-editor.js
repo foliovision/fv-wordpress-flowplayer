@@ -1191,9 +1191,13 @@ jQuery(function() {
                 get_field('auto_caption', video_tab ).val( auto_caption );
               }
 
-              // The Ajax save can give us some video details and it detects stream type so we refresh that information here 
-              show_video_details(k);
-              show_stream_fields_worker(k);
+              // The Ajax save can give us some video details and it detects stream type so we refresh that information here
+              if( current_video_to_edit > -1 ) {
+                show_video_details(k);
+                show_stream_fields_worker(k);
+              } else {
+                playlist_show();
+              }
             });
 
             // Did the data change while saving?
@@ -3397,7 +3401,7 @@ jQuery(function() {
         var duration_hms = new Date(seconds * 1000).toISOString().substr(11, 8);
         return duration_hms.replace( /^00:/, '' );
       } catch(e) {
-        return false;
+        return '';
       }
     }
 
