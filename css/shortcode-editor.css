@@ -301,11 +301,10 @@ a #add-format, a #add-rtmp {
 .fv_player_editor_url_shortened {
   font-size: 14px;
 	padding: 0 8px;
-	/* inherits font size 14px */
-	line-height: 2; /* 28px */
-	/* Only necessary for IE11 */
-	min-height: 36px;
+	line-height: 2;
+  min-height: 36px;
 	width:100%;
+  word-break: break-all;
 }
 .fv_player_editor_url_shortened {
   margin: 4px 2px;
