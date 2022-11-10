@@ -516,6 +516,7 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   
   
   add_filter( 'the_content', 'fv_player_handle_youtube_links' );
+  add_filter( 'the_content', 'fv_player_handle_vimeo_links' );
   add_filter( 'embed_oembed_html', 'fv_player_handle_vimeo_links' );
   add_filter( 'embed_oembed_html', 'fv_player_handle_youtube_links' );
 
