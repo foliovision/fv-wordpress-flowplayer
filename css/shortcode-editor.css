@@ -1110,3 +1110,20 @@ a.fvp_item_video-filename {
   background: radial-gradient(rgb(128 128 128 / 15%), transparent);
   visibility: visible !important;
 }
+
+.fv-player-editor-field-wrap-video_info {
+  margin-top: -24px;
+}
+.fv_wp_flowplayer_field_video_info {
+  margin: 0
+}
+.fv_wp_flowplayer_field_video_info li {
+  background: #eee;
+  border-radius: 1em;
+  float: left;
+  padding: .2em .6em;
+  margin-right: .6em;
+}
+.fv_wp_flowplayer_field_video_info li.error {
+  background: #f88;
+}

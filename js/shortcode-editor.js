@@ -2877,6 +2877,46 @@ jQuery(function() {
       
     }
 
+    function get_pretty_aspect_ratio( video ) {
+      let w, h, dividend, divisor, remainder;
+
+      if( video.width && video.height ) {
+        w = video.width;
+        h = video.height;
+      } else {
+        w = 1;
+        h = video.ratio;
+      }
+
+      if( h == w ) {
+        return '1:1';
+
+      } else {
+        if( h > w ) {
+          dividend  = h;
+          divisor   = w;
+        }
+
+        if( w > h ) {
+          dividend   = w;
+          divisor    = h;
+        }
+
+        var gcd = -1;
+        while( gcd == -1 ) {
+          remainder = dividend % divisor;
+          if( remainder == 0 ){
+            gcd = divisor;
+          } else {
+            dividend  = divisor;
+            divisor   = remainder;
+          }
+        }
+
+        return ( w / gcd ) + ':' + ( h / gcd );
+      }
+    }
+
     function insert_button_toggle( show ) {
       $('.fv_player_field_insert-button').toggle( show );
     }
@@ -3922,19 +3962,19 @@ jQuery(function() {
       video_info.html('');
 
       if( video.duration > 0 ) {
-        video_info.append( '<li><b>Duration:</b> ' + seconds_to_hms(video.duration) + '</li>' );
+        video_info.append( '<li title="Duration">' + seconds_to_hms(video.duration) + '</li>' );
         show = true;
       }
       if( video.width > 0 && video.height > 0 ) {
-        video_info.append( '<li><b>Dimensions:</b> ' + video.width  + 'x' + video.height + ' pixels</li>' );
+        video_info.append( '<li title="Video dimension in pixels">' + video.width  + 'x' + video.height + '</li>' );
         show = true;
       } 
       if( video.aspect_ratio ) {
-        video_info.append( '<li><b>Aspect Ratio:</b> ' + video.aspect_ratio  + '</li>' );
+        video_info.append( '<li title="Aspect ratio">' + get_pretty_aspect_ratio(video) + '</li>' );
         show = true;
       }
       if( error ) {
-        video_info.append( '<li><b>Error:</b> ' + error  + '</li>' );
+        video_info.append( '<li class="error"><b>Error:</b> ' + error  + '</li>' );
         show = true;
       }
 
