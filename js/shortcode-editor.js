@@ -3210,6 +3210,8 @@ jQuery(function() {
     Show a certain playlist item, it's Video and Subtitles tab
     */
     function playlist_item_show( new_index ) {
+      let previous_index = current_video_to_edit;
+
       set_current_video_to_edit( new_index );
 
       editing_video_details = true;
@@ -3251,7 +3253,9 @@ jQuery(function() {
 
       tabs_refresh();
 
-      reload_preview( current_video_to_edit );
+      if( previous_index != current_video_to_edit ) {
+        reload_preview( current_video_to_edit );
+      }
 
       $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
     }
