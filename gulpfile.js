@@ -24,8 +24,7 @@ const translationFile = 'fv-wordpress-flowplayer.pot';
 const bugReport = 'https://foliovision.com/support';
 
 // files to check
-// const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
-// const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
+const freedomplayerDistCSS = ['./node_modules/freedomplayer/dist/skin/skin.css']
 const freedomPlayerDistJS = ['./node_modules/freedomplayer/dist/freedomplayer.min.js']
 const freedomPlayerCSS = ['./css/freedomplayer.css', './css/freedomplayer-additions.css'];
 const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
@@ -40,6 +39,15 @@ function updateBrowserList() {
 
 function updateFreedomPlayerModule() {
   return run('npm install freedomplayer@latest').exec();
+}
+
+function copyFreedomPlayerCSS() {
+  return src(freedomplayerDistCSS)
+  .pipe(rename(function (path) {
+    path.basename = "freedomplayer";
+    path.extname = ".css";
+  }))
+    .pipe(dest('./css/'));
 }
 
 function copyFreedomPlayerJS() {
@@ -119,10 +127,13 @@ exports.browserlist = updateBrowserList;
 exports.zip = zipProject;
 exports.pot = potFileGenerate;
 exports.cssplayer = cssFreedomPlayer;
+exports.freedomplayercss = copyFreedomPlayerCSS;
 exports.freedomplayerjs= copyFreedomPlayerJS;
 exports.freedomplayerupdate = updateFreedomPlayerModule;
 exports.jsmodules = jsModulesMinify;
 exports.jsfiles = jsFilessMinify;
 exports.js = parallel( jsModulesMinify, jsFilessMinify );
 
-exports.default = series( updateFreedomPlayerModule, updateBrowserList, copyFreedomPlayerJS, parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );
+exports.dev = series( updateBrowserList, copyFreedomPlayerJS, copyFreedomPlayerCSS, parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer) );
+
+exports.default = series( updateFreedomPlayerModule, updateBrowserList, copyFreedomPlayerJS, copyFreedomPlayerCSS, parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );
