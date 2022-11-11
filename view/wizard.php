@@ -856,7 +856,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
         <div class="fv-player-tab fv-player-tab-actions" style="display: none">
           <?php
-          $actions = apply_filters('fv_player_editor_actions', array(
+          $actions = array(
             'actions' => array(
               'items' => array(
                 array(
@@ -884,7 +884,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 array(
                   'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
                   'name' => 'ad_custom', // TODO: Do not save
-                  'description' => __('Add you custom over ad code.', 'fv-wordpress-flowplayer'),
+                  'description' => __('Shows while the video is playing.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
                       'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
@@ -905,16 +905,21 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'visible' => true,
                   'dependencies' => array( 'ad_skip' => false )
                 ),
-                array(
-                  'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
-                  'name' => 'ad_skip',
-                  'description' => __('Video will autoplay when the page loads.', 'fv-wordpress-flowplayer'),
-                  'visible' => true,
-                  'dependencies' => array( 'ad_custom' => false )
-                ),
               )
             )
-          ) );
+          );
+
+          if( $fv_fp->_get_option('ad') ) {
+            $actions['actions']['items'][] = array(
+              'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
+              'name' => 'ad_skip',
+              'description' => sprintf( __('Use to disable ad set in <a href="%s" target="_blank">Actions -> Ads</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
+              'visible' => true,
+              'dependencies' => array( 'ad_custom' => false )
+            );
+          }
+        
+          $actions = apply_filters('fv_player_editor_actions', $actions );
 
           fv_player_editor_input_group( $actions );
           ?>
