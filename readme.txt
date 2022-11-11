@@ -1,7 +1,7 @@
 === FV Flowplayer Video Player ===
 Contributors: FolioVision
 Donate link: https://foliovision.com/donate
-Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
+Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 3.5
 Tested up to: 6.0
 Stable tag: trunk
@@ -40,9 +40,9 @@ Back to school special 25% off pro licenses until end of September.
 
 **Additional Technical information**
 
-* Core video engine: open source Flowplayer 7.
+* Core video engine: open source Freedom Player 8.
 * Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
-* Supported video streaming formats are HLS (Flash and JavaScript fallback available for incompatible devices), MPEG DASH and RTMP.
+* Supported video streaming formats are HLS (JavaScript fallback available for incompatible devices) and MPEG DASH.
 * Default options for all the embedded videos can be set in comprehensive administration menu.
 * In comparison with WordPress Flowplayer plugin, there are several improvements:
 

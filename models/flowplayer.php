@@ -1341,7 +1341,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
 
-    <?php if ( $this->_get_option('logo') ) : ?>
+    <?php if ( $this->_get_option('play_icon') ) : ?>
       .flowplayer .fp-play.fp-visible svg {
         opacity: 0;
       }

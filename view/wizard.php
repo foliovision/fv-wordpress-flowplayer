@@ -19,6 +19,8 @@
   global $fv_wp_flowplayer_ver, $fv_fp;
   global $post;
   $post_id = isset($post->ID) ? $post->ID : 0;
+
+  $script_fv_player_editor_defaults = array();
   
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
   
@@ -57,7 +59,6 @@
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
-                          'live' => true,
                           'name' => '',
                           'playlist_label' => false,
                          ) );
@@ -72,15 +73,13 @@
       $class = ' class="'.$class.'"';
     }
     
-    $live = !$live ? ' data-live-update="false"' : '';
-    
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
     
     ?>
       <tr<?php echo $id.$class; ?>>
         <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
         <td class="field">
-          <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?>>
+          <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>">
             <?php foreach( $dropdown AS $option ) : ?>
               <?php if( is_array($option) ) : ?>
                 <option value="<?php echo $option[0]; ?>"><?php _e( $option[1], 'fv_flowplayer' ); ?></option>
@@ -103,7 +102,7 @@
     }
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
-    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>" <?php echo $live; ?>><?php _e( $label, 'fv_flowplayer'); ?></a>
+    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>"><?php _e( $label, 'fv_flowplayer'); ?></a>
   </div>
     <?php
   }
@@ -117,7 +116,7 @@
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
     <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
-      <input class="components-form-toggle__input" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>"<?php echo $live; ?><?php /*if( $default ) echo ' checked="checked"';*/ ?> />
+      <input class="components-form-toggle__input<?php if( $no_data ) echo ' no-data'; ?>" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>" />
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
@@ -205,7 +204,7 @@
   <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
-      <?php if( $subtitle_language ) : ?>
+      <?php if( $subtitle_language ): ?>
         <div class="field-with-language">
           <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
             <option value=""><?php _e('Pick language', 'fv_flowplayer'); ?></option>
@@ -221,8 +220,15 @@
           </select>
       <?php endif; ?>
     
-      <input class="components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
-      
+      <?php if($browser):?>
+        <div class="fv_player_editor_url_shortened" id="<?php echo "fv_player_editor_url_field_" . $name ; ?>">
+          <span class="link-preview"></span>
+          <span class="dashicons dashicons-edit"></span>
+        </div>
+      <?php endif; ?>
+
+      <input class="<?php if($browser) echo "fv_player_interface_hide fv_player_editor_url_field "; ?>components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
+
       <?php if( $subtitle_language ) : ?>
         </div><!-- /.field-with-language-->
       <?php endif; ?>
@@ -277,8 +283,8 @@
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
-                          'live' => true,
                           'name' => '',
+                          'no_data' => false, // do not save any data based on this input
                           'options' => array(),
                           'playlist_label' => false,
                           'scope' => false,
@@ -313,56 +319,57 @@
       $class .= ' hide-if-singular';
     }
 
-    $live = !$live ? ' data-live-update="false"' : '';
-
     $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
 
-    // Lookout for gutenberg modular styles, where this is only a direct copy of the checkbox field
-    
-    if( !$is_child ) : ?>
-<div class="components-base-control fv-player-editor-field-wrap-<?php echo $name; ?> <?php echo $class; ?>">
-    <?php endif;
-
-    if( !$type || $type == 'checkbox' ) {
-      fv_player_editor_checkbox( $args );
-    } else if( $type == 'text' ) {
-      fv_player_editor_textfield( $args );
-    } else if( $type == 'number' ) {
-      fv_player_editor_numfield( $args );
-    } else if( $type == 'select' ) {
-      fv_player_editor_select( $args );
-    } else if( $type == 'button' ) {
-      fv_player_editor_button( $args );
-    } else if( $type == 'textarea' ) {
-      fv_player_editor_textarea( $args );
-    } else if( $type == 'hidden' ) {
-      fv_player_editor_hidden( $args );
-    } else if( $type == 'notice_info' ) {
-      fv_player_editor_notice_info( $args );
+    if( !$is_child ) {
+      $class .= ' components-base-control';
     }
 
-    if( !empty($args['description']) ) : ?>
-      <p class="components-form-token-field__help"><?php echo $args['description']; ?></p>
-    <?php endif;
-  
-    if( $children ) : ?>
-      <div id="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
-        <?php
-        foreach( $children AS $child_input ) {
-          fv_player_editor_input( $child_input, true );
-        }
-        ?>
-      </div>
-    <?php endif;
+    if( $children ) {
+      $class .= ' fv-player-editor-children-wrap';
+    }
+
+    ?>
+    <div class="fv-player-editor-field-wrap-<?php echo $name; ?><?php echo $class; ?>">
+      <?php
+
+      if( !$type || $type == 'checkbox' ) {
+        fv_player_editor_checkbox( $args );
+      } else if( $type == 'text' ) {
+        fv_player_editor_textfield( $args );
+      } else if( $type == 'number' ) {
+        fv_player_editor_numfield( $args );
+      } else if( $type == 'select' ) {
+        fv_player_editor_select( $args );
+      } else if( $type == 'button' ) {
+        fv_player_editor_button( $args );
+      } else if( $type == 'textarea' ) {
+        fv_player_editor_textarea( $args );
+      } else if( $type == 'hidden' ) {
+        fv_player_editor_hidden( $args );
+      } else if( $type == 'notice_info' ) {
+        fv_player_editor_notice_info( $args );
+      }
+
+      if( !empty($args['description']) ) : ?>
+        <p class="components-form-token-field__help"><?php echo $args['description']; ?></p>
+      <?php endif;
     
-    if( !$is_child ) : ?>
-</div>
-    <?php endif;
+      if( $children ) : ?>
+        <div class="fv-player-editor-field-children-<?php echo $name; ?>" style="display: none">
+          <?php
+          foreach( $children AS $child_input ) {
+            fv_player_editor_input( $child_input, true );
+          }
+          ?>
+        </div>
+      <?php endif; ?>
+    </div>
+    <?php
   }
 
   function fv_player_editor_input_group( $settings ) {
     global $script_fv_player_editor_defaults;
-    $script_fv_player_editor_defaults = array();
 
     // Check if the field is enabled in Post Interface Options
     $conf = get_option( 'fvwpflowplayer' );
@@ -590,9 +597,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
-                    'name' => 'advanced-settings', // TODO: Do not save
+                    'name' => 'advanced-settings',
+                    'no_data' => true,
                     'visible' => true,
                     'children' => array(
+                      array(
+                        'label' => __('Mobile Video', 'fv-wordpress-flowplayer'),
+                        'name' => 'mobile',
+                        'browser' => true,
+                        'type' => 'text',
+                        'visible' => isset($fv_flowplayer_conf["interface"]["mobile"]) && $fv_flowplayer_conf["interface"]["mobile"] == 'true',
+                      ),                      
                       array(
                         'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
                         'name' => 'src1',
@@ -609,8 +624,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       ),
                       array(
                         'label' => __('RTMP', 'fv-wordpress-flowplayer'),
-                        'name' => 'rtmp_show', // TODO: Do not save
-                        'visible' => true,
+                        'name' => 'rtmp_show',
+                        'no_data' => true,
+                        'visible' => false,
                         'children' => array(
                           array(
                             'label' => __('Path', 'fv-wordpress-flowplayer'),
@@ -644,7 +660,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
                     'name' => 'caption',
                     'type' => 'text',
-                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true'
+                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true',
+                    'description' => __('Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-wordpress-flowplayer'),
                   ),
                   array(
                     'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
@@ -939,7 +956,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               'name' => 'email_list',
               'class' => 'fv_player_actions_end-toggle',
               'dropdown' =>$aLists,
-              'live' => false ) );
+          ) );
         }
         ?>
         <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
@@ -1007,6 +1024,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 global $script_fv_player_editor_defaults;
 global $script_fv_player_editor_dependencies;
 
-echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>";
-echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>";
+echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>\n";
+echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>\n";
 ?>

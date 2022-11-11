@@ -320,6 +320,16 @@ function fv_flowplayer_admin_default_options() {
             <?php $fv_fp->_get_checkbox(__('No Picture Button', 'fv-wordpress-flowplayer'), 'ui_no_picture_button', __('Adds a button to turn the video picture on and off.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
+              <td class="first"><label for="sticky_video">Play Icon:</label></td>
+              <td>
+                <p class="description">
+                <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php  _e('The big play icon on top of the player. Recommended size is 168 pixels.', 'fv-wordpress-flowplayer'); ?>"/>
+                <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Icon', 'fv-wordpress-flowplayer'); ?>" />
+                </p>
+              </td>
+            </tr>
+
+            <tr>
 							<td><label for="liststyle"><?php _e('Playlist style', 'fv-wordpress-flowplayer'); ?>:</label></td>
 							<td colspan="3">
                 <p class="description">
@@ -576,7 +586,7 @@ function fv_flowplayer_admin_integrations() {
         <p><?php _e('Following options are suitable for web developers and programmers.', 'fv-wordpress-flowplayer'); ?></p>
         <table class="form-table2">
 
-          <?php $fv_fp->_get_checkbox(__('Disable saving skin CSS to a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-player-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Disable saving skin CSS to a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
 
           <tr>
             <td><label for="css_disable"><?php _e('Enable profile videos', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
@@ -1445,33 +1455,6 @@ function fv_flowplayer_admin_skin_playlist() {
 <?php
 }
 
-
-function  fv_flowplayer_admin_custom_icons() {
-  global $fv_fp;
-
-  ?>
-     <table class="form-table2">
-      <tbody>
-      <tr>
-        <td class="first"><label for="sticky_video">Custom Play Icon:</label></td>
-        <td>
-          <p class="description">
-          <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php  _e('Paste icon url or upload image to show custom play icon on player.', 'fv-wordpress-flowplayer'); ?>"/>
-          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php _e('Upload Image', 'fv-wordpress-flowplayer'); ?>" alt="Select Play Icon" />
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
-        </td>
-      </tr>
-      </tbody>
-     </table>
-     <div style="clear: both"></div>
-  <?php
-}
-
 function fv_flowplayer_admin_custom_css() {
   global $fv_fp;
   $customCSS = $fv_fp->_get_option('customCSS');
@@ -1951,7 +1934,6 @@ if( !class_exists('FV_Player_Pro') ) {
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_skin', 'fv_flowplayer_settings_skin', 'normal', 'high' );
 add_meta_box( 'flowplayer-wrapper', __('Player Skin', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_playlist', __('Playlist', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_playlist', 'fv_flowplayer_settings_skin', 'normal' );
-add_meta_box( 'fv_flowplayer_custom_icons', __('Custom Icons', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_custom_icons', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_custom_css', __('Custom CSS', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_custom_css', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_subtitles', __('Subtitles', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_subtitles', 'fv_flowplayer_settings_skin', 'normal' );
 add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_skin_sticky', 'fv_flowplayer_settings_skin', 'normal' );

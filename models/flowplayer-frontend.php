@@ -532,7 +532,7 @@ class flowplayer_frontend extends flowplayer
         if( isset($this->aCurArgs['controlbar']) ) {
           if( strcmp($this->aCurArgs['controlbar'],'yes') == 0 || strcmp($this->aCurArgs['controlbar'],'show') == 0 ) {
             $bFixedControlbar = true;
-          } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 ) {
+          } else if( strcmp($this->aCurArgs['controlbar'],'no') == 0 || strcmp($this->aCurArgs['controlbar'],'false') == 0 ) {
             $attributes['class'] .= ' no-controlbar';
             $bFixedControlbar = false;
           }

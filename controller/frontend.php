@@ -51,7 +51,6 @@ function fv_flowplayer_get_js_translations() {
   6 => __('Skin not found', 'fv-wordpress-flowplayer'),
   7 => __('SWF file not found', 'fv-wordpress-flowplayer'),
   8 => __('Subtitles not found', 'fv-wordpress-flowplayer'),
-  9 => __('Invalid RTMP URL', 'fv-wordpress-flowplayer'),
   10 => __('Unsupported video format.', 'fv-wordpress-flowplayer'),  
   11 => __('Click to watch the video', 'fv-wordpress-flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv-wordpress-flowplayer'),
@@ -374,10 +373,6 @@ function flowplayer_prepare_scripts() {
     if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') && ( $fv_fp->_get_option('video_checker_agreement') || $fv_fp->_get_option('key_automatic') ) ) {
       wp_enqueue_script( 'fv-player-video-checker', flowplayer::get_plugin_url().'/js/video-checker.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
       $aConf['video_checker'] = true;
-    }
-
-    if( $fv_fp->_get_option('rtmp-live-buffer') ) {
-      $aConf['bufferTime'] = apply_filters( 'fv_player_rtmp_bufferTime', 3 );
     }
    
     if( $fv_fp->_get_option('ui_speed_increment') == 0.25){

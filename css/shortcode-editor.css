@@ -19,7 +19,6 @@
 #fv-player-shortcode-editor table input.fv_wp_flowplayer_field_subtitles.with-button { width: 59%; }
 #fv-player-shortcode-editor table select.fv_wp_flowplayer_field_subtitles_lang { width: 10%;float:left; margin: 1px 2px; height: 27px; padding-left: 5px }
 #fv-flowplayer-playlist table tr.video-size { display: none; }
-#fv-flowplayer-playlist table tr#fv_wp_flowplayer_add_format_wrapper { display: none; }
 #fv-flowplayer-playlist table tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp { visibility: hidden; }
 #fv-flowplayer-playlist table .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: hidden; }
@@ -27,7 +26,6 @@
 /*#fv-flowplayer-playlist table .button { display: none; }*/
 #fv-flowplayer-playlist table:first-child tr.video-size { display: table-row; }
 #fv-flowplayer-playlist table:first-child .hint { display: inline; }
-#fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_add_format_wrapper { display: table-row; }
 #fv-flowplayer-playlist table:first-child tr#fv_wp_flowplayer_file_info { display: none; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp { visibility: visible; }
 #fv-flowplayer-playlist table:first-child .fv_wp_flowplayer_field_rtmp_wrapper th { visibility: visible; }
@@ -299,13 +297,24 @@ a #add-format, a #add-rtmp {
 }
 #fv-player-shortcode-editor input[type="text"],
 #fv-player-shortcode-editor input[type="number"],
-#fv-player-shortcode-editor select {
+#fv-player-shortcode-editor select,
+.fv_player_editor_url_shortened {
+  font-size: 14px;
 	padding: 0 8px;
-	/* inherits font size 14px */
-	line-height: 2; /* 28px */
-	/* Only necessary for IE11 */
-	min-height: 36px;
+	line-height: 2;
+  min-height: 36px;
 	width:100%;
+  word-break: break-all;
+}
+.fv_player_editor_url_shortened {
+  margin: 4px 2px;
+}
+.fv_player_editor_url_shortened .dashicons {
+  cursor: pointer;
+}
+.fv_player_editor_url_shortened .link-preview span.path,
+.fv_player_editor_url_shortened .link-preview span.sep {
+  color: #aaa;
 }
 
 #fv-player-shortcode-editor .fv-player-playlist-item-title, #fv-player-shortcode-editor .fv-player-playlist-item-title:hover{ margin:0;border:0;background:transparent; }
@@ -1100,4 +1109,21 @@ a.fvp_item_video-filename {
 #fv-player-shortcode-editor .ui-sortable-placeholder {
   background: radial-gradient(rgb(128 128 128 / 15%), transparent);
   visibility: visible !important;
+}
+
+.fv-player-editor-field-wrap-video_info {
+  margin-top: -24px;
+}
+.fv_wp_flowplayer_field_video_info {
+  margin: 0
+}
+.fv_wp_flowplayer_field_video_info li {
+  background: #eee;
+  border-radius: 1em;
+  float: left;
+  padding: .2em .6em;
+  margin-right: .6em;
+}
+.fv_wp_flowplayer_field_video_info li.error {
+  background: #f88;
 }
