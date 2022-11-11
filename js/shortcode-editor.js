@@ -673,6 +673,20 @@ jQuery(function() {
           checkbox_toggle_worker(wrap, name, checked);
       });
 
+      $el_editor.on('change', '.components-text-control__input', function() {
+        var input = jQuery(this),
+          parent = input.parents('.fv-player-editor-children-wrap'),
+          name = input.attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+
+        if( parent.length == 1 ) {
+          if( input.val() ) {
+            parent.find('.fv-player-editor-field-children-' + name ).show();
+          } else {
+            parent.find('.fv-player-editor-field-children-' + name).hide();
+          }
+        }
+      });
+
       /*
       * NAV TABS
       */
@@ -2253,15 +2267,15 @@ jQuery(function() {
                 }
 
                 var $video_data_tab = playlist_item_add(vids[x], false, subs);
-                var $subtitles_tab = $video_data_tab.parents('.fv-player-tabs:first').find('.fv-player-tab-subtitles table:eq(' + $video_data_tab.data('index') + ')');
+                var $subtitles_tab = get_tab( 'last', 'subtitles' );
 
                 // add chapters and transcript
                 if (chapters){
-                  $subtitles_tab.find('#fv_wp_flowplayer_field_chapters').val(chapters.value).attr('data-id', chapters.id);
+                  get_field('chapters', $subtitles_tab).val(chapters.value).trigger('change');
                 }
 
                 if (transcript) {
-                  $subtitles_tab.find('.fv_wp_flowplayer_field_transcript').val(transcript.value).attr('data-id', transcript.id);
+                  get_field('transcript', $subtitles_tab).val(transcript.value).trigger('change');
                 }
 
                 if (video_meta.length) {
