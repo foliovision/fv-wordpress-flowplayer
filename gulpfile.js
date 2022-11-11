@@ -134,6 +134,6 @@ exports.jsmodules = jsModulesMinify;
 exports.jsfiles = jsFilessMinify;
 exports.js = parallel( jsModulesMinify, jsFilessMinify );
 
-exports.dev = series( updateBrowserList, copyFreedomPlayerJS, copyFreedomPlayerCSS, parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer) );
+exports.dev = series( parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer) );
 
 exports.release = series( updateFreedomPlayerModule, updateBrowserList, copyFreedomPlayerJS, copyFreedomPlayerCSS, parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );
