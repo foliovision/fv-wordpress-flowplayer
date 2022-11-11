@@ -876,7 +876,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                         array('splashend', 'Show splash screen'),
                         array('email_list', 'Collect Emails')
                       ),
-                      'type' => 'select'
+                      'type' => 'select',
+                      'visible' => true
                     )
                   ),
                   'visible' => true
@@ -884,22 +885,26 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 array(
                   'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
                   'name' => 'ad_custom', // TODO: Do not save
+                  'no_data' => true,
                   'description' => __('Shows while the video is playing.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
                       'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
                       'name' => 'ad',
                       'type' => 'textarea',
+                      'visible' => true
                     ),
                     array(
                       'label' => __('Width', 'fv-wordpress-flowplayer'),
                       'name' => 'ad_width',
-                      'type' => 'number'
+                      'type' => 'number',
+                      'visible' => true
                     ),
                     array(
                       'label' => __('Height', 'fv-wordpress-flowplayer'),
                       'name' => 'ad_height',
-                      'type' => 'number'
+                      'type' => 'number',
+                      'visible' => true
                     )
                   ),
                   'visible' => true,

@@ -3922,6 +3922,7 @@ jQuery(function() {
       show_video_details(index);
       show_stream_fields_worker(index);
       show_advanced_fields();
+      show_custom_ad();
       show_rtmp_fields();
     });
 
@@ -3929,6 +3930,7 @@ jQuery(function() {
       show_video_details(0);
       show_stream_fields_worker(0);
       show_advanced_fields();
+      show_custom_ad();
       show_rtmp_fields();
     });
 
@@ -3938,6 +3940,14 @@ jQuery(function() {
 
       get_field( 'advanced-settings', true )
         .prop('checked', is_enabled)
+        .trigger('change');
+    }
+
+    function show_custom_ad() {
+      var player_object = get_current_player_object();
+
+      get_field( 'ad_custom', false )
+        .prop('checked', player_object.ad)
         .trigger('change');
     }
 
