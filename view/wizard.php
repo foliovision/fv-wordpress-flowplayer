@@ -24,34 +24,40 @@
   
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
   
-  function fv_flowplayer_admin_select_popups($aArgs) {
-
+  function fv_flowplayer_admin_select_popups() {
     $aPopupData = get_option('fv_player_popups');
 
-  
-    $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
-    $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'item_id'=>'', 'show_default' => false ) );
-    ?>
-    <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
-      <?php if( $aArgs['show_default'] ) : ?>
-        <option>Use site default</option>
-      <?php endif; ?>
-      <option <?php if( $aArgs['item_id'] == 'no' ) echo 'selected '; ?>value="no">None</option>
-      <option <?php if( $aArgs['item_id'] == 'random' ) echo 'selected '; ?>value="random">Random</option>
-      <?php
-      if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
-        foreach( $aPopupData AS $key => $aPopupAd ) {
-          ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
-          echo $key;
-          if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
-          if( $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
-          ?></option><?php
-        }
-      } ?>      
-    </select>
-    <?php
+    $aPopups = array(
+      array( 'no' , 'None' ),
+      array( 'random' , 'Random')
+    );
+
+    if( !empty($aPopupData) && is_array($aPopupData) ) {
+      foreach( $aPopupData AS $key => $aPopupAd ) {
+        $value = !empty($aPopupAd['name']) ? $aPopupAd['name'] : 'Popup - ' . $key;
+
+        if( $aPopupAd['disabled'] == 1 ) $value .= ' (currently disabled)';
+
+        $aPopups[] = array( $key , $value );
+      }
+    }
+
+    return $aPopups;
   }
   
+  function fv_player_email_lists() {
+    $rawLists = get_option('fv_player_email_lists');
+    $aLists = array();
+
+    foreach($rawLists as $key => $val) {
+      if(!is_numeric($key)) continue;
+
+      $aLists[] = array( $key , (empty($val->name) ? "List " . $key : "$val->name" ) );
+    }
+
+    return $aLists;
+  }
+
   function fv_player_shortcode_row( $args ) {
     $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
     $args = wp_parse_args( $args, array(
@@ -66,7 +72,7 @@
     
     if( $id ) {
       $id = ' id="'.$id.'"';
-    }    
+    }
     
     $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
     if( $class ) {
@@ -159,6 +165,9 @@
       </div>
       <div class="components-input-control__container">
         <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>">
+          <?php if($default): ?>
+            <option><?php echo $default; ?></option>
+          <?php endif; ?>
           <?php foreach( $options AS $option ) : ?>
             <?php if( is_array($option) ) : ?>
               <option value="<?php echo $option[0]; ?>"><?php echo $option[1]; ?></option>
@@ -290,7 +299,8 @@
                           'scope' => false,
                           'subtitle_language' => false,
                           'type' => false,
-                          'visible' => false
+                          'visible' => false,
+                          'default' => false
                          ) );
 
     extract($args);
@@ -867,7 +877,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     array(
                       'label' => __('Pick the action', 'fv-wordpress-flowplayer'),
                       'name' => 'end_actions',
-                      'options' => array( // TODO: Make these work
+                      'options' => array(
                         array('', 'Default'),
                         array('no', 'Nothing'),
                         array('redirect', 'Redirect'),
@@ -878,7 +888,25 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       ),
                       'type' => 'select',
                       'visible' => true
-                    )
+                    ),
+                    array(
+                      'label' => __('Redirect', 'fv-wordpress-flowplayer'),
+                      'name' => 'redirect',
+                      'type' => 'text'
+                    ),
+                    array(
+                      'label' => __('Popup', 'fv-wordpress-flowplayer'),
+                      'name' => 'popup_id',
+                      'type' => 'select',
+                      'options' => fv_flowplayer_admin_select_popups(),
+                      'default' => 'Use site default'
+                    ),
+                    array(
+                      'label' => __('Email list', 'fv-wordpress-flowplayer'),
+                      'name' => 'email_list',
+                      'type' => 'select',
+                      'options' => fv_player_email_lists()
+                    ),
                   ),
                   'visible' => true
                 ),

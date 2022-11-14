@@ -3842,6 +3842,35 @@ jQuery(function() {
       }
     });
 
+    /*
+    End of video action
+    */
+    $doc.on('change', '#fv_wp_flowplayer_field_end_actions', function() {
+      var selected = this.value;
+
+      jQuery('.fv-player-editor-field-wrap-redirect').addClass('fv_player_interface_hide');
+      jQuery('.fv-player-editor-field-wrap-popup_id').addClass('fv_player_interface_hide');
+      jQuery('.fv-player-editor-field-wrap-email_list').addClass('fv_player_interface_hide');
+        
+      switch (selected) {
+        case 'redirect':
+          jQuery('.fv-player-editor-field-wrap-redirect').removeClass('fv_player_interface_hide');
+          break;
+        
+        case 'popup':
+          jQuery('.fv-player-editor-field-wrap-popup_id').removeClass('fv_player_interface_hide');
+          break;
+
+        case 'email_list':
+          jQuery('.fv-player-editor-field-wrap-email_list').removeClass('fv_player_interface_hide');
+          break;
+
+        default:
+          break;
+      }
+
+    });
+
     // focus lost from input
     $doc.on('change', '.fv_player_editor_url_field', function() {
       show_short_link(jQuery(this));
@@ -3924,6 +3953,7 @@ jQuery(function() {
       show_advanced_fields();
       show_custom_ad();
       show_rtmp_fields();
+      show_end_of_video_actions();
     });
 
     $doc.on('fv_flowplayer_shortcode_new', function() {
@@ -3932,6 +3962,7 @@ jQuery(function() {
       show_advanced_fields();
       show_custom_ad();
       show_rtmp_fields();
+      show_end_of_video_actions();
     });
 
     function show_advanced_fields() {
@@ -3949,6 +3980,31 @@ jQuery(function() {
       get_field( 'ad_custom', false )
         .prop('checked', player_object.ad)
         .trigger('change');
+    }
+
+    function show_end_of_video_actions() {
+      var player_object = get_current_player_object(),
+        picked_action = player_object.end_actions,
+        action_value = player_object.end_action_value;
+
+      get_field( 'end_actions_show', false )
+        .prop('checked', picked_action)
+        .trigger('change');
+
+      select_end_of_video_action(picked_action, action_value);
+    }
+
+    function select_end_of_video_action(action, value) {
+      if( action == 'redirect' ) {
+        jQuery('.fv-player-editor-field-wrap-redirect').removeClass('fv_player_interface_hide');
+        get_field('redirect', false).val(value);
+      } else if ( action == 'popup' ) {
+        jQuery('.fv-player-editor-field-wrap-popup_id').removeClass('fv_player_interface_hide');
+        get_field('popup', false).find('[value="'+value+'"]').prop('selected', true);
+      } else if ( action == 'email_list' ) {
+        jQuery('.fv-player-editor-field-wrap-email_list').removeClass('fv_player_interface_hide');
+        get_field('email_list', false).find('[value="'+value+'"]').prop('selected', true);
+      }
     }
 
     function show_rtmp_fields() {
