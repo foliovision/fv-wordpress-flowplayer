@@ -51,6 +51,10 @@ jQuery( function($) {
 
   function ajax_file_upload( file, video_guid ) {
     $progressDiv.text("Uploading...");
+    fv_player_media_browser.set_upload_status(true);
+
+    window.addEventListener('beforeunload', closeWarning);
+
     $progressBarDiv.show();
 
     file_upload_xhr = $.ajax({
@@ -81,6 +85,8 @@ jQuery( function($) {
       },
     })
     .fail(function( jqXHR, textStatus, errorThrown ) {
+      fv_player_media_browser.set_upload_status(false);
+      window.removeEventListener('beforeunload', closeWarning);
       $progressDiv.text("Upload failed with server error.");
       $progressBarDiv.hide();
       console.log( jqXHR, textStatus, errorThrown );
@@ -96,7 +102,8 @@ jQuery( function($) {
         $progressBarDiv.hide();
         console.log( response );
       }
-
+      window.removeEventListener('beforeunload', closeWarning);
+      fv_player_media_browser.set_upload_status(false);
       file_upload_xhr = null;
       $uploadButton.add( $cancelButton ).toggle();
       recreate_file_input( file_select_input_name, file_select_input_class );
@@ -137,6 +144,11 @@ jQuery( function($) {
     });
 
     $progressDiv.text("Preparing upload...");
+  }
+
+  function closeWarning(e) {
+    (e || window.event).returnValue = true; //Gecko + IE
+    return true; //Gecko + Webkit, Safari, Chrome etc.
   }
 
   $doc.on("mediaBrowserOpen", function (event) {

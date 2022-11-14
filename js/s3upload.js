@@ -40,8 +40,12 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
         action: 'create_multiupload',
         fileInfo: self.fileInfo,
     }).done(function(data) {
-        self.sendBackData = data;
-        self.uploadParts();
+        if( data.error ) {
+          self.onServerError('create', null, data.error, null);
+        } else {
+          self.sendBackData = data;
+          self.uploadParts();
+        }
     }).fail(function(jqXHR, textStatus, errorThrown) {
         self.onServerError('create', jqXHR, textStatus, errorThrown);
     });
