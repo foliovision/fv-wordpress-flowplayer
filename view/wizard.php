@@ -28,6 +28,7 @@
     $aPopupData = get_option('fv_player_popups');
 
     $aPopups = array(
+      array( '' , 'Use site default' ),
       array( 'no' , 'None' ),
       array( 'random' , 'Random')
     );
@@ -165,9 +166,6 @@
       </div>
       <div class="components-input-control__container">
         <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>">
-          <?php if($default): ?>
-            <option><?php echo $default; ?></option>
-          <?php endif; ?>
           <?php foreach( $options AS $option ) : ?>
             <?php if( is_array($option) ) : ?>
               <option value="<?php echo $option[0]; ?>"><?php echo $option[1]; ?></option>
@@ -300,7 +298,6 @@
                           'subtitle_language' => false,
                           'type' => false,
                           'visible' => false,
-                          'default' => false
                          ) );
 
     extract($args);
@@ -871,7 +868,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               'items' => array(
                 array(
                   'label' => __('End of Video Action', 'fv-wordpress-flowplayer'),
-                  'name' => 'end_actions_show', // TODO: Do not save
+                  'name' => 'end_actions_show',
                   'description' => __('What should happen at the end of the video.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
@@ -898,8 +895,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'label' => __('Popup', 'fv-wordpress-flowplayer'),
                       'name' => 'popup_id',
                       'type' => 'select',
-                      'options' => fv_flowplayer_admin_select_popups(),
-                      'default' => 'Use site default'
+                      'options' => fv_flowplayer_admin_select_popups()
                     ),
                     array(
                       'label' => __('Email list', 'fv-wordpress-flowplayer'),
@@ -908,6 +904,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'options' => fv_player_email_lists()
                     ),
                   ),
+                  'no_data' => true,
                   'visible' => true
                 ),
                 array(
@@ -938,7 +935,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'visible' => true,
                   'dependencies' => array( 'ad_skip' => false )
                 ),
-              )
+              ),
+              'sort' => false
             )
           );
 
