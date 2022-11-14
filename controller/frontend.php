@@ -477,7 +477,9 @@ function flowplayer_prepare_scripts() {
 
     $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
-      $aConf['fv_chromecast'] = $fv_fp->_get_option('chromecast');
+      $aConf['fv_chromecast'] = array(
+        'applicationId' => '908E271B'
+      );
     }
 
     if( $fv_fp->_get_option('hd_streaming') ) {

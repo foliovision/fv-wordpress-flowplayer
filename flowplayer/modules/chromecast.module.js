@@ -13,7 +13,7 @@ flowplayer(function(api, root) {
     };
   }
 
-  var conf = api.conf.chromecast || {}
+  var conf = api.conf.fv_chromecast || {}
     , session
     , timer
     , trigger
