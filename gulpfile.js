@@ -11,6 +11,7 @@ const cleanCSS = require('gulp-clean-css'); // minify css
 const wpPot = require('gulp-wp-pot'); // for generating the .pot file.
 const sort = require('gulp-sort'); // recommended to prevent unnecessary changes in pot-file.
 const zip = require('gulp-zip'); // zip project
+const run = require('gulp-run'); // run commands
 
 // project
 const projectZipFile = 'fv-wordpress-flowplayer.zip';
@@ -23,14 +24,36 @@ const translationFile = 'fv-wordpress-flowplayer.pot';
 const bugReport = 'https://foliovision.com/support';
 
 // files to check
-// const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
-// const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
+const freedomplayerDistCSS = ['./node_modules/freedomplayer/dist/skin/skin.css']
+const freedomPlayerDistJS = ['./node_modules/freedomplayer/dist/freedomplayer.min.js']
 const freedomPlayerCSS = ['./css/freedomplayer.css', './css/freedomplayer-additions.css'];
 const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
 const youtubeJS = './flowplayer/fv-player-youtube.dev.js';
 const dashJS = './flowplayer/fv-player-dashjs.dev.js';
 const loaderJS = './flowplayer/fv-player-loader.dev.js'
 const projectPHPWatchFiles = ['*.php', './controller/**/*.php', './models/**/*.php', './view/**/*.php'];
+
+function updateBrowserList() {
+  return run('npx browserslist@latest --update-db --yes').exec();
+}
+
+function updateFreedomPlayerModule() {
+  return run('npm install freedomplayer@latest').exec();
+}
+
+function copyFreedomPlayerCSS() {
+  return src(freedomplayerDistCSS)
+  .pipe(rename(function (path) {
+    path.basename = "freedomplayer";
+    path.extname = ".css";
+  }))
+    .pipe(dest('./css/'));
+}
+
+function copyFreedomPlayerJS() {
+  return src(freedomPlayerDistJS)
+    .pipe(dest('./flowplayer/'));
+}
 
 // concat js files + uglify
 function jsModulesMinify() {
@@ -100,11 +123,17 @@ function zipProject() {
 };
 
 // export tasks
+exports.browserlist = updateBrowserList;
 exports.zip = zipProject;
 exports.pot = potFileGenerate;
 exports.cssplayer = cssFreedomPlayer;
+exports.freedomplayercss = copyFreedomPlayerCSS;
+exports.freedomplayerjs= copyFreedomPlayerJS;
+exports.freedomplayerupdate = updateFreedomPlayerModule;
 exports.jsmodules = jsModulesMinify;
 exports.jsfiles = jsFilessMinify;
 exports.js = parallel( jsModulesMinify, jsFilessMinify );
 
-exports.default = series( parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );
+exports.dev = series( parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer) );
+
+exports.release = series( updateFreedomPlayerModule, updateBrowserList, copyFreedomPlayerJS, copyFreedomPlayerCSS, parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );
