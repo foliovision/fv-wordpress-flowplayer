@@ -149,7 +149,7 @@ if( typeof(flowplayer) != "undefined" ) {
   
   function fv_player_pro_youtube_is_mobile() {
     // Include Safari (which means iPad too)
-    return !flowplayer.support.firstframe || flowplayer.support.android || flowplayer.support.iOS || flowplayer.support.browser.safari;
+    return !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.browser.safari;
   }
 
   function fv_player_pro_youtube_is_old_android() {
