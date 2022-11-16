@@ -162,10 +162,19 @@ class FV_Player_Checker {
             fclose($out);
 
             $headers = WP_Http::processHeaders( $header );
-            if( !empty($headers['response']['code']) && intval($headers['response']['code']) > 399 ) {
-              $error = 'HTTP '.$headers['response']['code'];
-              if( !empty($headers['response']['message']) ) {
-                $error .= ': '.$headers['response']['message'];
+            if( !empty($headers['response']['code']) ) {
+              $code = intval($headers['response']['code']);
+              if( $code == 404 ) {
+                $error = 'Video not found';
+
+              } else if( $code == 403 ) {
+                $error = 'Access denied';
+
+              } else if( $code > 399 ) {
+                $error = 'HTTP '.$code;
+                if( !empty($headers['response']['message']) ) {
+                  $error .= ': '.$headers['response']['message'];
+                }
               }
             }
 
@@ -214,7 +223,14 @@ class FV_Player_Checker {
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
             $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
-            if( is_wp_error($request) ) {
+            $response_code = wp_remote_retrieve_response_code( $request );
+            if( $response_code == 404 ) {
+              return array( 'error' => 'Video not found' );
+
+            } else if( $response_code == 403 ) {
+              return array( 'error' => 'Access denied' );
+
+            } else if( is_wp_error($request) ) {
               return array( 'error' => $request->get_error_message() );
             }
 

@@ -4069,7 +4069,7 @@ jQuery(function() {
         show = true;
       }
       if( error ) {
-        video_info.append( '<li class="error"><b>Error:</b> ' + error  + '</li>' );
+        video_info.append( '<li class="error">' + error  + '</li>' );
         show = true;
       }
 
