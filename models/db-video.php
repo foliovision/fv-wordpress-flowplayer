@@ -770,6 +770,8 @@ CREATE TABLE " . self::$db_table_name . " (
      */
     $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
+    $last_error = $this->getMetaValue( 'error', true );
+    $last_error_count = $this->getMetaValue( 'error_count', true );
 
     // Check video duration, or even splash image and title if it was not checked previously
     // TODO: What if the video source has changed?
@@ -852,6 +854,15 @@ CREATE TABLE " . self::$db_table_name . " (
             'meta_key' => 'error',
             'meta_value' => $video_data['error'],
           );
+
+          if( empty($last_error_count) ) $last_error_count = 0;
+          $last_error_count++;
+
+          $meta_data[] = array(
+            'meta_key' => 'error_count',
+            'meta_value' => $last_error_count,
+          );
+
         } else {
           $key = array_search('error', array_column($meta_data, 'meta_key'));
           if( $key !== false ) {
@@ -950,6 +961,20 @@ CREATE TABLE " . self::$db_table_name . " (
         'meta_key' => 'last_video_meta_check_src',
         'meta_value' => $video_url,
       );
+
+      if( $last_error ) {
+        $meta_data[] = array(
+          'meta_key' => 'error',
+          'meta_value' => $last_error,
+        );
+      }
+
+      if( $last_error_count ) {
+        $meta_data[] = array(
+          'meta_key' => 'error_count',
+          'meta_value' => $last_error_count,
+        );
+      }
     }
 
     /*
@@ -1021,9 +1046,6 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        // Clear previous checker error
-        $this->deleteMetaValue( 'error' );
-        $this->deleteMetaValue( 'error_count' );
         
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
