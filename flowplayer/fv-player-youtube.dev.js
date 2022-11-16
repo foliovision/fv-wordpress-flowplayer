@@ -986,9 +986,25 @@ if( typeof(flowplayer) != "undefined" ) {
 
       if( fv_player_pro_youtube_is_mobile() ) {
         // Give Flowplayer a bit of time to finish initializing, like the unload event for splash state players has to finish
-        setTimeout( function() {
+
+        load_youtube_in_viewport();
+        jQuery(window).on( 'scroll', load_youtube_in_viewport );
+      }
+
+      function load_youtube_in_viewport() {        
+        var rect = root.getBoundingClientRect();
+        if(
+          (
+            rect.top > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight) ||
+            rect.bottom > 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+          ) &&
+          rect.left >= 0 &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        ) {
+          jQuery(window).off( 'scroll', load_youtube_in_viewport );
+
           fv_player_pro_youtube_preload(root,api);
-        });
+        }
       }
     });
     
