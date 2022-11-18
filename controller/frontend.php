@@ -434,11 +434,11 @@ function flowplayer_prepare_scripts() {
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.2.3';
 
     $dashjs_version = '3.2.2-mod';
-        
+    $fv_player_dashjs = 'fv-player-dashjs.min.js';
+
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
       wp_enqueue_script( 'dashjs', flowplayer::get_plugin_url().'/flowplayer/dash.mediaplayer.min.js', array('flowplayer'), $dashjs_version, true );
 
-      $fv_player_dashjs = 'fv-player-dashjs.min.js';
       if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $fv_player_dashjs = 'fv-player-dashjs.dev.js';
 
       wp_enqueue_script( 'fv-player-dash', flowplayer::get_plugin_url().'/flowplayer/'.$fv_player_dashjs, array('dashjs'), $fv_wp_flowplayer_ver, true );
@@ -496,6 +496,10 @@ function flowplayer_prepare_scripts() {
 
     if( $fv_fp->_get_option('disable_localstorage') ) {
       $aConf['disable_localstorage'] = true;
+    }
+
+    if( $fv_fp->_get_option('autoplay_preload') && $fv_fp->_get_option('autoplay_preload') != 'false' ) {
+      $aConf['autoplay_preload'] = $fv_fp->_get_option('autoplay_preload');
     }
 
     $aConf['hlsjs'] = array(

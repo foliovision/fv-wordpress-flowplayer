@@ -219,24 +219,6 @@ function fv_flowplayer_admin_default_options() {
             p.description { font-style: normal; }
           </style>
           <table class="form-table2">
-            <tr>
-              <td class="first"><label for="autoplay"><?php _e('Autoplay', 'fv-wordpress-flowplayer'); ?>:</label></td>
-              <td colspan="3">
-                <p class="description">
-                  <?php
-                  // in the older FV Player versions this setting was just true/false and that creates a ton of issues
-                  $value = $fv_fp->_get_option('autoplay');
-                  ?>
-                  <select id="autoplay" name="autoplay">
-                    <option value="true"   <?php if( $value === 'true' || $value ) echo ' selected="selected"'; ?> >Yes</option>
-                    <option value="false"  <?php if( $value === 'false' || !$value ) echo ' selected="selected"'; ?> >No</option>
-                    <option value="muted"   <?php if ( $value === 'muted' )  echo ' selected="selected"'; ?> >Muted</option>
-                  </select>
-                  <?php _e('We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.', 'fv-wordpress-flowplayer'); ?>
-                </p>
-              </td>
-            </tr>
-            
             <?php $fv_fp->_get_checkbox(__('Preloading', 'fv-wordpress-flowplayer'), 'preload', __('Works for the first video on the page. YouTube and Vimeo not supported.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Controlbar Always Visible', 'fv-wordpress-flowplayer'), 'show_controlbar' ); ?>
             <tr>
@@ -462,6 +444,44 @@ jQuery(document).ready(function($) {
 });
 </script>
 					<div class="clear"></div>
+<?php
+}
+
+function fv_flowplayer_admin_autoplay_and_preloading() {
+  global $fv_fp;
+?>
+  <table class="form-table">
+  <tr>
+    <td colspan="2">
+      <p class="description"><?php _e('We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.', 'fv-wordpress-flowplayer'); ?></p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3">
+      <p class="description">
+        <?php
+        // in the older FV Player versions this setting was just true/false and that creates a ton of issues
+        $value = $fv_fp->_get_option('autoplay_preload');
+        ?>
+          <input id="autoplay_preload_off" type="radio" name="autoplay_preload" value="false" <?php if( $value === 'false' || !$value ) echo ' checked="checked"'; ?> >Off</input>
+          <label for="autoplay_preload_off">- disable autoplay</label><br>
+          <input id="autoplay_preload_preload" type="radio" name="autoplay_preload" value="preload" <?php if( $value === 'preload' ) echo ' checked="checked"'; ?> >Preload</input>
+          <label for="autoplay_preload_preload">- preload first video on page</label><br>
+          <input id="autoplay_preload_viewport" type="radio" name="autoplay_preload" value="viewport" <?php if( $value === 'viewport' ) echo ' checked="checked"'; ?> >Autoplay in viewport</input>
+          <label for="autoplay_preload_viewport">- the video autoplays when it comes into the viewport</label><br>
+          <input id="autoplay_preload_sticky" type="radio" name="autoplay_preload" value="sticky" <?php if ( $value === 'sticky' ) echo ' checked="checked"'; ?> > Autoplay in sticky</input>
+          <label for="autoplay_preload_sticky">- once the video autoplays, it becomes sticky and viewer can close it which will also pause it</label><br>
+          <?php do_action('fv_flowplayer_autoplay_and_preloading_inputs_after'); ?>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4">
+      <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+    </td>
+  </tr>
+  </table>
+  <div class="clear"></div>
 <?php
 }
 
@@ -1921,6 +1941,7 @@ $fv_player_aSettingsTabs = apply_filters('fv_player_admin_settings_tabs',$fv_pla
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description', 'fv_flowplayer_settings', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide FV Player Defaults', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_autoplay_and_preloading', __('Autoplay and preloading', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_autoplay_and_preloading', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_mobile', __('Mobile Settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_mobile', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_seo', 'fv_flowplayer_settings', 'normal' );

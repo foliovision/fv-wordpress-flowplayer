@@ -578,7 +578,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
-    if( !isset( $conf['preload'] ) ) $conf['preload'] = 'false';
     if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
     if( !isset( $conf['disablesharing'] ) ) $conf['disablesharing'] = 'false';
     
