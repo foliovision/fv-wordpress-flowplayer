@@ -19,7 +19,6 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
-    "browser-sync": "^2.27.9",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
     "gulp-babel": "^8.0.0",
@@ -32,6 +31,11 @@
     "gulp-wp-pot": "^2.5.0",
     "gulp-zip": "^5.1.0"
   },
+  "browserslist": [
+    "last 2 versions",
+    "> 5%",
+    "Firefox ESR"
+  ],
   "resolutions": {
     "glob-parent": "6.0.1"
   }
