@@ -991,11 +991,13 @@ if( typeof(flowplayer) != "undefined" ) {
 
         load_youtube_in_viewport();
 
+        jQuery(window).on( 'scroll', load_youtube_in_viewport_debounce );
+      }
+
         var debounce = false;
-        jQuery(window).on( 'scroll', function() {
+      function load_youtube_in_viewport_debounce() {
           clearInterval(debounce);
           debounce = setTimeout( load_youtube_in_viewport, 100 );
-        });
       }
 
       function load_youtube_in_viewport() {        
@@ -1008,7 +1010,7 @@ if( typeof(flowplayer) != "undefined" ) {
           rect.left >= 0 &&
           rect.right <= (window.innerWidth || document.documentElement.clientWidth)
         ) {
-          jQuery(window).off( 'scroll', load_youtube_in_viewport );
+          jQuery(window).off( 'scroll', load_youtube_in_viewport_debounce );
 
           fv_player_pro_youtube_preload(root,api);
         }
