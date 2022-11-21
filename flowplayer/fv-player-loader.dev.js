@@ -246,7 +246,7 @@ class FV_Player_JS_Loader {
 			return;
 		}
 
-		/* If the first click was on player, play it */
+		/* If the first click was on player which is not yet initialized, play it */
 		var first_click_done = false;
 		document.addEventListener('mousedown', function (e) {
 			if( first_click_done ) return;
@@ -261,7 +261,7 @@ class FV_Player_JS_Loader {
 					playlist_item = el;
 				}
 				
-				if( el.className && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) ) {
+				if( el.className && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) && !el.className.match(/\bis-ready\b/) ) {
 					/* Players with autoplay should stop */
 					document.querySelectorAll('[data-fvautoplay]').forEach( function(player) {
 						player.removeAttribute('data-fvautoplay');
