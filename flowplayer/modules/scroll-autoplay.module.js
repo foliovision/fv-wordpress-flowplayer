@@ -6,7 +6,8 @@ if( typeof(flowplayer) !== 'undefined') {
     fv_player_scroll_autoplay = true;
 
     api.on('pause', function(e,api) {
-      if(!api.viewport_pause) {
+      if(api.manual_pause) {
+        console.log('Scroll autoplay: Manual pause for ' + jQuery(root).attr('id'));
         api.non_viewport_pause = true;
       }
     });
@@ -70,7 +71,7 @@ if( typeof(flowplayer) !== 'undefined') {
 
           } else if( !api.loading && !api.playing && !api.error && !api.non_viewport_pause ) {
             api.viewport_pause = false;
-            console.log('Scroll autoplay: Play again ' + root.attr('id'));
+            console.log('Scroll autoplay: Load ' + root.attr('id'));
             i++;
             api.load();
 
