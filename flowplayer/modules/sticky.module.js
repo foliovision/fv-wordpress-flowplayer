@@ -1,5 +1,5 @@
  // sticky video
- flowplayer(function(api, root) {
+flowplayer(function(api, root) {
   var $root = jQuery(root),
     $playerDiv = $root.find('.fp-player'),
     sticky = $root.data("fvsticky"),
