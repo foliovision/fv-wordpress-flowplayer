@@ -1,7 +1,7 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
-  var instance_id = root.data('flowplayer-instance-id');
+  var instance_id = root.data('freedomplayer-instance-id');
 
   flowplayer.audible_instance = -1;
 
@@ -72,10 +72,10 @@ flowplayer( function(api,root) {
 
     // if we resume a video, we need to pause all the other ones, unless multiple playback is enabled
     if( !api.conf.multiple_playback ) {
-      jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
+      jQuery('.flowplayer[data-freedomplayer-instance-id]').each( function() {
 
         // of course skip the current player which is being resumed
-        if( instance_id == jQuery(this).data('flowplayer-instance-id') ) return;
+        if( instance_id == jQuery(this).data('freedomplayer-instance-id') ) return;
 
         var player = jQuery(this).data('flowplayer');
 
