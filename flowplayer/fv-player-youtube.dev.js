@@ -215,13 +215,17 @@ if( typeof(flowplayer) != "undefined" ) {
       wrapperTag.className = 'fp-engine fvyoutube-engine';
       common.prepend(common.find(".fp-player", root)[0], wrapperTag);    
 
-        //console.log('new YT preload');  //  probably shouldn't happen when used in lightbox
+        if( window.fv_player_pro_yt_load ) {
+          preload( true );
         
+        } else {
         // this is the event which lets the player load YouTube
-        jQuery(document).one('fv-player-yt-api-loaded', function() {
+          jQuery(document).one( 'fv-player-yt-api-loaded', preload );
+        }
         
-          // only one player can enter the loading phase
-          if( ( typeof(YT) == "undefined" || typeof(YT.Player) == "undefined" ) && window.fv_player_pro_yt_loading ) {
+        function preload( force ) {
+          // only one player can enter the loading phase, unless it's forced
+          if( ( typeof(YT) == "undefined" || typeof(YT.Player) == "undefined" ) && window.fv_player_pro_yt_loading && !force ) {
             return;
           }
           
@@ -245,8 +249,6 @@ if( typeof(flowplayer) != "undefined" ) {
             
             jQuery('.fp-engine.fvyoutube-engine',root)[0].allowFullscreen = false;
 
-            
-
             // splash needs to cover the iframe
             var splash = jQuery('.fp-splash',root);
             jQuery('.fp-ui',root).before( splash );            
@@ -265,7 +267,7 @@ if( typeof(flowplayer) != "undefined" ) {
             api.fv_yt_onError = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onError',fv_player_pro_youtube_onError);
                       
           }, 50 );
-        });
+        }
         
         if( !window.fv_player_pro_yt_load ) {
           window.fv_player_pro_yt_load = true;
@@ -986,9 +988,32 @@ if( typeof(flowplayer) != "undefined" ) {
 
       if( fv_player_pro_youtube_is_mobile() ) {
         // Give Flowplayer a bit of time to finish initializing, like the unload event for splash state players has to finish
-        setTimeout( function() {
+
+        load_youtube_in_viewport();
+
+        jQuery(window).on( 'scroll', load_youtube_in_viewport_debounce );
+      }
+
+        var debounce = false;
+      function load_youtube_in_viewport_debounce() {
+          clearInterval(debounce);
+          debounce = setTimeout( load_youtube_in_viewport, 100 );
+      }
+
+      function load_youtube_in_viewport() {        
+        var rect = root.getBoundingClientRect();
+        if(
+          (
+            rect.top > 0 && ( rect.top + 32 ) < (window.innerHeight || document.documentElement.clientHeight) ||
+            rect.bottom > 16 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+          ) &&
+          rect.left >= 0 &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        ) {
+          jQuery(window).off( 'scroll', load_youtube_in_viewport_debounce );
+
           fv_player_pro_youtube_preload(root,api);
-        });
+        }
       }
     });
     
