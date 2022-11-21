@@ -115,6 +115,7 @@ function fv_flowplayer_get_js_translations() {
 
 /**
  * Replaces the flowplayer tags in post content by players and fills the $GLOBALS['fv_fp_scripts'] array.
+ * 
  * @param string Content to be parsed
  * @return string Modified content string
  */
@@ -755,13 +756,12 @@ function fv_player_disable_scroll_autoplay() {
  * @return array $conf
  */
 function fv_player_disable_scroll_autoplay_conf($conf) {
-  if(isset($conf['autoplay_scroll'])) unset($conf['autoplay_scroll']);
-  if(isset($conf) && $conf['autoplay_preload'] == 'webview' ) unset($conf['autoplay_preload']);
+  if( isset( $conf['autoplay_preload'] ) && $conf['autoplay_preload'] == 'webview' ) unset($conf['autoplay_preload']); // check if value is webview which is for scroll autoplay
 
   return $conf;
 }
 
-/*
+/**
  * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
  * The reason is that it's a dependency of most of the modules so then each module would have to be 
  * adjusted to be able to load without it.
@@ -817,7 +817,7 @@ function fv_player_js_loader_load() {
   echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }
 
-/*
+/**
  * @param string $min The minimal version to check - like 7.4.44.727
  * 
  * @return bool True if the version is at least $min
