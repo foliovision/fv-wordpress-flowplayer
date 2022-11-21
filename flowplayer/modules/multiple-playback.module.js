@@ -25,12 +25,12 @@ flowplayer( function(api,root) {
     }
     
     // we go through all the players to paused or mute them all
-    jQuery('.flowplayer[data-flowplayer-instance-id]').each( function() {
+    jQuery('.freedomplayer[data-freedomplayer-instance-id]').each( function() {
       var player = jQuery(this).data('flowplayer');
       
       // we must skip the current player, as the load even can occur multiple times
       // like for example when you switch to another video in playlist
-      var current_instance_id = jQuery(this).data('flowplayer-instance-id');
+      var current_instance_id = jQuery(this).data('freedomplayer-instance-id');
 
       if( flowplayer.audible_instance == -1 || current_instance_id == flowplayer.audible_instance || current_instance_id == instance_id ) return;      
 
