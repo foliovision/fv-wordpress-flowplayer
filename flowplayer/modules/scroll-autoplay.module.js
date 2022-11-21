@@ -77,11 +77,6 @@ if( typeof(flowplayer) !== 'undefined') {
             i++;
             api.load();
 
-            if( autoplay == 'muted' ) {
-              console.log('Scroll autoplay: mute!');
-              api.mute(true,true);
-            }
-
           }
         } else {
           if( api && api.playing && fv_autoplay_type == 'viewport' ) {
