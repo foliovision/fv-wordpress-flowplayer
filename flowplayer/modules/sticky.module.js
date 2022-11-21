@@ -65,7 +65,7 @@
         offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
 
         // Is the player loading, or is it the audible player?
-        if ($window.scrollTop() > offset && ( api.loading || flowplayer.audible_instance == $root.data('flowplayer-instance-id') ) ) {
+        if ($window.scrollTop() > offset && ( api.loading || flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ) ) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) {
             return false;
           } else {
