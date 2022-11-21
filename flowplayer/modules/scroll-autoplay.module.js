@@ -2,9 +2,9 @@ if( typeof(flowplayer) !== 'undefined') {
   var fv_autoplay_type = fv_flowplayer_conf.autoplay_preload,
     fv_player_scroll_autoplay = false;
 
-  jQuery(document).ready( function() {
+  freedomplayer(function(api, root) {
     fv_player_scroll_autoplay = true;
-  } );
+  })
 
   jQuery(window).on( 'scroll', function() {
     fv_player_scroll_autoplay = true;
@@ -33,6 +33,15 @@ if( typeof(flowplayer) !== 'undefined') {
 
       if( fv_autoplay_type == 'viewport' || fv_autoplay_type == 'sticky' ) { // play video when on viewport or sticky
         var iPlayer = root.offset().top + root.height() / 2;
+
+        // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
+        // var play_icon = root.find('.fp-play').addClass('invisible'),
+        // control_bar = root.find('.fp-controls').addClass('invisible');
+
+        // api.one('progress', function() {
+        //   play_icon.removeClass('invisible');
+        //   control_bar.removeClass('invisible');
+        // });
 
         // looks for a single player which is in the middle of screen
         // and it also has to be further down than the currently playing player

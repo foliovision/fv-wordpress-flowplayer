@@ -52,7 +52,7 @@
     "fv_player_time_hms_ms": true,
     "fv_player_time_hms": true,
     "fv_player_notice": true,
-    "fv_autoplay_exec": true,
+    "fv_video_link_autoplay": true,
     "fv_player_load": true,
     "renderBrowserPlaceholderHTML" : true
   }
