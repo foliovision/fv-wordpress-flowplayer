@@ -738,6 +738,29 @@ function fv_player_load_svg_buttons_everywhere() {
 
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
 
+/**
+ * Disables scroll auotplay
+ *
+ * @return void
+ */
+function fv_player_disable_scroll_autoplay() {
+  add_filter('fv_flowplayer_conf', 'fv_player_disable_scroll_autoplay');
+}
+
+/**
+ * Removes scroll autoplay from conf
+ *
+ * @param array $conf
+ *
+ * @return array $conf
+ */
+function fv_player_disable_scroll_autoplay_conf($conf) {
+  if(isset($conf['autoplay_scroll'])) unset($conf['autoplay_scroll']);
+  if(isset($conf) && $conf['autoplay_preload'] == 'webview' ) unset($conf['autoplay_preload']);
+
+  return $conf;
+}
+
 /*
  * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
  * The reason is that it's a dependency of most of the modules so then each module would have to be 
