@@ -83,9 +83,24 @@ flowplayer(function(api, root) {
 
 jQuery(window).on('resize tabsactivate',function(){
   jQuery('.fp-playlist-external').each(function(){
-    var playlist = jQuery(this);
+    var playlist = jQuery(this),
+      parent_width = playlist.parent().width(),
+      // the playlist wrapper might be getting some max-width CSS applied, so we check that
+      playlist_max_width = playlist.css('max-width').match(/%/) ? playlist.width() : parseInt(playlist.css('max-width')),
+      // we use the above max-width if it's not more than parent width or the parent width
+      width = playlist_max_width > 0 && playlist_max_width < parent_width ? playlist_max_width : parent_width;
+
     if( playlist.parent().width() >= 900 ) playlist.addClass('is-wide');
     else playlist.removeClass('is-wide');
+
+    if (playlist.hasClass('fp-playlist-polaroid') || playlist.hasClass('fp-playlist-version-one') || playlist.hasClass('fp-playlist-version-two')) {
+      var limit = playlist.hasClass('fp-playlist-version-one') || playlist.hasClass('fp-playlist-version-two') ? 250 : 150,
+        fit_thumbs = Math.floor(width / limit);
+
+      if (fit_thumbs > 8) fit_thumbs = 8;
+      else if (fit_thumbs < 2) fit_thumbs = 2;
+      playlist.css('--fp-playlist-items-per-row', String(fit_thumbs));
+    }
   })
 }).trigger('resize');
 

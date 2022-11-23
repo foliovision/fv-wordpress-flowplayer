@@ -1242,7 +1242,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $attributes_html .= ' '.$attr_key.'="'.esc_attr( $attr_value ).'"';
       }
 
-      $sHTML = "\t<div$attributes_html>\n".implode( '', $sHTML )."\t</div>\n";
+      $items = implode( '', $sHTML );
+
+      if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'version-one', 'version-two' ) ) ) {
+        $items = "<div class='fv-playlist-draggable'>".$items."</div>";
+        $items .= "<div class='fv-playlist-slider-controls'>
+        <button class='fv-playlist-left-arrow'></button>
+        <button class='fv-playlist-right-arrow'></button>
+        </div>";
+      }
+
+      $sHTML = "\t<div$attributes_html>\n".$items."\t</div>\n";
       
       if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $sHTML = "<div class='fv-playlist-slider-wrapper'>".$sHTML."</div>\n";
