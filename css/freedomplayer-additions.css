@@ -420,7 +420,7 @@
 .fp-playlist-external .fvp-playlist-thumb-img {
   height: 0;
   overflow: hidden;
-  padding-top: 56%;
+  padding-top: 56.25%;
   position: relative;
 }
 .fp-playlist-external .fvp-playlist-thumb-img img {
