@@ -37,7 +37,7 @@ if( typeof(flowplayer) !== 'undefined') {
         autoplay = root.attr('data-fvautoplay');
 
       if( fv_autoplay_type == 'viewport' || fv_autoplay_type == 'sticky' ) { // play video when on viewport or sticky
-        var rect = root[0].getBoundingClientRect();
+        var rect = root.find('.fp-player')[0].getBoundingClientRect(); // watch .fp-player because root can ve outside viewport when stickied 
 
         // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
         // var play_icon = root.find('.fp-play').addClass('invisible'),
@@ -81,7 +81,7 @@ if( typeof(flowplayer) !== 'undefined') {
 
           }
         } else {
-          if( api && api.playing && fv_autoplay_type == 'viewport' ) {
+          if( api && api.playing ) {
             console.log('Scroll autoplay: Player not in viewport, pausing ' + root.attr('id'));
             api.viewport_pause = true;
             api.pause();
