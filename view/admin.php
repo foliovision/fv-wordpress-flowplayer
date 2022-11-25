@@ -448,32 +448,74 @@ jQuery(document).ready(function($) {
 
 function fv_flowplayer_admin_autoplay_and_preloading() {
   global $fv_fp;
+  $value = $fv_fp->_get_option('autoplay_preload');
 ?>
-  <table class="form-table">
+  <style>
+  #fv_flowplayer_autoplay_and_preloading .descriptions {
+    float: right;
+    position: relative;
+    width: 50%;
+  }
+  #fv_flowplayer_autoplay_and_preloading [data-describe] {
+    display: none;
+    position: absolute;
+    top: 0;
+  }
+  </style>
+  <table class="form-table2">
   <tr>
-    <td colspan="2">
-      <p class="description"><?php _e('We make sure only one video per page autoplays. Mobile devices only support Muted autoplay.', 'fv-wordpress-flowplayer'); ?></p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3">
-      <p class="description">
-        <?php
-        // in the older FV Player versions this setting was just true/false and that creates a ton of issues
-        $value = $fv_fp->_get_option('autoplay_preload');
+    <td class="first"></td>
+      <td>
+        <?php 
+        $radio_butons = array();
+        $radio_butons_descriptions = array();
+
+        foreach( array(
+          'false' => array(
+            'label' => __('Off', 'fv-wordpress-flowplayer')
+          ),
+          'preload' => array(
+            'label' => __('Video Preload', 'fv-wordpress-flowplayer'),
+            'description' => __('First video on page will preload. Then it will play instantly when clicked.', 'fv-wordpress-flowplayer')
+          ),
+          'viewport' => array(
+            'label' => __('Autoplay Video in Viewport', 'fv-wordpress-flowplayer'),
+            'description' => __('Video will autoplay when the player is visible on page load or when user scrolls down to it. It will pause when no longer in browser viewport.', 'fv-wordpress-flowplayer')
+          ),
+          'sticky' => array(
+            'label' => __('Sticky Autoplay', 'fv-wordpress-flowplayer'),
+            'description' => __('The video will autoplay and become sticky - following user\'s scroll position.', 'fv-wordpress-flowplayer')
+          )
+        ) AS $key => $field ) {
+          $id = 'autoplay_preload_'.esc_attr($key);
+
+          $radio_button = '<input id="'.$id.'" type="radio" name="autoplay_preload" value="'.esc_attr($key).'"';
+          if( $value === $key ) {
+            $radio_button .= ' checked="checked"';
+          }
+          $radio_button .= '</input>';
+          $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
+
+          $radio_butons[] = $radio_button;
+
+          if( !empty($field['description']) ) {
+            $radio_butons_descriptions[$key] = $field['description'];
+          }
+        }
+        
+        echo '<div class="descriptions">';
+        foreach( $radio_butons_descriptions AS $key => $description ) {
+          echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+        }
+        echo '</div>';
+
+        echo implode( $radio_butons );
         ?>
-          <input id="autoplay_preload_off" type="radio" name="autoplay_preload" value="false" <?php if( $value === 'false' || !$value ) echo ' checked="checked"'; ?> >Off</input>
-          <label for="autoplay_preload_off">- disable autoplay</label><br>
-          <input id="autoplay_preload_preload" type="radio" name="autoplay_preload" value="preload" <?php if( $value === 'preload' ) echo ' checked="checked"'; ?> >Preload</input>
-          <label for="autoplay_preload_preload">- preload first video on page</label><br>
-          <input id="autoplay_preload_viewport" type="radio" name="autoplay_preload" value="viewport" <?php if( $value === 'viewport' ) echo ' checked="checked"'; ?> >Autoplay in viewport</input>
-          <label for="autoplay_preload_viewport">- the video autoplays when it comes into the viewport</label><br>
-          <input id="autoplay_preload_sticky" type="radio" name="autoplay_preload" value="sticky" <?php if ( $value === 'sticky' ) echo ' checked="checked"'; ?> > Autoplay in sticky</input>
-          <label for="autoplay_preload_sticky">- once the video autoplays, it becomes sticky and viewer can close it which will also pause it</label><br>
-          <?php do_action('fv_flowplayer_autoplay_and_preloading_inputs_after'); ?>
-      </p>
+        </div>
+      </td>
     </td>
   </tr>
+  <?php do_action('fv_flowplayer_autoplay_and_preloading_inputs_after'); ?>
   <tr>
     <td colspan="4">
       <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
@@ -481,6 +523,19 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
   </tr>
   </table>
   <div class="clear"></div>
+
+  <script>
+  jQuery( function($) {
+    show_description();
+
+    $('[name=autoplay_preload]' ).on( 'change', show_description );
+
+    function show_description() {
+      $( '#fv_flowplayer_autoplay_and_preloading [data-describe]' ).hide();
+      $( '#fv_flowplayer_autoplay_and_preloading [data-describe='+$('[name=autoplay_preload]:checked').val()+']' ).show();
+    }
+  } );
+  </script>
 <?php
 }
 
