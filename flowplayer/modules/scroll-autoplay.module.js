@@ -58,6 +58,8 @@ if( typeof(flowplayer) !== 'undefined') {
             return;
           }
 
+          if( jQuery('.freedomplayer.is-playing').length > 0 ) return; // prevent multiple autoplays
+
           if( jQuery('.freedomplayer.is-playing .is-sticky').length > 0 ) return; // bail out if we have sticky
 
           if( !api ) {
