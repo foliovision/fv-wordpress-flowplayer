@@ -264,14 +264,17 @@ function fv_flowplayer_admin_default_options() {
             <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', __('Removes sharing buttons from top bar.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Disable Video Links', 'fv-wordpress-flowplayer'), 'disable_video_hash_links', __('Removes the "Link" item to the top bar.', 'fv-wordpress-flowplayer'), __("Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Enable Chromecast', 'fv-wordpress-flowplayer'), 'chromecast', __('Adds support for Google Chromecast.', 'fv-wordpress-flowplayer') ); ?>
-            <tr>
-              <td><label for="rtmp"><?php _e('Flash Streaming Server', 'fv-wordpress-flowplayer'); ?>:</label></td>
-              <td>
-                <p class="description">
-                  <input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr( $fv_fp->_get_option('rtmp') ); ?>" placeholder="<?php _e('Enter your default RTMP streaming server (Amazon CloudFront domain).', 'fv-wordpress-flowplayer'); ?>" />
-                </p>
-              </td>
-            </tr>
+
+            <?php if( $fv_fp->_get_option('rtmp') ) : ?>
+              <tr>
+                <td><label for="rtmp"><?php _e('Flash Streaming Server (deprecated)', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                <td>
+                  <p class="description">
+                    <input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr( $fv_fp->_get_option('rtmp') ); ?>" placeholder="<?php _e('Enter your default RTMP streaming server (Amazon CloudFront domain).', 'fv-wordpress-flowplayer'); ?>" />
+                  </p>
+                </td>
+              </tr>
+            <?php endif; ?>
 
             <?php $fv_fp->_get_checkbox(__('Force HD Streaming', 'fv-wordpress-flowplayer'), 'hd_streaming', __('Use HD quality for HLS/MPEG-DASH even on slow connections.', 'fv-wordpress-flowplayer'), __( 'User can still switch to lower quality by hand. Doesn\'t work on iPhones.', 'fv-wordpress-flowplayer') ); ?>
 
@@ -627,7 +630,7 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('postthumbnail') ) $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('engine') ) $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', __('Provides greater compatibility.', 'fv-wordpress-flowplayer'), __('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv-wordpress-flowplayer') ); ?>
-          <?php if( $fv_fp->_get_option('rtmp-live-buffer') ) $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
+          <?php if( $fv_fp->_get_option('rtmp-live-buffer') ) $fv_fp->_get_checkbox(__('RTMP bufferTime tweak (deprecated)', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
 
           <!--<tr>
             <td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
