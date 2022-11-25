@@ -840,6 +840,16 @@ jQuery( function($) {
     return false;
   }
 
+  function confirm_uploader_close() {
+    if( fv_player_media_browser.get_upload_status() ) {
+      confirm('You are currently uploading video, closing uploader will stop it. Do You want to close ?');
+      jQuery('.media-modal-close').click();
+    }
+  }
+
+  $( document ).on( "mousedown", ".media-modal-backdrop", confirm_uploader_close );
+  $( document ).on( "mousedown", '.media-modal-close', confirm_uploader_close );
+
   $( document ).on( "click", "#overlay-loader-li", function() {
     // click the Load More button when the actual DIV is clicked, for accessibility
     jQuery(this).find('button').click();
