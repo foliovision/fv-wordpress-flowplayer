@@ -58,9 +58,7 @@ if( typeof(flowplayer) !== 'undefined') {
             return;
           }
 
-          if( jQuery('.freedomplayer.is-playing').length > 0 ) return; // prevent multiple autoplays
-
-          if( jQuery('.freedomplayer.is-playing .is-sticky').length > 0 ) return; // bail out if we have sticky
+          if( jQuery('.freedomplayer.is-playing').length > 0 || jQuery('.freedomplayer.is-loading').length > 0 || jQuery('.freedomplayer.is-ready').length > 0 ) return; // prevent multiple autoplays & pick first video when there are multiple videos in viewport
 
           if( !api ) {
             console.log('Scroll autoplay: Play ' + root.attr('id'));
