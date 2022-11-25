@@ -843,7 +843,7 @@ jQuery( function($) {
   function confirm_uploader_close() {
     if( fv_player_media_browser.get_upload_status() ) {
       confirm('You are currently uploading video, closing uploader will stop it. Do You want to close ?');
-      jQuery('.media-modal-close').click();
+      jQuery('.media-modal-backdrop').click();
     }
   }
 
