@@ -2536,7 +2536,9 @@ jQuery(function() {
           /*
           * Video end dropdown
           */
-          get_field("popup")[0].parentNode.style.display = 'none'
+
+          //TODO: shortcode popup
+          // get_field("popup")[0].parentNode.style.display = 'none'
           var spopup = shortcode_parse_arg( shortcode, 'popup', true );
 
           if( sredirect != null && sredirect[1] != null ){

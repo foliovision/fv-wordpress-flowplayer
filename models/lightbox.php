@@ -493,38 +493,12 @@ class FV_Player_lightbox {
       <script>
 
         jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode) {
-
-          document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 0;
-          document.getElementById("fv_wp_flowplayer_field_lightbox_width").value = '';
-          document.getElementById("fv_wp_flowplayer_field_lightbox_height").value = '';
-          document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value = '';
-
           var sLightbox = shortcode.match(/lightbox="(.*?)"/);
           if (sLightbox && typeof (sLightbox) != "undefined" && typeof (sLightbox[1]) != "undefined") {
             sLightbox = sLightbox[1];
 
             if (sLightbox) {
-              var aLightbox = sLightbox.split(/[;]/, 4);
-              if (aLightbox.length > 2) {
-                for (var i in aLightbox) {
-                  if (i == 0 && aLightbox[i] == 'true') {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 1;
-                  } else if (i == 1) {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox_width").value = parseInt(aLightbox[i]);
-                  } else if (i == 2) {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox_height").value = parseInt(aLightbox[i]);
-                  } else if (i == 3) {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value = aLightbox[i].trim();
-                  }
-                }
-              } else {
-                if (typeof (aLightbox[0]) != "undefined" && aLightbox[0] == 'true') {
-                  document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 1;
-                }
-                if (typeof (aLightbox[1]) != "undefined") {
-                  document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value = aLightbox[1].trim();
-                }
-              }
+             fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
             }
           }
         });
