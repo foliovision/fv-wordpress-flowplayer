@@ -847,8 +847,8 @@ jQuery( function($) {
     }
   }
 
-  $( document ).on( "mousedown", ".media-modal-backdrop", confirm_uploader_close );
-  $( document ).on( "mousedown", '.media-modal-close', confirm_uploader_close );
+  $( document ).on( "mousedown touchstart", ".media-modal-backdrop", confirm_uploader_close );
+  $( document ).on( "mousedown touchstart", '.media-modal-close', confirm_uploader_close );
 
   $( document ).on( "click", "#overlay-loader-li", function() {
     // click the Load More button when the actual DIV is clicked, for accessibility
