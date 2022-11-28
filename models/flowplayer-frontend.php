@@ -178,7 +178,7 @@ class flowplayer_frontend extends flowplayer
     $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;
 
     $splash_img = $this->get_splash();
-    
+
     foreach( array( $media, $src1, $src2 ) AS $media_item ) {
       if( stripos( $media_item, 'rtmp://' ) === 0 ) {
         $rtmp = $media_item;
@@ -379,7 +379,7 @@ class flowplayer_frontend extends flowplayer
         if( is_feed() ) {
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains video, click to play]') );
           if( $splash_img ) {
-            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+            $this->ret['html'] .= '<br /><img src="'.esc_attr($splash_img).'" width="400" />';
           }
           $this->ret['html'] .= '</a></p>';
           
@@ -398,7 +398,7 @@ class flowplayer_frontend extends flowplayer
         if( !$bHTTPs && function_exists('is_amp_endpoint') && is_amp_endpoint() || count($aPlaylistItems) > 1 && function_exists('is_amp_endpoint') && is_amp_endpoint() ) {          
           $this->ret['html'] = '<p class="fv-flowplayer-feed"><a href="'.get_permalink().'" title="'.__('Click to watch the video').'">'.apply_filters( 'fv_flowplayer_rss_intro_splash', __('[This post contains advanced video player, click to open the original website]') );
           if( $splash_img ) {
-            $this->ret['html'] .= '<br /><img src="'.$splash_img.'" width="400" />';
+            $this->ret['html'] .= '<br /><img src="'.esc_attr($splash_img).'" width="400" />';
           }
           $this->ret['html'] .= '</a></p>';
           
