@@ -176,7 +176,7 @@ abstract class FV_Player_Media_Browser {
           $item['link'] = $link;
 
           if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item['name'])) {
-            $item['splash'] = apply_filters('fv_flowplayer_splash', $link );
+            $item['splash'] = htmlspecialchars( apply_filters('fv_flowplayer_splash', $link ) );
           }
         } else {
           $item['type'] = 'folder';
