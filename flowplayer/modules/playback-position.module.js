@@ -309,7 +309,7 @@ if (!Date.now) {
 
   flowplayer( function(api,root) {
     // localstorage disabled by admin
-    if( typeof(api.conf.disable_localstorage) != 'undefined' ) {
+    if( typeof(api.conf.disable_localstorage) != 'undefined' && flowplayer.conf.is_logged_in != '1' ) {
       return;
     }
 
