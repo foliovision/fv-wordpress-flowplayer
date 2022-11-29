@@ -244,6 +244,7 @@ function fv_player_preload() {
     
     //  playlist item click action
     jQuery('a',playlist).on('click', function(e) {
+
       e.preventDefault();
 
       splash_click = true;
@@ -254,6 +255,11 @@ function fv_player_preload() {
         index = jQuery('a',playlist).index(this),
         $prev = $this.prev('a'),
         item = $this.data('item');
+
+      // do not play if user was dragging the slider
+      if( $this.closest('.fv-playlist-draggable.is-dragging').length ) {
+        return false;
+      }
       
       // Open editing for the playlist item which was clicked
       // TODO: There should be a better way of sending a signal to the editor!
