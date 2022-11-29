@@ -1559,6 +1559,8 @@ iframe#youtube.fp-engine {
   text-align: left;
   padding: 0;
   line-height: 1.4;
+  filter: invert(1);
+  mix-blend-mode: difference;
 }
 
 .freedomplayer[data-ratio="0.5625"] + .fp-playlist-version-one.fp-playlist-external a h4 span,
