@@ -1698,8 +1698,6 @@ jQuery(function() {
           data['videos'] = {};
         } else if (is_subtitles_tab) {
           data['video_meta']['subtitles'] = {};
-          data['video_meta']['transcript'] = {};
-          data['video_meta']['chapters'] = {};
         }
 
         // iterate over all tables in tabs
@@ -1775,26 +1773,6 @@ jQuery(function() {
                       id: $this.parent().data('id_subtitles')
                     });
                   }
-                }
-
-                // subtitles tab, chapters and transcript input
-                else if (
-                  $this.attr('name') == 'fv_wp_flowplayer_field_chapters' ||
-                  $this.attr('name') == 'fv_wp_flowplayer_field_transcript'
-                ) {
-                  let key = $this.attr('name').replace(/fv_wp_flowplayer_field_/, '');
-
-                  if (!data['video_meta'][key][save_index]) {
-                    data['video_meta'][key][save_index] = {};
-                  }
-
-                  insertUpdateOrDeleteVideoMeta({
-                    data: data,
-                    meta_section: key,
-                    meta_key: 'file',
-                    meta_index: save_index,
-                    element: $this
-                  });
                 }
               }
 
@@ -2227,11 +2205,9 @@ jQuery(function() {
               for (var x in vids) {
                 var
                   subs = [],
-                  transcript = null,
-                  chapters = null,
                   video_meta = [];
 
-                // add all subtitles, chapters and transcripts
+                // add all subtitles
                 if (vids[x].meta && vids[x].meta.length) {
                   for (var m in vids[x].meta) {
                     // subtitles
@@ -2243,22 +2219,6 @@ jQuery(function() {
                       });
                     }
 
-                    // chapters
-                    if (vids[x].meta[m].meta_key.indexOf('chapters') > -1) {
-                      chapters = {
-                        id: vids[x].meta[m].id,
-                        value: vids[x].meta[m].meta_value
-                      };
-                    }
-
-                    // transcript
-                    if (vids[x].meta[m].meta_key === 'transcript') {
-                      transcript = {
-                        id: vids[x].meta[m].id,
-                        value: vids[x].meta[m].meta_value
-                      };
-                    }
-
                     // general video meta
                     if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['dvr', 'duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
                       video_meta.push(vids[x].meta[m]);
@@ -2268,15 +2228,6 @@ jQuery(function() {
 
                 var $video_data_tab = playlist_item_add(vids[x], false, subs);
                 var $subtitles_tab = get_tab( 'last', 'subtitles' );
-
-                // add chapters and transcript
-                if (chapters){
-                  get_field('chapters', $subtitles_tab).val(chapters.value).trigger('change');
-                }
-
-                if (transcript) {
-                  get_field('transcript', $subtitles_tab).val(transcript.value).trigger('change');
-                }
 
                 if (video_meta.length) {
                   for ( let i in video_meta) {
