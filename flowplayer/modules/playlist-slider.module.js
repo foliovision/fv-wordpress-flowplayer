@@ -24,16 +24,19 @@ freedomplayer( function(api,root) {
   // Initial scroll position check
   toggleArrows();
 
+  // All we need for mobile scrolling of the slider, really
+  bean.on( slider, 'scroll', toggleArrows );
+
   // Prepare for dragging
-  bean.on( slider, 'mousedown touchstart', function(e) {
+  bean.on( slider, 'mousedown', function(e) {
     isDragging = true;
     slider.classList.add('active');
     prevScrollLeft = slider.scrollLeft;
-    startX = get_x(e) - slider.offsetLeft;
+    startX = e.pageX - slider.offsetLeft;
   } );
   
   // End of dragging
-  bean.on( slider, 'mouseup touchup', stoppedInteracting );
+  bean.on( slider, 'mouseup', stoppedInteracting );
   
   // End of dragging and loosing focus
   slider.onmouseleave = function() {
@@ -43,7 +46,7 @@ freedomplayer( function(api,root) {
   };
   
   // Actual dragging
-  bean.on( slider, 'mousemove touchmove', function(e) {
+  bean.on( slider, 'mousemove', function(e) {
     isHovered = true;
 
     if (!isDragging) {
@@ -51,7 +54,7 @@ freedomplayer( function(api,root) {
     }
     e.preventDefault();
 
-    var x = get_x(e) - slider.offsetLeft,
+    var x = e.pageX - slider.offsetLeft,
       walk = x - startX;
 
     if( Math.abs(walk) > draggingThreshold ) {
@@ -120,22 +123,10 @@ freedomplayer( function(api,root) {
     }
   }
 
-  // Get mouse or touch X axis
-  function get_x( e ) {
-    var pageX = e.pageX || e.clientX;
-
-    // touchmove
-    if (!pageX && e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length) {
-       pageX = e.originalEvent.touches[0].pageX;
-    }
-
-    return pageX;
-  }
-  
   arrows[0].onclick = function() {
     scrollSlider(false);
   };
-  
+
   arrows[1].onclick = function() {
     scrollSlider(true);
   };
@@ -151,5 +142,5 @@ freedomplayer( function(api,root) {
       scrollSlider(false);
     }
   } );
-  
+
 });

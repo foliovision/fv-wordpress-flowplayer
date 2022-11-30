@@ -1449,16 +1449,18 @@ iframe#youtube.fp-engine {
   grid-auto-flow: column;
   grid-auto-columns: calc(100% / var(--fp-playlist-items-per-row));
   column-gap: 20px;
-  overflow: hidden;
+  overflow: auto hidden;
   user-select: none;
   width: 100%;
 }
 
+.fp-playlist-version-one .fv-playlist-draggable::-webkit-scrollbar {
+  width: 0 !important;
+}
+
 .fp-playlist-version-two .fv-playlist-draggable {
   column-gap: 4px;
-  overflow: auto hidden;
   touch-action: pan-x;
-  user-select: none;
   scrollbar-color: #12784a #2222;
   scrollbar-width: thin;
   cursor: pointer;
