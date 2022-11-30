@@ -165,7 +165,7 @@
         <label for="<?php echo $field_id; ?>" class="components-input-control__label"><?php echo $label; ?></label>
       </div>
       <div class="components-input-control__container">
-        <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>">
+        <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" <?php if( $multiple ) echo 'multiple'; ?>>
           <?php foreach( $options AS $option ) : ?>
             <?php if( is_array($option) ) : ?>
               <option value="<?php echo $option[0]; ?>"><?php echo $option[1]; ?></option>
@@ -290,6 +290,7 @@
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
+                          'multiple' => false, // applies to type = select
                           'name' => '',
                           'no_data' => false, // do not save any data based on this input
                           'options' => array(),
