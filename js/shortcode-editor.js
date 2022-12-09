@@ -3986,7 +3986,16 @@ jQuery(function() {
         hlskey.closest('.fv_player_interface_hide').hide();
       }
 
-      jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
+      // get live from video object
+      var live_field = get_field('live', true),
+        live_value = get_current_video_object() ? get_current_video_object().live : false;
+
+        live_field.prop('checked', !!live_value);
+        live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
+
+      checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value );
+
+      jQuery.each( [ 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
           meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false;
