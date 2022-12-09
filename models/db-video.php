@@ -782,11 +782,11 @@ CREATE TABLE " . self::$db_table_name . " (
     ) {
 
       // Check if FV Player Pro can fetch the video splash, title and duration
-      $video_data = apply_filters('fv_player_meta_data', $video_url, false);
+      $meta_data = apply_filters('fv_player_meta_data', $video_url, false);
 
       // No information obtained, do a basic check
-      if( !is_array($video_data) ) {
-        $video_data = array();
+      if( !is_array($meta_data) ) {
+        $meta_data = array();
 
         // was only the file path provided?
         $parsed = parse_url($video_url);
@@ -820,14 +820,14 @@ CREATE TABLE " . self::$db_table_name . " (
             'width'
           ) AS $key ) {
             if( !empty($check[$key]) ) {
-              $video_data[$key] = $check[$key];
+              $meta_data[$key] = $check[$key];
             }
           }
         }
       }
 
-      if( is_array($video_data) ) {
-        $video_data = wp_parse_args( $video_data, 
+      if( is_array($meta_data) ) {
+        $meta_data = wp_parse_args( $meta_data, 
           array(
             'error' => false,
             'duration' => false,
@@ -844,15 +844,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $this->last_check = current_time( 'mysql', true );
 
-        $meta_data[] = array(
-          'meta_key' => 'last_video_meta_check_src',
-          'meta_value' => $video_url,
-        );
-
-        if( $video_data['error'] ) {
+        if( $meta_data['error'] ) {
           $meta_data[] = array(
             'meta_key' => 'error',
-            'meta_value' => $video_data['error'],
+            'meta_value' => $meta_data['error'],
           );
 
           if( empty($last_error_count) ) $last_error_count = 0;
@@ -870,28 +865,28 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        if( $video_data['width'] ) {
-          $this->width = intval($video_data['width']);
+        if( $meta_data['width'] ) {
+          $this->width = intval($meta_data['width']);
         } else {
           $this->width = false;
         }
 
-        if( $video_data['height'] ) {
-          $this->height = intval($video_data['height']);
+        if( $meta_data['height'] ) {
+          $this->height = intval($meta_data['height']);
         } else {
           $this->height = false;
         }
 
-        if( $video_data['aspect_ratio'] ) {
-          $this->aspect_ratio = round( floatval($video_data['aspect_ratio']), 4 );
+        if( $meta_data['aspect_ratio'] ) {
+          $this->aspect_ratio = round( floatval($meta_data['aspect_ratio']), 4 );
         } else if( intval($this->width) > 0  && $this->height ) {
           $this->aspect_ratio = round( $this->height/$this->width, 4 );
         } else {
           $this->aspect_ratio = false;
         }
 
-        if( $video_data['duration'] ) {
-          $this->duration = $video_data['duration'];
+        if( $meta_data['duration'] ) {
+          $this->duration = $meta_data['duration'];
 
           // Remove the legacy value stored in video meta
           // TODO: Conversion process
@@ -903,7 +898,7 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->duration = 0;
         }
 
-        if( $video_data['is_live'] ) {
+        if( $meta_data['is_live'] ) {
           $this->live = true;
         } else {
           $this->live = false;
@@ -916,7 +911,7 @@ CREATE TABLE " . self::$db_table_name . " (
           unset($meta_data[$live_key]);
         }
 
-        if( !empty($video_data['is_encrypted']) ) {
+        if( !empty($meta_data['is_encrypted']) ) {
           $meta_data[] = array(
             'meta_key' => 'encrypted',
             'meta_value' => true,
@@ -928,10 +923,10 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        if( !empty($video_data['name']) && (
+        if( !empty($meta_data['name']) && (
           !$this->getCaption() || $this->getMetaValue( 'auto_caption', true )
         ) ) {
-          $this->caption = $video_data['name'];
+          $this->caption = $meta_data['name'];
 
           $meta_data[] = array(
             'meta_key' => 'auto_caption',
@@ -939,10 +934,10 @@ CREATE TABLE " . self::$db_table_name . " (
           );
         }
 
-        if( !empty($video_data['thumbnail']) && (
+        if( !empty($meta_data['thumbnail']) && (
           !$this->getSplash() || $this->getMetaValue( 'auto_splash', true )
         ) ) {
-          $this->splash = $video_data['thumbnail'];
+          $this->splash = $meta_data['thumbnail'];
 
           $meta_data[] = array(
             'meta_key' => 'auto_splash',
@@ -950,10 +945,17 @@ CREATE TABLE " . self::$db_table_name . " (
           );
         }
 
-        if( !empty($video_data['splash_attachment_id']) ) {
-          $this->splash_attachment_id = $video_data['splash_attachment_id'];
+        if( !empty($meta_data['splash_attachment_id']) ) {
+          $this->splash_attachment_id = $meta_data['splash_attachment_id'];
         }
+      } else {
+        $meta_data = array();
       }
+
+      $meta_data[] = array(
+        'meta_key' => 'last_video_meta_check_src',
+        'meta_value' => $video_url,
+      );
 
     // Meta fields which are not in editor and must be retained
     } else {
