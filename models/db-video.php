@@ -953,7 +953,14 @@ CREATE TABLE " . self::$db_table_name . " (
         if( !empty($video_data['splash_attachment_id']) ) {
           $this->splash_attachment_id = $video_data['splash_attachment_id'];
         }
+      } else {
+        $meta_data = array();
       }
+
+      $meta_data[] = array(
+        'meta_key' => 'last_video_meta_check_src',
+        'meta_value' => $video_url,
+      );
 
     // Meta fields which are not in editor and must be retained
     } else {
