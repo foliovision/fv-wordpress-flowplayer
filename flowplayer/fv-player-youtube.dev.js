@@ -486,6 +486,19 @@ if( typeof(flowplayer) != "undefined" ) {
               // we need to set the status properly, what if the VAST ad loads before YouTube engine does, it must be able to resume the video
               player.playing = false;
               player.paused = true;
+
+              // The video might not be playable, it might be set to start in XY hours
+              // Unfortunately this information is not part of any of the get* calls on youtube
+              // So we just check again if the video is still in the -1 status
+              // If it is, then we show the UI to make sure the "Live in XY hours" message is visible
+              setTimeout( function() {
+                var fresh_status = youtube.getPlayerState();
+                if( fresh_status == -1 ) {
+                  fv_player_log('This video did not start yet!');
+
+                  root.removeClass('is-youtube-nl');
+                }
+              }, 1000 );
               break;
 
             case YT.PlayerState.BUFFERING:    //  3, seems to me we don't need this at all
@@ -597,6 +610,12 @@ if( typeof(flowplayer) != "undefined" ) {
                   }, 500 );
                 }
               } );
+
+              // Hide UI again if it was shown previously
+              // To show the "Live in XY hours" message
+              if( window.fv_player_pro && fv_player_pro.youtube_nl ) {
+                root.addClass('is-youtube-nl');
+              }
 
               break;
             
