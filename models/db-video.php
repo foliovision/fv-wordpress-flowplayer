@@ -870,11 +870,6 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        $meta_data[] = array(
-          'meta_key' => 'audio',
-          'meta_value' => $video_data['is_audio'],
-        );
-
         if( $video_data['width'] ) {
           $this->width = intval($video_data['width']);
         } else {
@@ -928,6 +923,18 @@ CREATE TABLE " . self::$db_table_name . " (
           );
         } else {
           $key = array_search('encrypted', array_column($meta_data, 'meta_key'));
+          if( $key !== false ) {
+            unset($meta_data[$key]);
+          }
+        }
+
+        if( !empty($video_data['is_audio']) ) {
+          $meta_data[] = array(
+            'meta_key' => 'audio',
+            'meta_value' => true,
+          );
+        } else {
+          $key = array_search('audio', array_column($meta_data, 'meta_key'));
           if( $key !== false ) {
             unset($meta_data[$key]);
           }
