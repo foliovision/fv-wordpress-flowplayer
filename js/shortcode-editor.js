@@ -3111,13 +3111,14 @@ jQuery(function() {
         get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
         get_field('caption',new_item).val(objVid.caption);
-        get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
         get_field('splash',new_item).val(objVid.splash);
         get_field('splash_text',new_item).val(objVid.splash_text);
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
 
         get_field('start',new_item).val(objVid.start);
         get_field('end',new_item).val(objVid.end);
+
+        get_field('toggle_advanced_settings',new_item).prop('checked',!!objVid.toggle_advanced_settings).trigger('change');
 
         jQuery(objVid.meta).each( function(k,v) {
           if( v.meta_key == 'synopsis' ) get_field('synopsis',new_item).val(v.meta_value).attr('data-id',v.id);
@@ -3384,7 +3385,6 @@ jQuery(function() {
 
     // used several times below, so it's in a function
     function set_editor_field(key, value, id, video_table_index) {
-
       var
         real_key = map_names_to_editor_fields(key),
         real_val = map_db_values_to_field_values(key, value),
@@ -3903,8 +3903,6 @@ jQuery(function() {
     $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
       show_video_details(index);
       show_stream_fields_worker(index);
-      show_advanced_fields();
-      show_custom_ad();
       show_rtmp_fields();
       show_end_of_video_actions();
     });
@@ -3912,37 +3910,14 @@ jQuery(function() {
     $doc.on('fv_flowplayer_shortcode_new', function() {
       show_video_details(0);
       show_stream_fields_worker(0);
-      show_advanced_fields();
-      show_custom_ad();
       show_rtmp_fields();
       show_end_of_video_actions();
     });
-
-    function show_advanced_fields() {
-      var video_object = get_current_video_object(),
-        is_enabled = video_object.mobile || video_object.src1 || video_object.src2
-
-      get_field( 'advanced-settings', true )
-        .prop('checked', is_enabled)
-        .trigger('change');
-    }
-
-    function show_custom_ad() {
-      var player_object = get_current_player_object();
-
-      get_field( 'ad_custom', false )
-        .prop('checked', player_object.ad)
-        .trigger('change');
-    }
 
     function show_end_of_video_actions() {
       var player_object = get_current_player_object(),
         picked_action = player_object.end_actions,
         action_value = player_object.end_action_value;
-
-      get_field( 'end_actions_show', false )
-        .prop('checked', picked_action)
-        .trigger('change');
 
       select_end_of_video_action(picked_action, action_value);
     }
@@ -3969,7 +3944,7 @@ jQuery(function() {
         .trigger('change');
 
       if( is_enabled ) {
-        get_field( 'advanced-settings', true )
+        get_field( 'toggle_advanced_settings', true )
           .prop('checked', true)
           .trigger('change');
       }

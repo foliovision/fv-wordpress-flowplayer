@@ -63,6 +63,8 @@ class FV_Player_Db_Player {
     $width, // with of the player on page
     $status, // draft of published
     $videos, // comma-delimited IDs of videos for this player
+    $toggle_end_action,
+    $toggle_ad_custom,
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $meta_data = null,
@@ -378,7 +380,21 @@ class FV_Player_Db_Player {
    * @return bool
    */
   public function getIsValid() {
-    return $this->is_valid;
+    return boolval($this->is_valid);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleEndAction() {
+    return boolval($this->toggle_end_action);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleAdCustom() {
+    return boolval($this->toggle_ad_custom);
   }
 
   /**
@@ -447,7 +463,7 @@ CREATE TABLE " . self::$db_table_name . " (
   lightbox varchar(7) NOT NULL,
   lightbox_caption varchar(120) NOT NULL,
   lightbox_height varchar(7) NOT NULL,
-  lightbox_width varchar(7) NOT NULL,  
+  lightbox_width varchar(7) NOT NULL,
   playlist varchar(10) NOT NULL,
   playlist_advance varchar(7) NOT NULL,
   qsel varchar(25) NOT NULL,
@@ -460,6 +476,8 @@ CREATE TABLE " . self::$db_table_name . " (
   video_ads_post varchar(10) NOT NULL,
   width varchar(7) NOT NULL,
   status varchar(9) NOT NULL default 'published',
+  toggle_end_action tinyint(1) NOT NULL,
+  toggle_ad_custom tinyint(1) NOT NULL,
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
