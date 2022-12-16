@@ -870,6 +870,11 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
+        $meta_data[] = array(
+          'meta_key' => 'audio',
+          'meta_value' => $video_data['is_audio'],
+        );
+
         if( $video_data['width'] ) {
           $this->width = intval($video_data['width']);
         } else {

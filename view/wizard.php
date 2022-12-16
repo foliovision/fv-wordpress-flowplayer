@@ -594,10 +594,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   array(
                     'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
                     'name' => 'live',
-                  ),
-                  array(
-                    'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
-                    'name' => 'dvr',
+                    'children' => array(
+                      array(
+                        'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
+                        'name' => 'dvr',
+                        'visible' => true
+                      ),
+                    ),
                   ),
                   array(
                     'label' => __('Audio Stream', 'fv-wordpress-flowplayer'),
