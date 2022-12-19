@@ -199,7 +199,7 @@ class FV_Player_YouTube {
       $objVideo->deleteMetaValue('live');
     }
 
-    wp_send_json( array( 'is_live' => false ) );
+    wp_send_json( array( 'is_live' => $is_live ) );
     wp_die();
   }
 
