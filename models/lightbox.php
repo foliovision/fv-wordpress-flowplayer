@@ -497,7 +497,7 @@ class FV_Player_lightbox {
                   } else if (i == 2) {
                     // ignore Lightbox Height
                   } else if (i == 3) {
-                    fv_player_editor.get_field('lightbox_caption').val( aLightbox[i].trim() );
+                    fv_player_editor.get_field('lightbox_caption').val( aLightbox[i].trim() ).trigger('change');
                   }
                 }
               } else {
@@ -505,7 +505,7 @@ class FV_Player_lightbox {
                   fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
                 }
                 if (typeof (aLightbox[1]) != "undefined") {
-                  fv_player_editor.get_field('lightbox_caption').val( aLightbox[1].trim() );
+                  fv_player_editor.get_field('lightbox_caption').val( aLightbox[1].trim() ).trigger('change');
                 }
               }
             }
