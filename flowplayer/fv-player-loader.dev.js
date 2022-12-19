@@ -260,8 +260,8 @@ class FV_Player_JS_Loader {
 				if( el.getAttribute && el.getAttribute('data-item') ) {
 					playlist_item = el;
 				}
-				
-				if( el.className && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) ) {
+
+				if( el.className && el.className.match && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) ) {
 					/* Players with autoplay should stop */
 					document.querySelectorAll('[data-fvautoplay]').forEach( function(player) {
 						player.removeAttribute('data-fvautoplay');
