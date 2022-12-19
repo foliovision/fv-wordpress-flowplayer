@@ -1,13 +1,13 @@
  // sticky video
  flowplayer(function(api, root) {
-  var $root = jQuery(root);
-  var $playerDiv = $root.find('.fp-player');
-  var sticky = $root.data("fvsticky");
-  var globalSticky = false;
-  var videoRatio = $root.data("ratio");
-  
+  var $root = jQuery(root),
+    $playerDiv = $root.find('.fp-player'),
+    sticky = $root.data("fvsticky"),
+    globalSticky = false,
+    videoRatio = $root.data("ratio");
+
   api.is_sticky = false;
-  
+
   if (typeof(videoRatio) == "undefined") {
     videoRatio = 0.5625;
   }
@@ -16,11 +16,13 @@
   }
   if (globalSticky || sticky) {
     if (flowplayer.support.firstframe) {
-      var stickyPlace = flowplayer.conf.sticky_place;
-      var stickyWidth = flowplayer.conf.sticky_width;
+      var stickyPlace = flowplayer.conf.sticky_place,
+        stickyWidth = flowplayer.conf.sticky_width;
+
       if (stickyWidth == "") {
         stickyWidth = 380;
       }
+
       var stickyHeight = stickyWidth * videoRatio;
       fv_player_sticky_video();
     } else {
@@ -28,11 +30,19 @@
     }
   }
 
+  function fv_player_is_in_viewport(el) {
+    var rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 - (jQuery(el).outerHeight() / 2) &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + (jQuery(el).outerHeight() / 2) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+
   function fv_player_sticky_video() {
     var $window = jQuery(window),
-      $flowplayerDiv = $root,
-      top = $flowplayerDiv.offset().top,
-      offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
+      $flowplayerDiv = $root;
 
     api.on('unload', function() {
       fv_player_sticky_class_remove();
@@ -48,8 +58,6 @@
           return;
         }
 
-        top = $flowplayerDiv.offset().top;
-        offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
       })
       .on("scroll", function() {
         if( !is_big_enough() ) {
@@ -59,18 +67,15 @@
           return;
         }
 
-        top = $flowplayerDiv.offset().top;
-        offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
-
-        // Is the player loading, or is it the audible player?
-        if ($window.scrollTop() > offset && ( api.loading || flowplayer.audible_instance == $root.data('flowplayer-instance-id') ) ) {
-          if (jQuery("div.flowplayer.is-unSticky").length > 0) {
+        // Not in viewport and the player loading, or it is the audible player
+        if ( !fv_player_is_in_viewport($flowplayerDiv[0]) && ( api.playing || api.loading || flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ) ) {
+          if (jQuery("div.flowplayer.is-unSticky").length > 0) { // Sticky already added
             return false;
           } else {
-            fv_player_sticky_class_add();
+            fv_player_sticky_class_add(); // Add sticky
           }
         } else {
-          fv_player_sticky_class_remove();
+          fv_player_sticky_class_remove(); // Remove sticky
         }
       });
   }
@@ -81,9 +86,11 @@
     } else {
       $playerDiv.addClass("is-sticky");
       $playerDiv.addClass("is-sticky-" + stickyPlace);
-      if ($root.find("a.fp-sticky").length == 0){
+      
+      if ($root.find("a.fp-sticky").length == 0) {
         $root.find('div.fp-header').prepend('<a class="fp-sticky fp-icon"></a>');
       }
+
       $playerDiv.css("width", stickyWidth);
       $playerDiv.css("height", stickyHeight);
       $playerDiv.css("max-height", stickyHeight);

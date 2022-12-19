@@ -148,22 +148,22 @@ class FV_Player_lightbox {
   
   function editor_setting( $options ) {
     global $fv_fp;
-    if( $fv_fp->_get_option(array('interface','lightbox')) ) {
-      $options['general']['items'][] = array(
-        'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
-        'name' => 'lightbox',
-        'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
-        'dependencies' => array( 'autoplay' => false, 'sticky' => false ),
-        'children' => array(
-          array(
-            'label' => __('Lightbox Title', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_caption',
-            'type' => 'text',
-            'visible' => true
-          ),
-        )
-      );
-    }
+    $options['general']['items'][] = array(
+      'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
+      'name' => 'lightbox',
+      'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
+      'dependencies' => array( 'autoplay' => false, 'sticky' => false ),
+      'visible' => $fv_fp->_get_option( array('interface','lightbox') ),
+      'children' => array(
+        array(
+          'label' => __('Lightbox Title', 'fv-wordpress-flowplayer'),
+          'name' => 'lightbox_caption',
+          'description' => __('Shows when the lightbox is open.', 'fv-wordpress-flowplayer'),
+          'type' => 'text',
+          'visible' => true
+        ),
+      )
+    );
     return $options;
   }
 
