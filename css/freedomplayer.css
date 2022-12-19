@@ -454,18 +454,14 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking .fp-ui {
+  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking .fp-ui {
     background-image: none; }
-    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking .fp-ui > * {
+    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking .fp-ui > * {
       opacity: 1; }
   .freedomplayer .fp-header {
     top: 0;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.25)), to(transparent));
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent);
     text-align: left;
     height: 3em;
-    -webkit-transition: opacity 0.3s;
-    transition: opacity 0.3s;
     padding-left: .65em; }
     .freedomplayer .fp-header .fp-icon {
       padding: .5em 1em; }
@@ -475,6 +471,11 @@
       float: right; }
     .freedomplayer .fp-header .fp-unload {
       display: none; }
+  .freedomplayer.is-mouseover.is-touch .fp-ui {
+    background: rgba(0, 0, 0, 0.6); }
+  .freedomplayer:not(.is-touch) .fp-header {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.25)), to(transparent));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent); }
   .freedomplayer .fp-help {
     display: none; }
   .freedomplayer .fp-message {
@@ -546,7 +547,6 @@
     display: none; }
   .freedomplayer .fp-play svg, .freedomplayer .fp-pause svg, .freedomplayer .fp-waiting svg, .freedomplayer .fp-forward svg, .freedomplayer .fp-rewind svg {
     position: absolute;
-    pointer-events: none;
     left: 0;
     right: 0;
     bottom: 0;
@@ -573,7 +573,8 @@
     width: 30%;
     position: absolute;
     left: 0;
-    height: 100%; }
+    height: 100%;
+    pointer-events: none; }
     .freedomplayer .fp-rewind svg, .freedomplayer .fp-forward svg {
       pointer-events: auto; }
       .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
