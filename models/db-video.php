@@ -839,8 +839,8 @@ CREATE TABLE " . self::$db_table_name . " (
     }
   }
 
-/**
-   * Updates or instert a video meta row
+  /**
+   * Delete a video meta row by key
    *
    * @param string $key   The meta key
    * @param string $value Option meta value to remove
@@ -854,7 +854,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $deleted = 0;
     $data = $this->getMetaData();
 
-    if( count($data) ) {      
+    if( count($data) ) {
       foreach( $data as $meta_object ) {
         if(
           $meta_object->getMetaKey() == $key &&

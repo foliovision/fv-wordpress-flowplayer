@@ -26,8 +26,7 @@ const bugReport = 'https://foliovision.com/support';
 // const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
 // const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
 const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
-const youtubeJS = './flowplayer/fv-player-youtube.dev.js';
-const loaderJS = './flowplayer/fv-player-loader.dev.js'
+const devJS = [ './flowplayer/fv-player-youtube.dev.js', './flowplayer/fv-player-loader.dev.js']
 const projectPHPWatchFiles = ['*.php', './controller/**/*.php', './models/**/*.php', './view/**/*.php'];
 
 // concat js files + uglify
@@ -43,7 +42,7 @@ function jsModulesMinify() {
 }
 
 function jsFilessMinify() {
-  return src([youtubeJS, loaderJS])
+  return src(devJS)
     .pipe(babel({"presets": [
       ["@babel/preset-env", {"modules": false} ]
     ]}))

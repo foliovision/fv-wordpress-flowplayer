@@ -32,6 +32,12 @@ class FV_Player_YouTube {
 
     //add_action( 'amp_post_template_footer', array( $this, 'amp_post_template_footer' ), 9 );
 
+    add_action( 'fv_player_extensions_admin_load_assets', array( $this, 'admin_load_assets' ) );
+
+    add_action( 'wp_ajax_fv_player_youtube_live_check', array( $this, 'youtube_live_check' ));
+
+    add_action( 'wp_ajax_nopriv_fv_player_youtube_live_check', array( $this, 'youtube_live_check' ) );
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'player_attributes' ), 10, 3 );
 
     add_filter( 'fv_flowplayer_checker_time', array( $this, 'youtube_duration' ), 10, 2 );
@@ -40,11 +46,9 @@ class FV_Player_YouTube {
 
     add_filter( 'fv_flowplayer_get_mime_type', array( $this, 'set_file_type'), 10, 2 );
 
-    add_action( 'fv_player_extensions_admin_load_assets', array( $this, 'admin_load_assets' ) );
-
     add_filter( 'fv_flowplayer_conf', array($this, 'fv_flowplayer_conf'), 10, 2);
 
-    add_filter( 'fv_player_meta_data', array($this, 'fetch_yt_data'), 10, 2);
+    add_filter( 'fv_player_meta_data', array($this, 'fetch_yt_data'), 9, 2);
 
     //add_action( 'wp_footer', array( $this, 'scripts' ), 0 );
 
@@ -99,7 +103,7 @@ class FV_Player_YouTube {
     global $fv_fp;
 
     // must be url string
-    if( !is_string($video) ) {
+     if( !is_string($video) ) {
       return $video;
     }
 
@@ -111,15 +115,15 @@ class FV_Player_YouTube {
         if( !$fv_flowplayer_meta || !isset($fv_flowplayer_meta['date']) || ( $fv_flowplayer_meta['date'] + 24 * 3600 ) < time() || !$fv_flowplayer_meta['duration'] && ( $fv_flowplayer_meta['date'] + 60 ) < time() ) {
           $fv_flowplayer_meta = false;
         }
-      }      
+      }
       
       if( !$fv_flowplayer_meta ) {
         $tStart = microtime(true);
         $aId = $this->is_youtube($video);
-        
-        $response = wp_remote_get( 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' . $aId[1] . '&key=' . $fv_fp->_get_option( array('pro','youtube_key') ), array( 'sslverify' => false ) );        
+
+        $response = wp_remote_get( 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' . $aId[1] . '&key=' . $fv_fp->_get_option( array('pro','youtube_key') ), array( 'sslverify' => false ) );
         $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
-        
+
         $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
         if ( $obj && isset($obj->items[0]->contentDetails->duration)) {
           if (class_exists('DateInterval')) {
@@ -138,12 +142,12 @@ class FV_Player_YouTube {
         if( $obj && isset($obj->items[0]) && isset($obj->items[0]->snippet->thumbnails) ) {
           $thumbs = $obj->items[0]->snippet->thumbnails;
           $ratio = isset($thumbs->maxres) && intval($thumbs->maxres->width) > 0 && intval($thumbs->maxres->height) > 0 ? $thumbs->maxres->height/$thumbs->maxres->width : false;
-          foreach( (array)$thumbs AS $k => $v ) {            
+          foreach( (array)$thumbs AS $k => $v ) {
             if( !$ratio || $v->height/$v->width == $ratio ) {
               $fv_flowplayer_meta['splash'] = $v->url;
               if( $v->width > 600 ) break;
             }
-          }          
+          }
         }
         
         $fv_flowplayer_meta['caption'] = $obj && isset($obj->items[0]) && isset($obj->items[0]->snippet->title) ? $obj->items[0]->snippet->title : false;
@@ -162,10 +166,41 @@ class FV_Player_YouTube {
             'duration' => $fv_flowplayer_meta['duration'],
         );
       }
+
+      if( isset($obj->items[0]->snippet->liveBroadcastContent) && $obj->items[0]->snippet->liveBroadcastContent == 'live' ) {
+        $videoData['is_live'] = true;
+      }
+
       return $videoData;
     } else {
       return $video; // no vimeo or yt, pass to another filter
     }
+  }
+
+  function youtube_live_check() {
+    if( defined('DOING_AJAX') && DOING_AJAX && ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], "youtube-live-check-nonce-" . get_current_user_id() ) ) ) {
+      die('Security check failed');
+    }
+
+    global $fv_fp, $FV_Player_Db;
+
+    $video_id = intval($_POST['video_id']); 
+    $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
+
+    $aId = $this->is_youtube($objVideo->getSrc());
+
+    $response = wp_remote_get( 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' . $aId[1] . '&key=' . $fv_fp->_get_option( array('pro','youtube_key') ), array( 'sslverify' => false ) );
+
+    $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
+
+    $is_live = isset($obj->items[0]->snippet->liveBroadcastContent) && $obj->items[0]->snippet->liveBroadcastContent == 'live';
+
+    if( !$is_live ) {
+      $objVideo->deleteMetaValue('live');
+    }
+
+    wp_send_json( array( 'is_live' => false ) );
+    wp_die();
   }
 
   function fv_flowplayer_conf( $conf ) {
@@ -178,6 +213,9 @@ class FV_Player_YouTube {
         $conf['youtube_cookies'] = true;
       }
     }
+
+    $conf['youtube_live_check_nonce'] = wp_create_nonce( "youtube-live-check-nonce-" . get_current_user_id() );
+
     return $conf;
   }
 
@@ -215,11 +253,11 @@ class FV_Player_YouTube {
           </td>
         </tr>
       <?php endif; ?>
-      <tr>    		
+      <tr>
         <td colspan="4">
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-player-pro'); ?>" style="margin-top: 2ex;"/>
         </td>
-      </tr>         
+      </tr>
     </table>
     <?php
   }
