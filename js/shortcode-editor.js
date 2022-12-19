@@ -3967,10 +3967,10 @@ jQuery(function() {
 
       // get live from video object
       var live_field = get_field('live', true),
-        live_value = get_current_video_object() ? get_current_video_object().live : false;
+        live_value = get_current_video_object() ? parseInt(get_current_video_object().live) : false;
 
-        live_field.prop('checked', !!live_value);
-        live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
+      live_field.prop('checked', !!live_value);
+      live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
 
       checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value );
 
@@ -4021,6 +4021,7 @@ jQuery(function() {
     }
     
     function checkbox_toggle_worker( wrap, name, checked ) {
+
       var compare = checked ? 1 : 0;
 
       wrap.toggleClass( 'is-checked', checked );
