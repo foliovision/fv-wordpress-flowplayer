@@ -2565,7 +2565,11 @@ jQuery(function() {
             jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
           }
 
-          jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
+          try {
+            jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
+          } catch(e) {
+            debug_log('Error: fv_flowplayer_shortcode_parse', e);
+          }
 
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
