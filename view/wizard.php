@@ -608,8 +608,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
-                    'name' => 'advanced-settings',
-                    'no_data' => true,
+                    'name' => 'toggle_advanced_settings',
                     'visible' => true,
                     'children' => array(
                       array(
@@ -872,7 +871,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               'items' => array(
                 array(
                   'label' => __('End of Video Action', 'fv-wordpress-flowplayer'),
-                  'name' => 'end_actions_show',
+                  'name' => 'toggle_end_action',
                   'description' => __('What should happen at the end of the video.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
@@ -908,13 +907,11 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'options' => fv_player_email_lists()
                     ),
                   ),
-                  'no_data' => true,
                   'visible' => true
                 ),
                 array(
                   'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
-                  'name' => 'ad_custom', // TODO: Do not save
-                  'no_data' => true,
+                  'name' => 'toggle_ad_custom',
                   'description' => __('Shows while the video is playing.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
@@ -950,7 +947,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
               'name' => 'ad_skip',
               'description' => sprintf( __('Use to disable ad set in <a href="%s" target="_blank">Actions -> Ads</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
               'visible' => true,
-              'dependencies' => array( 'ad_custom' => false )
+              'dependencies' => array( 'toggle_ad_custom' => false )
             );
           }
         

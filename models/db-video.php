@@ -39,6 +39,7 @@ class FV_Player_Db_Video {
     $aspect_ratio,
     $duration,
     $live,
+    $toggle_advanced_settings,
     $last_check,
     $meta_data = null, // object of this video's meta data
     $ignored_video_fields = array(
@@ -125,7 +126,14 @@ class FV_Player_Db_Video {
    * @return bool
    */
   public function getLive() {
-    return $this->live > 0;
+    return boolval($this->live);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleAdvancedSettings() {
+    return boolval($this->toggle_advanced_settings);
   }
 
   /**
@@ -271,6 +279,7 @@ CREATE TABLE " . self::$db_table_name . " (
   aspect_ratio varchar(8) NOT NULL,
   duration decimal(7,2) NOT NULL,
   live tinyint(1) NOT NULL,
+  toggle_advanced_settings tinyint(1) NOT NULL,
   last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (id),
   KEY src (src(191)),
