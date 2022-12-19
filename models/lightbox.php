@@ -153,24 +153,15 @@ class FV_Player_lightbox {
         'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
         'name' => 'lightbox',
         'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
-        'dependencies' => array( 'sticky' => false ),
-        /*'children' => array(
+        'dependencies' => array( 'autoplay' => false, 'sticky' => false ),
+        'children' => array(
           array(
-            'label' => __('Width', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_width',
-            'type' => 'number'
-          ),
-          array(
-            'label' => __('Height', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_height',
-            'type' => 'number'
-          ),
-          array(
-            'label' => __('Title', 'fv-wordpress-flowplayer'),
+            'label' => __('Lightbox Title', 'fv-wordpress-flowplayer'),
             'name' => 'lightbox_caption',
-            'type' => 'text'
+            'type' => 'text',
+            'visible' => true
           ),
-        )*/
+        )
       );
     }
     return $options;
