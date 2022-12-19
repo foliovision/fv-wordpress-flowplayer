@@ -62,6 +62,7 @@ Thumbs.db
 
 # track these files, if they exist
 !.gitignore
+!.gitattributes
 !.editorconfig
 !.phpcs.xml.dist
 !.github
