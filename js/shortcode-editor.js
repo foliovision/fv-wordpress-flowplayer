@@ -668,7 +668,7 @@ jQuery(function() {
       $el_editor.on( 'change', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
-          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = $(this).attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
           checkbox_toggle_worker(wrap, name, checked);
       });
@@ -676,7 +676,7 @@ jQuery(function() {
       $el_editor.on('change', '.components-text-control__input', function() {
         var input = jQuery(this),
           parent = input.parents('.fv-player-editor-children-wrap'),
-          name = input.attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
         if( parent.length == 1 ) {
           if( input.val() ) {
