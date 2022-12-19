@@ -153,24 +153,15 @@ class FV_Player_lightbox {
         'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
         'name' => 'lightbox',
         'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
-        'dependencies' => array( 'sticky' => false ),
-        /*'children' => array(
+        'dependencies' => array( 'autoplay' => false, 'sticky' => false ),
+        'children' => array(
           array(
-            'label' => __('Width', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_width',
-            'type' => 'number'
-          ),
-          array(
-            'label' => __('Height', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_height',
-            'type' => 'number'
-          ),
-          array(
-            'label' => __('Title', 'fv-wordpress-flowplayer'),
+            'label' => __('Lightbox Title', 'fv-wordpress-flowplayer'),
             'name' => 'lightbox_caption',
-            'type' => 'text'
+            'type' => 'text',
+            'visible' => true
           ),
-        )*/
+        )
       );
     }
     return $options;
@@ -223,7 +214,6 @@ class FV_Player_lightbox {
          * true
          * true;text
          * true;Lightbox title
-         * true;Lightbox title;text - not sure, TODO
          * true;640;360;Lightbox title
          */
         $aLightbox = preg_split('~[;]~', $args['lightbox']);
@@ -487,7 +477,6 @@ class FV_Player_lightbox {
 
     $bLightbox = $fv_fp->_get_option(array('interface','lightbox'));
 
-    // TODO: Ensure the new inputs work with old shortcodes etc.
     if ($bLightbox) {
       ?>
       <script>
@@ -497,8 +486,28 @@ class FV_Player_lightbox {
           if (sLightbox && typeof (sLightbox) != "undefined" && typeof (sLightbox[1]) != "undefined") {
             sLightbox = sLightbox[1];
 
-            if (sLightbox) {
-             fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
+            if( sLightbox ) {
+              var aLightbox = sLightbox.split(/[;]/, 4);
+              if (aLightbox.length > 2) {
+                for (var i in aLightbox) {
+                  if (i == 0 && aLightbox[i] == 'true') {
+                    fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
+                  } else if (i == 1) {
+                    // ignore Lightbox Width
+                  } else if (i == 2) {
+                    // ignore Lightbox Height
+                  } else if (i == 3) {
+                    fv_player_editor.get_field('lightbox_caption').val( aLightbox[i].trim() ).trigger('change');
+                  }
+                }
+              } else {
+                if (typeof (aLightbox[0]) != "undefined" && aLightbox[0] == 'true') {
+                  fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
+                }
+                if (typeof (aLightbox[1]) != "undefined") {
+                  fv_player_editor.get_field('lightbox_caption').val( aLightbox[1].trim() ).trigger('change');
+                }
+              }
             }
           }
         });

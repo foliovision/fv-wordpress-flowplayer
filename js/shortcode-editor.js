@@ -668,7 +668,7 @@ jQuery(function() {
       $el_editor.on( 'change', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
-          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = $(this).attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
           checkbox_toggle_worker(wrap, name, checked);
       });
@@ -676,7 +676,7 @@ jQuery(function() {
       $el_editor.on('change', '.components-text-control__input', function() {
         var input = jQuery(this),
           parent = input.parents('.fv-player-editor-children-wrap'),
-          name = input.attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
         if( parent.length == 1 ) {
           if( input.val() ) {
@@ -2565,7 +2565,11 @@ jQuery(function() {
             jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
           }
 
-          jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
+          try {
+            jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
+          } catch(e) {
+            debug_log('Error: fv_flowplayer_shortcode_parse', e);
+          }
 
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
