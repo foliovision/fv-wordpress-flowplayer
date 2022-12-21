@@ -48,6 +48,7 @@ class FV_Player_YouTube {
 
     add_filter( 'fv_flowplayer_conf', array($this, 'fv_flowplayer_conf'), 10, 2);
 
+    // needs to run sooner than pro plugin
     add_filter( 'fv_player_meta_data', array($this, 'fetch_yt_data'), 9, 2);
 
     //add_action( 'wp_footer', array( $this, 'scripts' ), 0 );
@@ -99,6 +100,14 @@ class FV_Player_YouTube {
     return $aArgs;
   }
 
+  /**
+   * Fetch meta data for youtube video
+   *
+   * @param string|array $video
+   * @param boolean $post_id
+   *
+   * @return string|array
+   */
   function fetch_yt_data($video, $post_id = false) {
     global $fv_fp;
 
@@ -178,28 +187,24 @@ class FV_Player_YouTube {
   }
 
   function youtube_live_check() {
-    if( defined('DOING_AJAX') && DOING_AJAX && ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], "youtube-live-check-nonce-" . get_current_user_id() ) ) ) {
-      die('Security check failed');
-    }
+    if( !defined('DOING_AJAX') || !DOING_AJAX ) return;
+  
+    global $FV_Player_Db;
 
-    global $fv_fp, $FV_Player_Db;
+    $is_live = false;
 
     $video_id = intval($_POST['video_id']); 
     $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
+    $src = $objVideo->getSrc();
 
-    $aId = $this->is_youtube($objVideo->getSrc());
+    $data = $this->fetch_yt_data($src);
 
-    $response = wp_remote_get( 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' . $aId[1] . '&key=' . $fv_fp->_get_option( array('pro','youtube_key') ), array( 'sslverify' => false ) );
-
-    $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
-
-    $is_live = isset($obj->items[0]->snippet->liveBroadcastContent) && $obj->items[0]->snippet->liveBroadcastContent == 'live';
-
-    if( !$is_live ) {
-      $objVideo->deleteMetaValue('live');
+    if( is_array($data) && isset($data['is_live']) ) {
+      $is_live = $data['is_live'];
     }
 
     wp_send_json( array( 'is_live' => $is_live ) );
+
     wp_die();
   }
 
@@ -213,8 +218,6 @@ class FV_Player_YouTube {
         $conf['youtube_cookies'] = true;
       }
     }
-
-    $conf['youtube_live_check_nonce'] = wp_create_nonce( "youtube-live-check-nonce-" . get_current_user_id() );
 
     return $conf;
   }

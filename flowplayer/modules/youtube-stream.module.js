@@ -9,7 +9,6 @@ flowplayer(function(api, root) {
 
     var data = {
       action: 'fv_player_youtube_live_check',
-      nonce: fv_flowplayer_conf.youtube_live_check_nonce,
       video_id: api.video.id
     };
 
