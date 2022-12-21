@@ -2,6 +2,8 @@
 
 abstract class FV_Player_Conversion_Base {
 
+  public $set_live = false;
+
   protected $matchers = array();
   protected $title = 'Conversion';
   protected $slug = 'conversion-slug';
@@ -216,7 +218,7 @@ abstract class FV_Player_Conversion_Base {
   }
   
   function is_live() {
-    return !empty($_POST['make-changes']) && $_POST['make-changes'] == 'true';
+    return (!empty($_POST['make-changes']) && $_POST['make-changes'] == 'true') || $this->set_live ;
   }
 
 }

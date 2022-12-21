@@ -680,6 +680,7 @@ function fv_flowplayer_admin_integrations() {
         <table class="form-table2">
 
           <?php $fv_fp->_get_checkbox(__('Disable saving skin CSS to a static file', 'fv-wordpress-flowplayer'), 'css_disable', __('Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css.', 'fv-wordpress-flowplayer'), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!','fv-wordpress-flowplayer' )); ?>
+          <?php $fv_fp->_get_checkbox(__('Convert to DB on save', 'fv-wordpress-flowplayer'), 'convert_db_save', __('Enable to convert links and shortcodes to [fv_player id="..."] shortcode when post is saved.', 'fv-wordpress-flowplayer') ); ?>
 
           <tr>
             <td><label for="css_disable"><?php _e('Enable profile videos', 'fv-wordpress-flowplayer').' (beta)'; ?>:</label></td>
