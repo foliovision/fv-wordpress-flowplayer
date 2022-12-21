@@ -403,4 +403,5 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
 }
 
-new FV_Player_Shortcode2Database_Conversion;
+global $FV_Player_Shortcode2Database_Conversion;
+$FV_Player_Shortcode2Database_Conversion = new FV_Player_Shortcode2Database_Conversion;
