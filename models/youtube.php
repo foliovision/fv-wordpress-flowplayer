@@ -193,16 +193,14 @@ class FV_Player_YouTube {
 
     $video_id = intval($_POST['video_id']);
 
-    $is_live = false;
-
     $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
     $src = $objVideo->getSrc();
 
-    $data = $this->fetch_yt_data($src);
+    $checker = new FV_Player_Checker;
 
-    if( is_array($data) && isset($data['is_live']) ) {
-      $is_live = $data['is_live'];
-    }
+    $objVideo = $checker->checker_cron_video_obj($video_id, $src, 300 );
+
+    $is_live = $objVideo->getMetaValue('live', true);
 
     // remove from meta if not live
     if( !$is_live ) {

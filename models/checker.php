@@ -318,71 +318,12 @@ class FV_Player_Checker {
       
       if( $aVideos ) {
         foreach( $aVideos AS $objVideo ) {
-          $id = $objVideo->id;
-          $url = $objVideo->src;
-          
-          global $FV_Player_Db;
-          $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
-          $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
-          
-          if( $last_check && intval($last_check) + 86400 > time() ) {
-            continue;
-          }
-
-          $error_count = $objVideo->getMetaValue('error_count',true);
-
-          if( $error_count && intval($error_count) > 5 ) {
-            continue;
-          }
-
-          // TODO: This should change to a proper filter at once
-          $meta_data = apply_filters('fv_player_meta_data', $url, false);
-
-          if( $meta_data == false || is_string($meta_data) && strcmp($meta_data,$url) == 0 ) {
-            if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
-              $url = $secured_url;
-            }
-
-            if( $check = $this->check_mimetype(array($url), false, true) ) {
-              $meta_data = $check;
-            }
-
-          }
-  
-          if( !empty($meta_data['thumbnail']) ) {
-            if( !$objVideo->getSplash() || $objVideo->getMetaValue('auto_splash',true) ) {
-              $video_object = new FV_Player_Db_Video( $objVideo->getId(), array(), $FV_Player_Db );
-              $video_object->link2db( $objVideo->getId() );
-              $video_object->set( 'splash', $meta_data['thumbnail'] );
-              $video_object->save();
-            }
-          }
-          
-          $objVideo->updateMetaValue('last_video_meta_check', time());
-          
-          if( $meta_data['duration'] ) {
-            $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );
-          }
-
-          if( $meta_data['error'] ) {
-            $objVideo->updateMetaValue( 'error', $meta_data['error'] );
-
-            $error_count = $objVideo->getMetaValue( 'error_count', true );
-            if( !$error_count ) {
-              $error_count = 0;
-            }
-            $objVideo->updateMetaValue( 'error_count', $error_count + 1 );
-
-          } else {
-            $objVideo->deleteMetaValue( 'error' );
-            $objVideo->deleteMetaValue( 'error_count' );
-          }
-
+          $this->checker_cron_video_obj($objVideo->id, $objVideo->src);
         }
       }
     }
     
-    // legacy    
+    // legacy
     if( !$aQueue = self::queue_get() ) return;
     $tStart = microtime(true);
     $this->is_cron = true;
@@ -396,17 +337,85 @@ class FV_Player_Checker {
       
       do_action( 'fv_flowplayer_checker_cron_post', $key );
       
-      fv_wp_flowplayer_save_post($key);     
+      fv_wp_flowplayer_save_post($key);
       $post = $tmp;
     }
     
   }
-  
-  
-  
-  
+
+
+
+
+  function checker_cron_video_obj($id, $url, $check_duration = 86400) {
+    global $fv_fp, $FV_Player_Db;
+    $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
+    $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
+    
+    if( $last_check && intval($last_check) + $check_duration > time() ) {
+      return $objVideo;
+    }
+
+    $error_count = $objVideo->getMetaValue('error_count',true);
+
+    if( $error_count && intval($error_count) > 5 ) {
+      return $objVideo;
+    }
+
+    // TODO: This should change to a proper filter at once
+    $meta_data = apply_filters('fv_player_meta_data', $url, false);
+
+    if( $meta_data == false || is_string($meta_data) && strcmp($meta_data,$url) == 0 ) {
+      if( $secured_url = $fv_fp->get_video_src( $url, array( 'dynamic' => true ) ) ) {
+        $url = $secured_url;
+      }
+
+      if( $check = $this->check_mimetype(array($url), false, true) ) {
+        $meta_data = $check;
+      }
+
+    }
+
+    if( !empty($meta_data['thumbnail']) ) {
+      if( !$objVideo->getSplash() || $objVideo->getMetaValue('auto_splash',true) ) {
+        $video_object = new FV_Player_Db_Video( $objVideo->getId(), array(), $FV_Player_Db );
+        $video_object->link2db( $objVideo->getId() );
+        $video_object->set( 'splash', $meta_data['thumbnail'] );
+        $video_object->save();
+      }
+    }
+    
+    $objVideo->updateMetaValue('last_video_meta_check', time());
+
+    if( $meta_data['is_live'] ) {
+      $objVideo->updateMetaValue( 'live', true );
+    }
+
+    if( $meta_data['duration'] ) {
+      $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );
+    }
+
+    if( $meta_data['error'] ) {
+      $objVideo->updateMetaValue( 'error', $meta_data['error'] );
+
+      $error_count = $objVideo->getMetaValue( 'error_count', true );
+      if( !$error_count ) {
+        $error_count = 0;
+      }
+      $objVideo->updateMetaValue( 'error_count', $error_count + 1 );
+
+    } else {
+      $objVideo->deleteMetaValue( 'error' );
+      $objVideo->deleteMetaValue( 'error_count' );
+    }
+
+    return $objVideo;
+  }
+
+
+
+
   function cron_init() {
-    global $fv_fp;      
+    global $fv_fp;
     if( isset($fv_fp->conf['db_duration']) && $fv_fp->conf['db_duration'] == 'true' ) {
       if ( !wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
         wp_schedule_event( time(), '5minutes', 'fv_flowplayer_checker_event' );
