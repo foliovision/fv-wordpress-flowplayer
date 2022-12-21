@@ -188,12 +188,13 @@ class FV_Player_YouTube {
 
   function youtube_live_check() {
     if( !defined('DOING_AJAX') || !DOING_AJAX ) return;
-  
+
     global $FV_Player_Db;
+
+    $video_id = intval($_POST['video_id']);
 
     $is_live = false;
 
-    $video_id = intval($_POST['video_id']); 
     $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
     $src = $objVideo->getSrc();
 
@@ -201,6 +202,11 @@ class FV_Player_YouTube {
 
     if( is_array($data) && isset($data['is_live']) ) {
       $is_live = $data['is_live'];
+    }
+
+    // remove from meta if not live
+    if( !$is_live ) {
+      $objVideo->deleteMetaValue('live');
     }
 
     wp_send_json( array( 'is_live' => $is_live ) );
