@@ -96,7 +96,7 @@ flowplayer(function(api, root) {
         root.addClass('has-fp-message-muted');
 
         // Remove the notice after a while
-        setTimeout( remove_volume_notice, 5000 );
+        setTimeout( remove_volume_notice, 10000 );
       }
     }
   } );
