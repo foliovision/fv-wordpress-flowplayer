@@ -16,11 +16,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+// Set the FV Player wp-admin menu item to be open
+?>
+<script>
+var fv_player_menu_item = document.getElementById('toplevel_page_fv_player');
+if( fv_player_menu_item && fv_player_menu_item.classList ) {
+  fv_player_menu_item.classList.add('wp-menu-open');
+  fv_player_menu_item.classList.add('wp-has-current-submenu');
+  fv_player_menu_item.classList.remove('wp-not-current-submenu');
+}
+</script>
+<?php
+
 /**
  * Displays administrator backend.
  */
 
- 
+
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
 function fv_flowplayer_admin_ads() {
