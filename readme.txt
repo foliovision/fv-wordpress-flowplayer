@@ -359,22 +359,26 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.30.7210 - 2022/12/21 =
+= 7.5.30.7210 - 2022/12/23 =
 
 * Using Freedom Video Player 7.2.12
 * Chromecast - fix for HLS streams with multiple audio tracks
+* Click to unmute - showing for 10 instead of just 5 seconds if audible autoplay has been blocked by browser
 * Compatibility - SiteGround Optimizer
 * CSS - making the timeline easier to tap on mobile
 * Handle WordPress audio/video setting - Support Vimeo Gutenberg block
 * Handle WordPress audio/video setting - Support Vimeo iframes
+* Lightbox - support text links to images with class="colorbox"
 * MPEG-DASH - upgrade to Dash.js 3.2.2
-* MPEG-DASH - fixing autoplay blocked in Safari
 * Schema.org - adding video duration
-* YouTube - fix Shorts support for mobile
+* Sticky player - also working when scrolling up
 * YouTube - fullscreen fix if your theme uses CSS transform or z-index
 * Bugfix - duplicate preview with Gutenberg
+* Bugfix - MPEG-DASH - Vimeo volume unmuting for iPad
+* Bugfix - YouTube - "Live in XY hours" message not appearing for some users on scheduled live streams
+* Bugfix - YouTube - Shorts support for mobile
 
-= 7.5.29.7210 - 2022/09/20 =
+= 7.5.29.7210 - 2022/09/23 =
 
 * AWS SDK update and size reduction
 * Full-featured YouTube player (moved in from FV Player Pro)
