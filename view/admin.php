@@ -1908,10 +1908,10 @@ function fv_flowplayer_admin_rollback() {
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
-    <p>You can go back to the last 7.4 version - without editor autosaving and JavaScript loading changes:</p>
+    <p>You can go back to the previous 7.5 version - without changes to Chromecast, WordPress audio/video handling, MPEG-DASH and YouTube:</p>
     </div>
 <div class="usage-section">
-<h3><a href="<?php echo wp_nonce_url( admin_url($base.'7.4.47.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.4.47.727</a></h3>
+<h3><a href="<?php echo wp_nonce_url( admin_url($base.'7.5.29.7210'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.5.29.7210</a></h3>
   <?php
 }
 
