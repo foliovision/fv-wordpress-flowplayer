@@ -321,11 +321,20 @@ function fv_flowplayer_browser_browse(data, options) {
           }
         }
 
-        file.append('<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape' + (options && options.extraAttachmentClass ? ' ' + options.extraAttachmentClass : '') + '">'
+        var css_class = 'attachment-preview js--select-attachment type-video subtype-mp4 landscape';
+        if( options && options.extraAttachmentClass ) {
+          css_class += ' ' + options.extraAttachmentClass;
+        }
+
+        if( f.status ) {
+          css_class += ' job-status-'+f.status;
+        }
+
+        file.append('<div class="'+css_class+'">'
           + '<div class="thumbnail"' + (isPicture || (options && options.noFileName) ? ' title="' + name + '"' : '') + '>'
           + icon
           + '<div class="filename' + (isPicture || (options && options.noFileName) ? ' hidden' : '') + '">'
-          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
+          + '<div data-modified="' + f.modified + '" data-size="' + f.size + '" data-link="' + f.link + '"' + '" data-status="' + f.status + '"' + (f.duration ? ' data-duration="' + f.duration + '"' : '') + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>' + ' data-extra=\''+JSON.stringify(f.extra)+'\'>' + name + '</div>'
           + '</div>'
           + progress
           + '</div>'
@@ -970,6 +979,7 @@ jQuery( function($) {
             '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
             (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
             '\t\t\t</div>\n' +
+            '\t\t\t\t<div class="status">' + ( $filenameDiv.data('status') != 'undefined' ? $filenameDiv.data('status') : '' ) + '</div>\n' +
             ( ( splashValue && $filenameDiv.data('link').match(/\.(jpg|jpeg|png|gif)$/) ) ? '<div><i>Found matching splash screen image</i></div>' : '') +
             '\t\t</div>\n' +
             '\n' +

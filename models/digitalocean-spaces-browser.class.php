@@ -121,6 +121,6 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
 }
 
 global $FV_Player_DigitalOcean_Spaces_Browser;
-$FV_Player_DigitalOcean_Spaces_Browser = new FV_Player_DigitalOcean_Spaces_Browser( 'wp_ajax_load_dos_assets' );
+$FV_Player_DigitalOcean_Spaces_Browser = new FV_Player_DigitalOcean_Spaces_Browser(  array('ajax_action_name' => 'wp_ajax_load_dos_assets', 'browser_type' => 'dos') );
 
 endif;
