@@ -1,4 +1,9 @@
 {
+  "config": {
+    "platform": {
+        "php": "7.3.5"
+    }
+  },
   "require-dev": {
     "mockery/mockery": "dev-master",
     "yoast/phpunit-polyfills": "dev-main"
