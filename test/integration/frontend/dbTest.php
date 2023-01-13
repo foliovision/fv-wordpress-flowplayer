@@ -10,7 +10,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   
   var $import_ids = array();
 
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
         
     global $FV_Player_Db;
@@ -153,7 +153,7 @@ HTML;
 
   }
 
-  public function tearDown() {
+  protected function tearDown(): void {
     delete_option('fv_player_popups');
   }
 

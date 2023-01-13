@@ -4,7 +4,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   
   protected $backupGlobals = false;
   
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     
     global $fv_fp;
@@ -90,7 +90,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     //$fv_fp->_set_conf();
   }
   
-  public function tearDown() {
+  protected function tearDown(): void {
     parent::tearDown();
     
     global $fv_fp;

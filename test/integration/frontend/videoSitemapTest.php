@@ -10,7 +10,7 @@ final class FV_Player_Video_SitemapTest extends FV_Player_UnitTestCase {
   
   var $import_ids = array();
   
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
         
     global $FV_Player_Db;
@@ -67,7 +67,7 @@ HTML
     $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($actual) );
   }
   
-  public function tearDown() {
+  protected function tearDown(): void {
     global $FV_Player_Db;
     
     // when you delete a player loaded from cache it won't remove the player and player meta, so we do a hard cache purge here! The player ID is not passed in contructor when loading from cache.
