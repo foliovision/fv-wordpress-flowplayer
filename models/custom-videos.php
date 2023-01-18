@@ -1,11 +1,15 @@
 <?php
 
 class FV_Player_Custom_Videos {
-  
+
   var $id;
-  
+
   var $instance_id;
-  
+
+  private $meta;
+
+  private $type;
+
   public function __construct( $args ) {
     global $post;
     
