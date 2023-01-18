@@ -3,7 +3,8 @@
 abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   
   protected $backupGlobals = false;
-  
+  protected $restore;
+
   protected function setUp(): void {
     parent::setUp();
     
