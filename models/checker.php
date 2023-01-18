@@ -324,8 +324,15 @@ class FV_Player_Checker {
           global $FV_Player_Db;
           $objVideo = new FV_Player_Db_Video( $id, array(), $FV_Player_Db );
           $last_check = $objVideo->getMetaValue('last_video_meta_check',true);
-          
-          if( $last_check && intval($last_check) + 86400 > time() ) {
+
+          $check_ttl = 86400;
+
+          $is_live = $objVideo->getMetaValue('live',true);
+          if( $is_live && FV_Player_YouTube()->is_youtube( $url ) ) {
+            $check_ttl = 300;
+          }
+
+          if( $last_check && intval($last_check) + $check_ttl > time() ) {
             continue;
           }
 
@@ -359,6 +366,12 @@ class FV_Player_Checker {
           }
           
           $objVideo->updateMetaValue('last_video_meta_check', time());
+
+          if( $meta_data['is_live'] ) {
+            $objVideo->updateMetaValue( 'live', true );
+          } else {
+            $objVideo->deleteMetaValue( 'live', true );
+          }
           
           if( $meta_data['duration'] ) {
             $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );
