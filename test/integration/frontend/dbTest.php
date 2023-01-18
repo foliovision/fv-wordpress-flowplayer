@@ -9,6 +9,8 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
 final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   
   var $import_ids = array();
+  private $post_id_testEndActions;
+  private $post_id_testStartEnd;
 
   protected function setUp(): void {
     parent::setUp();

@@ -9,7 +9,8 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
 final class FV_Player_Video_SitemapTest extends FV_Player_UnitTestCase {
   
   var $import_ids = array();
-  
+  private $post_id_testEndActions;
+
   protected function setUp(): void {
     parent::setUp();
         

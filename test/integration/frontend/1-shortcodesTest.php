@@ -8,6 +8,8 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
   
+  private $post_id_SimpleShortcode;
+
   protected function setUp(): void {
     parent::setUp();
 

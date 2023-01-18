@@ -8,6 +8,12 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
   
+  private $playlist_default;
+  private $playlist_vertical;
+  private $playlist_tabs;
+  private $playlist_prevnext;
+  private $playlist_slider;
+
   protected function setUp(): void {
     parent::setUp();
     
