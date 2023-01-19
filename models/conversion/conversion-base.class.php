@@ -8,6 +8,7 @@ abstract class FV_Player_Conversion_Base {
   protected $title = 'Conversion';
   protected $slug = 'conversion-slug';
   protected $screen;
+  protected $help;
 
   abstract function convert_one($post);
 

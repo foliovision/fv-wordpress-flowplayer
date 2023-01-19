@@ -90,12 +90,14 @@ class FV_Player_Custom_Videos {
       $preview = false;
       $before = 0;
       if( $video ) {
-        $video = str_replace( '[fvplayer ', '[fvplayer autoplay="false" ', $video );
-        $preview = do_shortcode($video);
+        $preview = do_shortcode( str_replace( '[fvplayer ', '[fvplayer autoplay="false" ', $video ) );
         global $fv_fp;
         if( $fv_fp->current_player() ) {
           $before = count($fv_fp->current_player()->getVideos());
         }
+
+        // Previously we added autoplay="false" to the stored shortcodes by accident, so remove it here
+        $video = str_replace( 'autoplay="false"', '', $video );
       }
       
       $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>

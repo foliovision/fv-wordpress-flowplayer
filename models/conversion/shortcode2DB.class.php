@@ -2,6 +2,12 @@
 
 class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base {
 
+  var $supported_atts;
+
+  var $supported_player_atts;
+
+  var $supported_video_atts;
+
   function __construct() {
     parent::__construct( array(
       'title' => 'FV Player Shortcode2Database Conversion',

@@ -33,7 +33,23 @@ class FV_Wordpress_Flowplayer_Plugin_Private
 {
   
   var $_wp_using_ext_object_cache_prev;
-  
+
+  var $class_name;
+
+  var $license_key;
+
+  var $pointer_boxes;
+
+  var $readme_URL;
+
+  var $strPluginName;
+
+  var $strPluginPath;  
+
+  var $strPluginSlug;
+
+  var $strPrivateAPI;
+
   function __construct(){
         $this->class_name = sanitize_title( get_class($this) );
 
