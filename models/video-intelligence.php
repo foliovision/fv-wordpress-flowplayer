@@ -10,8 +10,8 @@ class FV_Player_video_intelligence_Installer {
     add_action( 'admin_init', array( $this, 'settings_register' ) ) ;
     add_action( 'admin_notices', array( $this, 'show_notice' ) );
     add_action( 'fv_player_admin_settings_tabs', array( $this, 'settings_tab' ) );
-    add_action( 'wp_ajax_fv-player-vi-add', array( $this, 'settings_remove' ) );
-    add_action( 'wp_ajax_fv-player-vi-remove', array( $this, 'settings_remove' ) );
+    add_action( 'wp_ajax_fv-player-vi-add', array( $this, 'settings_toggle' ) );
+    add_action( 'wp_ajax_fv-player-vi-remove', array( $this, 'settings_toggle' ) );
   }
   
   function screen_account() {
@@ -133,7 +133,7 @@ class FV_Player_video_intelligence_Installer {
     <script>
     jQuery( function($) {
       $('#fv-player-vi-remove').on('click', function() {
-        $.post(ajaxurl, {action:'fv-player-vi-remove'}, function() {
+        $.post(ajaxurl, {action:'fv-player-vi-remove', nonce: jQuery('#nonce_fv_player_vi_install').val()}, function() {
           $('#fv-player-vi-give-back').prop('checked',false);
           $('[href=\\#postbox-container-tab_video_intelligence]').hide();
           $('#postbox-container-tab_video_intelligence').hide();
@@ -164,8 +164,8 @@ class FV_Player_video_intelligence_Installer {
     }
   }
   
-  function settings_remove() {
-    if( current_user_can('manage_options') ) {
+  function settings_toggle() {
+    if( current_user_can('manage_options') && !empty($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], 'fv_player_vi_install' ) ) {
       global $fv_fp;
       $aNew = $fv_fp->conf;
       $aNew['hide-tab-video-intelligence'] = $_POST['action'] == 'fv-player-vi-remove';
@@ -174,13 +174,13 @@ class FV_Player_video_intelligence_Installer {
     }
   }
   
-  function settings_revival() {    
+  function settings_revival() {
     ?>
     <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e('Show the vi Ads tab again', 'fv-wordpress-flowplayer'); ?></label></a>
     <script>
     jQuery( function($) {
       $('#fv-player-vi-give-back').on('click', function() {
-        $.post(ajaxurl, {action:'fv-player-vi-add'}, function() {
+        $.post(ajaxurl, {action:'fv-player-vi-add', nonce: jQuery('#nonce_fv_player_vi_install').val()}, function() {
           $('#fv-player-vi-remove').prop('checked',false);
           $('[href=\\#postbox-container-tab_video_intelligence]').show();
           $('#fv_flowplayer_video_intelligence').show();
