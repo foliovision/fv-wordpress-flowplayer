@@ -5,6 +5,8 @@ class FV_Player_video_intelligence_Installer {
   var $notice = false;
   var $notice_status = false;
 
+  private $setting_toggle_nonce;
+
   function __construct() {
     add_action( 'admin_menu', array( $this, 'start' ), 8 ) ;
     add_action( 'admin_init', array( $this, 'settings_register' ) ) ;
@@ -133,7 +135,7 @@ class FV_Player_video_intelligence_Installer {
     <script>
     jQuery( function($) {
       $('#fv-player-vi-remove').on('click', function() {
-        $.post(ajaxurl, {action:'fv-player-vi-remove', nonce: jQuery('#nonce_fv_player_vi_install').val()}, function() {
+        $.post(ajaxurl, {action:'fv-player-vi-remove', nonce: '<?php echo $this->setting_toggle_nonce ?>'}, function() {
           $('#fv-player-vi-give-back').prop('checked',false);
           $('[href=\\#postbox-container-tab_video_intelligence]').hide();
           $('#postbox-container-tab_video_intelligence').hide();
@@ -153,6 +155,7 @@ class FV_Player_video_intelligence_Installer {
 
   function settings_register() {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
+      $this->setting_toggle_nonce = wp_create_nonce('fv_player_vi_setting_toggle');
       add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       add_meta_box( 'fv_flowplayer_video_intelligence_hide', __('Hide vi Ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
@@ -165,7 +168,7 @@ class FV_Player_video_intelligence_Installer {
   }
   
   function settings_toggle() {
-    if( current_user_can('manage_options') && !empty($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], 'fv_player_vi_install' ) ) {
+    if( current_user_can('manage_options') && !empty($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], 'fv_player_vi_setting_toggle' ) ) {
       global $fv_fp;
       $aNew = $fv_fp->conf;
       $aNew['hide-tab-video-intelligence'] = $_POST['action'] == 'fv-player-vi-remove';
@@ -180,7 +183,7 @@ class FV_Player_video_intelligence_Installer {
     <script>
     jQuery( function($) {
       $('#fv-player-vi-give-back').on('click', function() {
-        $.post(ajaxurl, {action:'fv-player-vi-add', nonce: jQuery('#nonce_fv_player_vi_install').val()}, function() {
+        $.post(ajaxurl, {action:'fv-player-vi-add', nonce: '<?php echo $this->setting_toggle_nonce ?>'}, function() {
           $('#fv-player-vi-remove').prop('checked',false);
           $('[href=\\#postbox-container-tab_video_intelligence]').show();
           $('#fv_flowplayer_video_intelligence').show();
