@@ -52,7 +52,7 @@
   display: none;
 }
 
-.fv_player_actions_end-toggle,.fv_player_interface_hide, .is-visible-dependency.fv_player_interface_hide, .fv-player-playlist-item-title{ display:none; }
+.fv_player_actions_end-toggle, #fv-player-shortcode-editor .fv_player_interface_hide, .is-visible-dependency.fv_player_interface_hide, .fv-player-playlist-item-title{ display:none; }
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
 
@@ -504,7 +504,7 @@ body.is-fv-player-editor-modal-open {
   border-top: 1px solid #e9e9e9;
   box-sizing:border-box;
 }
-#fv-player-editor-modal-bottom a {
+#fv-player-editor-modal-bottom a.button, #fv-player-editor-modal-bottom a.button-primary {
   margin-top: 20px;
   margin-bottom: 20px;
 }

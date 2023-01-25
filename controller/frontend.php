@@ -903,3 +903,96 @@ function fv_player_remove_for_excerpt( $post_content ) {
   }
   return $post_content;
 }
+
+
+add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
+
+function fvplayer_editor() {
+  include_once( ABSPATH.'/wp-admin/includes/plugin.php' );
+  include_once( __DIR__.'/editor.php' );
+
+  wp_enqueue_media();
+
+  fv_player_shortcode_editor_scripts_enqueue();
+
+  ob_start();
+  fv_wp_flowplayer_edit_form_after_editor();
+  ?>
+  <script>
+  var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+
+  document.addEventListener( 'DOMContentLoaded', function() {
+    jQuery(function() {
+
+      // Wait until FV Player Editor $doc.ready() finishes
+      setTimeout( function() {
+        fv_player_editor.editor_open();
+      });
+    });
+  });
+  </script>
+  <style>
+  #fv-player-editor-modal {
+    display: block !important;
+    position: static !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  }
+  #fv-player-editor-modal h2 {
+    letter-spacing: normal;
+  }
+  #fv-player-editor-modal #fv-player-shortcode-editor {
+    min-height: 400px;
+    height: 75vh; /* without set height the tab content will never get scrollbars */
+    position: static !important;
+  }
+  #fv-player-editor-modal-close {
+    display: none;
+  }
+
+  /* Core WordPress Admin Button styling */
+  #fv-player-editor-modal .button, #fv-player-editor-modal .button-primary, #fv-player-editor-modal .button-secondary {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    text-transform: none;
+  }
+  #fv-player-editor-modal .button.hover, #fv-player-editor-modal .button:hover, #fv-player-editor-modal .button-secondary:hover {
+    background: #f0f0f1;
+    border-color: #0a4b78;
+    color: #0a4b78;
+  }
+  #fv-player-editor-modal .button, #fv-player-editor-modal .button-secondary {
+    color: #2271b1;
+    border-color: #2271b1;
+    background: #f6f7f7;
+    vertical-align: top;
+  }
+  #fv-player-editor-modal .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+  }
+  #fv-player-editor-modal .button-primary.hover, #fv-player-editor-modal .button-primary:hover, #fv-player-editor-modal .button-primary.focus, #fv-player-editor-modal .button-primary:focus {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+  }
+  </style>
+  <?php
+  return ob_get_clean();
+}

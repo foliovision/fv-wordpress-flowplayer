@@ -2080,7 +2080,11 @@ jQuery(function() {
         }
 
         // Foliopress WYSIWYG
-        else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
+        else if (
+          instance_fp_wysiwyg && (
+            instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())
+          )
+        ) {
           debug_log('Loading for Foliopress WYSIWYG...' );
 
           editor_content = instance_fp_wysiwyg.GetHTML();
@@ -2089,7 +2093,7 @@ jQuery(function() {
             editor_content = instance_fp_wysiwyg.GetHTML();
           }
 
-        } else {
+        } else if( instance_tinymce ) {
           debug_log('Loading for TinyMCE in Visual Mode...' );
 
           // TinyMCE in Visual Mode
@@ -2112,6 +2116,9 @@ jQuery(function() {
 
           }
           instance_tinymce.settings.validate = true;
+        } else {
+          editor_content = '';
+
         }
 
         if( !shortcode ){
@@ -4293,6 +4300,8 @@ jQuery(function() {
       meta_data_load_finished() {
         is_loading_meta_data--;
       },
+
+      editor_open: editor_open,
 
       error_add( identifier, txt ) {
         errors[ identifier ] = txt;
