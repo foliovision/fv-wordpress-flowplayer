@@ -606,7 +606,13 @@ function fvplayer_watched( $args = array() ) {
 
       foreach( $videos2durations AS $details ) {
         if( $details->video_id == $video_id ) {
-          $line .= ' (<abbr title="'.esc_attr($data['message']).'">'.round( 100 * $data['time']/$details->duration ).'%</abbr>)';
+          // In some strange cases the duration might not be set right
+		      if( $data['time'] <= intval($details->duration) ) {
+            if( isset($_GET['fvplayer_watched_debug']) ) {
+              $data['message'] .= ' out of '.flowplayer::format_hms($details->duration).' ('.$data['time'].' out of '.$details->duration.')';
+            }
+            $line .= ' (<abbr title="'.esc_attr($data['message']).'">'.round( 100 * $data['time'] / intval($details->duration) ).'%</abbr>)';
+		      }
         }
       }
     }

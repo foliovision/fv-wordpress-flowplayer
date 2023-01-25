@@ -945,11 +945,7 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
           'time' => $meta->meta_value
         );
 
-      }
-    }
-    
-    foreach( $metas AS $meta ) {
-      if( stripos( $meta->meta_key, 'fv_wp_flowplayer_position_') === 0 ) {
+      } else if( stripos( $meta->meta_key, 'fv_wp_flowplayer_position_') === 0 ) {
         $video_id = str_replace( 'fv_wp_flowplayer_position_', '', $meta->meta_key );
         if( !is_numeric($video_id) ) continue;
 
@@ -962,10 +958,9 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
         }
 
       }
-    }
-
-    foreach( $metas AS $meta ) {
-      if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
+		
+    // No else if as we want the full video watch to take priority over the stored position
+	  if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
         $video_id = str_replace( 'fv_wp_flowplayer_saw_', '', $meta->meta_key );
         if( !is_numeric($video_id) ) continue;
 
@@ -975,7 +970,6 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
         );
       }
     }
-    
   }
 
   // Filter unfinished or finished videos
