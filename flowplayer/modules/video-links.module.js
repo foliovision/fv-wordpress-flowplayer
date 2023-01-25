@@ -49,13 +49,13 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
       });
 
       jQuery('.sharing-link',root).on('click', function(e) {
-
+        e.preventDefault();
         fv_player_clipboard( jQuery(this).attr('href'), function() {
-          e.preventDefault();
           fv_player_notice(root,fv_flowplayer_translations.link_copied,2000);
-        });
-
-        return false;
+          }, function() {
+            fv_player_notice(root,fv_flowplayer_translations.error_copy_clipboard,2000);
+          }
+        );
       })
     }
   })

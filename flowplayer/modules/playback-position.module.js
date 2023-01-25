@@ -309,7 +309,7 @@ if (!Date.now) {
 
   flowplayer( function(api,root) {
     // localstorage disabled by admin
-    if( typeof(api.conf.disable_localstorage) != 'undefined' ) {
+    if( typeof(api.conf.disable_localstorage) != 'undefined' && flowplayer.conf.is_logged_in != '1' ) {
       return;
     }
 
@@ -361,13 +361,13 @@ if (!Date.now) {
       },
 
       isSupported = function() {
-        return !( api.live || api.video && typeof(api.video.click) == "string" );
+        return !( api.live || api.video && typeof(api.video.click) == "string");
       },
 
       // used to seek into the desired last stored position when he video has started
       seekIntoPosition = function (e, api) {
         // do not restore position for live video or video ad
-        if( !isSupported() ) return;
+        if( !isSupported() || api.video.prevent_position_restore  ) return;
 
         var position = getVideoPosition(api);
 
@@ -500,7 +500,7 @@ if (!Date.now) {
       },
 
       restorePlaylistItem = function(e, api) {
-        if ( typeof api == 'undefined' || api.conf.playlist.length == 0 ) return;
+        if ( typeof api == 'undefined' || api.conf.playlist.length == 0 || api.conf.prevent_position_restore ) return;
 
         var item_index = -1;
 

@@ -16,11 +16,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+// Set the FV Player wp-admin menu item to be open
+?>
+<script>
+var fv_player_menu_item = document.getElementById('toplevel_page_fv_player');
+if( fv_player_menu_item && fv_player_menu_item.classList ) {
+  fv_player_menu_item.classList.add('wp-menu-open');
+  fv_player_menu_item.classList.add('wp-has-current-submenu');
+  fv_player_menu_item.classList.remove('wp-not-current-submenu');
+}
+</script>
+<?php
+
 /**
  * Displays administrator backend.
  */
 
- 
+
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
 function fv_flowplayer_admin_ads() {
@@ -1467,7 +1479,7 @@ function fv_flowplayer_admin_custom_css() {
   border: 1px solid #ddd;
   }
 </style>
- <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for someusefull CSS tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
+ <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for usefull appearance tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
  <table class="form-table2">
     <tr>
       <td colspan="2">
@@ -1874,10 +1886,10 @@ function fv_flowplayer_admin_rollback() {
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
-    <p>You can go back to the last 7.4 version - without editor autosaving and JavaScript loading changes:</p>
+    <p>You can go back to the previous 7.5 version - without changes to Chromecast, WordPress audio/video handling, MPEG-DASH and YouTube:</p>
     </div>
 <div class="usage-section">
-<h3><a href="<?php echo wp_nonce_url( admin_url($base.'7.4.47.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.4.47.727</a></h3>
+<h3><a href="<?php echo wp_nonce_url( admin_url($base.'7.5.29.7210'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.5.29.7210</a></h3>
   <?php
 }
 

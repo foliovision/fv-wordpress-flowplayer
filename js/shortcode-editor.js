@@ -524,6 +524,35 @@ jQuery(function() {
           widget_id = $(this).data().number;
         });
 
+        var site_editor_load = setInterval( function() {
+          var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
+          if( site_editor_iframe.length ) {
+            debug_log( 'Site editor found!');
+
+            clearInterval(site_editor_load);
+
+            site_editor_iframe.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
+
+              editor_button_clicked = this;
+              e.preventDefault();
+              $.fv_player_box( {
+                top: "100px",
+                initialWidth: 1100,
+                initialHeight: 50,
+                width:"1100px",
+                height:"100px",
+                href: "#fv-player-shortcode-editor",
+                inline: true,
+                title: 'Add FV Player',
+                onComplete : editor_open,
+                onClosed : editor_close,
+                onOpen: lightbox_open
+              } );
+              widget_id = $(this).data().number;
+            });
+          }
+        }, 1000 );
+
         $doc.on( 'click', '.fv-player-export', function(e) {
           var $element = jQuery(this);
 
@@ -4221,6 +4250,12 @@ jQuery(function() {
        * @param shortcode The actual player shortcode to generate the preview from.
        */
       gutenberg_preview: function( parent, shortcode ) {
+        // No preview if the element is in the Site Editor iframe
+        // The iframe would have to load all the FV Player JS and CSS
+        if( jQuery(parent).closest('body').hasClass('block-editor-iframe__body') ) {
+          return;
+        }
+
         if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
           return;
         }

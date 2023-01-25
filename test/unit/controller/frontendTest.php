@@ -184,6 +184,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [live_stream_retry] => <h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>
     [live_stream_continue] => <h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>
     [embed_copied] => Embed Code Copied to Clipboard
+    [error_copy_clipboard] => Error copying text into clipboard!
     [subtitles_disabled] => Subtitles disabled
     [subtitles_switched] => Subtitles switched to 
     [warning_iphone_subs] => This video has subtitles, that are not supported on your device.

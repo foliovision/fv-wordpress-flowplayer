@@ -80,7 +80,8 @@ flowplayer(function(api, root) {
     var sources = api.video.sources_fvqs || api.video.sources;
     for( var i in sources ) {
       var type = sources[i].type;
-      if( type == 'video/mp4' || type == 'video/fv-mp4' || type == 'application/dash+xml' ) {
+      // Use MP4, or MPEG-DASH if it's not the Vimeo JSON
+      if( type == 'video/mp4' || type == 'video/fv-mp4' || type == 'application/dash+xml' && !sources[i].src.match(/.json/) ) {
         media = sources[i];
         break;
       }

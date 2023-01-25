@@ -79,6 +79,7 @@ function fv_flowplayer_get_js_translations() {
   'live_stream_retry'=>__( '<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'live_stream_continue'=>__( '<h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
+  'error_copy_clipboard' => __('Error copying text into clipboard!', 'fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
@@ -480,10 +481,9 @@ function flowplayer_prepare_scripts() {
 
     $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
-      $aConf['fv_chromecast'] = true;
-      /*$aConf['fv_chromecast'] = array(
+      $aConf['fv_chromecast'] = array(
         'applicationId' => '908E271B'
-      );*/
+      );
     }
 
     if( $fv_fp->_get_option('hd_streaming') ) {

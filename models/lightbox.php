@@ -398,7 +398,8 @@ class FV_Player_lightbox {
       return $content;
     }
 
-    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
+    // Look for any image links
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
 
     if( $count ) {
       $this->enqueue();
@@ -415,7 +416,7 @@ class FV_Player_lightbox {
 
     $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
 
-    return $matches[1] . $matches[2];
+    return $matches[1];
   }
 
   function disable_autoplay($aArgs) {

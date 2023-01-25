@@ -372,6 +372,19 @@ class FV_Player_Checker {
         foreach( $aVideos AS $video_id ) {
           $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
 
+          $last_check = $objVideo->getLastCheck();
+
+          $check_ttl = 86400;
+
+          $is_live = $objVideo->getLive();
+          if( $is_live && FV_Player_YouTube()->is_youtube( $objVideo->getSrc() ) ) {
+            $check_ttl = 300;
+          }
+
+          if( $last_check && intval($last_check) + $check_ttl > time() ) {
+            continue;
+          }
+
           $error_count = $objVideo->getMetaValue('error_count',true);
 
           if( $error_count && intval($error_count) > 5 ) {

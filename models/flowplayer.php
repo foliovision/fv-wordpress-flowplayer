@@ -1057,6 +1057,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       } 
                  
+      $aDurations = !empty($aArgs['durations']) ? explode( ';', $aArgs['durations'] ) : array();
+
       $aItem = array();      
       
       if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
@@ -1124,6 +1126,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $aPlayer['splash'] = $splash_img;
       }
       
+      if( empty($aPlayer['duration']) && !empty($aDurations[0]) ) {
+        $aPlayer['duration'] = $aDurations[0];
+      }
+
       $aPlaylistItems[] = $aPlayer;
       $aSplashScreens[] = $splash_img;
       $aCaptions[] = $sItemCaption;
@@ -1213,6 +1219,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $aPlayer['splash'] = $sSplashImage;
           }
           
+          if( empty($aPlayer['duration']) && !empty($aDurations[$index]) ) {
+            $aPlayer['duration'] = $aDurations[$index];
+          }
+
           $aPlaylistItems[] = $aPlayer;
           
           $sHTML[] = $this->build_playlist_html( $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index );

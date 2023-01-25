@@ -1,3 +1,5 @@
+/* eslint-disable no-inner-declarations */
+/* eslint-disable no-cond-assign */
 
 /**
  * FV Flowplayer additions!
@@ -51,7 +53,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
         return parseFloat(e[e.length - 1].replace('_', '.'), 10);
     }
     return 0;
-  };
+  }
 
   if( flowplayer.support.iOS && flowplayer.support.iOS.chrome && flowplayer.support.iOS.version == 0 ) {
     flowplayer.support.iOS.version = parseIOSVersion(navigator.userAgent);
@@ -226,7 +228,9 @@ function fv_player_preload() {
     }
     
     // failsafe is Flowplayer is loaded outside of fv_player_load()
-    var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
+    var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
+      parsed;
+
     if( ( !api.conf.playlist || api.conf.playlist.length == 0 ) && playlist.length && playlist.find('a[data-item]').length > 0 ) {  // api.conf.playlist.length necessary for iOS 9 in some setups
       var items = [];      
       playlist.find('a[data-item]').each( function() {
@@ -270,7 +274,7 @@ function fv_player_preload() {
 
       if( jQuery( '#' + $this.parent().attr('rel') ).hasClass('dynamic-playlist') ) return;
       
-      var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
+      playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
       
       fv_player_playlist_active(playlist,this);
       
@@ -401,9 +405,9 @@ function fv_player_preload() {
     });
 
     //is this needed?  
-    var playlist = jQuery(root).parent().find('div.fp-playlist-vertical[rel='+jQuery(root).attr('id')+']');  
+    playlist = jQuery(root).parent().find('div.fp-playlist-vertical[rel='+jQuery(root).attr('id')+']');  
     if( playlist.length ){
-      function check_size_and_all(args) {
+      function check_size_and_all() {
         var property = playlist.hasClass('fp-playlist-only-captions') ? 'height' : 'max-height';
         if( playlist.parents('.fp-playlist-text-wrapper').hasClass('is-fv-narrow') ){
           property = 'max-height';
@@ -417,7 +421,7 @@ function fv_player_preload() {
       } );
     }
     
-    function vertical_playlist_height(args) {
+    function vertical_playlist_height() {
       var height = root.height();
       if( height == 0 ) height = root.css('max-height');
       return height;
@@ -536,7 +540,7 @@ function fv_player_load( forced_el ) {
       }
     }
 
-    var conf = false;
+    var conf = false, playlist, parsed;
     if( root.attr('data-item') ) {
       conf = { clip: fv_player_videos_parse(root.attr('data-item'), root) };
       
@@ -564,7 +568,7 @@ function fv_player_load( forced_el ) {
     }
   } );
   
-  jQuery('.fv-playlist-slider-wrapper').each( function(i,el) {
+  jQuery('.fv-playlist-slider-wrapper').each( function() {
     var items = jQuery(this).find('a');
     jQuery(this).find('.fp-playlist-external').css( 'width', items.outerWidth() * items.length );
   });
@@ -587,7 +591,7 @@ function fv_player_playlist_active(playlist,item) {
     jQuery('.now-playing').remove();
   }
   
-  $playlist = jQuery(playlist);
+  var $playlist = jQuery(playlist),
   $item = jQuery(item);
 
   var scroll_parent = false;
@@ -648,8 +652,6 @@ function fv_player_playlist_active(playlist,item) {
 }
 
 
-var fv_fp_date = new Date();
-var fv_fp_utime = fv_fp_date.getTime();
 
 
 /* *
@@ -889,7 +891,7 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
     // unless the video position is > 0
     if ( fTime > 0 || api.video.time > 0 ) {
       // use the FV Player Pro method if available which considers the custom start/end time
-      if( !!api.custom_seek ) {
+      if( api.custom_seek ) {
         api.custom_seek(fTime);
       } else {
         api.seek(fTime);
@@ -930,10 +932,14 @@ function fv_autoplay_exec(){
         if( !playlist.hasOwnProperty(item) ) continue;
 
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
-        if( hash === id && autoplay ){
+        if( hash === id && autoplay ) {
+          if( api.conf.playlist.length > 0 ) api.conf.playlist[item].prevent_position_restore = true;
+          else api.conf.clip.prevent_position_restore = true; 
+          
           console.log('fv_autoplay_exec for '+id,item);
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
+
           return false;
         }
       }
@@ -942,10 +948,14 @@ function fv_autoplay_exec(){
         if( !playlist.hasOwnProperty(item) ) continue;
 
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
-        if( hash === src  && autoplay ){
+        if( hash === src  && autoplay ) {
+          if( api.conf.playlist.length > 0 ) api.conf.playlist[item].prevent_position_restore = true;
+          else api.conf.clip.prevent_position_restore = true; 
+
           console.log('fv_autoplay_exec for '+src,item);
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
+
           return false;
         }
       }
