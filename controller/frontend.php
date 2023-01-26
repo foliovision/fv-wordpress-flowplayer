@@ -959,7 +959,7 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
 
       }
 		
-    // No else if as we want the full video watch to take priority over the stored position
+    // No "else if" as we want the full video watch to take priority over the stored position
 	  if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
         $video_id = str_replace( 'fv_wp_flowplayer_saw_', '', $meta->meta_key );
         if( !is_numeric($video_id) ) continue;

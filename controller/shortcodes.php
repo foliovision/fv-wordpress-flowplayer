@@ -601,6 +601,9 @@ function fvplayer_watched( $args = array() ) {
     if( $post ) {
       $line .= " in <a href='".get_permalink($post)."'>".$post->post_title."</a>";
     }
+    if( isset($_GET['fvplayer_watched_debug']) ) {
+      $line .= ' (post #'.$data['post_id'].')';
+    }
 
     if( !empty($data['time']) ) {
 
