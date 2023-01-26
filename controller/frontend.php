@@ -906,6 +906,43 @@ function fv_player_remove_for_excerpt( $post_content ) {
  *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
  *  }
  * 
+ *  @return array   Array of post IDs
+ */
+function fv_player_get_user_watched_post_ids( $args = array() ) {
+  $args = wp_parse_args( $args, array(
+    'count' => 20,
+    'include' => 'all',
+    'post_type' => 'any',
+    'user_id' => get_current_user_id()
+  ) );
+
+  $args['full_details'] = true;
+
+  $video_ids = fv_player_get_user_watched_video_ids( $args );
+  if( count($video_ids) == 0 ) {
+    return array();
+  }
+
+  $post_ids = array();
+  foreach( $video_ids AS $data ) {
+    if( !empty($data['post_id']) ) {
+      $post_ids[] = $data['post_id'];
+    }
+  }
+
+  return $post_ids;
+}
+	
+
+/*
+ *  @param array $args {
+ *    @param  int     $count          Number of items to get
+ *    @param  bool    $full_details   Should it return full details about the video progress?
+ *    @param  string  $include        Get only "unfinished" or "finished" videos.
+ *    @param  string  $post_type      Post type where the video is embed
+ *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
+ *  }
+ * 
  *  @return array   Array of video IDs, or array of video progress details
  */
 function fv_player_get_user_watched_video_ids( $args = array() ) {
