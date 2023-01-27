@@ -907,13 +907,13 @@ function fv_player_remove_for_excerpt( $post_content ) {
 
 add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
 
-function fvplayer_editor() {
+function fvplayer_editor( $args ) {
   include_once( ABSPATH.'/wp-admin/includes/plugin.php' );
   include_once( __DIR__.'/editor.php' );
 
   wp_enqueue_media();
 
-  fv_player_shortcode_editor_scripts_enqueue();
+  fv_player_shortcode_editor_scripts_enqueue( $args );
 
   ob_start();
   fv_wp_flowplayer_edit_form_after_editor();

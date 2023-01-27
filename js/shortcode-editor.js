@@ -1536,7 +1536,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         // manually invoke a heartbeat to remove an edit lock immediatelly
-        if (current_player_db_id > -1) {
+        if (current_player_db_id > -1 && window.wp && wp.heartbeat && wp.heartbeat.connectNow ) {
           // do this asynchronously to allow our cleanup procedures set lock removal data for the next hearbeat
           setTimeout(wp.heartbeat.connectNow, 500);
         }
@@ -1599,8 +1599,9 @@ jQuery(function() {
 
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
-      
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
+        custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
+    
       if( field.length ) {
         if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
           field = field.find('textarea').first();
@@ -1608,7 +1609,9 @@ jQuery(function() {
 
         editor_content = jQuery(field).val();
       } else if( widget.length ){
-        editor_content = widget.val();
+        editor_content = widget.val();        
+      } else if( custom_field_selector.length ){
+        editor_content = custom_field_selector.val();
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
       } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -2953,7 +2956,8 @@ jQuery(function() {
 
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
+        custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
 
       // is there a Gutenberg field together in wrapper with the button?
       if( gutenberg.length ) {
@@ -2978,6 +2982,10 @@ jQuery(function() {
         widget.val( shortcode );
         widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content 
         widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
+
+      // Field set by the [fvplayer_editor field="{selector}"]
+      } else if( custom_field_selector.length ){
+        custom_field_selector.val( shortcode );
         
         // tinyMCE Text tab
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {

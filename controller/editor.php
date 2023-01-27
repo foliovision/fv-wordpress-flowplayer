@@ -13,7 +13,7 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 
 
-function fv_player_shortcode_editor_scripts_enqueue() {
+function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
   global $fv_wp_flowplayer_ver;
 
   $url = flowplayer::get_plugin_url();
@@ -24,7 +24,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
   wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js',array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), $fv_wp_flowplayer_ver, true );
 
-  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
+  $fv_player_editor_conf = array(
     'admin_url' => admin_url('admin.php?page=fv_player'),
     'home_url' => home_url('/'),
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
@@ -62,7 +62,13 @@ function fv_player_shortcode_editor_scripts_enqueue() {
       'volume'
     ),
     'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
-  ) );
+  );
+
+  if( !empty($extra_args['field']) ) {
+    $fv_player_editor_conf['field_selector'] = $extra_args['field'];
+  }
+
+  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', $fv_player_editor_conf );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_translations', array(
     'embed_notice' => __('Embed feature not supported in editor preview', 'fv-wordpress-flowplayer'),
