@@ -1287,6 +1287,11 @@ jQuery(function() {
                 ajax_save_this_please = false;
               }
 
+              // Output the shortcode into the pre-configured output field
+              if( fv_player_editor_conf.field_selector ){
+                insert_shortcode( '[fvplayer id="'+current_player_db_id+'"]');
+              }
+
               // Set the current data as previous to let auto-saving detect changes
               // For new player this will have video and player IDs
               ajax_save_previous = build_ajax_data(true);
@@ -1599,10 +1604,21 @@ jQuery(function() {
 
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
-        custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
-    
-      if( field.length ) {
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
+
+      if( fv_player_editor_conf.field_selector ){
+        var custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+
+        // If the pre-configured field was not failed it's a big deal!
+        if( !custom_field_selector.length ){
+          alert( 'FV Player Editor: Field '+fv_player_editor_conf.field_selector+' not found!' );
+        }
+        editor_content = custom_field_selector.val();
+
+        // No need for insert button
+        insert_button_toggle(false);
+
+      } else if( field.length ) {
         if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
           field = field.find('textarea').first();
         }
@@ -1610,8 +1626,6 @@ jQuery(function() {
         editor_content = jQuery(field).val();
       } else if( widget.length ){
         editor_content = widget.val();        
-      } else if( custom_field_selector.length ){
-        editor_content = custom_field_selector.val();
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
       } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -2932,6 +2946,12 @@ jQuery(function() {
     }
 
     function insert_button_toggle( show ) {
+
+      // Do not show Insert button if player is configured for a set field
+      if( show && fv_player_editor_conf.field_selector ) {
+        return;
+      }
+
       $('.fv_player_field_insert-button').toggle( show );
     }
 
@@ -2959,8 +2979,12 @@ jQuery(function() {
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
         custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
 
+      // Field set by the [fvplayer_editor field="{selector}"]
+      if( custom_field_selector.length ){
+        custom_field_selector.val( shortcode );
+
       // is there a Gutenberg field together in wrapper with the button?
-      if( gutenberg.length ) {
+      } else if( gutenberg.length ) {
         var
           nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
           gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
@@ -2983,10 +3007,6 @@ jQuery(function() {
         widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content 
         widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
 
-      // Field set by the [fvplayer_editor field="{selector}"]
-      } else if( custom_field_selector.length ){
-        custom_field_selector.val( shortcode );
-        
         // tinyMCE Text tab
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
         // editing
