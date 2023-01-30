@@ -212,6 +212,8 @@ class FV_Player_Custom_Videos_Master {
     //  bbPress
     add_action( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10 );
     add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
+
+    add_action( 'admin_init', array( $this, 'init_post_list_columns' ) );
   }
   
   function add_meta_boxes() {
@@ -300,13 +302,52 @@ class FV_Player_Custom_Videos_Master {
       </div><!-- #bbp-author-topics-started -->
     <?php endif;
   }
-  
+
+  // Add post list column for post types which do have a FV Player Video Custom Field
+  function init_post_list_columns() {
+    if( !empty($this->aMetaBoxes) ) {
+      foreach( $this->aMetaBoxes AS $post_type => $boxes ) {
+        if( $post_type == 'post' ) {
+          $post_type = 'posts';
+        } else if( $post_type == 'page' ) {
+          $post_type = 'pages';
+        } else {
+          $post_type = $post_type.'_posts';
+        }
+
+        add_filter( 'manage_'.$post_type.'_columns', array( $this, 'post_list_column' ) );
+        add_filter( 'manage_'.$post_type.'_custom_column', array( $this, 'post_list_column_content' ), 10, 2 );
+      }
+    }
+  }
+
   function meta_box( $aPosts, $args ) {
     global $FV_Player_Custom_Videos_form_instances;
     $objVideos = $FV_Player_Custom_Videos_form_instances[$args['id']];
     echo $objVideos->get_form();
   }
-  
+
+  function post_list_column( $cols ) {
+    global $current_screen;
+    if( !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
+      foreach( $this->aMetaBoxes[$current_screen->post_type] AS $box ) {
+        $cols[ $box['meta_key'] ] = $box['name'];
+      }
+    }
+    return $cols;
+  }
+
+  function post_list_column_content( $column_name, $post_id ) {
+    global $current_screen;
+    if( !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
+      foreach( $this->aMetaBoxes[$current_screen->post_type] AS $box ) {
+        if( $column_name == $box['meta_key'] ) {
+          echo get_post_meta( $post_id, $box['meta_key'], true );
+        }
+      }
+    }
+  }
+
   function register_metabox( $args ) {
     if( !isset($this->aMetaBoxes[$args['post_type']]) ) $this->aMetaBoxes[$args['post_type']] = array();
     
