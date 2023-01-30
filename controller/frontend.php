@@ -895,3 +895,170 @@ function fv_player_remove_for_excerpt( $post_content ) {
   }
   return $post_content;
 }
+
+
+/*
+ *  @param array $args {
+ *    @param  int     $count          Number of items to get
+ *    @param  bool    $full_details   Should it return full details about the video progress?
+ *    @param  string  $include        Get only "unfinished" or "finished" videos.
+ *    @param  string  $post_type      Post type where the video is embed
+ *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
+ *  }
+ * 
+ *  @return array   Array of post IDs
+ */
+function fv_player_get_user_watched_post_ids( $args = array() ) {
+  $args = wp_parse_args( $args, array(
+    'count' => 20,
+    'include' => 'all',
+    'post_type' => 'any',
+    'user_id' => get_current_user_id()
+  ) );
+
+  $args['full_details'] = true;
+
+  $video_ids = fv_player_get_user_watched_video_ids( $args );
+  if( count($video_ids) == 0 ) {
+    return array();
+  }
+
+  $post_ids = array();
+  foreach( $video_ids AS $data ) {
+    if( !empty($data['post_id']) ) {
+      $post_ids[] = $data['post_id'];
+    }
+  }
+
+  return $post_ids;
+}
+	
+
+/*
+ *  @param array $args {
+ *    @param  int     $count          Number of items to get
+ *    @param  bool    $full_details   Should it return full details about the video progress?
+ *    @param  string  $include        Get only "unfinished" or "finished" videos.
+ *    @param  string  $post_type      Post type where the video is embed
+ *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
+ *  }
+ * 
+ *  @return array   Array of video IDs, or array of video progress details
+ */
+function fv_player_get_user_watched_video_ids( $args = array() ) {
+  $args = wp_parse_args( $args, array(
+    'count' => 20,
+    'full_details' => false,
+    'include' => 'all',
+    'post_type' => 'any',
+    'user_id' => get_current_user_id()
+  ) );
+
+  $output = array();
+
+  global $wpdb;
+
+  static $user_meta;
+  if( !isset($user_meta) ) {
+    $user_meta = array();
+  }
+  if( !isset($user_meta[ $args['user_id'] ]) ) {
+    $user_meta[ $args['user_id'] ] = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->usermeta WHERE user_id = %d AND ( meta_key LIKE 'fv_wp_flowplayer_position_%' OR meta_key LIKE 'fv_wp_flowplayer_top_position_%' OR meta_key LIKE 'fv_wp_flowplayer_saw_%' ) ORDER BY umeta_id DESC ", $args['user_id'] ) );
+  }
+
+  if( $user_meta[ $args['user_id'] ] ) {
+    $metas = $user_meta[ $args['user_id'] ];
+
+    $output = array();
+
+    foreach( $metas AS $meta ) {
+      if( stripos( $meta->meta_key, 'fv_wp_flowplayer_top_position_') === 0 ) {
+        $video_id = str_replace( 'fv_wp_flowplayer_top_position_', '', $meta->meta_key );
+        if( !is_numeric($video_id) ) continue;
+
+        $output[$video_id] = array(
+          'type' => 'unfinished',
+          'message' => 'Watched until '.flowplayer::format_hms($meta->meta_value),
+          'time' => $meta->meta_value
+        );
+
+      } else if( stripos( $meta->meta_key, 'fv_wp_flowplayer_position_') === 0 ) {
+        $video_id = str_replace( 'fv_wp_flowplayer_position_', '', $meta->meta_key );
+        if( !is_numeric($video_id) ) continue;
+
+        if( empty($output[$video_id]) ) {
+          $output[$video_id] = array(
+            'type' => 'unfinished',
+            'message' => 'Watched until '.flowplayer::format_hms($meta->meta_value),
+            'time' => $meta->meta_value
+          );
+        }
+
+      }
+		
+    // No "else if" as we want the full video watch to take priority over the stored position
+	  if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
+        $video_id = str_replace( 'fv_wp_flowplayer_saw_', '', $meta->meta_key );
+        if( !is_numeric($video_id) ) continue;
+
+        $output[$video_id] = array(
+          'type' => 'finished',
+          'message' => 'Saw whole video'
+        );
+      }
+    }
+  }
+
+  // Filter unfinished or finished videos
+  if( $args['include'] != 'all' ) {
+    foreach( $output AS $video_id => $details ) {
+      if( $args['include'] != $details['type'] ) {
+        unset( $output[$video_id]);
+      }
+    }
+  }
+
+  // Add player_id and post_id for the videos
+  // Remove items which do not belong to a player and published post
+  if( count($output) ) {
+    $post_type_where = $args['post_type'] != 'any' ? 'post_type = %s AND ': '';
+
+    $videos2players2posts = $wpdb->get_results( $wpdb->prepare( "
+      SELECT pl.id AS player_id, v.id AS video_id, pm.meta_value AS post_id FROM
+        {$wpdb->prefix}fv_player_players AS pl
+      JOIN {$wpdb->prefix}fv_player_playermeta AS pm
+        ON pl.id = pm.id_player
+      JOIN {$wpdb->prefix}fv_player_videos AS v
+        ON FIND_IN_SET(v.id, pl.videos)
+      JOIN {$wpdb->posts} AS p
+        ON p.ID = pm.meta_value
+      WHERE
+        pm.meta_key = 'post_id' AND
+        p.post_status = 'publish' AND
+        $post_type_where
+        v.id IN (".implode( ',', array_map( 'intval', array_keys( $output ) ) ).")", $args['post_type'] ) );
+
+    foreach( $output AS $video_id => $details ) {
+      $found = false;
+      foreach( $videos2players2posts AS $more_details ) {
+
+        if( $more_details->video_id == $video_id ) {
+          $found = true;
+          $output[$video_id]['player_id'] = $more_details->player_id;
+          $output[$video_id]['post_id'] = $more_details->post_id;
+          break;
+        }
+      }
+
+      if( !$found ) {
+        unset($output[$video_id]);
+      }
+    }
+  }
+
+  if( !$args['full_details'] ) {
+    $output = array_keys( $output );
+  }
+
+  return $output;
+}
