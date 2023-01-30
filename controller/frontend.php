@@ -992,6 +992,12 @@ function fvplayer_editor( $args ) {
     border-color: #135e96;
     color: #fff;
   }
+
+  /* Core WordPress Media Library styles to fix */
+  .media-modal .media-router button.media-menu-item {
+    color: #3c434a;
+    text-transform: none;
+  }
   </style>
   <?php
   return ob_get_clean();
