@@ -344,7 +344,7 @@ class FV_Player_Custom_Videos_Master {
     if( !empty($current_screen->post_type) && $this->has_post_type($current_screen->post_type) ) {
       fv_player_shortcode_editor_scripts_enqueue();
 
-      add_action( 'admin_print_footer_scripts', 'fv_wp_flowplayer_edit_form_after_editor' );
+      add_action( 'admin_footer', 'fv_wp_flowplayer_edit_form_after_editor', 0 );
     }
   }
 
