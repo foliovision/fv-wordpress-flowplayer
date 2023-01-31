@@ -278,17 +278,17 @@ class FV_Player_Db {
   /**
    * Retrieves data for all players table shown in admin.
    *
-   * @param $order_by  If set, data will be ordered by this column.
-   * @param $order     If set, data will be ordered in this order.
-   * @param $offset    If set, data will returned will be limited, starting at this offset.
-   * @param $per_page  If set, data will returned will be limited, ending at this offset.
-   * @param $single_id If set, data will be restricted to a single player ID.
-   * @param $search    If set, results will be searched for using the GET search parameter.
+   * @param string      $order_by  If set, data will be ordered by this column.
+   * @param string      $order     If set, data will be ordered in this order.
+   * @param int         $offset    If set, data will returned will be limited, starting at this offset.
+   * @param int         $per_page  If set, data will returned will be limited, ending at this offset.
+   * @param int|array   $player_id If set, data will be restricted to a single player ID or array of player IDs.
+   * @param string      $search    If set, results will be searched for using the GET search parameter.
    *
    * @return array     Returns an array of all list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
-  public function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
+  public function getListPageData($order_by, $order, $offset, $per_page, $player_id = null, $search = null) {
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
     $order_by = (in_array($order_by, $this->valid_order_by) ? $order_by : 'id');
@@ -296,8 +296,14 @@ class FV_Player_Db {
     $cannot_edit_other_posts = !current_user_can('edit_others_posts');
 
     // load single player, as requested by the user
-    if ($single_id) {
-      new FV_Player_Db_Player( $single_id, array(), $this );
+    if ($player_id) {
+      if( is_array($player_id) ) {
+        $this->cache_players_and_videos_do( $player_id );
+
+      } else {
+        new FV_Player_Db_Player( $player_id, array(), $this );
+      }
+
     } else if ($search) {
 
       $direct_hit_cache = false;
