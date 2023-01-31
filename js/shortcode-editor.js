@@ -1944,26 +1944,45 @@ jQuery(function() {
           fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
         }
       } else if( current_player_db_id > 0 ) {
-        var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
-        if( playerRow.length == 0 ) {
-          var firstRow = $('#the-list tr:first'),
-            newRow = firstRow.clone();
 
-          newRow.find('td').html('');
-          playerRow = newRow.find('td').eq(0);
+        // Append or update player row in wp-admin -> FV Player
+        if( fv_player_editor_conf.is_fv_player_screen ) {
+          var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
+          if( playerRow.length == 0 ) {
+            var firstRow = $('#the-list tr:first'),
+              newRow = firstRow.clone();
 
-          firstRow.before( newRow )
+            newRow.find('td').html('');
+            playerRow = newRow.find('td').eq(0);
+
+            firstRow.before( newRow )
+          }
+
+          jQuery.post( ajaxurl, {
+            action : 'fv_player_table_new_row',
+            nonce : fv_player_editor_conf.table_new_row_nonce,
+            playerID :  current_player_db_id
+          }, function(response) {
+            playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
+          });
+
+          playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+        // Update the player on the wp-admin -> Posts, Pages or CPT screen
+        } else if( fv_player_editor_conf.is_edit_posts_screen ) {
+          let target_el = jQuery('.fv-player-edit[data-player_id='+current_player_db_id+']');
+          target_el.find('.fv_player_splash_list_preview').append('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+          jQuery.post( ajaxurl, {
+            action : 'fv_player_edit_posts_cell',
+            nonce : fv_player_editor_conf.edit_posts_cell_nonce,
+            playerID :  current_player_db_id
+          }, function(response) {
+            target_el.html( response );
+          });
+
         }
 
-        jQuery.post( ajaxurl, {
-          action : 'fv_player_table_new_row',
-          nonce : fv_player_editor_conf.table_new_row_nonce,
-          playerID :  current_player_db_id
-        }, function(response) {
-          playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
-        });
-
-        playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
       }
 
       // we need to do this now to make sure Heartbeat gets the correct data
@@ -3042,9 +3061,10 @@ jQuery(function() {
     }
 
     /*
-    Determines if the button clicked is on wp-admin -> FV Player
+    Determines if the button clicked is on wp-admin -> FV Player or wp-admin -> Posts (if using FV Player Video Custom Fields)
     */
     function is_fv_player_screen(button) {
+      // TODO: Should use fv_player_editor_conf.is_fv_player_screen || fv_player_editor_conf.is_edit_posts_screen
       return is_fv_player_screen_add_new(button) || is_fv_player_screen_edit(button);
     }
 

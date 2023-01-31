@@ -180,7 +180,7 @@ class FV_Player_Custom_Videos {
   function shortcode_editor_load() {
     if( !function_exists('fv_flowplayer_admin_select_popups') ) {
       fv_wp_flowplayer_edit_form_after_editor();
-      fv_player_shortcode_editor_scripts_enqueue();   
+      fv_player_shortcode_editor_scripts_enqueue();
     }
   }
   
@@ -191,8 +191,12 @@ class FV_Player_Custom_Videos {
 
 
 class FV_Player_Custom_Videos_Master {
-  
+
+  static $instance = null;
+
   var $aMetaBoxes = array();
+
+  var $aPostListPlayers = array();
   
   function __construct() {
     
@@ -201,7 +205,7 @@ class FV_Player_Custom_Videos_Master {
 
     add_filter( 'show_password_fields', array( $this, 'user_profile' ), 10, 2 );
     add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-    
+
     add_filter( 'the_content', array( $this, 'show' ) );  //  adding post videos after content automatically
     add_filter( 'get_the_author_description', array( $this, 'show_bio' ), 10, 2 );
     
@@ -214,8 +218,18 @@ class FV_Player_Custom_Videos_Master {
     add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
 
     add_action( 'admin_init', array( $this, 'init_post_list_columns' ) );
+    add_action( 'admin_enqueue_scripts', array( $this, 'init_post_list_columns_script' ) );
+    add_filter( 'the_posts', array( $this, 'preload_post_list_players' ) );
   }
-  
+
+  public static function _get_instance() {
+    if( !self::$instance ) {
+      self::$instance = new self();
+    }
+
+    return self::$instance;
+  }
+
   function add_meta_boxes() {
     global $post;
     if( !empty($this->aMetaBoxes[$post->post_type]) ) {
@@ -303,6 +317,10 @@ class FV_Player_Custom_Videos_Master {
     <?php endif;
   }
 
+  function has_post_type( $post_type ) {
+    return !empty( $this->aMetaBoxes[ $post_type ] );
+  }
+
   // Add post list column for post types which do have a FV Player Video Custom Field
   function init_post_list_columns() {
     if( !empty($this->aMetaBoxes) ) {
@@ -318,6 +336,15 @@ class FV_Player_Custom_Videos_Master {
         add_filter( 'manage_'.$post_type.'_columns', array( $this, 'post_list_column' ) );
         add_filter( 'manage_'.$post_type.'_custom_column', array( $this, 'post_list_column_content' ), 10, 2 );
       }
+    }
+  }
+
+  function init_post_list_columns_script() {
+    global $current_screen;
+    if( !empty($current_screen->post_type) && $this->has_post_type($current_screen->post_type) ) {
+      fv_player_shortcode_editor_scripts_enqueue();
+
+      add_action( 'admin_print_footer_scripts', 'fv_wp_flowplayer_edit_form_after_editor' );
     }
   }
 
@@ -340,12 +367,61 @@ class FV_Player_Custom_Videos_Master {
   function post_list_column_content( $column_name, $post_id ) {
     global $current_screen;
     if( !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
+
+      // TODO: Load the wp-admin -> FV Player styles more sensibly
+      global $fv_wp_flowplayer_ver;
+      wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
+
       foreach( $this->aMetaBoxes[$current_screen->post_type] AS $box ) {
         if( $column_name == $box['meta_key'] ) {
-          echo get_post_meta( $post_id, $box['meta_key'], true );
+          $shortcode = get_post_meta( $post_id, $box['meta_key'], true );
+          $shortcode_atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
+
+          if( !empty($shortcode_atts['id']) ) {
+            echo '<input type="hidden" value="'.esc_attr($shortcode).'" />';
+
+            $button_text = 'FV Player #'.$shortcode_atts['id'];
+            foreach( $this->aPostListPlayers AS $objPostPlayer ) {
+              if( $objPostPlayer->id == $shortcode_atts['id'] ) {
+                $button_text = $objPostPlayer->thumbs;
+                break;
+              }
+            }
+
+            echo '<a href="#" class="fv-player-edit" data-player_id="'.$shortcode_atts['id'].'">'.$button_text.'</a>';
+          }
         }
       }
     }
+  }
+
+  function preload_post_list_players( $posts ) {
+
+    // Are we looking at the wp-admin list of posts?
+    global $current_screen;
+    if( !is_admin() || empty($current_screen->post_type) || !$this->has_post_type($current_screen->post_type) ) {
+      return $posts;
+    }
+
+    $players = array();
+    foreach( $posts AS $post ) {
+      if( !empty($this->aMetaBoxes[$post->post_type]) ) {
+        foreach( $this->aMetaBoxes[$post->post_type] AS $box ) {
+
+          // Get shortcode and player ID
+          $shortcode = get_post_meta( $post->ID, $box['meta_key'], true );
+          $shortcode_atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
+          if( !empty($shortcode_atts['id']) ) {
+            $players[] = $shortcode_atts['id'];
+          }
+        }
+      }
+    }
+
+    global $FV_Player_Db;
+    $this->aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $players );
+
+    return $posts;
   }
 
   function register_metabox( $args ) {
@@ -483,10 +559,11 @@ class FV_Player_Custom_Videos_Master {
 }
 
 
-global $FV_Player_Custom_Videos_Master;
-$FV_Player_Custom_Videos_Master = new FV_Player_Custom_Videos_Master;
+function FV_Player_Custom_Videos_Master() {
+  return FV_Player_Custom_Videos_Master::_get_instance();
+}
 
-
+FV_Player_Custom_Videos_Master();
 
 
 class FV_Player_MetaBox {
@@ -509,8 +586,7 @@ class FV_Player_MetaBox {
         'remove' => 'Remove Video'
       ) ) );
     
-    global $FV_Player_Custom_Videos_Master;
-    $FV_Player_Custom_Videos_Master->register_metabox($args);
+    FV_Player_Custom_Videos_Master()->register_metabox($args);
   }
   
 }

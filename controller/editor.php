@@ -14,7 +14,7 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 
 function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
-  global $fv_wp_flowplayer_ver;
+  global $current_screen, $fv_wp_flowplayer_ver;
 
   $url = flowplayer::get_plugin_url();
 
@@ -29,6 +29,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'home_url' => home_url('/'),
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce-".get_current_user_id() ),
     'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce-".get_current_user_id() ),
     'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
     'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id()),
@@ -61,7 +62,9 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
       'sort',
       'volume'
     ),
-    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
+    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream'),
+    'is_fv_player_screen' => !empty($current_screen->id) && $current_screen->id == 'toplevel_page_fv_player',
+    'is_edit_posts_screen' => !empty($current_screen->base) && $current_screen->base == 'edit' && !empty($current_screen->post_type)
   );
 
   if( !empty($extra_args['field']) ) {
