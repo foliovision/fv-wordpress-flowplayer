@@ -551,3 +551,78 @@ function fv_flowplayer_shortcode_fix_fancy_quotes( $aArgs ) {
   
   return $aArgs;
 }
+
+
+add_shortcode( 'fvplayer_watched', 'fvplayer_watched' );
+
+function fvplayer_watched( $args = array() ) {
+  $args = wp_parse_args( $args, array(
+    'count' => 20,
+    'include' => 'all',
+    'post_type' => 'any',
+    'user_id' => get_current_user_id()
+  ) );
+
+  $args['full_details'] = true;
+
+  $video_ids = fv_player_get_user_watched_video_ids( $args );
+  if( count($video_ids) == 0 ) {
+    return "<p>No watched videos.</p>";
+  }
+
+  $actual_video_ids = array_filter( array_keys($video_ids), 'is_numeric' );
+
+  global $wpdb;
+  $videos2durations = $wpdb->get_results( $wpdb->prepare( "
+    SELECT v.id AS video_id, vm.meta_value AS duration FROM
+      {$wpdb->prefix}fv_player_videos AS v
+    JOIN {$wpdb->prefix}fv_player_videometa AS vm
+      ON v.id = vm.id_video
+    WHERE
+      v.id IN (".implode( ',', $actual_video_ids ).") AND
+      vm.meta_key = 'duration'" ) );
+
+  $html = "<ul>\n";
+  foreach( $video_ids AS $video_id => $data ) {
+
+    global $FV_Player_Db;
+    $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
+    if( $objVideo->getCaption() ) {
+      $line = $objVideo->getCaption();
+    } else {
+      $line = $objVideo->getCaptionFromSrc();
+    }
+
+    if( isset($_GET['fvplayer_watched_debug']) ) {
+      $line .= ' (player #'.$data['player_id'].', video #'.$video_id.')';
+    }
+
+    $post = get_post( $data['post_id'] );
+    if( $post ) {
+      $line .= " in <a href='".get_permalink($post)."'>".$post->post_title."</a>";
+    }
+    if( isset($_GET['fvplayer_watched_debug']) ) {
+      $line .= ' (post #'.$data['post_id'].')';
+    }
+
+    if( !empty($data['time']) ) {
+
+      foreach( $videos2durations AS $details ) {
+        if( $details->video_id == $video_id ) {
+          // In some strange cases the duration might not be set right
+		      if( $data['time'] <= intval($details->duration) ) {
+            if( isset($_GET['fvplayer_watched_debug']) ) {
+              $data['message'] .= ' out of '.flowplayer::format_hms($details->duration).' ('.$data['time'].' out of '.$details->duration.')';
+            }
+            $line .= ' (<abbr title="'.esc_attr($data['message']).'">'.round( 100 * $data['time'] / intval($details->duration) ).'%</abbr>)';
+		      }
+        }
+      }
+    }
+
+    $html .= "<li>".$line."</li>\n";
+  }
+  $html .= "</ul>\n";
+
+  return $html;
+}

@@ -359,6 +359,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.31.7212 - 2023/01/30 =
+
+* New feature - [fvplayer_watched] to give list of watched/unfinished/finished videos with their post links
+* PHP 8.2 fixes
+* Security fix - video intelligence ads settings box could be removed with XSS
+* Video Custom Fields - fix autoplay not working
+* YouTube - check live stream status
+
 = 7.5.30.7210 - 2022/12/23 =
 
 * Using Freedom Video Player 7.2.12
