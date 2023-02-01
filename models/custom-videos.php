@@ -220,6 +220,24 @@ class FV_Player_Custom_Videos_Master {
     add_action( 'admin_init', array( $this, 'init_post_list_columns' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'init_post_list_columns_script' ) );
     add_filter( 'the_posts', array( $this, 'preload_post_list_players' ) );
+
+    // Admin Columns Pro support
+    /*
+     * That plugin ignores the standard 'manage_'.$post_type.'_columns' hooks
+     * but fortunately we can still add it this way. Then the 
+     * 'manage_'.$post_type.'_custom_column' hook works for the column content
+     */
+    add_filter( 'ac/headings', function( $headings, $list_screen ) {
+      if( $post_type = $list_screen->get_post_type() ) {
+        if( $this->has_post_type($post_type) ) {
+          foreach( $this->aMetaBoxes[$post_type] AS $box ) {
+            $headings[ $box['meta_key'] ] = $box['name'];
+          }
+        }
+      }
+
+      return $headings;
+    }, 10, 2 );
   }
 
   public static function _get_instance() {
@@ -356,7 +374,7 @@ class FV_Player_Custom_Videos_Master {
 
   function post_list_column( $cols ) {
     global $current_screen;
-    if( !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
+    if( !empty($current_screen->post_type) && $this->has_post_type($current_screen->post_type) ) {
       foreach( $this->aMetaBoxes[$current_screen->post_type] AS $box ) {
         $cols[ $box['meta_key'] ] = $box['name'];
       }
