@@ -695,10 +695,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( $video_fields );
 
             // Legacy
-            // TODO: Will these still actually work?
-            do_action('fv_flowplayer_shortcode_editor_before');
+            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-            do_action('fv_flowplayer_shortcode_editor_item_after');
+              // TODO: Will these still actually work?
+              do_action('fv_flowplayer_shortcode_editor_before');
+              do_action('fv_flowplayer_shortcode_editor_item_after');
+
+            echo "</div>\n";
             ?>
           </div>
         </div>
@@ -732,10 +735,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( $subtitle_fields );
 
             // Legacy
-            // TODO: Will these still actually work?
-            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
+            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+              // TODO: Will these still actually work?
+              do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
+              do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+
+            echo "</div>\n";
             ?>
 
           </div>
@@ -1006,13 +1012,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           </td>
         </tr>
         -->
-        
+
           <?php
           // Legacy
-          // TODO: Will these still actually work?
-          do_action('fv_flowplayer_shortcode_editor_after');
+          echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-          do_action('fv_flowplayer_shortcode_editor_tab_actions'); ?>
+            // TODO: Will these still actually work?
+            do_action('fv_flowplayer_shortcode_editor_after');
+            do_action('fv_flowplayer_shortcode_editor_tab_actions');
+
+          echo "</div>\n";
+          ?>
 
         </div>
 

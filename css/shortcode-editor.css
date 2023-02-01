@@ -1134,3 +1134,11 @@ a.fvp_item_video-filename {
 .fv_wp_flowplayer_field_video_info li.error {
   background: #f88;
 }
+
+/* Legacy inputs in new editor style */
+.components-panel__body label {
+  display: block;
+}
+.components-panel__body .alignright {
+  float: unset;
+}
