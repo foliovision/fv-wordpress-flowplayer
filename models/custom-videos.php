@@ -217,6 +217,7 @@ class FV_Player_Custom_Videos_Master {
     add_action( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10 );
     add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
 
+    // Post list custom columns
     add_action( 'admin_init', array( $this, 'init_post_list_columns' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'init_post_list_columns_script' ) );
     add_filter( 'the_posts', array( $this, 'preload_post_list_players' ) );
@@ -399,10 +400,29 @@ class FV_Player_Custom_Videos_Master {
             echo '<input type="hidden" value="'.esc_attr($shortcode).'" />';
 
             $button_text = 'FV Player #'.$shortcode_atts['id'];
+
+            // Did we preload the right player?
+            $found = false;
             foreach( $this->aPostListPlayers AS $objPostPlayer ) {
               if( $objPostPlayer->id == $shortcode_atts['id'] ) {
                 $button_text = $objPostPlayer->thumbs;
+                $found = true;
                 break;
+              }
+            }
+
+            // Fallback if it was not preloaded
+            if( !$found ) {
+              global $FV_Player_Db;
+              $objPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $shortcode_atts['id'] );
+
+              // The above function always gives back the FV Player PHP Players cache, so we need to loop through results
+              foreach( $objPlayers AS $objPlayer ) {
+                if( $objPlayer->id == $shortcode_atts['id'] ) {
+                  $button_text = $objPlayer->thumbs;
+                  $found = true;
+                  break;
+                }
               }
             }
 
@@ -413,6 +433,9 @@ class FV_Player_Custom_Videos_Master {
     }
   }
 
+  /*
+   * The preload might not succeed, for example Admin Columns Pro seems to run WP_Query without the_posts filter
+   */
   function preload_post_list_players( $posts ) {
 
     // Are we looking at the wp-admin list of posts?
@@ -436,8 +459,10 @@ class FV_Player_Custom_Videos_Master {
       }
     }
 
-    global $FV_Player_Db;
-    $this->aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $players );
+    if( count($players) ) {
+      global $FV_Player_Db;
+      $this->aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $players );
+    }
 
     return $posts;
   }

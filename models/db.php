@@ -276,7 +276,7 @@ class FV_Player_Db {
   }
 
   /**
-   * Retrieves data for all players table shown in admin.
+   * Adds data for all players table shown in admin to cache, the returns the cache.
    *
    * @param string      $order_by  If set, data will be ordered by this column.
    * @param string      $order     If set, data will be ordered in this order.
@@ -285,7 +285,7 @@ class FV_Player_Db {
    * @param int|array   $player_id If set, data will be restricted to a single player ID or array of player IDs.
    * @param string      $search    If set, results will be searched for using the GET search parameter.
    *
-   * @return array     Returns an array of all list page results to be displayed.
+   * @return array     Returns an array of all cached list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
   public function getListPageData($order_by, $order, $offset, $per_page, $player_id = null, $search = null) {
@@ -298,7 +298,9 @@ class FV_Player_Db {
     // load single player, as requested by the user
     if ($player_id) {
       if( is_array($player_id) ) {
-        $this->cache_players_and_videos_do( $player_id );
+        if( count($player_id) > 0 ) {
+          $this->cache_players_and_videos_do( $player_id );
+        }
 
       } else {
         new FV_Player_Db_Player( $player_id, array(), $this );
