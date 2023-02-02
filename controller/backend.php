@@ -934,6 +934,8 @@ function fv_player_table_new_row() {
 
 /**
  * Update the player on the wp-admin -> Posts, Pages or CPT screen
+ * 
+ * Gets the first video thumbnail only
  */
 add_action('wp_ajax_fv_player_edit_posts_cell', 'fv_player_edit_posts_cell');
 
@@ -942,7 +944,8 @@ function fv_player_edit_posts_cell() {
     global $FV_Player_Db;
     $aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $_POST['playerID'] );
     if( !empty($aPostListPlayers[0]->thumbs) ) {
-      echo $aPostListPlayers[0]->thumbs;
+      $thumbs = explode( "</div>", $aPostListPlayers[0]->thumbs );
+      echo $thumbs[0].'</div>';
     } else {
       echo "Error: Player not found!";
     }

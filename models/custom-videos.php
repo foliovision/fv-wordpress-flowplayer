@@ -217,9 +217,19 @@ class FV_Player_Custom_Videos_Master {
     add_action( 'bbp_template_after_user_profile', array( $this, 'bbpress_profile' ), 10 );
     add_filter( 'bbp_user_edit_after_about', array( $this, 'bbpress_edit' ), 10, 2 );
 
+    // Post list custom columns
+    add_action( 'admin_head-edit.php', array( $this, 'post_list_column_styles' ) );
     add_action( 'admin_init', array( $this, 'init_post_list_columns' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'init_post_list_columns_script' ) );
     add_filter( 'the_posts', array( $this, 'preload_post_list_players' ) );
+
+    // Admin Columns Pro support
+    /*
+     * That plugin ignores the standard 'manage_'.$post_type.'_columns' hooks
+     * but fortunately we can still add it this way. Then the 
+     * 'manage_'.$post_type.'_custom_column' hook works for the column content
+     */
+    add_filter( 'ac/headings', array( $this, 'post_list_column_for_admin_columns_pro' ), 10, 2 );
   }
 
   public static function _get_instance() {
@@ -357,45 +367,126 @@ class FV_Player_Custom_Videos_Master {
 
   function post_list_column( $cols ) {
     global $current_screen;
-    if( !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
+    if( !empty($current_screen->post_type) && $this->has_post_type($current_screen->post_type) ) {
       foreach( $this->aMetaBoxes[$current_screen->post_type] AS $box ) {
-        $cols[ $box['meta_key'] ] = $box['name'];
+        $cols = $this->post_list_column_add( $cols, $box );
       }
     }
     return $cols;
   }
 
+  function post_list_column_add( $cols, $box ) {
+    // Column form player video count
+    $cols[ 'fv-player-video-custom-field-playlist-items-count-'.$box['meta_key'] ] = $box['name'].' playlist videos count';
+
+    // Actual player splash image here
+    $cols[ 'fv-player-video-custom-field-player-'.$box['meta_key'] ] = $box['name'];
+    return $cols;
+  }
+
   function post_list_column_content( $column_name, $post_id ) {
     global $current_screen;
-    if( !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
+    if( stripos( $column_name, 'fv-player-video-custom-field-' ) === 0 && !empty($current_screen->post_type) && !empty($this->aMetaBoxes[$current_screen->post_type]) ) {
 
       // TODO: Load the wp-admin -> FV Player styles more sensibly
       global $fv_wp_flowplayer_ver;
       wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
 
       foreach( $this->aMetaBoxes[$current_screen->post_type] AS $box ) {
-        if( $column_name == $box['meta_key'] ) {
+        $column_name_sanitized = str_replace( array(
+          'fv-player-video-custom-field-playlist-items-count-',
+          'fv-player-video-custom-field-player-'
+        ), '', $column_name );
+
+        if( $column_name_sanitized == $box['meta_key'] ) {
           $shortcode = get_post_meta( $post_id, $box['meta_key'], true );
           $shortcode_atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
 
           if( !empty($shortcode_atts['id']) ) {
-            echo '<input type="hidden" value="'.esc_attr($shortcode).'" />';
-
             $button_text = 'FV Player #'.$shortcode_atts['id'];
+            $video_count = 0;
+
+            // Did we preload the right player?
+            $found = false;
             foreach( $this->aPostListPlayers AS $objPostPlayer ) {
               if( $objPostPlayer->id == $shortcode_atts['id'] ) {
                 $button_text = $objPostPlayer->thumbs;
+                $found = true;
                 break;
               }
             }
 
-            echo '<a href="#" class="fv-player-edit" data-player_id="'.$shortcode_atts['id'].'">'.$button_text.'</a>';
+            // Fallback if it was not preloaded
+            if( !$found ) {
+              global $FV_Player_Db;
+              $objPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $shortcode_atts['id'] );
+
+              // The above function always gives back the FV Player PHP Players cache, so we need to loop through results
+              foreach( $objPlayers AS $objPlayer ) {
+                if( $objPlayer->id == $shortcode_atts['id'] ) {
+                  // Only show the first thumbnail
+                  $thumbs = explode( "</div>", $objPlayer->thumbs );
+                  $button_text = $thumbs[0].'</div>';
+
+                  // The above FV_Player_Db::getListPageData() call it supposed to only occur once, it seems $objPlayer->video_objects contains all the videos in cache and that's bad
+                  // So we check the HTML :(
+                  $video_count = substr_count( $objPlayer->thumbs, '<div class="fv_player_splash_list_preview">' );
+                  if( $video_count > 1 ) {
+                    $video_count .= 'v';
+                  } else {
+                    $video_count = '';
+                  }
+
+                  $found = true;
+                  break;
+                }
+              }
+            }
+
+            if( stripos( $column_name, 'fv-player-video-custom-field-player' ) === 0 ) {
+              echo '<input type="hidden" value="'.esc_attr($shortcode).'" />';
+
+              echo '<a href="#" class="fv-player-edit" data-player_id="'.$shortcode_atts['id'].'">'.$button_text.'</a>';
+            } else if( stripos( $column_name, 'fv-player-video-custom-field-playlist-items-count-' ) === 0 ) {
+              echo $video_count;
+            }
           }
         }
       }
     }
   }
 
+  function post_list_column_for_admin_columns_pro( $headings, $list_screen ) {
+    if( method_exists( $list_screen, 'get_post_type' ) ) {
+      if( $post_type = $list_screen->get_post_type() ) {
+        if( $this->has_post_type($post_type) ) {
+          foreach( $this->aMetaBoxes[$post_type] AS $box ) {
+            $headings = $this->post_list_column_add( $headings, $box );
+          }
+        }
+      }
+    }
+    return $headings;
+  }
+
+  function post_list_column_styles() {
+    global $current_screen;
+    if( !empty($current_screen->post_type) && $this->has_post_type($current_screen->post_type) ) {
+      // Set fixed column width to fit the number of videos and hide its label
+      // ..and fixed width for the player splash
+      ?>
+      <style>
+      #fv-player-video-custom-field-playlist-items-count-fv_player, tfoot .column-fv-player-video-custom-field-playlist-items-count-fv_player { text-indent: -9999px; width: 2em }
+      td.column-fv-player-video-custom-field-playlist-items-count-fv_player { padding-left: 0; padding-right: 0 }
+      #fv-player-video-custom-field-player-fv_player { width: 148px; }
+      </style>
+      <?php
+    }
+  }
+
+  /*
+   * The preload might not succeed, for example Admin Columns Pro seems to run WP_Query without the_posts filter
+   */
   function preload_post_list_players( $posts ) {
 
     // Are we looking at the wp-admin list of posts?
@@ -419,8 +510,11 @@ class FV_Player_Custom_Videos_Master {
       }
     }
 
-    global $FV_Player_Db;
-    $this->aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $players );
+    // Somehow calling it with empty array would pre-load all the players an videos
+    if( count($players) ) {
+      global $FV_Player_Db;
+      $this->aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $players );
+    }
 
     return $posts;
   }
