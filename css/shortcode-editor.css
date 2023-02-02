@@ -522,6 +522,9 @@ New FV Player Editor inputs styling
   border-top: 1px solid #e0e0e0;
   padding: 16px;
 }
+#fv-player-shortcode-editor .components-panel__body.fv-player-editor-legacy {
+  border-top: none;
+}
 #fv-player-shortcode-editor .fv-player-tab .components-panel__body:first-of-type {
   border-top: 0;
 }
