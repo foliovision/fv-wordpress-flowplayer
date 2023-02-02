@@ -2055,8 +2055,18 @@ jQuery(function() {
         shortcode = 'fvplayer id="' + selected_player_id + '"';
 
       } else {
+        if( fv_player_editor_conf.field_selector ){
+          let custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+
+          // If the pre-configured field was not failed it's a big deal!
+          if( !custom_field_selector.length ){
+            alert( 'FV Player Editor: Field '+fv_player_editor_conf.field_selector+' not found!' );
+          }
+          editor_content = custom_field_selector.val();
+          shortcode = editor_content;
+
         // Edit button on wp-admin -> FV Player screen
-        if (is_fv_player_screen_edit(editor_button_clicked)) {
+        } else if (is_fv_player_screen_edit(editor_button_clicked)) {
           current_player_db_id = $(editor_button_clicked).data('player_id');
 
           debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
