@@ -934,7 +934,12 @@ function fvplayer_editor( $args ) {
   <style>
   #fv-player-editor-modal {
     display: block !important;
-    position: static !important;
+    position: relative !important;
+    top: auto !important;
+    left: unset !important;
+    right: unset !important;
+    bottom: unset !important;
+    z-index: unset !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   }
   #fv-player-editor-modal h2 {
