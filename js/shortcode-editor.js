@@ -2792,9 +2792,9 @@ jQuery(function() {
 
         if( response.error ) {
           if( response.error && response.fatal_error ) {
-            var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+            let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
   
-            var overlay = overlay_show('error_saving');
+            let overlay = overlay_show('error_saving');
             overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
             overlay.find('[data-error]').html( response.error );
   
@@ -2846,7 +2846,7 @@ jQuery(function() {
 
             store_shortcode_args = args_to_keep;
 
-            var
+            let
               params = jQuery.map(store_shortcode_args, function (value, index) {
                 return index + '="' + value + '"';
               }),
@@ -2859,7 +2859,7 @@ jQuery(function() {
             insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
           } else if (always_keep_shortcode_args && player_was_non_db) {
             // we have extra parameters to keep that are DB-incompatible
-            var
+            let
               params = jQuery.map(always_keep_shortcode_args, function (value, index) {
                 return index + '="' + value + '"';
               }),
@@ -2877,9 +2877,9 @@ jQuery(function() {
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
         } else {
-          var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+          let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
 
-          var overlay = overlay_show('error_saving');
+          let overlay = overlay_show('error_saving');
           overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
 
           jQuery('#fv_player_copy_to_clipboard').select();
