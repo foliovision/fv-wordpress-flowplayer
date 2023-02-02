@@ -946,7 +946,7 @@ function fvplayer_editor( $args ) {
     position: static !important;
   }
   #fv-player-editor-modal-close {
-    display: none;
+    display: none !important;
   }
 
   /* Core WordPress Admin Button styling */
