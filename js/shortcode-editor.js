@@ -828,7 +828,7 @@ jQuery(function() {
 
         debug_log('Running fv_player_db_save Ajax.');
 
-        $.post(ajaxurl, {
+        $.post(ajaxurl+'?fv_player_db_save=1', {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_save_this_please),
           nonce: fv_player_editor_conf.preview_nonce,
@@ -2219,7 +2219,7 @@ jQuery(function() {
           // load video data via an AJAX call
           debug_log('Running fv_player_db_load Ajax.');
 
-          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
+          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl+'?fv_player_db_load', {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
             playerID :  result[1]
