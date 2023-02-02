@@ -2783,7 +2783,8 @@ jQuery(function() {
       ajax_data['current_video_to_edit'] = current_video_to_edit;
 
       // save data
-      jQuery.post(ajaxurl, {
+      // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
+      jQuery.post(ajaxurl+'?fv_player_db_save=1', {
         action: 'fv_player_db_save',
         data: JSON.stringify(ajax_data),
         nonce: fv_player_editor_conf.preview_nonce
