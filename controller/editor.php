@@ -554,10 +554,14 @@ add_filter( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9, 3 );
  * @return void
  */
 function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
-  global $wp_embed, $fv_fp, $FV_Player_Shortcode2Database_Conversion;
+  global $wp, $wp_embed, $fv_fp, $FV_Player_Shortcode2Database_Conversion;
 
-  // check if not quick edit
-  if( !isset($_POST['action']) || (isset($_POST['action']) && $_POST['action'] != 'editpost') ) return;
+  $is_classic_editor_save = !empty($_POST['action']) && $_POST['action'] != 'editpost' && !empty($_POST['post_ID']) && $_POST['post_ID'] == $post_id;
+  $is_gutenberg_post_save = !empty($wp->query_vars['rest_route']) && $wp->query_vars['rest_route'] == '/wp/v2/posts/'.$post_id;
+
+  if( !$is_classic_editor_save && !$is_gutenberg_post_save ) {
+    return;
+  }
 
   // check if option is enabled
   if( !$fv_fp->_get_option('convert_db_save') ) return;
