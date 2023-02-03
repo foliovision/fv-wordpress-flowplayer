@@ -182,6 +182,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     $errors = array();
 
     $import_atts = array();
+    $errors = array();
 
     unset( $atts[0] ); // remove [fvplayer or [flowplayer
 
