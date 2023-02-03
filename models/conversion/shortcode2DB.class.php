@@ -179,6 +179,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     $atts = shortcode_parse_atts( trim(rtrim($shortcode,']')) );
     $import_video_atts = array();
     $import_player_atts = array();
+    $errors = array();
 
     $import_atts = array();
 
@@ -347,7 +348,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       $import_player_atts['status'] = 'published';
 
       // add date_created
-      $import_player_atts['date_created'] = $post->post_date_gmt;
+      $import_player_atts['date_created'] = strtotime($post->post_date_gmt) > 0 ? $post->post_date_gmt : current_time( 'mysql' );
 
       // add player_name
       // $import_player_atts['player_name'] = 'player_name';
@@ -386,7 +387,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         $output_msg = "Would create new FV Player";
       }
     }
-
+    
     $type = $post->post_type;
     if( $meta_key ) {
       $type .= '<br />meta_key: <code>'.$meta_key.'</code>';
