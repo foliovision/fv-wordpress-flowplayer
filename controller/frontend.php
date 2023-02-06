@@ -911,6 +911,16 @@ function fvplayer_editor( $args ) {
   include_once( ABSPATH.'/wp-admin/includes/plugin.php' );
   include_once( __DIR__.'/editor.php' );
 
+  if( version_compare(phpversion(),'5.5.0') != -1 ) {
+    include_once( __DIR__ . '/../models/media-browser.php');
+  }
+
+  if ( function_exists( 'FV_Player_Pro' ) && method_exists ( 'FV_Player_Pro', 'include_vimeo_media_browser' ) ) {
+    FV_Player_Pro()->include_vimeo_media_browser( true );
+  }
+
+  do_action( 'fvplayer_editor_load' );
+
   wp_enqueue_media();
 
   fv_player_shortcode_editor_scripts_enqueue( $args );
