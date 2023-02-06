@@ -717,6 +717,25 @@ jQuery(function() {
       });
 
       /*
+       * Intro view text input and button
+       */
+
+      // Copy hero input value to the first video src and trigger event for save & preview
+      $('[name=hero-src]').on('change keyup', function() {
+        let editor_src_field = get_field("src"),
+          value = jQuery(this).val();
+
+        if( value.trim() ) {
+          editor_src_field.val( value ).trigger( 'keyup' );
+        }
+      });
+
+      $('.button-hero').on('click', function() {
+        // click on the media library button next to that input
+        get_field("src").closest('.components-base-control__field').find('.add_media').trigger('click');
+      });
+
+      /*
       * NAV TABS
       */
       $('.fv-player-tabs-header a').on( 'click', function(e) {
@@ -998,6 +1017,13 @@ jQuery(function() {
       */
       $doc.on('fvp-preview-complete',function() {
         $el_preview.attr('class','preview-show');
+
+        // If editor was in the intro mode, we show the playlist and enable the full-editor 
+        if( $el_editor.hasClass('is-intro') ) {
+          playlist_show();
+
+          $el_editor.removeClass('is-intro');
+        }
       });
 
       /*
@@ -3469,6 +3495,9 @@ jQuery(function() {
 
     function reset_preview() {
       $el_preview.attr('class','preview-no');
+
+      // TODO: Setting
+      $el_editor.addClass('is-intro');
     }
 
     function seconds_to_hms( seconds ) {

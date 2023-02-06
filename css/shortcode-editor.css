@@ -474,6 +474,13 @@ body.is-fv-player-editor-modal-open {
 
 }
 
+#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left {
+  width: 100%;
+}
+#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-right {
+  display: none;
+}
+
 #fv-player-shortcode-editor .nav-tab {
   float: left;
   border: 0;
