@@ -514,8 +514,11 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
           <h1><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></h1>
-		  <p><?php _e('Add your video from the media gallery or use the video tab to enter your URL.', 'fv-wordpress-flowplayer'); ?></p>
-		  <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Select File</button>
+          <p><?php _e('Paste a link to your video.', 'fv-wordpress-flowplayer'); ?></p>
+          <div class="components-base-control__field">
+            <input class="components-text-control__input" type="text" placeholder="Paste a link to your video." name="hero-src" />
+          </div>
+          <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose an Existing Video</button>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
