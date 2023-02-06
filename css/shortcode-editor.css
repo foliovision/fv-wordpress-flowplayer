@@ -438,9 +438,6 @@ body.is-fv-player-editor-modal-open {
 }
 
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no {
-  /* TODO: Use proper path */
-  
-  border: 4px dashed #ddd;
   background-size: contain;
   background-position: center;
   image-rendering: -webkit-optimize-contrast;
@@ -450,6 +447,9 @@ body.is-fv-player-editor-modal-open {
   bottom: 0;
   margin: auto;
   padding: 95px 0;
+}
+#fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no.upload-support {
+  border: 4px dashed #ddd;
 }
 
 #fv-player-shortcode-editor-left {
