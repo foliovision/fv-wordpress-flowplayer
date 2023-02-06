@@ -1686,6 +1686,8 @@ jQuery(function() {
       }
 
       $doc.trigger('fv-player-editor-init');
+
+      $el_editor.show();
     }
 
     /**
