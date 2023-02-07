@@ -728,6 +728,9 @@ div#fv-player-editor-field-children-align {
 		width: 100%;
 		height: 265px;
 	}
+  #fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left {
+    height: 100%;
+  }
 	#fv-player-shortcode-editor-right {
 
 		width: calc(100% - 1px);
