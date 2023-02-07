@@ -290,6 +290,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
       if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::meta2TableConversion();
+        self::advancedSettingsConversion();
       }
 
       $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
@@ -317,6 +318,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'duration_backup' WHERE meta_key = 'duration'");
     $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'live_backup' WHERE meta_key = 'live'");
     $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'last_video_meta_check_backup' WHERE meta_key = 'last_video_meta_check'");
+  }
+
+  private static function advancedSettingsConversion() {
+    global $wpdb;
+
+    $res = $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_videos` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
   }
 
   /**
