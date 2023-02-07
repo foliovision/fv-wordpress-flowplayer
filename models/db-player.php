@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player    
+/*  FV Wordpress Flowplayer - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ class FV_Player_Db_Player {
     $lightbox, // whether to enable displaying this player in a lightbox
     $lightbox_caption, // title for the lightbox popup
     $lightbox_height, // height for the lightbox popup
-    $lightbox_width, // width for the lightbox popup    
+    $lightbox_width, // width for the lightbox popup
     $loop, // (NON-ORM, class property only) loops player at the end if set
     $player_name, // custom name for the player
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
@@ -199,7 +199,7 @@ class FV_Player_Db_Player {
   public function getCopyText() {
     return $this->copy_text;
   }
-  
+
   public function getCount($video_meta) {
     if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
     if( $video_meta == 'cues' && isset($this->cues_count) ) return $this->cues_count;
@@ -482,10 +482,27 @@ CREATE TABLE " . self::$db_table_name . " (
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
+
+      if( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+        self::toggleConversion();
+      }
+
       $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
     }
 
     return $res;
+  }
+
+  private static function toggleConversion() {
+    global $wpdb;
+
+    $table = self::$db_table_name;
+
+    // enable toggle end action
+    $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 1 WHERE end_actions != '' AND end_actions_value != ''");
+
+    // enable toggle ad custom
+    $wpdb->query("UPDATE `{$table}` SET toggle_ad_custom = 1 WHERE ad != ''");
   }
 
   /**
@@ -501,10 +518,10 @@ CREATE TABLE " . self::$db_table_name . " (
             $value = strip_tags($value);
           }
           $this->$key = stripslashes($value);
-          
+
         } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
           $this->$key = stripslashes($value);
-          
+
         } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
           if ( defined('WP_DEBUG') && WP_DEBUG ) {
             // generate warning
@@ -513,8 +530,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
         }
       }
-    }    
-    
+    }
+
     // make sure we fill the appropriate non-orm object properties
     $this->propagate_end_action_value();
   }
@@ -827,13 +844,13 @@ CREATE TABLE " . self::$db_table_name . " (
       return array();
     }
   }
-  
+
   /**
    * Returns actual meta data for a key for this player.
    */
   public function getMetaValue( $key, $single = false ) {
     $output = array();
-    $data = $this->getMetaData();    
+    $data = $this->getMetaData();
     if (count($data)) {
       foreach ($data as $meta_object) {
         if ($meta_object->getMetaKey() == $key) {
@@ -844,7 +861,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
     if( $single ) return false;
     return $output;
-  }  
+  }
 
   /**
    * Returns all video objects for this player.
@@ -968,7 +985,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
-        
+
         if( $property != 'ad' ) {
           $value = strip_tags($value);
         }
@@ -1010,15 +1027,15 @@ CREATE TABLE " . self::$db_table_name . " (
           } else {
             $existing_meta_ids[$existing->getId()] = true;
           }
-        }        
-        
+        }
+
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
           // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
           if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
-            unset($meta_record['id']);          
+            unset($meta_record['id']);
           }
-          
+
           // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
           if( empty($meta_record['id']) ) {
             foreach( $existing_meta AS $existing ) {
@@ -1027,8 +1044,8 @@ CREATE TABLE " . self::$db_table_name . " (
                 break;
               }
             }
-          }          
-          
+          }
+
           // add our player ID
           $meta_record['id_player'] = $this->id;
 
@@ -1106,7 +1123,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
         if( $wpdb->get_var("select count(*) from ".self::$db_table_name." where FIND_IN_SET(".$video->getId().",videos)") > 1 ) continue; // only delete videos which are used for this particular player and no other player
-        
+
         $video->delete();
 
         // load all meta data for this video
