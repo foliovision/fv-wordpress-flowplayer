@@ -794,6 +794,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if( $frontend ) {
       if( !$data['toggle_end_action'] ) {
         $data['end_actions'] = '';
+        $data['end_action_value'] = '';
       }
 
       if( !$data['toggle_ad_custom'] ) {
