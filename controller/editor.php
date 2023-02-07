@@ -71,6 +71,10 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     $fv_player_editor_conf['field_selector'] = $extra_args['field'];
   }
 
+  if( !empty($extra_args['library']) ) {
+    $fv_player_editor_conf['library'] = $extra_args['library'];
+  }
+
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', $fv_player_editor_conf );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_translations', array(

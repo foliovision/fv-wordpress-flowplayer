@@ -940,9 +940,26 @@ jQuery(function() {
         });
 
         fv_flowplayer_uploader.on('open', function() {
-        $( document ).trigger( "mediaBrowserOpen" );
+          $( document ).trigger( "mediaBrowserOpen" );
           jQuery('.media-router .media-menu-item').eq(0).trigger('click');
           jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
+
+          // Hide Media Library tabs which are not allowed
+          if( fv_player_editor_conf.library ) {
+            let libraries = fv_player_editor_conf.library.split(/,/);
+            $( '.media-router .media-menu-item' ).each( function( i, el ) {
+              let found = false;
+              $( libraries ).each( function( v, library ) {
+                if( $(el).attr('id').match(library) ) {
+                  found = true;
+                }
+              });
+
+              if( !found ) {
+                $(el).hide();
+              }
+            });
+          }
         });
 
         //When a file is selected, grab the URL and set it as the text field's value

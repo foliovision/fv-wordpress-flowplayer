@@ -907,6 +907,14 @@ function fv_player_remove_for_excerpt( $post_content ) {
 
 add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
 
+/**
+ * @param array $args { 
+ *   @type string $field    jQuery field selector of the field with the shortcode
+ *   @type string $library  Comma separated list of libraries to show in Media Library
+ * }
+ *
+ * @return string HTML code.
+ */
 function fvplayer_editor( $args ) {
   include_once( ABSPATH.'/wp-admin/includes/plugin.php' );
   include_once( __DIR__.'/editor.php' );
