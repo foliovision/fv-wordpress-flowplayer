@@ -520,7 +520,7 @@ class FV_Player_Db {
 
         // cache first vid
         if (!$first_video_data_cached && $videos) {
-          $vid = $videos[0]->getAllDataValues();
+          $vid = $videos[0]->getAllDataValues(true);
 
           // we need to keep the player id!
           $first_video = $vid;
@@ -540,7 +540,7 @@ class FV_Player_Db {
         // add rest of the videos into the playlist tag
         if ($videos && count($videos)) {
           foreach ( $videos as $k => $vid_object ) {
-            $vid                               = $vid_object->getAllDataValues();
+            $vid                               = $vid_object->getAllDataValues(true);
             $vid_id                            = isset($vid['id']) ? $vid['id'] : 'preview-'.($k+1);
             $atts['video_objects'][]           = $vid_object;
             $this->video_atts_cache[ $vid_id ] = $vid;
