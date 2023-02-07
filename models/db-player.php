@@ -476,8 +476,8 @@ CREATE TABLE " . self::$db_table_name . " (
   video_ads_post varchar(10) NOT NULL,
   width varchar(7) NOT NULL,
   status varchar(9) NOT NULL default 'published',
-  toggle_end_action tinyint(1) NOT NULL,
-  toggle_ad_custom tinyint(1) NOT NULL,
+  toggle_end_action varchar(7) NOT NULL,
+  toggle_ad_custom varchar(7) NOT NULL,
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -499,10 +499,10 @@ CREATE TABLE " . self::$db_table_name . " (
     $table = self::$db_table_name;
 
     // enable toggle end action
-    $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 1 WHERE end_actions != '' AND end_action_value != ''");
+    $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
     // enable toggle ad custom
-    $wpdb->query("UPDATE `{$table}` SET toggle_ad_custom = 1 WHERE ad != ''");
+    $wpdb->query("UPDATE `{$table}` SET toggle_ad_custom = 'true' WHERE ad != ''");
   }
 
   /**
