@@ -783,12 +783,23 @@ CREATE TABLE " . self::$db_table_name . " (
    *
    * @return array Returns all global options data for this player.
    */
-  public function getAllDataValues() {
+  public function getAllDataValues($frontend = false) {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
         $data[$property] = $value;
       }
+    }
+
+    if( $frontend ) {
+      if( !$data['toggle_end_action'] ) {
+        $data['end_actions'] = '';
+      }
+
+      if( !$data['toggle_ad_custom'] ) {
+        $data['ad'] = '';
+      }
+
     }
 
     return $data;
