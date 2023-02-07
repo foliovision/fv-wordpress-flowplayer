@@ -499,7 +499,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $table = self::$db_table_name;
 
     // enable toggle end action
-    $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 1 WHERE end_actions != '' AND end_actions_value != ''");
+    $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 1 WHERE end_actions != '' AND end_action_value != ''");
 
     // enable toggle ad custom
     $wpdb->query("UPDATE `{$table}` SET toggle_ad_custom = 1 WHERE ad != ''");
