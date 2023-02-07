@@ -62,7 +62,7 @@ class FV_Player_Db_Video {
    */
   public function getAspectRatio() {
     return floatval($this->aspect_ratio);
-  }  
+  }
 
   /**
    * @return string
@@ -70,7 +70,7 @@ class FV_Player_Db_Video {
   public function getCaption() {
     return $this->caption;
   }
-  
+
   /**
    * @return string
    */
@@ -78,7 +78,7 @@ class FV_Player_Db_Video {
     $src = $this->getSrc();
     $arr = explode('/', $src);
     $caption = end($arr);
-    
+
     if( $caption == 'index.m3u8' ) {
       unset($arr[count($arr)-1]);
       $caption = end($arr);
@@ -88,7 +88,7 @@ class FV_Player_Db_Video {
 
     return urldecode($caption);
   }
-  
+
   /**
    * @return int
    */
@@ -279,7 +279,7 @@ CREATE TABLE " . self::$db_table_name . " (
   aspect_ratio varchar(8) NOT NULL,
   duration decimal(7,2) NOT NULL,
   live tinyint(1) NOT NULL,
-  toggle_advanced_settings tinyint(1) NOT NULL,
+  toggle_advanced_settings varchar(7) NOT NULL,
   last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (id),
   KEY src (src(191)),
@@ -287,7 +287,7 @@ CREATE TABLE " . self::$db_table_name . " (
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
-  
+
       if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::meta2TableConversion();
       }
@@ -355,7 +355,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if (is_array($options) && count($options) ) {
       foreach ($options as $key => $value) {
         if( $key == 'meta' ) continue; // meta is handled elsewhere, but it's part of the object when importing from JSON
-        
+
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
             if( !is_string($value) ) $value = '';
@@ -394,13 +394,13 @@ CREATE TABLE " . self::$db_table_name . " (
           $select = '*';
 
           $where = ' WHERE id IN('. implode(',', $query_ids).') ';
-          
+
           $order = '';
-          
+
           $limit = '';
-          
+
           $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
-          
+
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;
           }
@@ -501,11 +501,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
   /**
    * Makes this video linked to a record in database.
-   * 
+   *
    * This is used when loading multiple videos in the constructor,
    * so we can return them as objects from the DB and any saving will
    * not insert their duplicates.
-   * 
+   *
    * Also used when updating video via editor, so we keep certain fields.
    *
    * @param int  $id        The DB ID to which we'll link this video.
@@ -684,7 +684,7 @@ CREATE TABLE " . self::$db_table_name . " (
       return array();
     }
   }
-  
+
   /**
    * Returns actual meta data for a key for this video.
    */
@@ -702,30 +702,30 @@ CREATE TABLE " . self::$db_table_name . " (
     if( $single ) return false;
     return $output;
   }
-  
+
   /**
    * Updates or instert a video meta row
    *
    * @param string $key       The meta key
-   * @param string $value     The meta value     
+   * @param string $value     The meta value
    * @param int $id           ID of the existing video meta row.
    *                          If it's left empty only one $key is allowed for the $this->getId() video ID.
    *
    * @throws Exception When the underlying Meta object throws.
    *
    * @return bool|int Returns record ID if successful, false otherwise.
-   * 
+   *
    */
   public function updateMetaValue( $key, $value, $id = false ) {
     $to_update = false;
     $data = $this->getMetaData();
 
-    if (count($data)) {      
+    if (count($data)) {
       foreach ($data as $meta_object) {
         // find the matching video meta row and if id is provided as well, match on that too
         if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
           $to_update = $meta_object->getId();
-          
+
           // if there is no change, then do not run any update and instead return the row ID
           if(
             is_string($value) && strcmp($meta_object->getMetaValue(), $value) == 0 ||
@@ -741,17 +741,17 @@ CREATE TABLE " . self::$db_table_name . " (
     if( $to_update || !$to_update && !$id ) {
       $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), self::$DB_Instance );
       if( $to_update ) $meta->link2db($to_update);
-      return $meta->save();        
+      return $meta->save();
     }
-    
+
     return false;
   }
-  
+
   /**
    * Lets you alter any of the video properties and then call save()
    *
    * @param string $key       The meta key
-   * @param string $value     The meta value     
+   * @param string $value     The meta value
    */
   public function set( $key, $value ) {
     $this->$key = stripslashes($value);
@@ -775,7 +775,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $video_url = $this->getSrc();
 
     /*
-     * Check video duration, fetch splash screen and title 
+     * Check video duration, fetch splash screen and title
      */
     $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
@@ -836,7 +836,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       if( is_array($video_data) ) {
-        $video_data = wp_parse_args( $video_data, 
+        $video_data = wp_parse_args( $video_data,
           array(
             'error' => false,
             'duration' => false,
@@ -1074,14 +1074,14 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        
+
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
           // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
           if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
             unset($meta_record['id']);
           }
-          
+
           // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
           if( empty($meta_record['id']) ) {
             foreach( $existing_meta AS $existing ) {
@@ -1091,7 +1091,7 @@ CREATE TABLE " . self::$db_table_name . " (
               }
             }
           }
-          
+
           // add our video ID
           $meta_record['id_video'] = $this->id;
 
@@ -1115,7 +1115,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $cache[$this->id] = $this;
       self::$DB_Instance->setVideosCache($cache);
 
-      $saved_attachments = $wpdb->get_col( 
+      $saved_attachments = $wpdb->get_col(
         $wpdb->prepare( "SELECT post_id FROM `{$wpdb->postmeta}` WHERE meta_key = 'fv_player_video_id' AND meta_value = %d", $this->getId() )
       );
 
@@ -1199,13 +1199,13 @@ CREATE TABLE " . self::$db_table_name . " (
    * @throws Exception    When the underlying Meta object throws.
    *
    * @return int          Returns number of removed meta rows
-   * 
+   *
    */
   public function deleteMetaValue( $key, $value = false ) {
     $deleted = 0;
     $data = $this->getMetaData();
 
-    if( count($data) ) {      
+    if( count($data) ) {
       foreach( $data as $meta_object ) {
         if(
           $meta_object->getMetaKey() == $key &&
