@@ -316,6 +316,13 @@ jQuery(function() {
       return false;
     }
 
+    function hide_inputs() {
+      $.each( fv_player_editor_conf.hide, function( k, v ) {
+        $( '.fv-player-editor-field-wrap-'+v ).hide();//addClass('fv_player_interface_hide');//.hide();
+        $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();//addClass('fv_player_interface_hide');
+      } );
+    }
+
     /**
      * Automatically handles new, updated or removed player meta data
      * via JS.
@@ -1055,6 +1062,7 @@ jQuery(function() {
           playlist_show();
 
           $el_editor.removeClass('is-intro');
+          $('[name=hero-src]').val('');
         }
       });
 
@@ -1746,6 +1754,8 @@ jQuery(function() {
       }
 
       $doc.trigger('fv-player-editor-init');
+
+      hide_inputs();
 
       $el_editor.show();
     }
@@ -3385,6 +3395,8 @@ jQuery(function() {
         reload_preview( current_video_to_edit );
       }
 
+      hide_inputs();
+
       $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
     }
 
@@ -3798,6 +3810,10 @@ jQuery(function() {
           tab = $el_editor.find('a[data-tab=' + data[0] + ']');
         }
 
+        if( fv_player_editor_conf.tabs && fv_player_editor_conf.tabs == 'none' ) {
+          bHideTab = true; 
+        }
+
         if(bHideTab){
           tab.addClass('fv_player_interface_hide')
         } else {
@@ -3810,6 +3826,7 @@ jQuery(function() {
 
       if(visibleTabs<=1){
         $el_editor.find('.nav-tab').addClass('fv_player_interface_hide');
+        $el_editor.find('.nav-tab-wrapper').addClass('fv_player_interface_hide');
       }
 
       var end_actions_label = $('label[for=fv_wp_flowplayer_field_end_actions]');

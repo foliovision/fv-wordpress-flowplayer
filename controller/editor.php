@@ -71,8 +71,18 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     $fv_player_editor_conf['field_selector'] = $extra_args['field'];
   }
 
+  // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
+  if( !empty($extra_args['hide']) ) {
+    $fv_player_editor_conf['hide'] = explode( ',', $extra_args['hide'] );
+  }
+
   if( !empty($extra_args['library']) ) {
     $fv_player_editor_conf['library'] = $extra_args['library'];
+  }
+
+  // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
+  if( !empty($extra_args['tabs']) ) {
+    $fv_player_editor_conf['tabs'] = $extra_args['tabs'];
   }
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', $fv_player_editor_conf );

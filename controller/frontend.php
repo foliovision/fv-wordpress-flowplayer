@@ -910,7 +910,9 @@ add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
 /**
  * @param array $args { 
  *   @type string $field    jQuery field selector of the field with the shortcode
+ *   @type string $hide     Comma separated list of fields to hide
  *   @type string $library  Comma separated list of libraries to show in Media Library
+ *   @type string $tabs     Use "none" to only show Playlist and Videos tabs and nothing else, like Options, Actions or Subtitles
  * }
  *
  * @return string HTML code.
