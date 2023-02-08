@@ -520,6 +520,9 @@ body.is-fv-player-editor-modal-open {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+#fv-player-shortcode-editor.is-playlist-active #fv-player-editor-modal-bottom {
+  border: 0;
+}
 
 /*
 New FV Player Editor inputs styling
@@ -1003,6 +1006,7 @@ a.fvp_item_video-filename {
   display: flex;
   font-family: monospace;
   font-size: 1.25em;
+  overflow: hidden;
 }
 
 .fv-player-editor-playlist-move-handle::after {

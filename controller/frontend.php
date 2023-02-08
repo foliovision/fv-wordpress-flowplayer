@@ -964,12 +964,16 @@ function fvplayer_editor( $args ) {
     letter-spacing: normal;
   }
   #fv-player-editor-modal #fv-player-shortcode-editor {
-    min-height: 400px;
-    height: 75vh; /* without set height the tab content will never get scrollbars */
     position: static !important;
   }
   #fv-player-editor-modal-close {
     display: none !important;
+  }
+  #fv-player-shortcode-editor-preview {
+    margin-top: .5em;
+  }
+  .fv-player-tab {
+    overflow-y: unset !important;
   }
 
   /* Core WordPress Admin Button styling */
