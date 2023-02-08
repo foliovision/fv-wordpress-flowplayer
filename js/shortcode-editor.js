@@ -847,6 +847,8 @@ jQuery(function() {
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
+
+        return false;
       });
 
       /*
@@ -1524,16 +1526,18 @@ jQuery(function() {
 
       $doc.on('click', '.playlist_add', function() {
         playlist_item_add();
+
+        return false;
       });
 
       $doc.on('click', '.playlist_edit', function() {
-        if ( jQuery(this).hasClass('disabled') ) {
-          return false;
-        }
-
+        if ( !jQuery(this).hasClass('disabled') ) {
         playlist_show();
 
         reload_preview( current_video_to_edit );
+        }
+
+        return false;
       });
 
       // prevent closing of the overlay if we have unsaved data
