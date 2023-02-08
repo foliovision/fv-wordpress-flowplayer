@@ -972,7 +972,7 @@ function fvplayer_editor( $args ) {
     display: none !important;
   }
   #fv-player-shortcode-editor-preview {
-    margin-top: .5em;
+    margin-top: 16px;
   }
   .fv-player-tab {
     overflow-y: unset !important;
@@ -980,6 +980,7 @@ function fvplayer_editor( $args ) {
 
   /* Core WordPress Admin Button styling */
   #fv-player-editor-modal .button, #fv-player-editor-modal .button-primary, #fv-player-editor-modal .button-secondary {
+    box-shadow: unset;
     display: inline-block;
     text-decoration: none;
     font-size: 13px;
@@ -996,6 +997,7 @@ function fvplayer_editor( $args ) {
     border-radius: 3px;
     white-space: nowrap;
     box-sizing: border-box;
+    text-shadow: unset;
     text-transform: none;
   }
   #fv-player-editor-modal .button.hover, #fv-player-editor-modal .button:hover, #fv-player-editor-modal .button-secondary:hover {

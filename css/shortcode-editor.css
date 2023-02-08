@@ -311,6 +311,9 @@ a #add-format, a #add-rtmp {
 	width:100%;
   word-break: break-all;
 }
+#fv-player-shortcode-editor input::placeholder, #fv-player-shortcode-editor textarea::placeholder {
+  color: unset;
+}
 .fv_player_editor_url_shortened {
   margin: 4px 2px;
 }
