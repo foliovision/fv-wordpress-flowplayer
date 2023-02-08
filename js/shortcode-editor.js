@@ -723,10 +723,23 @@ jQuery(function() {
       // Copy hero input value to the first video src and trigger event for save & preview
       $('[name=hero-src]').on('change keyup', function() {
         let editor_src_field = get_field("src"),
-          value = jQuery(this).val();
+          value = jQuery(this).val().trim();
 
-        if( value.trim() ) {
-          editor_src_field.val( value ).trigger( 'keyup' );
+        if( value ) {
+          let is_valid_url = false
+          if( value.match( /https?:\/\// ) ) {
+
+            for (var vtype in window.fv_player_editor_matcher) {
+              if (window.fv_player_editor_matcher[vtype].matcher.exec(value) !== null) {
+                editor_src_field.val( value ).trigger( 'keyup' );
+                is_valid_url = true;
+                break;
+              }
+            }
+
+          }
+
+          $('#fv-player-shortcode-editor-preview-no .fv-player-editor-notice').toggle( !is_valid_url );
         }
       });
 
@@ -1532,9 +1545,9 @@ jQuery(function() {
 
       $doc.on('click', '.playlist_edit', function() {
         if ( !jQuery(this).hasClass('disabled') ) {
-        playlist_show();
+          playlist_show();
 
-        reload_preview( current_video_to_edit );
+          reload_preview( current_video_to_edit );
         }
 
         return false;

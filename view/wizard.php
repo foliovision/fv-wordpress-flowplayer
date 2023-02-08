@@ -513,12 +513,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
-          <h1><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></h1>
-          <p><?php _e('Paste a link to your video.', 'fv-wordpress-flowplayer'); ?></p>
+          <p><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></p>
           <div class="components-base-control__field">
-            <input class="components-text-control__input" type="text" placeholder="Paste a link to your video." name="hero-src" />
+            <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
+            <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
           </div>
-          <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose an Existing Video</button>
+          <div class="fv-player-editor-notice" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
