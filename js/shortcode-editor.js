@@ -1524,12 +1524,47 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on('change', '#players_selector', function() {
-        insert_button_toggle_disabled(false);
-        
-        // TODO
+      $doc.on('click', '#fv-player-editor-copy_player-overlay .attachment', function() {
+        let item = $(this),
+          sidebar = $('#fv-player-editor-copy_player-overlay .media-sidebar'),
+          attachment_details = sidebar.find( '.attachment-details' ),
+          details = item.data('details');
+
+        $( '#fv-player-editor-copy_player-overlay .attachment' ).removeClass( 'selected details' );
+
+        item.addClass('selected details');
+
+        attachment_details.find('.filename').text( '#' + details.id + '. '+ details.player_name );
+        attachment_details.find('.uploaded').text( details.date_created );
+
+        attachment_details.find('.videos-list').html( '<ul><li>' + details.video_titles.join('</li><li>' ) + '</li></ul>' );
+
+        let ul = $('<ul></ul>');
+        $.each( details.embeds, function( k, v ) {
+          let type = v.post_type != 'post' ? ' (' + v.post_type + ')' : '',
+            status = v.post_status != 'publish' ? ' (' + v.post_status + ')' : '',
+            taxonomies = v.taxonomies ? '<ul><li>' + v.taxonomies.join( '</li><li>' ) + '</li></ul>' : '';
+
+          ul.append( '<li>' + v.post_title + type + status + taxonomies + '</li>')
+        } );
+        attachment_details.find('.posts-list').html('').append( ul );
+
+        attachment_details.find('.setting input').val( '[fvplayer id="' + details.id + '"]' );
+        attachment_details.show();
+
+        $( '#fv-player-editor-copy_player-overlay .button-primary' ).prop( 'disabled', false );
+
+      });
+
+      $doc.on('click', '#fv-player-editor-copy_player-overlay .button-primary', function() {
         $el_editor.find('.button-primary').text('Insert');
-        editor_open(this.value);
+
+        // TODO: Make it work
+        let selected = $( '#fv-player-editor-copy_player-overlay .attachment.selected' );
+        if( selected.length > 0 ) {
+          editor_open( selected.data('details').id );
+        }
+        
       });
 
       $doc.on('click', '.fv_player_field_insert-button', function() {
@@ -1626,31 +1661,56 @@ jQuery(function() {
 
         $.post(ajaxurl, {
           // TODO: Nonce
-          action: 'fv_player_db_retrieve_all_players_for_dropdown',
-          cookie: encodeURIComponent(document.cookie),
-        }, function (json_data) {
-          var overlay = overlay_show('copy_player');
-
-          // build the dropdown
-          var dropdown = [];
-          for (var i in json_data) {
-            dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
-          }
-
-          // prepend the "Choose a player" option
-          if (dropdown.length) {
-            dropdown.unshift('<option hidden disabled selected value>Choose a Player...</option>');
-          }
-
-          overlay.find('select').html( dropdown.join('') );
-
-        }).fail(function () {
+          action: 'fv_player_db_retrieve_all_players_for_dropdown'
+        }, show_players ).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
-
         });
 
         return false;
       });
+
+      // TODO: Debounce
+      $doc.on('keyup', '#fv-player-editor-copy_player-overlay [name=players_selector]', function() {
+        let input = $(this);
+
+        $.post(ajaxurl, {
+          // TODO: Nonce
+          action: 'fv_player_db_retrieve_all_players_for_dropdown',
+          search: input.val()
+        }, show_players ).fail(function () {
+          overlay_show('message', 'An unexpected error has occurred. Please try again.');
+        });
+      });
+
+      function show_players(json_data) {
+        let overlay = overlay_show('copy_player'),
+          list = overlay.find('.attachments'),
+          button = overlay.find('.button-primary');
+
+        button.prop( 'disabled', true );
+        list.html('');
+
+        for (var i in json_data) {
+          let data = json_data[i],
+            image = $( data.thumbs[0] ).find('img'),
+            player_name = data.player_name || data.video_titles.join( ', ' );
+
+          image.removeAttr('width');
+
+          let item = $('<li class="attachment"><div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape fullsize"><div class="thumbnail"><div class="filename hidden"><div></div></div></div></div><button type="button" class="check" tabindex="0"><span class="media-modal-icon"></span><span class="screen-reader-text">Deselect</span></button></li>');
+
+          item.find('.thumbnail').append( image );
+          
+          item.find('.thumbnail .filename > div').html( player_name );
+          if( image.length == 0 ) {
+            item.find('.thumbnail .filename').removeClass('hidden');
+          }
+          item.attr( 'data-details', JSON.stringify( json_data[i] ) );
+
+          list.append( item );
+        }
+
+      }
 
     });
 
@@ -3543,7 +3603,7 @@ jQuery(function() {
       $el_preview.attr('class','preview-no');
 
       // TODO: Setting
-      $el_editor.addClass('is-intro');
+      //$el_editor.addClass('is-intro');
     }
 
     function seconds_to_hms( seconds ) {

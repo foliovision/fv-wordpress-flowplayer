@@ -435,10 +435,14 @@ class FV_Player_Db {
             $post_ids = array();
             foreach( $posts AS $post_id ) {
               $post_ids[] = $post_id;
-          }
+            }
 
             global $wpdb;
             $embeds = $wpdb->get_results( "SELECT ID, post_title, post_status, post_type FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
+
+            foreach( $embeds AS $post_id => $post_data ) {
+              $embeds[ $post_id ]->taxonomies = array_values( get_the_taxonomies( $post_id ) );
+            }
 
             $embeds = apply_filters( 'fv_player_editor_embeds', $embeds, $player );
           }
@@ -1848,13 +1852,20 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    $players = $this->getListPageData('date_created', 'desc', false, false);
+    $search = !empty( $_POST['search'] ) ? $_POST['search'] : false;
+
+    $players = $this->getListPageData('date_created', 'desc', false, false, false, $search );
+
     $json_data = array();
 
     foreach ($players as $player) {
       $json_data[] = array(
         'id' => $player->id,
-        'name' => '#' . $player->id . ' ' . $player->player_name
+        'player_name' => $player->player_name,
+        'video_titles' => $player->video_titles,
+        'thumbs' => $player->thumbs,
+        'date_created' => date( get_option( 'date_format' ), strtotime( $player->date_created ) ),
+        'embeds' => $player->embeds,
       );
     }
 

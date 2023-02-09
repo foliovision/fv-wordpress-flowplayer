@@ -1177,3 +1177,25 @@ a.fvp_item_video-filename {
 .components-panel__body .alignright {
   float: unset;
 }
+
+/*
+ * We use the WP Media Library HTML and CSS, here's what's necessary to make it work
+ */
+#fv-player-editor-copy_player-overlay {
+  padding: 0;
+  text-align: unset;
+}
+
+#fv-player-editor-copy_player-overlay.media-frame .attachments-browser {
+  height: auto;
+  position: absolute;
+}
+#fv-player-editor-copy_player-overlay .media-frame-content {
+  top: 50px;
+}
+#fv-player-editor-copy_player-overlay .attachment-details .setting input {
+  width: 65%;
+}
+#fv-player-editor-copy_player-overlay .posts-list ul > ul {
+  margin: 0 1em 1em;
+}

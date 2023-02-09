@@ -467,12 +467,55 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <a data-fv-player-editor-overlay-close href="#" class="button button-primary">Close</a>
     </div>
     
-    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay">
-      <select name="players_selector" id="players_selector">
-        <option hidden disabled selected value>Choose a Player...</option>
-      </select>
-      
-      <a data-fv-player-editor-overlay-close href="#" class="button">Close</a>
+    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay media-frame hide-menu">
+      <button type="button" class="media-modal-close" data-fv-player-editor-overlay-close>
+        <span class="media-modal-icon">
+          <span class="screen-reader-text">Close dialog</span>
+        </span>
+      </button>
+    <div class="media-frame-title" id="media-frame-title"><h1>Pick FV Player</h1></div>
+
+      <!-- TODO: Dynamic data-columns! -->
+      <div class="wp-core-ui media-frame-content attachments-browser" data-columns="6">
+        <div class="media-toolbar">
+          <div class="media-toolbar-primary search-form">
+            <input type="search" placeholder="Search videos or playlists" id="media-search-input" class="search" name="players_selector" >
+          </div>
+        </div>
+
+        <ul class="attachments"></ul>
+
+        <div class="media-sidebar">
+          <div class="attachment-details" style="display: none">
+            <h2>Player Details</h2>
+            <div class="attachment-info">
+              <div class="details">
+                <div class="filename"></div>
+                <div class="uploaded"></div>
+              </div>
+            </div>
+
+            <h2>Videos</h2>
+            <div class="videos-list"></div>
+
+            <h2>Embedded on</h2>
+            <div class="posts-list"></div>
+
+            <label class="setting" data-setting="url">
+              <span class="name">Shortcode</span>
+              <input type="text" value="" readonly="">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="media-frame-toolbar">
+        <div class="media-toolbar">
+          <div class="media-toolbar-secondary"></div>
+          <div class="media-toolbar-primary search-form">
+            <button type="button" class="button media-button button-primary button-large media-button-select" disabled>Choose</button>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
