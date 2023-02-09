@@ -734,24 +734,9 @@ CREATE TABLE " . self::$db_table_name . " (
     $player_name = $this->getPlayerName();
 
     // player name is present - return it
-    if( !empty( $player_name ) ) {
-      return $player_name;
+    if( empty( $player_name ) ) {
+      $player_name = join(', ', $this->getPlayerVideoNames() );
     }
-
-    // else assemble player name
-    $player_name = array();
-
-    foreach( $this->getVideos() as $video ) {
-      $caption = $video->getCaption();
-      if( !$caption ) {
-        $caption = $video->getCaptionFromSrc();
-      }
-
-      $player_name[] = $caption;
-    }
-
-    // join name items
-    $player_name = join(', ', $player_name);
 
     // add "Draft" at the end of player, if in draft status
     if ( $this->getStatus() == 'draft' ) {
@@ -759,6 +744,21 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     return $player_name;
+  }
+
+  public function getPlayerVideoNames() {
+    $video_names = array();
+
+    foreach( $this->getVideos() as $video ) {
+      $caption = $video->getCaption();
+      if( !$caption ) {
+        $caption = $video->getCaptionFromSrc();
+      }
+
+      $video_names[] = $caption;
+    }
+
+    return $video_names;
   }
 
   /**

@@ -943,9 +943,8 @@ function fv_player_edit_posts_cell() {
   if( isset($_POST['playerID']) && isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-edit_posts_cell_nonce-".get_current_user_id() ) ) {
     global $FV_Player_Db;
     $aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $_POST['playerID'] );
-    if( !empty($aPostListPlayers[0]->thumbs) ) {
-      $thumbs = explode( "</div>", $aPostListPlayers[0]->thumbs );
-      echo $thumbs[0].'</div>';
+    if( !empty($aPostListPlayers[0]->thumbs[0]) ) {
+      echo $aPostListPlayers[0]->thumbs[0];
     } else {
       echo "Error: Player not found!";
     }

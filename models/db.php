@@ -426,10 +426,23 @@ class FV_Player_Db {
           $result_row->status = __($player->getStatus(), 'fv-wordpress-flowplayer');
           $result_row->video_objects = $videos;
 
-          // no player name, we'll assemble it from video captions and/or sources
-          if (!$result_row->player_name) {
-            $result_row->player_name = $player->getPlayerNameWithFallback();
+          $result_row->player_name = $player->getPlayerName();
+
+          $result_row->video_titles = $player->getPlayerVideoNames();
+
+          $embeds = array();
+          if( $posts = $player->getMetaValue('post_id') ) {
+            $post_ids = array();
+            foreach( $posts AS $post_id ) {
+              $post_ids[] = $post_id;
           }
+
+            global $wpdb;
+            $embeds = $wpdb->get_results( "SELECT ID, post_title, post_status, post_type FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
+
+            $embeds = apply_filters( 'fv_player_editor_embeds', $embeds, $player );
+          }
+          $result_row->embeds = $embeds;
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
             if( empty($videos[ $video_id ]) ) { // the videos field might point to a missing video
@@ -458,9 +471,6 @@ class FV_Player_Db {
               $result_row->stats_play += intval($video->getMetaValue('stats_play',true)); // todo: lower SQL count
             }
           }
-
-          // join thumbnails
-          $result_row->thumbs = join(' ', $result_row->thumbs);
 
           $result[] = $result_row;
         }

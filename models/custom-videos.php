@@ -410,7 +410,7 @@ class FV_Player_Custom_Videos_Master {
             $found = false;
             foreach( $this->aPostListPlayers AS $objPostPlayer ) {
               if( $objPostPlayer->id == $shortcode_atts['id'] ) {
-                $button_text = $objPostPlayer->thumbs;
+                $button_text = $objPostPlayer->thumbs[0];
                 $found = true;
                 break;
               }
@@ -425,12 +425,11 @@ class FV_Player_Custom_Videos_Master {
               foreach( $objPlayers AS $objPlayer ) {
                 if( $objPlayer->id == $shortcode_atts['id'] ) {
                   // Only show the first thumbnail
-                  $thumbs = explode( "</div>", $objPlayer->thumbs );
-                  $button_text = $thumbs[0].'</div>';
+                  $button_text = $objPlayer->thumbs[0];
 
                   // The above FV_Player_Db::getListPageData() call it supposed to only occur once, it seems $objPlayer->video_objects contains all the videos in cache and that's bad
                   // So we check the HTML :(
-                  $video_count = substr_count( $objPlayer->thumbs, '<div class="fv_player_splash_list_preview">' );
+                  $video_count = count( $objPlayer->thumbs );
                   if( $video_count > 1 ) {
                     $video_count .= 'v';
                   } else {

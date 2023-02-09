@@ -150,7 +150,9 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($player->player_name)."</a>\n";
+        $name = $player->player_name ? $player->player_name : join( ', ', $player->video_titles );
+
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($name)."</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
         $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";
@@ -162,21 +164,16 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "</div>\n";
         break;
       case 'embeds':
-        $player = new FV_Player_Db_Player($id);
         $value = '';
-        if( $player->getIsValid() ) {
-          if( $posts = $player->getMetaValue('post_id') ) {
-            foreach( $posts AS $post_id ) {
-              $post = get_post($post_id);
-              if( !isset($post) ) continue;
-              $title = !empty($post->post_title) ? $post->post_title : '#'.$post->ID;
-              if( $post->post_status != 'publish' ) {
-                $title .= ' ('.$post->post_status.')';
-              }
-              
-              $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.$title.'</a></li>';
-            }
+      
+        foreach( $player->embeds AS $post_id => $post ) {
+
+          $title = !empty($post->post_title) ? $post->post_title : '#'.$post->ID;
+          if( $post->post_status != 'publish' ) {
+            $title .= ' ('.$post->post_status.')';
           }
+
+          $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.$title.'</a></li>';
         }
         
         if( $value ) $value = '<ul>'.$value.'</ul>';
@@ -188,6 +185,9 @@ class FV_Player_List_Table extends WP_List_Table {
       case 'stats_play':
         $value= '';
         if( $player->stats_play ) $value = '<a href="'. admin_url( 'admin.php?page=fv_player_stats&player_id=' . $id ) .'" target="_blank">'. $player->stats_play .'</a>';
+        break;
+      case 'thumbs':
+        $value = join( ' ', $player->thumbs );
         break;
       default:
         $value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';
