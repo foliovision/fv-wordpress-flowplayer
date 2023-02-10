@@ -73,10 +73,11 @@
 
       jQuery.post(fv_player.ajaxurl, data, function(response) {
         if(response.src) {
-          var splashInput = item.find('#fv_wp_flowplayer_field_splash');
+
+          var splashInput = fv_player_editor.get_field('splash').eq( api.video.index );
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
-          
+
           // trigger autosave
           splashInput.trigger('keyup');
         }
@@ -97,7 +98,7 @@
 
     // Compatibility test
     api.on('ready', function(e,api) {
-      var src = jQuery('[name="fv_wp_flowplayer_field_src"]:visible').val(), // check using visible src
+      var src = fv_player_editor.get_field('src').eq( api.video.index ).val(), // get current video src
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
