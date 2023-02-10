@@ -1106,6 +1106,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
 
+      if( !$aArgs['toggle_advanced_settings'] ) {
+        $mobile = false;
+      }
+
       $aPlayer = array( 'sources' => $aItem );
       if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
 
