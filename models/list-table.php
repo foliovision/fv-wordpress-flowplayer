@@ -24,7 +24,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
   public function __construct( $args = array() ) {
     $this->args = $args;
-    //var_dump($args);
+
     parent::__construct( array(
       'singular' => 'Log entry',
       'plural'   => 'Log entries',
@@ -194,7 +194,10 @@ class FV_Player_List_Table extends WP_List_Table {
         break;
 
     }
-    
+
+    // Use manage_toplevel_page_fv_player_columns to add new columns and what's below to add content
+    do_action( "manage_toplevel_page_fv_player_custom_column", $column_name, $player );
+
     return $value;
   }
 
