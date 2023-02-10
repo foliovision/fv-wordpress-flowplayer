@@ -1727,7 +1727,7 @@ jQuery(function() {
           if( image.length == 0 ) {
             item.find('.thumbnail .filename').removeClass('hidden');
           }
-          item.attr( 'data-details', JSON.stringify( json_data[i] ) );
+          item.attr( 'data-details', JSON.stringify( data ) );
 
           list.append( item );
         }
@@ -1742,7 +1742,7 @@ jQuery(function() {
           player_browser_list = player_browser.find( '.attachments' ),
           idealColumnWidth =  $( window ).width() < 640 ? 135 : 150;
 
-        player_browser.attr( 'data-columns', Math.min( Math.round( player_browser_list.width() / idealColumnWidth, 12 ) ) || 1 );
+        player_browser.attr( 'data-columns', Math.min( Math.round( player_browser_list.width() / idealColumnWidth ), 12 ) || 1 );
       }
 
     });
