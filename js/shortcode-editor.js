@@ -1669,12 +1669,12 @@ jQuery(function() {
       });
 
       let do_search = false,
-        is_searching = false;
+        is_searching = false,
+        search_val = false;
 
       $doc.on('keyup', '#fv-player-editor-copy_player-overlay [name=players_selector]', function() {
-        let input = $(this);
-
-        do_search = input.val();
+        search_val = $(this).val();
+        do_search = true;
       });      
 
       setInterval( function() {
@@ -1687,7 +1687,7 @@ jQuery(function() {
           $.post(ajaxurl, {
             action: 'fv_player_db_retrieve_all_players_for_dropdown',
             nonce: fv_player_editor_conf.search_nonce,
-            search: do_search
+            search: search_val
           }, show_players ).fail(function () {
             overlay_show('message', 'An unexpected error has occurred. Please try again.');
           });
