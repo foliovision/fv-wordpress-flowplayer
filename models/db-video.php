@@ -627,7 +627,7 @@ CREATE TABLE " . self::$db_table_name . " (
    *
    * @return array Returns all options data for this video.
    */
-  public function getAllDataValues($frontend = false) {
+  public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
@@ -635,7 +635,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
-    if( $frontend && !$data['toggle_advanced_settings'] ) {
+    if( !$data['toggle_advanced_settings'] ) {
       $data['src1'] = '';
       $data['src2'] = '';
       $data['rtmp'] = '';
