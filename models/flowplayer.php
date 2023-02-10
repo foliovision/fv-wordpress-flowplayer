@@ -1064,7 +1064,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $rtmp && stripos($rtmp,'rtmp://') === false ) {
         $rtmp = 'rtmp:'.$rtmp;  
       }
-      
+
+      if( !$aArgs['toggle_advanced_settings'] ) { // disable alternative sources if advanced settings are hidden
+        $src1 = $src2 = $rtmp = false;
+      }
+
       foreach( apply_filters( 'fv_player_media', array($media, $src1, $src2, $rtmp), $this ) AS $key => $media_item ) {
         if( !$media_item ) continue;
         

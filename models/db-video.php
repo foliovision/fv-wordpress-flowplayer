@@ -635,14 +635,6 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
-    if( !$data['toggle_advanced_settings'] ) {
-      $data['src1'] = '';
-      $data['src2'] = '';
-      $data['rtmp'] = '';
-      $data['rtmp_path'] = '';
-      $data['mobile'] = '';
-    }
-
     return $data;
   }
 
