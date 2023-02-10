@@ -1852,14 +1852,21 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
+    if( !wp_verify_nonce( $_POST['nonce'], 'fv-player-editor-search-nonce' ) ) {
+      wp_send_json_error( 'Nonce verification failed! Please reload the page.' );
+    }
+
     $search = !empty( $_POST['search'] ) ? $_POST['search'] : false;
 
     $players = $this->getListPageData('date_created', 'desc', false, false, false, $search );
 
-    $json_data = array();
+    $json_data = array(
+      'success' => true,
+      'players' => array()
+    );
 
     foreach ($players as $player) {
-      $json_data[] = array(
+      $json_data['players'][] = array(
         'id' => $player->id,
         'player_name' => $player->player_name,
         'video_titles' => $player->video_titles,
@@ -1869,8 +1876,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
       );
     }
 
-    header('Content-Type: application/json');
-    die(json_encode($json_data));
+    wp_send_json( $json_data );
   }
 
   /**

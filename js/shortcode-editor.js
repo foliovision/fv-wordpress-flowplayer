@@ -1659,8 +1659,8 @@ jQuery(function() {
         debug_log('Running fv_player_db_retrieve_all_players_for_dropdown Ajax.');
 
         $.post(ajaxurl, {
-          // TODO: Nonce
-          action: 'fv_player_db_retrieve_all_players_for_dropdown'
+          action: 'fv_player_db_retrieve_all_players_for_dropdown',
+          nonce: fv_player_editor_conf.search_nonce,
         }, show_players ).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
         });
@@ -1668,20 +1668,43 @@ jQuery(function() {
         return false;
       });
 
-      // TODO: Debounce
+      let do_search = false,
+        is_searching = false;
+
       $doc.on('keyup', '#fv-player-editor-copy_player-overlay [name=players_selector]', function() {
         let input = $(this);
 
-        $.post(ajaxurl, {
-          // TODO: Nonce
-          action: 'fv_player_db_retrieve_all_players_for_dropdown',
-          search: input.val()
-        }, show_players ).fail(function () {
-          overlay_show('message', 'An unexpected error has occurred. Please try again.');
-        });
-      });
+        do_search = input.val();
+      });      
+
+      setInterval( function() {
+        if( do_search ) {
+          if( is_searching ) {
+            // Try again later
+            return;
+          }
+
+          $.post(ajaxurl, {
+            action: 'fv_player_db_retrieve_all_players_for_dropdown',
+            nonce: fv_player_editor_conf.search_nonce,
+            search: do_search
+          }, show_players ).fail(function () {
+            overlay_show('message', 'An unexpected error has occurred. Please try again.');
+          });
+
+          is_searching = true;
+          do_search = false;
+        }
+      }, 1000 );
 
       function show_players(json_data) {
+        if( !json_data.success ) {
+          overlay_show('message', json_data.data );
+          return;
+        }
+
+        is_searching = false;
+
         let overlay = overlay_show('copy_player'),
           list = overlay.find('.attachments'),
           button = overlay.find('.button-primary');
@@ -1689,8 +1712,8 @@ jQuery(function() {
         button.prop( 'disabled', true );
         list.html('');
 
-        for (var i in json_data) {
-          let data = json_data[i],
+        for (var i in json_data.players) {
+          let data = json_data.players[i],
             image = $( data.thumbs[0] ).find('img'),
             player_name = data.player_name || data.video_titles.join( ', ' );
 

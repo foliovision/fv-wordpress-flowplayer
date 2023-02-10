@@ -32,6 +32,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce-".get_current_user_id() ),
     'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce-".get_current_user_id() ),
     'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
+    'search_nonce' => wp_create_nonce( "fv-player-editor-search-nonce" ),
     'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id()),
     'shortcode_args_to_preserve' => array(
       'ab',
