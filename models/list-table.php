@@ -230,7 +230,11 @@ class FV_Player_List_Table extends WP_List_Table {
   			$count = $post_type_player_counts[$k]->count;
       }
 
-			$views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', add_query_arg( array( 'post_type' => $k, 'paged' => FALSE ) ), $current == $k ? ' class="current"' : '', $v['label'] .  '&nbsp;<span class="count">('.number_format($count).')' );
+      $url_post_type = 'all' != $k ? $k : false;
+      $url = add_query_arg( array( 'post_type' => $url_post_type, 'paged' => FALSE ) );
+      $class = $current == $k ? ' class="current"' : '';
+
+			$views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', $url, $class, $v['label'] .  '&nbsp;<span class="count">('.number_format($count).')' );
 		}
 
 		return $views;
@@ -259,7 +263,16 @@ class FV_Player_List_Table extends WP_List_Table {
     $offset = ( $current - 1 ) * $per_page;
 
     global $FV_Player_Db;
-    return $FV_Player_Db->getListPageData($order_by, $order, $offset, $per_page, $single_id, $search, $post_type );
+    return $FV_Player_Db->getListPageData( array(
+      'offset'    => $offset,
+      'order'     => $order,
+      'order_by'  => $order_by,
+      'player_id' => $single_id,
+      'per_page'  => $per_page,
+      'post_type' => $post_type,
+      'search'    => $search,
+    ) );
+
   }
   
   public function prepare_items() {

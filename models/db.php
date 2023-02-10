@@ -278,17 +278,31 @@ class FV_Player_Db {
   /**
    * Adds data for all players table shown in admin to cache, the returns the cache.
    *
-   * @param string      $order_by  If set, data will be ordered by this column.
-   * @param string      $order     If set, data will be ordered in this order.
-   * @param int         $offset    If set, data will returned will be limited, starting at this offset.
-   * @param int         $per_page  If set, data will returned will be limited, ending at this offset.
-   * @param int|array   $player_id If set, data will be restricted to a single player ID or array of player IDs.
-   * @param string      $search    If set, results will be searched for using the GET search parameter.
+   * @param array $args {
+   *   @type string     $order_by  If set, data will be ordered by this column.
+   *   @type string     $order     If set, data will be ordered in this order.
+   *   @type int        $offset    If set, data will returned will be limited, starting at this offset.
+   *   @type int        $per_page  If set, data will returned will be limited, ending at this offset.
+   *   @type int|array  $player_id If set, data will be restricted to a single player ID or array of player IDs.
+   *   @type string     $search    If set, results will be searched for using the GET search parameter.
+   * }
    *
    * @return array     Returns an array of all cached list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
-  public function getListPageData($order_by, $order, $offset, $per_page, $player_id = null, $search = null, $post_type = false ) {
+  public function getListPageData( $args ) {
+    $args = wp_parse_args( $args, array(
+      'offset'    => false,
+      'order'     => 'asc',
+      'order_by'  => 'id',
+      'player_id' => null,
+      'per_page'  => false,
+      'post_type' => false,
+      'search'    => false,
+    ) );
+
+    extract( $args );
+
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
     $order_by = (in_array($order_by, $this->valid_order_by) ? $order_by : 'id');
@@ -1870,7 +1884,11 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     $search = !empty( $_POST['search'] ) ? $_POST['search'] : false;
 
-    $players = $this->getListPageData('date_created', 'desc', false, false, false, $search );
+    $players = $this->getListPageData( array(
+      'order' => 'desc',
+      'order_by' => 'date_created',
+      'search' => $search
+    ) );
 
     $json_data = array(
       'success' => true,

@@ -419,7 +419,9 @@ class FV_Player_Custom_Videos_Master {
             // Fallback if it was not preloaded
             if( !$found ) {
               global $FV_Player_Db;
-              $objPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $shortcode_atts['id'] );
+              $objPlayers = $FV_Player_Db->getListPageData( array(
+                'player_id' => $shortcode_atts['id']
+              ) );
 
               // The above function always gives back the FV Player PHP Players cache, so we need to loop through results
               foreach( $objPlayers AS $objPlayer ) {
@@ -512,7 +514,9 @@ class FV_Player_Custom_Videos_Master {
     // Somehow calling it with empty array would pre-load all the players an videos
     if( count($players) ) {
       global $FV_Player_Db;
-      $this->aPostListPlayers = $FV_Player_Db->getListPageData( false, false, false, false, $players );
+      $this->aPostListPlayers = $FV_Player_Db->getListPageData( array(
+        'player_id' => $players
+      ) );
     }
 
     return $posts;
