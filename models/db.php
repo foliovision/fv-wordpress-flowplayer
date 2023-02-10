@@ -378,14 +378,8 @@ class FV_Player_Db {
     } else {
       // load all players, which will put them into the cache automatically
 
-      $db_options = array(
-        'select_fields' => 'player_name, date_created, videos, author, status',
-        'order_by'      => $order_by,
-        'order'         => $order,
-        'offset'        => $offset,
-        'per_page'      => $per_page,
-        'post_type'     => $post_type,
-      );
+      $db_options = $args;
+      $db_options['select_fields'] = 'player_name, date_created, videos, author, status';
 
       if( $cannot_edit_other_posts ) {
         $db_options['author_id'] = $author_id;
@@ -1463,13 +1457,31 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
     global $wpdb;
 
     $post_type_join = '';
+    $tax_join = '';
     if( $args['post_type'] ) {
       $post_type_join = 'JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player JOIN `'.$wpdb->posts.'` AS posts ON posts.ID = pm.meta_value ';
 
       $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
+
+      // Is there any known taxonomy in $args ?
+      $post_type_taxonomies = get_taxonomies( array(
+        'object_type' => array( $args['post_type']  ),
+        'public'      => true,
+        'show_ui'     => true,
+      ) );
+
+      foreach( $post_type_taxonomies AS $tax) {
+        if ( !empty( $args[ 'tax_' . $tax ] ) ) {
+          $tax_join = "
+INNER JOIN {$wpdb->term_relationships} AS tr ON posts.ID = tr.object_id
+INNER JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
+
+          $where .= ' AND t.slug = "' . esc_sql( $args[ 'tax_' . $tax ] ) . '"';
+          $where .= ' AND tt.taxonomy = "' . esc_sql( $tax ) . '"';
+        }
+      }
     }
-
-
 
     if($args['count']) {
       $group_order = '';
@@ -1480,7 +1492,7 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
     $player_data = $wpdb->get_results('SELECT
 '.$select.$meta_counts_select.'
 FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
-'.$meta_counts_join.$post_type_join.$where.$group_order);
+'.$meta_counts_join.$post_type_join.$tax_join.$where.$group_order);
 
 
     if($args['count']) {

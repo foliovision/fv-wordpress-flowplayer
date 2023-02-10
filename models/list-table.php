@@ -212,6 +212,23 @@ class FV_Player_List_Table extends WP_List_Table {
     global $wpdb;
     $post_type_player_counts = $wpdb->get_results( "SELECT post_type, count( post_type ) AS count FROM $wpdb->posts AS p JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON p.ID = pm.meta_value WHERE p.post_status IN ( 'draft', 'publish' ) AND pm.meta_key = 'post_id' GROUP BY post_type", OBJECT_K );
 
+    if ( ! empty( $_GET['post_type'] ) ) {
+      // Remove the taxonomy arg from the URL 
+      $post_type_taxonomies = get_taxonomies( array(
+        'object_type' => array( $_GET['post_type'] ),
+        'public'      => true,
+        'show_ui'     => true,
+      ) );
+
+      foreach ( $post_type_taxonomies AS $tax ) {
+        if ( ! empty( $_GET[ $tax ] ) ) {
+          $url = add_query_arg( array(
+            $tax => false
+          ) );
+        }
+      }
+    }
+
 		foreach( $post_types AS $k => $v ) {
 
       // Omit post types which have no player
@@ -231,7 +248,12 @@ class FV_Player_List_Table extends WP_List_Table {
       }
 
       $url_post_type = 'all' != $k ? $k : false;
-      $url = add_query_arg( array( 'post_type' => $url_post_type, 'paged' => FALSE ) );
+
+      $url = add_query_arg( array(
+        'post_type' => $url_post_type,
+        'paged' => false
+      ), isset($url) ? $url : false );
+
       $class = $current == $k ? ' class="current"' : '';
 
 			$views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', $url, $class, $v['label'] .  '&nbsp;<span class="count">('.number_format($count).')' );
@@ -262,8 +284,7 @@ class FV_Player_List_Table extends WP_List_Table {
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;
 
-    global $FV_Player_Db;
-    return $FV_Player_Db->getListPageData( array(
+    $args = array(
       'offset'    => $offset,
       'order'     => $order,
       'order_by'  => $order_by,
@@ -271,8 +292,25 @@ class FV_Player_List_Table extends WP_List_Table {
       'per_page'  => $per_page,
       'post_type' => $post_type,
       'search'    => $search,
-    ) );
+    );
 
+    // Add any know taxonomy to the arguments
+    if( $post_type ) {
+      $post_type_taxonomies = get_taxonomies( array(
+        'object_type' => array( $post_type ),
+        'public'      => true,
+        'show_ui'     => true,
+      ) );
+
+      foreach( $post_type_taxonomies AS $post_type_taxonomy) {
+        if ( !empty( $_GET[ $post_type_taxonomy ] ) ) {
+          $args[ 'tax_'.$post_type_taxonomy ] = $_GET[ $post_type_taxonomy ];
+        }
+      }
+    }
+
+    global $FV_Player_Db;
+    return $FV_Player_Db->getListPageData( $args );
   }
   
   public function prepare_items() {
