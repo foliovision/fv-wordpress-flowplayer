@@ -11,7 +11,7 @@ class FV_Player_List_Table extends WP_List_Table {
   public $args;
 
   public $base_url;
-  
+
   public $counts;
   
   public $total_impressions = 0;
@@ -201,6 +201,40 @@ class FV_Player_List_Table extends WP_List_Table {
   public function get_bulk_actions() { // todo: any bulk action?
     return array();
   }
+    
+	public function get_views() {
+		$current = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'all';
+
+		$post_types = array( 'all' => array( 'label' => 'All' ) );
+
+    $post_types = array_merge( $post_types, get_post_types( array( 'public' => true ), 'objects' ) );
+
+    global $wpdb;
+    $post_type_player_counts = $wpdb->get_results( "SELECT post_type, count( post_type ) AS count FROM $wpdb->posts AS p JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON p.ID = pm.meta_value WHERE p.post_status IN ( 'draft', 'publish' ) AND pm.meta_key = 'post_id' GROUP BY post_type", OBJECT_K );
+
+		foreach( $post_types AS $k => $v ) {
+
+      // Omit post types which have no player
+      if ( 'all' != $k && ( !isset( $post_type_player_counts[$k]->count ) || $post_type_player_counts[$k]->count === 0 ) ) {
+        continue;
+      }
+
+      $v = (array) $v;
+
+      if ( 'all' == $k ) {
+        $count = 0;
+        foreach( $post_type_player_counts AS $type ) {
+          $count += $type->count;
+        }
+      } else {
+  			$count = $post_type_player_counts[$k]->count;
+      }
+
+			$views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', add_query_arg( array( 'post_type' => $k, 'paged' => FALSE ) ), $current == $k ? ' class="current"' : '', $v['label'] .  '&nbsp;<span class="count">('.number_format($count).')' );
+		}
+
+		return $views;
+	}
 
   public function process_bulk_action() {  // todo: any bulk action?
     return;
@@ -217,6 +251,7 @@ class FV_Player_List_Table extends WP_List_Table {
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
+    $post_type = !empty($_GET['post_type']) ? trim($_GET['post_type']) : null;
 
     if(!empty($this->args['player_id'])) $single_id = $this->args['player_id'];
 
@@ -224,7 +259,7 @@ class FV_Player_List_Table extends WP_List_Table {
     $offset = ( $current - 1 ) * $per_page;
 
     global $FV_Player_Db;
-    return $FV_Player_Db->getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
+    return $FV_Player_Db->getListPageData($order_by, $order, $offset, $per_page, $single_id, $search, $post_type );
   }
   
   public function prepare_items() {

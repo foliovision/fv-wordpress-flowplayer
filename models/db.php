@@ -288,7 +288,7 @@ class FV_Player_Db {
    * @return array     Returns an array of all cached list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
-  public function getListPageData($order_by, $order, $offset, $per_page, $player_id = null, $search = null) {
+  public function getListPageData($order_by, $order, $offset, $per_page, $player_id = null, $search = null, $post_type = false ) {
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
     $order_by = (in_array($order_by, $this->valid_order_by) ? $order_by : 'id');
@@ -345,6 +345,7 @@ class FV_Player_Db {
           'order'               => $order,
           'offset'              => $offset,
           'per_page'            => $per_page,
+          'post_type'           => $post_type,
           'search_by_video_ids' => $player_video_ids
         );
 
@@ -369,6 +370,7 @@ class FV_Player_Db {
         'order'         => $order,
         'offset'        => $offset,
         'per_page'      => $per_page,
+        'post_type'     => $post_type,
       );
 
       if( $cannot_edit_other_posts ) {
@@ -1341,6 +1343,7 @@ class FV_Player_Db {
       'order' => false,
       'order_by' => false,
       'per_page' => false,
+      'post_type' => false,
       'search_by_video_ids' => false,
       'select_fields' => false,
       'count' => false
@@ -1427,23 +1430,32 @@ class FV_Player_Db {
 
     $meta_counts_select = '';
     $meta_counts_join = '';
-      if( is_admin() ) {
-        $meta_table = FV_Player_Db_Video_Meta::get_db_table_name();
+    if( is_admin() ) {
+      $meta_table = FV_Player_Db_Video_Meta::get_db_table_name();
 
-        $meta_counts_select = ',
+      $meta_counts_select = ',
 count(subtitles.id) as subtitles_count,
 count(cues.id) as cues_count,
 count(chapters.id) as chapters_count,
 count(meta_transcript.id) as transcript_count';
-        $meta_counts_join = 'JOIN `'.FV_Player_Db_Video::get_db_table_name().'` AS v on FIND_IN_SET(v.id, p.videos)
+      $meta_counts_join = 'JOIN `'.FV_Player_Db_Video::get_db_table_name().'` AS v on FIND_IN_SET(v.id, p.videos)
 LEFT JOIN `'.$meta_table.'` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
 LEFT JOIN `'.$meta_table.'` AS cues ON v.id = cues.id_video AND cues.meta_key like \'cues%\'
 LEFT JOIN `'.$meta_table.'` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = \'chapters\'
 LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key = \'transcript\'
 ';
-      }
+    }
 
     global $wpdb;
+
+    $post_type_join = '';
+    if( $args['post_type'] ) {
+      $post_type_join = 'JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player JOIN `'.$wpdb->posts.'` AS posts ON posts.ID = pm.meta_value ';
+
+      $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
+    }
+
+
 
     if($args['count']) {
       $group_order = '';
@@ -1454,7 +1466,7 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
     $player_data = $wpdb->get_results('SELECT
 '.$select.$meta_counts_select.'
 FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
-'.$meta_counts_join.$where.$group_order);
+'.$meta_counts_join.$post_type_join.$where.$group_order);
 
 
     if($args['count']) {
