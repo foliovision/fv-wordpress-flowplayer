@@ -475,8 +475,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       </button>
     <div class="media-frame-title" id="media-frame-title"><h1>Pick FV Player</h1></div>
 
-      <!-- TODO: Dynamic data-columns! -->
-      <div class="wp-core-ui media-frame-content attachments-browser" data-columns="6">
+      <div class="wp-core-ui media-frame-content attachments-browser">
         <div class="media-toolbar">
           <div class="media-toolbar-primary search-form">
             <input type="search" placeholder="Search videos or playlists" id="media-search-input" class="search" name="players_selector" >
@@ -501,10 +500,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <h2>Embedded on</h2>
             <div class="posts-list"></div>
 
-            <label class="setting" data-setting="url">
-              <span class="name">Shortcode</span>
-              <input type="text" value="" readonly="">
-            </label>
           </div>
         </div>
       </div>

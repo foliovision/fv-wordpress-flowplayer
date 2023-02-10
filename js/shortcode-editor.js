@@ -1545,11 +1545,10 @@ jQuery(function() {
             status = v.post_status != 'publish' ? ' (' + v.post_status + ')' : '',
             taxonomies = v.taxonomies ? '<ul><li>' + v.taxonomies.join( '</li><li>' ) + '</li></ul>' : '';
 
-          ul.append( '<li>' + v.post_title + type + status + taxonomies + '</li>')
+          ul.append( '<li><strong>' + v.post_title + '</strong>' + type + status + taxonomies + '</li>')
         } );
         attachment_details.find('.posts-list').html('').append( ul );
 
-        attachment_details.find('.setting input').val( '[fvplayer id="' + details.id + '"]' );
         attachment_details.show();
 
         $( '#fv-player-editor-copy_player-overlay .button-primary' ).prop( 'disabled', false );
@@ -1710,6 +1709,17 @@ jQuery(function() {
           list.append( item );
         }
 
+        show_players_resize();
+      }
+
+      $( window ).resize( show_players_resize );
+
+      function show_players_resize() {
+        let player_browser = $( '#fv-player-editor-copy_player-overlay .attachments-browser'),
+          player_browser_list = player_browser.find( '.attachments' ),
+          idealColumnWidth =  $( window ).width() < 640 ? 135 : 150;
+
+        player_browser.attr( 'data-columns', Math.min( Math.round( player_browser_list.width() / idealColumnWidth, 12 ) ) || 1 );
       }
 
     });
@@ -2145,7 +2155,6 @@ jQuery(function() {
       $el_editor.find('[data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
 
       // fire up editor reset event, so plugins can clear up their data IDs as well
-      var $doc = jQuery(document);
       $doc.trigger('fv_flowplayer_player_editor_reset');
 
       // reset content of any input fields, except what has .extra-field
@@ -2398,7 +2407,6 @@ jQuery(function() {
               current_player_object = response;
 
               // fire the player load event to cater for any plugins listening
-              var $doc = jQuery(document);
               $doc.trigger('fv_flowplayer_player_meta_load', [response]);
 
               for (var key in response) {

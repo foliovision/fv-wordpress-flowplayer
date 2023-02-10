@@ -1196,6 +1196,6 @@ a.fvp_item_video-filename {
 #fv-player-editor-copy_player-overlay .attachment-details .setting input {
   width: 65%;
 }
-#fv-player-editor-copy_player-overlay .posts-list ul > ul {
-  margin: 0 1em 1em;
+#fv-player-editor-copy_player-overlay .posts-list ul ul {
+  margin: .5em 1em;
 }
