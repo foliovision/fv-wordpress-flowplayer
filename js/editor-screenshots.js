@@ -1,7 +1,7 @@
 /*
  *  Take screenshot from preview
  */
-( function($) {
+( function() {
   var index = 0;
 
   flowplayer( function(api,root) {
@@ -28,6 +28,10 @@
     }
 
     button.on('click', function() {
+      var current_video_index = api.video.index;
+
+      console.log('FV Player Editor Screenshots: Taking screenshot for' + current_video_index);
+
       try {
         button.prop("disabled", true);
 
@@ -74,7 +78,9 @@
       jQuery.post(fv_player.ajaxurl, data, function(response) {
         if(response.src) {
 
-          var splashInput = fv_player_editor.get_field('splash').eq( api.video.index );
+          console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+current_video_index);
+
+          var splashInput = fv_player_editor.get_field('splash').eq( current_video_index );
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
 
@@ -102,7 +108,7 @@
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
-        fv_player_editor_conf_screenshots.disable_domains.forEach(function(item, index) {
+        fv_player_editor_conf_screenshots.disable_domains.forEach(function(item) {
           if( src.indexOf(item) !== -1 ) {
             should_show = false;
           }
@@ -120,7 +126,7 @@
     });
 
     // Resume video after setting crossOrigin
-    api.on('resume progress', function(e) {
+    api.on('resume progress', function() {
       if( seek_recovery && api.video.seekable ) {
         api.seek(seek_recovery, function() {
           seek_recovery = false;
@@ -132,7 +138,7 @@
     });
 
     // Show error if video fails after setting crossOrigin
-    api.on('error', function(e, api, err) {
+    api.on('error', function(e, api) {
       if( seek_recovery ) {
         // prevent FV Player Pro from trying to recover
         api.fv_retry_count = 100;
