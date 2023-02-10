@@ -451,7 +451,35 @@ class FV_Player_Db {
             $embeds = $wpdb->get_results( "SELECT ID, post_title, post_status, post_type FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
 
             foreach( $embeds AS $post_id => $post_data ) {
-              $embeds[ $post_id ]->taxonomies = array_values( get_the_taxonomies( $post_id ) );
+
+              // TODO: Seems to add a lot of queries, only do when necessary
+              // Code from core WordPress get_the_taxonomies()
+              $post = get_post( $post_id );
+
+              $taxonomies = array();
+
+              if ( $post ) {
+                foreach ( get_object_taxonomies( $post ) as $taxonomy ) {
+                  $t = (array) get_taxonomy( $taxonomy );
+                  if ( empty( $t['label'] ) ) {
+                    $t['label'] = $taxonomy;
+                  }
+
+                  $terms = get_object_term_cache( $post->ID, $taxonomy );
+                  if ( false === $terms ) {
+                    $terms = wp_get_object_terms( $post->ID, $taxonomy );
+                  }
+
+                  if ( $terms ) {
+                    $taxonomies[ $taxonomy ] = array(
+                      'label' => $t['label'],
+                      'terms' => $terms
+                    );
+                  }
+                }
+              }
+
+              $embeds[ $post_id ]->taxonomies = $taxonomies;
             }
 
             $embeds = apply_filters( 'fv_player_editor_embeds', $embeds, $player );

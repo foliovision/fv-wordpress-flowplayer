@@ -1543,9 +1543,22 @@ jQuery(function() {
         $.each( details.embeds, function( k, v ) {
           let type = v.post_type != 'post' ? ' (' + v.post_type + ')' : '',
             status = v.post_status != 'publish' ? ' (' + v.post_status + ')' : '',
-            taxonomies = v.taxonomies ? '<ul><li>' + v.taxonomies.join( '</li><li>' ) + '</li></ul>' : '';
+            taxonomies_and_terms = [];
+            
+          if( v.taxonomies ) {
+            $.each( v.taxonomies, function( taxonomy, taxonomy_details ) {
+              
+              let taxonomy_terms = [];
+              $.each( taxonomy_details.terms, function( k, term ) {
+                taxonomy_terms.push( term.name );
+              } );
+              taxonomies_and_terms.push( taxonomy_details.label + ': ' + taxonomy_terms.join( ', ' ) );
+            } );
+          }
+          
+          taxonomies_and_terms = '<ul><li>' + taxonomies_and_terms.join( '</li><li>' ) + '</li></ul>';
 
-          ul.append( '<li><strong>' + v.post_title + '</strong>' + type + status + taxonomies + '</li>')
+          ul.append( '<li><strong>' + v.post_title + '</strong>' + type + status + taxonomies_and_terms + '</li>')
         } );
         attachment_details.find('.posts-list').html('').append( ul );
 
@@ -1558,7 +1571,6 @@ jQuery(function() {
       $doc.on('click', '#fv-player-editor-copy_player-overlay .button-primary', function() {
         $el_editor.find('.button-primary').text('Insert');
 
-        // TODO: Make it work
         let selected = $( '#fv-player-editor-copy_player-overlay .attachment.selected' );
         if( selected.length > 0 ) {
           editor_open( selected.data('details').id );
