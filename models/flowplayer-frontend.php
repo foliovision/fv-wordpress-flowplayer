@@ -121,6 +121,15 @@ class flowplayer_frontend extends flowplayer
     // preview POST data, as they are not all present here yet
     if( $player = $this->current_player() ) {
 
+      if( !$player->getToggleEndAction() ) {
+        $this->aCurArgs['end_actions'] = false;
+        $this->aCurArgs['end_action_value'] = false;
+      }
+
+      if( !$player->getToggleAdCustom() ) {
+        $this->aCurArgs['ad'] = false;
+      }
+
       if (isset($_GET['fv_player_preview']) && $_GET['fv_player_preview'] == 'POST' && isset($_POST['fv_player_preview_json'])) {
         foreach ($player->getAllDataValues() as $key => $value) {
           if (empty($this->aCurArgs[$key]) && !empty($value)) {
