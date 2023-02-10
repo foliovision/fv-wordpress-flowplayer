@@ -667,7 +667,7 @@ class FV_Player_Db {
 
         $fv_fp->currentPlayerObject = $player;
 
-        $data = $player->getAllDataValues(true);
+        $data = $player->getAllDataValues();
 
         // did we find the player?
         if ( $data ) {
