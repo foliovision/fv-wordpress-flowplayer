@@ -1237,7 +1237,7 @@ jQuery(function() {
             });
 
             // If we are in playlist view, we refresh the list too
-            if( current_video_to_edit > 1 ) {
+            if( current_video_to_edit == -1 ) {
               playlist_refresh();
             }
 
