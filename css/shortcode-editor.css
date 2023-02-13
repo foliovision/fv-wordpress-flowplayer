@@ -1146,6 +1146,25 @@ a.fvp_item_video-filename {
   background: #d7d7d7;
 }
 
+#playlist-hero {
+  float: right;
+  width: calc(100% - 65px);
+  margin-right: 8px;
+}
+#playlist-hero .components-base-control__field {
+  margin-top: 0;
+}
+#fv-player-shortcode-editor #playlist-hero input {
+  min-height: 34px;
+}
+#fv-player-shortcode-editor #playlist-hero button {
+  width: 100%;
+}
+#fv-player-shortcode-editor #playlist-hero .fv-player-editor-notice {
+  max-width: 100%;
+  position: static;
+}
+
 #fv-player-shortcode-editor .ui-sortable-placeholder {
   background: radial-gradient(rgb(128 128 128 / 15%), transparent);
   visibility: visible !important;

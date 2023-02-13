@@ -556,7 +556,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
             <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
           </div>
-          <div class="fv-player-editor-notice" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
+          <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
@@ -598,7 +598,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <a class="fvp_item_remove" href="#"><span class="dashicons dashicons-trash"></span></a>
               </div>
           </div>
-          <a class="playlist_add">+</a>
+          <div id="playlist-hero" style="display: none">
+            <div class="components-base-control__field">
+              <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" data-playlist-hero="true" />
+              <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;" data-playlist-hero="true">Choose from <?php echo get_bloginfo(); ?>'s library</button>
+              <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
+              <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php _e('Please post a link to the new video or choose one.', 'fv-wordpress-flowplayer'); ?></div>
+            </div>
+          </div>
+          <a class="playlist_add" data-html="+" data-alt-html="&#10140;">+</a>
 
         </div>
 

@@ -48,6 +48,8 @@ jQuery(function() {
     // are we editing player which is not yet in DB?
     is_unsaved = true,
 
+    is_playlist_hero_editing = false,
+
     // is the player already saved in the DB but actually
     // still in a "draft" status? i.e. not published yet
     has_draft_status = true,
@@ -185,6 +187,38 @@ jQuery(function() {
         return current_player_object.videos[current_video_to_edit];
       }
       return false;
+    }
+
+    /*
+     *  Used when entering link to the "hero" field.
+     *  If it's used in the playlist mode, we need to insert the hidden new playlist row and use the added field.
+     */
+    function get_hero_src_field( input ) {
+      let editor_src_field = get_field("src")
+
+      if( $( '#playlist-hero:visible' ).length && input.data('playlist-hero') ) {
+
+        // Remember the new item index to not add new video on each keyup event!
+        if( !input.data( 'new-item-index' ) ) {
+          input.data( 'new-item-index', get_playlist_items_count() );
+        }
+
+        editor_src_field = editor_src_field.eq( input.data( 'new-item-index' ) );
+        
+        // Add new playlist item if it's not there
+        if( !editor_src_field.length ) {
+          let new_item = playlist_item_add();
+
+          // If we are going to type in the URL, do not show the row
+          if( input.attr( 'type') == 'text' ) {
+            $( '#fv-player-editor-playlist .fv-player-editor-playlist-item:last').hide();
+          }
+
+          editor_src_field = get_field( "src", new_item );
+        }
+      }
+
+      return editor_src_field;
     }
 
     /*
@@ -729,16 +763,18 @@ jQuery(function() {
 
       // Copy hero input value to the first video src and trigger event for save & preview
       $('[name=hero-src]').on('change keyup', function() {
-        let editor_src_field = get_field("src"),
-          value = jQuery(this).val().trim();
+
+        $('#playlist-hero .fv-player-editor-notice.notice-use-ui').hide();
+
+        let input = $( this ),
+          value = input.val().trim(),
+          is_valid_url = false;
 
         if( value ) {
-          let is_valid_url = false
           if( value.match( /https?:\/\// ) ) {
 
             for (var vtype in window.fv_player_editor_matcher) {
               if (window.fv_player_editor_matcher[vtype].matcher.exec(value) !== null) {
-                editor_src_field.val( value ).trigger( 'keyup' );
                 is_valid_url = true;
                 break;
               }
@@ -746,13 +782,23 @@ jQuery(function() {
 
           }
 
-          $('#fv-player-shortcode-editor-preview-no .fv-player-editor-notice').toggle( !is_valid_url );
+          if( $( '#playlist-hero:visible' ).length ) {
+            $('#playlist-hero .fv-player-editor-notice.notice-url-format').toggle( !is_valid_url );
+          } else {
+            $('#fv-player-shortcode-editor-preview-no .fv-player-editor-notice.notice-url-format').toggle( !is_valid_url );
+          }
         }
+
+        if( !is_valid_url ) {
+          return false;
+        }
+
+        get_hero_src_field( $(this) ).val( value ).trigger( 'keyup' );
       });
 
       $('.button-hero').on('click', function() {
         // click on the media library button next to that input
-        get_field("src").closest('.components-base-control__field').find('.add_media').trigger('click');
+        get_hero_src_field( $(this) ).closest('.components-base-control__field').find('.add_media').trigger('click');
       });
 
       /*
@@ -1063,6 +1109,12 @@ jQuery(function() {
 
           $el_editor.removeClass('is-intro');
           $('[name=hero-src]').val('');
+        }
+
+        // If editor was in the frontend mode and adding playlist item we hide the playlist hero item now
+        // and instead show the playlist item row
+        if( $( '#playlist-hero:visible' ).length ) {
+          playlist_hero_hide();
         }
       });
 
@@ -1592,7 +1644,18 @@ jQuery(function() {
       });
 
       $doc.on('click', '.playlist_add', function() {
-        playlist_item_add();
+        // If it's front-end mode do not add new item instantly, but show input and a button
+        if( fv_player_editor_conf.frontend ) {
+          console.log( 'is_playlist_hero_editing', is_playlist_hero_editing );
+          if( is_playlist_hero_editing ) {
+            $('#playlist-hero .fv-player-editor-notice.notice-use-ui').show();
+          } else {
+            playlist_hero_show();
+          }
+          
+        } else {
+          playlist_item_add();
+        }
 
         return false;
       });
@@ -3331,6 +3394,11 @@ jQuery(function() {
       return 'fv_wp_flowplayer_field_' + (fieldMap[name] ? fieldMap[name] : name);
     }
 
+    function playlist_add_toggle_function( hero_on ) {
+      let button = $( '.playlist_add' );
+      button.html( button.data( hero_on ? 'alt-html' : 'html' ) );
+    }
+
     function playlist_buttons_disable( reason ) {
       if( reason ) {
         $('.playlist_add, .playlist_edit').addClass('disabled').attr('title', reason);
@@ -3342,6 +3410,36 @@ jQuery(function() {
     function playlist_buttons_toggle( show ) {
       $('.playlist_add, .playlist_edit').css( 'display', show ? 'inline-block' : 'none' );
     }
+
+    function playlist_hero_hide() {
+      playlist_add_toggle_function();
+
+      $( '#fv-player-editor-playlist .fv-player-editor-playlist-item:last').show();
+      $( '#playlist-hero' ).hide();
+
+      // Reset playlist item count on the hero input box
+      $( '#playlist-hero [name=hero-src]').data( 'new-item-index', false ).val('');
+
+      // Reset playlist item count on the hero Media Library button
+      $( '#playlist-hero button').data( 'new-item-index', false );
+
+      is_playlist_hero_editing = false;
+    }
+
+    function playlist_hero_show() {
+      is_playlist_hero_editing = true;
+
+      playlist_add_toggle_function( true );
+
+      $( '#playlist-hero' ).show();
+    }
+
+    // Clicking anywhere else should hide the prompt, the button to add playlist item is excluded too
+    $( $el_editor ).on( 'click', function( e ) {
+      if( is_playlist_hero_editing && $( e.target ).closest( '#playlist-hero').length == 0 && !$( e.target ).hasClass( 'playlist_add') ) {
+        playlist_hero_hide();
+      }
+    });
 
     /*
     * Adds playlist item
