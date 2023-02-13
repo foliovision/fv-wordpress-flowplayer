@@ -52,7 +52,7 @@
   display: none;
 }
 
-.fv_player_actions_end-toggle,.fv_player_interface_hide, .is-visible-dependency.fv_player_interface_hide, .fv-player-playlist-item-title{ display:none; }
+.fv_player_actions_end-toggle, #fv-player-shortcode-editor .fv_player_interface_hide, .is-visible-dependency.fv_player_interface_hide, .fv-player-playlist-item-title{ display:none; }
 #fv_player_boxTitle{ display:none!important; }
 #fv_player_boxLoadedContent{ margin-top:0; }
 
@@ -142,6 +142,7 @@
 #fv-player-shortcode-editor-preview-spinner{z-index: 2; height: 100%; width: 100%; position: absolute}
 .fv-player-shortcode-editor-small-spinner, .fv-player-se-loading-indictor {z-index: 2; background-size: 20px; height: 20px; width: 20px; display: inline-block}
 .fv-player-playlist-item .fv-player-shortcode-editor-small-spinner {position: absolute; top: 4px; right: 123px;}
+.fv_player_splash_list_preview .fv-player-shortcode-editor-small-spinner {position: absolute; width: 100%; background-color: transparent}
 .fvp_item_video-thumbnail img{max-width: 142px;max-height: 80px;aspect-ratio: 16/9;object-fit: cover;width: 100%;}
 .fvp_item_video-thumbnail.no-img {max-width: 142px;aspect-ratio: 16/9;background: radial-gradient(transparent, transparent, rgba( 128, 128, 128, 0.15) );width: 100%;display: inline-block}
 
@@ -215,6 +216,9 @@ a #add-format, a #add-rtmp {
   right: 0;
 }
 
+#fv-player-editor-notices {
+  position: relative;
+}
 .fv-player-editor-notice {
   position: absolute;
   bottom: 10px;
@@ -280,6 +284,7 @@ a #add-format, a #add-rtmp {
 
 #fv-player-shortcode-editor label {
   color: black;
+  font-size: 13px;
 }
 
 #fv-player-shortcode-editor input[type="text"],
@@ -305,6 +310,9 @@ a #add-format, a #add-rtmp {
   min-height: 36px;
 	width:100%;
   word-break: break-all;
+}
+#fv-player-shortcode-editor input::placeholder, #fv-player-shortcode-editor textarea::placeholder {
+  color: unset;
 }
 .fv_player_editor_url_shortened {
   margin: 4px 2px;
@@ -433,9 +441,6 @@ body.is-fv-player-editor-modal-open {
 }
 
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no {
-  /* TODO: Use proper path */
-  
-  border: 4px dashed #ddd;
   background-size: contain;
   background-position: center;
   image-rendering: -webkit-optimize-contrast;
@@ -445,6 +450,19 @@ body.is-fv-player-editor-modal-open {
   bottom: 0;
   margin: auto;
   padding: 95px 0;
+}
+#fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no.upload-support {
+  border: 4px dashed #ddd;
+}
+#fv-player-shortcode-editor-preview-no .components-base-control__field {
+  justify-content: center;
+}
+#fv-player-shortcode-editor-preview-no input[name=hero-src] {
+  width: 25%;
+}
+#fv-player-shortcode-editor-preview-no .fv-player-editor-notice {
+  margin: 0 auto;
+  position: static;
 }
 
 #fv-player-shortcode-editor-left {
@@ -467,6 +485,13 @@ body.is-fv-player-editor-modal-open {
 #fv-player-shortcode-editor-preview {
    width:75%;
 
+}
+
+#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left {
+  width: 100%;
+}
+#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-right {
+  display: none;
 }
 
 #fv-player-shortcode-editor .nav-tab {
@@ -504,9 +529,12 @@ body.is-fv-player-editor-modal-open {
   border-top: 1px solid #e9e9e9;
   box-sizing:border-box;
 }
-#fv-player-editor-modal-bottom a {
+#fv-player-editor-modal-bottom a.button, #fv-player-editor-modal-bottom a.button-primary {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+#fv-player-shortcode-editor.is-playlist-active #fv-player-editor-modal-bottom {
+  border: 0;
 }
 
 /*
@@ -516,6 +544,9 @@ New FV Player Editor inputs styling
   border: none;
   border-top: 1px solid #e0e0e0;
   padding: 16px;
+}
+#fv-player-shortcode-editor .components-panel__body.fv-player-editor-legacy {
+  border-top: none;
 }
 #fv-player-shortcode-editor .fv-player-tab .components-panel__body:first-of-type {
   border-top: 0;
@@ -713,6 +744,9 @@ div#fv-player-editor-field-children-align {
 		width: 100%;
 		height: 265px;
 	}
+  #fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left {
+    height: 100%;
+  }
 	#fv-player-shortcode-editor-right {
 
 		width: calc(100% - 1px);
@@ -985,6 +1019,7 @@ a.fvp_item_video-filename {
   display: flex;
   font-family: monospace;
   font-size: 1.25em;
+  overflow: hidden;
 }
 
 .fv-player-editor-playlist-move-handle::after {
@@ -1054,6 +1089,7 @@ a.fvp_item_video-filename {
   font-size: 16px;
   font-weight: 500;
   margin-right: 10px;
+  white-space: nowrap;
 }
 
 .configure-video {
@@ -1104,6 +1140,10 @@ a.fvp_item_video-filename {
   line-height: 1;
   font-family: monospace;
   background: #f7f7f7;
+  text-decoration: none;
+}
+.playlist_add:hover {
+  background: #d7d7d7;
 }
 
 #fv-player-shortcode-editor .ui-sortable-placeholder {
@@ -1115,15 +1155,47 @@ a.fvp_item_video-filename {
   margin-top: -24px;
 }
 .fv_wp_flowplayer_field_video_info {
-  margin: 0
+  list-style: none;
+  margin: 0;
 }
 .fv_wp_flowplayer_field_video_info li {
   background: #eee;
   border-radius: 1em;
   float: left;
+  font-size: 13px;
   padding: .2em .6em;
-  margin-right: .6em;
+  margin: 0 .6em 0 0;
 }
 .fv_wp_flowplayer_field_video_info li.error {
   background: #f88;
+}
+
+/* Legacy inputs in new editor style */
+.components-panel__body label {
+  display: block;
+}
+.components-panel__body .alignright {
+  float: unset;
+}
+
+/*
+ * We use the WP Media Library HTML and CSS, here's what's necessary to make it work
+ */
+#fv-player-editor-copy_player-overlay {
+  padding: 0;
+  text-align: unset;
+}
+
+#fv-player-editor-copy_player-overlay.media-frame .attachments-browser {
+  height: auto;
+  position: absolute;
+}
+#fv-player-editor-copy_player-overlay .media-frame-content {
+  top: 50px;
+}
+#fv-player-editor-copy_player-overlay .attachment-details .setting input {
+  width: 65%;
+}
+#fv-player-editor-copy_player-overlay .posts-list ul ul {
+  margin: .5em 1em;
 }

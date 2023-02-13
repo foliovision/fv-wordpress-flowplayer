@@ -1070,3 +1070,133 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
 
   return $output;
 }
+
+
+add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
+
+/**
+ * @param array $args { 
+ *   @type string $field    jQuery field selector of the field with the shortcode
+ *   @type string $hide     Comma separated list of fields to hide
+ *   @type string $library  Comma separated list of libraries to show in Media Library
+ *   @type string $tabs     Use "none" to only show Playlist and Videos tabs and nothing else, like Options, Actions or Subtitles
+ * }
+ *
+ * @return string HTML code.
+ */
+function fvplayer_editor( $args ) {
+  include_once( ABSPATH.'/wp-admin/includes/plugin.php' );
+  include_once( __DIR__.'/editor.php' );
+
+  if( version_compare(phpversion(),'5.5.0') != -1 ) {
+    include_once( __DIR__ . '/../models/media-browser.php');
+  }
+
+  if ( function_exists( 'FV_Player_Pro' ) && method_exists ( 'FV_Player_Pro', 'include_vimeo_media_browser' ) ) {
+    FV_Player_Pro()->include_vimeo_media_browser( true );
+  }
+
+  do_action( 'fvplayer_editor_load' );
+
+  wp_enqueue_media();
+
+  fv_player_shortcode_editor_scripts_enqueue( $args );
+
+  ob_start();
+  fv_wp_flowplayer_edit_form_after_editor();
+  ?>
+  <script>
+  var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+
+  document.addEventListener( 'DOMContentLoaded', function() {
+    jQuery(function() {
+
+      // Wait until FV Player Editor $doc.ready() finishes
+      setTimeout( function() {
+        fv_player_editor.editor_open();
+      });
+    });
+  });
+  </script>
+  <style>
+  #fv-player-editor-modal {
+    display: block !important;
+    position: relative !important;
+    top: auto !important;
+    left: unset !important;
+    right: unset !important;
+    bottom: unset !important;
+    z-index: unset !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  }
+  #fv-player-editor-modal h2 {
+    letter-spacing: normal;
+  }
+  #fv-player-editor-modal #fv-player-shortcode-editor {
+    position: static !important;
+  }
+  #fv-player-editor-modal-close {
+    display: none !important;
+  }
+  #fv-player-shortcode-editor-preview {
+    margin-top: 16px;
+  }
+  .fv-player-tab {
+    overflow-y: unset !important;
+  }
+
+  /* Core WordPress Admin Button styling */
+  #fv-player-editor-modal .button, #fv-player-editor-modal .button-primary, #fv-player-editor-modal .button-secondary {
+    box-shadow: unset;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    text-shadow: unset;
+    text-transform: none;
+  }
+  #fv-player-editor-modal .button.hover, #fv-player-editor-modal .button:hover, #fv-player-editor-modal .button-secondary:hover {
+    background: #f0f0f1;
+    border-color: #0a4b78;
+    color: #0a4b78;
+  }
+  #fv-player-editor-modal .button, #fv-player-editor-modal .button-secondary {
+    color: #2271b1;
+    border-color: #2271b1;
+    background: #f6f7f7;
+    vertical-align: top;
+  }
+  #fv-player-editor-modal .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+  }
+  #fv-player-editor-modal .button-primary.hover, #fv-player-editor-modal .button-primary:hover, #fv-player-editor-modal .button-primary.focus, #fv-player-editor-modal .button-primary:focus {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+  }
+
+  /* Core WordPress Media Library styles to fix */
+  .media-modal .media-router button.media-menu-item {
+    color: #3c434a;
+    text-transform: none;
+  }
+  </style>
+  <?php
+  return ob_get_clean();
+}

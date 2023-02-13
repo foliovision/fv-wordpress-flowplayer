@@ -13,8 +13,8 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 
 
-function fv_player_shortcode_editor_scripts_enqueue() {
-  global $fv_wp_flowplayer_ver;
+function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
+  global $current_screen, $fv_wp_flowplayer_ver;
 
   $url = flowplayer::get_plugin_url();
 
@@ -24,13 +24,15 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
   wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js',array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), $fv_wp_flowplayer_ver, true );
 
-  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
+  $fv_player_editor_conf = array(
     'admin_url' => admin_url('admin.php?page=fv_player'),
     'home_url' => home_url('/'),
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce-".get_current_user_id() ),
     'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce-".get_current_user_id() ),
     'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
+    'search_nonce' => wp_create_nonce( "fv-player-editor-search-nonce" ),
     'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id()),
     'shortcode_args_to_preserve' => array(
       'ab',
@@ -61,8 +63,30 @@ function fv_player_shortcode_editor_scripts_enqueue() {
       'sort',
       'volume'
     ),
-    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
-  ) );
+    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream'),
+    'is_fv_player_screen' => !empty($current_screen->id) && $current_screen->id == 'toplevel_page_fv_player',
+    'is_edit_posts_screen' => !empty($current_screen->base) && $current_screen->base == 'edit' && !empty($current_screen->post_type)
+  );
+
+  if( !empty($extra_args['field']) ) {
+    $fv_player_editor_conf['field_selector'] = $extra_args['field'];
+  }
+
+  // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
+  if( !empty($extra_args['hide']) ) {
+    $fv_player_editor_conf['hide'] = explode( ',', $extra_args['hide'] );
+  }
+
+  if( !empty($extra_args['library']) ) {
+    $fv_player_editor_conf['library'] = $extra_args['library'];
+  }
+
+  // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
+  if( !empty($extra_args['tabs']) ) {
+    $fv_player_editor_conf['tabs'] = $extra_args['tabs'];
+  }
+
+  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', $fv_player_editor_conf );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_translations', array(
     'embed_notice' => __('Embed feature not supported in editor preview', 'fv-wordpress-flowplayer'),

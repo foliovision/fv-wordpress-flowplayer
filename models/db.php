@@ -279,19 +279,33 @@ class FV_Player_Db {
   }
 
   /**
-   * Retrieves data for all players table shown in admin.
+   * Adds data for all players table shown in admin to cache, the returns the cache.
    *
-   * @param $order_by  If set, data will be ordered by this column.
-   * @param $order     If set, data will be ordered in this order.
-   * @param $offset    If set, data will returned will be limited, starting at this offset.
-   * @param $per_page  If set, data will returned will be limited, ending at this offset.
-   * @param $single_id If set, data will be restricted to a single player ID.
-   * @param $search    If set, results will be searched for using the GET search parameter.
+   * @param array $args {
+   *   @type string     $order_by  If set, data will be ordered by this column.
+   *   @type string     $order     If set, data will be ordered in this order.
+   *   @type int        $offset    If set, data will returned will be limited, starting at this offset.
+   *   @type int        $per_page  If set, data will returned will be limited, ending at this offset.
+   *   @type int|array  $player_id If set, data will be restricted to a single player ID or array of player IDs.
+   *   @type string     $search    If set, results will be searched for using the GET search parameter.
+   * }
    *
-   * @return array     Returns an array of all list page results to be displayed.
+   * @return array     Returns an array of all cached list page results to be displayed.
    * @throws Exception When the underlying FV_Player_Db_Video class generates an error.
    */
-  public function getListPageData($order_by, $order, $offset, $per_page, $single_id = null, $search = null) {
+  public function getListPageData( $args ) {
+    $args = wp_parse_args( $args, array(
+      'offset'    => false,
+      'order'     => 'asc',
+      'order_by'  => 'id',
+      'player_id' => null,
+      'per_page'  => false,
+      'post_type' => false,
+      'search'    => false,
+    ) );
+
+    extract( $args );
+
     // sanitize variables
     $order = (in_array($order, array('asc', 'desc')) ? $order : 'asc');
     $order_by = (in_array($order_by, $this->valid_order_by) ? $order_by : 'id');
@@ -299,8 +313,16 @@ class FV_Player_Db {
     $cannot_edit_other_posts = !current_user_can('edit_others_posts');
 
     // load single player, as requested by the user
-    if ($single_id) {
-      new FV_Player_Db_Player( $single_id, array(), $this );
+    if ($player_id) {
+      if( is_array($player_id) ) {
+        if( count($player_id) > 0 ) {
+          $this->cache_players_and_videos_do( $player_id );
+        }
+
+      } else {
+        new FV_Player_Db_Player( $player_id, array(), $this );
+      }
+
     } else if ($search) {
 
       $direct_hit_cache = false;
@@ -340,6 +362,7 @@ class FV_Player_Db {
           'order'               => $order,
           'offset'              => $offset,
           'per_page'            => $per_page,
+          'post_type'           => $post_type,
           'search_by_video_ids' => $player_video_ids
         );
 
@@ -358,13 +381,8 @@ class FV_Player_Db {
     } else {
       // load all players, which will put them into the cache automatically
 
-      $db_options = array(
-        'select_fields' => 'player_name, date_created, videos, author, status',
-        'order_by'      => $order_by,
-        'order'         => $order,
-        'offset'        => $offset,
-        'per_page'      => $per_page,
-      );
+      $db_options = $args;
+      $db_options['select_fields'] = 'player_name, date_created, videos, author, status';
 
       if( $cannot_edit_other_posts ) {
         $db_options['author_id'] = $author_id;
@@ -421,10 +439,55 @@ class FV_Player_Db {
           $result_row->status = __($player->getStatus(), 'fv-wordpress-flowplayer');
           $result_row->video_objects = $videos;
 
-          // no player name, we'll assemble it from video captions and/or sources
-          if (!$result_row->player_name) {
-            $result_row->player_name = $player->getPlayerNameWithFallback();
+          $result_row->player_name = $player->getPlayerName();
+
+          $result_row->video_titles = $player->getPlayerVideoNames();
+
+          $embeds = array();
+          if( $posts = $player->getMetaValue('post_id') ) {
+            $post_ids = array();
+            foreach( $posts AS $post_id ) {
+              $post_ids[] = $post_id;
+            }
+
+            global $wpdb;
+            $embeds = $wpdb->get_results( "SELECT ID, post_title, post_status, post_type FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
+
+            foreach( $embeds AS $post_id => $post_data ) {
+
+              // TODO: Seems to add a lot of queries, only do when necessary
+              // Code from core WordPress get_the_taxonomies()
+              $post = get_post( $post_id );
+
+              $taxonomies = array();
+
+              if ( $post ) {
+                foreach ( get_object_taxonomies( $post ) as $taxonomy ) {
+                  $t = (array) get_taxonomy( $taxonomy );
+                  if ( empty( $t['label'] ) ) {
+                    $t['label'] = $taxonomy;
+                  }
+
+                  $terms = get_object_term_cache( $post->ID, $taxonomy );
+                  if ( false === $terms ) {
+                    $terms = wp_get_object_terms( $post->ID, $taxonomy );
+                  }
+
+                  if ( $terms ) {
+                    $taxonomies[ $taxonomy ] = array(
+                      'label' => $t['label'],
+                      'terms' => $terms
+                    );
+                  }
+                }
+              }
+
+              $embeds[ $post_id ]->taxonomies = $taxonomies;
+            }
+
+            $embeds = apply_filters( 'fv_player_editor_embeds', $embeds, $player );
           }
+          $result_row->embeds = $embeds;
 
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
             if( empty($videos[ $video_id ]) ) { // the videos field might point to a missing video
@@ -453,9 +516,6 @@ class FV_Player_Db {
               $result_row->stats_play += intval($video->getMetaValue('stats_play',true)); // todo: lower SQL count
             }
           }
-
-          // join thumbnails
-          $result_row->thumbs = join(' ', $result_row->thumbs);
 
           $result[] = $result_row;
         }
@@ -1322,6 +1382,7 @@ class FV_Player_Db {
       'order' => false,
       'order_by' => false,
       'per_page' => false,
+      'post_type' => false,
       'search_by_video_ids' => false,
       'select_fields' => false,
       'count' => false
@@ -1408,23 +1469,50 @@ class FV_Player_Db {
 
     $meta_counts_select = '';
     $meta_counts_join = '';
-      if( is_admin() ) {
-        $meta_table = FV_Player_Db_Video_Meta::get_db_table_name();
+    if( is_admin() ) {
+      $meta_table = FV_Player_Db_Video_Meta::get_db_table_name();
 
-        $meta_counts_select = ',
+      $meta_counts_select = ',
 count(subtitles.id) as subtitles_count,
 count(cues.id) as cues_count,
 count(chapters.id) as chapters_count,
 count(meta_transcript.id) as transcript_count';
-        $meta_counts_join = 'JOIN `'.FV_Player_Db_Video::get_db_table_name().'` AS v on FIND_IN_SET(v.id, p.videos)
+      $meta_counts_join = 'JOIN `'.FV_Player_Db_Video::get_db_table_name().'` AS v on FIND_IN_SET(v.id, p.videos)
 LEFT JOIN `'.$meta_table.'` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
 LEFT JOIN `'.$meta_table.'` AS cues ON v.id = cues.id_video AND cues.meta_key like \'cues%\'
 LEFT JOIN `'.$meta_table.'` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = \'chapters\'
 LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key = \'transcript\'
 ';
-      }
+    }
 
     global $wpdb;
+
+    $post_type_join = '';
+    $tax_join = '';
+    if( $args['post_type'] ) {
+      $post_type_join = 'JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player JOIN `'.$wpdb->posts.'` AS posts ON posts.ID = pm.meta_value ';
+
+      $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
+
+      // Is there any known taxonomy in $args ?
+      $post_type_taxonomies = get_taxonomies( array(
+        'object_type' => array( $args['post_type']  ),
+        'public'      => true,
+        'show_ui'     => true,
+      ) );
+
+      foreach( $post_type_taxonomies AS $tax) {
+        if ( !empty( $args[ 'tax_' . $tax ] ) ) {
+          $tax_join = "
+INNER JOIN {$wpdb->term_relationships} AS tr ON posts.ID = tr.object_id
+INNER JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
+
+          $where .= ' AND t.slug = "' . esc_sql( $args[ 'tax_' . $tax ] ) . '"';
+          $where .= ' AND tt.taxonomy = "' . esc_sql( $tax ) . '"';
+        }
+      }
+    }
 
     if($args['count']) {
       $group_order = '';
@@ -1435,7 +1523,7 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
     $player_data = $wpdb->get_results('SELECT
 '.$select.$meta_counts_select.'
 FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
-'.$meta_counts_join.$where.$group_order);
+'.$meta_counts_join.$post_type_join.$tax_join.$where.$group_order);
 
 
     if($args['count']) {
@@ -1833,18 +1921,35 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    $players = $this->getListPageData('date_created', 'desc', false, false);
-    $json_data = array();
+    if( !wp_verify_nonce( $_POST['nonce'], 'fv-player-editor-search-nonce' ) ) {
+      wp_send_json_error( 'Nonce verification failed! Please reload the page.' );
+    }
+
+    $search = !empty( $_POST['search'] ) ? $_POST['search'] : false;
+
+    $players = $this->getListPageData( array(
+      'order' => 'desc',
+      'order_by' => 'date_created',
+      'search' => $search
+    ) );
+
+    $json_data = array(
+      'success' => true,
+      'players' => array()
+    );
 
     foreach ($players as $player) {
-      $json_data[] = array(
+      $json_data['players'][] = array(
         'id' => $player->id,
-        'name' => '#' . $player->id . ' ' . $player->player_name
+        'player_name' => $player->player_name,
+        'video_titles' => $player->video_titles,
+        'thumbs' => $player->thumbs,
+        'date_created' => date( get_option( 'date_format' ), strtotime( $player->date_created ) ),
+        'embeds' => $player->embeds,
       );
     }
 
-    header('Content-Type: application/json');
-    die(json_encode($json_data));
+    wp_send_json( $json_data );
   }
 
   /**

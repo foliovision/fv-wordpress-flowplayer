@@ -4,7 +4,7 @@
 ( function() {
   var index = 0;
 
-  flowplayer( function(api,root) {
+  flowplayer( function(api,root) {console.log('screenshots 1');
     root = jQuery(root);
     var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
@@ -110,11 +110,13 @@
       if ( typeof src != 'undefined' ) {
         fv_player_editor_conf_screenshots.disable_domains.forEach(function(item) {
           if( src.indexOf(item) !== -1 ) {
+            console.log('screenshots no 1');
             should_show = false;
           }
         });
 
         if( should_show ) {
+          console.log('screenshots 3');
           button.appendTo('#fv-player-shortcode-editor-preview');
           try {
             takeScreenshot();

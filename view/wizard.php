@@ -455,7 +455,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </div>
 <div id="fv-player-editor-modal" style="display: none">
 
-  <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?>>
+  <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?> style="display: none">
 
     <input type="hidden" id="fv_wp_flowplayer_field_post_id" name="fv_wp_flowplayer_field_post_id" value="<?php echo get_the_ID(); ?>" />
 
@@ -467,12 +467,50 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <a data-fv-player-editor-overlay-close href="#" class="button button-primary">Close</a>
     </div>
     
-    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay">
-      <select name="players_selector" id="players_selector">
-        <option hidden disabled selected value>Choose a Player...</option>
-      </select>
-      
-      <a data-fv-player-editor-overlay-close href="#" class="button">Close</a>
+    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay media-frame hide-menu">
+      <button type="button" class="media-modal-close" data-fv-player-editor-overlay-close>
+        <span class="media-modal-icon">
+          <span class="screen-reader-text">Close dialog</span>
+        </span>
+      </button>
+    <div class="media-frame-title" id="media-frame-title"><h1>Pick FV Player</h1></div>
+
+      <div class="wp-core-ui media-frame-content attachments-browser">
+        <div class="media-toolbar">
+          <div class="media-toolbar-primary search-form">
+            <input type="search" placeholder="Search videos or playlists" id="media-search-input" class="search" name="players_selector" >
+          </div>
+        </div>
+
+        <ul class="attachments"></ul>
+
+        <div class="media-sidebar">
+          <div class="attachment-details" style="display: none">
+            <h2>Player Details</h2>
+            <div class="attachment-info">
+              <div class="details">
+                <div class="filename"></div>
+                <div class="uploaded"></div>
+              </div>
+            </div>
+
+            <h2>Videos</h2>
+            <div class="videos-list"></div>
+
+            <h2>Embedded on</h2>
+            <div class="posts-list"></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="media-frame-toolbar">
+        <div class="media-toolbar">
+          <div class="media-toolbar-secondary"></div>
+          <div class="media-toolbar-primary search-form">
+            <button type="button" class="button media-button button-primary button-large media-button-select" disabled>Choose</button>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
@@ -513,9 +551,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
-          <h1><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></h1>
-		  <p><?php _e('Add your video from the media gallery or use the video tab to enter your URL.', 'fv-wordpress-flowplayer'); ?></p>
-		  <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Select File</button>
+          <p><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></p>
+          <div class="components-base-control__field">
+            <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
+            <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
+          </div>
+          <div class="fv-player-editor-notice" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
@@ -695,10 +736,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( $video_fields );
 
             // Legacy
-            // TODO: Will these still actually work?
-            do_action('fv_flowplayer_shortcode_editor_before');
+            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-            do_action('fv_flowplayer_shortcode_editor_item_after');
+              // TODO: Will these still actually work?
+              do_action('fv_flowplayer_shortcode_editor_before');
+              do_action('fv_flowplayer_shortcode_editor_item_after');
+
+            echo "</div>\n";
             ?>
           </div>
         </div>
@@ -732,10 +776,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( $subtitle_fields );
 
             // Legacy
-            // TODO: Will these still actually work?
-            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
+            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+              // TODO: Will these still actually work?
+              do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
+              do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+
+            echo "</div>\n";
             ?>
 
           </div>
@@ -1006,13 +1053,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           </td>
         </tr>
         -->
-        
+
           <?php
           // Legacy
-          // TODO: Will these still actually work?
-          do_action('fv_flowplayer_shortcode_editor_after');
+          echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-          do_action('fv_flowplayer_shortcode_editor_tab_actions'); ?>
+            // TODO: Will these still actually work?
+            do_action('fv_flowplayer_shortcode_editor_after');
+            do_action('fv_flowplayer_shortcode_editor_tab_actions');
+
+          echo "</div>\n";
+          ?>
 
         </div>
 

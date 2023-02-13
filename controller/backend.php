@@ -911,7 +911,7 @@ function fv_player_submitbox_misc_actions( $attachment ) {
 }
 
 /**
- * Admin add new player row by ajax
+ * Append or update player row in wp-admin -> FV Player
  */
 add_action('wp_ajax_fv_player_table_new_row', 'fv_player_table_new_row');
 
@@ -928,6 +928,29 @@ function fv_player_table_new_row() {
     $table->views();
     $table->advanced_filters();
     $table->display();
+    exit;
+  }
+}
+
+/**
+ * Update the player on the wp-admin -> Posts, Pages or CPT screen
+ * 
+ * Gets the first video thumbnail only
+ */
+add_action('wp_ajax_fv_player_edit_posts_cell', 'fv_player_edit_posts_cell');
+
+function fv_player_edit_posts_cell() {
+  if( isset($_POST['playerID']) && isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-edit_posts_cell_nonce-".get_current_user_id() ) ) {
+    global $FV_Player_Db;
+    $aPostListPlayers = $FV_Player_Db->getListPageData( array(
+      'player_id' => $_POST['playerID']
+    ) );
+
+    if( !empty($aPostListPlayers[0]->thumbs[0]) ) {
+      echo $aPostListPlayers[0]->thumbs[0];
+    } else {
+      echo "Error: Player not found!";
+    }
     exit;
   }
 }

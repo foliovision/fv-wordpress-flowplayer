@@ -316,6 +316,13 @@ jQuery(function() {
       return false;
     }
 
+    function hide_inputs() {
+      $.each( fv_player_editor_conf.hide, function( k, v ) {
+        $( '.fv-player-editor-field-wrap-'+v ).hide();//addClass('fv_player_interface_hide');//.hide();
+        $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();//addClass('fv_player_interface_hide');
+      } );
+    }
+
     /**
      * Automatically handles new, updated or removed player meta data
      * via JS.
@@ -717,6 +724,38 @@ jQuery(function() {
       });
 
       /*
+       * Intro view text input and button
+       */
+
+      // Copy hero input value to the first video src and trigger event for save & preview
+      $('[name=hero-src]').on('change keyup', function() {
+        let editor_src_field = get_field("src"),
+          value = jQuery(this).val().trim();
+
+        if( value ) {
+          let is_valid_url = false
+          if( value.match( /https?:\/\// ) ) {
+
+            for (var vtype in window.fv_player_editor_matcher) {
+              if (window.fv_player_editor_matcher[vtype].matcher.exec(value) !== null) {
+                editor_src_field.val( value ).trigger( 'keyup' );
+                is_valid_url = true;
+                break;
+              }
+            }
+
+          }
+
+          $('#fv-player-shortcode-editor-preview-no .fv-player-editor-notice').toggle( !is_valid_url );
+        }
+      });
+
+      $('.button-hero').on('click', function() {
+        // click on the media library button next to that input
+        get_field("src").closest('.components-base-control__field').find('.add_media').trigger('click');
+      });
+
+      /*
       * NAV TABS
       */
       $('.fv-player-tabs-header a').on( 'click', function(e) {
@@ -828,6 +867,8 @@ jQuery(function() {
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
+
+        return false;
       });
 
       /*
@@ -921,9 +962,26 @@ jQuery(function() {
         });
 
         fv_flowplayer_uploader.on('open', function() {
-        $( document ).trigger( "mediaBrowserOpen" );
+          $( document ).trigger( "mediaBrowserOpen" );
           jQuery('.media-router .media-menu-item').eq(0).trigger('click');
           jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
+
+          // Hide Media Library tabs which are not allowed
+          if( fv_player_editor_conf.library ) {
+            let libraries = fv_player_editor_conf.library.split(/,/);
+            $( '.media-router .media-menu-item' ).each( function( i, el ) {
+              let found = false;
+              $( libraries ).each( function( v, library ) {
+                if( $(el).attr('id').match(library) ) {
+                  found = true;
+                }
+              });
+
+              if( !found ) {
+                $(el).hide();
+              }
+            });
+          }
         });
 
         //When a file is selected, grab the URL and set it as the text field's value
@@ -998,6 +1056,14 @@ jQuery(function() {
       */
       $doc.on('fvp-preview-complete',function() {
         $el_preview.attr('class','preview-show');
+
+        // If editor was in the intro mode, we show the playlist and enable the full-editor 
+        if( $el_editor.hasClass('is-intro') ) {
+          playlist_show();
+
+          $el_editor.removeClass('is-intro');
+          $('[name=hero-src]').val('');
+        }
       });
 
       /*
@@ -1287,6 +1353,11 @@ jQuery(function() {
                 ajax_save_this_please = false;
               }
 
+              // Output the shortcode into the pre-configured output field
+              if( fv_player_editor_conf.field_selector ){
+                insert_shortcode( '[fvplayer id="'+current_player_db_id+'"]');
+              }
+
               // Set the current data as previous to let auto-saving detect changes
               // For new player this will have video and player IDs
               ajax_save_previous = build_ajax_data(true);
@@ -1453,12 +1524,58 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on('change', '#players_selector', function() {
-        insert_button_toggle_disabled(false);
+      $doc.on('click', '#fv-player-editor-copy_player-overlay .attachment', function() {
+        let item = $(this),
+          sidebar = $('#fv-player-editor-copy_player-overlay .media-sidebar'),
+          attachment_details = sidebar.find( '.attachment-details' ),
+          details = item.data('details');
 
-        // TODO
+        $( '#fv-player-editor-copy_player-overlay .attachment' ).removeClass( 'selected details' );
+
+        item.addClass('selected details');
+
+        attachment_details.find('.filename').text( '#' + details.id + '. '+ details.player_name );
+        attachment_details.find('.uploaded').text( details.date_created );
+
+        attachment_details.find('.videos-list').html( '<ul><li>' + details.video_titles.join('</li><li>' ) + '</li></ul>' );
+
+        let ul = $('<ul></ul>');
+        $.each( details.embeds, function( k, v ) {
+          let type = v.post_type != 'post' ? ' (' + v.post_type + ')' : '',
+            status = v.post_status != 'publish' ? ' (' + v.post_status + ')' : '',
+            taxonomies_and_terms = [];
+            
+          if( v.taxonomies ) {
+            $.each( v.taxonomies, function( taxonomy, taxonomy_details ) {
+              
+              let taxonomy_terms = [];
+              $.each( taxonomy_details.terms, function( k, term ) {
+                taxonomy_terms.push( term.name );
+              } );
+              taxonomies_and_terms.push( taxonomy_details.label + ': ' + taxonomy_terms.join( ', ' ) );
+            } );
+          }
+          
+          taxonomies_and_terms = '<ul><li>' + taxonomies_and_terms.join( '</li><li>' ) + '</li></ul>';
+
+          ul.append( '<li><strong>' + v.post_title + '</strong>' + type + status + taxonomies_and_terms + '</li>')
+        } );
+        attachment_details.find('.posts-list').html('').append( ul );
+
+        attachment_details.show();
+
+        $( '#fv-player-editor-copy_player-overlay .button-primary' ).prop( 'disabled', false );
+
+      });
+
+      $doc.on('click', '#fv-player-editor-copy_player-overlay .button-primary', function() {
         $el_editor.find('.button-primary').text('Insert');
-        editor_open(this.value);
+
+        let selected = $( '#fv-player-editor-copy_player-overlay .attachment.selected' );
+        if( selected.length > 0 ) {
+          editor_open( selected.data('details').id );
+        }
+        
       });
 
       $doc.on('click', '.fv_player_field_insert-button', function() {
@@ -1476,16 +1593,18 @@ jQuery(function() {
 
       $doc.on('click', '.playlist_add', function() {
         playlist_item_add();
+
+        return false;
       });
 
       $doc.on('click', '.playlist_edit', function() {
-        if ( jQuery(this).hasClass('disabled') ) {
-          return false;
+        if ( !jQuery(this).hasClass('disabled') ) {
+          playlist_show();
+
+          reload_preview( current_video_to_edit );
         }
 
-        playlist_show();
-
-        reload_preview( current_video_to_edit );
+        return false;
       });
 
       // prevent closing of the overlay if we have unsaved data
@@ -1536,7 +1655,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         // manually invoke a heartbeat to remove an edit lock immediatelly
-        if (current_player_db_id > -1) {
+        if (current_player_db_id > -1 && window.wp && wp.heartbeat && wp.heartbeat.connectNow ) {
           // do this asynchronously to allow our cleanup procedures set lock removal data for the next hearbeat
           setTimeout(wp.heartbeat.connectNow, 500);
         }
@@ -1552,32 +1671,91 @@ jQuery(function() {
         debug_log('Running fv_player_db_retrieve_all_players_for_dropdown Ajax.');
 
         $.post(ajaxurl, {
-          // TODO: Nonce
           action: 'fv_player_db_retrieve_all_players_for_dropdown',
-          cookie: encodeURIComponent(document.cookie),
-        }, function (json_data) {
-          var overlay = overlay_show('copy_player');
-
-          // build the dropdown
-          var dropdown = [];
-          for (var i in json_data) {
-            dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
-          }
-
-          // prepend the "Choose a player" option
-          if (dropdown.length) {
-            dropdown.unshift('<option hidden disabled selected value>Choose a Player...</option>');
-          }
-
-          overlay.find('select').html( dropdown.join('') );
-
-        }).fail(function () {
+          nonce: fv_player_editor_conf.search_nonce,
+        }, show_players ).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
-
         });
 
         return false;
       });
+
+      let do_search = false,
+        is_searching = false,
+        search_val = false;
+
+      $doc.on('keyup', '#fv-player-editor-copy_player-overlay [name=players_selector]', function() {
+        search_val = $(this).val();
+        do_search = true;
+      });      
+
+      setInterval( function() {
+        if( do_search ) {
+          if( is_searching ) {
+            // Try again later
+            return;
+          }
+
+          $.post(ajaxurl, {
+            action: 'fv_player_db_retrieve_all_players_for_dropdown',
+            nonce: fv_player_editor_conf.search_nonce,
+            search: search_val
+          }, show_players ).fail(function () {
+            overlay_show('message', 'An unexpected error has occurred. Please try again.');
+          });
+
+          is_searching = true;
+          do_search = false;
+        }
+      }, 1000 );
+
+      function show_players(json_data) {
+        if( !json_data.success ) {
+          overlay_show('message', json_data.data );
+          return;
+        }
+
+        is_searching = false;
+
+        let overlay = overlay_show('copy_player'),
+          list = overlay.find('.attachments'),
+          button = overlay.find('.button-primary');
+
+        button.prop( 'disabled', true );
+        list.html('');
+
+        for (var i in json_data.players) {
+          let data = json_data.players[i],
+            image = $( data.thumbs[0] ).find('img'),
+            player_name = data.player_name || data.video_titles.join( ', ' );
+
+          image.removeAttr('width');
+
+          let item = $('<li class="attachment"><div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape fullsize"><div class="thumbnail"><div class="filename hidden"><div></div></div></div></div><button type="button" class="check" tabindex="0"><span class="media-modal-icon"></span><span class="screen-reader-text">Deselect</span></button></li>');
+
+          item.find('.thumbnail').append( image );
+          
+          item.find('.thumbnail .filename > div').html( player_name );
+          if( image.length == 0 ) {
+            item.find('.thumbnail .filename').removeClass('hidden');
+          }
+          item.attr( 'data-details', JSON.stringify( data ) );
+
+          list.append( item );
+        }
+
+        show_players_resize();
+      }
+
+      $( window ).resize( show_players_resize );
+
+      function show_players_resize() {
+        let player_browser = $( '#fv-player-editor-copy_player-overlay .attachments-browser'),
+          player_browser_list = player_browser.find( '.attachments' ),
+          idealColumnWidth =  $( window ).width() < 640 ? 135 : 150;
+
+        player_browser.attr( 'data-columns', Math.min( Math.round( player_browser_list.width() / idealColumnWidth ), 12 ) || 1 );
+      }
 
     });
 
@@ -1601,14 +1779,26 @@ jQuery(function() {
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
 
-      if( field.length ) {
+      if( fv_player_editor_conf.field_selector ){
+        var custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+
+        // If the pre-configured field was not failed it's a big deal!
+        if( !custom_field_selector.length ){
+          alert( 'FV Player Editor: Field '+fv_player_editor_conf.field_selector+' not found!' );
+        }
+        editor_content = custom_field_selector.val();
+
+        // No need for insert button
+        insert_button_toggle(false);
+
+      } else if( field.length ) {
         if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
           field = field.find('textarea').first();
         }
 
         editor_content = jQuery(field).val();
       } else if( widget.length ){
-        editor_content = widget.val();
+        editor_content = widget.val();        
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
       } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -1669,6 +1859,10 @@ jQuery(function() {
       }
 
       $doc.trigger('fv-player-editor-init');
+
+      hide_inputs();
+
+      $el_editor.show();
     }
 
     /**
@@ -1914,26 +2108,45 @@ jQuery(function() {
           fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
         }
       } else if( current_player_db_id > 0 ) {
-        var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
-        if( playerRow.length == 0 ) {
-          var firstRow = $('#the-list tr:first'),
-            newRow = firstRow.clone();
 
-          newRow.find('td').html('');
-          playerRow = newRow.find('td').eq(0);
+        // Append or update player row in wp-admin -> FV Player
+        if( fv_player_editor_conf.is_fv_player_screen ) {
+          var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
+          if( playerRow.length == 0 ) {
+            var firstRow = $('#the-list tr:first'),
+              newRow = firstRow.clone();
 
-          firstRow.before( newRow )
+            newRow.find('td').html('');
+            playerRow = newRow.find('td').eq(0);
+
+            firstRow.before( newRow )
+          }
+
+          jQuery.post( ajaxurl, {
+            action : 'fv_player_table_new_row',
+            nonce : fv_player_editor_conf.table_new_row_nonce,
+            playerID :  current_player_db_id
+          }, function(response) {
+            playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
+          });
+
+          playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+        // Update the player on the wp-admin -> Posts, Pages or CPT screen
+        } else if( fv_player_editor_conf.is_edit_posts_screen ) {
+          let target_el = jQuery('.fv-player-edit[data-player_id='+current_player_db_id+']');
+          target_el.find('.fv_player_splash_list_preview').append('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+          jQuery.post( ajaxurl, {
+            action : 'fv_player_edit_posts_cell',
+            nonce : fv_player_editor_conf.edit_posts_cell_nonce,
+            playerID :  current_player_db_id
+          }, function(response) {
+            target_el.html( response );
+          });
+
         }
 
-        jQuery.post( ajaxurl, {
-          action : 'fv_player_table_new_row',
-          nonce : fv_player_editor_conf.table_new_row_nonce,
-          playerID :  current_player_db_id
-        }, function(response) {
-          playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
-        });
-
-        playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
       }
 
       // we need to do this now to make sure Heartbeat gets the correct data
@@ -1964,7 +2177,6 @@ jQuery(function() {
       $el_editor.find('[data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
 
       // fire up editor reset event, so plugins can clear up their data IDs as well
-      var $doc = jQuery(document);
       $doc.trigger('fv_flowplayer_player_editor_reset');
 
       // reset content of any input fields, except what has .extra-field
@@ -2006,8 +2218,18 @@ jQuery(function() {
         shortcode = 'fvplayer id="' + selected_player_id + '"';
 
       } else {
+        if( fv_player_editor_conf.field_selector ){
+          let custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+
+          // If the pre-configured field was not failed it's a big deal!
+          if( !custom_field_selector.length ){
+            alert( 'FV Player Editor: Field '+fv_player_editor_conf.field_selector+' not found!' );
+          }
+          editor_content = custom_field_selector.val();
+          shortcode = editor_content;
+
         // Edit button on wp-admin -> FV Player screen
-        if (is_fv_player_screen_edit(editor_button_clicked)) {
+        } else if (is_fv_player_screen_edit(editor_button_clicked)) {
           current_player_db_id = $(editor_button_clicked).data('player_id');
 
           debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
@@ -2067,7 +2289,11 @@ jQuery(function() {
         }
 
         // Foliopress WYSIWYG
-        else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
+        else if (
+          instance_fp_wysiwyg && (
+            instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())
+          )
+        ) {
           debug_log('Loading for Foliopress WYSIWYG...' );
 
           editor_content = instance_fp_wysiwyg.GetHTML();
@@ -2076,7 +2302,7 @@ jQuery(function() {
             editor_content = instance_fp_wysiwyg.GetHTML();
           }
 
-        } else {
+        } else if( instance_tinymce ) {
           debug_log('Loading for TinyMCE in Visual Mode...' );
 
           // TinyMCE in Visual Mode
@@ -2099,6 +2325,9 @@ jQuery(function() {
 
           }
           instance_tinymce.settings.validate = true;
+        } else {
+          editor_content = '';
+
         }
 
         if( !shortcode ){
@@ -2200,7 +2429,6 @@ jQuery(function() {
               current_player_object = response;
 
               // fire the player load event to cater for any plugins listening
-              var $doc = jQuery(document);
               $doc.trigger('fv_flowplayer_player_meta_load', [response]);
 
               for (var key in response) {
@@ -2727,7 +2955,8 @@ jQuery(function() {
       ajax_data['current_video_to_edit'] = current_video_to_edit;
 
       // save data
-      jQuery.post(ajaxurl, {
+      // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
+      jQuery.post(ajaxurl+'?fv_player_db_save=1', {
         action: 'fv_player_db_save',
         data: JSON.stringify(ajax_data),
         nonce: fv_player_editor_conf.preview_nonce
@@ -2735,9 +2964,9 @@ jQuery(function() {
 
         if( response.error ) {
           if( response.error && response.fatal_error ) {
-            var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-
-            var overlay = overlay_show('error_saving');
+            let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+  
+            let overlay = overlay_show('error_saving');
             overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
             overlay.find('[data-error]').html( response.error );
 
@@ -2789,7 +3018,7 @@ jQuery(function() {
 
             store_shortcode_args = args_to_keep;
 
-            var
+            let
               params = jQuery.map(store_shortcode_args, function (value, index) {
                 return index + '="' + value + '"';
               }),
@@ -2802,7 +3031,7 @@ jQuery(function() {
             insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
           } else if (always_keep_shortcode_args && player_was_non_db) {
             // we have extra parameters to keep that are DB-incompatible
-            var
+            let
               params = jQuery.map(always_keep_shortcode_args, function (value, index) {
                 return index + '="' + value + '"';
               }),
@@ -2820,9 +3049,9 @@ jQuery(function() {
 
           jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
         } else {
-          var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+          let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
 
-          var overlay = overlay_show('error_saving');
+          let overlay = overlay_show('error_saving');
           overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
 
           jQuery('#fv_player_copy_to_clipboard').select();
@@ -2909,6 +3138,12 @@ jQuery(function() {
     }
 
     function insert_button_toggle( show ) {
+
+      // Do not show Insert button if player is configured for a set field
+      if( show && fv_player_editor_conf.field_selector ) {
+        return;
+      }
+
       $('.fv_player_field_insert-button').toggle( show );
     }
 
@@ -2933,10 +3168,15 @@ jQuery(function() {
 
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
+        custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
+
+      // Field set by the [fvplayer_editor field="{selector}"]
+      if( custom_field_selector.length ){
+        custom_field_selector.val( shortcode );
 
       // is there a Gutenberg field together in wrapper with the button?
-      if( gutenberg.length ) {
+      } else if( gutenberg.length ) {
         var
           nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
           gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
@@ -2994,9 +3234,10 @@ jQuery(function() {
     }
 
     /*
-    Determines if the button clicked is on wp-admin -> FV Player
+    Determines if the button clicked is on wp-admin -> FV Player or wp-admin -> Posts (if using FV Player Video Custom Fields)
     */
     function is_fv_player_screen(button) {
+      // TODO: Should use fv_player_editor_conf.is_fv_player_screen || fv_player_editor_conf.is_edit_posts_screen
       return is_fv_player_screen_add_new(button) || is_fv_player_screen_edit(button);
     }
 
@@ -3255,6 +3496,8 @@ jQuery(function() {
         reload_preview( current_video_to_edit );
       }
 
+      hide_inputs();
+
       $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
     }
 
@@ -3399,6 +3642,9 @@ jQuery(function() {
 
     function reset_preview() {
       $el_preview.attr('class','preview-no');
+
+      // TODO: Setting
+      //$el_editor.addClass('is-intro');
     }
 
     function seconds_to_hms( seconds ) {
@@ -3665,6 +3911,10 @@ jQuery(function() {
           tab = $el_editor.find('a[data-tab=' + data[0] + ']');
         }
 
+        if( fv_player_editor_conf.tabs && fv_player_editor_conf.tabs == 'none' ) {
+          bHideTab = true; 
+        }
+
         if(bHideTab){
           tab.addClass('fv_player_interface_hide')
         } else {
@@ -3677,6 +3927,7 @@ jQuery(function() {
 
       if(visibleTabs<=1){
         $el_editor.find('.nav-tab').addClass('fv_player_interface_hide');
+        $el_editor.find('.nav-tab-wrapper').addClass('fv_player_interface_hide');
       }
 
       var end_actions_label = $('label[for=fv_wp_flowplayer_field_end_actions]');
@@ -4290,6 +4541,8 @@ jQuery(function() {
       meta_data_load_finished() {
         is_loading_meta_data--;
       },
+
+      editor_open: editor_open,
 
       error_add( identifier, txt ) {
         errors[ identifier ] = txt;
