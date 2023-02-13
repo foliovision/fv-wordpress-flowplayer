@@ -1100,6 +1100,8 @@ function fvplayer_editor( $args ) {
 
   wp_enqueue_media();
 
+  $args['frontend'] = true;
+
   fv_player_shortcode_editor_scripts_enqueue( $args );
 
   ob_start();

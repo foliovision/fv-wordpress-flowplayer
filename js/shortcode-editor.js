@@ -3643,8 +3643,9 @@ jQuery(function() {
     function reset_preview() {
       $el_preview.attr('class','preview-no');
 
-      // TODO: Setting
-      //$el_editor.addClass('is-intro');
+      if( fv_player_editor_conf.frontend ) {
+        $el_editor.addClass('is-intro');
+      }
     }
 
     function seconds_to_hms( seconds ) {
