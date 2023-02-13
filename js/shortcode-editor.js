@@ -4075,8 +4075,7 @@ jQuery(function() {
         });
       }
 
-      // TODO: What should be saved when it's all hidden?
-      $('.fv-player-editor-field-children-'+name).toggle( checked );
+      wrap.closest( '.fv-player-editor-children-wrap' ).find( '.fv-player-editor-field-children-'+name ).toggle( checked );
     }
 
     function show_end_actions( e, value ) {
