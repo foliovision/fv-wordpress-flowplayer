@@ -8,8 +8,8 @@
 	if(window.HTMLCollection && !HTMLCollection.prototype.forEach) {
 		HTMLCollection.prototype.forEach = Array.prototype.forEach;
 	}
-	
-	var filter = document.createElement('div');
+
+	let filter = document.createElement('div');
 	filter.innerHTML = '<svg class="fp-filters" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 0 0"><defs><filter id="f1" x="-20%" y="-20%" width="200%" height="200%"><feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" /><feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.3 0 0 0 0 0 0.4 0" /><feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="4" /><feBlend in="SourceGraphic" in2="blurOut" mode="normal" /></filter></defs></svg>';
 	filter.style.width = 0;
 	filter.style.height = 0;
@@ -21,15 +21,15 @@
 
 	Array.prototype.filter.call(document.getElementsByClassName('flowplayer'), function(player){
 		player.className = player.className.replace(/\bno-svg\b/g,'');
-		
+
 		/* remove admin JavaScript warning */
-		var admin_js_warning = player.querySelector('.fvfp_admin_error');
+		let admin_js_warning = player.querySelector('.fvfp_admin_error');
 		if( admin_js_warning ) {
 			admin_js_warning.parentNode.removeChild( admin_js_warning );
 		}
 
 		/* remove preload animation if it's there - not there for audio player */
-		var preload = player.querySelector('.fp-preload');
+		let preload = player.querySelector('.fp-preload');
 		if( preload ) {
 
 			preload.style.display = 'none';
@@ -133,16 +133,16 @@ class FV_Player_JS_Loader {
 	 */
 	_loadScriptSrc() {
 		const scripts = document.querySelectorAll( `script[${ this.attrName }]` );
-		
+
 		window.FV_Player_JS_Loader_scripts_total = 0;
 		window.FV_Player_JS_Loader_scripts_loaded = 0;
-		
+
 		scripts.forEach( elem => {
 			const scriptSrc = elem.getAttribute( this.attrName );
 
 			elem.setAttribute( 'src', scriptSrc );
 			elem.removeAttribute( this.attrName );
-			
+
 			window.FV_Player_JS_Loader_scripts_total++;
 			elem.onload = function() {
 				window.FV_Player_JS_Loader_scripts_loaded++;
@@ -162,17 +162,17 @@ class FV_Player_JS_Loader {
         return;
       }
 
-			var preload = player.querySelector('.fp-preload');
+			let preload = player.querySelector('.fp-preload');
 			if( preload ) {
 				preload.style.display = 'block';
 			}
 		});
-		
+
 		/* Not sure when, but sometimes the flowplayer script is not ready */
 		if( window.flowplayer ) {
 			this._loadScriptSrc();
 		} else {
-			var that = this,
+			let that = this,
 				wait_for_flowplayer = setInterval( function() {
 				if( window.flowplayer ) {
 					that._loadScriptSrc();
@@ -187,29 +187,29 @@ class FV_Player_JS_Loader {
 		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
 		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
-		
+
 		/* if using Video Link, load it all right away */
 		if( location.hash.match(/fvp_/) ) {
 			instance.triggerListener();
 			return;
 		}
-		
+
 		/* iOS specific block https://stackoverflow.com/questions/9038625/detect-if-device-is-ios */
 		function iOS() {
 			return navigator.platform.match(/iPad|iPhone|iPod/)
 			/* iPad on iOS 13 detection */
 			|| (navigator.userAgent.indexOf("Mac") !== -1 && "ontouchend" in document)
 		}
-		
+
 		if( iOS() ) {
-			
+
 			function load_if_any_player_visible() {
-				var is_any_player_visible = false;
-				
+				let is_any_player_visible = false;
+
 				/* if part of any player visible? */
 				/* TODO: What about playlist item thumbs? */
 				document.querySelectorAll('.flowplayer').forEach( el => {
-					var rect = el.getBoundingClientRect();
+					let rect = el.getBoundingClientRect();
 					if( rect.top >= -el.offsetHeight &&
 						rect.left >= -el.offsetWidth &&
 						rect.bottom <= ( window.innerHeight || document.documentElement.clientHeight ) + el.offsetHeight &&
@@ -219,22 +219,22 @@ class FV_Player_JS_Loader {
 					}
 				});
 				console.log( 'FV Player: Visible?', is_any_player_visible );
-				
+
 				if( is_any_player_visible ) {
 					instance.triggerListener();
 				}
-				
+
 				return is_any_player_visible;
 			}
-			
+
 			/* Load FV Player scripts instantly if any player is visible */
-			var was_visible = load_if_any_player_visible();
-				
+			let was_visible = load_if_any_player_visible();
+
 			/* Try again once styles are loaded */
 			if( !was_visible ) {
 				/* once everything is loaded */
 				window.addEventListener( 'load', load_if_any_player_visible );
-				
+
 				/* ...or when Safari restores the scroll position */
 				function load_on_scroll() {
 					this.removeEventListener( 'scroll', load_on_scroll );
@@ -242,19 +242,19 @@ class FV_Player_JS_Loader {
 				}
 				window.addEventListener( 'scroll', load_on_scroll );
 			}
-			
+
 			return;
 		}
 
 		/* If the first click was on player, play it */
-		var first_click_done = false;
+		let first_click_done = false;
 		document.addEventListener('mousedown', function (e) {
 			if( first_click_done ) return;
 			first_click_done = true;
-			
-			var playlist_item = false;
-			
-			var path = e.path || (e.composedPath && e.composedPath());
+
+			let playlist_item = false;
+
+			let path = e.path || (e.composedPath && e.composedPath());
 			path.forEach( function(el) {
 				/* store playlist item for later use */
 				if( el.getAttribute && el.getAttribute('data-item') ) {
@@ -262,41 +262,83 @@ class FV_Player_JS_Loader {
 				}
 
 				if( el.className && el.className.match && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) ) {
-					/* Players with autoplay should stop */
+					/* player_roots with autoplay should stop */
 					document.querySelectorAll('[data-fvautoplay]').forEach( function(player) {
 						player.removeAttribute('data-fvautoplay');
 					});
-					
+
 					/* VAST should not autoplay */
 					if( window.fv_vast_conf ) {
 						window.fv_vast_conf.autoplay = false;
 					}
-					
+
 					/* TODO: Perhaps video link should not be parsed or it should be done here */
-					
+
 					/* was it lightbox? */
 					if( el.className.match(/lightbox-starter/) ) {
-						
+
 					/* was it playlist thumb? */
 					} else if( el.className.match(/\bfp-playlist-external\b/) ) {
 						console.log('First click on playlist');
-						
-						var player = document.getElementById( el.getAttribute('rel') );
+
+						let player = document.getElementById( el.getAttribute('rel') );
 						player.setAttribute( 'data-fvautoplay', Array.prototype.indexOf.call(el.children,playlist_item) );
-						
+
 					} else {
 						console.log('First click on player');
 						el.classList.remove('is-poster');
 						el.classList.add('is-splash');
-						
+
 						el.setAttribute( 'data-fvautoplay', 0 );
 					}
 				}
 			});
-		
+
 		}, false);
-		
+
 	}
 }
 
 FV_Player_JS_Loader.run();
+
+( function() {
+  console.log('FV Player: adding playlist styles');
+  const player_roots = document.querySelectorAll('.flowplayer');
+
+  if (player_roots.length) {
+    for (let i = 0; i < player_roots.length; i++) {
+      let el = player_roots[i].querySelector('.fp-player');
+
+      if (player_roots[i].parentNode.classList.contains('fp-playlist-vertical-wrapper') || player_roots[i].parentNode.classList.contains('fp-playlist-text-wrapper')) {
+        el = player_roots[i].parentNode;
+      }
+
+      if( el.offsetHeight && el.offsetWidth <= 560 ) {
+        el.classList.add('is-fv-narrow');
+      } else {
+        el.classList.remove('is-fv-narrow');
+      }
+
+      const playlist_external = player_roots[i].parentNode.querySelector('div.fp-playlist-vertical[rel=' + player_roots[i].id + ']');
+      if( playlist_external ) {
+
+        let property = 'max-height';
+        let height = player_roots[i].offsetHeight;
+
+        if( height == 0 ) {
+          // get max-height from element
+          height = player_roots[i].style['max-height'];
+        }
+
+        playlist_external.style[property] = height + 'px';
+
+        if (property === 'max-height') {
+          // set height to auto for playlist_external
+          playlist_external.style['height'] = 'auto';
+        }
+      }
+
+    }
+
+  }
+} )();
