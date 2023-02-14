@@ -1158,6 +1158,7 @@ function fvplayer_editor( $args ) {
     line-height: 2.15384615;
     min-height: 30px;
     margin: 0;
+    margin-top: 0 !important;
     padding: 0 10px;
     cursor: pointer;
     border-width: 1px;
@@ -1168,6 +1169,7 @@ function fvplayer_editor( $args ) {
     box-sizing: border-box;
     text-shadow: unset;
     text-transform: none;
+    width: auto !important;    
   }
   #fv-player-editor-modal .button.hover, #fv-player-editor-modal .button:hover, #fv-player-editor-modal .button-secondary:hover {
     background: #f0f0f1;
