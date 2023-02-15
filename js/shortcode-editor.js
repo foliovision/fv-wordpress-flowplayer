@@ -351,20 +351,22 @@ jQuery(function() {
     }
 
     function hide_inputs() {
-      $.each( fv_player_editor_conf.hide, function( k, v ) {
-        try {
-          if( 'configure-video' === v ) {
-            $( 'a.configure-video' ).hide();
-            $( "<style>.fv-player-editor-playlist-item .fvp_item_video-thumbnail { cursor: default; }</style>" ).appendTo( "head" )
+      if( fv_player_editor_conf.hide ) {
+        $.each( fv_player_editor_conf.hide, function( k, v ) {
+          try {
+            if( 'configure-video' === v ) {
+              $( 'a.configure-video' ).hide();
+              $( "<style>.fv-player-editor-playlist-item .fvp_item_video-thumbnail { cursor: default; }</style>" ).appendTo( "head" )
 
-          } else {
-            $( '.fv-player-editor-field-wrap-'+v ).hide();
-            $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();
+            } else {
+              $( '.fv-player-editor-field-wrap-'+v ).hide();
+              $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();
+            }
+          } catch(e) {
+            debug_log( 'Hide Field: Failure', e );
           }
-        } catch(e) {
-          debug_log( 'Hide Field: Failure', e );
-        }
-      } );
+        } );
+      }
     }
 
     /**
@@ -827,7 +829,7 @@ jQuery(function() {
       * keywords: select item
       */
       $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function() {
-        if( fv_player_editor_conf.hide.indexOf( 'configure-video' ) > 0 ) {
+        if( fv_player_editor_conf.hide && fv_player_editor_conf.hide.indexOf( 'configure-video' ) > 0 ) {
           return false;
         }
 
