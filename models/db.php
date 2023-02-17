@@ -455,22 +455,25 @@ class FV_Player_Db {
 
             foreach( $embeds AS $post_id => $post_data ) {
 
-              // TODO: Seems to add a lot of queries, only do when necessary
-              // Code from core WordPress get_the_taxonomies()
-              $post = get_post( $post_id );
-
+              // Get taxonomies for each post...
+              // But hold on, what columns is the FV Player list page actually showing? We may not need all of this extra processing.
+              $list_page_coluns = array_keys( apply_filters( 'manage_toplevel_page_fv_player_columns', array() ) );
               $taxonomies = array();
 
-              if ( $post ) {
-                foreach ( get_object_taxonomies( $post ) as $taxonomy ) {
+              // Code from core WordPress get_the_taxonomies()
+              foreach ( get_object_taxonomies( $post_data->post_type ) as $taxonomy ) {
+
+                // Is the columns for that taxonomy showing?
+                if ( in_array( 'tax_' . $taxonomy, $list_page_coluns) ) {
+
                   $t = (array) get_taxonomy( $taxonomy );
                   if ( empty( $t['label'] ) ) {
                     $t['label'] = $taxonomy;
                   }
 
-                  $terms = get_object_term_cache( $post->ID, $taxonomy );
+                  $terms = get_object_term_cache( $post_data->ID, $taxonomy );
                   if ( false === $terms ) {
-                    $terms = wp_get_object_terms( $post->ID, $taxonomy );
+                    $terms = wp_get_object_terms( $post_data->ID, $taxonomy );
                   }
 
                   if ( $terms ) {
