@@ -954,3 +954,19 @@ function fv_player_edit_posts_cell() {
     exit;
   }
 }
+
+function fv_player_get_post_type_taxonomies( $post_type ) {
+  $taxonomies = get_taxonomies( array(
+    'public'      => true,
+    'show_ui'     => true,
+  ), 'objects' );
+
+  $post_type_taxonomies = array();
+  foreach( $taxonomies AS $taxonomy) {
+    if( in_array( $post_type, $taxonomy->object_type ) ) {
+      $post_type_taxonomies[] = $taxonomy->name;
+    }
+  }
+
+  return $post_type_taxonomies;
+}

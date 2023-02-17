@@ -217,11 +217,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
     if ( ! empty( $_GET['post_type'] ) ) {
       // Remove the taxonomy arg from the URL 
-      $post_type_taxonomies = get_taxonomies( array(
-        'object_type' => array( $_GET['post_type'] ),
-        'public'      => true,
-        'show_ui'     => true,
-      ) );
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $_GET['post_type'] );
 
       foreach ( $post_type_taxonomies AS $tax ) {
         if ( ! empty( $_GET[ $tax ] ) ) {
@@ -299,15 +295,11 @@ class FV_Player_List_Table extends WP_List_Table {
 
     // Add any know taxonomy to the arguments
     if( $post_type ) {
-      $post_type_taxonomies = get_taxonomies( array(
-        'object_type' => array( $post_type ),
-        'public'      => true,
-        'show_ui'     => true,
-      ) );
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $post_type );
 
-      foreach( $post_type_taxonomies AS $post_type_taxonomy) {
-        if ( !empty( $_GET[ $post_type_taxonomy ] ) ) {
-          $args[ 'tax_'.$post_type_taxonomy ] = $_GET[ $post_type_taxonomy ];
+      foreach ( $post_type_taxonomies AS $tax ) {
+        if ( !empty( $_GET[ $tax ] ) ) {
+          $args[ 'tax_'.$tax ] = $_GET[ $tax ];
         }
       }
     }

@@ -1495,11 +1495,7 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
       $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
 
       // Is there any known taxonomy in $args ?
-      $post_type_taxonomies = get_taxonomies( array(
-        'object_type' => array( $args['post_type']  ),
-        'public'      => true,
-        'show_ui'     => true,
-      ) );
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $args['post_type'] );
 
       foreach( $post_type_taxonomies AS $tax) {
         if ( !empty( $args[ 'tax_' . $tax ] ) ) {
