@@ -13,7 +13,9 @@ class FV_Player_List_Table extends WP_List_Table {
   public $base_url;
 
   public $counts;
-  
+
+  private $post_types;
+
   public $total_impressions = 0;
   
   public $total_clicks = 0;
@@ -37,7 +39,6 @@ class FV_Player_List_Table extends WP_List_Table {
     new FV_Player_Db_Video(-1);
     new FV_Player_Db_Video_Meta(-1);
 
-    $this->get_result_counts();
     $this->process_bulk_action();
     $this->base_url = admin_url( 'admin.php?page=fv_player' );
   }
@@ -205,16 +206,10 @@ class FV_Player_List_Table extends WP_List_Table {
     return array();
   }
     
-	public function get_views() {
-		$current = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'all';
+  public function get_views() {
+    $current = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'all';
 
-		$post_types = array( 'all' => array( 'label' => 'All' ) );
-
-    $post_types = array_merge( $post_types, get_post_types( array( 'public' => true ), 'objects' ) );
-
-    global $wpdb;
-    $post_type_player_counts = $wpdb->get_results( "SELECT post_type, count( post_type ) AS count FROM $wpdb->posts AS p JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON p.ID = pm.meta_value WHERE p.post_status IN ( 'draft', 'publish' ) AND pm.meta_key = 'post_id' GROUP BY post_type", OBJECT_K );
-
+    
     if ( ! empty( $_GET['post_type'] ) ) {
       // Remove the taxonomy arg from the URL 
       $post_type_taxonomies = fv_player_get_post_type_taxonomies( $_GET['post_type'] );
@@ -228,23 +223,14 @@ class FV_Player_List_Table extends WP_List_Table {
       }
     }
 
-		foreach( $post_types AS $k => $v ) {
+    foreach( $this->post_types AS $k => $v ) {
 
       // Omit post types which have no player
-      if ( 'all' != $k && ( !isset( $post_type_player_counts[$k]->count ) || $post_type_player_counts[$k]->count === 0 ) ) {
+      if ( 'all' != $k && ( !isset( $v->player_count ) || $v->player_count === 0 ) ) {
         continue;
       }
 
-      $v = (array) $v;
-
-      if ( 'all' == $k ) {
-        $count = 0;
-        foreach( $post_type_player_counts AS $type ) {
-          $count += $type->count;
-        }
-      } else {
-  			$count = $post_type_player_counts[$k]->count;
-      }
+      $count = $v->player_count;
 
       $url_post_type = 'all' != $k ? $k : false;
 
@@ -255,11 +241,11 @@ class FV_Player_List_Table extends WP_List_Table {
 
       $class = $current == $k ? ' class="current"' : '';
 
-			$views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', $url, $class, $v['label'] .  '&nbsp;<span class="count">('.number_format($count).')' );
-		}
+      $views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', $url, $class, $v->label .  '&nbsp;<span class="count">('.number_format($count).')' );
+    }
 
-		return $views;
-	}
+    return $views;
+  }
 
   public function process_bulk_action() {  // todo: any bulk action?
     return;
@@ -268,6 +254,63 @@ class FV_Player_List_Table extends WP_List_Table {
   public function get_result_counts() {
     global $FV_Player_Db;
     $this->total_items = $FV_Player_Db->getListPageCount();
+
+    $all_post_type = new stdClass;
+    $all_post_type->label = 'All';
+
+    $total_count = array();
+
+    // Get counts per post type and only do this once
+    if ( empty( $this->post_types ) ) {
+      $this->post_types = array( 'all' => $all_post_type );
+
+      $this->post_types = array_merge( $this->post_types, get_post_types( array( 'public' => true ), 'objects' ) );
+
+      // Get post IDs, post types and post statuses for each player
+      // Each player might be in multiple posts
+      global $wpdb;
+      $player_to_post_id_to_post_type = $wpdb->get_results( "SELECT pl.id, pm.meta_value, p.ID, p.post_type, p.post_status FROM {$wpdb->prefix}fv_player_players AS pl LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON pl.id = pm.id_player AND pm.meta_key = 'post_id' LEFT JOIN {$wpdb->posts} AS p ON p.ID = pm.meta_value" );
+
+      $no_post_attached = 0;
+
+      foreach ( $player_to_post_id_to_post_type AS $v ) {
+        // Only count for the post type if it's not in Trash
+        if ( 'trash' != $v->post_status ) {
+          foreach ( $this->post_types AS $post_type => $post_type_details ) {
+            if ( $v->post_type == $post_type ) {
+              if ( !isset( $this->post_types[ $post_type ]->player_count ) ) {
+                $this->post_types[ $post_type ]->player_count = 0;
+              }
+              $this->post_types[ $post_type ]->player_count++;
+            }
+          }
+        }
+
+        // Player may not be used in any post
+        if ( ! $v->meta_value ) {
+          $no_post_attached++;
+        }
+
+        $total_count[ $v->id ] = true;
+      }
+
+      if( $no_post_attached ) {
+        $no_post_type = new stdClass;
+        $no_post_type->label = 'None';
+        $no_post_type->player_count = $no_post_attached;
+
+        $this->post_types['none'] = $no_post_type;
+      }
+
+      $this->post_types[ 'all' ]->player_count = count( $total_count ); 
+    }
+
+    if ( ! empty( $_GET['post_type'] ) ) {
+      $post_type = $_GET['post_type'];
+      if ( ! empty( $this->post_types[ $post_type ] ) ) {
+        $this->total_items = $this->post_types[ $post_type ]->player_count;
+      }
+    }
   }
 
   public function get_data() {
@@ -314,12 +357,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
     $data     = $this->get_data();
 
-    // re-count number of players to show when searching
-    if (isset($_GET['s']) && $_GET['s']) {
-      $this->get_result_counts();
-    }
-
-    $status   = isset( $_GET['status'] ) ? $_GET['status'] : 'all';
+    $this->get_result_counts();
 
     $this->items = $data;
 
@@ -327,8 +365,7 @@ class FV_Player_List_Table extends WP_List_Table {
         'total_items' => $this->total_items,
         'per_page'    => $this->args['per_page'],
         'total_pages' => ceil( $this->total_items / $this->args['per_page'] ),
-      )
-    );
+    ) );
   }
 
 }
