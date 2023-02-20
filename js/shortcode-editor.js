@@ -1030,12 +1030,15 @@ jQuery(function() {
 
           // Hide Media Library tabs which are not allowed
           if( fv_player_editor_conf.library ) {
-            let libraries = fv_player_editor_conf.library.split(/,/);
+            let libraries = fv_player_editor_conf.library.split(/,/),
+              library_found = false;
+
             $( '.media-router .media-menu-item' ).each( function( i, el ) {
               let found = false;
               $( libraries ).each( function( v, library ) {
                 if( $(el).attr('id').match(library) ) {
-                  found = true;
+                  found = library_found = true;
+                  $(el).trigger( 'click' );
                 }
               });
 
@@ -1043,6 +1046,12 @@ jQuery(function() {
                 $(el).hide();
               }
             });
+
+            // At least close the Media Library if the desired that was not found
+            // TODO: It should not open at all if the required library is not found
+            if ( ! library_found ) {
+              fv_flowplayer_uploader.close();
+            }
           }
         });
 

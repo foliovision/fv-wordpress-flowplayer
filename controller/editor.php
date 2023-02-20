@@ -77,7 +77,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'field'    => 'field_selector',
     'frontend' => 'frontend',
     'hide'     => 'hide',
-    'library'  => 'library',
+    'library'  => 'library',  // TODO: Hide the Media Library buttons if the library is not found at all
     'tabs'     => 'tabs', // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
   ) AS $key => $setting ) {
     if( !empty($extra_args[ $key ]) ) {
