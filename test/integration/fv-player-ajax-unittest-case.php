@@ -17,7 +17,8 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
   }  
   
   public function fix_newlines( $html ) {
-    $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"some-test-hash"', $html);
+    $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"wpfp_some-test-hash"', $html);
+    $html = preg_replace( '/"wpfp_[0-9a-z]+_playlist"/', '"wpfp_some-test-hash_playlist"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
     $html = preg_replace( "~nonce: '([^']*?)'~", "nonce: 'XYZ'", $html);
     

@@ -1065,7 +1065,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $rtmp = 'rtmp:'.$rtmp;
       }
 
-      if( !$aArgs['toggle_advanced_settings'] ) { // disable alternative sources if advanced settings are hidden
+      if( isset($aArgs['toggle_advanced_settings']) && !$aArgs['toggle_advanced_settings'] ) { // disable alternative sources if advanced settings are hidden
         $src1 = $src2 = $rtmp = false;
       }
 
@@ -1106,7 +1106,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $aItem[] = array( 'src' => $mobile, 'type' => $this->get_mime_type($mobile), 'mobile' => true );
       }
 
-      if( !$aArgs['toggle_advanced_settings'] ) {
+      if( isset($aArgs['toggle_advanced_settings']) && !$aArgs['toggle_advanced_settings'] ) {
         $mobile = false;
       }
 
