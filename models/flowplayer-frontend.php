@@ -102,6 +102,27 @@ class flowplayer_frontend extends flowplayer
   function build_min_player($media,$args = array()) {
 
     $this->hash = md5($media.$this->_salt()); //  unique player id
+
+    // Nicer player element ID for players using FV Player database
+    if ( ! empty( $args['id'] ) && is_numeric( $args['id'] ) ) {
+      $id = $args['id'];
+      $this->hash = $id;
+
+      static $used;
+      if ( !isset( $used ) ) {
+        $used = array();
+      }
+      if ( !isset( $used[ $id ] ) ) {
+        $used[ $id ] = 0;
+      }
+
+      // Append -2 or -3 if the same player is used multiple times on the page
+      $used[ $id ]++;
+      if( $used[ $id ] > 1 ) {
+        $this->hash .= '-'.$used[ $id ];
+      }
+    }
+
     // todo: harmonize this, the media arg was a bad idea in the first place
     if( !empty($media) ) {
       $this->aCurArgs['src'] = $media;
@@ -825,7 +846,32 @@ class flowplayer_frontend extends flowplayer
 
     if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 ){
       $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
+
+      // These script need to run right away to ensure nothing moves during the page loading
+      $this->ret['html'] .= <<< JS
+<script>
+( function() {
+  var player = document.getElementById( 'wpfp_{$this->hash}'),
+    el = player.parentNode,
+    playlist = document.getElementById( 'wpfp_{$this->hash}_playlist'),
+    property = playlist.classList.contains( 'fp-playlist-only-captions' ) ? 'height' : 'max-height',
+    height = player.offsetHeight || parseInt(player.style['max-height']);
+
+  if ( el.offsetHeight && el.offsetWidth <= 560 ) {
+    el.classList.add('is-fv-narrow');
+  }
+
+  playlist.style[property] = height + 'px';
+
+  if (property === 'max-height') {
+    playlist.style['height'] = 'auto';
+  }
+} )();
+</script>
+JS;
+
     }
+
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
 
     if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
@@ -834,7 +880,7 @@ class flowplayer_frontend extends flowplayer
 
     $this->ret['script'] = apply_filters( 'fv_flowplayer_scripts_array', $this->ret['script'], 'wpfp_' . $this->hash, $media );
 
-      return $this->ret;
+    return $this->ret;
   }
 
 
