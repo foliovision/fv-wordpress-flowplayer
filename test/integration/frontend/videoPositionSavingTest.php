@@ -78,7 +78,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=Test+Blog+&url=" target="_blank"></a></li>
     <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank"></a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
-	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_31180ef298e0fc79eff36d1114e09913">
+	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_31180ef298e0fc79eff36d1114e09913" id="wpfp_31180ef298e0fc79eff36d1114e09913_playlist">
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/1.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/2.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/3.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
@@ -138,7 +138,7 @@ HTML;
     <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=Test+Blog+&url=" target="_blank"></a></li>
     <li><a class="sharing-email" href="mailto:?body=Check%20out%20the%20amazing%20video%20here%3A%20" target="_blank"></a></li></ul><div><label><a class="embed-code-toggle" href="#"><strong>Embed</strong></a></label></div><div class="embed-code"><label>Copy and paste this HTML code into your webpage to embed.</label><textarea></textarea></div></div>
 </div>
-	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_245a181e8fd0e4cbe48d6e34cd579eda">
+	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal skin-slim" rel="wpfp_245a181e8fd0e4cbe48d6e34cd579eda" id="wpfp_245a181e8fd0e4cbe48d6e34cd579eda_playlist">
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/1.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/2.mp4","type":"video\/mp4","position":12,"top_position":32}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
 		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/3.mp4","type":"video\/mp4"}]}'><div class='fvp-playlist-thumb-img'><div class='fvp-playlist-thumb-img no-image'></div></div></a>
