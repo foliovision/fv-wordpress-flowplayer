@@ -922,10 +922,19 @@ jQuery(function() {
         get_tab(index,'cues').remove();
 
         // if no playlist item is left, add a new one
-        // TODO: Some better way?
+        // TODO: Some better way? Like do it after the data is saved
         if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
+
+          // Required, with this it actually saves the change!
           playlist_item_add();
-          playlist_item_show(0);
+
+          if( fv_player_editor_conf.frontend ) {
+            reset_preview();
+            playlist_show();
+
+          } else {
+            playlist_item_show(0);
+          }
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
@@ -1411,11 +1420,18 @@ jQuery(function() {
                 }
                 overlay_close_waiting_for_save = false;
                 $.fn.fv_player_box.close();
-              } else if ( response.html ) {
-                // auto-refresh preview
-                el_preview_target.html( response.html )
 
-                $doc.trigger('fvp-preview-complete');
+              } else if ( typeof( response.html ) != "undefined" ) {
+
+                if( response.html ) {
+                  // auto-refresh preview
+                  el_preview_target.html( response.html )
+
+                  $doc.trigger('fvp-preview-complete');
+
+                } else {
+                  reset_preview();
+                }
               }
 
               // if we're creating a new player, hide the Save / Insert button and
