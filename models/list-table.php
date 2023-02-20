@@ -64,6 +64,10 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   function get_columns() {
+    return self::get_columns_worker();
+  }
+
+  public static function get_columns_worker() {
     $cols = array(
       //'cb'             => '<input type="checkbox" />',
       'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),

@@ -56,8 +56,7 @@ class FV_Player_List_Table_View {
   }
   
   function screen_columns() {
-    $FV_Player_List_Table = new FV_Player_List_Table;
-    return $FV_Player_List_Table->get_columns();
+    return FV_Player_List_Table::get_columns_worker();
   }
   
   function screen_columns_hidden( $hidden, $screen, $use_defaults ) {
