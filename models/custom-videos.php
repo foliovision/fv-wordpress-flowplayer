@@ -411,6 +411,14 @@ class FV_Player_Custom_Videos_Master {
             foreach( $this->aPostListPlayers AS $objPostPlayer ) {
               if( $objPostPlayer->id == $shortcode_atts['id'] ) {
                 $button_text = $objPostPlayer->thumbs[0];
+
+                $video_count = count( $objPlayer->thumbs );
+                if( $video_count > 1 ) {
+                  $video_count .= 'v';
+                } else {
+                  $video_count = '';
+                }
+
                 $found = true;
                 break;
               }
