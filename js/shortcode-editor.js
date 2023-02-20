@@ -1059,6 +1059,8 @@ jQuery(function() {
             // At least close the Media Library if the desired that was not found
             // TODO: It should not open at all if the required library is not found
             if ( ! library_found ) {
+              debug_log('Libraries '+fv_player_editor_conf.library+' not found!');
+
               fv_flowplayer_uploader.close();
             }
           }
@@ -3581,6 +3583,9 @@ jQuery(function() {
       if (!input) {
         $doc.trigger('fv-player-playlist-item-add');
       }
+
+      hide_inputs();
+
       return new_item;
     }
 
