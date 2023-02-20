@@ -253,7 +253,7 @@ class FV_Player_lightbox {
         
         // The original player HTML markup becomes the hidden lightbox content
         // We add the lightboxed class
-        $lightbox = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
+        $lightbox = str_replace(array('class="freedomplayer ', "class='freedomplayer "), array('class="freedomplayer lightboxed ', "class='freedomplayer lightboxed "), $html);
         // ...and wrap it in hidden DIV
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
         
