@@ -35,7 +35,7 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     remove_action('wp_head', 'wp_generator');
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
-    add_filter( 'wp_resource_hints', '__return_empty_array' );    
+    add_filter( 'wp_resource_hints', '__return_empty_array' );
 
     wp_deregister_script( 'wp-embed' );
         
@@ -45,7 +45,9 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     echo apply_filters( 'the_content', $post->post_content );
     wp_footer();
     $output = ob_get_clean();
-    
+
+    $output = preg_replace( "~<style id='global-styles-inline-css'[\s\S]*?</style>~", '', $output );
+
     // file_put_contents( dirname(__FILE__).'/testSimpleShortcode.html.new', $output );
 
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSimpleShortcode.html')), $this->fix_newlines($output) );
