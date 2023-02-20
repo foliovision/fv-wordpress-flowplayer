@@ -2592,7 +2592,7 @@ jQuery(function() {
               // if we have more than 1 video
               if( current_video_to_edit > -1 ) {
                 playlist_item_show(current_video_to_edit);
-              } else if (vids.length > 1) {
+              } else if ( vids.length > 1 || fv_player_editor_conf.frontend ) {
                 playlist_show();
               } else {
                 playlist_item_show(0);
