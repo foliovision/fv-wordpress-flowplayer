@@ -1434,4 +1434,4 @@ iframe#youtube.fp-engine {
   width: 100%;
 }
 
-.fp-duration { line-height: 1em; }
+.fp-duration { line-height: 1em; white-space: nowrap; }

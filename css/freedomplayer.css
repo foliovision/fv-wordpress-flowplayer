@@ -615,7 +615,8 @@
       padding: .4em .6em; }
     .freedomplayer .fp-controls > strong {
       letter-spacing: 1px;
-      font-weight: 400; }
+      font-weight: 400;
+      white-space: nowrap; }
     .freedomplayer .fp-controls img {
       width: 1.2em; }
   .freedomplayer .fp-bar, .freedomplayer .fp-bar-slider {
