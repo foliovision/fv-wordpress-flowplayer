@@ -4,15 +4,17 @@
 // What's here needs to stay global
 
 // used in FV Player Pro to add more matchers
-var fv_player_editor_matcher = {
-  default: {
-    // matches URL of the video
-    matcher: /\.(mp4|webm|m3u8)(?:(?:\?.*?|\#.*?)?)?$/i,
-    // AJAX will return these fields which can be auto-updated via JS
-    update_fields: ['duration', 'last_video_meta_check'],
-    support_thumb_generate: true
-  }
-};
+if (typeof(window.fv_player_editor_matcher) == 'undefined') {
+  window.fv_player_editor_matcher = {};
+}
+
+fv_player_editor_matcher.default = {
+  // matches URL of the video
+  matcher: /\.(mp4|webm|m3u8)(?:(?:\?.*?|\#.*?)?)?$/i,
+  // AJAX will return these fields which can be auto-updated via JS
+  update_fields: ['duration', 'last_video_meta_check'],
+  support_thumb_generate: true
+}
 
 function fv_wp_flowplayer_dialog_resize() {
   fv_player_editor.fv_wp_flowplayer_dialog_resize();
