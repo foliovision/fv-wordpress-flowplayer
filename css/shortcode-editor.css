@@ -449,7 +449,6 @@ body.is-fv-player-editor-modal-open {
   top: 0;
   bottom: 0;
   margin: auto;
-  padding: 95px 0;
 }
 #fv-player-shortcode-editor-preview-new-tab, #fv-player-shortcode-editor-preview-no.upload-support {
   border: 4px dashed #ddd;
@@ -487,7 +486,8 @@ body.is-fv-player-editor-modal-open {
 
 }
 
-#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left {
+#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left,
+#fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-preview {
   width: 100%;
 }
 #fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-right {

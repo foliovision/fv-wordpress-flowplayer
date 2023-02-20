@@ -801,7 +801,7 @@ jQuery( function($) {
         hlskey_field.val('');
       }
   
-      var timeline_previews_field = fv_player_editor.get_field('timeline_preview', true);
+      var timeline_previews_field = fv_player_editor.get_field('timeline_previews', true);
       if( extra && extra.timeline_previews ) {
         timeline_previews_field.val(extra.timeline_previews);
       } else {

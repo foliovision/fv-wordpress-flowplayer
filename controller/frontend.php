@@ -1146,6 +1146,18 @@ function fvplayer_editor( $args ) {
   .fv-player-tab {
     overflow-y: unset !important;
   }
+  /* Left-align for the inputs */
+  #fv-player-shortcode-editor #fv-player-shortcode-editor-preview-no .components-base-control__field {
+    justify-content: unset;
+  }
+  /* Hide the intro text */
+  #fv-player-shortcode-editor-preview-no > p {
+    display: none;
+  }
+  /* Somehow the vertical scrolling would appear when one video was inserted */
+  #fv-player-shortcode-editor #fv-player-shortcode-editor-left {
+    overflow-x: unset;
+  }
 
   /* Core WordPress Admin Button styling */
   #fv-player-editor-modal .button, #fv-player-editor-modal .button-primary, #fv-player-editor-modal .button-secondary {

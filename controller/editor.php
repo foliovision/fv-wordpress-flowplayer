@@ -22,7 +22,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
 
   wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
-  wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js',array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), $fv_wp_flowplayer_ver, true );
+  wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js', array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), filemtime( dirname(__FILE__).'/../js/editor-screenshots.js' ), true );
 
   $fv_player_editor_conf = array(
     'admin_url' => admin_url('admin.php?page=fv_player'),
@@ -77,7 +77,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'field'    => 'field_selector',
     'frontend' => 'frontend',
     'hide'     => 'hide',
-    'library'  => 'library',
+    'library'  => 'library',  // TODO: Hide the Media Library buttons if the library is not found at all
     'tabs'     => 'tabs', // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
   ) AS $key => $setting ) {
     if( !empty($extra_args[ $key ]) ) {

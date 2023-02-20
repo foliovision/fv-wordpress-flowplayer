@@ -351,20 +351,22 @@ jQuery(function() {
     }
 
     function hide_inputs() {
-      $.each( fv_player_editor_conf.hide, function( k, v ) {
-        try {
-          if( 'configure-video' === v ) {
-            $( 'a.configure-video' ).hide();
-            $( "<style>.fv-player-editor-playlist-item .fvp_item_video-thumbnail { cursor: default; }</style>" ).appendTo( "head" )
+      if( fv_player_editor_conf.hide ) {
+        $.each( fv_player_editor_conf.hide, function( k, v ) {
+          try {
+            if( 'configure-video' === v ) {
+              $( 'a.configure-video' ).hide();
+              $( "<style>.fv-player-editor-playlist-item .fvp_item_video-thumbnail { cursor: default; }</style>" ).appendTo( "head" )
 
-          } else {
-            $( '.fv-player-editor-field-wrap-'+v ).hide();
-            $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();
+            } else {
+              $( '.fv-player-editor-field-wrap-'+v ).hide();
+              $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();
+            }
+          } catch(e) {
+            debug_log( 'Hide Field: Failure', e );
           }
-        } catch(e) {
-          debug_log( 'Hide Field: Failure', e );
-        }
-      } );
+        } );
+      }
     }
 
     /**
@@ -827,7 +829,7 @@ jQuery(function() {
       * keywords: select item
       */
       $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function() {
-        if( fv_player_editor_conf.hide.indexOf( 'configure-video' ) > 0 ) {
+        if( fv_player_editor_conf.hide && fv_player_editor_conf.hide.indexOf( 'configure-video' ) > 0 ) {
           return false;
         }
 
@@ -920,10 +922,19 @@ jQuery(function() {
         get_tab(index,'cues').remove();
 
         // if no playlist item is left, add a new one
-        // TODO: Some better way?
+        // TODO: Some better way? Like do it after the data is saved
         if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
+
+          // Required, with this it actually saves the change!
           playlist_item_add();
-          playlist_item_show(0);
+
+          if( fv_player_editor_conf.frontend ) {
+            reset_preview();
+            playlist_show();
+
+          } else {
+            playlist_item_show(0);
+          }
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
@@ -1028,12 +1039,15 @@ jQuery(function() {
 
           // Hide Media Library tabs which are not allowed
           if( fv_player_editor_conf.library ) {
-            let libraries = fv_player_editor_conf.library.split(/,/);
+            let libraries = fv_player_editor_conf.library.split(/,/),
+              library_found = false;
+
             $( '.media-router .media-menu-item' ).each( function( i, el ) {
               let found = false;
               $( libraries ).each( function( v, library ) {
                 if( $(el).attr('id').match(library) ) {
-                  found = true;
+                  found = library_found = true;
+                  $(el).trigger( 'click' );
                 }
               });
 
@@ -1041,6 +1055,12 @@ jQuery(function() {
                 $(el).hide();
               }
             });
+
+            // At least close the Media Library if the desired that was not found
+            // TODO: It should not open at all if the required library is not found
+            if ( ! library_found ) {
+              fv_flowplayer_uploader.close();
+            }
           }
         });
 
@@ -1400,11 +1420,18 @@ jQuery(function() {
                 }
                 overlay_close_waiting_for_save = false;
                 $.fn.fv_player_box.close();
-              } else if ( response.html ) {
-                // auto-refresh preview
-                el_preview_target.html( response.html )
 
-                $doc.trigger('fvp-preview-complete');
+              } else if ( typeof( response.html ) != "undefined" ) {
+
+                if( response.html ) {
+                  // auto-refresh preview
+                  el_preview_target.html( response.html )
+
+                  $doc.trigger('fvp-preview-complete');
+
+                } else {
+                  reset_preview();
+                }
               }
 
               // if we're creating a new player, hide the Save / Insert button and
@@ -2565,7 +2592,7 @@ jQuery(function() {
               // if we have more than 1 video
               if( current_video_to_edit > -1 ) {
                 playlist_item_show(current_video_to_edit);
-              } else if (vids.length > 1) {
+              } else if ( vids.length > 1 || fv_player_editor_conf.frontend ) {
                 playlist_show();
               } else {
                 playlist_item_show(0);

@@ -4,9 +4,9 @@
 ( function() {
   var index = 0;
 
-  flowplayer( function(api,root) {console.log('screenshots 1');
+  flowplayer( function(api,root) {
     root = jQuery(root);
-    var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
+    var button = jQuery('<input type="button" value="Make new splash screen" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
       title ='';
 
@@ -28,7 +28,7 @@
     }
 
     button.on('click', function() {
-      var current_video_index = api.video.index;
+      var current_video_index = api.video.index || 0;
 
       console.log('FV Player Editor Screenshots: Taking screenshot for' + current_video_index);
 
@@ -104,19 +104,18 @@
 
     // Compatibility test
     api.on('ready', function(e,api) {
-      var src = fv_player_editor.get_field('src').eq( api.video.index ).val(), // get current video src
+      var src = fv_player_editor.get_field('src').eq( api.video.index || 0 ).val(), // get current video src
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
         fv_player_editor_conf_screenshots.disable_domains.forEach(function(item) {
           if( src.indexOf(item) !== -1 ) {
-            console.log('screenshots no 1');
+            console.log('FV Player Editor Screenshots: Not available for the video source domain.');
             should_show = false;
           }
         });
 
         if( should_show ) {
-          console.log('screenshots 3');
           button.appendTo('#fv-player-shortcode-editor-preview');
           try {
             takeScreenshot();

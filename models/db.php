@@ -455,22 +455,25 @@ class FV_Player_Db {
 
             foreach( $embeds AS $post_id => $post_data ) {
 
-              // TODO: Seems to add a lot of queries, only do when necessary
-              // Code from core WordPress get_the_taxonomies()
-              $post = get_post( $post_id );
-
+              // Get taxonomies for each post...
+              // But hold on, what columns is the FV Player list page actually showing? We may not need all of this extra processing.
+              $list_page_coluns = array_keys( apply_filters( 'manage_toplevel_page_fv_player_columns', array() ) );
               $taxonomies = array();
 
-              if ( $post ) {
-                foreach ( get_object_taxonomies( $post ) as $taxonomy ) {
+              // Code from core WordPress get_the_taxonomies()
+              foreach ( get_object_taxonomies( $post_data->post_type ) as $taxonomy ) {
+
+                // Is the columns for that taxonomy showing?
+                if ( in_array( 'tax_' . $taxonomy, $list_page_coluns) ) {
+
                   $t = (array) get_taxonomy( $taxonomy );
                   if ( empty( $t['label'] ) ) {
                     $t['label'] = $taxonomy;
                   }
 
-                  $terms = get_object_term_cache( $post->ID, $taxonomy );
+                  $terms = get_object_term_cache( $post_data->ID, $taxonomy );
                   if ( false === $terms ) {
-                    $terms = wp_get_object_terms( $post->ID, $taxonomy );
+                    $terms = wp_get_object_terms( $post_data->ID, $taxonomy );
                   }
 
                   if ( $terms ) {
@@ -1490,16 +1493,21 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
     $post_type_join = '';
     $tax_join = '';
     if( $args['post_type'] ) {
-      $post_type_join = 'JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player JOIN `'.$wpdb->posts.'` AS posts ON posts.ID = pm.meta_value ';
 
-      $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
+      // Get players which are not embedded in any post = no post_id playermeta
+      if ( 'none' === $args['post_type'] ) {
+        $post_type_join = 'LEFT JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player AND pm.meta_key = "post_id" ';
+
+        $where .= ' AND pm.id IS NULL';
+
+      } else {
+        $post_type_join = 'JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player JOIN `'.$wpdb->posts.'` AS posts ON posts.ID = pm.meta_value ';
+
+        $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
+      }
 
       // Is there any known taxonomy in $args ?
-      $post_type_taxonomies = get_taxonomies( array(
-        'object_type' => array( $args['post_type']  ),
-        'public'      => true,
-        'show_ui'     => true,
-      ) );
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $args['post_type'] );
 
       foreach( $post_type_taxonomies AS $tax) {
         if ( !empty( $args[ 'tax_' . $tax ] ) ) {
@@ -1517,7 +1525,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     if($args['count']) {
       $group_order = '';
     } else {
-      $group_order = 'GROUP BY p.id'.$order.$limit;
+      $group_order = ' GROUP BY p.id'.$order.$limit;
     }
 
     $player_data = $wpdb->get_results('SELECT
