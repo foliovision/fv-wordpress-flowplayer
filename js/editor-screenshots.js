@@ -6,7 +6,7 @@
 
   flowplayer( function(api,root) {
     root = jQuery(root);
-    var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
+    var button = jQuery('<input type="button" value="Make new splash screen" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
       title ='';
 
