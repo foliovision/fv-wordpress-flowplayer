@@ -460,7 +460,7 @@ body.is-fv-player-editor-modal-open {
   width: 25%;
 }
 #fv-player-shortcode-editor-preview-no .fv-player-editor-notice {
-  margin: 0 auto;
+  max-width: 100%;
   position: static;
 }
 
