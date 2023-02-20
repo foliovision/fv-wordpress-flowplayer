@@ -356,6 +356,10 @@ class FV_Player_Custom_Videos_Master {
 
       // We use 0 priority to ensure both FV Player playback and editor scripts load
       add_action( 'admin_footer', 'fv_wp_flowplayer_edit_form_after_editor', 0 );
+
+      do_action( 'fvplayer_editor_load' );
+
+      wp_enqueue_media();
     }
   }
 
