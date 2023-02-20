@@ -155,7 +155,6 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [6] => Skin not found
     [7] => SWF file not found
     [8] => Subtitles not found
-    [9] => Invalid RTMP URL
     [10] => Unsupported video format.
     [11] => Click to watch the video
     [12] => [This post contains video, click to play]
