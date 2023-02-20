@@ -92,7 +92,7 @@ HTML;
     
     ob_start();
     do_action('wp_footer');
-    $footer = ob_get_clean();
+    $footer = $this->fix_newlines( ob_get_clean() );
     
     $sample = <<< HTML
 <div id="wpfp_0960fcb4ba1dd9c649b750aaf5c5da5c_container" class="fv_player_lightbox_hidden" style="display: none">
@@ -104,76 +104,15 @@ HTML;
 </div>
 </div>
 <!-- lightboxed players -->
-
-<link rel='stylesheet' id='fv_player_lightbox-css'  href='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/css/fancybox.css?ver=7.5.22.728.3' type='text/css' media='all' />
-<script type='text/javascript' id='fv_player_lightbox-js-extra'>
-/* <![CDATA[ */
-var fv_player_lightbox = {"lightbox_images":""};
-/* ]]> */
-</script>
-<script type='text/javascript' src='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/js/fancybox.js?ver=7.5.22.728.3' id='fv_player_lightbox-js'></script>
-      <style type="text/css">
-    .flowplayer.skin-slim { background-color: #000000 !important; }
-.flowplayer.skin-slim .fp-color, .flowplayer.skin-slim .fp-selected, .fp-playlist-external.skin-slim .fvp-progress { background-color: #bb0000 !important; }
-.flowplayer.skin-slim .fp-color-fill .svg-color, .flowplayer.skin-slim .fp-color-fill svg.fvp-icon, .flowplayer.skin-slim .fp-color-fill { fill: #bb0000 !important; color: #bb0000 !important; }
-.flowplayer.skin-slim .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: transparent !important; }
-.flowplayer.skin-slim .fp-elapsed, .flowplayer.skin-slim .fp-duration { color: #ffffff !important; }
-.flowplayer.skin-slim .fv-player-video-checker { color: #ffffff !important; }
-.flowplayer.skin-slim .fp-bar span.chapter_passed{ background-color: #bb0000 !important; }
-.fv-player-buttons a.current { background-color: #bb0000 !important; }
-#content .flowplayer.skin-slim, .flowplayer.skin-slim { font-family: Tahoma, Geneva, sans-serif; }
-.flowplayer.skin-slim .fp-dropdown li.active { background-color: #bb0000 !important }
-.flowplayer.skin-youtuby { background-color: #000000 !important; }
-.flowplayer.skin-youtuby .fp-color, .flowplayer.skin-youtuby .fp-selected, .fp-playlist-external.skin-youtuby .fvp-progress { background-color: #bb0000 !important; }
-.flowplayer.skin-youtuby .fp-color-fill .svg-color, .flowplayer.skin-youtuby .fp-color-fill svg.fvp-icon, .flowplayer.skin-youtuby .fp-color-fill { fill: #bb0000 !important; color: #bb0000 !important; }
-.flowplayer.skin-youtuby .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: rgba(0, 0, 0, 0.5) !important; }
-.flowplayer.skin-youtuby .fp-elapsed, .flowplayer.skin-youtuby .fp-duration { color: #ffffff !important; }
-.flowplayer.skin-youtuby .fv-player-video-checker { color: #ffffff !important; }
-.flowplayer.skin-youtuby .fv-ab-loop { background-color: rgba(0, 0, 0, 0.5) !important; }
-.flowplayer.skin-youtuby .fv_player_popup, .fvfp_admin_error_content {  background: rgba(0, 0, 0, 0.5); }
-.flowplayer.skin-youtuby .fp-bar span.chapter_passed{ background-color: #bb0000 !important; }
-.fv-player-buttons a.current { background-color: #bb0000 !important; }
-#content .flowplayer.skin-youtuby, .flowplayer.skin-youtuby { font-family: Tahoma, Geneva, sans-serif; }
-.flowplayer.skin-youtuby .fp-dropdown li.active { background-color: #bb0000 !important }
-.flowplayer.skin-custom { background-color: #000000 !important; }
-.flowplayer.skin-custom .fp-color, .flowplayer.skin-custom .fp-selected, .fp-playlist-external.skin-custom .fvp-progress { background-color: #bb0000 !important; }
-.flowplayer.skin-custom .fp-color-fill .svg-color, .flowplayer.skin-custom .fp-color-fill svg.fvp-icon, .flowplayer.skin-custom .fp-color-fill { fill: #bb0000 !important; color: #bb0000 !important; }
-.flowplayer.skin-custom .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #333333 !important; }
-.flowplayer.skin-custom a.fp-play, .flowplayer.skin-custom a.fp-volumebtn, .flowplayer.skin-custom .fp-controls, .flowplayer.skin-custom .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: #eeeeee !important; }
-.flowplayer.skin-custom .fp-controls > .fv-fp-prevbtn:before, .flowplayer.skin-custom .fp-controls > .fv-fp-nextbtn:before { border-color: #eeeeee !important; }
-.flowplayer.skin-custom .fvfp_admin_error, .flowplayer.skin-custom .fvfp_admin_error a, #content .flowplayer.skin-custom .fvfp_admin_error a { color: #eeeeee; }
-.flowplayer.skin-custom svg.fvp-icon { fill: #eeeeee !important; }
-.flowplayer.skin-custom .fp-volumeslider, .flowplayer.skin-custom .fp-buffer { background-color: #eeeeee !important; }
-.flowplayer.skin-custom .fp-bar span.chapter_buffered{ background-color: #eeeeee !important; }
-.flowplayer.skin-custom .fp-elapsed, .flowplayer.skin-custom .fp-duration { color: #eeeeee !important; }
-.flowplayer.skin-custom .fv-player-video-checker { color: #eeeeee !important; }
-.flowplayer.skin-custom .fv-ab-loop { background-color: #333333 !important; }
-.flowplayer.skin-custom .fv_player_popup, .fvfp_admin_error_content {  background: #333333; }
-.flowplayer.skin-custom .fp-bar span.chapter_passed{ background-color: #bb0000 !important; }
-.fv-player-buttons a.current { background-color: #bb0000 !important; }
-#content .flowplayer.skin-custom, .flowplayer.skin-custom { font-family: Tahoma, Geneva, sans-serif; }
-.flowplayer.skin-custom .fp-dropdown li.active { background-color: #bb0000 !important }
-      
-    .wpfp_custom_background { display: none; }  
-    .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
-    .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
-    .is-finished .wpfp_custom_background { display: block; }  
-    
-    .wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }
-.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }    .wpfp_custom_ad { color: #888; z-index: 20 !important; }
-    .wpfp_custom_ad a { color: #ff3333 }
-    
-    .fp-playlist-external > a > span { background-color:#808080; }
-        .fp-playlist-external > a.is-active > span { border-color:#bb0000; }
-    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:#bb0000; }
-    .fp-playlist-vertical { background-color:#808080; }
-    .flowplayer .fp-player .fp-captions p { font-size: 16px; }        .flowplayer .fp-logo { bottom: 30px; left: 15px }      
-    .flowplayer .fp-player .fp-captions p { background-color: rgba(0,0,0,0.5) }
-  
-                  </style>  
 HTML;
-    
-    $this->assertTrue( stripos( $this->fix_newlines($footer),$this->fix_newlines($sample) ) !== false );  //  is the lightboxed players in the footer?
+
+    $this->assertTrue( stripos( $footer,$this->fix_newlines($sample) ) !== false );  //  is the lightboxed players in the footer?
+
+    //  are the required scripts in the footer?
+    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/freedomplayer.css' ) !== false );
+    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/freedomplayer-additions.css' ) !== false );
+    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/fancybox.css' ) !== false );
+    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/js/fancybox.js' ) !== false );
     
     global $FV_Player_lightbox;
     $this->assertTrue( $FV_Player_lightbox->bLoad );  //  is the flag to load lightbox JS set?
@@ -259,7 +198,7 @@ HTML;
 </div>
 <!-- lightboxed players -->
 HTML;
-    
+
     $this->assertTrue( stripos( $this->fix_newlines($footer),$this->fix_newlines($sample) ) !== false );  //  are the lightboxed players in the footer?
     
     global $FV_Player_lightbox;
