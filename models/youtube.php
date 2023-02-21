@@ -28,12 +28,7 @@ class FV_Player_YouTube {
       add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'youtube_splash' ), 10, 2 );
     }
 
-    add_action( 'init', function() {
-      if ( function_exists( 'FV_Player_Pro' ) ) {
-        remove_filter( 'fv_flowplayer_splash', array( FV_Player_Pro(), 'youtube_splash' ), 10, 2 );
-        remove_filter( 'fv_flowplayer_playlist_splash', array( FV_Player_Pro(), 'youtube_splash' ), 10, 2 );
-      }
-    });
+    add_action( 'init', array( $this, 'disable_pro_plugin_hooks' ) );
 
     add_action( 'admin_init', array( $this, 'admin__add_meta_boxes' ) );
 
@@ -74,6 +69,13 @@ class FV_Player_YouTube {
 
   function amp_post_template_footer() {
     $this->scripts();
+  }
+
+  function disable_pro_plugin_hooks() {
+    if ( function_exists( 'FV_Player_Pro' ) ) {
+      remove_filter( 'fv_flowplayer_splash', array( FV_Player_Pro(), 'youtube_splash' ), 10, 2 );
+      remove_filter( 'fv_flowplayer_playlist_splash', array( FV_Player_Pro(), 'youtube_splash' ), 10, 2 );
+    }
   }
 
   function disable_titles_youtube( $aArgs ) {
