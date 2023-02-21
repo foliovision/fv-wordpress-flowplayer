@@ -1238,9 +1238,9 @@ class FV_Player_Db {
             // Verify if the FV Player Video Custom Field for such meta_key exists
             if( $post && !empty( FV_Player_Custom_Videos_Master()->aMetaBoxes[ $post->post_type ][ $post_data['current_post_meta_key'] ] ) ) {
               update_post_meta( $post_data['current_post_id'], $post_data['current_post_meta_key'], '[fvplayer id="' . $id. '"]' );
-            }
 
-            // TODO: Add player meta for post_id
+              $this->store_post_ids( $post->ID );
+            }
           }
 
           $current_video_to_edit = isset($post_data['current_video_to_edit']) ? $post_data['current_video_to_edit'] : -1;
