@@ -463,6 +463,10 @@ class FV_Player_Custom_Videos_Master {
             } else if( stripos( $column_name, 'fv-player-video-custom-field-playlist-items-count-' ) === 0 ) {
               echo $video_count;
             }
+
+          } else if( stripos( $column_name, 'fv-player-video-custom-field-player' ) === 0 ) {
+            echo '<a href="#" class="fv-player-edit" data-post-id="'.$post_id.'" data-meta_key="'.$box['meta_key'].'">Add new player</a>';
+
           }
         }
       }

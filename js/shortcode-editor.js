@@ -26,6 +26,9 @@ jQuery(function() {
     current_video_db_id = 0,
     current_video_to_edit = -1,
 
+    current_post_id = 0,
+    current_post_meta_key = 0,
+
     deleted_videos = [],
     deleted_video_meta = [],
     deleted_player_meta = [],
@@ -1289,6 +1292,16 @@ jQuery(function() {
 
         // add current video that we're editing into the save data
         ajax_save_this_please['current_video_to_edit'] = current_video_to_edit;
+
+        if( current_post_id ) {
+          ajax_save_this_please['current_post_id'] = current_post_id;
+        }
+        if( current_post_meta_key ) {
+          ajax_save_this_please['current_post_meta_key'] = current_post_meta_key;
+        }
+        if( current_post_id || current_post_meta_key ) {
+          debug_log( 'Attaching to post #' + current_post_id + ' as ' + current_post_meta_key + ' meta_key.' );
+        }
 
         debug_log('Running fv_player_db_save Ajax.');
 
@@ -2957,6 +2970,9 @@ jQuery(function() {
       } else {
         debug_log('New player...' );
 
+        current_post_id = $(editor_button_clicked).data('post-id');
+        current_post_meta_key = $(editor_button_clicked).data('meta_key');
+
         playlist_item_show(0);
 
         jQuery(document).trigger('fv_flowplayer_shortcode_new');
@@ -3134,6 +3150,7 @@ jQuery(function() {
               to_append = ' ' + params.join(' ');
             }
 
+            // TODO: Trying to insert wp-admin post lists player into editor here
             insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
           } else if (always_keep_shortcode_args && player_was_non_db) {
             // we have extra parameters to keep that are DB-incompatible
@@ -3782,6 +3799,9 @@ jQuery(function() {
       current_player_db_id = 0;
       current_player_object = false;
       current_video_db_id = 0;
+
+      current_post_id = 0;
+      current_post_meta_key = 0;
     }
 
     function reset_preview() {
