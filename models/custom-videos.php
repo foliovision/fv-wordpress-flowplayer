@@ -416,7 +416,7 @@ class FV_Player_Custom_Videos_Master {
               if( $objPostPlayer->id == $shortcode_atts['id'] ) {
                 $button_text = $objPostPlayer->thumbs[0];
 
-                $video_count = count( $objPlayer->thumbs );
+                $video_count = count( $objPostPlayer->thumbs );
                 if( $video_count > 1 ) {
                   $video_count .= 'v';
                 } else {
