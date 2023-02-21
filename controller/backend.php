@@ -940,17 +940,38 @@ function fv_player_table_new_row() {
 add_action('wp_ajax_fv_player_edit_posts_cell', 'fv_player_edit_posts_cell');
 
 function fv_player_edit_posts_cell() {
-  if( isset($_POST['playerID']) && isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-edit_posts_cell_nonce-".get_current_user_id() ) ) {
-    global $FV_Player_Db;
-    $aPostListPlayers = $FV_Player_Db->getListPageData( array(
-      'player_id' => $_POST['playerID']
-    ) );
+  if( isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-edit_posts_cell_nonce-".get_current_user_id() ) ) {
 
-    if( !empty($aPostListPlayers[0]->thumbs[0]) ) {
-      echo $aPostListPlayers[0]->thumbs[0];
-    } else {
-      echo "Error: Player not found!";
+    $player_id = false;
+
+    // New player, load from post meta field to ensure it saved
+    if ( ! empty( $_POST['post_id'] ) && ! empty( $_POST['meta_key'] ) ) {
+      $shortcode = get_post_meta( $_POST['post_id'], $_POST['meta_key'], true );
+      $shortcode_atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
+
+      if( ! empty($shortcode_atts['id']) ) {
+        $player_id = $shortcode_atts['id'];
+      }
+
+    // Existing player, load by id
+    } else if ( ! empty( $_POST['playerID'] ) ) {
+      $player_id = $_POST['playerID'];
     }
+
+    if ( $player_id ) {
+      global $FV_Player_Db;
+      $aPostListPlayers = $FV_Player_Db->getListPageData( array(
+        'player_id' => $player_id
+      ) );
+
+      if( !empty($aPostListPlayers[0]->thumbs[0]) ) {
+        echo '<a href="#" class="fv-player-edit" data-player_id="' . intval($player_id) . '">' . $aPostListPlayers[0]->thumbs[0] . '</a>';
+
+      } else {
+        echo "Error: Player not found!";
+      }
+    }
+
     exit;
   }
 }

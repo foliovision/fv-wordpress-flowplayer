@@ -1290,18 +1290,7 @@ jQuery(function() {
 
         remove_notices();
 
-        // add current video that we're editing into the save data
-        ajax_save_this_please['current_video_to_edit'] = current_video_to_edit;
-
-        if( current_post_id ) {
-          ajax_save_this_please['current_post_id'] = current_post_id;
-        }
-        if( current_post_meta_key ) {
-          ajax_save_this_please['current_post_meta_key'] = current_post_meta_key;
-        }
-        if( current_post_id || current_post_meta_key ) {
-          debug_log( 'Attaching to post #' + current_post_id + ' as ' + current_post_meta_key + ' meta_key.' );
-        }
+        ajax_save_this_please = set_control_fields( ajax_save_this_please );
 
         debug_log('Running fv_player_db_save Ajax.');
 
@@ -2253,15 +2242,28 @@ jQuery(function() {
 
         // Update the player on the wp-admin -> Posts, Pages or CPT screen
         } else if( fv_player_editor_conf.is_edit_posts_screen ) {
-          let target_el = jQuery('.fv-player-edit[data-player_id='+current_player_db_id+']');
+
+          // Existing player
+          let target_el = jQuery('.fv-player-edit[data-player_id='+current_player_db_id+']'),
+            args = {
+              action : 'fv_player_edit_posts_cell',
+              nonce : fv_player_editor_conf.edit_posts_cell_nonce,
+              playerID :  current_player_db_id
+            };
+
+          // New player, load from the new post meta
+          if ( target_el.length === 0 && current_post_id ) {
+            target_el = jQuery('.fv-player-edit[data-post-id='+current_post_id+']');
+            args.post_id = current_post_id;
+            args.meta_key = current_post_meta_key;
+          }
+
           target_el.find('.fv_player_splash_list_preview').append('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
 
-          jQuery.post( ajaxurl, {
-            action : 'fv_player_edit_posts_cell',
-            nonce : fv_player_editor_conf.edit_posts_cell_nonce,
-            playerID :  current_player_db_id
-          }, function(response) {
-            target_el.html( response );
+          jQuery.post( ajaxurl, args, function(response) {
+            if ( response ) {
+              target_el.replaceWith( response );
+            }
           });
 
         }
@@ -2336,6 +2338,13 @@ jQuery(function() {
 
         shortcode = 'fvplayer id="' + selected_player_id + '"';
 
+        current_post_id = $(editor_button_clicked).data('post-id');
+        current_post_meta_key = $(editor_button_clicked).data('meta_key');
+
+        if( current_post_id || current_post_meta_key ) {
+          debug_log( 'New player for post #' + current_post_id + ' for ' + current_post_meta_key + ' meta_key.' );
+        }
+
       } else {
         if( fv_player_editor_conf.field_selector ){
           let custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
@@ -2351,11 +2360,21 @@ jQuery(function() {
         } else if (is_fv_player_screen_edit(editor_button_clicked)) {
           current_player_db_id = $(editor_button_clicked).data('player_id');
 
-          debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+          current_post_id = $(editor_button_clicked).data('post-id');
+          current_post_meta_key = $(editor_button_clicked).data('meta_key');
 
-          // create an artificial shortcode from which we can extract the actual player ID later below
-          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-          shortcode = editor_content;
+          if( current_post_id || current_post_meta_key ) {
+            debug_log( 'New player for post #' + current_post_id + ' for ' + current_post_meta_key + ' meta_key.' );
+
+            editor_content = '';
+
+          } else {
+            debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+
+            // create an artificial shortcode from which we can extract the actual player ID later below
+            editor_content = '[fvplayer id="' + current_player_db_id + '"]';
+            shortcode = editor_content;
+          }
         }
 
         // Add new button on wp-admin -> FV Player screen
@@ -2970,9 +2989,6 @@ jQuery(function() {
       } else {
         debug_log('New player...' );
 
-        current_post_id = $(editor_button_clicked).data('post-id');
-        current_post_meta_key = $(editor_button_clicked).data('meta_key');
-
         playlist_item_show(0);
 
         jQuery(document).trigger('fv_flowplayer_shortcode_new');
@@ -3073,8 +3089,7 @@ jQuery(function() {
 
       debug_log('Running fv_player_db_save Ajax on submit.');
 
-      // add current video that we're editing into the save data
-      ajax_data['current_video_to_edit'] = current_video_to_edit;
+      ajax_data = set_control_fields( ajax_data );
 
       // save data
       // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
@@ -3375,7 +3390,10 @@ jQuery(function() {
     Determines if the button clicked is Edit on wp-admin -> FV Player
     */
     function is_fv_player_screen_edit(button) {
-      return typeof( $(button).data('player_id') ) != 'undefined';
+      return (
+        typeof( $(button).data('player_id') ) != 'undefined' ||
+        typeof( $(button).data('post-id') ) != 'undefined'
+      );
     }
 
     /*
@@ -3823,6 +3841,20 @@ jQuery(function() {
 
     function set_current_video_to_edit( index ) {
       current_video_to_edit = index;
+    }
+
+    function set_control_fields( ajax_data ) {
+      // add current video that we're editing into the save data
+      ajax_data['current_video_to_edit'] = current_video_to_edit;
+
+      if( current_post_id ) {
+        ajax_data['current_post_id'] = current_post_id;
+      }
+      if( current_post_meta_key ) {
+        ajax_data['current_post_meta_key'] = current_post_meta_key;
+      }
+
+      return ajax_data;
     }
 
     // used several times below, so it's in a function
