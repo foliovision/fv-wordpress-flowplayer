@@ -582,7 +582,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         
         <div class="fv-player-tab fv-player-tab-playlist">
           <div id="fv-player-editor-playlist">
-              <div class="fv-player-editor-playlist-item">
+              <div class="fv-player-editor-playlist-item" data-index="0">
                 <div class="fv-player-editor-playlist-move">
                   <span class="fv-player-editor-playlist-move-up dashicons dashicons-arrow-up-alt2"></span>
                   <span class="fv-player-editor-playlist-move-handle"></span>
