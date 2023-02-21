@@ -4631,6 +4631,8 @@ jQuery(function() {
         $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
       },
 
+      playlist_item_add: playlist_item_add,
+
       shortcode_parse_arg,
 
       // We keep it for backwards compatibility
