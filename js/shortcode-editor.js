@@ -207,7 +207,7 @@ jQuery(function() {
         }
 
         editor_src_field = editor_src_field.eq( input.data( 'new-item-index' ) );
-        
+
         // Add new playlist item if it's not there
         if( !editor_src_field.length ) {
           let new_item = playlist_item_add();
@@ -1142,7 +1142,7 @@ jQuery(function() {
       $doc.on('fvp-preview-complete',function() {
         $el_preview.attr('class','preview-show');
 
-        // If editor was in the intro mode, we show the playlist and enable the full-editor 
+        // If editor was in the intro mode, we show the playlist and enable the full-editor
         if( $el_editor.hasClass('is-intro') ) {
           playlist_show();
 
@@ -1641,10 +1641,10 @@ jQuery(function() {
           let type = v.post_type != 'post' ? ' (' + v.post_type + ')' : '',
             status = v.post_status != 'publish' ? ' (' + v.post_status + ')' : '',
             taxonomies_and_terms = [];
-            
+
           if( v.taxonomies ) {
             $.each( v.taxonomies, function( taxonomy, taxonomy_details ) {
-              
+
               let taxonomy_terms = [];
               $.each( taxonomy_details.terms, function( k, term ) {
                 taxonomy_terms.push( term.name );
@@ -1652,7 +1652,7 @@ jQuery(function() {
               taxonomies_and_terms.push( taxonomy_details.label + ': ' + taxonomy_terms.join( ', ' ) );
             } );
           }
-          
+
           taxonomies_and_terms = '<ul><li>' + taxonomies_and_terms.join( '</li><li>' ) + '</li></ul>';
 
           ul.append( '<li><strong>' + v.post_title + '</strong>' + type + status + taxonomies_and_terms + '</li>')
@@ -1672,7 +1672,7 @@ jQuery(function() {
         if( selected.length > 0 ) {
           editor_open( selected.data('details').id );
         }
-        
+
       });
 
       $doc.on('click', '.fv_player_field_insert-button', function() {
@@ -1697,7 +1697,7 @@ jQuery(function() {
           } else {
             playlist_hero_show();
           }
-          
+
         } else {
           playlist_item_add();
         }
@@ -1795,7 +1795,7 @@ jQuery(function() {
       $doc.on('keyup', '#fv-player-editor-copy_player-overlay [name=players_selector]', function() {
         search_val = $(this).val();
         do_search = true;
-      });      
+      });
 
       setInterval( function() {
         if( do_search ) {
@@ -1842,7 +1842,7 @@ jQuery(function() {
           let item = $('<li class="attachment"><div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape fullsize"><div class="thumbnail"><div class="filename hidden"><div></div></div></div></div><button type="button" class="check" tabindex="0"><span class="media-modal-icon"></span><span class="screen-reader-text">Deselect</span></button></li>');
 
           item.find('.thumbnail').append( image );
-          
+
           item.find('.thumbnail .filename > div').html( player_name );
           if( image.length == 0 ) {
             item.find('.thumbnail .filename').removeClass('hidden');
@@ -1906,7 +1906,7 @@ jQuery(function() {
 
         editor_content = jQuery(field).val();
       } else if( widget.length ){
-        editor_content = widget.val();        
+        editor_content = widget.val();
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
       } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -3102,7 +3102,7 @@ jQuery(function() {
         if( response.error ) {
           if( response.error && response.fatal_error ) {
             let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-  
+
             let overlay = overlay_show('error_saving');
             overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
             overlay.find('[data-error]').html( response.error );
@@ -4109,7 +4109,7 @@ jQuery(function() {
         }
 
         if( fv_player_editor_conf.tabs && fv_player_editor_conf.tabs == 'none' ) {
-          bHideTab = true; 
+          bHideTab = true;
         }
 
         if(bHideTab){
@@ -4592,6 +4592,8 @@ jQuery(function() {
     // Public stuff
     return {
       add_notice,
+
+      playlist_index,
 
       reload_preview( index ) {
         return reload_preview(index);

@@ -6,13 +6,14 @@ jQuery(function() {
       current_term_id = false,
       $current_pending_tab = false,
       current_pending_refresh = false,
-      is_uploading = false;
-  
+      is_uploading = false,
+      is_holding_ctrl = false;
+
     return {
       get_current_folder() {
         return current_folder;
       },
-  
+
       set_current_folder( folder ) {
         return current_folder = folder;
       },
@@ -72,6 +73,10 @@ jQuery(function() {
 
       get_active_tab() {
         return jQuery('.media-menu-item.active:visible');
+      },
+
+      get_editor_is_holding_ctrl() {
+        return is_holding_ctrl;
       }
     }
   })(jQuery);
@@ -129,7 +134,7 @@ function fv_flowplayer_browser_browse(data, options) {
     fileList = filemanager.find('.data'),
     showBreadcrumbs = (options && options.breadcrumbs ? options.breadcrumbs : false);
 
-  var 
+  var
     breadcrumbsUrls = [];
 
     fv_player_media_browser.set_current_folder('')
@@ -384,7 +389,7 @@ function fv_flowplayer_browser_browse(data, options) {
       fv_player_media_browser.set_current_pending_refresh(false);
     }
 
-    // check if we should refresh when we have pending items and not currently uploading 
+    // check if we should refresh when we have pending items and not currently uploading
     if ( havePendingItems && !fv_player_media_browser.get_upload_status() ) {
       // update pending values
       fv_player_media_browser.set_current_pending_path( fv_player_media_browser.get_current_folder() );
@@ -508,7 +513,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
 
     $tab = $item;
   }
-  
+
   // if this tab was the last active, make it active again
   try {
     if ( typeof window.localStorage == "object" && window.localStorage.fv_player_last_tab_selected && window.localStorage.fv_player_last_tab_selected == tabId ) {
@@ -767,9 +772,29 @@ jQuery( function($) {
     return splash;
   }
 
-  function fileUrlIntoShortcodeEditor(href, extra, is_trailer) {
+  function fileUrlIntoShortcodeEditor(href, extra, is_trailer, index) {
+    //TODO: delete debug
+    console.log('fileUrlIntoShortcodeEditor', href, extra, is_trailer, index);
+
+    var $url_input;
+
+    if( index > 0 ) {
+      var new_item = fv_player_editor.playlist_item_add();
+      fv_player_editor.playlist_index();
+
+      //TODO: delete debug
+      console.log('new_item index', new_item.attr('data-index'));
+
+      fv_player_editor.set_current_video_to_edit(
+        new_item.attr('data-index')
+      );
+
+      $url_input = fv_player_editor.get_field( 'src', true );
+    } else {
+      $url_input = jQuery('.fv_flowplayer_target');
+    }
+
     var
-      $url_input       = jQuery('.fv_flowplayer_target'),
       $popup_close_btn = jQuery('.media-modal-close:visible'),
       splash = locateSplashFileObjectForMediaFileHref(href);
 
@@ -784,14 +809,14 @@ jQuery( function($) {
       .trigger('change'); // this check the video duration etc.
 
     var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);
-      
+
     if( splash && are_we_picking_the_video ) {
       var splash_input = fv_player_editor.get_field('splash', true);
       if( splash_input.val() == '' ) {
         splash_input.val(splash);
       }
     }
-    
+
     if( !is_trailer ) {
       var hlskey_field = fv_player_editor.get_field('hlskey', true);
       if( extra && extra.hlskey ) {
@@ -800,7 +825,7 @@ jQuery( function($) {
       } else {
         hlskey_field.val('');
       }
-  
+
       var timeline_previews_field = fv_player_editor.get_field('timeline_previews', true);
       if( extra && extra.timeline_previews ) {
         timeline_previews_field.val(extra.timeline_previews);
@@ -816,7 +841,7 @@ jQuery( function($) {
     } else {
       encoding_job_id_field.val('');
     }
-    
+
     var audio_checkbox = fv_player_editor.get_field('audio', true);
     if( extra && extra.mime ) {
       if( extra.mime.indexOf('audio') !== -1 ) {
@@ -825,7 +850,7 @@ jQuery( function($) {
         audio_checkbox.prop( "checked", false );
       }
     }
-    
+
     if( extra && extra.title ) {
       var title_input = fv_player_editor.get_field('caption', true);
       if( title_input.val() == '' ) {
@@ -872,14 +897,14 @@ jQuery( function($) {
         // we clicked on a file, not a folder... add a confirmation tick icon to it
         var wasSelected = $e.hasClass('selected');
 
-        if ($lastElementSelected !== null) {
+        if ($lastElementSelected !== null && !is_holding_ctrl) {
           $lastElementSelected
             .attr('aria-checked', 'false')
             .removeClass('selected details');
         }
 
         // if we clicked on the same selected LI, don't re-select it, as we just deselected it
-        if (!wasSelected) {
+        if (!wasSelected && is_holding_ctrl) {
           $e
             .attr('aria-checked', 'true')
             .addClass('selected details');
@@ -1014,13 +1039,15 @@ jQuery( function($) {
   });
 
   $( document ).on( "click", ".media-button-select", function(event) {
-    var
-      $e = jQuery('#__assets_browser li.selected'),
+    jQuery('#__assets_browser li.selected').each(function (index, $e) {
+      $e = jQuery($e);
+
       filenameDiv = $e.find('.filename div');
 
-    if (filenameDiv.length && filenameDiv.data('link')) {
-      fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'), false);
-    }
+      if (filenameDiv.length && filenameDiv.data('link')) {
+        fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'), false, index);
+      }
+    });
 
     return false;
   });
@@ -1045,6 +1072,20 @@ jQuery( function($) {
         'display' : 'none',
         'opacity' : 0,
       });
+    }
+  });
+
+  // set is_holding_ctrl to true when ctrl key is pressed
+  $( document ).on( "keydown", function(event) {
+    if ( event.ctrlKey ) {
+      is_holding_ctrl = true;
+    }
+  });
+
+  // set is_holding_ctrl to false when ctrl key is released
+  $( document ).on( "keyup", function(event) {
+    if ( !event.ctrlKey ) {
+      is_holding_ctrl = false;
     }
   });
 
