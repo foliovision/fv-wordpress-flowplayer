@@ -1880,6 +1880,31 @@ function fv_flowplayer_admin_database() {
   }
 }
 
+function fv_flowplayer_admin_embedded_on() {
+  global $wpdb;
+  $players_with_no_posts = $wpdb->get_var( "SELECT p.id, m.meta_value FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+  
+  $url = wp_nonce_url(
+    add_query_arg(
+      array(
+        'page'   => 'fvplayer',
+        'action' => 'fv-player-embedded-on-fix',
+      ),
+      admin_url( 'options-general.php' )
+    ),
+    'fv-player-embedded-on-fix'
+  );
+
+  if( $players_with_no_posts > 0 ) :
+    ?>
+    <p>It appears there are <?php echo $players_with_no_posts; ?> players which do not belong to any post.</p>
+    <a href="<?php echo $url ?>" class="button">Fix</a>
+
+  <?php else : ?>
+    <p>All of your FV Players seem to have a post associated.</p>
+  <?php endif;
+}
+
 
 function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
@@ -1973,6 +1998,7 @@ if( !class_exists('FV_Player_Pro') ) {
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings_tools', 'normal' );
 add_meta_box( 'fv_flowplayer_database', __('Database', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_database', 'fv_flowplayer_settings_tools', 'normal', 'low' );
+add_meta_box( 'fv_flowplayer_embedded_on', __('Embeded Posts Information', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_embedded_on', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 
