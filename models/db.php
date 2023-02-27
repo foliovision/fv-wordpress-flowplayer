@@ -363,7 +363,8 @@ class FV_Player_Db {
           'offset'              => $offset,
           'per_page'            => $per_page,
           'post_type'           => $post_type,
-          'search_by_video_ids' => $player_video_ids
+          'search_by_video_ids' => $player_video_ids,
+          'search_string'       => $search,
         );
 
         if( $cannot_edit_other_posts ) {
@@ -1398,6 +1399,7 @@ class FV_Player_Db {
       'per_page' => false,
       'post_type' => false,
       'search_by_video_ids' => false,
+      'search_string' => false,
       'select_fields' => false,
       'count' => false
     ) );
@@ -1439,6 +1441,12 @@ class FV_Player_Db {
     // if we have multiple video IDs to load players for, let's prepare a like statement here
     } else if( is_array($args['search_by_video_ids']) ) {
       $where_like_part = array();
+      
+      if ( !empty( $args['search_string'] ) ) {
+        // TODO: Escape in some better way
+        $where_like_part[] = 'player_name LIKE "%' . esc_sql( $args['search_string'] ) . '%"';
+      }
+
       foreach ($args['search_by_video_ids'] as $player_video_id) {
         $player_video_id = intval($player_video_id);
 
