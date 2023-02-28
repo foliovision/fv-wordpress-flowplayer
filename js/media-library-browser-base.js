@@ -6,8 +6,7 @@ jQuery(function() {
       current_term_id = false,
       $current_pending_tab = false,
       current_pending_refresh = false,
-      is_uploading = false,
-      is_holding_ctrl = false;
+      is_uploading = false;
 
     return {
       get_current_folder() {
@@ -75,9 +74,6 @@ jQuery(function() {
         return jQuery('.media-menu-item.active:visible');
       },
 
-      get_editor_is_holding_ctrl() {
-        return is_holding_ctrl;
-      }
     }
   })(jQuery);
 })
@@ -100,7 +96,8 @@ var
   // ... for example, Coconut uses m3u8 files with the same file name as its encoded file names for thumbnails,
   //     so it will need to create an inclusion rule like so:
   //        fv_flowplayer_browser_splash_file_lookup_rules['fv_player_coconut_browser_media_tab']['include'] = ['\.(m3u8)$']
-  fv_flowplayer_browser_splash_file_lookup_rules = {};
+  fv_flowplayer_browser_splash_file_lookup_rules = {},
+  fv_flowplayer_browser_holding_meta_key = false;
 
 // this thumbnail sizing functionality originally comes from WP JS
 function fv_flowplayer_media_browser_setColumns() {
@@ -897,14 +894,14 @@ jQuery( function($) {
         // we clicked on a file, not a folder... add a confirmation tick icon to it
         var wasSelected = $e.hasClass('selected');
 
-        if ($lastElementSelected !== null && !is_holding_ctrl) {
+        if ($lastElementSelected !== null && !fv_flowplayer_browser_holding_meta_key) {
           $lastElementSelected
             .attr('aria-checked', 'false')
             .removeClass('selected details');
         }
 
         // if we clicked on the same selected LI, don't re-select it, as we just deselected it
-        if (!wasSelected && is_holding_ctrl) {
+        if (!wasSelected && fv_flowplayer_browser_holding_meta_key) {
           $e
             .attr('aria-checked', 'true')
             .addClass('selected details');
@@ -1075,17 +1072,17 @@ jQuery( function($) {
     }
   });
 
-  // set is_holding_ctrl to true when ctrl key is pressed
+  // set fv_flowplayer_browser_holding_meta_key to true when ctrl key is pressed
   $( document ).on( "keydown", function(event) {
-    if ( event.ctrlKey ) {
-      is_holding_ctrl = true;
+    if ( event.metaKey ) {
+      fv_flowplayer_browser_holding_meta_key = true;
     }
   });
 
-  // set is_holding_ctrl to false when ctrl key is released
+  // set fv_flowplayer_browser_holding_meta_key to false when ctrl key is released
   $( document ).on( "keyup", function(event) {
-    if ( !event.ctrlKey ) {
-      is_holding_ctrl = false;
+    if ( !event.metaKey ) {
+      fv_flowplayer_browser_holding_meta_key = false;
     }
   });
 
