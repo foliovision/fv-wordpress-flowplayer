@@ -670,11 +670,15 @@ jQuery(function() {
         $doc.on( 'click', '.fv-player-remove-confirm', function() {
           var
             $element = $(this),
+            $row_actions = $element.closest( '.row-actions' ),
             $element_td = $element.parent(),
             $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>');
 
           $element_td.find('a, span').hide();
           $element.after($spinner);
+
+          // Make sure the row actions do not show on hover only, but always appear to make sure the spinner remains visible
+          $row_actions.css( 'left', 0 );
 
           debug_log('Running fv_player_db_remove Ajax.');
 
