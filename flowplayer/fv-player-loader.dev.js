@@ -83,6 +83,7 @@ class FV_Player_JS_Loader {
 		this.browser = browser;
 		this.options = this.browser.options;
 		this.triggerEvents = triggerEvents;
+		this.first_click_done = false;
 		this.userEventListener = this.triggerListener.bind( this );
 	}
 
@@ -181,6 +182,14 @@ class FV_Player_JS_Loader {
 			}, 100 );
 		}
 		this._removeEventListener( this );
+
+		// Avoid loader click handler once loaded
+		// We already loaded the JS so no need for any special treatment anymore
+		// Otherwise it might add .is-splash to a player which is playing already
+		let that = this;
+		setTimeout( function() {
+			that.first_click_done = true;
+		}, 100 );
 	}
 
 	static run() {
@@ -247,10 +256,9 @@ class FV_Player_JS_Loader {
 		}
 
 		/* If the first click was on player, play it */
-		let first_click_done = false;
 		document.addEventListener('mousedown', function (e) {
-			if( first_click_done ) return;
-			first_click_done = true;
+			if( instance.first_click_done ) return;
+			instance.first_click_done = true;
 
 			let playlist_item = false;
 
