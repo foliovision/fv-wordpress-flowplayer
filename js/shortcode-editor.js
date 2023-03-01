@@ -3245,9 +3245,11 @@ jQuery(function() {
       if( video.width && video.height ) {
         w = video.width;
         h = video.height;
-      } else {
+      } else if( video.ratio ) {
         w = 1;
         h = video.ratio;
+      } else {
+        return false;
       }
 
       if( h == w ) {
