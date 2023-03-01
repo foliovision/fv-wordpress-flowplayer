@@ -274,7 +274,17 @@ class FV_Player_Stats {
   public function top_ten_videos() {
     global $wpdb;
 
-    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date > now() - INTERVAL 7 day GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
+    $excluded_posts = false;
+    $exclude_posts_query_args = apply_filters( 'fv_player_stats_view_exclude_posts_query_args', false );
+    if( $exclude_posts_query_args ) {
+      $exclude_posts_query = new WP_Query( $exclude_posts_query_args );
+      if( !empty($exclude_posts_query->posts) ) {
+        $excluded_posts = implode( ', ', wp_list_pluck( $exclude_posts_query->posts, 'ID' ) );
+        $excluded_posts = ' AND id_post NOT IN ( '.$excluded_posts.' )';
+      }
+    }
+
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date > now() - INTERVAL 7 day $excluded_posts GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
 
     return $results;
   }
