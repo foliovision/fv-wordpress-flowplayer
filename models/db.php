@@ -726,7 +726,7 @@ class FV_Player_Db {
         // even if we have multi-playlist tag, if we cannot find the first player
         // we don't continue here, since we get all attributes from the first player
         if (!$player || !$player->getIsValid()) {
-          return false;
+          return $atts;
         }
 
         $fv_fp->currentPlayerObject = $player;
