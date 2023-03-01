@@ -125,37 +125,63 @@ class FV_Player_YouTube {
       if( !$fv_flowplayer_meta ) {
         $tStart = microtime(true);
         $aId = $this->is_youtube($video);
-        
-        $response = wp_remote_get( 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' . $aId[1] . '&key=' . $fv_fp->_get_option( array('pro','youtube_key') ), array( 'sslverify' => false ) );        
+
+        $api_url = add_query_arg( array(
+          'part' => 'snippet,contentDetails,player',
+          'id' => $aId[1],
+          'key' => $fv_fp->_get_option( array('pro','youtube_key') ),
+          'maxWidth' => 1920 // This is a trick to get player->embedWidth and embedHeight to be able to tell the aspect ratio of the video
+        ), 'https://www.googleapis.com/youtube/v3/videos' );
+
+        $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );        
+
         $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
-        
-        $fv_flowplayer_meta = ($fv_flowplayer_meta) ? $fv_flowplayer_meta : array();
-        if ( $obj && isset($obj->items[0]->contentDetails->duration)) {
-          if (class_exists('DateInterval')) {
-            $interval = new DateInterval($obj->items[0]->contentDetails->duration);
-            $fv_flowplayer_meta['duration'] = date_create('@0')->add($interval)->getTimestamp();
-          } else {
-            $fv_flowplayer_meta['duration'] = flowplayer::hms_to_seconds($obj->items[0]->contentDetails->duration);
-          }
-        }
-        
+
         if( isset($obj->error) && !empty($obj->error->message) ) {
           update_option('fv_player_pro_youtube_error', date('r').": ".$obj->error->message, false );
         }
         
-        //  YouTube splash screens come in various sizes and often with black borders. So we use the maxres image to determine image aspect ratio and then look for matching image
-        if( $obj && isset($obj->items[0]) && isset($obj->items[0]->snippet->thumbnails) ) {
-          $thumbs = $obj->items[0]->snippet->thumbnails;
-          $ratio = isset($thumbs->maxres) && intval($thumbs->maxres->width) > 0 && intval($thumbs->maxres->height) > 0 ? $thumbs->maxres->height/$thumbs->maxres->width : false;
-          foreach( (array)$thumbs AS $k => $v ) {            
-            if( !$ratio || $v->height/$v->width == $ratio ) {
-              $fv_flowplayer_meta['splash'] = $v->url;
-              if( $v->width > 600 ) break;
+        if( $obj && !empty($obj->items[0]) ) {
+          $obj_item = $obj->items[0];
+
+          $fv_flowplayer_meta = array();
+          if ( !empty($obj_item->contentDetails->duration) ) {
+            $duration = $obj_item->contentDetails->duration;
+
+            if (class_exists('DateInterval')) {
+              $interval = new DateInterval($duration);
+              $fv_flowplayer_meta['duration'] = date_create('@0')->add($interval)->getTimestamp();
+            } else {
+              $fv_flowplayer_meta['duration'] = self::hms_to_seconds($duration);
             }
-          }          
+          }
+
+          $fv_flowplayer_meta['aspect_ratio'] = 0;
+          if( !empty($obj_item->player->embedWidth) && !empty($obj_item->player->embedHeight) ) {
+            $fv_flowplayer_meta['aspect_ratio'] = $obj_item->player->embedHeight/$obj_item->player->embedWidth;
+          }
+
+          $fv_flowplayer_meta['is_live'] = false;
+          if( !empty($obj_item->snippet->liveBroadcastContent) ) {
+            if( $obj_item->snippet->liveBroadcastContent == 'live' ) {
+              $fv_flowplayer_meta['is_live'] = true;
+            }
+          }
+          
+          //  YouTube splash screens come in various sizes and often with black borders. So we use the maxres image to determine image aspect ratio and then look for matching image
+          if( !empty($obj_item->snippet->thumbnails) ) {
+            $thumbs = $obj_item->snippet->thumbnails;
+            $ratio = isset($thumbs->maxres) && intval($thumbs->maxres->width) > 0 && intval($thumbs->maxres->height) > 0 ? $thumbs->maxres->height/$thumbs->maxres->width : false;
+            foreach( (array)$thumbs AS $k => $v ) {            
+              if( !$ratio || $v->height/$v->width == $ratio ) {
+                $fv_flowplayer_meta['splash'] = $v->url;
+                if( $v->width > 600 ) break;
+              }
+            }          
+          }
+          
+          $fv_flowplayer_meta['caption'] = !empty($obj_item->snippet->title) ? $obj_item->snippet->title : false;
         }
-        
-        $fv_flowplayer_meta['caption'] = $obj && isset($obj->items[0]) && isset($obj->items[0]->snippet->title) ? $obj->items[0]->snippet->title : false;
         $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
         
         if ($post_id) {
@@ -169,8 +195,16 @@ class FV_Player_YouTube {
             'name' => htmlspecialchars( str_replace( array(';','[',']'), array('\;','(',')'), $fv_flowplayer_meta['caption']) ),
             'thumbnail' => $fv_flowplayer_meta['splash'],
             'duration' => $fv_flowplayer_meta['duration'],
+            'aspect_ratio' => $fv_flowplayer_meta['aspect_ratio'],
+            'is_live'      => $fv_flowplayer_meta['is_live'],
+            // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails            
         );
       }
+
+      if( isset($obj->items[0]->snippet->liveBroadcastContent) && $obj->items[0]->snippet->liveBroadcastContent == 'live' ) {
+        $videoData['is_live'] = true;
+      }
+
       return $videoData;
     } else {
       return $video; // no vimeo or yt, pass to another filter
