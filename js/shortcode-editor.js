@@ -3242,12 +3242,19 @@ jQuery(function() {
     function get_pretty_aspect_ratio( video ) {
       let w, h, dividend, divisor, remainder;
 
+      // Sanitize input
+      video.width = parseInt( video.width );
+      video.height = parseInt( video.height );
+      video.aspect_ratio = parseFloat( video.aspect_ratio );
+
       if( video.width && video.height ) {
         w = video.width;
         h = video.height;
-      } else if( video.ratio ) {
+
+      } else if( video.aspect_ratio ) {
         w = 1;
-        h = video.ratio;
+        h = video.aspect_ratio;
+
       } else {
         return false;
       }
@@ -3266,8 +3273,19 @@ jQuery(function() {
           divisor    = h;
         }
 
-        var gcd = -1;
+        let gcd = -1,
+          loop_runs = 0;
+
         while( gcd == -1 ) {
+          loop_runs++;
+
+          // Avoid endless loop, what if...
+          if( loop_runs > 100 ) {
+            gcd = divisor;
+            break;
+          }
+
+          console.log('gcd run');
           remainder = dividend % divisor;
           if( remainder == 0 ){
             gcd = divisor;
