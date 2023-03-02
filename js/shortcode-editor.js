@@ -127,6 +127,15 @@ jQuery(function() {
       }
     }
 
+    function add_shortcode_args( args ) {
+      let
+        params = jQuery.map( args, function (value, index) {
+          return index + '="' + value + '"';
+        });
+
+      return params.length ? ' ' + params.join(' ') : '';
+    }
+
     function copy_player_button_toggle( show ) {
       $('#fv-player-shortcode-editor .copy_player').toggle( show );
     }
@@ -2990,11 +2999,19 @@ jQuery(function() {
           }
         }
 
+        if( store_shortcode_args ) {
+          debug_log('Preserving shortcode args', store_shortcode_args );
+        }
+
         for( let i in fv_player_editor_conf.shortcode_args_not_db_compatible ) {
           let value = shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_not_db_compatible[i] );
           if (value && value[1]) {
             always_keep_shortcode_args[fv_player_editor_conf.shortcode_args_not_db_compatible[i]] = value[1];
           }
+        }
+
+        if( always_keep_shortcode_args ) {
+          debug_log('Always preserve shortcode args', always_keep_shortcode_args );
         }
 
       } else {
@@ -3115,101 +3132,73 @@ jQuery(function() {
         dataType:    'json',
         success: function(response) {
 
-        if( response.error ) {
-          if( response.error && response.fatal_error ) {
+          if( response.error ) {
+            if( response.error && response.fatal_error ) {
+              let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+    
+              let overlay = overlay_show('error_saving');
+              overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+              overlay.find('[data-error]').html( response.error );
+
+              jQuery('#fv_player_copy_to_clipboard').select();
+
+            } else {
+              add_notice( 'error', response.error )
+            }
+
+            el_spinner.hide();
+            is_saving = false;
+
+            return;
+          }
+
+          // player saved, reset draft status
+          is_unsaved = false;
+          //is_draft_changed = false;
+
+          current_player_db_id = parseInt(response.id);
+          if( current_player_db_id > 0 ) {
+            let shortcode_insert = '[fvplayer id="' + current_player_db_id + '"';
+
+            // we have extra presentation parameters to keep
+            if (store_shortcode_args) {
+              // if this was a non-DB player and is being converted into a DB-player,
+              // remove all parameters to keep that will go into the DB
+              var args_to_keep = {};
+
+              for (var i in store_shortcode_args) {
+                if (always_keep_shortcode_args[ i ]) {
+                  args_to_keep[ i ] = store_shortcode_args[ i ];
+                }
+              }
+
+              store_shortcode_args = args_to_keep;
+
+              shortcode_insert += add_shortcode_args( store_shortcode_args );
+
+            } else if (always_keep_shortcode_args && player_was_non_db) {
+              // we have extra parameters to keep that are DB-incompatible
+              shortcode_insert += add_shortcode_args( always_keep_shortcode_args );
+
+            } else {
+              // simple DB shortcode, no extra presentation parameters
+              insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
+            }
+
+            shortcode_insert += ']';
+
+            insert_shortcode( shortcode_insert );
+
+            jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
+
+          } else {
             let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-  
+
             let overlay = overlay_show('error_saving');
             overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-            overlay.find('[data-error]').html( response.error );
 
             jQuery('#fv_player_copy_to_clipboard').select();
-
-          } else {
-            add_notice( 'error', response.error )
           }
-
-          el_spinner.hide();
-          is_saving = false;
-
-          return;
-        }
-
-        // player saved, reset draft status
-        is_unsaved = false;
-        //is_draft_changed = false;
-
-        current_player_db_id = parseInt(response.id);
-        if( current_player_db_id > 0 ) {
-          var
-            has_store_shortcode_args = false,
-            has_always_keep_shortcode_args = false;
-
-          // since both of the above variables are length-less Objects, we need to determine their emptyness
-          // by iterating over them and checking that they inded contain any values
-          for (var i in store_shortcode_args) {
-            has_store_shortcode_args = true;
-            break;
-          }
-
-          for (var i in always_keep_shortcode_args) {
-            has_always_keep_shortcode_args = true;
-            break;
-          }
-
-          // we have extra presentation parameters to keep
-          if (store_shortcode_args) {
-            // if this was a non-DB player and is being converted into a DB-player,
-            // remove all parameters to keep that will go into the DB
-            var args_to_keep = {};
-
-            for (var i in store_shortcode_args) {
-              if (always_keep_shortcode_args[ i ]) {
-                args_to_keep[ i ] = store_shortcode_args[ i ];
-              }
-            }
-
-            store_shortcode_args = args_to_keep;
-
-            let
-              params = jQuery.map(store_shortcode_args, function (value, index) {
-                return index + '="' + value + '"';
-              }),
-              to_append = '';
-
-            if (params.length) {
-              to_append = ' ' + params.join(' ');
-            }
-
-            // TODO: Trying to insert wp-admin post lists player into editor here
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
-          } else if (always_keep_shortcode_args && player_was_non_db) {
-            // we have extra parameters to keep that are DB-incompatible
-            let
-              params = jQuery.map(always_keep_shortcode_args, function (value, index) {
-                return index + '="' + value + '"';
-              }),
-              to_append = '';
-
-            if (params.length) {
-              to_append = ' ' + params.join(' ');
-            }
-
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
-          } else {
-            // simple DB shortcode, no extra presentation parameters
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
-          }
-
-          jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
-        } else {
-          let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-
-          let overlay = overlay_show('error_saving');
-          overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-
-          jQuery('#fv_player_copy_to_clipboard').select();
-        }
         },
         error: function( jqXHR, textStatus, errorThrown) {
           overlay_show('message', 'An unexpected error has occurred: ' + errorThrown + ' Please try again');
@@ -3299,7 +3288,6 @@ jQuery(function() {
             break;
           }
 
-          console.log('gcd run');
           remainder = dividend % divisor;
           if( remainder == 0 ){
             gcd = divisor;
