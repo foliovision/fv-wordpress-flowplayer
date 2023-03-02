@@ -499,7 +499,7 @@ function fv_player_preload() {
   fv_player_load();
   fv_autoplay_exec();
   
-  jQuery(document).ajaxComplete( function() {  
+  jQuery(document).ajaxComplete( function() {
     fv_player_load();
   });
   
@@ -838,11 +838,10 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   }
 
   // todo: refactor!
-  if(index){
+  if( index ){
     if( fv_player_video_link_autoplay_can(api,parseInt(index)) ) {
       if( api.ready ) {
-        fv_player_video_link_seek( api, fTime );
-        
+        fv_player_video_link_seek( api, fTime, abEnd, abStart );
       } else {
         api.play(parseInt(index));
         api.one('ready', function() {
@@ -863,9 +862,9 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
       }
     }
-  }else{
+  } else {
     if( api.ready ) {
-      fv_player_video_link_seek( api, fTime );
+      fv_player_video_link_seek( api, fTime, abEnd, abStart );
       
     } else {
       if( fv_player_video_link_autoplay_can(api) ) {
@@ -897,6 +896,7 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
         api.seek(fTime);
       } 
     }
+
     if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
     clearInterval(do_seek);
   }, 10 );
