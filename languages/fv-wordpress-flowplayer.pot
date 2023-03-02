@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2023-02-28 09:20+0000\n"
+"POT-Creation-Date: 2023-03-02 11:43+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -43,19 +43,19 @@ msgstr ""
 msgid "FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!"
 msgstr ""
 
-#: controller/editor.php:91
+#: controller/editor.php:92
 msgid "Embed feature not supported in editor preview"
 msgstr ""
 
-#: controller/editor.php:92
+#: controller/editor.php:93
 msgid "Link feature not supported in editor preview"
 msgstr ""
 
-#: controller/editor.php:93
+#: controller/editor.php:94
 msgid "Cannot obtain video screenshot, please make sure the video is served with <a href=\"https://foliovision.com/player/video-hosting/hls#hls-js\">CORS headers</a>."
 msgstr ""
 
-#: controller/editor.php:126
+#: controller/editor.php:127
 msgid "Add FV Player"
 msgstr ""
 
