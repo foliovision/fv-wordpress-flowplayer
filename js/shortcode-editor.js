@@ -1318,176 +1318,176 @@ jQuery(function() {
           dataType:    'json',
           success: function(response) {
 
-          if( response.error ) {
-            if( response.fatal_error ) {
-              var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
+            if( response.error ) {
+              if( response.fatal_error ) {
+                var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
 
-              var overlay = overlay_show('error_saving');
-              overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-              overlay.find('[data-error]').html( response.error );
+                var overlay = overlay_show('error_saving');
+                overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+                overlay.find('[data-error]').html( response.error );
 
-              jQuery('#fv_player_copy_to_clipboard').select();
+                jQuery('#fv_player_copy_to_clipboard').select();
 
-            } else {
-              add_notice( 'error', response.error );
-            }
-
-            el_spinner.hide();
-
-            is_saving = false;
-
-            return;
-          }
-
-          debug_log('player ID after save: '+response.id);
-
-          current_player_object = response;
-
-          try {
-            $(response.videos).each( function(k,v) {
-              var item = $('.fv-player-playlist-item').eq(k);
-              if( !item.data('id_video') ) {
-                item.attr('data-id_video',v.id);
+              } else {
+                add_notice( 'error', response.error );
               }
-
-              if( k == current_video_to_edit ) {
-                debug_log('current_video_db_id after save: '+v.id);
-                current_video_db_id = v.id;
-              }
-
-              /*
-               * The video saving might fetch the video duration, splash screen and title...
-               * So we fill that in
-               */
-              // TODO: Populate chapters, error, is_live, is_audio, encryption key
-              var video_tab = get_tab( k, 'video-files' ),
-                splash_field = get_field( 'splash', video_tab ),
-                splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
-                title_field = get_field( 'caption', video_tab ),
-                auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
-
-              if( get_field('auto_splash', video_tab ).val() == '0' ) {
-                auto_splash = false;
-              }
-
-              if( get_field('auto_caption', video_tab ).val() == '0' ) {
-                auto_caption = false;
-              }
-
-              if( get_field('auto_splash', video_tab ).val() == '0' ) {
-                auto_splash = false;
-              }
-
-              if( get_field('auto_caption', video_tab ).val() == '0' ) {
-                auto_caption = false;
-              }
-
-              if( v.splash && ( !splash_field.val() || auto_splash ) ) {
-                splash_field.val( v.splash );
-
-                if( v.splash_attachment_id && !splash_attachment_id_field.val() ) {
-                  splash_attachment_id_field.val( v.splash_attachment_id )
-                }
-              }
-
-              if( auto_splash ) {
-                get_field('auto_splash', video_tab ).val( auto_splash );
-              }
-
-              if( v.caption && ( !title_field.val() || auto_caption ) ) {
-                title_field.val( v.caption );
-              }
-
-              if( auto_caption ) {
-                get_field('auto_caption', video_tab ).val( auto_caption );
-              }
-
-              // The Ajax save can give us some video details and it detects stream type so we refresh that information here if we are editing that video
-              if( current_video_to_edit == k ) {
-                show_video_details(k);
-                show_stream_fields_worker(k);
-              }
-            });
-
-            // If we are in playlist view, we refresh the list too
-            if( current_video_to_edit == -1 ) {
-              playlist_refresh();
-            }
-
-            // Did the data change while saving?
-            if( next ) {
-              debug_log('There is more to save...');
-
-              if ( is_unsaved ) {
-                init_saved_player_fields();
-              }
-
-              ajax( build_ajax_data(true) );
-              next = false;
-            } else {
-              is_saving = false;
-
-              insert_button_toggle_disabled(false);
 
               el_spinner.hide();
 
-              add_notice( 'success', 'Saved!', 2500 );
+              is_saving = false;
 
-              // close the overlay, if we're waiting for the save
-              if (overlay_close_waiting_for_save) {
-                // add this player's ID into players that no longer need an edit lock
-                if (current_player_db_id > 0) {
-                  edit_lock_removal[current_player_db_id] = 1;
-                }
-                overlay_close_waiting_for_save = false;
-                $.fn.fv_player_box.close();
-
-              } else if ( typeof( response.html ) != "undefined" ) {
-
-                if( response.html ) {
-                  // auto-refresh preview
-                  el_preview_target.html( response.html )
-
-                  $doc.trigger('fvp-preview-complete');
-
-                } else {
-                  reset_preview();
-                }
-              }
-
-              // if we're creating a new player, hide the Save / Insert button and
-              // add all the data and inputs to page that we need for an existing player
-              if ( is_unsaved ) {
-                copy_player_button_toggle(false);
-                init_saved_player_fields();
-                current_player_db_id = response.id;
-                is_unsaved = false;
-                //is_draft_changed = false;
-                loading = false;
-                ajax_save_this_please = false;
-              }
-
-              // Output the shortcode into the pre-configured output field
-              if( fv_player_editor_conf.field_selector ){
-                insert_shortcode( '[fvplayer id="'+current_player_db_id+'"]');
-              }
-
-              // Set the current data as previous to let auto-saving detect changes
-              // For new player this will have video and player IDs
-              ajax_save_previous = build_ajax_data(true);
+              return;
             }
-          } catch(e) {
-            error(e);
-          }
+
+            debug_log('player ID after save: '+response.id);
+
+            current_player_object = response;
+
+            try {
+              $(response.videos).each( function(k,v) {
+                var item = $('.fv-player-playlist-item').eq(k);
+                if( !item.data('id_video') ) {
+                  item.attr('data-id_video',v.id);
+                }
+
+                if( k == current_video_to_edit ) {
+                  debug_log('current_video_db_id after save: '+v.id);
+                  current_video_db_id = v.id;
+                }
+
+                /*
+                * The video saving might fetch the video duration, splash screen and title...
+                * So we fill that in
+                */
+                // TODO: Populate chapters, error, is_live, is_audio, encryption key
+                var video_tab = get_tab( k, 'video-files' ),
+                  splash_field = get_field( 'splash', video_tab ),
+                  splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
+                  title_field = get_field( 'caption', video_tab ),
+                  auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
+                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
+
+                if( get_field('auto_splash', video_tab ).val() == '0' ) {
+                  auto_splash = false;
+                }
+
+                if( get_field('auto_caption', video_tab ).val() == '0' ) {
+                  auto_caption = false;
+                }
+
+                if( get_field('auto_splash', video_tab ).val() == '0' ) {
+                  auto_splash = false;
+                }
+
+                if( get_field('auto_caption', video_tab ).val() == '0' ) {
+                  auto_caption = false;
+                }
+
+                if( v.splash && ( !splash_field.val() || auto_splash ) ) {
+                  splash_field.val( v.splash );
+
+                  if( v.splash_attachment_id && !splash_attachment_id_field.val() ) {
+                    splash_attachment_id_field.val( v.splash_attachment_id )
+                  }
+                }
+
+                if( auto_splash ) {
+                  get_field('auto_splash', video_tab ).val( auto_splash );
+                }
+
+                if( v.caption && ( !title_field.val() || auto_caption ) ) {
+                  title_field.val( v.caption );
+                }
+
+                if( auto_caption ) {
+                  get_field('auto_caption', video_tab ).val( auto_caption );
+                }
+
+                // The Ajax save can give us some video details and it detects stream type so we refresh that information here if we are editing that video
+                if( current_video_to_edit == k ) {
+                  show_video_details(k);
+                  show_stream_fields_worker(k);
+                }
+              });
+
+              // If we are in playlist view, we refresh the list too
+              if( current_video_to_edit == -1 ) {
+                playlist_refresh();
+              }
+
+              // Did the data change while saving?
+              if( next ) {
+                debug_log('There is more to save...');
+
+                if ( is_unsaved ) {
+                  init_saved_player_fields();
+                }
+
+                ajax( build_ajax_data(true) );
+                next = false;
+              } else {
+                is_saving = false;
+
+                insert_button_toggle_disabled(false);
+
+                el_spinner.hide();
+
+                add_notice( 'success', 'Saved!', 2500 );
+
+                // close the overlay, if we're waiting for the save
+                if (overlay_close_waiting_for_save) {
+                  // add this player's ID into players that no longer need an edit lock
+                  if (current_player_db_id > 0) {
+                    edit_lock_removal[current_player_db_id] = 1;
+                  }
+                  overlay_close_waiting_for_save = false;
+                  $.fn.fv_player_box.close();
+
+                } else if ( typeof( response.html ) != "undefined" ) {
+
+                  if( response.html ) {
+                    // auto-refresh preview
+                    el_preview_target.html( response.html )
+
+                    $doc.trigger('fvp-preview-complete');
+
+                  } else {
+                    reset_preview();
+                  }
+                }
+
+                // if we're creating a new player, hide the Save / Insert button and
+                // add all the data and inputs to page that we need for an existing player
+                if ( is_unsaved ) {
+                  copy_player_button_toggle(false);
+                  init_saved_player_fields();
+                  current_player_db_id = response.id;
+                  is_unsaved = false;
+                  //is_draft_changed = false;
+                  loading = false;
+                  ajax_save_this_please = false;
+                }
+
+                // Output the shortcode into the pre-configured output field
+                if( fv_player_editor_conf.field_selector ){
+                  insert_shortcode( '[fvplayer id="'+current_player_db_id+'"]');
+                }
+
+                // Set the current data as previous to let auto-saving detect changes
+                // For new player this will have video and player IDs
+                ajax_save_previous = build_ajax_data(true);
+              }
+            } catch(e) {
+              error(e);
+            }
 
           },
           error: function( jqXHR, textStatus, errorThrown) {
             add_notice( 'error', '<p>Error saving changes: ' + errorThrown + '</p>' );
 
-          el_spinner.hide();
+            el_spinner.hide();
 
-          is_saving = false;
+            is_saving = false;
           }
         });
 
