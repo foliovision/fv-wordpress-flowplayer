@@ -2857,6 +2857,8 @@ jQuery(function() {
             sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
             sad = sad.replace(/&amp;/g,'&');
             get_field("ad").val(sad);
+
+            get_field( 'toggle_ad_custom' ).prop('checked', true).trigger('change');
           }
 
           if( iadheight != null && iadheight[1] != null )
@@ -2864,7 +2866,7 @@ jQuery(function() {
           if( iadwidth != null && iadwidth[1] != null )
             get_field("ad_width").val(iadwidth[1]);
           if( sad_skip != null && sad_skip[1] != null && sad_skip[1] == 'yes' )
-            get_field("ad_skip")[0].checked = 1;
+            get_field("ad_skip").prop('checked',true).trigger('change');
 
           if( sspeed != null && sspeed[1] != null ) {
             if (sspeed[1] == 'buttons')
@@ -2894,33 +2896,37 @@ jQuery(function() {
           // get_field("popup")[0].parentNode.style.display = 'none'
           var spopup = shortcode_parse_arg( shortcode, 'popup', true );
 
+          let end_actions_val = false;
           if( sredirect != null && sredirect[1] != null ){
-            get_field("end_actions")[0].selectedIndex = 1;
-            get_field("redirect").val(sredirect[1]);
-            jQuery('#fv_wp_flowplayer_field_redirect').parents('tr').show();
-          }else if( sloop != null && sloop[1] != null && sloop[1] == 'true' ){
-            get_field("end_actions")[0].selectedIndex = 2;
-          }else if( spopup != null && spopup[1] != null ) {
-            get_field("end_actions")[0].selectedIndex = 3;
+            end_actions_val = 2;
+            get_field("redirect").val( sredirect[1] );
+
+          } else if( sloop != null && sloop[1] != null && sloop[1] == 'true' ){
+            end_actions_val = 3;
+
+          } else if( spopup != null && spopup[1] != null ) {
+            end_actions_val = 4;
 
             spopup = spopup[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
             spopup = spopup.replace(/&amp;/g,'&');
 
-            get_field("popup_id").parents('tr').show();
+            if( spopup.match(/email-[0-9]*/)){
+              end_actions_val = 6;
 
-            if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random' || spopup === 'email_list') {
-              get_field("popup_id").val(spopup)
-            } else if( spopup.match(/email-[0-9]*/)){
-              get_field("popup_id").parent().parent().hide();
-              get_field("email_list").parent().parent().show();
-              get_field("end_actions").val('email_list');
               get_field("email_list").val(spopup.match(/email-([0-9]*)/)[1]);
-            }else {
-              get_field("popup").val(spopup).parent().show();
+
+            } else {
+              get_field("popup_id").val(spopup);
             }
 
-          }else if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' ){
-            get_field('end_actions')[0].selectedIndex = 4
+          } else if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' ){
+            end_actions_val = 5;
+          }
+
+          if( end_actions_val ) {
+            get_field("end_actions").prop( 'selectedIndex', end_actions_val ).trigger('change');
+
+            get_field( 'toggle_end_action' ).prop('checked', true).trigger('change');
           }
 
           if( splaylist_advance != null && splaylist_advance[1] != null ) {
@@ -4070,6 +4076,12 @@ jQuery(function() {
       if( typeof(iTabIndex) == "undefined" ){
         iTabIndex = current_video_to_edit;
       }
+
+      // Reguired when parsing a legacy shortcode
+      if( iTabIndex == -1 ) {
+        iTabIndex = 0;
+      }
+
       var oTab = get_tab( iTabIndex, 'subtitles' );
 
       var subElement = false;
