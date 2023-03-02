@@ -1000,30 +1000,57 @@ class FV_Player_Db {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
-    global $FV_Player_Db, $fv_fp;
+    global $FV_Player_Db;
 
     $player_options        = array();
     $video_ids             = array();
 
-    $cannot_edit_other_posts = !current_user_can('edit_others_posts');
-    $user_id = get_current_user_id();
+    $json_post = file_get_contents( 'php://input' );
 
     $post_data = null;
     if( is_array($data) ) {
       $post_data = $data;
-    } else if( !empty($_POST['data']) && wp_verify_nonce( $_POST['nonce'],"fv-player-preview-".$user_id ) ) {
-      if( json_decode( stripslashes($_POST['data']) ) ) {
-        $post_data = json_decode( stripslashes($_POST['data']), true );
+
+    } else if( !empty($json_post) ) {
+      $json_post = json_decode( $json_post, true );
+
+      $json_error = json_last_error();
+      
+      if( $json_error !== JSON_ERROR_NONE ) {
+        wp_send_json( array(
+          'error' => 'Error saving: JSON error.',
+          'fatal_error' => true
+        ) );
+        exit;
+      }
+
+      if( !wp_verify_nonce( $json_post['nonce'], "fv-player-edit" ) ) {
+        wp_send_json( array(
+          'error' => 'Error saving: Nonce error, please ensure you are logged in and try again.',
+          'fatal_error' => true
+        ) );
+        exit;
+      }
+
+      if( !empty( $json_post['data'] ) ) {
+        $post_data = $json_post['data'];
 
         // check if user can update player
-        if(!empty($post_data['update']) && $cannot_edit_other_posts ) {
+        if(!empty($post_data['update']) && !current_user_can('edit_others_posts') ) {
           $player_to_check = new FV_Player_Db_Player(intval($post_data['update']), array(), $FV_Player_Db);
 
-          if( $player_to_check->getAuthor() !== $user_id ) {
+          if( $player_to_check->getAuthor() !== get_current_user_id() ) {
             wp_send_json( array( 'error' => 'Security check failed.' ) );
           }
         }
       }
+
+    } else if( !empty( $_REQUEST['action'] ) && 'fv_player_db_save' === $_REQUEST['action'] ) {
+      wp_send_json( array(
+        'error' => 'Error saving: JSON POST data missing!',
+        'fatal_error' => true
+      ) );
+      exit;
     }
 
     $ignored_player_fields = array(

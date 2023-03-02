@@ -1298,11 +1298,16 @@ jQuery(function() {
 
         debug_log('Running fv_player_db_save Ajax.');
 
-        $.post(ajaxurl+'?fv_player_db_save=1', {
-          action: 'fv_player_db_save',
-          data: JSON.stringify(ajax_save_this_please),
-          nonce: fv_player_editor_conf.preview_nonce,
-        }, function(response) {
+        $.ajax({
+          type:        'POST',
+          url:         ajaxurl + '?action=fv_player_db_save',
+          data:        JSON.stringify( {
+            data:        ajax_save_this_please,
+            nonce:       fv_player_editor_conf.edit_nonce,
+          } ),
+          contentType: 'application/json',
+          dataType:    'json',
+          success: function(response) {
 
           if( response.error ) {
             if( response.fatal_error ) {
@@ -1467,12 +1472,14 @@ jQuery(function() {
             error(e);
           }
 
-        }, 'json' ).fail( function() {
-          add_notice( 'error', 'Error saving changes.' );
+          },
+          error: function( jqXHR, textStatus, errorThrown) {
+            add_notice( 'error', '<p>Error saving changes: ' + errorThrown + '</p>' );
 
           el_spinner.hide();
 
           is_saving = false;
+          }
         });
 
         ajax_save_this_please = false;
@@ -3097,11 +3104,16 @@ jQuery(function() {
 
       // save data
       // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
-      jQuery.post(ajaxurl+'?fv_player_db_save=1', {
-        action: 'fv_player_db_save',
-        data: JSON.stringify(ajax_data),
-        nonce: fv_player_editor_conf.preview_nonce
-      }, function(response) {
+      $.ajax({
+        type:        'POST',
+        url:         ajaxurl + '?action=fv_player_db_save',
+        data:        JSON.stringify( {
+          data:        ajax_data,
+          nonce:       fv_player_editor_conf.edit_nonce,
+        } ),
+        contentType: 'application/json',
+        dataType:    'json',
+        success: function(response) {
 
         if( response.error ) {
           if( response.error && response.fatal_error ) {
@@ -3198,8 +3210,10 @@ jQuery(function() {
 
           jQuery('#fv_player_copy_to_clipboard').select();
         }
-      }).fail(function() {
-        overlay_show('message', 'An unexpected error has occurred. Please try again');
+        },
+        error: function( jqXHR, textStatus, errorThrown) {
+          overlay_show('message', 'An unexpected error has occurred: ' + errorThrown + ' Please try again');
+        }
       });
 
       return;
