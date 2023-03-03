@@ -508,7 +508,7 @@ CREATE TABLE " . self::$db_table_name . " (
   overlay text NOT NULL,
   overlay_height varchar(7) NOT NULL,
   overlay_width varchar(7) NOT NULL,
-  overlay_skip varchar(7) NOT NULL,  
+  overlay_skip varchar(7) NOT NULL,
   playlist varchar(10) NOT NULL,
   playlist_advance varchar(7) NOT NULL,
   qsel varchar(25) NOT NULL,
@@ -529,7 +529,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $res = dbDelta( $sql );
 
       if( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
-        self::toggleConversion();
+        self::updateTableConversion();
 
         foreach ( array(
           'ad'                => 'overlay',
@@ -555,7 +555,12 @@ CREATE TABLE " . self::$db_table_name . " (
     return $res;
   }
 
-  private static function toggleConversion() {
+  /**
+   * Run conversion of old data to new data structure.
+   *
+   * @return void
+   */
+  private static function updateTableConversion() {
     global $wpdb;
 
     $table = self::$db_table_name;

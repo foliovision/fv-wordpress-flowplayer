@@ -308,8 +308,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $res = dbDelta( $sql );
 
       if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
-        self::meta2TableConversion();
-        self::toggleConversion();
+        self::updateTableConversion();
 
         // Is there such column?
         if ( FV_Player_Db::has_table_column( self::$db_table_name , 'caption' ) ) {
@@ -327,8 +326,13 @@ CREATE TABLE " . self::$db_table_name . " (
     return $res;
   }
 
-  private static function meta2TableConversion() {
-    global $wpdb;
+  /**
+   * Run conversion of old data to new data structure.
+   *
+   * @return void
+   */
+  private static function updateTableConversion() {
+    global $wpdb, $fv_fp;
 
     $table = self::$db_table_name;
     $meta_table = $wpdb->prefix.'fv_player_videometa';
@@ -342,18 +346,18 @@ CREATE TABLE " . self::$db_table_name . " (
     // update last_check
     $res_last_check = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
 
-    // backup old meta
-    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'duration_backup' WHERE meta_key = 'duration'");
-    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'live_backup' WHERE meta_key = 'live'");
-    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'last_video_meta_check_backup' WHERE meta_key = 'last_video_meta_check'");
-  }
+    $res_toggle = $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
 
-  private static function toggleConversion() {
-    global $wpdb;
+    // backup just once
+    if( !$fv_fp->_get_option('backup_video_meta') ) {
+      // backup old meta
+      $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'duration_backup' WHERE meta_key = 'duration'");
+      $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'live_backup' WHERE meta_key = 'live'");
+      $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'last_video_meta_check_backup' WHERE meta_key = 'last_video_meta_check'");
 
-    $table = self::$db_table_name;
+      $fv_fp->_set_option('backup_video_meta', true);
+    }
 
-    $res = $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
   }
 
   /**
