@@ -286,7 +286,7 @@ class flowplayer_frontend extends flowplayer
       $aPlaylistItems = array( $aPlaylistItems[ $args['current_video_to_edit'] ] );
 
       // Pick title and splash from the previewed video
-      $this->aCurArgs['caption'] = $aPlaylistItems[0]['fv_title'];
+      $this->aCurArgs['title'] = $aPlaylistItems[0]['fv_title'];
       $splash_img = $aPlaylistItems[0]['splash'];
     }
 
@@ -669,13 +669,13 @@ class flowplayer_frontend extends flowplayer
           }
 
           if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
-            $attributes['class'] .= ' has-caption';
+            $attributes['class'] .= ' has-title';
             $this->sHTMLAfter .= apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
 
         } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
-          $attributes['class'] .= ' has-caption';
+          $attributes['class'] .= ' has-title';
           $this->sHTMLAfter = apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
 
         }

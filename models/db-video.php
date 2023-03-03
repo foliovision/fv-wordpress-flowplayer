@@ -212,17 +212,17 @@ class FV_Player_Db_Video {
   public function getTitleFromSrc() {
     $src = $this->getSrc();
     $arr = explode('/', $src);
-    $caption = end($arr);
+    $title = end($arr);
 
-    if( $caption == 'index.m3u8' ) {
+    if( $title == 'index.m3u8' ) {
       unset($arr[count($arr)-1]);
-      $caption = end($arr);
+      $title = end($arr);
     }
 
-    $caption = apply_filters( 'fv_flowplayer_caption_src', $caption , $src );
-    $caption = apply_filters( 'fv_flowplayer_title_src', $caption , $src );
+    $title = apply_filters( 'fv_flowplayer_caption_src', $title , $src );
+    $title = apply_filters( 'fv_flowplayer_title_src', $title , $src );
 
-    return urldecode($caption);
+    return urldecode($title);
   }
 
   /**
@@ -1000,7 +1000,7 @@ CREATE TABLE " . self::$db_table_name . " (
         if( !empty($video_data['name']) && (
           !$this->getTitle() || $this->getMetaValue( 'auto_caption', true )
         ) ) {
-          $this->caption = $video_data['name'];
+          $this->title = $video_data['name'];
 
           $meta_data[] = array(
             'meta_key' => 'auto_caption',
