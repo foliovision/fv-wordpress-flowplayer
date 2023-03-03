@@ -148,7 +148,7 @@ class flowplayer_frontend extends flowplayer
       }
 
       if( !$player->getToggleAdCustom() ) {
-        $this->aCurArgs['ad'] = false;
+        $this->aCurArgs['overlay'] = false;
       }
 
       if (isset($_GET['fv_player_preview']) && $_GET['fv_player_preview'] == 'POST' && isset($_POST['fv_player_preview_json'])) {
@@ -732,8 +732,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-popup'] = $this->json_encode( $popup_contents );
         }
 
-        if( $ad_contents = $this->get_ad_code() ) {
-          $attributes['data-ad'] = $this->json_encode( $ad_contents );
+        if( $overlay_contents = $this->get_ad_code() ) {
+          $attributes['data-overlay'] = $this->json_encode( $overlay_contents );
         }
 
         // Tell the preload script to not try to load the player
@@ -885,41 +885,42 @@ JS;
 
 
   function get_ad_code() {
-    $ad_contents = false;
+    $overlay_contents = false;
 
     if(
-      ( trim($this->_get_option('ad')) || ( isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad']) ) )
-      && !strlen($this->aCurArgs['ad_skip'])
+      ( trim($this->_get_option('overlay')) || ( isset($this->aCurArgs['overlay']) && !empty($this->aCurArgs['overlay']) ) )
+      && !strlen($this->aCurArgs['overlay_skip'])
     ) {
-      if (isset($this->aCurArgs['ad']) && !empty($this->aCurArgs['ad'])) {
-        $ad = trim($this->aCurArgs['ad']);
-        if( stripos($ad,'<!--fv_flowplayer_base64_encoded-->') !== false ) {
-          $ad = str_replace('<!--fv_flowplayer_base64_encoded-->','',$ad);
-          $ad = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($ad) ) );
+      if (isset($this->aCurArgs['overlay']) && !empty($this->aCurArgs['overlay'])) {
+        $overlay = trim($this->aCurArgs['overlay']);
+        if( stripos($overlay,'<!--fv_flowplayer_base64_encoded-->') !== false ) {
+          $overlay = str_replace('<!--fv_flowplayer_base64_encoded-->','',$overlay);
+          $overlay = html_entity_decode( str_replace( array('\"','\[','\]'), array('"','[',']'), base64_decode($overlay) ) );
         } else {
-          $ad = html_entity_decode( str_replace('&#039;',"'",$ad ) );
+          $overlay = html_entity_decode( str_replace('&#039;',"'",$overlay ) );
         }
 
-        $ad_width = ( isset($this->aCurArgs['ad_width']) && intval($this->aCurArgs['ad_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';
-        $ad_height = ( isset($this->aCurArgs['ad_height']) && intval($this->aCurArgs['ad_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';
+        $overlay_width = ( isset($this->aCurArgs['overlay_width']) && intval($this->aCurArgs['overlay_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';
+        $overlay_height = ( isset($this->aCurArgs['overlay_height']) && intval($this->aCurArgs['overlay_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';
       }
       else {
-        $ad = trim( $this->_get_option('ad') );
-        $ad_width = ( $this->_get_option('ad_width') ) ? $this->_get_option('ad_width').'px' : '100%';
-        $ad_height = ( $this->_get_option('ad_height') ) ? $this->_get_option('ad_height').'px' : '';
+        $overlay = trim( $this->_get_option('overlay') );
+        $overlay_width = ( $this->_get_option('overlay_width') ) ? $this->_get_option('overlay_width').'px' : '100%';
+        $overlay_height = ( $this->_get_option('overlay_height') ) ? $this->_get_option('overlay_height').'px' : '';
       }
 
-      $ad = apply_filters( 'fv_flowplayer_ad_html', $ad);
-      if( strlen(trim($ad)) > 0 ) {
-        $ad_contents = array(
-                             'html' => "<div class='wpfp_custom_ad_content' style='width: $ad_width; height: $ad_height'>\n\t\t<div class='fv_fp_close'><a href='#'></a></div>\n\t\t\t".$ad."\n\t\t</div>",
-                             'width' => $ad_width,
-                             'height' => $ad_height
+      $overlay = apply_filters( 'fv_flowplayer_ad_html', $overlay);
+      $overlay = apply_filters( 'fv_flowplayer_overlay_html', $overlay);
+      if( strlen(trim($overlay)) > 0 ) {
+        $overlay_contents = array(
+                             'html' => "<div class='wpfp_custom_ad_content' style='width: $overlay_width; height: $overlay_height'>\n\t\t<div class='fv_fp_close'><a href='#'></a></div>\n\t\t\t".$overlay."\n\t\t</div>",
+                             'width' => $overlay_width,
+                             'height' => $overlay_height
                             );
       }
     }
 
-    return $ad_contents;
+    return $overlay_contents;
   }
 
 

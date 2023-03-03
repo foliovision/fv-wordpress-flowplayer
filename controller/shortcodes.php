@@ -90,11 +90,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     
   }
   
-  $atts = wp_parse_args( $atts, array(
-    'ad' => '',
-    'ad_width' => '',
-    'ad_height' => '',
-    'ad_skip' => '',    
+  $atts = wp_parse_args( $atts, array(  
     'admin_warning' => '',
     'align' => '',
     'autoplay' => '',
@@ -111,6 +107,10 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'live' => '',
     'logo' => '',
     'loop' => '',
+    'overlay' => '',
+    'overlay_width' => '',
+    'overlay_height' => '',
+    'overlay_skip' => '',  
     'play_button' => '',
     'playlist' => '',    
     'playlist_advance' => '',

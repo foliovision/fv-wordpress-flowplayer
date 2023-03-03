@@ -921,6 +921,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
         <div class="fv-player-tab fv-player-tab-actions" style="display: none">
           <?php
+          $overlay_show_after = $fv_fp->_get_option('overlay_show_after');
+
           $actions = array(
             'actions' => array(
               'items' => array(
@@ -972,6 +974,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     array(
                       'label' => __('Overlay Code', 'fv-wordpress-flowplayer'),
                       'name' => 'overlay',
+                      'description' => $overlay_show_after ? sprintf( __('Shows after %d seconds.', 'fv-wordpress-flowplayer'), $overlay_show_after ) : false,
                       'type' => 'textarea',
                       'visible' => true
                     ),

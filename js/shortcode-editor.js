@@ -1483,7 +1483,7 @@ jQuery(function() {
 
           },
           error: function( jqXHR, textStatus, errorThrown) {
-            add_notice( 'error', '<p>Error saving changes: ' + errorThrown + '</p>' );
+            add_notice( 'error', '<p>Error saving changes: ' + errorThrown + jqXHR.responseText + '</p>' );
 
             el_spinner.hide();
 
@@ -2856,17 +2856,17 @@ jQuery(function() {
           if( sad != null && sad[1] != null ) {
             sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
             sad = sad.replace(/&amp;/g,'&');
-            get_field("ad").val(sad);
+            get_field("overlay").val(sad);
 
-            get_field( 'toggle_ad_custom' ).prop('checked', true).trigger('change');
+            get_field( 'toggle_overlay' ).prop('checked', true).trigger('change');
           }
 
           if( iadheight != null && iadheight[1] != null )
-            get_field("ad_height").val(iadheight[1]);
+            get_field("overlay_height").val(iadheight[1]);
           if( iadwidth != null && iadwidth[1] != null )
-            get_field("ad_width").val(iadwidth[1]);
+            get_field("overlay_width").val(iadwidth[1]);
           if( sad_skip != null && sad_skip[1] != null && sad_skip[1] == 'yes' )
-            get_field("ad_skip").prop('checked',true).trigger('change');
+            get_field("overlay_skip").prop('checked',true).trigger('change');
 
           if( sspeed != null && sspeed[1] != null ) {
             if (sspeed[1] == 'buttons')
