@@ -1891,6 +1891,18 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     }
   }
 
+  public static function has_table_column( $table, $column ) {
+    global $wpdb;
+    return $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+        DB_NAME,
+        $table,
+        $column
+        ) 
+    );
+  }
+
   /**
    * AJAX function to remove a player from database.
    *

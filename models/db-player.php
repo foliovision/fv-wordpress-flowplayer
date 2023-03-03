@@ -538,10 +538,13 @@ CREATE TABLE " . self::$db_table_name . " (
           'ad_width'          => 'overlay_width',
           'toggle_ad_custom'  => 'toggle_overlay',
         ) as $from => $to ) {
-          $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
+          // Is there such column?
+          if ( FV_Player_Db::has_table_column( self::$db_table_name , $from ) ) {
+            $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
 
-          if ( empty( $wpdb->last_error ) ) {
-            $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `" . $from . "`" );
+            if ( empty( $wpdb->last_error ) ) {
+              $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `" . $from . "`" );
+            }
           }
         }
       }
@@ -560,8 +563,10 @@ CREATE TABLE " . self::$db_table_name . " (
     // enable toggle end action
     $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
-    // enable toggle ad custom
-    $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+    if ( FV_Player_Db::has_table_column( self::$db_table_name , 'ad' ) ) {
+      // enable toggle ad custom
+      $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+    }
   }
 
   /**

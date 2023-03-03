@@ -311,10 +311,13 @@ CREATE TABLE " . self::$db_table_name . " (
         self::meta2TableConversion();
         self::toggleConversion();
 
-        $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
+        // Is there such column?
+        if ( FV_Player_Db::has_table_column( self::$db_table_name , 'caption' ) ) {
+          $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
 
-        if ( empty( $wpdb->last_error ) ) {
-          $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `caption`" );
+          if ( empty( $wpdb->last_error ) ) {
+            $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `caption`" );
+          }
         }
       }
 
