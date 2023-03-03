@@ -51,9 +51,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   var $bCSSInline = false;
 
-  public $ad_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+  public $overlay_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
 
-  public $ad_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
+  public $overlay_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
 
   public $load_dash = false;
 
@@ -602,8 +602,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
     if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
     if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';
-    if( !isset( $conf['adTextColor'] ) ) $conf['adTextColor'] = '#888';
-    if( !isset( $conf['adLinksColor'] ) ) $conf['adLinksColor'] = '#ff3333';
+    if( !isset( $conf['overlayTextColor'] ) ) $conf['overlayTextColor'] = '#888';
+    if( !isset( $conf['overlayLinksColor'] ) ) $conf['overlayLinksColor'] = '#ff3333';
     if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = 'rgba(0,0,0,0.5)';
     if( !isset( $conf['subtitleSize'] ) ) $conf['subtitleSize'] = 16;
 
@@ -620,11 +620,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['height'] ) ) $conf['height'] = '360';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
     if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
-    if( !isset( $conf['ad'] ) ) $conf['ad'] = '';
-    if( !isset( $conf['ad_width'] ) ) $conf['ad_width'] = '';
-    if( !isset( $conf['ad_height'] ) ) $conf['ad_height'] = '';
-    if( !isset( $conf['ad_css'] ) ) $conf['ad_css'] = $this->ad_css_default;
-    if( !isset( $conf['ad_show_after'] ) ) $conf['ad_show_after'] = 0;
+    if( !isset( $conf['overlay'] ) ) $conf['overlay'] = '';
+    if( !isset( $conf['overlay_width'] ) ) $conf['overlay_width'] = '';
+    if( !isset( $conf['overlay_height'] ) ) $conf['overlay_height'] = '';
+    if( !isset( $conf['overlay_css'] ) ) $conf['overlay_css'] = $this->overlay_css_default;
+    if( !isset( $conf['overlay_show_after'] ) ) $conf['overlay_show_after'] = 0;
     if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';
     if(  isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }
     if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'ads' => false, 'mobile' => false, 'align' => false );
@@ -754,7 +754,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       } else if( in_array( $key, array('width', 'height') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^0-9%]/', '', $value) );
-      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'ad', 'ad_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor', 'customCSS') ) ) {
+      } else if( !in_array( $key, array('amazon_region', 'amazon_bucket', 'amazon_key', 'amazon_secret', 'font-face', 'overlay', 'overlay_css', 'subtitleFontFace','sharing_email_text','mailchimp_label','email_lists','playlist-design','subtitleBgColor', 'customCSS') ) ) {
         $aNewOptions[$key] = trim( preg_replace('/[^A-Za-z0-9.:\-_\/]/', '', $value) );
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
@@ -1396,9 +1396,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }
 
-    <?php echo $this->_get_option('ad_css'); ?>
-    .wpfp_custom_ad { color: <?php echo $this->_get_option('adTextColor'); ?>; z-index: 20 !important; }
-    .wpfp_custom_ad a { color: <?php echo $this->_get_option('adLinksColor'); ?> }
+    <?php echo $this->_get_option('overlay_css'); ?>
+    .wpfp_custom_ad { color: <?php echo $this->_get_option('overlayTextColor'); ?>; z-index: 20 !important; }
+    .wpfp_custom_ad a { color: <?php echo $this->_get_option('overlayLinksColor'); ?> }
 
     .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
     <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>

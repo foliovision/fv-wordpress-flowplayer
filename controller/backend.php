@@ -405,9 +405,24 @@ function fv_player_admin_update() {
       $fv_fp->_get_conf();
     }
 
-    if( !empty($aOptions["interface"]["playlist_captions"]) ) {
+    if( empty($aOptions["interface"]['playlist_titles']) && !empty($aOptions["interface"]["playlist_captions"]) ) {
       $aOptions["interface"]['playlist_titles'] = $aOptions["interface"]["playlist_captions"];
     }
+
+    foreach( array(
+      'ad'            => 'overlay',
+      'ad_css'        => 'overlay_css',
+      'ad_height'     => 'overlay_height',
+      'ad_show_after' => 'overlay_show_after',
+      'ad_width'      => 'overlay_width',
+      'adTextColor'   => 'overlayTextColor',
+      'adLinksColor'  => 'overlayLinksColor'
+    ) as $from => $to ) {
+      if( empty($aOptions[ $to ]) && !empty($aOptions[ $from ]) ) {
+        $aOptions[ $to ] = $aOptions[ $from ];
+      }
+    }
+    
 
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );

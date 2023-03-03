@@ -71,12 +71,12 @@ flowplayer(function (api,root) {
       ad.remove();
       ad = false;
     }
-    if( !root.data('ad_show_after') ) {
+    if( !root.data('overlay_show_after') ) {
       show_ad();
     }
     
   }).bind('progress', function(e,api,current) {
-    if (current > root.data('ad_show_after') ){
+    if (current > root.data('overlay_show_after') ){
       show_ad();
     }
   }).bind("finish", function (e, api) {

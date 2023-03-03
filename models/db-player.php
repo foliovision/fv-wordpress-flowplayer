@@ -27,10 +27,6 @@ class FV_Player_Db_Player {
     $date_created, // date this playlist was created on
     $date_modified, // date this playlist was modified on
     $ab, // whether to show AB loop
-    $ad, // any HTML ad text
-    $ad_height, // height of advertisement for this player
-    $ad_width, // width of advertisement for this player
-    $ad_skip, // whether or not to skip ads for this player
     $align, // alignment position, DEPRECATED
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
@@ -45,6 +41,10 @@ class FV_Player_Db_Player {
     $lightbox_height, // height for the lightbox popup
     $lightbox_width, // width for the lightbox popup
     $loop, // (NON-ORM, class property only) loops player at the end if set
+    $overlay, // any HTML overlay text
+    $overlay_height, // height of overlay for this player
+    $overlay_width, // width of overlay for this player
+    $overlay_skip, // whether or not to use global overlay for this player
     $player_name, // custom name for the player
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
@@ -64,7 +64,7 @@ class FV_Player_Db_Player {
     $status, // draft of published
     $videos, // comma-delimited IDs of videos for this player
     $toggle_end_action,
-    $toggle_ad_custom,
+    $toggle_overlay,
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $meta_data = null,
@@ -134,7 +134,9 @@ class FV_Player_Db_Player {
    * @return string
    */
   public function getAd() {
-    return $this->ad;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlay' );
+
+    return $this->getOverlay();
   }
 
   /**
@@ -155,21 +157,27 @@ class FV_Player_Db_Player {
    * @return int
    */
   public function getAdHeight() {
-    return $this->ad_height;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlayHeight' );
+
+    return $this->getOverlayHeight();
   }
 
   /**
    * @return int
    */
   public function getAdWidth() {
-    return $this->ad_width;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlayWidth' );
+
+    return $this->getOverlayWidth();
   }
 
   /**
    * @return string
    */
   public function getAdSkip() {
-    return $this->ad_skip;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlaySkip' );
+
+    return $this->getOverlaySkip();
   }
 
   /**
@@ -262,6 +270,34 @@ class FV_Player_Db_Player {
    */
   public function getLightboxWidth() {
     return $this->lightbox_width;
+  }
+
+  /**
+   * @return string
+   */
+  public function getOverlay() {
+    return $this->overlay;
+  }
+
+  /**
+   * @return int
+   */
+  public function getOverlayHeight() {
+    return $this->overlay_height;
+  }
+
+  /**
+   * @return int
+   */
+  public function getOverlayWidth() {
+    return $this->overlay_width;
+  }
+
+  /**
+   * @return string
+   */
+  public function getOverlaySkip() {
+    return $this->overlay_skip;
   }
 
   /**
@@ -394,7 +430,16 @@ class FV_Player_Db_Player {
    * @return bool
    */
   public function getToggleAdCustom() {
-    return boolval($this->toggle_ad_custom);
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getToggleOverlay' );
+
+    return $this->getToggleOverlay();
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleOverlay() {
+    return boolval($this->toggle_overlay);
   }
 
   /**
@@ -443,18 +488,14 @@ CREATE TABLE " . self::$db_table_name . " (
   player_slug varchar(255) NOT NULL,
   videos text NOT NULL,
   ab varchar(7) NOT NULL,
-  ad text NOT NULL,
-  ad_height varchar(7) NOT NULL,
-  ad_width varchar(7) NOT NULL,
-  ad_skip varchar(7) NOT NULL,
   align varchar(7) NOT NULL,
   author bigint(20) unsigned NOT NULL default '0',
   autoplay varchar(7) NOT NULL,
   controlbar varchar(7) NOT NULL,
   copy_text varchar(120) NOT NULL,
   changed_by bigint(20) unsigned NOT NULL default '0',
-  date_created datetime NOT NULL default '0000-00-00 00:00:00',
-  date_modified datetime NOT NULL default '0000-00-00 00:00:00',
+  date_created datetime NOT NULL default CURRENT_TIMESTAMP,
+  date_modified datetime NOT NULL default CURRENT_TIMESTAMP,
   embed varchar(12) NOT NULL,
   end_actions varchar(10) NOT NULL,
   end_action_value varchar(255) NOT NULL,
@@ -464,6 +505,10 @@ CREATE TABLE " . self::$db_table_name . " (
   lightbox_caption varchar(120) NOT NULL,
   lightbox_height varchar(7) NOT NULL,
   lightbox_width varchar(7) NOT NULL,
+  overlay text NOT NULL,
+  overlay_height varchar(7) NOT NULL,
+  overlay_width varchar(7) NOT NULL,
+  overlay_skip varchar(7) NOT NULL,  
   playlist varchar(10) NOT NULL,
   playlist_advance varchar(7) NOT NULL,
   qsel varchar(25) NOT NULL,
@@ -477,7 +522,7 @@ CREATE TABLE " . self::$db_table_name . " (
   width varchar(7) NOT NULL,
   status varchar(9) NOT NULL default 'published',
   toggle_end_action varchar(7) NOT NULL,
-  toggle_ad_custom varchar(7) NOT NULL,
+  toggle_overlay varchar(7) NOT NULL,
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -485,6 +530,20 @@ CREATE TABLE " . self::$db_table_name . " (
 
       if( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::toggleConversion();
+
+        foreach ( array(
+          'ad'                => 'overlay',
+          'ad_height'         => 'overlay_height',
+          'ad_skip'           => 'overlay_skip',
+          'ad_width'          => 'overlay_width',
+          'toggle_ad_custom'  => 'toggle_overlay',
+        ) as $from => $to ) {
+          $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
+
+          if ( empty( $wpdb->last_error ) ) {
+            $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `" . $from . "`" );
+          }
+        }
       }
 
       $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
@@ -502,7 +561,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
     // enable toggle ad custom
-    $wpdb->query("UPDATE `{$table}` SET toggle_ad_custom = 'true' WHERE ad != ''");
+    $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
   }
 
   /**

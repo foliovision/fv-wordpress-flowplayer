@@ -35,47 +35,47 @@ if( fv_player_menu_item && fv_player_menu_item.classList ) {
 
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
-function fv_flowplayer_admin_ads() {
+function fv_flowplayer_admin_overlay() {
 	global $fv_fp;
-  $lines = substr_count( $fv_fp->_get_option('ad'), "\n" ) + 2;
+  $lines = substr_count( $fv_fp->_get_option('overlay'), "\n" ) + 2;
 ?>
 					<table class="form-table2">	
 						<tr>
 							<td colspan="2">
-								<label for="ad"><?php _e('Default Ad Code', 'fv-wordpress-flowplayer'); ?>:</label><br />
-								<textarea id="ad" name="ad" class="large-text code" rows="<?php echo $lines; ?>"><?php echo esc_textarea($fv_fp->_get_option('ad')); ?></textarea>			
+								<label for="overlay"><?php _e('Default Overlay Code', 'fv-wordpress-flowplayer'); ?>:</label><br />
+								<textarea id="overlay" name="overlay" class="large-text code" rows="<?php echo $lines; ?>"><?php echo esc_textarea($fv_fp->_get_option('overlay')); ?></textarea>			
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><label for="ad_width"><?php _e('Default set size', 'fv-wordpress-flowplayer');?> [px]:</label> 
-								<label for="ad_width">W:</label>&nbsp; <input type="text" name="ad_width" id="ad_width" value="<?php echo intval( $fv_fp->_get_option('ad_width') ); ?>" class="small" /> 
-								<label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval( $fv_fp->_get_option('ad_height') ); ?>" class="small"  />
-								<label for="adTextColor"><?php _e('Ad text', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo esc_attr( $fv_fp->_get_option('adTextColor') ); ?>" /> 
-								<label for="adLinksColor"><?php _e('Ad links', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo esc_attr( $fv_fp->_get_option('adLinksColor') ); ?>" /> 
+							<td colspan="2"><label for="overlay_width"><?php _e('Default set size', 'fv-wordpress-flowplayer');?> [px]:</label> 
+								<label for="overlay_width">W:</label>&nbsp; <input type="text" name="overlay_width" id="overlay_width" value="<?php echo intval( $fv_fp->_get_option('overlay_width') ); ?>" class="small" /> 
+								<label for="overlay_height">H:</label>&nbsp;<input type="text" name="overlay_height" id="overlay_height" value="<?php echo intval( $fv_fp->_get_option('overlay_height') ); ?>" class="small"  />
+								<label for="overlayTextColor"><?php _e('Overlay text', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="overlayTextColor" id="overlayTextColor" value="<?php echo esc_attr( $fv_fp->_get_option('overlayTextColor') ); ?>" /> 
+								<label for="overlayLinksColor"><?php _e('Overlay links', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="overlayLinksColor" id="overlayLinksColor" value="<?php echo esc_attr( $fv_fp->_get_option('overlayLinksColor') ); ?>" /> 
 							</td>			
 						</tr> 
             <tr>
               <td>
-                <label for="ad_show_after"><?php _e('Show After', 'fv-wordpress-flowplayer');?> [s]:</label>&nbsp; <input type="text" name="ad_show_after" id="ad_show_after" value="<?php echo intval( $fv_fp->_get_option('ad_show_after') ); ?>" class="small" /> 
+                <label for="overlay_show_after"><?php _e('Show After', 'fv-wordpress-flowplayer');?> [s]:</label>&nbsp; <input type="text" name="overlay_show_after" id="overlay_show_after" value="<?php echo intval( $fv_fp->_get_option('overlay_show_after') ); ?>" class="small" /> 
               </td>
             </tr> 
 						<tr>
 							<td colspan="2">
-								<label for="ad_css_select"><?php _e('Ad CSS', 'fv-wordpress-flowplayer'); ?>:</label>
-								<a href="#" onclick="jQuery('.ad_css_wrap').show(); jQuery(this).hide(); return false"><?php _e('Show styling options', 'fv-wordpress-flowplayer'); ?></a>
-								<div class="ad_css_wrap" style="display: none; ">
-									<select id="ad_css_select">
+								<label for="overlay_css_select"><?php _e('Overlay CSS', 'fv-wordpress-flowplayer'); ?>:</label>
+								<a href="#" onclick="jQuery('.overlay_css_wrap').show(); jQuery(this).hide(); return false"><?php _e('Show styling options', 'fv-wordpress-flowplayer'); ?></a>
+								<div class="overlay_css_wrap" style="display: none; ">
+									<select id="overlay_css_select">
 										<option value=""><?php _e('Select your preset', 'fv-wordpress-flowplayer'); ?></option>
-										<option value="<?php echo esc_attr($fv_fp->ad_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('ad_css') )) == 0 ) echo ' selected="selected"'; ?>><?php _e('Default (white, centered above the control bar)', 'fv-wordpress-flowplayer'); ?></option>
-										<option value="<?php echo esc_attr($fv_fp->ad_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('ad_css') ))  == 0 ) echo ' selected="selected"'; ?>><?php _e('White, centered at the bottom of the video', 'fv-wordpress-flowplayer'); ?></option>					  		
+										<option value="<?php echo esc_attr($fv_fp->overlay_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->overlay_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('overlay_css') )) == 0 ) echo ' selected="selected"'; ?>><?php _e('Default (white, centered above the control bar)', 'fv-wordpress-flowplayer'); ?></option>
+										<option value="<?php echo esc_attr($fv_fp->overlay_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->overlay_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('overlay_css') ))  == 0 ) echo ' selected="selected"'; ?>><?php _e('White, centered at the bottom of the video', 'fv-wordpress-flowplayer'); ?></option>					  		
 									</select>
 									<br />
-									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('ad_css')); ?></textarea>
+									<textarea rows="5" name="overlay_css" id="overlay_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('overlay_css')); ?></textarea>
 									<p class="description"><?php _e('(Hint: put .wpfp_custom_ad_content before your own CSS selectors)', 'fv-wordpress-flowplayer'); ?></p>
 									<script type="text/javascript">
-									jQuery('#ad_css_select').on('change', function() {
-										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
-											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
+									jQuery('#overlay_css_select').on('change', function() {
+										if( jQuery('#overlay_css_select option:selected').val().length > 0 && jQuery('#overlay_css_select option:selected').val() != jQuery('#overlay_css').val() && confirm('Are you sure you want to apply the preset?') ) {
+											jQuery('#overlay_css').val( jQuery('#overlay_css_select option:selected').val() );	
 										}									
 									} );
 									</script>
@@ -1986,7 +1986,7 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_end_of_video', __('End of Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_end_of_video' , 'fv_flowplayer_settings_actions', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_popups', __('Custom Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_ads', __('Overlay', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_overlay', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
 if( !class_exists('FV_Player_Pro') ) {

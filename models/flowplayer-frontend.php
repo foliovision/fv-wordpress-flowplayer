@@ -705,8 +705,8 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-playlist_start'] = $this->aCurArgs['playlist_start'];
         }
 
-        if( $this->_get_option('ad_show_after') ) {
-          $attributes['data-ad_show_after'] = $this->_get_option('ad_show_after');
+        if( $this->_get_option('overlay_show_after') ) {
+          $attributes['data-overlay_show_after'] = $this->_get_option('overlay_show_after');
         }
         if( count($aPlaylistItems) ) {
           if( isset($this->aCurArgs['playlist_advance']) && ($this->aCurArgs['playlist_advance'] === 'false' || $this->aCurArgs['playlist_advance'] === 'off') ){
@@ -1426,7 +1426,7 @@ HTML;
     }
 
     if( !empty($tags['div']) && is_array($tags['div']) ) {
-      $tags['div']['data-ad_show_after'] = true;
+      $tags['div']['data-overlay_show_after'] = true;
       $tags['div']['data-advance'] = true;
       $tags['div']['data-analytics'] = true;
       $tags['div']['data-item'] = true;
