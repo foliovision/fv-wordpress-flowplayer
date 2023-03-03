@@ -784,7 +784,7 @@ jQuery( function($) {
   function fileUrlIntoShortcodeEditor(href, extra, is_trailer, index) {
     var $url_input;
 
-    if( index > 0 ) {
+    if( typeof index == 'number' && index > 0 ) {
       var new_item = fv_player_editor.playlist_item_add();
       fv_player_editor.playlist_index();
 
@@ -862,7 +862,8 @@ jQuery( function($) {
       }
     }
 
-    $popup_close_btn.click();
+    // dont when creating playlist
+    if( typeof index != 'number' ) $popup_close_btn.click();
 
     return false;
   }
@@ -910,6 +911,13 @@ jQuery( function($) {
 
         if ($lastElementSelected !== null && !fv_flowplayer_browser_holding_meta_key) {
           $lastElementSelected
+            .attr('aria-checked', 'false')
+            .removeClass('selected details');
+        }
+
+        // if we click on same selected LI while holding meta key, deselect it
+        if (wasSelected && fv_flowplayer_browser_holding_meta_key) {
+          $e
             .attr('aria-checked', 'false')
             .removeClass('selected details');
         }
@@ -1025,8 +1033,8 @@ jQuery( function($) {
             jQuery('.media-button-select').removeAttr('disabled');
           }
         } else {
-          // disable Choose button
-          jQuery('.media-button-select').prop('disabled', 'disabled');
+          // disable Choose button if nothing is selected
+          if(jQuery('.wp-core-ui .attachment.selected').length === 0) jQuery('.media-button-select').prop('disabled', 'disabled');
         }
 
         $lastElementSelected = $e;
@@ -1036,8 +1044,10 @@ jQuery( function($) {
   });
 
   $( document ).on( "click", ".check .media-modal-icon", function(event) {
+    var $element = jQuery(this).closest('li');
+
     // deselect media element
-    $lastElementSelected
+    $element
       .attr('aria-checked', 'false')
       .removeClass('selected details');
 
@@ -1059,6 +1069,12 @@ jQuery( function($) {
         fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'), false, index);
       }
     });
+
+    // show playlist after inserting items and close media browser
+    setTimeout(function() {
+      jQuery('.media-modal-close:visible').click();
+      fv_player_editor.playlist_show();
+    },0);
 
     return false;
   });
