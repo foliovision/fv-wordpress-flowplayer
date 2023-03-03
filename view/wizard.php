@@ -478,7 +478,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div class="wp-core-ui media-frame-content attachments-browser">
         <div class="media-toolbar">
           <div class="media-toolbar-primary search-form">
-            <input type="search" placeholder="Search videos or playlists" id="media-search-input" class="search" name="players_selector" >
+            <input type="search" placeholder="Search videos or playlists" class="search" name="players_selector" >
           </div>
         </div>
 
