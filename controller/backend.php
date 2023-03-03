@@ -404,7 +404,11 @@ function fv_player_admin_update() {
       $aOptions['playlist_advance'] = false;
       $fv_fp->_get_conf();
     }
-    
+
+    if( !empty($aOptions["interface"]["playlist_captions"]) ) {
+      $aOptions["interface"]['playlist_titles'] = $aOptions["interface"]["playlist_captions"];
+    }
+
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
     

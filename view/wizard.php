@@ -717,9 +717,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
-                    'name' => 'caption',
+                    'name' => 'title',
                     'type' => 'text',
-                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true',
+                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_titles"]) && $fv_flowplayer_conf["interface"]["playlist_titles"] == 'true',
                     'description' => __('Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-wordpress-flowplayer'),
                   ),
                   array(

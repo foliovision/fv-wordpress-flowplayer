@@ -870,7 +870,7 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Mobile Video', 'fv-wordpress-flowplayer'), array('interface', 'mobile') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Auto Advance', 'fv-wordpress-flowplayer'), array('interface', 'playlist_advance') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Style', 'fv-wordpress-flowplayer'), array('interface', 'playlist') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Playlist Item Titles', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Item Titles', 'fv-wordpress-flowplayer'), array('interface', 'playlist_titles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
