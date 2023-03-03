@@ -984,6 +984,12 @@ class FV_Player_Db {
     $preview_data = $fv_fp->build_min_player( false, $args );
     $out['html'] = $preview_data['html'];
 
+    foreach( $out['videos'] as $index => $video ) {
+      if( !empty($video['splash']) ) {
+        $out['videos'][$index]['splash_display'] = apply_filters( 'fv_flowplayer_playlist_splash', $video['splash'] );
+      }
+    }
+
     return $out;
   }
 
@@ -1248,7 +1254,7 @@ class FV_Player_Db {
         $player->setStatus('published');
       }
 
-      // save only if we're not requesting new instances for preview purposes
+      // Save only if we're not requesting new instances for preview purposes
       if (!$data) {
         // link to DB, if we're doing an update
         if (!empty($post_data['update'])) {
@@ -1279,6 +1285,7 @@ class FV_Player_Db {
           wp_send_json( array( 'fatal_error' => true, 'error' => 'Failed to save player: '.$wpdb->last_error ) );
         }
       } else {
+        // Used for player preview
         $player->link2meta( $player_meta );
         return array(
           'player' => $player,
@@ -1395,13 +1402,6 @@ class FV_Player_Db {
       if( empty($out['videos']) ) {
         wp_send_json( array( 'error' => "Failed to load videos for this player." ) );
         exit;
-      }
-
-      // add tokens to splash if needed
-      foreach( $out['videos'] as $index => $video ) {
-        if( !empty($video['splash']) ) {
-          $out['videos'][$index]['splash_display'] = apply_filters( 'fv_flowplayer_playlist_splash', $video['splash'] );
-        }
       }
 
       header('Content-Type: application/json');
