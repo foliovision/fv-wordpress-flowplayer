@@ -3141,7 +3141,7 @@ jQuery(function() {
           if( response.error ) {
             if( response.error && response.fatal_error ) {
               let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-    
+
               let overlay = overlay_show('error_saving');
               overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
               overlay.find('[data-error]').html( response.error );
@@ -3551,7 +3551,7 @@ jQuery(function() {
       }
     });
 
-    /*
+    /**
     * Adds playlist item
     * keywords: add playlist item
     */
@@ -3775,7 +3775,7 @@ jQuery(function() {
       });
     }
 
-    /*
+    /**
     * Displays playlist editor
     * keywords: show playlist
     */
@@ -4724,6 +4724,8 @@ jQuery(function() {
       },
 
       playlist_item_add: playlist_item_add,
+
+      playlist_show: playlist_show,
 
       shortcode_parse_arg,
 
