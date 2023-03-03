@@ -163,7 +163,7 @@ class FV_Player_Custom_Videos {
     if( is_array($aMeta) && count($aMeta) > 0 ) {
       foreach( $aMeta AS $aVideo ) {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) {
-          $aVideos[] = '[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]';
+          $aVideos[] = '[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" title="'.$this->esc_shortcode($aVideo['title']).'"]';
         } else if( is_string($aVideo) && stripos($aVideo,'[fvplayer ') === 0 ) {
           $aVideos[] = $aVideo;
         }

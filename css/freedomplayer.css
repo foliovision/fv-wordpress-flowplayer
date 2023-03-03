@@ -175,6 +175,9 @@
 .freedomplayer.is-live.is-dvr.is-live-position .fp-duration {
   color: #00abcd; }
 
+.freedomplayer.is-mouseout:not(.is-splash):not(.is-seeking):not(.fixed-controls) .fp-timeline {
+  pointer-events: none; }
+
 .freedomplayer.is-tiny:not(.is-fullscreen) {
   font-size: .7em; }
 

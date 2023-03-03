@@ -22,7 +22,7 @@ class FV_Player_Db_Video {
   private
     $id, // automatic ID for the video
     $is_valid = false, // used when loading the video from DB to determine whether we've found it
-    $caption, // optional video caption
+    $title, // optional video title
     $end, // allows you to show only a specific part of a video
     $mobile, // mobile (smaller-sized) version of this video
     $rtmp, // optional RTMP server URL
@@ -68,25 +68,18 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getCaption() {
-    return $this->caption;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getTitle' );
+
+    return $this->getTitle();
   }
 
   /**
    * @return string
    */
   public function getCaptionFromSrc() {
-    $src = $this->getSrc();
-    $arr = explode('/', $src);
-    $caption = end($arr);
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getTitleFromSrc' );
 
-    if( $caption == 'index.m3u8' ) {
-      unset($arr[count($arr)-1]);
-      $caption = end($arr);
-    }
-
-    $caption = apply_filters( 'fv_flowplayer_caption_src', $caption , $src );
-
-    return urldecode($caption);
+    return $this->getTitleFromSrc();
   }
 
   /**
@@ -207,6 +200,32 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * @return string
+   */
+  public function getTitle() {
+    return $this->title;
+  }
+
+  /**
+   * @return string
+   */
+  public function getTitleFromSrc() {
+    $src = $this->getSrc();
+    $arr = explode('/', $src);
+    $title = end($arr);
+
+    if( $title == 'index.m3u8' ) {
+      unset($arr[count($arr)-1]);
+      $title = end($arr);
+    }
+
+    $title = apply_filters( 'fv_flowplayer_caption_src', $title , $src );
+    $title = apply_filters( 'fv_flowplayer_title_src', $title , $src );
+
+    return urldecode($title);
+  }
+
+  /**
    * @return int
    */
   public function getWidth() {
@@ -268,7 +287,7 @@ CREATE TABLE " . self::$db_table_name . " (
   splash_attachment_id bigint(20) unsigned,
   splash varchar(512) NOT NULL,
   splash_text varchar(512) NOT NULL,
-  caption varchar(1024) NOT NULL,
+  title varchar(1024) NOT NULL,
   end varchar(16) NOT NULL,
   mobile varchar(512) NOT NULL,
   rtmp varchar(128) NOT NULL,
@@ -280,10 +299,10 @@ CREATE TABLE " . self::$db_table_name . " (
   duration decimal(7,2) NOT NULL,
   live tinyint(1) NOT NULL,
   toggle_advanced_settings varchar(7) NOT NULL,
-  last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  last_check datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY  (id),
   KEY src (src(191)),
-  KEY caption (caption(191))
+  KEY title (title(191))
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
@@ -291,6 +310,15 @@ CREATE TABLE " . self::$db_table_name . " (
       if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::meta2TableConversion();
         self::toggleConversion();
+
+        // Is there such column?
+        if ( FV_Player_Db::has_table_column( self::$db_table_name , 'caption' ) ) {
+          $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
+
+          if ( empty( $wpdb->last_error ) ) {
+            $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `caption`" );
+          }
+        }
       }
 
       $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
@@ -970,9 +998,9 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         if( !empty($video_data['name']) && (
-          !$this->getCaption() || $this->getMetaValue( 'auto_caption', true )
+          !$this->getTitle() || $this->getMetaValue( 'auto_caption', true )
         ) ) {
-          $this->caption = $video_data['name'];
+          $this->title = $video_data['name'];
 
           $meta_data[] = array(
             'meta_key' => 'auto_caption',

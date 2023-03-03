@@ -29,6 +29,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'home_url' => home_url('/'),
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'edit_nonce' => wp_create_nonce( "fv-player-edit" ),
     'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce-".get_current_user_id() ),
     'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce-".get_current_user_id() ),
     'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
@@ -278,7 +279,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $aMeta ) {
       foreach( $aMeta AS $meta_value ) {
-        if( preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
+        if ( is_string( $meta_value ) && preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
           foreach( $shortcodes[0] AS $shortcode ) {
             $search_context .= "\n\n".$shortcode;
           }
@@ -302,8 +303,8 @@ function fv_wp_flowplayer_featured_image($post_id) {
     foreach( $ids[1] as $player_id ) {
       $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
 
-      if( !empty($atts['caption']) ) {
-        $title = $atts['caption'];
+      if( !empty($atts['title']) ) {
+        $title = $atts['title'];
       }
 
       if( !empty($atts['splash_attachment_id']) ) { // first check splash_attachment_id
@@ -446,24 +447,24 @@ function fv_player_splashcreen_action() {
   global $wpdb; //access to the database
   $jsonReturn = '';
 
-   function getTitleFromUrl($url) {
+  function getTitleFromUrl($url) {
     $arr = explode('/', $url);
-    $caption = end($arr);
+    $title = end($arr);
 
-    if( strpos($caption, ".m3u8") !== false ) {
+    if( strpos($title, ".m3u8") !== false ) {
       unset($arr[count($arr)-1]);
-      $caption = end($arr);
+      $title = end($arr);
     }
 
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
     );  
-    $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
+    $title = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $title);
 
-    if( is_numeric($caption) && intval($caption) == $caption && stripos($url,'vimeo.com/') !== false ) {
-      $caption = "Vimeo: ".$caption;
+    if( is_numeric($title) && intval($title) == $title && stripos($url,'vimeo.com/') !== false ) {
+      $title = "Vimeo: ".$title;
     } 
-    return urldecode($caption);
+    return urldecode($title);
   }
 
   if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {

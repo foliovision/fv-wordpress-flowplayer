@@ -90,11 +90,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     
   }
   
-  $atts = wp_parse_args( $atts, array(
-    'ad' => '',
-    'ad_width' => '',
-    'ad_height' => '',
-    'ad_skip' => '',    
+  $atts = wp_parse_args( $atts, array(  
     'admin_warning' => '',
     'align' => '',
     'autoplay' => '',
@@ -111,6 +107,10 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'live' => '',
     'logo' => '',
     'loop' => '',
+    'overlay' => '',
+    'overlay_width' => '',
+    'overlay_height' => '',
+    'overlay_skip' => '',  
     'play_button' => '',
     'playlist' => '',    
     'playlist_advance' => '',
@@ -130,7 +130,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     'src1' => '',
     'src2' => '',
     'sticky' => '',    
-    'subtitles' => '',    
+    'subtitles' => '',
+    'title' => '',
     'width' => '',
   ) );
 
@@ -187,8 +188,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         if( strlen($aArgs['lightbox']) ) {
           $aArgs['lightbox'] .= ';'.html_entity_decode(get_the_title());
         }
-        if( strlen($aArgs['caption']) ) {
-          $aArgs['caption'] = apply_filters( 'fv_player_caption', $aArgs['caption'], false );
+        if( strlen($aArgs['title']) ) {
+          $aArgs['title'] = apply_filters( 'fv_player_title', $aArgs['title'], false );
         }
 
         $new_player = $fv_fp->build_min_player( $aArgs['src'],$aArgs );
@@ -587,10 +588,10 @@ function fvplayer_watched( $args = array() ) {
 
     global $FV_Player_Db;
     $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
-    if( $objVideo->getCaption() ) {
-      $line = $objVideo->getCaption();
+    if( $objVideo->getTitle() ) {
+      $line = $objVideo->getTitle();
     } else {
-      $line = $objVideo->getCaptionFromSrc();
+      $line = $objVideo->getTitleFromSrc();
     }
 
     if( isset($_GET['fvplayer_watched_debug']) ) {

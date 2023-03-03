@@ -144,6 +144,17 @@ flowplayer(function(player, root) {
      common.removeNode(wrapper);
    });
 
+   // Avoid dragging by the edge of the window which acts as the back button on iPhones without home button
+   if( flowplayer.support.iOS ) {
+      root.querySelector('.fp-player').addEventListener('touchstart', function(e) {
+         if( player.isFullscreen ) {
+            if (e.pageX > 16 && e.pageX < window.innerWidth - 16) return;
+
+            e.preventDefault();
+         }
+      });
+   }
+
    /*
     * iPhone fullscreen is CSS-based and it can't work if the parent elements use CSS transform
     * So we get rid of these rules even entering fullscreen and put them back when leaving

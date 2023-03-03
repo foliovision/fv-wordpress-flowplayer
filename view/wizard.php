@@ -717,9 +717,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
-                    'name' => 'caption',
+                    'name' => 'title',
                     'type' => 'text',
-                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true',
+                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_titles"]) && $fv_flowplayer_conf["interface"]["playlist_titles"] == 'true',
                     'description' => __('Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-wordpress-flowplayer'),
                   ),
                   array(
@@ -921,6 +921,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
         <div class="fv-player-tab fv-player-tab-actions" style="display: none">
           <?php
+          $overlay_show_after = $fv_fp->_get_option('overlay_show_after');
+
           $actions = array(
             'actions' => array(
               'items' => array(
@@ -965,44 +967,45 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'visible' => true
                 ),
                 array(
-                  'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
-                  'name' => 'toggle_ad_custom',
-                  'description' => __('Shows while the video is playing.', 'fv-wordpress-flowplayer'),
+                  'label' => __('Show Overlay', 'fv-wordpress-flowplayer'),
+                  'name' => 'toggle_overlay',
+                  'description' => __('Enter text or HTML to show on top of video while it\'s playing.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
-                      'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
-                      'name' => 'ad',
+                      'label' => __('Overlay Code', 'fv-wordpress-flowplayer'),
+                      'name' => 'overlay',
+                      'description' => $overlay_show_after ? sprintf( __('Shows after %d seconds.', 'fv-wordpress-flowplayer'), $overlay_show_after ) : false,
                       'type' => 'textarea',
                       'visible' => true
                     ),
                     array(
                       'label' => __('Width', 'fv-wordpress-flowplayer'),
-                      'name' => 'ad_width',
+                      'name' => 'overlay_width',
                       'type' => 'number',
                       'visible' => true
                     ),
                     array(
                       'label' => __('Height', 'fv-wordpress-flowplayer'),
-                      'name' => 'ad_height',
+                      'name' => 'overlay_height',
                       'type' => 'number',
                       'visible' => true
                     )
                   ),
                   'visible' => true,
-                  'dependencies' => array( 'ad_skip' => false )
+                  'dependencies' => array( 'overlay_skip' => false )
                 ),
               ),
               'sort' => false
             )
           );
 
-          if( $fv_fp->_get_option('ad') ) {
+          if( $fv_fp->_get_option('overlay') ) {
             $actions['actions']['items'][] = array(
-              'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
-              'name' => 'ad_skip',
-              'description' => sprintf( __('Use to disable ad set in <a href="%s" target="_blank">Actions -> Ads</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
+              'label' => __('Do not show global overlay', 'fv-wordpress-flowplayer'),
+              'name' => 'overlay_skip',
+              'description' => sprintf( __('Use to disable overlay set in <a href="%s" target="_blank">Actions -> Overlays</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
               'visible' => true,
-              'dependencies' => array( 'toggle_ad_custom' => false )
+              'dependencies' => array( 'toggle_overlay' => false )
             );
           }
         

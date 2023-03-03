@@ -337,7 +337,7 @@ class FV_Player_Db {
       // search for videos that are consistent with the search text
       // and load their players only
       $query_videos = array(
-        'fields_to_search' =>  array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'),
+        'fields_to_search' =>  array('src', 'src1', 'src2', 'title', 'splash', 'splash_text'),
         'search_string' => $search,
         'like' => true,
         'and_or' => 'OR'
@@ -363,7 +363,8 @@ class FV_Player_Db {
           'offset'              => $offset,
           'per_page'            => $per_page,
           'post_type'           => $post_type,
-          'search_by_video_ids' => $player_video_ids
+          'search_by_video_ids' => $player_video_ids,
+          'search_string'       => $search,
         );
 
         if( $cannot_edit_other_posts ) {
@@ -499,19 +500,19 @@ class FV_Player_Db {
 
             $video = $videos[ $video_id ];
 
-            $caption = $video->getCaption();
-            if( !$caption ) {
-              $caption = $video->getCaptionFromSrc();
+            $title = $video->getTitle();
+            if( !$title ) {
+              $title = $video->getTitleFromSrc();
             }
 
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
-              // use splash with caption / filename in a span
+              // use splash with title / filename in a span
               $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($caption).'" title="'.esc_attr($caption).'" loading="lazy" /><span>' . $caption . '</span></div>';
-            } else if ( isset($videos[ $video_id ]) && $caption ) {
-              // use caption
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption) . '"><span>' . $caption . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($title).'" title="'.esc_attr($title).'" loading="lazy" /><span>' . $title . '</span></div>';
+            } else if ( isset($videos[ $video_id ]) && $title ) {
+              // use title
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($title) . '"><span>' . $title . '</span></div>';
             }
 
             if( $stats_enabled ) {
@@ -725,7 +726,7 @@ class FV_Player_Db {
         // even if we have multi-playlist tag, if we cannot find the first player
         // we don't continue here, since we get all attributes from the first player
         if (!$player || !$player->getIsValid()) {
-          return false;
+          return $atts;
         }
 
         $fv_fp->currentPlayerObject = $player;
@@ -803,7 +804,7 @@ class FV_Player_Db {
                     continue;
                   }
 
-                  $title = $video->getCaption();
+                  $title = $video->getTitle();
 
                   if (!$title) {
                     $title = $video->getSplashText();
@@ -999,30 +1000,57 @@ class FV_Player_Db {
    * @throws Exception When any of the underlying objects throw.
    */
   public function db_store_player_data($data = null) {
-    global $FV_Player_Db, $fv_fp;
+    global $FV_Player_Db;
 
     $player_options        = array();
     $video_ids             = array();
 
-    $cannot_edit_other_posts = !current_user_can('edit_others_posts');
-    $user_id = get_current_user_id();
+    $json_post = file_get_contents( 'php://input' );
 
     $post_data = null;
     if( is_array($data) ) {
       $post_data = $data;
-    } else if( !empty($_POST['data']) && wp_verify_nonce( $_POST['nonce'],"fv-player-preview-".$user_id ) ) {
-      if( json_decode( stripslashes($_POST['data']) ) ) {
-        $post_data = json_decode( stripslashes($_POST['data']), true );
+
+    } else if( !empty($json_post) ) {
+      $json_post = json_decode( $json_post, true );
+
+      $json_error = json_last_error();
+      
+      if( $json_error !== JSON_ERROR_NONE ) {
+        wp_send_json( array(
+          'error' => 'Error saving: JSON error.',
+          'fatal_error' => true
+        ) );
+        exit;
+      }
+
+      if( !wp_verify_nonce( $json_post['nonce'], "fv-player-edit" ) ) {
+        wp_send_json( array(
+          'error' => 'Error saving: Nonce error, please ensure you are logged in and try again.',
+          'fatal_error' => true
+        ) );
+        exit;
+      }
+
+      if( !empty( $json_post['data'] ) ) {
+        $post_data = $json_post['data'];
 
         // check if user can update player
-        if(!empty($post_data['update']) && $cannot_edit_other_posts ) {
+        if(!empty($post_data['update']) && !current_user_can('edit_others_posts') ) {
           $player_to_check = new FV_Player_Db_Player(intval($post_data['update']), array(), $FV_Player_Db);
 
-          if( $player_to_check->getAuthor() !== $user_id ) {
+          if( $player_to_check->getAuthor() !== get_current_user_id() ) {
             wp_send_json( array( 'error' => 'Security check failed.' ) );
           }
         }
       }
+
+    } else if( !empty( $_REQUEST['action'] ) && 'fv_player_db_save' === $_REQUEST['action'] ) {
+      wp_send_json( array(
+        'error' => 'Error saving: JSON POST data missing!',
+        'fatal_error' => true
+      ) );
+      exit;
     }
 
     $ignored_player_fields = array(
@@ -1042,7 +1070,7 @@ class FV_Player_Db {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     video data valid for object creation
-          $d_vid = new FV_Player_Db_Video(null, array('caption' => '1'), $this);
+          $d_vid = new FV_Player_Db_Video(null, array('title' => '1'), $this);
           $d_vid->link2db($d_id);
           $d_vid->delete();
         }
@@ -1398,6 +1426,7 @@ class FV_Player_Db {
       'per_page' => false,
       'post_type' => false,
       'search_by_video_ids' => false,
+      'search_string' => false,
       'select_fields' => false,
       'count' => false
     ) );
@@ -1439,6 +1468,12 @@ class FV_Player_Db {
     // if we have multiple video IDs to load players for, let's prepare a like statement here
     } else if( is_array($args['search_by_video_ids']) ) {
       $where_like_part = array();
+      
+      if ( !empty( $args['search_string'] ) ) {
+        // TODO: Escape in some better way
+        $where_like_part[] = 'player_name LIKE "%' . esc_sql( $args['search_string'] ) . '%"';
+      }
+
       foreach ($args['search_by_video_ids'] as $player_video_id) {
         $player_video_id = intval($player_video_id);
 
@@ -1854,6 +1889,18 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         return 'No valid import data found, import unsuccessful';
       }
     }
+  }
+
+  public static function has_table_column( $table, $column ) {
+    global $wpdb;
+    return $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s",
+        DB_NAME,
+        $table,
+        $column
+        ) 
+    );
   }
 
   /**

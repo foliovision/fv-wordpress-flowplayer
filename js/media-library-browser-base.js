@@ -414,6 +414,18 @@ function fv_flowplayer_browser_browse(data, options) {
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
   var $tab = jQuery('#' + tabId);
 
+  // Bail if it's not the Media Library for video src and it's Vimeo
+  // Amazon S3 should be allowed
+  // TODO: Coconut, Bunny Stream, PeerTube
+  if ( 'fv_flowplayer_vimeo_browser_media_tab' === tabId && 'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name')   ) {
+
+    if ( $tab.length ) {
+      $tab.remove();
+    }
+
+    return;
+  }
+
   if (!$tab.length) {
     var
       $router = jQuery('.media-router:visible'),

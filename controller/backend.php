@@ -404,7 +404,26 @@ function fv_player_admin_update() {
       $aOptions['playlist_advance'] = false;
       $fv_fp->_get_conf();
     }
+
+    if( empty($aOptions["interface"]['playlist_titles']) && !empty($aOptions["interface"]["playlist_captions"]) ) {
+      $aOptions["interface"]['playlist_titles'] = $aOptions["interface"]["playlist_captions"];
+    }
+
+    foreach( array(
+      'ad'            => 'overlay',
+      'ad_css'        => 'overlay_css',
+      'ad_height'     => 'overlay_height',
+      'ad_show_after' => 'overlay_show_after',
+      'ad_width'      => 'overlay_width',
+      'adTextColor'   => 'overlayTextColor',
+      'adLinksColor'  => 'overlayLinksColor'
+    ) as $from => $to ) {
+      if( empty($aOptions[ $to ]) && !empty($aOptions[ $from ]) ) {
+        $aOptions[ $to ] = $aOptions[ $from ];
+      }
+    }
     
+
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
     
@@ -741,6 +760,64 @@ global $FV_Player_Db;
 
 // these have to be here, as using them in constructor doesn't work
 add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10, 2);
+
+
+add_action( 'admin_notices', 'fv_player_embedded_on_fix' );
+
+function fv_player_embedded_on_fix() {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-embedded-on-fix' ) ) {
+
+    global $wpdb;
+    $players_with_no_posts = $wpdb->get_col( "SELECT p.id FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+
+    echo "<h2>FV Player Embedded On Post Scan</h2>\n";
+
+    echo '<p>' . sprintf( 'It appears there are %d players which do not belong to any post.', count( $players_with_no_posts ) ) . "</p>\n";
+
+    if ( $players_with_no_posts ) {
+      foreach ( $players_with_no_posts as $player_id ) {
+        echo '<p>';
+        echo 'Player #' . $player_id . '... ';
+
+        $wild = '%';
+        $find = 'fvplayer id="'.$player_id.'"';
+        $like = $wild . $wpdb->esc_like( $find ) . $wild;
+
+        $posts = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_status != 'trash' AND post_type != 'revision' AND post_content LIKE %s", $like ) );
+
+        $post_meta = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta AS m JOIN $wpdb->posts AS p ON m.post_id = p.ID WHERE post_status != 'trash' AND post_type != 'revision' AND meta_value LIKE %s", $like ) );
+
+        $posts = array_merge( $posts, $post_meta );
+
+        $posts = array_unique( $posts );
+
+        if ( count($posts) > 0 ) {
+
+          echo "Found in posts: " . implode( ', ', $posts ) . "\n";
+
+          foreach ( $posts AS $post_id ) {
+            $meta = new FV_Player_Db_Player_Meta(null, array(
+              'id_player' => $player_id,
+              'meta_key' => 'post_id',
+              'meta_value' => $post_id
+            ) );
+
+            $meta->save();
+          }
+
+        } else {
+          echo "Not found in any post.\n";
+          
+        }
+
+        echo "</p>\n";
+      }
+    }
+
+    die( 'Done!' );
+
+  }
+}
 
 
 add_action( 'admin_notices', 'fv_player_rollback' );
