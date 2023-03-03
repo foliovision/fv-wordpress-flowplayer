@@ -147,7 +147,7 @@ class flowplayer_frontend extends flowplayer
         $this->aCurArgs['end_action_value'] = false;
       }
 
-      if( !$player->getToggleAdCustom() ) {
+      if( !$player->getToggleOverlay() ) {
         $this->aCurArgs['overlay'] = false;
       }
 
