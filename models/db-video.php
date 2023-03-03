@@ -689,9 +689,11 @@ CREATE TABLE " . self::$db_table_name . " (
           return array();
         }
       }
-    } else if ($this->meta_data === null) {
-      // meta data not loaded yet - load them now
-      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($this->id)), self::$DB_Instance);
+
+    // meta data not loaded yet - load them now if the player exists
+    } else if ($this->meta_data === null && $this->getId() ) {
+
+      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array( $this->getId() ) ), self::$DB_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$this->meta_data->getIsValid()) {
