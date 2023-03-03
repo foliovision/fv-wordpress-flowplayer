@@ -770,17 +770,11 @@ jQuery( function($) {
   }
 
   function fileUrlIntoShortcodeEditor(href, extra, is_trailer, index) {
-    //TODO: delete debug
-    console.log('fileUrlIntoShortcodeEditor', href, extra, is_trailer, index);
-
     var $url_input;
 
     if( index > 0 ) {
       var new_item = fv_player_editor.playlist_item_add();
       fv_player_editor.playlist_index();
-
-      //TODO: delete debug
-      console.log('new_item index', new_item.attr('data-index'));
 
       fv_player_editor.set_current_video_to_edit(
         new_item.attr('data-index')
@@ -873,6 +867,14 @@ jQuery( function($) {
 
     $('#media-search-input').val(''); // remove search when clicked on folder
 
+    // deselect all items if not holding the meta key
+    if ( !fv_flowplayer_browser_holding_meta_key && jQuery('#__assets_browser li.selected').length > 1 ) {
+      jQuery('#__assets_browser li.selected').removeClass('selected');
+    }
+
+    // wp adds on click .details, we need to remove it if element doesnt have class .selected
+    jQuery('.wp-core-ui .attachment.details:not(.selected)').removeClass('details');
+
     // coming directly from a link
     if (this.tagName == 'A') {
       // disable Choose button
@@ -901,7 +903,7 @@ jQuery( function($) {
         }
 
         // if we clicked on the same selected LI, don't re-select it, as we just deselected it
-        if (!wasSelected && fv_flowplayer_browser_holding_meta_key) {
+        if (!wasSelected) {
           $e
             .attr('aria-checked', 'true')
             .addClass('selected details');
@@ -1039,7 +1041,7 @@ jQuery( function($) {
     jQuery('#__assets_browser li.selected').each(function (index, $e) {
       $e = jQuery($e);
 
-      filenameDiv = $e.find('.filename div');
+      var filenameDiv = $e.find('.filename div');
 
       if (filenameDiv.length && filenameDiv.data('link')) {
         fileUrlIntoShortcodeEditor(filenameDiv.data('link'), filenameDiv.data('extra'), false, index);
@@ -1072,16 +1074,16 @@ jQuery( function($) {
     }
   });
 
-  // set fv_flowplayer_browser_holding_meta_key to true when ctrl key is pressed
+  // set fv_flowplayer_browser_holding_meta_key to true when meta or ctrl key is pressed
   $( document ).on( "keydown", function(event) {
-    if ( event.metaKey ) {
+    if ( event.metaKey || event.ctrlKey  ) {
       fv_flowplayer_browser_holding_meta_key = true;
     }
   });
 
-  // set fv_flowplayer_browser_holding_meta_key to false when ctrl key is released
+  // set fv_flowplayer_browser_holding_meta_key to false when meta or ctrl key is released
   $( document ).on( "keyup", function(event) {
-    if ( !event.metaKey ) {
+    if ( !event.metaKey && !event.ctrlKey ) {
       fv_flowplayer_browser_holding_meta_key = false;
     }
   });
