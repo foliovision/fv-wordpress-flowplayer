@@ -1117,7 +1117,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       if ($this->current_video()) {
         if( !$splash_img ) $splash_img = $this->current_video()->getSplash();
-        if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();
+        if( !$sItemCaption ) $sItemCaption = $this->current_video()->getTitle();
       }
 
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
@@ -1206,7 +1206,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
           if ($this->current_video()) {
             if( !$sSplashImage ) $sSplashImage = $this->current_video()->getSplash();
-            if( !$sItemCaption ) $sItemCaption = $this->current_video()->getCaption();
+            if( !$sItemCaption ) $sItemCaption = $this->current_video()->getTitle();
           }
 
           if( !$sSplashImage && $this->_get_option('splash') ) {

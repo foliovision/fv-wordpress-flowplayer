@@ -670,13 +670,13 @@ class flowplayer_frontend extends flowplayer
 
           if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
             $attributes['class'] .= ' has-caption';
-            $this->sHTMLAfter .= apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->get_title()."</p>", $this );
+            $this->sHTMLAfter .= apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
 
         } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-caption';
-          $this->sHTMLAfter = apply_filters( 'fv_player_caption', "<p class='fp-caption'>".$this->get_title()."</p>", $this );
+          $this->sHTMLAfter = apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
 
         }
 

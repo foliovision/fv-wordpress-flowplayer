@@ -337,7 +337,7 @@ class FV_Player_Db {
       // search for videos that are consistent with the search text
       // and load their players only
       $query_videos = array(
-        'fields_to_search' =>  array('src', 'src1', 'src2', 'caption', 'splash', 'splash_text'),
+        'fields_to_search' =>  array('src', 'src1', 'src2', 'title', 'splash', 'splash_text'),
         'search_string' => $search,
         'like' => true,
         'and_or' => 'OR'
@@ -500,19 +500,19 @@ class FV_Player_Db {
 
             $video = $videos[ $video_id ];
 
-            $caption = $video->getCaption();
-            if( !$caption ) {
-              $caption = $video->getCaptionFromSrc();
+            $title = $video->getTitle();
+            if( !$title ) {
+              $title = $video->getTitleFromSrc();
             }
 
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
-              // use splash with caption / filename in a span
+              // use splash with title / filename in a span
               $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($caption).'" title="'.esc_attr($caption).'" loading="lazy" /><span>' . $caption . '</span></div>';
-            } else if ( isset($videos[ $video_id ]) && $caption ) {
-              // use caption
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($caption) . '"><span>' . $caption . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($title).'" title="'.esc_attr($title).'" loading="lazy" /><span>' . $title . '</span></div>';
+            } else if ( isset($videos[ $video_id ]) && $title ) {
+              // use title
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($title) . '"><span>' . $title . '</span></div>';
             }
 
             if( $stats_enabled ) {
@@ -804,7 +804,7 @@ class FV_Player_Db {
                     continue;
                   }
 
-                  $title = $video->getCaption();
+                  $title = $video->getTitle();
 
                   if (!$title) {
                     $title = $video->getSplashText();
@@ -1070,7 +1070,7 @@ class FV_Player_Db {
           // and then delete it
           // ... although we'll need at least 1 item in the data array to consider this
           //     video data valid for object creation
-          $d_vid = new FV_Player_Db_Video(null, array('caption' => '1'), $this);
+          $d_vid = new FV_Player_Db_Video(null, array('title' => '1'), $this);
           $d_vid->link2db($d_id);
           $d_vid->delete();
         }

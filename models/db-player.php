@@ -767,12 +767,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $video_names = array();
 
     foreach( $this->getVideos() as $video ) {
-      $caption = $video->getCaption();
-      if( !$caption ) {
-        $caption = $video->getCaptionFromSrc();
+      $title = $video->getTitle();
+      if( !$title ) {
+        $title = $video->getTitleFromSrc();
       }
 
-      $video_names[] = $caption;
+      $video_names[] = $title;
     }
 
     return $video_names;

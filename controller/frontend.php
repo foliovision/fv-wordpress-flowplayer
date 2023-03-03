@@ -618,7 +618,7 @@ function fv_flowplayer_attachment_page_video( $c ) {
 add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
 
 
-function fv_player_caption( $caption ) {
+function fv_player_title( $caption ) {
   global $post, $authordata;
   $sAuthorInfo = ( $authordata ) ? sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ) : false;
   $caption = str_replace(
@@ -637,7 +637,7 @@ function fv_player_caption( $caption ) {
                         $caption );
   return $caption;
 }
-add_filter( 'fv_player_caption', 'fv_player_caption' );
+add_filter( 'fv_player_title', 'fv_player_title' );
 
 
 add_filter( 'comment_text', 'fv_player_comment_text', 0 );
