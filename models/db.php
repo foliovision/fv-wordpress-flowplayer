@@ -1015,7 +1015,7 @@ class FV_Player_Db {
       $json_post = json_decode( $json_post, true );
 
       $json_error = json_last_error();
-      
+
       if( $json_error !== JSON_ERROR_NONE ) {
         wp_send_json( array(
           'error' => 'Error saving: JSON error.',
@@ -1397,6 +1397,13 @@ class FV_Player_Db {
         exit;
       }
 
+      // add tokens to splash if needed
+      foreach( $out['videos'] as $index => $video ) {
+        if( !empty($video['splash']) ) {
+          $out['videos'][$index]['splash_display'] = apply_filters( 'fv_flowplayer_playlist_splash', $video['splash'] );
+        }
+      }
+
       header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
         echo json_encode($out);
@@ -1468,7 +1475,7 @@ class FV_Player_Db {
     // if we have multiple video IDs to load players for, let's prepare a like statement here
     } else if( is_array($args['search_by_video_ids']) ) {
       $where_like_part = array();
-      
+
       if ( !empty( $args['search_string'] ) ) {
         // TODO: Escape in some better way
         $where_like_part[] = 'player_name LIKE "%' . esc_sql( $args['search_string'] ) . '%"';
@@ -1899,7 +1906,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         DB_NAME,
         $table,
         $column
-        ) 
+        )
     );
   }
 

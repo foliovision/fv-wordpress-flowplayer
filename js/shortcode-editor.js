@@ -3737,16 +3737,17 @@ jQuery(function() {
       // fills playlist editor table from individual video items
       let video_files = jQuery('.fv-player-tab-video-files [data-playlist-item]');
       video_files.each( function( k, v ) {
-        let current = jQuery(v);
+        let current = jQuery(v),
+          video = get_playlist_video_object( k ),
+          currentUrl = get_field("src",current).val();
 
-        let currentUrl = get_field("src",current).val();
-        if(!currentUrl.length){
+        if (!currentUrl.length) {
           currentUrl = 'Video ' + (k + 1);
         }
 
         let playlist_row = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').eq( current.data('index') );
 
-        let video_preview = get_field("splash",current).val(),
+        let video_preview = video.splash_display ? video.splash_display : get_field("splash", current).val(),
           playlist_img = jQuery('<img />')
             .attr('width', 120 )
             .attr('src', video_preview );
@@ -3770,7 +3771,6 @@ jQuery(function() {
           }
         }
 
-        let video = get_playlist_video_object( k );
         playlist_row.find('.fvp_item_video-duration').text( seconds_to_hms( video.duration ) );
       });
     }
