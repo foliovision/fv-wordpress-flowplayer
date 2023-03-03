@@ -1044,8 +1044,10 @@ jQuery( function($) {
   });
 
   $( document ).on( "click", ".check .media-modal-icon", function(event) {
+    var $element = jQuery(this).closest('li');
+
     // deselect media element
-    $lastElementSelected
+    $element
       .attr('aria-checked', 'false')
       .removeClass('selected details');
 
