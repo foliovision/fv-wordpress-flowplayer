@@ -797,9 +797,7 @@ jQuery( function($) {
       $url_input = jQuery('.fv_flowplayer_target');
     }
 
-    var
-      $popup_close_btn = jQuery('.media-modal-close:visible'),
-      splash = locateSplashFileObjectForMediaFileHref(href);
+    var splash = locateSplashFileObjectForMediaFileHref(href);
 
     if ( splash ) {
       splash = getFileSplashImage( splash, true, 'splash_large' );
@@ -861,9 +859,6 @@ jQuery( function($) {
         title_input.closest('tr').show();
       }
     }
-
-    // dont when creating playlist
-    if( typeof index != 'number' ) $popup_close_btn.click();
 
     return false;
   }
@@ -1059,8 +1054,10 @@ jQuery( function($) {
     return false;
   });
 
-  $( document ).on( "click", ".media-button-select", function(event) {
-    jQuery('#__assets_browser li.selected').each(function (index, $e) {
+  $( document ).on( "click", ".media-button-select", function() {
+    let selected_media_items = jQuery('#__assets_browser li.selected');
+
+    selected_media_items.each(function (index, $e) {
       $e = jQuery($e);
 
       var filenameDiv = $e.find('.filename div');
@@ -1070,11 +1067,15 @@ jQuery( function($) {
       }
     });
 
-    // show playlist after inserting items and close media browser
-    setTimeout(function() {
-      jQuery('.media-modal-close:visible').click();
-      fv_player_editor.playlist_show();
-    },0);
+    // close media browser
+    jQuery('.media-modal-close:visible').click();
+
+    // show playlist if multiple items were inserted
+    if ( selected_media_items.length > 1 ) {
+      setTimeout( function() {
+        fv_player_editor.playlist_show();
+      }, 0 );
+    }
 
     return false;
   });
@@ -1087,6 +1088,9 @@ jQuery( function($) {
     if (filenameDiv.length && filenameDiv.data('extra').trailer_src[0] != undefined ) {
       fileUrlIntoShortcodeEditor(filenameDiv.data('extra').trailer_src[0], filenameDiv.data('extra'), true);
     }
+
+    // close media browser
+    jQuery('.media-modal-close:visible').click();
 
     return false;
   });
