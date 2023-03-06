@@ -894,8 +894,8 @@ jQuery(function() {
       });
 
       /*
-      * Edit caption
-      * keywords: edit caption playlist items edit caption playlist items
+      * Edit title
+      * keywords: edit title playlist items edit title playlist items
       */
       $doc.on('keyup','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-edit-input', function(e) {
         e.stopPropagation();
@@ -908,10 +908,11 @@ jQuery(function() {
         var
           $parent = $(e.target).parents('[data-index]'),
           index = $parent.attr('data-index'),
-          video_tab = get_tab(index, 'video-files');
+          video_tab = get_tab(index, 'video-files'),
+          new_title = jQuery(this).val();
 
-        $parent.find('.fvp_item_video-filename').text(jQuery(this).val());
-        get_field('caption', video_tab).val(jQuery(this).val()).trigger('keyup');
+        $parent.find('.fvp_item_video-filename').text( new_title );
+        get_field('title', video_tab).val( new_title ).trigger('keyup');
       });
 
       /*
@@ -1363,17 +1364,9 @@ jQuery(function() {
                 var video_tab = get_tab( k, 'video-files' ),
                   splash_field = get_field( 'splash', video_tab ),
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
-                  title_field = get_field( 'caption', video_tab ),
+                  title_field = get_field( 'title', video_tab ),
                   auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
                   auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
-
-                if( get_field('auto_splash', video_tab ).val() == '0' ) {
-                  auto_splash = false;
-                }
-
-                if( get_field('auto_caption', video_tab ).val() == '0' ) {
-                  auto_caption = false;
-                }
 
                 if( get_field('auto_splash', video_tab ).val() == '0' ) {
                   auto_splash = false;
@@ -1395,8 +1388,8 @@ jQuery(function() {
                   get_field('auto_splash', video_tab ).val( auto_splash );
                 }
 
-                if( v.caption && ( !title_field.val() || auto_caption ) ) {
-                  title_field.val( v.caption );
+                if( v.title && ( !title_field.val() || auto_caption ) ) {
+                  title_field.val( v.title );
                 }
 
                 if( auto_caption ) {
@@ -2946,7 +2939,7 @@ jQuery(function() {
             aCaptions = shortcode_arg_split(sCaptions);
 
             var caption = aCaptions.shift();
-            get_field("caption").val( caption );
+            get_field("title").val( caption );
             if( caption ) {
               playlist_row.find('.fvp_item_video-filename').text( caption );
             }
@@ -3590,7 +3583,7 @@ jQuery(function() {
         get_field('rtmp',new_item).val(objVid.rtmp);
         get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
-        get_field('caption',new_item).val(objVid.caption);
+        get_field('title',new_item).val(objVid.caption);
         get_field('splash',new_item).val(objVid.splash);
         get_field('splash_text',new_item).val(objVid.splash_text);
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
@@ -3630,7 +3623,7 @@ jQuery(function() {
           }
         }
         if( sCaption ) {
-          get_field('caption',new_item).val(sCaption);
+          get_field('title',new_item).val(sCaption);
         }
         if( sSubtitles ) {
           get_field('subtitles',new_item_subtitles).val(sSubtitles);
@@ -3763,11 +3756,11 @@ jQuery(function() {
         let playlist_title = playlist_row.find('.fvp_item_video-filename');
         playlist_title.text( video_name );
 
-        // do not put in caption if it's loading
+        // do not put in title if it's loading
         if (!playlist_title.hasClass('fv-player-shortcode-editor-small-spinner')) {
-          let caption = get_field("caption",current).val();
-          if( caption ) {
-            playlist_title.text( caption );
+          let title = get_field("title",current).val();
+          if( title ) {
+            playlist_title.text( title );
           }
         }
 
@@ -4596,13 +4589,11 @@ jQuery(function() {
     /*
     Mark each manually updated title or splash field as such
     */
-    // TODO: Fix for new code
-    $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_caption', function() {
-      var $element = jQuery(this),
-        $input;
+    $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
+      let $input;
 
       // if this element already has data set, don't do any of the selections below
-      if (typeof($element.data('fv_player_user_updated')) != 'undefined') {
+      if (typeof( jQuery(this).data('fv_player_user_updated') ) != 'undefined') {
         return;
       }
 
@@ -4615,14 +4606,7 @@ jQuery(function() {
       if( $input.length > 0 ) {
         $input.val(0);
 
-        // insertUpdateOrDeleteVideoMeta({
-        //   element: $input,
-        //   meta_section: 'video',
-        //   meta_key: $meta_key,
-        //   handle_delete: true
-        // });
-
-        console.log(this.id+' has been updated manually!');
+        debug_log(this.id+' has been updated manually!');
       }
 
     });
