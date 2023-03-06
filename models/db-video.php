@@ -309,15 +309,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
       if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::updateTableConversion();
-
-        // Is there such column?
-        if ( FV_Player_Db::has_table_column( self::$db_table_name , 'caption' ) ) {
-          $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
-
-          if ( empty( $wpdb->last_error ) ) {
-            $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `caption`" );
-          }
-        }
       }
 
       $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
@@ -337,27 +328,22 @@ CREATE TABLE " . self::$db_table_name . " (
     $table = self::$db_table_name;
     $meta_table = $wpdb->prefix.'fv_player_videometa';
 
-    // update duration
-    $res_duration = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
+    if( $fv_fp->_get_option('video_model_db_updated') != '7.9.3' ) {
+      $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
 
-    // update live
-    $res_live = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
+      // update duration
+      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
 
-    // update last_check
-    $res_last_check = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
+      // update live
+      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
 
-    $res_toggle = $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
+      // update last_check
+      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
 
-    // backup just once
-    if( !$fv_fp->_get_option('backup_video_meta') ) {
-      // backup old meta
-      $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'duration_backup' WHERE meta_key = 'duration'");
-      $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'live_backup' WHERE meta_key = 'live'");
-      $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'last_video_meta_check_backup' WHERE meta_key = 'last_video_meta_check'");
-
-      $fv_fp->_set_option('backup_video_meta', true);
+      $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
+      
+      $fv_fp->_set_option('video_model_db_updated', '7.9.3');
     }
-
   }
 
   /**

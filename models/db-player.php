@@ -530,23 +530,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
       if( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
         self::updateTableConversion();
-
-        foreach ( array(
-          'ad'                => 'overlay',
-          'ad_height'         => 'overlay_height',
-          'ad_skip'           => 'overlay_skip',
-          'ad_width'          => 'overlay_width',
-          'toggle_ad_custom'  => 'toggle_overlay',
-        ) as $from => $to ) {
-          // Is there such column?
-          if ( FV_Player_Db::has_table_column( self::$db_table_name , $from ) ) {
-            $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
-
-            if ( empty( $wpdb->last_error ) ) {
-              $wpdb->query( "ALTER TABLE `" . self::$db_table_name . "` DROP `" . $from . "`" );
-            }
-          }
-        }
       }
 
       $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
@@ -561,16 +544,31 @@ CREATE TABLE " . self::$db_table_name . " (
    * @return void
    */
   private static function updateTableConversion() {
-    global $wpdb;
+    global $fv_fp, $wpdb;
 
     $table = self::$db_table_name;
 
-    // enable toggle end action
-    $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
+    if( $fv_fp->_get_option('player_model_db_updated') != '7.9.3' ) {
+      // enable toggle end action
+      $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
-    if ( FV_Player_Db::has_table_column( self::$db_table_name , 'ad' ) ) {
       // enable toggle ad custom
       $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+
+      foreach ( array(
+        'ad'                => 'overlay',
+        'ad_height'         => 'overlay_height',
+        'ad_skip'           => 'overlay_skip',
+        'ad_width'          => 'overlay_width',
+        'toggle_ad_custom'  => 'toggle_overlay',
+      ) as $from => $to ) {
+        // Is there such column?
+        if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
+          $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
+        }
+      }
+
+      $fv_fp->_set_option('player_model_db_updated', '7.9.3');
     }
   }
 
