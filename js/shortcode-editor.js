@@ -4345,22 +4345,25 @@ jQuery(function() {
       });
     });
 
-    function show_short_link(original_field) {
-      var preview = original_field.prev('.fv_player_editor_url_shortened'),
-        original_value = original_field.val();
+    function show_short_link(field) {
+      var value = field.val().trim(),
+        preview = field.prev('.fv_player_editor_url_shortened'),
+        button = preview.siblings('.components-button'); // Media Library Button
 
       shortened_field_edited = false;
       shortened_field_button = false;
 
-      if( !original_value ) { // no value, hide preview
-        original_field.removeClass('fv_player_interface_hide');
+      if( !value ) { // no value, hide preview
+        field.removeClass('fv_player_interface_hide');
         preview.addClass('fv_player_interface_hide');
+        button.show();
+
       } else {
-        original_field.addClass('fv_player_interface_hide');
+        field.addClass('fv_player_interface_hide');
         preview.removeClass('fv_player_interface_hide');
-        preview.attr('title', original_value);
-        preview.find('.link-preview').html(shorten_original_link(original_value)); // shorten preview link
-        preview.siblings('.components-button').hide(); // hide media library button
+        preview.attr('title', value );
+        preview.find('.link-preview').html( shorten_original_link( value ) ); // shorten preview link
+        button.hide();
       }
     }
 
