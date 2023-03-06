@@ -597,6 +597,18 @@
       opacity: 1; }
   .freedomplayer.is-mouseover.is-disabled .fp-forward, .freedomplayer.is-mouseover.is-disabled .fp-rewind {
     display: none; }
+  .freedomplayer.is-video-rewind.is-ready .fp-rewind {
+    display: block;
+    opacity: 1; }
+    .freedomplayer.is-video-rewind.is-ready .fp-rewind svg {
+      display: block;
+      opacity: 1; }
+  .freedomplayer.is-video-forward.is-ready .fp-forward {
+    display: block;
+    opacity: 1; }
+    .freedomplayer.is-video-forward.is-ready .fp-forward svg {
+      display: block;
+      opacity: 1; }
   .freedomplayer .fp-controls {
     display: -ms-flexbox;
     display: -webkit-box;
