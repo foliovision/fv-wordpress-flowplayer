@@ -396,13 +396,19 @@ function fv_player_admin_update() {
   
   $aOptions = get_option( 'fvwpflowplayer' );
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
-    do_action( 'fv_player_update' );
+    do_action( 'fv_player_update' ); // trigger update actions
 
     //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
 
     if( !empty($aOptions['version']) && $aOptions['version'] == '6.0.5.20' && $aOptions['playlist_advance'] == 'true' ) { //  version 6.0.5 used reverse logic for this option!
       $aOptions['playlist_advance'] = false;
       $fv_fp->_get_conf();
+    }
+
+    if( $fv_fp->_get_option( 'autoplay' ) || $fv_fp->_get_option( array( 'pro' ,'autoplay_scroll' )) ) {
+      $aOptions['autoplay_preload'] = 'viewport';
+    } else {
+      $aOptions['autoplay_preload'] = false;
     }
 
     if( empty($aOptions["interface"]['playlist_titles']) && !empty($aOptions["interface"]["playlist_captions"]) ) {
