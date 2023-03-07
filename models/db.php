@@ -282,12 +282,12 @@ class FV_Player_Db {
    * Adds data for all players table shown in admin to cache, the returns the cache.
    *
    * @param array $args {
-   *   @type string     $order_by  If set, data will be ordered by this column.
-   *   @type string     $order     If set, data will be ordered in this order.
-   *   @type int        $offset    If set, data will returned will be limited, starting at this offset.
-   *   @type int        $per_page  If set, data will returned will be limited, ending at this offset.
-   *   @type int|array  $player_id If set, data will be restricted to a single player ID or array of player IDs.
-   *   @type string     $search    If set, results will be searched for using the GET search parameter.
+   * @param string     $order_by  If set, data will be ordered by this column.
+   * @param string     $order     If set, data will be ordered in this order.
+   * @param int        $offset    If set, data will returned will be limited, starting at this offset.
+   * @param int        $per_page  If set, data will returned will be limited, ending at this offset.
+   * @param int|array  $player_id If set, data will be restricted to a single player ID or array of player IDs.
+   * @param string     $search    If set, results will be searched for using the GET search parameter.
    * }
    *
    * @return array     Returns an array of all cached list page results to be displayed.

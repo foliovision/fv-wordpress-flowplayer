@@ -356,29 +356,23 @@ class flowplayer_frontend extends flowplayer
       return $this->get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width);
     }
 
-
     /*
      *  Autoplay, in the older FV Player versions this setting was just true/false and that creates a ton of issues
      */
     $autoplay = -1;
-    if( $this->_get_option('autoplay') == 'true' && $this->aCurArgs['autoplay'] != 'false'  ) {
+    if( in_array( $fv_fp->_get_option('autoplay_preload'), array('viewport', 'sticky')) && $this->aCurArgs['autoplay'] != 'false'  ) {
       $autoplay = 0;
-    } else if ( $this->_get_option('autoplay') == 'muted' && $this->aCurArgs['autoplay'] != 'false' ) {
-      $autoplay = 'muted';
     }
 
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = 0;
     }
-    if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'muted')) {
-      $autoplay = 'muted';
-    }
-
+    
     /*
      *  Sticky
      */
     $sticky = false;  //  todo: should be changed into a property
-    if( $this->_get_option('sticky') && $this->aCurArgs['sticky'] != 'false'  ) {
+    if( $this->_get_option('autoplay_preload') == 'sticky' && $this->aCurArgs['sticky'] != 'false'  ) {
       $sticky = true;
     }
     if( isset($this->aCurArgs['sticky']) && ($this->aCurArgs['sticky'] == 'true' || $this->aCurArgs['sticky'] == 'on')) {
@@ -507,8 +501,8 @@ class flowplayer_frontend extends flowplayer
         if( !empty($splash_img) && strcmp( $splash_img, $this->_get_option('splash') ) != 0 ) {
           $bIsAudio = false;
         }
-
-        if( $this->_get_option('preload') ) {
+        
+        if( $this->_get_option('autoplay_preload') == 'preload' ) {
           $splash_preload_class = 'is-poster';
         } else {
           $splash_preload_class = 'is-splash';
