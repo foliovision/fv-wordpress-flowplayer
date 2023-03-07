@@ -45,10 +45,11 @@ flowplayer( function(api,root) {
 
     // do we force HD playback?
     var pick_quality = flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ? 720 : false;
-    // or did we disable it for this player?
-    if( jQuery(params.root).data('hd_streaming') == false ) pick_quality = false;
     // or did the user pick some quality by hand?
     if( localStorage.FVPlayerHLSQuality ) pick_quality = localStorage.FVPlayerHLSQuality;
+    // or did we disable it for this player?
+
+    if( jQuery(params.root).data('hd_streaming') == false ) pick_quality = false;
 
     if( pick_quality ) {
       hlsjs.on(Hls.Events.MANIFEST_PARSED, function(_, data) {
@@ -97,15 +98,16 @@ flowplayer( function(api,root) {
     }
   });
 
-  
-  if( localStorage.FVPlayerHLSQuality ) {
-    api.conf.hlsjs.startLevel = parseInt(localStorage.FVPlayerHLSQuality);
-    api.conf.hlsjs.testBandwidth = false;
-    api.conf.hlsjs.autoLevelEnabled = false;
-  } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
-    api.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
-    api.conf.hlsjs.testBandwidth = false;
-    api.conf.hlsjs.autoLevelEnabled = false;
+  if( root.data('hd_streaming') != false ) {
+    if( localStorage.FVPlayerHLSQuality ) {
+      api.conf.hlsjs.startLevel = parseInt(localStorage.FVPlayerHLSQuality);
+      api.conf.hlsjs.testBandwidth = false;
+      api.conf.hlsjs.autoLevelEnabled = false;
+    } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
+      api.conf.hlsjs.startLevel = 3; // far from ideal, but in most cases it works; ideally HLS.js would handle this better
+      api.conf.hlsjs.testBandwidth = false;
+      api.conf.hlsjs.autoLevelEnabled = false;
+    }
   }
   
   api.bind('quality', function(e,api,quality) {
@@ -152,37 +154,40 @@ flowplayer( function(api,root) {
 
       if( api.video.qualities && api.video.qualities.length > 2 ) {
         var qswitch = -1;
-        if( localStorage.FVPlayerHLSQuality ) {
-          // do we have such quality?
-          jQuery(api.video.qualities).each( function(k,v) {
-            if( v.value == localStorage.FVPlayerHLSQuality ) {
-              // accept the remembered quality index
-              qswitch = localStorage.FVPlayerHLSQuality;  
-              return false;
-            }
-          });
-        
-        // is FV Player set to force HD?
-        } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
-          jQuery(api.video.qualities).each( function(k,v) {
-            var height = parseInt(v.label);
-            if( height > 0 && qswitch == -1 && height >= 720 && height <= 720 ) {
-              qswitch = v.value;
-            }
-          });
+        if( root.data('hd_streaming') != false ) {
+          if( localStorage.FVPlayerHLSQuality ) {
+            // do we have such quality?
+            jQuery(api.video.qualities).each( function(k,v) {
+              if( v.value == localStorage.FVPlayerHLSQuality ) {
+                // accept the remembered quality index
+                qswitch = localStorage.FVPlayerHLSQuality;  
+                return false;
+              }
+            });
+
+          // is FV Player set to force HD?
+          } else if( flowplayer.conf.hd_streaming && !flowplayer.support.fvmobile ) {
+            jQuery(api.video.qualities).each( function(k,v) {
+              var height = parseInt(v.label);
+              if( height > 0 && qswitch == -1 && height >= 720 && height <= 720 ) {
+                qswitch = v.value;
+              }
+            });
+            
+          }
+
+          qswitch = parseInt(qswitch);
+
+          if( qswitch > -1 ) {
+            root.one('progress', function() {
+              setTimeout( function() {
+                api.quality(qswitch);
+              });
+            });
+          }
           
         }
-        
-        qswitch = parseInt(qswitch);
 
-        if( qswitch > -1 ) {
-          root.one('progress', function() {
-            setTimeout( function() {
-              api.quality(qswitch);
-            });
-          });
-        }
-        
         quality_sort();
       }
 

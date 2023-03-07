@@ -4,9 +4,12 @@
 * */
 if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefined"  && fv_flowplayer_conf.video_hash_links ) {
   flowplayer(function (api, root) {
+    var link = '';
+
     if( jQuery(root).find('.sharing-link').length > 0 ) {
       var abEnd, abStart, hash, sTime, abloop;
 
+      // eslint-disable-next-line no-inner-declarations
       function update_link( abStartNew, abEndNew ) {
         hash = fv_player_get_video_link_hash(api);
         sTime = ',' + fv_player_time_hms(api.video.time);
@@ -19,7 +22,9 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
           abStart = abloop && typeof api.get_ab_start() != 'undefined' && api.get_ab_start() ? ',' + fv_player_time_hms_ms(api.get_ab_start()) : '';
         }
 
-        jQuery('.sharing-link',root).attr('href',jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime + abStart + abEnd);
+        link = jQuery('.sharing-link',root).attr('href').replace(/#.*/,'') + '#' + hash + sTime + abStart + abEnd;
+
+        jQuery('.sharing-link',root).attr('href', link);
       }
 
       api.on("ready", function (e,api,video) {
@@ -49,14 +54,18 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
       });
 
       jQuery('.sharing-link',root).on('click', function(e) {
-
+        e.preventDefault();
         fv_player_clipboard( jQuery(this).attr('href'), function() {
-          e.preventDefault();
           fv_player_notice(root,fv_flowplayer_translations.link_copied,2000);
-        });
-
-        return false;
+          }, function() {
+            fv_player_notice(root,fv_flowplayer_translations.error_copy_clipboard,2000);
+          }
+        );
       })
+    }
+
+    api.get_video_link = function() {
+      return link;
     }
   })
 

@@ -13,6 +13,8 @@ abstract class FV_Player_Media_Browser {
     add_action( 'admin_print_scripts-toplevel_page_fv_player', array($this, 'init_base'), 0 ); // wp-admin -> FV Player
     add_action( 'admin_print_scripts-widgets.php', array($this, 'init_base'), 0 ); // wp-admin -> Widgets
 
+    add_action( 'fvplayer_editor_load', array($this, 'init_base'), 0 ); // Front-end editor
+
     // TODO: Video encoder class should take care of this
     add_action( 'admin_print_scripts-fv-player_page_fv_player_coconut', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Coconut Jobs
     add_action( 'admin_print_scripts-fv-player_page_fv_player_bunny_stream', array($this, 'init_base'), 0 ); // wp-admin -> FV Player -> Bunny Stream Jobs
@@ -50,7 +52,7 @@ abstract class FV_Player_Media_Browser {
   function init_base() {
     global $fv_wp_flowplayer_ver;
     wp_enqueue_media();
-    wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), $fv_wp_flowplayer_ver, true );
+    wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname( __FILE__ ) . '/../js/media-library-browser-base.js' ), true );
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
     $this->init();
   }
@@ -176,7 +178,7 @@ abstract class FV_Player_Media_Browser {
           $item['link'] = $link;
 
           if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item['name'])) {
-            $item['splash'] = apply_filters('fv_flowplayer_splash', $link );
+            $item['splash'] = htmlspecialchars( apply_filters('fv_flowplayer_splash', $link ) );
           }
         } else {
           $item['type'] = 'folder';

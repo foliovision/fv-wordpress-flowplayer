@@ -404,7 +404,26 @@ function fv_player_admin_update() {
       $aOptions['playlist_advance'] = false;
       $fv_fp->_get_conf();
     }
+
+    if( empty($aOptions["interface"]['playlist_titles']) && !empty($aOptions["interface"]["playlist_captions"]) ) {
+      $aOptions["interface"]['playlist_titles'] = $aOptions["interface"]["playlist_captions"];
+    }
+
+    foreach( array(
+      'ad'            => 'overlay',
+      'ad_css'        => 'overlay_css',
+      'ad_height'     => 'overlay_height',
+      'ad_show_after' => 'overlay_show_after',
+      'ad_width'      => 'overlay_width',
+      'adTextColor'   => 'overlayTextColor',
+      'adLinksColor'  => 'overlayLinksColor'
+    ) as $from => $to ) {
+      if( empty($aOptions[ $to ]) && !empty($aOptions[ $from ]) ) {
+        $aOptions[ $to ] = $aOptions[ $from ];
+      }
+    }
     
+
     $aOptions['version'] = $fv_wp_flowplayer_ver;
     update_option( 'fvwpflowplayer', $aOptions );
     
@@ -743,6 +762,64 @@ global $FV_Player_Db;
 add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10, 2);
 
 
+add_action( 'admin_notices', 'fv_player_embedded_on_fix' );
+
+function fv_player_embedded_on_fix() {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-embedded-on-fix' ) ) {
+
+    global $wpdb;
+    $players_with_no_posts = $wpdb->get_col( "SELECT p.id FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+
+    echo "<h2>FV Player Embedded On Post Scan</h2>\n";
+
+    echo '<p>' . sprintf( 'It appears there are %d players which do not belong to any post.', count( $players_with_no_posts ) ) . "</p>\n";
+
+    if ( $players_with_no_posts ) {
+      foreach ( $players_with_no_posts as $player_id ) {
+        echo '<p>';
+        echo 'Player #' . $player_id . '... ';
+
+        $wild = '%';
+        $find = 'fvplayer id="'.$player_id.'"';
+        $like = $wild . $wpdb->esc_like( $find ) . $wild;
+
+        $posts = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_status != 'trash' AND post_type != 'revision' AND post_content LIKE %s", $like ) );
+
+        $post_meta = $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta AS m JOIN $wpdb->posts AS p ON m.post_id = p.ID WHERE post_status != 'trash' AND post_type != 'revision' AND meta_value LIKE %s", $like ) );
+
+        $posts = array_merge( $posts, $post_meta );
+
+        $posts = array_unique( $posts );
+
+        if ( count($posts) > 0 ) {
+
+          echo "Found in posts: " . implode( ', ', $posts ) . "\n";
+
+          foreach ( $posts AS $post_id ) {
+            $meta = new FV_Player_Db_Player_Meta(null, array(
+              'id_player' => $player_id,
+              'meta_key' => 'post_id',
+              'meta_value' => $post_id
+            ) );
+
+            $meta->save();
+          }
+
+        } else {
+          echo "Not found in any post.\n";
+          
+        }
+
+        echo "</p>\n";
+      }
+    }
+
+    die( 'Done!' );
+
+  }
+}
+
+
 add_action( 'admin_notices', 'fv_player_rollback' );
 
 function fv_player_rollback() {
@@ -911,7 +988,7 @@ function fv_player_submitbox_misc_actions( $attachment ) {
 }
 
 /**
- * Admin add new player row by ajax
+ * Append or update player row in wp-admin -> FV Player
  */
 add_action('wp_ajax_fv_player_table_new_row', 'fv_player_table_new_row');
 
@@ -930,4 +1007,64 @@ function fv_player_table_new_row() {
     $table->display();
     exit;
   }
+}
+
+/**
+ * Update the player on the wp-admin -> Posts, Pages or CPT screen
+ * 
+ * Gets the first video thumbnail only
+ */
+add_action('wp_ajax_fv_player_edit_posts_cell', 'fv_player_edit_posts_cell');
+
+function fv_player_edit_posts_cell() {
+  if( isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-edit_posts_cell_nonce-".get_current_user_id() ) ) {
+
+    $player_id = false;
+
+    // New player, load from post meta field to ensure it saved
+    if ( ! empty( $_POST['post_id'] ) && ! empty( $_POST['meta_key'] ) ) {
+      $shortcode = get_post_meta( $_POST['post_id'], $_POST['meta_key'], true );
+      $shortcode_atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
+
+      if( ! empty($shortcode_atts['id']) ) {
+        $player_id = $shortcode_atts['id'];
+      }
+
+    // Existing player, load by id
+    } else if ( ! empty( $_POST['playerID'] ) ) {
+      $player_id = $_POST['playerID'];
+    }
+
+    if ( $player_id ) {
+      global $FV_Player_Db;
+      $aPostListPlayers = $FV_Player_Db->getListPageData( array(
+        'player_id' => $player_id
+      ) );
+
+      if( !empty($aPostListPlayers[0]->thumbs[0]) ) {
+        echo '<a href="#" class="fv-player-edit" data-player_id="' . intval($player_id) . '">' . $aPostListPlayers[0]->thumbs[0] . '</a>';
+
+      } else {
+        echo "Error: Player not found!";
+      }
+    }
+
+    exit;
+  }
+}
+
+function fv_player_get_post_type_taxonomies( $post_type ) {
+  $taxonomies = get_taxonomies( array(
+    'public'      => true,
+    'show_ui'     => true,
+  ), 'objects' );
+
+  $post_type_taxonomies = array();
+  foreach( $taxonomies AS $taxonomy) {
+    if( in_array( $post_type, $taxonomy->object_type ) ) {
+      $post_type_taxonomies[] = $taxonomy->name;
+    }
+  }
+
+  return $post_type_taxonomies;
 }

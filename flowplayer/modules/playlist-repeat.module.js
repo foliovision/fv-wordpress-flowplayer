@@ -136,27 +136,34 @@ flowplayer( function(api,root) {
             api.play( random_seed.pop() );
             if( random_seed.length == 0 ) random_seed = randomize();
           }
-        });      
+        });
         
       } else if( root.find('.fv-fp-track-repeat').length == 0 && api.conf.playlist.length == 0 ) {
         var button_track_repeat = jQuery('<strong class="fv-fp-track-repeat"><svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-replay-track"><use xlink:href="#fvp-replay-track"></use></svg></strong>');
         button_track_repeat.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          
-          jQuery(this).toggleClass('is-active fp-color-fill',api.video.loop);
-          
+
           if( api.video.loop ) {
             api.video.loop = false;
           } else {
             api.video.loop = true;
           }
+          
+          jQuery(this).toggleClass('is-active fp-color-fill',api.video.loop);
         });
         
         if( api.conf.loop ) {
           button_track_repeat.addClass('is-active fp-color-fill');
         }
-        
+
+        api.on("finish", function( e, api ) {
+          if( api.video.loop ) {
+            console.log('playlist-repeat.module', api.video.loop );
+            api.resume();
+          }
+        });
+
       }
     }
     

@@ -1,4 +1,4 @@
-flowplayer( function(api,root) {
+freedomplayer( function(api,root) {
   root = jQuery(root);
 
   var instance_id = root.data('freedomplayer-instance-id');

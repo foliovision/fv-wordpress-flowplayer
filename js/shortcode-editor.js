@@ -26,6 +26,9 @@ jQuery(function() {
     current_video_db_id = 0,
     current_video_to_edit = -1,
 
+    current_post_id = 0,
+    current_post_meta_key = 0,
+
     deleted_videos = [],
     deleted_video_meta = [],
     deleted_player_meta = [],
@@ -47,6 +50,8 @@ jQuery(function() {
 
     // are we editing player which is not yet in DB?
     is_unsaved = true,
+
+    is_playlist_hero_editing = false,
 
     // is the player already saved in the DB but actually
     // still in a "draft" status? i.e. not published yet
@@ -106,10 +111,10 @@ jQuery(function() {
 
     /**
      * Adds a notice at the bottom of player. Used for successful save and save errors. Notices are removed on successful save.
-     * 
+     *
      * @param {string}  id
      * @param {string}  msg
-     * @param {int}    [timeout] Duration for which it should appear or omit for persistent message      
+     * @param {int}    [timeout] Duration for which it should appear or omit for persistent message
      */
     function add_notice( id, msg, timeout ) {
       var notice = $('<div class="fv-player-editor-notice fv-player-editor-notice_'+id+'">'+msg+'</div>' );
@@ -120,6 +125,15 @@ jQuery(function() {
           notice.fadeOut();
         }, timeout );
       }
+    }
+
+    function add_shortcode_args( args ) {
+      let
+        params = jQuery.map( args, function (value, index) {
+          return index + '="' + value + '"';
+        });
+
+      return params.length ? ' ' + params.join(' ') : '';
     }
 
     function copy_player_button_toggle( show ) {
@@ -185,6 +199,38 @@ jQuery(function() {
         return current_player_object.videos[current_video_to_edit];
       }
       return false;
+    }
+
+    /*
+     *  Used when entering link to the "hero" field.
+     *  If it's used in the playlist mode, we need to insert the hidden new playlist row and use the added field.
+     */
+    function get_hero_src_field( input ) {
+      let editor_src_field = get_field("src")
+
+      if( $( '#playlist-hero:visible' ).length && input.data('playlist-hero') ) {
+
+        // Remember the new item index to not add new video on each keyup event!
+        if( !input.data( 'new-item-index' ) ) {
+          input.data( 'new-item-index', get_playlist_items_count() );
+        }
+
+        editor_src_field = editor_src_field.eq( input.data( 'new-item-index' ) );
+
+        // Add new playlist item if it's not there
+        if( !editor_src_field.length ) {
+          let new_item = playlist_item_add();
+
+          // If we are going to type in the URL, do not show the row
+          if( input.attr( 'type') == 'text' ) {
+            $( '#fv-player-editor-playlist .fv-player-editor-playlist-item:last').hide();
+          }
+
+          editor_src_field = get_field( "src", new_item );
+        }
+      }
+
+      return editor_src_field;
     }
 
     /*
@@ -314,6 +360,25 @@ jQuery(function() {
       }
 
       return false;
+    }
+
+    function hide_inputs() {
+      if( fv_player_editor_conf.hide ) {
+        $.each( fv_player_editor_conf.hide, function( k, v ) {
+          try {
+            if( 'configure-video' === v ) {
+              $( 'a.configure-video' ).hide();
+              $( "<style>.fv-player-editor-playlist-item .fvp_item_video-thumbnail { cursor: default; }</style>" ).appendTo( "head" )
+
+            } else {
+              $( '.fv-player-editor-field-wrap-'+v ).hide();
+              $( '[name=fv_wp_flowplayer_field_'+v+']' ).hide();
+            }
+          } catch(e) {
+            debug_log( 'Hide Field: Failure', e );
+          }
+        } );
+      }
     }
 
     /**
@@ -524,6 +589,35 @@ jQuery(function() {
           widget_id = $(this).data().number;
         });
 
+        var site_editor_load = setInterval( function() {
+          var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
+          if( site_editor_iframe.length ) {
+            debug_log( 'Site editor found!');
+
+            clearInterval(site_editor_load);
+
+            site_editor_iframe.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
+
+              editor_button_clicked = this;
+              e.preventDefault();
+              $.fv_player_box( {
+                top: "100px",
+                initialWidth: 1100,
+                initialHeight: 50,
+                width:"1100px",
+                height:"100px",
+                href: "#fv-player-shortcode-editor",
+                inline: true,
+                title: 'Add FV Player',
+                onComplete : editor_open,
+                onClosed : editor_close,
+                onOpen: lightbox_open
+              } );
+              widget_id = $(this).data().number;
+            });
+          }
+        }, 1000 );
+
         $doc.on( 'click', '.fv-player-export', function(e) {
           var $element = jQuery(this);
 
@@ -585,11 +679,15 @@ jQuery(function() {
         $doc.on( 'click', '.fv-player-remove-confirm', function() {
           var
             $element = $(this),
+            $row_actions = $element.closest( '.row-actions' ),
             $element_td = $element.parent(),
             $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>');
 
           $element_td.find('a, span').hide();
           $element.after($spinner);
+
+          // Make sure the row actions do not show on hover only, but always appear to make sure the spinner remains visible
+          $row_actions.css( 'left', 0 );
 
           debug_log('Running fv_player_db_remove Ajax.');
 
@@ -668,7 +766,7 @@ jQuery(function() {
       $el_editor.on( 'change', '.components-form-toggle input[type=checkbox]', function() {
         var wrap = $(this).closest('.components-form-toggle'),
           checked = $(this).prop('checked'),
-          name = $(this).attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = $(this).attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
           checkbox_toggle_worker(wrap, name, checked);
       });
@@ -676,7 +774,7 @@ jQuery(function() {
       $el_editor.on('change', '.components-text-control__input', function() {
         var input = jQuery(this),
           parent = input.parents('.fv-player-editor-children-wrap'),
-          name = input.attr('id').replace( /fv_wp_flowplayer_field_/, '' );
+          name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
         if( parent.length == 1 ) {
           if( input.val() ) {
@@ -685,6 +783,50 @@ jQuery(function() {
             parent.find('.fv-player-editor-field-children-' + name).hide();
           }
         }
+      });
+
+      /*
+       * Intro view text input and button
+       */
+
+      // Copy hero input value to the first video src and trigger event for save & preview
+      $('[name=hero-src]').on('change keyup', function() {
+
+        $('#playlist-hero .fv-player-editor-notice.notice-use-ui').hide();
+
+        let input = $( this ),
+          value = input.val().trim(),
+          is_valid_url = false;
+
+        if( value ) {
+          if( value.match( /https?:\/\// ) ) {
+
+            for (var vtype in window.fv_player_editor_matcher) {
+              if (window.fv_player_editor_matcher[vtype].matcher.exec(value) !== null) {
+                is_valid_url = true;
+                break;
+              }
+            }
+
+          }
+
+          if( $( '#playlist-hero:visible' ).length ) {
+            $('#playlist-hero .fv-player-editor-notice.notice-url-format').toggle( !is_valid_url );
+          } else {
+            $('#fv-player-shortcode-editor-preview-no .fv-player-editor-notice.notice-url-format').toggle( !is_valid_url );
+          }
+        }
+
+        if( !is_valid_url ) {
+          return false;
+        }
+
+        get_hero_src_field( $(this) ).val( value ).trigger( 'keyup' );
+      });
+
+      $('.button-hero').on('click', function() {
+        // click on the media library button next to that input
+        get_hero_src_field( $(this) ).closest('.components-base-control__field').find('.add_media').trigger('click');
       });
 
       /*
@@ -703,6 +845,10 @@ jQuery(function() {
       * keywords: select item
       */
       $doc.on('click','.fv-player-editor-playlist-item .configure-video, .fv-player-editor-playlist-item .fvp_item_video-thumbnail', function() {
+        if( fv_player_editor_conf.hide && fv_player_editor_conf.hide.indexOf( 'configure-video' ) > 0 ) {
+          return false;
+        }
+
         playlist_item_show( $(this).parents('.fv-player-editor-playlist-item').attr('data-index') );
         return false;
       });
@@ -748,8 +894,8 @@ jQuery(function() {
       });
 
       /*
-      * Edit caption
-      * keywords: edit caption playlist items edit caption playlist items
+      * Edit title
+      * keywords: edit title playlist items edit title playlist items
       */
       $doc.on('keyup','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_video-edit-input', function(e) {
         e.stopPropagation();
@@ -762,10 +908,11 @@ jQuery(function() {
         var
           $parent = $(e.target).parents('[data-index]'),
           index = $parent.attr('data-index'),
-          video_tab = get_tab(index, 'video-files');
+          video_tab = get_tab(index, 'video-files'),
+          new_title = jQuery(this).val();
 
-        $parent.find('.fvp_item_video-filename').text(jQuery(this).val());
-        get_field('caption', video_tab).val(jQuery(this).val()).trigger('keyup');
+        $parent.find('.fvp_item_video-filename').text( new_title );
+        get_field('title', video_tab).val( new_title ).trigger('keyup');
       });
 
       /*
@@ -792,13 +939,24 @@ jQuery(function() {
         get_tab(index,'cues').remove();
 
         // if no playlist item is left, add a new one
-        // TODO: Some better way?
+        // TODO: Some better way? Like do it after the data is saved
         if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
+
+          // Required, with this it actually saves the change!
           playlist_item_add();
-          playlist_item_show(0);
+
+          if( fv_player_editor_conf.frontend ) {
+            reset_preview();
+            playlist_show();
+
+          } else {
+            playlist_item_show(0);
+          }
         }
 
         $doc.trigger('fv_flowplayer_shortcode_item_delete');
+
+        return false;
       });
 
       /*
@@ -892,9 +1050,37 @@ jQuery(function() {
         });
 
         fv_flowplayer_uploader.on('open', function() {
-        $( document ).trigger( "mediaBrowserOpen" );
+          $( document ).trigger( "mediaBrowserOpen" );
           jQuery('.media-router .media-menu-item').eq(0).trigger('click');
           jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
+
+          // Hide Media Library tabs which are not allowed
+          if( fv_player_editor_conf.library ) {
+            let libraries = fv_player_editor_conf.library.split(/,/),
+              library_found = false;
+
+            $( '.media-router .media-menu-item' ).each( function( i, el ) {
+              let found = false;
+              $( libraries ).each( function( v, library ) {
+                if( $(el).attr('id').match(library) ) {
+                  found = library_found = true;
+                  $(el).trigger( 'click' );
+                }
+              });
+
+              if( !found ) {
+                $(el).hide();
+              }
+            });
+
+            // At least close the Media Library if the desired that was not found
+            // TODO: It should not open at all if the required library is not found
+            if ( ! library_found ) {
+              debug_log('Libraries '+fv_player_editor_conf.library+' not found!');
+
+              fv_flowplayer_uploader.close();
+            }
+          }
         });
 
         //When a file is selected, grab the URL and set it as the text field's value
@@ -969,6 +1155,20 @@ jQuery(function() {
       */
       $doc.on('fvp-preview-complete',function() {
         $el_preview.attr('class','preview-show');
+
+        // If editor was in the intro mode, we show the playlist and enable the full-editor
+        if( $el_editor.hasClass('is-intro') ) {
+          playlist_show();
+
+          $el_editor.removeClass('is-intro');
+          $('[name=hero-src]').val('');
+        }
+
+        // If editor was in the frontend mode and adding playlist item we hide the playlist hero item now
+        // and instead show the playlist item row
+        if( $( '#playlist-hero:visible' ).length ) {
+          playlist_hero_hide();
+        }
       });
 
       /*
@@ -1104,174 +1304,184 @@ jQuery(function() {
 
         remove_notices();
 
-        // add current video that we're editing into the save data
-        ajax_save_this_please['current_video_to_edit'] = current_video_to_edit;
+        ajax_save_this_please = set_control_fields( ajax_save_this_please );
 
         debug_log('Running fv_player_db_save Ajax.');
 
-        $.post(ajaxurl+'?fv_player_db_save=1', {
-          action: 'fv_player_db_save',
-          data: JSON.stringify(ajax_save_this_please),
-          nonce: fv_player_editor_conf.preview_nonce,
-        }, function(response) {
+        $.ajax({
+          type:        'POST',
+          url:         ajaxurl + '?action=fv_player_db_save',
+          data:        JSON.stringify( {
+            data:        ajax_save_this_please,
+            nonce:       fv_player_editor_conf.edit_nonce,
+          } ),
+          contentType: 'application/json',
+          dataType:    'json',
+          success: function(response) {
 
-          if( response.error ) {
-            if( response.fatal_error ) {
-              var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
-  
-              var overlay = overlay_show('error_saving');
-              overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-              overlay.find('[data-error]').html( response.error );
-    
-              jQuery('#fv_player_copy_to_clipboard').select();
+            if( response.error ) {
+              if( response.fatal_error ) {
+                var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
 
-            } else {
-              add_notice( 'error', response.error );
-            }
+                var overlay = overlay_show('error_saving');
+                overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+                overlay.find('[data-error]').html( response.error );
 
-            el_spinner.hide();
-            
-            is_saving = false;
+                jQuery('#fv_player_copy_to_clipboard').select();
 
-            return;
-          }
-
-          debug_log('player ID after save: '+response.id);
-
-          current_player_object = response;
-
-          try {
-            $(response.videos).each( function(k,v) {
-              var item = $('.fv-player-playlist-item').eq(k);
-              if( !item.data('id_video') ) {
-                item.attr('data-id_video',v.id);
+              } else {
+                add_notice( 'error', response.error );
               }
-
-              if( k == current_video_to_edit ) {
-                debug_log('current_video_db_id after save: '+v.id);
-                current_video_db_id = v.id;
-              }
-
-              /*
-               * The video saving might fetch the video duration, splash screen and title...
-               * So we fill that in
-               */
-              // TODO: Populate chapters, error, is_live, is_audio, encryption key
-              var video_tab = get_tab( k, 'video-files' ),
-                splash_field = get_field( 'splash', video_tab ),
-                splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
-                title_field = get_field( 'caption', video_tab ),
-                auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
-
-              if( get_field('auto_splash', video_tab ).val() == '0' ) {
-                auto_splash = false;
-              }
-
-              if( get_field('auto_caption', video_tab ).val() == '0' ) {
-                auto_caption = false;
-              }
-
-              if( get_field('auto_splash', video_tab ).val() == '0' ) {
-                auto_splash = false;
-              }
-
-              if( get_field('auto_caption', video_tab ).val() == '0' ) {
-                auto_caption = false;
-              }
-
-              if( v.splash && ( !splash_field.val() || auto_splash ) ) {
-                splash_field.val( v.splash );
-
-                if( v.splash_attachment_id && !splash_attachment_id_field.val() ) {
-                  splash_attachment_id_field.val( v.splash_attachment_id )
-                }
-              }
-
-              if( auto_splash ) {
-                get_field('auto_splash', video_tab ).val( auto_splash );
-              }
-
-              if( v.caption && ( !title_field.val() || auto_caption ) ) {
-                title_field.val( v.caption );
-              }
-
-              if( auto_caption ) {
-                get_field('auto_caption', video_tab ).val( auto_caption );
-              }
-
-              // The Ajax save can give us some video details and it detects stream type so we refresh that information here if we are editing that video
-              if( current_video_to_edit == k ) {
-                show_video_details(k);
-                show_stream_fields_worker(k);
-              }
-            });
-
-            // If we are in playlist view, we refresh the list too
-            if( current_video_to_edit > 1 ) {
-              playlist_refresh();
-            }
-
-            // Did the data change while saving?
-            if( next ) {
-              debug_log('There is more to save...');
-
-              if ( is_unsaved ) {
-                init_saved_player_fields();
-              }
-
-              ajax( build_ajax_data(true) );
-              next = false;
-            } else {
-              is_saving = false;
-
-              insert_button_toggle_disabled(false);
 
               el_spinner.hide();
 
-              add_notice( 'success', 'Saved!', 2500 );
+              is_saving = false;
 
-              // close the overlay, if we're waiting for the save
-              if (overlay_close_waiting_for_save) {
-                // add this player's ID into players that no longer need an edit lock
-                if (current_player_db_id > 0) {
-                  edit_lock_removal[current_player_db_id] = 1;
-                }
-                overlay_close_waiting_for_save = false;
-                $.fn.fv_player_box.close();
-              } else if ( response.html ) {
-                // auto-refresh preview
-                el_preview_target.html( response.html )
-
-                $doc.trigger('fvp-preview-complete');
-              }
-
-              // if we're creating a new player, hide the Save / Insert button and
-              // add all the data and inputs to page that we need for an existing player
-              if ( is_unsaved ) {
-                copy_player_button_toggle(false);
-                init_saved_player_fields();
-                current_player_db_id = response.id;
-                is_unsaved = false;
-                //is_draft_changed = false;
-                loading = false;
-                ajax_save_this_please = false;
-              }
-
-              // Set the current data as previous to let auto-saving detect changes
-              // For new player this will have video and player IDs
-              ajax_save_previous = build_ajax_data(true);
+              return;
             }
-          } catch(e) {
-            error(e);
-          }
 
-        }, 'json' ).fail( function() {
-          add_notice( 'error', 'Error saving changes.' );
-          
-          el_spinner.hide();
-          
-          is_saving = false;
+            debug_log('player ID after save: '+response.id);
+
+            current_player_object = response;
+
+            try {
+              $(response.videos).each( function(k,v) {
+                var item = $('.fv-player-playlist-item').eq(k);
+                if( !item.data('id_video') ) {
+                  item.attr('data-id_video',v.id);
+                }
+
+                if( k == current_video_to_edit ) {
+                  debug_log('current_video_db_id after save: '+v.id);
+                  current_video_db_id = v.id;
+                }
+
+                /*
+                * The video saving might fetch the video duration, splash screen and title...
+                * So we fill that in
+                */
+                // TODO: Populate chapters, error, is_live, is_audio, encryption key
+                var video_tab = get_tab( k, 'video-files' ),
+                  splash_field = get_field( 'splash', video_tab ),
+                  splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
+                  title_field = get_field( 'title', video_tab ),
+                  auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
+                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
+
+                if( get_field('auto_splash', video_tab ).val() == '0' ) {
+                  auto_splash = false;
+                }
+
+                if( get_field('auto_caption', video_tab ).val() == '0' ) {
+                  auto_caption = false;
+                }
+
+                if( v.splash && ( !splash_field.val() || auto_splash ) ) {
+                  splash_field.val( v.splash );
+
+                  if( v.splash_attachment_id && !splash_attachment_id_field.val() ) {
+                    splash_attachment_id_field.val( v.splash_attachment_id )
+                  }
+                }
+
+                if( auto_splash ) {
+                  get_field('auto_splash', video_tab ).val( auto_splash );
+                }
+
+                if( v.title && ( !title_field.val() || auto_caption ) ) {
+                  title_field.val( v.title );
+                }
+
+                if( auto_caption ) {
+                  get_field('auto_caption', video_tab ).val( auto_caption );
+                }
+
+                // The Ajax save can give us some video details and it detects stream type so we refresh that information here if we are editing that video
+                if( current_video_to_edit == k ) {
+                  show_video_details(k);
+                  show_stream_fields_worker(k);
+                }
+              });
+
+              // If we are in playlist view, we refresh the list too
+              if( current_video_to_edit == -1 ) {
+                playlist_refresh();
+              }
+
+              // Did the data change while saving?
+              if( next ) {
+                debug_log('There is more to save...');
+
+                if ( is_unsaved ) {
+                  init_saved_player_fields();
+                }
+
+                ajax( build_ajax_data(true) );
+                next = false;
+              } else {
+                is_saving = false;
+
+                insert_button_toggle_disabled(false);
+
+                el_spinner.hide();
+
+                add_notice( 'success', 'Saved!', 2500 );
+
+                // close the overlay, if we're waiting for the save
+                if (overlay_close_waiting_for_save) {
+                  // add this player's ID into players that no longer need an edit lock
+                  if (current_player_db_id > 0) {
+                    edit_lock_removal[current_player_db_id] = 1;
+                  }
+                  overlay_close_waiting_for_save = false;
+                  $.fn.fv_player_box.close();
+
+                } else if ( typeof( response.html ) != "undefined" ) {
+
+                  if( response.html ) {
+                    // auto-refresh preview
+                    el_preview_target.html( response.html )
+
+                    $doc.trigger('fvp-preview-complete');
+
+                  } else {
+                    reset_preview();
+                  }
+                }
+
+                // if we're creating a new player, hide the Save / Insert button and
+                // add all the data and inputs to page that we need for an existing player
+                if ( is_unsaved ) {
+                  copy_player_button_toggle(false);
+                  init_saved_player_fields();
+                  current_player_db_id = response.id;
+                  is_unsaved = false;
+                  //is_draft_changed = false;
+                  loading = false;
+                  ajax_save_this_please = false;
+                }
+
+                // Output the shortcode into the pre-configured output field
+                if( fv_player_editor_conf.field_selector ){
+                  insert_shortcode( '[fvplayer id="'+current_player_db_id+'"]');
+                }
+
+                // Set the current data as previous to let auto-saving detect changes
+                // For new player this will have video and player IDs
+                ajax_save_previous = build_ajax_data(true);
+              }
+            } catch(e) {
+              error(e);
+            }
+
+          },
+          error: function( jqXHR, textStatus, errorThrown) {
+            add_notice( 'error', '<p>Error saving changes: ' + errorThrown + jqXHR.responseText + '</p>' );
+
+            el_spinner.hide();
+
+            is_saving = false;
+          }
         });
 
         ajax_save_this_please = false;
@@ -1288,11 +1498,11 @@ jQuery(function() {
       /**
        * Ensure user is notified about using video types which are not supported in playlists
        */
-      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {      
+      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {
         var result = {
           'supported': true
         }
-        
+
         var url = jQuery(this).val();
 
         if (
@@ -1309,24 +1519,24 @@ jQuery(function() {
         // so it can check the URL and make sure we don't show
         // a warning message for PRO-supported video types
         $doc.trigger('fv-player-editor-src-change', [ url, result, this ]);
-        
+
         // Notice next to the input field
         var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
-        
+
         if( result.supported ) {
           input_field_notice.hide();
-          
+
           playlist_buttons_disable(false);
-          
+
         } else {
           // Show a notice if you have a playlist already
           input_field_notice.toggle( get_playlist_items_count() > 1 );
-          
+
           // Disable the playlist editing buttons if the video type is not supported in playlists
           playlist_buttons_disable('FV Player Pro required for playlists with this video type');
-          
+
         }
-        
+
       });
 
       jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only
@@ -1424,12 +1634,58 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on('change', '#players_selector', function() {
-        insert_button_toggle_disabled(false);
-        
-        // TODO
+      $doc.on('click', '#fv-player-editor-copy_player-overlay .attachment', function() {
+        let item = $(this),
+          sidebar = $('#fv-player-editor-copy_player-overlay .media-sidebar'),
+          attachment_details = sidebar.find( '.attachment-details' ),
+          details = item.data('details');
+
+        $( '#fv-player-editor-copy_player-overlay .attachment' ).removeClass( 'selected details' );
+
+        item.addClass('selected details');
+
+        attachment_details.find('.filename').text( '#' + details.id + '. '+ details.player_name );
+        attachment_details.find('.uploaded').text( details.date_created );
+
+        attachment_details.find('.videos-list').html( '<ul><li>' + details.video_titles.join('</li><li>' ) + '</li></ul>' );
+
+        let ul = $('<ul></ul>');
+        $.each( details.embeds, function( k, v ) {
+          let type = v.post_type != 'post' ? ' (' + v.post_type + ')' : '',
+            status = v.post_status != 'publish' ? ' (' + v.post_status + ')' : '',
+            taxonomies_and_terms = [];
+
+          if( v.taxonomies ) {
+            $.each( v.taxonomies, function( taxonomy, taxonomy_details ) {
+
+              let taxonomy_terms = [];
+              $.each( taxonomy_details.terms, function( k, term ) {
+                taxonomy_terms.push( term.name );
+              } );
+              taxonomies_and_terms.push( taxonomy_details.label + ': ' + taxonomy_terms.join( ', ' ) );
+            } );
+          }
+
+          taxonomies_and_terms = '<ul><li>' + taxonomies_and_terms.join( '</li><li>' ) + '</li></ul>';
+
+          ul.append( '<li><strong>' + v.post_title + '</strong>' + type + status + taxonomies_and_terms + '</li>')
+        } );
+        attachment_details.find('.posts-list').html('').append( ul );
+
+        attachment_details.show();
+
+        $( '#fv-player-editor-copy_player-overlay .button-primary' ).prop( 'disabled', false );
+
+      });
+
+      $doc.on('click', '#fv-player-editor-copy_player-overlay .button-primary', function() {
         $el_editor.find('.button-primary').text('Insert');
-        editor_open(this.value);
+
+        let selected = $( '#fv-player-editor-copy_player-overlay .attachment.selected' );
+        if( selected.length > 0 ) {
+          editor_open( selected.data('details').id );
+        }
+
       });
 
       $doc.on('click', '.fv_player_field_insert-button', function() {
@@ -1446,17 +1702,30 @@ jQuery(function() {
       });
 
       $doc.on('click', '.playlist_add', function() {
-        playlist_item_add();
+        // If it's front-end mode do not add new item instantly, but show input and a button
+        if( fv_player_editor_conf.frontend ) {
+          console.log( 'is_playlist_hero_editing', is_playlist_hero_editing );
+          if( is_playlist_hero_editing ) {
+            $('#playlist-hero .fv-player-editor-notice.notice-use-ui').show();
+          } else {
+            playlist_hero_show();
+          }
+
+        } else {
+          playlist_item_add();
+        }
+
+        return false;
       });
 
       $doc.on('click', '.playlist_edit', function() {
-        if ( jQuery(this).hasClass('disabled') ) {
-          return false;
+        if ( !jQuery(this).hasClass('disabled') ) {
+          playlist_show();
+
+          reload_preview( current_video_to_edit );
         }
 
-        playlist_show();
-
-        reload_preview( current_video_to_edit );
+        return false;
       });
 
       // prevent closing of the overlay if we have unsaved data
@@ -1507,7 +1776,7 @@ jQuery(function() {
         //is_draft_changed = false;
 
         // manually invoke a heartbeat to remove an edit lock immediatelly
-        if (current_player_db_id > -1) {
+        if (current_player_db_id > -1 && window.wp && wp.heartbeat && wp.heartbeat.connectNow ) {
           // do this asynchronously to allow our cleanup procedures set lock removal data for the next hearbeat
           setTimeout(wp.heartbeat.connectNow, 500);
         }
@@ -1523,32 +1792,91 @@ jQuery(function() {
         debug_log('Running fv_player_db_retrieve_all_players_for_dropdown Ajax.');
 
         $.post(ajaxurl, {
-          // TODO: Nonce
           action: 'fv_player_db_retrieve_all_players_for_dropdown',
-          cookie: encodeURIComponent(document.cookie),
-        }, function (json_data) {
-          var overlay = overlay_show('copy_player');
-
-          // build the dropdown
-          var dropdown = [];
-          for (var i in json_data) {
-            dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
-          }
-
-          // prepend the "Choose a player" option
-          if (dropdown.length) {
-            dropdown.unshift('<option hidden disabled selected value>Choose a Player...</option>');
-          }
-
-          overlay.find('select').html( dropdown.join('') );
-
-        }).fail(function () {
+          nonce: fv_player_editor_conf.search_nonce,
+        }, show_players ).fail(function () {
           overlay_show('message', 'An unexpected error has occurred. Please try again.');
-
         });
 
         return false;
       });
+
+      let do_search = false,
+        is_searching = false,
+        search_val = false;
+
+      $doc.on('keyup', '#fv-player-editor-copy_player-overlay [name=players_selector]', function() {
+        search_val = $(this).val();
+        do_search = true;
+      });
+
+      setInterval( function() {
+        if( do_search ) {
+          if( is_searching ) {
+            // Try again later
+            return;
+          }
+
+          $.post(ajaxurl, {
+            action: 'fv_player_db_retrieve_all_players_for_dropdown',
+            nonce: fv_player_editor_conf.search_nonce,
+            search: search_val
+          }, show_players ).fail(function () {
+            overlay_show('message', 'An unexpected error has occurred. Please try again.');
+          });
+
+          is_searching = true;
+          do_search = false;
+        }
+      }, 1000 );
+
+      function show_players(json_data) {
+        if( !json_data.success ) {
+          overlay_show('message', json_data.data );
+          return;
+        }
+
+        is_searching = false;
+
+        let overlay = overlay_show('copy_player'),
+          list = overlay.find('.attachments'),
+          button = overlay.find('.button-primary');
+
+        button.prop( 'disabled', true );
+        list.html('');
+
+        for (var i in json_data.players) {
+          let data = json_data.players[i],
+            image = $( data.thumbs[0] ).find('img'),
+            player_name = data.player_name || data.video_titles.join( ', ' );
+
+          image.removeAttr('width');
+
+          let item = $('<li class="attachment"><div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape fullsize"><div class="thumbnail"><div class="filename hidden"><div></div></div></div></div><button type="button" class="check" tabindex="0"><span class="media-modal-icon"></span><span class="screen-reader-text">Deselect</span></button></li>');
+
+          item.find('.thumbnail').append( image );
+
+          item.find('.thumbnail .filename > div').html( player_name );
+          if( image.length == 0 ) {
+            item.find('.thumbnail .filename').removeClass('hidden');
+          }
+          item.attr( 'data-details', JSON.stringify( data ) );
+
+          list.append( item );
+        }
+
+        show_players_resize();
+      }
+
+      $( window ).resize( show_players_resize );
+
+      function show_players_resize() {
+        let player_browser = $( '#fv-player-editor-copy_player-overlay .attachments-browser'),
+          player_browser_list = player_browser.find( '.attachments' ),
+          idealColumnWidth =  $( window ).width() < 640 ? 135 : 150;
+
+        player_browser.attr( 'data-columns', Math.min( Math.round( player_browser_list.width() / idealColumnWidth ), 12 ) || 1 );
+      }
 
     });
 
@@ -1571,8 +1899,20 @@ jQuery(function() {
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
-      
-      if( field.length ) {
+
+      if( fv_player_editor_conf.field_selector ){
+        var custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+
+        // If the pre-configured field was not failed it's a big deal!
+        if( !custom_field_selector.length ){
+          alert( 'FV Player Editor: Field '+fv_player_editor_conf.field_selector+' not found!' );
+        }
+        editor_content = custom_field_selector.val();
+
+        // No need for insert button
+        insert_button_toggle(false);
+
+      } else if( field.length ) {
         if (field[0].tagName != 'TEXTAREA' && !field.hasClass('attachement-shortcode')) {
           field = field.find('textarea').first();
         }
@@ -1627,7 +1967,7 @@ jQuery(function() {
       jQuery('.playlist_edit').html(jQuery('.playlist_edit').data('create')).removeClass('button-primary').addClass('button');
 
       tabs_refresh();
-      
+
       playlist_buttons_disable(false);
       playlist_buttons_toggle(true);
 
@@ -1640,6 +1980,10 @@ jQuery(function() {
       }
 
       $doc.trigger('fv-player-editor-init');
+
+      hide_inputs();
+
+      $el_editor.show();
     }
 
     /**
@@ -1698,8 +2042,6 @@ jQuery(function() {
           data['videos'] = {};
         } else if (is_subtitles_tab) {
           data['video_meta']['subtitles'] = {};
-          data['video_meta']['transcript'] = {};
-          data['video_meta']['chapters'] = {};
         }
 
         // iterate over all tables in tabs
@@ -1713,9 +2055,8 @@ jQuery(function() {
           $inputs.each(function() {
             var
               $this               = jQuery(this),
-              isDropdown          = this.nodeName == 'SELECT';
+              m;
 
-            var m;
             while ((m = regex.exec(this.name)) !== null) {
               // This is necessary to avoid infinite loops with zero-width matches
               if (m.index === regex.lastIndex) {
@@ -1750,13 +2091,7 @@ jQuery(function() {
                     element: this
                   });
                 } else {
-                  // ordinary video field
-                  // check dropdown for its value based on values in it
-                  if (isDropdown) {
-                    data['videos'][save_index][m[1]] = map_dropdown_value( $this );
-                  } else {
-                    data['videos'][save_index][m[1]] = this.value;
-                  }
+                  data['videos'][save_index][m[1]] = map_input_value($this);
                 }
               }
 
@@ -1776,37 +2111,11 @@ jQuery(function() {
                     });
                   }
                 }
-
-                // subtitles tab, chapters and transcript input
-                else if (
-                  $this.attr('name') == 'fv_wp_flowplayer_field_chapters' ||
-                  $this.attr('name') == 'fv_wp_flowplayer_field_transcript'
-                ) {
-                  let key = $this.attr('name').replace(/fv_wp_flowplayer_field_/, '');
-
-                  if (!data['video_meta'][key][save_index]) {
-                    data['video_meta'][key][save_index] = {};
-                  }
-
-                  insertUpdateOrDeleteVideoMeta({
-                    data: data,
-                    meta_section: key,
-                    meta_key: 'file',
-                    meta_index: save_index,
-                    element: $this
-                  });
-                }
               }
 
               // all other tabs
               else {
-                let player_attribute_value = this.value;
-                if (this.nodeName == 'INPUT' && this.type.toLowerCase() == 'checkbox') {
-                  player_attribute_value = this.checked ? 'true' : '';
-
-                } else if (isDropdown) {
-                  player_attribute_value = map_dropdown_value( $this );
-                }
+                let player_attribute_value = map_input_value($this);
 
                 if (check_for_player_meta_field(m[1])) {
                   // meta data input
@@ -1827,7 +2136,7 @@ jQuery(function() {
 
                     // Should it be off while default is on? Save literal false
                     } else if( window.fv_player_editor_defaults[field] && !this.checked ) {
-                      player_attribute_value = 'false'; 
+                      player_attribute_value = 'false';
                     }
                   }
 
@@ -1920,26 +2229,58 @@ jQuery(function() {
           fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
         }
       } else if( current_player_db_id > 0 ) {
-        var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
-        if( playerRow.length == 0 ) {
-          var firstRow = $('#the-list tr:first'),
-            newRow = firstRow.clone();
 
-          newRow.find('td').html('');
-          playerRow = newRow.find('td').eq(0);
+        // Append or update player row in wp-admin -> FV Player
+        if( fv_player_editor_conf.is_fv_player_screen ) {
+          var playerRow = $('#the-list span[data-player_id="' + current_player_db_id + '"]')
+          if( playerRow.length == 0 ) {
+            var firstRow = $('#the-list tr:first'),
+              newRow = firstRow.clone();
 
-          firstRow.before( newRow )
+            newRow.find('td').html('');
+            playerRow = newRow.find('td').eq(0);
+
+            firstRow.before( newRow )
+          }
+
+          jQuery.post( ajaxurl, {
+            action : 'fv_player_table_new_row',
+            nonce : fv_player_editor_conf.table_new_row_nonce,
+            playerID :  current_player_db_id
+          }, function(response) {
+            playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
+          });
+
+          playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+        // Update the player on the wp-admin -> Posts, Pages or CPT screen
+        } else if( fv_player_editor_conf.is_edit_posts_screen ) {
+
+          // Existing player
+          let target_el = jQuery('.fv-player-edit[data-player_id='+current_player_db_id+']'),
+            args = {
+              action : 'fv_player_edit_posts_cell',
+              nonce : fv_player_editor_conf.edit_posts_cell_nonce,
+              playerID :  current_player_db_id
+            };
+
+          // New player, load from the new post meta
+          if ( target_el.length === 0 && current_post_id ) {
+            target_el = jQuery('.fv-player-edit[data-post-id='+current_post_id+']');
+            args.post_id = current_post_id;
+            args.meta_key = current_post_meta_key;
+          }
+
+          target_el.find('.fv_player_splash_list_preview').append('<div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
+
+          jQuery.post( ajaxurl, args, function(response) {
+            if ( response ) {
+              target_el.replaceWith( response );
+            }
+          });
+
         }
 
-        jQuery.post( ajaxurl, {
-          action : 'fv_player_table_new_row',
-          nonce : fv_player_editor_conf.table_new_row_nonce,
-          playerID :  current_player_db_id
-        }, function(response) {
-          playerRow.closest('tr').replaceWith( $(response).find('#the-list tr') );
-        });
-
-        playerRow.append('&nbsp; <div class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>');
       }
 
       // we need to do this now to make sure Heartbeat gets the correct data
@@ -1970,7 +2311,6 @@ jQuery(function() {
       $el_editor.find('[data-id_subtitles]').removeData('id_subtitles').removeAttr('data-subtitles');
 
       // fire up editor reset event, so plugins can clear up their data IDs as well
-      var $doc = jQuery(document);
       $doc.trigger('fv_flowplayer_player_editor_reset');
 
       // reset content of any input fields, except what has .extra-field
@@ -1984,13 +2324,13 @@ jQuery(function() {
       $el_editor.find('select:not([multiple])').prop('selectedIndex',0); // select first index, ignore multiselect - let it be handled separately
 
       $el_editor.find(".fv_player_field_insert-button").text( 'Insert' );
-      
+
       if( window.fv_player_editor_defaults ) {
         jQuery.each( window.fv_player_editor_defaults, function(k,v) {
           var checkbox = $el_editor.find('[name=fv_wp_flowplayer_field_'+k+'][type=checkbox]');
           if( checkbox.length ) {
             checkbox.prop( 'checked', !!v ).trigger( 'change' );
-            
+
             var wrap = checkbox.closest('.components-form-toggle');
             wrap.toggleClass( 'is-checked is-default', !!v );
           }
@@ -2011,18 +2351,45 @@ jQuery(function() {
 
         shortcode = 'fvplayer id="' + selected_player_id + '"';
 
+        current_post_id = $(editor_button_clicked).data('post-id');
+        current_post_meta_key = $(editor_button_clicked).data('meta_key');
+
+        if( current_post_id || current_post_meta_key ) {
+          debug_log( 'New player for post #' + current_post_id + ' for ' + current_post_meta_key + ' meta_key.' );
+        }
+
       } else {
+        if( fv_player_editor_conf.field_selector ){
+          let custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+
+          // If the pre-configured field was not failed it's a big deal!
+          if( !custom_field_selector.length ){
+            alert( 'FV Player Editor: Field '+fv_player_editor_conf.field_selector+' not found!' );
+          }
+          editor_content = custom_field_selector.val();
+          shortcode = editor_content;
+
         // Edit button on wp-admin -> FV Player screen
-        if (is_fv_player_screen_edit(editor_button_clicked)) {
+        } else if (is_fv_player_screen_edit(editor_button_clicked)) {
           current_player_db_id = $(editor_button_clicked).data('player_id');
 
-          debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+          current_post_id = $(editor_button_clicked).data('post-id');
+          current_post_meta_key = $(editor_button_clicked).data('meta_key');
 
-          // create an artificial shortcode from which we can extract the actual player ID later below
-          editor_content = '[fvplayer id="' + current_player_db_id + '"]';
-          shortcode = editor_content;
+          if( current_post_id || current_post_meta_key ) {
+            debug_log( 'New player for post #' + current_post_id + ' for ' + current_post_meta_key + ' meta_key.' );
+
+            editor_content = '';
+
+          } else {
+            debug_log('Loading for FV Player screen, player id: '+current_player_db_id );
+
+            // create an artificial shortcode from which we can extract the actual player ID later below
+            editor_content = '[fvplayer id="' + current_player_db_id + '"]';
+            shortcode = editor_content;
+          }
         }
-        
+
         // Add new button on wp-admin -> FV Player screen
         else if (is_fv_player_screen_add_new(editor_button_clicked)) {
           debug_log('Loading for FV Player screen, new player' );
@@ -2073,7 +2440,11 @@ jQuery(function() {
         }
 
         // Foliopress WYSIWYG
-        else if (instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())) {
+        else if (
+          instance_fp_wysiwyg && (
+            instance_tinymce == undefined || (typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden())
+          )
+        ) {
           debug_log('Loading for Foliopress WYSIWYG...' );
 
           editor_content = instance_fp_wysiwyg.GetHTML();
@@ -2082,7 +2453,7 @@ jQuery(function() {
             editor_content = instance_fp_wysiwyg.GetHTML();
           }
 
-        } else {
+        } else if( instance_tinymce ) {
           debug_log('Loading for TinyMCE in Visual Mode...' );
 
           // TinyMCE in Visual Mode
@@ -2105,6 +2476,9 @@ jQuery(function() {
 
           }
           instance_tinymce.settings.validate = true;
+        } else {
+          editor_content = '';
+
         }
 
         if( !shortcode ){
@@ -2161,7 +2535,7 @@ jQuery(function() {
             overlay_show('message', 'Shortcode editor is not available for multiple players shortcode tag.');
             return;
           }
-          
+
           // stop Ajax saving that might occur from thinking it's a draft taking place
           is_unsaved = false;
 
@@ -2206,7 +2580,6 @@ jQuery(function() {
               current_player_object = response;
 
               // fire the player load event to cater for any plugins listening
-              var $doc = jQuery(document);
               $doc.trigger('fv_flowplayer_player_meta_load', [response]);
 
               for (var key in response) {
@@ -2227,11 +2600,9 @@ jQuery(function() {
               for (var x in vids) {
                 var
                   subs = [],
-                  transcript = null,
-                  chapters = null,
                   video_meta = [];
 
-                // add all subtitles, chapters and transcripts
+                // add all subtitles
                 if (vids[x].meta && vids[x].meta.length) {
                   for (var m in vids[x].meta) {
                     // subtitles
@@ -2243,22 +2614,6 @@ jQuery(function() {
                       });
                     }
 
-                    // chapters
-                    if (vids[x].meta[m].meta_key.indexOf('chapters') > -1) {
-                      chapters = {
-                        id: vids[x].meta[m].id,
-                        value: vids[x].meta[m].meta_value
-                      };
-                    }
-
-                    // transcript
-                    if (vids[x].meta[m].meta_key === 'transcript') {
-                      transcript = {
-                        id: vids[x].meta[m].id,
-                        value: vids[x].meta[m].meta_value
-                      };
-                    }
-
                     // general video meta
                     if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['dvr', 'duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
                       video_meta.push(vids[x].meta[m]);
@@ -2268,15 +2623,6 @@ jQuery(function() {
 
                 var $video_data_tab = playlist_item_add(vids[x], false, subs);
                 var $subtitles_tab = get_tab( 'last', 'subtitles' );
-
-                // add chapters and transcript
-                if (chapters){
-                  get_field('chapters', $subtitles_tab).val(chapters.value).trigger('change');
-                }
-
-                if (transcript) {
-                  get_field('transcript', $subtitles_tab).val(transcript.value).trigger('change');
-                }
 
                 if (video_meta.length) {
                   for ( let i in video_meta) {
@@ -2293,7 +2639,7 @@ jQuery(function() {
               // if we have more than 1 video
               if( current_video_to_edit > -1 ) {
                 playlist_item_show(current_video_to_edit);
-              } else if (vids.length > 1) {
+              } else if ( vids.length > 1 || fv_player_editor_conf.frontend ) {
                 playlist_show();
               } else {
                 playlist_item_show(0);
@@ -2301,13 +2647,13 @@ jQuery(function() {
 
               // if this player is published, mark it as such
               has_draft_status = ( response.status == 'draft' );
-              
+
               // Set the current data as previous to let auto-saving detect changes
               ajax_save_previous = build_ajax_data(true);
             }
 
             overlay_hide();
-            
+
             if ( response.html ) {
               // auto-refresh preview
               el_preview_target.html( response.html )
@@ -2503,15 +2849,17 @@ jQuery(function() {
           if( sad != null && sad[1] != null ) {
             sad = sad[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
             sad = sad.replace(/&amp;/g,'&');
-            get_field("ad").val(sad);
+            get_field("overlay").val(sad);
+
+            get_field( 'toggle_overlay' ).prop('checked', true).trigger('change');
           }
 
           if( iadheight != null && iadheight[1] != null )
-            get_field("ad_height").val(iadheight[1]);
+            get_field("overlay_height").val(iadheight[1]);
           if( iadwidth != null && iadwidth[1] != null )
-            get_field("ad_width").val(iadwidth[1]);
+            get_field("overlay_width").val(iadwidth[1]);
           if( sad_skip != null && sad_skip[1] != null && sad_skip[1] == 'yes' )
-            get_field("ad_skip")[0].checked = 1;
+            get_field("overlay_skip").prop('checked',true).trigger('change');
 
           if( sspeed != null && sspeed[1] != null ) {
             if (sspeed[1] == 'buttons')
@@ -2536,36 +2884,42 @@ jQuery(function() {
           /*
           * Video end dropdown
           */
-          get_field("popup")[0].parentNode.style.display = 'none'
+
+          //TODO: shortcode popup
+          // get_field("popup")[0].parentNode.style.display = 'none'
           var spopup = shortcode_parse_arg( shortcode, 'popup', true );
 
+          let end_actions_val = false;
           if( sredirect != null && sredirect[1] != null ){
-            get_field("end_actions")[0].selectedIndex = 1;
-            get_field("redirect").val(sredirect[1]);
-            jQuery('#fv_wp_flowplayer_field_redirect').parents('tr').show();
-          }else if( sloop != null && sloop[1] != null && sloop[1] == 'true' ){
-            get_field("end_actions")[0].selectedIndex = 2;
-          }else if( spopup != null && spopup[1] != null ) {
-            get_field("end_actions")[0].selectedIndex = 3;
+            end_actions_val = 2;
+            get_field("redirect").val( sredirect[1] );
+
+          } else if( sloop != null && sloop[1] != null && sloop[1] == 'true' ){
+            end_actions_val = 3;
+
+          } else if( spopup != null && spopup[1] != null ) {
+            end_actions_val = 4;
 
             spopup = spopup[1].replace(/&#039;/g,'\'').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
             spopup = spopup.replace(/&amp;/g,'&');
 
-            get_field("popup_id").parents('tr').show();
+            if( spopup.match(/email-[0-9]*/)){
+              end_actions_val = 6;
 
-            if (spopup === null || !isNaN(parseInt(spopup)) || spopup === 'no' || spopup === 'random' || spopup === 'email_list') {
-              get_field("popup_id").val(spopup)
-            } else if( spopup.match(/email-[0-9]*/)){
-              get_field("popup_id").parent().parent().hide();
-              get_field("email_list").parent().parent().show();
-              get_field("end_actions").val('email_list');
               get_field("email_list").val(spopup.match(/email-([0-9]*)/)[1]);
-            }else {
-              get_field("popup").val(spopup).parent().show();
+
+            } else {
+              get_field("popup_id").val(spopup);
             }
 
-          }else if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' ){
-            get_field('end_actions')[0].selectedIndex = 4
+          } else if( ssplashend != null && ssplashend[1] != null && ssplashend[1] == 'show' ){
+            end_actions_val = 5;
+          }
+
+          if( end_actions_val ) {
+            get_field("end_actions").prop( 'selectedIndex', end_actions_val ).trigger('change');
+
+            get_field( 'toggle_end_action' ).prop('checked', true).trigger('change');
           }
 
           if( splaylist_advance != null && splaylist_advance[1] != null ) {
@@ -2585,7 +2939,7 @@ jQuery(function() {
             aCaptions = shortcode_arg_split(sCaptions);
 
             var caption = aCaptions.shift();
-            get_field("caption").val( caption );
+            get_field("title").val( caption );
             if( caption ) {
               playlist_row.find('.fvp_item_video-filename').text( caption );
             }
@@ -2612,7 +2966,11 @@ jQuery(function() {
             jQuery('.fv-fp-subtitles .fv-fp-subtitle:first').remove();
           }
 
-          jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
+          try {
+            jQuery(document).trigger('fv_flowplayer_shortcode_parse', [ shortcode_parse_fix, shortcode_remains ] );
+          } catch(e) {
+            debug_log('Error: fv_flowplayer_shortcode_parse', e);
+          }
 
           if (slive != null && slive[1] != null && slive[1] == 'true') {
             jQuery("input[name=fv_wp_flowplayer_field_live]").each(function () {
@@ -2640,11 +2998,19 @@ jQuery(function() {
           }
         }
 
+        if( store_shortcode_args ) {
+          debug_log('Preserving shortcode args', store_shortcode_args );
+        }
+
         for( let i in fv_player_editor_conf.shortcode_args_not_db_compatible ) {
           let value = shortcode_parse_arg( shortcode_parse_fix, fv_player_editor_conf.shortcode_args_not_db_compatible[i] );
           if (value && value[1]) {
             always_keep_shortcode_args[fv_player_editor_conf.shortcode_args_not_db_compatible[i]] = value[1];
           }
+        }
+
+        if( always_keep_shortcode_args ) {
+          debug_log('Always preserve shortcode args', always_keep_shortcode_args );
         }
 
       } else {
@@ -2656,7 +3022,7 @@ jQuery(function() {
         shortcode_remains = '';
         fix_save_btn_text();
       }
-      
+
       $doc.trigger('fv_player_editor_finished');
     }
 
@@ -2684,7 +3050,7 @@ jQuery(function() {
         if ( current_player_db_id < 0 ) {
           if (is_loading_meta_data) {
             insert_button_toggle_disabled(true);
-            
+
             $el_editor.find('.button-primary').text('Saving...');
             var checker = setInterval(function() {
               if (is_loading_meta_data <= 0) {
@@ -2750,112 +3116,92 @@ jQuery(function() {
 
       debug_log('Running fv_player_db_save Ajax on submit.');
 
-      // add current video that we're editing into the save data
-      ajax_data['current_video_to_edit'] = current_video_to_edit;
+      ajax_data = set_control_fields( ajax_data );
 
       // save data
-      jQuery.post(ajaxurl, {
-        action: 'fv_player_db_save',
-        data: JSON.stringify(ajax_data),
-        nonce: fv_player_editor_conf.preview_nonce
-      }, function(response) {
+      // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
+      $.ajax({
+        type:        'POST',
+        url:         ajaxurl + '?action=fv_player_db_save',
+        data:        JSON.stringify( {
+          data:        ajax_data,
+          nonce:       fv_player_editor_conf.edit_nonce,
+        } ),
+        contentType: 'application/json',
+        dataType:    'json',
+        success: function(response) {
 
-        if( response.error ) {
-          if( response.error && response.fatal_error ) {
-            var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-  
-            var overlay = overlay_show('error_saving');
-            overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-            overlay.find('[data-error]').html( response.error );
-  
-            jQuery('#fv_player_copy_to_clipboard').select();
-  
-          } else {
-            add_notice( 'error', response.error )
+          if( response.error ) {
+            if( response.error && response.fatal_error ) {
+              let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+
+              let overlay = overlay_show('error_saving');
+              overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+              overlay.find('[data-error]').html( response.error );
+
+              jQuery('#fv_player_copy_to_clipboard').select();
+
+            } else {
+              add_notice( 'error', response.error )
+            }
+
+            el_spinner.hide();
+            is_saving = false;
+
+            return;
           }
 
-          el_spinner.hide();
-          is_saving = false;
+          // player saved, reset draft status
+          is_unsaved = false;
+          //is_draft_changed = false;
 
-          return;
-        }
+          current_player_db_id = parseInt(response.id);
+          if( current_player_db_id > 0 ) {
+            let shortcode_insert = '[fvplayer id="' + current_player_db_id + '"';
 
-        // player saved, reset draft status
-        is_unsaved = false;
-        //is_draft_changed = false;
+            // we have extra presentation parameters to keep
+            if (store_shortcode_args) {
+              // if this was a non-DB player and is being converted into a DB-player,
+              // remove all parameters to keep that will go into the DB
+              var args_to_keep = {};
 
-        current_player_db_id = parseInt(response.id);
-        if( current_player_db_id > 0 ) {
-          var
-            has_store_shortcode_args = false,
-            has_always_keep_shortcode_args = false;
-
-          // since both of the above variables are length-less Objects, we need to determine their emptyness
-          // by iterating over them and checking that they inded contain any values
-          for (var i in store_shortcode_args) {
-            has_store_shortcode_args = true;
-            break;
-          }
-
-          for (var i in always_keep_shortcode_args) {
-            has_always_keep_shortcode_args = true;
-            break;
-          }
-
-          // we have extra presentation parameters to keep
-          if (store_shortcode_args) {
-            // if this was a non-DB player and is being converted into a DB-player,
-            // remove all parameters to keep that will go into the DB
-            var args_to_keep = {};
-
-            for (var i in store_shortcode_args) {
-              if (always_keep_shortcode_args[ i ]) {
-                args_to_keep[ i ] = store_shortcode_args[ i ];
+              for (var i in store_shortcode_args) {
+                if (always_keep_shortcode_args[ i ]) {
+                  args_to_keep[ i ] = store_shortcode_args[ i ];
+                }
               }
+
+              store_shortcode_args = args_to_keep;
+
+              shortcode_insert += add_shortcode_args( store_shortcode_args );
+
+            } else if (always_keep_shortcode_args && player_was_non_db) {
+              // we have extra parameters to keep that are DB-incompatible
+              shortcode_insert += add_shortcode_args( always_keep_shortcode_args );
+
+            } else {
+              // simple DB shortcode, no extra presentation parameters
+              insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
             }
 
-            store_shortcode_args = args_to_keep;
+            shortcode_insert += ']';
 
-            var
-              params = jQuery.map(store_shortcode_args, function (value, index) {
-                return index + '="' + value + '"';
-              }),
-              to_append = '';
+            insert_shortcode( shortcode_insert );
 
-            if (params.length) {
-              to_append = ' ' + params.join(' ');
-            }
+            jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
 
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
-          } else if (always_keep_shortcode_args && player_was_non_db) {
-            // we have extra parameters to keep that are DB-incompatible
-            var
-              params = jQuery.map(always_keep_shortcode_args, function (value, index) {
-                return index + '="' + value + '"';
-              }),
-              to_append = '';
-
-            if (params.length) {
-              to_append = ' ' + params.join(' ');
-            }
-
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"' + to_append + ']');
           } else {
-            // simple DB shortcode, no extra presentation parameters
-            insert_shortcode('[fvplayer id="' + current_player_db_id + '"]');
+            let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
+
+            let overlay = overlay_show('error_saving');
+            overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
+
+            jQuery('#fv_player_copy_to_clipboard').select();
           }
-
-          jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
-        } else {
-          var json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
-
-          var overlay = overlay_show('error_saving');
-          overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-
-          jQuery('#fv_player_copy_to_clipboard').select();
+        },
+        error: function( jqXHR, textStatus, errorThrown) {
+          overlay_show('message', 'An unexpected error has occurred: ' + errorThrown + ' Please try again');
         }
-      }).fail(function() {
-        overlay_show('message', 'An unexpected error has occurred. Please try again');
       });
 
       return;
@@ -2873,7 +3219,7 @@ jQuery(function() {
 
     // TODO: Is this needed?
     function file_info_show( args ) {
-      
+
       var html = '';
       if( args.duration ) {
         var duration = args.duration;
@@ -2885,25 +3231,34 @@ jQuery(function() {
       if( args.error ) {
         html += 'Error: '+args.error;
       }
-      
+
       if( html ) {
         $('#fv_wp_flowplayer_file_info').show();
         $('#fv_wp_flowplayer_file_info td').html(html);
       } else {
         file_info_hide();
       }
-      
+
     }
 
     function get_pretty_aspect_ratio( video ) {
       let w, h, dividend, divisor, remainder;
 
+      // Sanitize input
+      video.width = parseInt( video.width );
+      video.height = parseInt( video.height );
+      video.aspect_ratio = parseFloat( video.aspect_ratio );
+
       if( video.width && video.height ) {
         w = video.width;
         h = video.height;
-      } else {
+
+      } else if( video.aspect_ratio ) {
         w = 1;
-        h = video.ratio;
+        h = video.aspect_ratio;
+
+      } else {
+        return false;
       }
 
       if( h == w ) {
@@ -2920,8 +3275,18 @@ jQuery(function() {
           divisor    = h;
         }
 
-        var gcd = -1;
+        let gcd = -1,
+          loop_runs = 0;
+
         while( gcd == -1 ) {
+          loop_runs++;
+
+          // Avoid endless loop, what if...
+          if( loop_runs > 100 ) {
+            gcd = divisor;
+            break;
+          }
+
           remainder = dividend % divisor;
           if( remainder == 0 ){
             gcd = divisor;
@@ -2936,6 +3301,12 @@ jQuery(function() {
     }
 
     function insert_button_toggle( show ) {
+
+      // Do not show Insert button if player is configured for a set field
+      if( show && fv_player_editor_conf.field_selector ) {
+        return;
+      }
+
       $('.fv_player_field_insert-button').toggle( show );
     }
 
@@ -2960,10 +3331,15 @@ jQuery(function() {
 
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
-        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
+        widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
+        custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
+
+      // Field set by the [fvplayer_editor field="{selector}"]
+      if( custom_field_selector.length ){
+        custom_field_selector.val( shortcode );
 
       // is there a Gutenberg field together in wrapper with the button?
-      if( gutenberg.length ) {
+      } else if( gutenberg.length ) {
         var
           nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
           gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
@@ -2983,15 +3359,15 @@ jQuery(function() {
         // FV Player in a Widget
       } else if( widget.length ){
         widget.val( shortcode );
-        widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content 
+        widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content
         widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
-        
+
         // tinyMCE Text tab
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
         // editing
         if( editor_content.match(/\[.*?#fvp_placeholder#.*?\]/) ) {
           editor_content = editor_content.replace(/\[.*?#fvp_placeholder#.*?\]/, shortcode);
-        
+
         //inserting
         } else {
           editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
@@ -3021,9 +3397,10 @@ jQuery(function() {
     }
 
     /*
-    Determines if the button clicked is on wp-admin -> FV Player
+    Determines if the button clicked is on wp-admin -> FV Player or wp-admin -> Posts (if using FV Player Video Custom Fields)
     */
     function is_fv_player_screen(button) {
+      // TODO: Should use fv_player_editor_conf.is_fv_player_screen || fv_player_editor_conf.is_edit_posts_screen
       return is_fv_player_screen_add_new(button) || is_fv_player_screen_edit(button);
     }
 
@@ -3038,7 +3415,10 @@ jQuery(function() {
     Determines if the button clicked is Edit on wp-admin -> FV Player
     */
     function is_fv_player_screen_edit(button) {
-      return typeof( $(button).data('player_id') ) != 'undefined';
+      return (
+        typeof( $(button).data('player_id') ) != 'undefined' ||
+        typeof( $(button).data('post-id') ) != 'undefined'
+      );
     }
 
     /*
@@ -3059,7 +3439,7 @@ jQuery(function() {
       switch (name) {
         case 'playlist_advance':
           return ((value == 'true' || value == 'on') ? 'on' : (value == 'default' || value == '') ? 'default' : 'off');
-    
+
         default: return value;
       }
     }
@@ -3074,16 +3454,16 @@ jQuery(function() {
         var selected = [],
           options = dropdown_element[0].options,
           opt;
-      
+
         for (var i=0, iLen=options.length; i<iLen; i++) {
           opt = options[i];
-      
+
           // take only selected with value
           if (opt.selected && opt.value) {
             selected.push(opt.value);
           }
         }
-    
+
         return selected.length ? selected.join(',') : '';
 
       } else if ( $valueLessOptions.length ) { // at least one option is value-less
@@ -3096,14 +3476,30 @@ jQuery(function() {
       }
     }
 
+    function map_input_value( $el ) {
+      let value = $el.val();
+      if ($el[0].nodeName == 'INPUT' && $el[0].type.toLowerCase() == 'checkbox') {
+        value = $el[0].checked ? 'true' : '';
+
+      } else if ( $el[0].nodeName == 'SELECT' ) {
+        value = map_dropdown_value( $el );
+      }
+      return value;
+    }
+
     function map_names_to_editor_fields(name) {
       var fieldMap = {
         'liststyle': 'playlist',
         'preroll': 'video_ads',
         'postroll': 'video_ads_post'
       };
-    
+
       return 'fv_wp_flowplayer_field_' + (fieldMap[name] ? fieldMap[name] : name);
+    }
+
+    function playlist_add_toggle_function( hero_on ) {
+      let button = $( '.playlist_add' );
+      button.html( button.data( hero_on ? 'alt-html' : 'html' ) );
     }
 
     function playlist_buttons_disable( reason ) {
@@ -3118,7 +3514,37 @@ jQuery(function() {
       $('.playlist_add, .playlist_edit').css( 'display', show ? 'inline-block' : 'none' );
     }
 
-    /*
+    function playlist_hero_hide() {
+      playlist_add_toggle_function();
+
+      $( '#fv-player-editor-playlist .fv-player-editor-playlist-item:last').show();
+      $( '#playlist-hero' ).hide();
+
+      // Reset playlist item count on the hero input box
+      $( '#playlist-hero [name=hero-src]').data( 'new-item-index', false ).val('');
+
+      // Reset playlist item count on the hero Media Library button
+      $( '#playlist-hero button').data( 'new-item-index', false );
+
+      is_playlist_hero_editing = false;
+    }
+
+    function playlist_hero_show() {
+      is_playlist_hero_editing = true;
+
+      playlist_add_toggle_function( true );
+
+      $( '#playlist-hero' ).show();
+    }
+
+    // Clicking anywhere else should hide the prompt, the button to add playlist item is excluded too
+    $( $el_editor ).on( 'click', function( e ) {
+      if( is_playlist_hero_editing && $( e.target ).closest( '#playlist-hero').length == 0 && !$( e.target ).hasClass( 'playlist_add') ) {
+        playlist_hero_hide();
+      }
+    });
+
+    /**
     * Adds playlist item
     * keywords: add playlist item
     */
@@ -3157,14 +3583,15 @@ jQuery(function() {
         get_field('rtmp',new_item).val(objVid.rtmp);
         get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
-        get_field('caption',new_item).val(objVid.caption);
-        get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
+        get_field('title',new_item).val(objVid.caption);
         get_field('splash',new_item).val(objVid.splash);
         get_field('splash_text',new_item).val(objVid.splash_text);
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
 
         get_field('start',new_item).val(objVid.start);
         get_field('end',new_item).val(objVid.end);
+
+        get_field('toggle_advanced_settings',new_item).prop('checked', objVid.toggle_advanced_settings).trigger('change');
 
         jQuery(objVid.meta).each( function(k,v) {
           if( v.meta_key == 'synopsis' ) get_field('synopsis',new_item).val(v.meta_value).attr('data-id',v.id);
@@ -3196,7 +3623,7 @@ jQuery(function() {
           }
         }
         if( sCaption ) {
-          get_field('caption',new_item).val(sCaption);
+          get_field('title',new_item).val(sCaption);
         }
         if( sSubtitles ) {
           get_field('subtitles',new_item_subtitles).val(sSubtitles);
@@ -3204,7 +3631,7 @@ jQuery(function() {
         if( sSplashText ) {
           get_field('splash_text',new_item).val(sSplashText);
         }
-       
+
       // new item
       } else {
         new_playlist_item.find('.fvp_item_video-thumbnail').addClass( 'no-img' );
@@ -3216,6 +3643,9 @@ jQuery(function() {
       if (!input) {
         $doc.trigger('fv-player-playlist-item-add');
       }
+
+      hide_inputs();
+
       return new_item;
     }
 
@@ -3270,6 +3700,8 @@ jQuery(function() {
         reload_preview( current_video_to_edit );
       }
 
+      hide_inputs();
+
       $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
     }
 
@@ -3298,16 +3730,17 @@ jQuery(function() {
       // fills playlist editor table from individual video items
       let video_files = jQuery('.fv-player-tab-video-files [data-playlist-item]');
       video_files.each( function( k, v ) {
-        let current = jQuery(v);
+        let current = jQuery(v),
+          video = get_playlist_video_object( k ),
+          currentUrl = get_field("src",current).val();
 
-        let currentUrl = get_field("src",current).val();
-        if(!currentUrl.length){
+        if (!currentUrl.length) {
           currentUrl = 'Video ' + (k + 1);
         }
 
         let playlist_row = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').eq( current.data('index') );
 
-        let video_preview = get_field("splash",current).val(),
+        let video_preview = video.splash_display ? video.splash_display : get_field("splash", current).val(),
           playlist_img = jQuery('<img />')
             .attr('width', 120 )
             .attr('src', video_preview );
@@ -3323,20 +3756,19 @@ jQuery(function() {
         let playlist_title = playlist_row.find('.fvp_item_video-filename');
         playlist_title.text( video_name );
 
-        // do not put in caption if it's loading
+        // do not put in title if it's loading
         if (!playlist_title.hasClass('fv-player-shortcode-editor-small-spinner')) {
-          let caption = get_field("caption",current).val();
-          if( caption ) {
-            playlist_title.text( caption );
+          let title = get_field("title",current).val();
+          if( title ) {
+            playlist_title.text( title );
           }
         }
 
-        let video = get_playlist_video_object( k );
         playlist_row.find('.fvp_item_video-duration').text( seconds_to_hms( video.duration ) );
       });
     }
 
-    /*
+    /**
     * Displays playlist editor
     * keywords: show playlist
     */
@@ -3410,10 +3842,17 @@ jQuery(function() {
       current_player_db_id = 0;
       current_player_object = false;
       current_video_db_id = 0;
+
+      current_post_id = 0;
+      current_post_meta_key = 0;
     }
 
     function reset_preview() {
       $el_preview.attr('class','preview-no');
+
+      if( fv_player_editor_conf.frontend ) {
+        $el_editor.addClass('is-intro');
+      }
     }
 
     function seconds_to_hms( seconds ) {
@@ -3429,9 +3868,22 @@ jQuery(function() {
       current_video_to_edit = index;
     }
 
+    function set_control_fields( ajax_data ) {
+      // add current video that we're editing into the save data
+      ajax_data['current_video_to_edit'] = current_video_to_edit;
+
+      if( current_post_id ) {
+        ajax_data['current_post_id'] = current_post_id;
+      }
+      if( current_post_meta_key ) {
+        ajax_data['current_post_meta_key'] = current_post_meta_key;
+      }
+
+      return ajax_data;
+    }
+
     // used several times below, so it's in a function
     function set_editor_field(key, value, id, video_table_index) {
-
       var
         real_key = map_names_to_editor_fields(key),
         real_val = map_db_values_to_field_values(key, value),
@@ -3528,7 +3980,7 @@ jQuery(function() {
 
     /**
      * Populate content of the Embeds tab and show it if there is any content to be set
-     * 
+     *
      * @param string  html  The OL > LI list of posts which contain the same player.
      */
     function set_embeds( html ) {
@@ -3555,7 +4007,7 @@ jQuery(function() {
       var rDoubleQ = new RegExp(sArg+"=\"","g");
       var rSingleQ = new RegExp(sArg+"='","g");
       var rNoQ = new RegExp(sArg+"=[^\"']","g");
-      
+
       var rMatch = false;
       if( sShortcode.match(rDoubleQ) ) {
         //rMatch = new RegExp(sArg+'="(.*?[^\\\\/])"',"g");
@@ -3569,14 +4021,14 @@ jQuery(function() {
       if( !rMatch ){
         return false;
       }
-      
+
       var aOutput = rMatch.exec(sShortcode);
       fv_player_editor.set_shortcode_remains( fv_player_editor.get_shortcode_remains().replace( rMatch, '' ) );
-     
+
       if( aOutput && bHTML ) {
         aOutput[1] = aOutput[1].replace(/\\"/g, '"').replace(/\\(\[|])/g, '$1');
       }
-      
+
       if( aOutput && sCallback ) {
         sCallback(aOutput);
       } else {
@@ -3617,10 +4069,16 @@ jQuery(function() {
       if( typeof(iTabIndex) == "undefined" ){
         iTabIndex = current_video_to_edit;
       }
+
+      // Reguired when parsing a legacy shortcode
+      if( iTabIndex == -1 ) {
+        iTabIndex = 0;
+      }
+
       var oTab = get_tab( iTabIndex, 'subtitles' );
 
       var subElement = false;
-      
+
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
         subElement = $('.fv-player-editor-field-wrap-subtitles:last', oTab);
@@ -3681,6 +4139,10 @@ jQuery(function() {
           tab = $el_editor.find('a[data-tab=' + data[0] + ']');
         }
 
+        if( fv_player_editor_conf.tabs && fv_player_editor_conf.tabs == 'none' ) {
+          bHideTab = true;
+        }
+
         if(bHideTab){
           tab.addClass('fv_player_interface_hide')
         } else {
@@ -3693,6 +4155,7 @@ jQuery(function() {
 
       if(visibleTabs<=1){
         $el_editor.find('.nav-tab').addClass('fv_player_interface_hide');
+        $el_editor.find('.nav-tab-wrapper').addClass('fv_player_interface_hide');
       }
 
       var end_actions_label = $('label[for=fv_wp_flowplayer_field_end_actions]');
@@ -3837,7 +4300,7 @@ jQuery(function() {
           !shortened_field_edited.is(e.target) &&
           !shortened_field_button.is(e.target)
         ) {
-          show_short_link( shortened_field_edited ); 
+          show_short_link( shortened_field_edited );
         }
       }
     });
@@ -3851,12 +4314,12 @@ jQuery(function() {
       jQuery('.fv-player-editor-field-wrap-redirect').addClass('fv_player_interface_hide');
       jQuery('.fv-player-editor-field-wrap-popup_id').addClass('fv_player_interface_hide');
       jQuery('.fv-player-editor-field-wrap-email_list').addClass('fv_player_interface_hide');
-        
+
       switch (selected) {
         case 'redirect':
           jQuery('.fv-player-editor-field-wrap-redirect').removeClass('fv_player_interface_hide');
           break;
-        
+
         case 'popup':
           jQuery('.fv-player-editor-field-wrap-popup_id').removeClass('fv_player_interface_hide');
           break;
@@ -3882,32 +4345,35 @@ jQuery(function() {
       });
     });
 
-    function show_short_link(original_field) {
-      var preview = original_field.prev('.fv_player_editor_url_shortened'),
-        original_value = original_field.val();
+    function show_short_link(field) {
+      var value = field.val().trim(),
+        preview = field.prev('.fv_player_editor_url_shortened'),
+        button = preview.siblings('.components-button'); // Media Library Button
 
       shortened_field_edited = false;
-      shortened_field_button = false; 
+      shortened_field_button = false;
 
-      if( !original_value ) { // no value, hide preview
-        original_field.removeClass('fv_player_interface_hide');
+      if( !value ) { // no value, hide preview
+        field.removeClass('fv_player_interface_hide');
         preview.addClass('fv_player_interface_hide');
+        button.show();
+
       } else {
-        original_field.addClass('fv_player_interface_hide');
+        field.addClass('fv_player_interface_hide');
         preview.removeClass('fv_player_interface_hide');
-        preview.attr('title', original_value);
-        preview.find('.link-preview').html(shorten_original_link(original_value)); // shorten preview link
-        preview.siblings('.components-button').hide(); // hide media library button
+        preview.attr('title', value );
+        preview.find('.link-preview').html( shorten_original_link( value ) ); // shorten preview link
+        button.hide();
       }
     }
 
     function shorten_original_link(original_link) {
       if(!original_link) return original_link;
-      
+
       let parts = original_link.trim().split('/'),
         is_hls = parts[parts.length - 1].indexOf('.m3u8') != -1,
         new_parts = [];
-      
+
       $(parts).each( function(k,v) {
         let c = '';
         // filename
@@ -3923,7 +4389,7 @@ jQuery(function() {
 
         // HLS filename - use the directory name
         } else if( is_hls && k == parts.length - 2 ) {
-          
+
         // domain
         } else if ( k == 2 ) {
           // hilight bucket name for AWS
@@ -3950,8 +4416,6 @@ jQuery(function() {
     $doc.on('fv_flowplayer_shortcode_item_switch', function(e, index) {
       show_video_details(index);
       show_stream_fields_worker(index);
-      show_advanced_fields();
-      show_custom_ad();
       show_rtmp_fields();
       show_end_of_video_actions();
     });
@@ -3959,37 +4423,14 @@ jQuery(function() {
     $doc.on('fv_flowplayer_shortcode_new', function() {
       show_video_details(0);
       show_stream_fields_worker(0);
-      show_advanced_fields();
-      show_custom_ad();
       show_rtmp_fields();
       show_end_of_video_actions();
     });
-
-    function show_advanced_fields() {
-      var video_object = get_current_video_object(),
-        is_enabled = video_object.mobile || video_object.src1 || video_object.src2
-
-      get_field( 'advanced-settings', true )
-        .prop('checked', is_enabled)
-        .trigger('change');
-    }
-
-    function show_custom_ad() {
-      var player_object = get_current_player_object();
-
-      get_field( 'ad_custom', false )
-        .prop('checked', player_object.ad)
-        .trigger('change');
-    }
 
     function show_end_of_video_actions() {
       var player_object = get_current_player_object(),
         picked_action = player_object.end_actions,
         action_value = player_object.end_action_value;
-
-      get_field( 'end_actions_show', false )
-        .prop('checked', picked_action)
-        .trigger('change');
 
       select_end_of_video_action(picked_action, action_value);
     }
@@ -4016,7 +4457,7 @@ jQuery(function() {
         .trigger('change');
 
       if( is_enabled ) {
-        get_field( 'advanced-settings', true )
+        get_field( 'toggle_advanced_settings', true )
           .prop('checked', true)
           .trigger('change');
       }
@@ -4033,7 +4474,16 @@ jQuery(function() {
         hlskey.closest('.fv_player_interface_hide').hide();
       }
 
-      jQuery.each( [ 'live', 'audio', 'dvr' ], function(k,v) {
+      // get live from video object
+      var live_field = get_field('live', true),
+        live_value = get_current_video_object() ? parseInt(get_current_video_object().live) : false;
+
+      live_field.prop('checked', !!live_value);
+      live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
+
+      checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value );
+
+      jQuery.each( [ 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
           meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false;
@@ -4043,7 +4493,7 @@ jQuery(function() {
 
         checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
-      
+
     }
 
     function show_video_details( index = 0 ) {
@@ -4063,7 +4513,7 @@ jQuery(function() {
       if( video.width > 0 && video.height > 0 ) {
         video_info.append( '<li title="Video dimension in pixels">' + video.width  + 'x' + video.height + '</li>' );
         show = true;
-      } 
+      }
       if( video.aspect_ratio ) {
         video_info.append( '<li title="Aspect ratio">' + get_pretty_aspect_ratio(video) + '</li>' );
         show = true;
@@ -4076,10 +4526,11 @@ jQuery(function() {
       if( show ) {
         video_info.closest('.fv_player_interface_hide').removeClass('fv_player_interface_hide');
       }
-      
+
     }
-    
+
     function checkbox_toggle_worker( wrap, name, checked ) {
+
       var compare = checked ? 1 : 0;
 
       wrap.toggleClass( 'is-checked', checked );
@@ -4095,7 +4546,7 @@ jQuery(function() {
 
       if( window.fv_player_editor_dependencies[name] ) {
         jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
-          
+
           jQuery.each( inputs, function(k,input_name) {
             let field_wrap = $('.fv-player-editor-field-wrap-'+input_name);
 
@@ -4106,8 +4557,7 @@ jQuery(function() {
         });
       }
 
-      // TODO: What should be saved when it's all hidden?
-      $('.fv-player-editor-field-children-'+name).toggle( checked );
+      wrap.closest( '.fv-player-editor-children-wrap' ).find( '.fv-player-editor-field-children-'+name ).toggle( checked );
     }
 
     function show_end_actions( e, value ) {
@@ -4142,13 +4592,11 @@ jQuery(function() {
     /*
     Mark each manually updated title or splash field as such
     */
-    // TODO: Fix for new code
-    $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_caption', function() {
-      var $element = jQuery(this),
-        $input;
+    $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
+      let $input;
 
       // if this element already has data set, don't do any of the selections below
-      if (typeof($element.data('fv_player_user_updated')) != 'undefined') {
+      if (typeof( jQuery(this).data('fv_player_user_updated') ) != 'undefined') {
         return;
       }
 
@@ -4161,14 +4609,7 @@ jQuery(function() {
       if( $input.length > 0 ) {
         $input.val(0);
 
-        // insertUpdateOrDeleteVideoMeta({
-        //   element: $input,
-        //   meta_section: 'video',
-        //   meta_key: $meta_key,
-        //   handle_delete: true
-        // });
-
-        console.log(this.id+' has been updated manually!');
+        debug_log(this.id+' has been updated manually!');
       }
 
     });
@@ -4176,6 +4617,8 @@ jQuery(function() {
     // Public stuff
     return {
       add_notice,
+
+      playlist_index,
 
       reload_preview( index ) {
         return reload_preview(index);
@@ -4267,6 +4710,10 @@ jQuery(function() {
         $('.fv-player-editor-overlay-notice').css('visibility', 'hidden');
       },
 
+      playlist_item_add: playlist_item_add,
+
+      playlist_show: playlist_show,
+
       shortcode_parse_arg,
 
       // We keep it for backwards compatibility
@@ -4279,12 +4726,18 @@ jQuery(function() {
        * @param shortcode The actual player shortcode to generate the preview from.
        */
       gutenberg_preview: function( parent, shortcode ) {
+        // No preview if the element is in the Site Editor iframe
+        // The iframe would have to load all the FV Player JS and CSS
+        if( jQuery(parent).closest('body').hasClass('block-editor-iframe__body') ) {
+          return;
+        }
+
         if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
           return;
         }
 
         var id = parent[0].id;
-        
+
         if (gutenberg_previews_loading[id] !== false) {
           clearTimeout(gutenberg_previews_loading[id]);
         }
@@ -4306,7 +4759,7 @@ jQuery(function() {
       get_playlist_items_count,
 
       insert_button_toggle,
-      
+
       copy_player_button_toggle,
 
       meta_data_load_started() {
@@ -4316,6 +4769,8 @@ jQuery(function() {
       meta_data_load_finished() {
         is_loading_meta_data--;
       },
+
+      editor_open: editor_open,
 
       error_add( identifier, txt ) {
         errors[ identifier ] = txt;

@@ -175,6 +175,9 @@
 .freedomplayer.is-live.is-dvr.is-live-position .fp-duration {
   color: #00abcd; }
 
+.freedomplayer.is-mouseout:not(.is-splash):not(.is-seeking):not(.fixed-controls) .fp-timeline {
+  pointer-events: none; }
+
 .freedomplayer.is-tiny:not(.is-fullscreen) {
   font-size: .7em; }
 
@@ -454,19 +457,16 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking .fp-ui {
+  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui {
     background-image: none; }
-    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking .fp-ui > * {
+    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui > * {
       opacity: 1; }
   .freedomplayer .fp-header {
     top: 0;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.25)), to(transparent));
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent);
     text-align: left;
     height: 3em;
-    -webkit-transition: opacity 0.3s;
-    transition: opacity 0.3s;
-    padding-left: .65em; }
+    padding-left: .65em;
+    z-index: 2; }
     .freedomplayer .fp-header .fp-icon {
       padding: .5em 1em; }
       .freedomplayer .fp-header .fp-icon.fp-active {
@@ -475,6 +475,11 @@
       float: right; }
     .freedomplayer .fp-header .fp-unload {
       display: none; }
+  .freedomplayer.is-mouseover.is-touch .fp-ui {
+    background: rgba(0, 0, 0, 0.6); }
+  .freedomplayer:not(.is-touch) .fp-header {
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.25)), to(transparent));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent); }
   .freedomplayer .fp-help {
     display: none; }
   .freedomplayer .fp-message {
@@ -546,7 +551,6 @@
     display: none; }
   .freedomplayer .fp-play svg, .freedomplayer .fp-pause svg, .freedomplayer .fp-waiting svg, .freedomplayer .fp-forward svg, .freedomplayer .fp-rewind svg {
     position: absolute;
-    pointer-events: none;
     left: 0;
     right: 0;
     bottom: 0;
@@ -574,11 +578,9 @@
     position: absolute;
     left: 0;
     height: 100%; }
-    .freedomplayer .fp-rewind svg, .freedomplayer .fp-forward svg {
-      pointer-events: auto; }
-      .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
-        -webkit-transform: scale(0.9);
-                transform: scale(0.9); }
+    .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
+      -webkit-transform: scale(0.9);
+              transform: scale(0.9); }
   .freedomplayer .fp-forward {
     left: auto;
     right: 0; }
@@ -593,6 +595,18 @@
       opacity: 1; }
   .freedomplayer.is-mouseover.is-disabled .fp-forward, .freedomplayer.is-mouseover.is-disabled .fp-rewind {
     display: none; }
+  .freedomplayer.is-video-rewind.is-ready .fp-rewind {
+    display: block;
+    opacity: 1; }
+    .freedomplayer.is-video-rewind.is-ready .fp-rewind svg {
+      display: block;
+      opacity: 1; }
+  .freedomplayer.is-video-forward.is-ready .fp-forward {
+    display: block;
+    opacity: 1; }
+    .freedomplayer.is-video-forward.is-ready .fp-forward svg {
+      display: block;
+      opacity: 1; }
   .freedomplayer .fp-controls {
     display: -ms-flexbox;
     display: -webkit-box;
@@ -614,7 +628,8 @@
       padding: .4em .6em; }
     .freedomplayer .fp-controls > strong {
       letter-spacing: 1px;
-      font-weight: 400; }
+      font-weight: 400;
+      white-space: nowrap; }
     .freedomplayer .fp-controls img {
       width: 1.2em; }
   .freedomplayer .fp-bar, .freedomplayer .fp-bar-slider {

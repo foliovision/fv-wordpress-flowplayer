@@ -148,31 +148,22 @@ class FV_Player_lightbox {
   
   function editor_setting( $options ) {
     global $fv_fp;
-    if( $fv_fp->_get_option(array('interface','lightbox')) ) {
-      $options['general']['items'][] = array(
-        'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
-        'name' => 'lightbox',
-        'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
-        'dependencies' => array( 'sticky' => false ),
-        /*'children' => array(
-          array(
-            'label' => __('Width', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_width',
-            'type' => 'number'
-          ),
-          array(
-            'label' => __('Height', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_height',
-            'type' => 'number'
-          ),
-          array(
-            'label' => __('Title', 'fv-wordpress-flowplayer'),
-            'name' => 'lightbox_caption',
-            'type' => 'text'
-          ),
-        )*/
-      );
-    }
+    $options['general']['items'][] = array(
+      'label' => __('Lightbox', 'fv-wordpress-flowplayer'),
+      'name' => 'lightbox',
+      'description' => __('Video will play in a popup box.', 'fv-wordpress-flowplayer'),
+      'dependencies' => array( 'autoplay' => false, 'sticky' => false ),
+      'visible' => $fv_fp->_get_option( array('interface','lightbox') ),
+      'children' => array(
+        array(
+          'label' => __('Lightbox Title', 'fv-wordpress-flowplayer'),
+          'name' => 'lightbox_caption',
+          'description' => __('Shows when the lightbox is open.', 'fv-wordpress-flowplayer'),
+          'type' => 'text',
+          'visible' => true
+        ),
+      )
+    );
     return $options;
   }
 
@@ -223,7 +214,6 @@ class FV_Player_lightbox {
          * true
          * true;text
          * true;Lightbox title
-         * true;Lightbox title;text - not sure, TODO
          * true;640;360;Lightbox title
          */
         $aLightbox = preg_split('~[;]~', $args['lightbox']);
@@ -263,7 +253,7 @@ class FV_Player_lightbox {
         
         // The original player HTML markup becomes the hidden lightbox content
         // We add the lightboxed class
-        $lightbox = str_replace(array('class="flowplayer ', "class='flowplayer "), array('class="flowplayer lightboxed ', "class='flowplayer lightboxed "), $html);
+        $lightbox = str_replace(array('class="freedomplayer ', "class='freedomplayer "), array('class="freedomplayer lightboxed ', "class='freedomplayer lightboxed "), $html);
         // ...and wrap it in hidden DIV
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
         
@@ -408,7 +398,8 @@ class FV_Player_lightbox {
       return $content;
     }
 
-    $content = preg_replace_callback('~(<a[^>]*?>\s*?)(<img.*?>)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
+    // Look for any image links
+    $content = preg_replace_callback('~(<a[^>]*?>\s*?)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
 
     if( $count ) {
       $this->enqueue();
@@ -425,7 +416,7 @@ class FV_Player_lightbox {
 
     $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
 
-    return $matches[1] . $matches[2];
+    return $matches[1];
   }
 
   function disable_autoplay($aArgs) {
@@ -487,42 +478,35 @@ class FV_Player_lightbox {
 
     $bLightbox = $fv_fp->_get_option(array('interface','lightbox'));
 
-    // TODO: Ensure the new inputs work with old shortcodes etc.
     if ($bLightbox) {
       ?>
       <script>
 
         jQuery(document).on('fv_flowplayer_shortcode_parse', function (e, shortcode) {
-
-          document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 0;
-          document.getElementById("fv_wp_flowplayer_field_lightbox_width").value = '';
-          document.getElementById("fv_wp_flowplayer_field_lightbox_height").value = '';
-          document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value = '';
-
           var sLightbox = shortcode.match(/lightbox="(.*?)"/);
           if (sLightbox && typeof (sLightbox) != "undefined" && typeof (sLightbox[1]) != "undefined") {
             sLightbox = sLightbox[1];
 
-            if (sLightbox) {
+            if( sLightbox ) {
               var aLightbox = sLightbox.split(/[;]/, 4);
               if (aLightbox.length > 2) {
                 for (var i in aLightbox) {
                   if (i == 0 && aLightbox[i] == 'true') {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 1;
+                    fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
                   } else if (i == 1) {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox_width").value = parseInt(aLightbox[i]);
+                    // ignore Lightbox Width
                   } else if (i == 2) {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox_height").value = parseInt(aLightbox[i]);
+                    // ignore Lightbox Height
                   } else if (i == 3) {
-                    document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value = aLightbox[i].trim();
+                    fv_player_editor.get_field('lightbox_caption').val( aLightbox[i].trim() ).trigger('change');
                   }
                 }
               } else {
                 if (typeof (aLightbox[0]) != "undefined" && aLightbox[0] == 'true') {
-                  document.getElementById("fv_wp_flowplayer_field_lightbox").checked = 1;
+                  fv_player_editor.get_field('lightbox').prop('checked', true).trigger('change');
                 }
                 if (typeof (aLightbox[1]) != "undefined") {
-                  document.getElementById("fv_wp_flowplayer_field_lightbox_caption").value = aLightbox[1].trim();
+                  fv_player_editor.get_field('lightbox_caption').val( aLightbox[1].trim() ).trigger('change');
                 }
               }
             }

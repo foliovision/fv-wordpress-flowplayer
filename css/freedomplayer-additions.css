@@ -55,8 +55,8 @@
 }
 
 .flowplayer { margin: 0 auto 2.8em auto; display: block; max-width: 100%; white-space: normal }
-.flowplayer.has-caption { margin: 0 auto; }
-.flowplayer.fixed-controls.has-caption, flowplayer.fixed-controls.has-caption * { margin-bottom: 2.8em; }
+.flowplayer.has-title { margin: 0 auto; }
+.flowplayer.fixed-controls.has-title, flowplayer.fixed-controls.has-title * { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls, .entry-content .flowplayer.fixed-controls { margin-bottom: 5.2em }
 .flowplayer.fixed-controls.skin-custom {border: none}
 .flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
@@ -597,7 +597,7 @@
 
 /*  Popups */
 .flowplayer .wpfp_custom_ad { display: none; overflow: hidden; }
-.flowplayer .wpfp_custom_ad.tall-ad { top: 0; bottom: auto; }
+.flowplayer .wpfp_custom_ad.tall-overlay { top: 0; bottom: auto; }
 .flowplayer .wpfp_custom_ad img { height: auto; }  	
 .flowplayer.is-playing .wpfp_custom_ad, .flowplayer.is-ready .wpfp_custom_ad { display: block; }  
 .flowplayer.is-poster .wpfp_custom_ad { display: none; }  
@@ -1361,28 +1361,6 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.fp-edgy .fp-volumebtn-notice:before { content: "\e10d"; }
 .flowplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .flowplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
 
-/* Better touch in fullscreen in portrait mode */
-.flowplayer.is-tiny.is-fullscreen .fp-player {
-  align-items: center;
-  display: flex;
-}
-.flowplayer.is-tiny.is-fullscreen:not(.is-youtube) .fp-engine {
-  height: auto !important;
-  position: static;
-}
-.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui {
-  pointer-events: none;
-}
-.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui > * {
-  pointer-events: auto;
-}
-.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header {
-  pointer-events: none;
-}
-.flowplayer.is-tiny.is-fullscreen.is-playing .fp-ui .fp-header > * {
-  pointer-events: auto;
-}
-
 /* Videos pending encoding */
 .fv-player-encoder-video-processing-modal {
   text-align: center;
@@ -1434,4 +1412,4 @@ iframe#youtube.fp-engine {
   width: 100%;
 }
 
-.fp-duration { line-height: 1em; }
+.fp-duration { line-height: 1em; white-space: nowrap; }

@@ -56,8 +56,7 @@ class FV_Player_List_Table_View {
   }
   
   function screen_columns() {
-    $FV_Player_List_Table = new FV_Player_List_Table;
-    return $FV_Player_List_Table->get_columns();
+    return FV_Player_List_Table::get_columns_worker();
   }
   
   function screen_columns_hidden( $hidden, $screen, $use_defaults ) {
@@ -115,6 +114,31 @@ class FV_Player_List_Table_View {
       <div id="fv_player_players_table">
           <form id="fv-player-filter" method="get" action="<?php echo admin_url( 'admin.php?page=fv_player' ); ?>">
               <input type="hidden" name="page" value="fv_player" />
+
+              <?php
+              // Show the current taxonomy filtering, if any
+              if ( ! empty( $_GET['post_type'] ) ) {
+                $post_type_taxonomies = get_taxonomies( array(
+                  'object_type' => array( $_GET['post_type'] ),
+                  'public'      => true,
+                  'show_ui'     => true,
+                ), 'objects' );
+
+                foreach ( $post_type_taxonomies AS $tax ) {
+                  if ( ! empty( $_GET[ $tax->name ] ) ) :
+                    $term = term_exists( $_GET[ $tax->name ], $tax->name );
+                    if ( $term ) :
+                      $term = get_term( $term['term_id'], $tax->name );
+                      ?>
+                        <p class="subsubsub" style="position: absolute; margin-top: 43px;"><?php echo $tax->labels->singular_name; ?>: <strong><?php echo $term->name; ?></strong></p>
+                      <?php
+                    endif;
+                  endif;
+                }
+              }
+              ?>
+
+              <p class="subsubsub" style="line-height: 26px; margin-right: .5em">Embed post type:</p>
 
               <?php $table->views() ?>
 

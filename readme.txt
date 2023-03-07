@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.0
+Tested up to: 6.1
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -359,7 +359,34 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.29.7210 - 2022/09/20 =
+= 7.5.31.7212 - 2023/01/30 =
+
+* New feature - [fvplayer_watched] to give list of watched/unfinished/finished videos with their post links
+* PHP 8.2 fixes
+* Security fix - video intelligence ads settings box could be removed with XSS
+* Video Custom Fields - fix autoplay not working
+* YouTube - check live stream status
+
+= 7.5.30.7210 - 2022/12/23 =
+
+* Using Freedom Video Player 7.2.12
+* Chromecast - fix for HLS streams with multiple audio tracks
+* Click to unmute - showing for 10 instead of just 5 seconds if audible autoplay has been blocked by browser
+* Compatibility - SiteGround Optimizer
+* CSS - making the timeline easier to tap on mobile
+* Handle WordPress audio/video setting - Support Vimeo Gutenberg block
+* Handle WordPress audio/video setting - Support Vimeo iframes
+* Lightbox - support text links to images with class="colorbox"
+* MPEG-DASH - upgrade to Dash.js 3.2.2
+* Schema.org - adding video duration
+* Sticky player - also working when scrolling up
+* YouTube - fullscreen fix if your theme uses CSS transform or z-index
+* Bugfix - duplicate preview with Gutenberg
+* Bugfix - MPEG-DASH - Vimeo volume unmuting for iPad
+* Bugfix - YouTube - "Live in XY hours" message not appearing for some users on scheduled live streams
+* Bugfix - YouTube - Shorts support for mobile
+
+= 7.5.29.7210 - 2022/09/23 =
 
 * AWS SDK update and size reduction
 * Full-featured YouTube player (moved in from FV Player Pro)

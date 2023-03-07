@@ -165,7 +165,7 @@
         <label for="<?php echo $field_id; ?>" class="components-input-control__label"><?php echo $label; ?></label>
       </div>
       <div class="components-input-control__container">
-        <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>">
+        <select class="components-select-control__input" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" <?php if( $multiple ) echo 'multiple'; ?>>
           <?php foreach( $options AS $option ) : ?>
             <?php if( is_array($option) ) : ?>
               <option value="<?php echo $option[0]; ?>"><?php echo $option[1]; ?></option>
@@ -290,6 +290,7 @@
                           'dropdown' => array( 'Default', 'On', 'Off' ),
                           'id' => false,
                           'label' => '',
+                          'multiple' => false, // applies to type = select
                           'name' => '',
                           'no_data' => false, // do not save any data based on this input
                           'options' => array(),
@@ -454,7 +455,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </div>
 <div id="fv-player-editor-modal" style="display: none">
 
-  <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?>>
+  <div id="fv-player-shortcode-editor"<?php if( did_action('elementor/editor/wp_head') ) echo ' class="wp-core-ui"'; // when using Elementor we need to add this class to ensure proper button styling ?> style="display: none">
 
     <input type="hidden" id="fv_wp_flowplayer_field_post_id" name="fv_wp_flowplayer_field_post_id" value="<?php echo get_the_ID(); ?>" />
 
@@ -466,12 +467,50 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <a data-fv-player-editor-overlay-close href="#" class="button button-primary">Close</a>
     </div>
     
-    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay">
-      <select name="players_selector" id="players_selector">
-        <option hidden disabled selected value>Choose a Player...</option>
-      </select>
-      
-      <a data-fv-player-editor-overlay-close href="#" class="button">Close</a>
+    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay media-frame hide-menu">
+      <button type="button" class="media-modal-close" data-fv-player-editor-overlay-close>
+        <span class="media-modal-icon">
+          <span class="screen-reader-text">Close dialog</span>
+        </span>
+      </button>
+    <div class="media-frame-title" id="media-frame-title"><h1>Pick FV Player</h1></div>
+
+      <div class="wp-core-ui media-frame-content attachments-browser">
+        <div class="media-toolbar">
+          <div class="media-toolbar-primary search-form">
+            <input type="search" placeholder="Search videos or playlists" class="search" name="players_selector" >
+          </div>
+        </div>
+
+        <ul class="attachments"></ul>
+
+        <div class="media-sidebar">
+          <div class="attachment-details" style="display: none">
+            <h2>Player Details</h2>
+            <div class="attachment-info">
+              <div class="details">
+                <div class="filename"></div>
+                <div class="uploaded"></div>
+              </div>
+            </div>
+
+            <h2>Videos</h2>
+            <div class="videos-list"></div>
+
+            <h2>Embedded on</h2>
+            <div class="posts-list"></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="media-frame-toolbar">
+        <div class="media-toolbar">
+          <div class="media-toolbar-secondary"></div>
+          <div class="media-toolbar-primary search-form">
+            <button type="button" class="button media-button button-primary button-large media-button-select" disabled>Choose</button>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
@@ -512,9 +551,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
-          <h1><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></h1>
-		  <p><?php _e('Add your video from the media gallery or use the video tab to enter your URL.', 'fv-wordpress-flowplayer'); ?></p>
-		  <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Select File</button>
+          <p><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></p>
+          <div class="components-base-control__field">
+            <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
+            <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
+          </div>
+          <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
           <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
@@ -556,7 +598,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 <a class="fvp_item_remove" href="#"><span class="dashicons dashicons-trash"></span></a>
               </div>
           </div>
-          <a class="playlist_add">+</a>
+          <div id="playlist-hero" style="display: none">
+            <div class="components-base-control__field">
+              <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" data-playlist-hero="true" />
+              <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;" data-playlist-hero="true">Choose from <?php echo get_bloginfo(); ?>'s library</button>
+              <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
+              <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php _e('Please post a link to the new video or choose one.', 'fv-wordpress-flowplayer'); ?></div>
+            </div>
+          </div>
+          <a class="playlist_add" data-html="+" data-alt-html="&#10140;">+</a>
 
         </div>
 
@@ -593,10 +643,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   array(
                     'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
                     'name' => 'live',
-                  ),
-                  array(
-                    'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
-                    'name' => 'dvr',
+                    'children' => array(
+                      array(
+                        'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
+                        'name' => 'dvr',
+                        'visible' => true
+                      ),
+                    ),
                   ),
                   array(
                     'label' => __('Audio Stream', 'fv-wordpress-flowplayer'),
@@ -604,8 +657,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
-                    'name' => 'advanced-settings',
-                    'no_data' => true,
+                    'name' => 'toggle_advanced_settings',
                     'visible' => true,
                     'children' => array(
                       array(
@@ -665,9 +717,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   ),
                   array(
                     'label' => __('Title', 'fv-wordpress-flowplayer'),
-                    'name' => 'caption',
+                    'name' => 'title',
                     'type' => 'text',
-                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_captions"]) && $fv_flowplayer_conf["interface"]["playlist_captions"] == 'true',
+                    'visible' => isset($fv_flowplayer_conf["interface"]["playlist_titles"]) && $fv_flowplayer_conf["interface"]["playlist_titles"] == 'true',
                     'description' => __('Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-wordpress-flowplayer'),
                   ),
                   array(
@@ -692,10 +744,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( $video_fields );
 
             // Legacy
-            // TODO: Will these still actually work?
-            do_action('fv_flowplayer_shortcode_editor_before');
+            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-            do_action('fv_flowplayer_shortcode_editor_item_after');
+              // TODO: Will these still actually work?
+              do_action('fv_flowplayer_shortcode_editor_before');
+              do_action('fv_flowplayer_shortcode_editor_item_after');
+
+            echo "</div>\n";
             ?>
           </div>
         </div>
@@ -729,10 +784,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( $subtitle_fields );
 
             // Legacy
-            // TODO: Will these still actually work?
-            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
+            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-            do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+              // TODO: Will these still actually work?
+              do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
+              do_action('fv_flowplayer_shortcode_editor_subtitles_tab_append');
+
+            echo "</div>\n";
             ?>
 
           </div>
@@ -863,12 +921,14 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
         <div class="fv-player-tab fv-player-tab-actions" style="display: none">
           <?php
+          $overlay_show_after = $fv_fp->_get_option('overlay_show_after');
+
           $actions = array(
             'actions' => array(
               'items' => array(
                 array(
                   'label' => __('End of Video Action', 'fv-wordpress-flowplayer'),
-                  'name' => 'end_actions_show',
+                  'name' => 'toggle_end_action',
                   'description' => __('What should happen at the end of the video.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
@@ -904,49 +964,48 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'options' => fv_player_email_lists()
                     ),
                   ),
-                  'no_data' => true,
                   'visible' => true
                 ),
                 array(
-                  'label' => __('Custom Ad Code', 'fv-wordpress-flowplayer'),
-                  'name' => 'ad_custom', // TODO: Do not save
-                  'no_data' => true,
-                  'description' => __('Shows while the video is playing.', 'fv-wordpress-flowplayer'),
+                  'label' => __('Show Overlay', 'fv-wordpress-flowplayer'),
+                  'name' => 'toggle_overlay',
+                  'description' => __('Enter text or HTML to show on top of video while it\'s playing.', 'fv-wordpress-flowplayer'),
                   'children' => array(
                     array(
-                      'label' => __('Ad Code', 'fv-wordpress-flowplayer'),
-                      'name' => 'ad',
+                      'label' => __('Overlay Code', 'fv-wordpress-flowplayer'),
+                      'name' => 'overlay',
+                      'description' => $overlay_show_after ? sprintf( __('Shows after %d seconds.', 'fv-wordpress-flowplayer'), $overlay_show_after ) : false,
                       'type' => 'textarea',
                       'visible' => true
                     ),
                     array(
                       'label' => __('Width', 'fv-wordpress-flowplayer'),
-                      'name' => 'ad_width',
+                      'name' => 'overlay_width',
                       'type' => 'number',
                       'visible' => true
                     ),
                     array(
                       'label' => __('Height', 'fv-wordpress-flowplayer'),
-                      'name' => 'ad_height',
+                      'name' => 'overlay_height',
                       'type' => 'number',
                       'visible' => true
                     )
                   ),
                   'visible' => true,
-                  'dependencies' => array( 'ad_skip' => false )
+                  'dependencies' => array( 'overlay_skip' => false )
                 ),
               ),
               'sort' => false
             )
           );
 
-          if( $fv_fp->_get_option('ad') ) {
+          if( $fv_fp->_get_option('overlay') ) {
             $actions['actions']['items'][] = array(
-              'label' => __('Skip Global Ad', 'fv-wordpress-flowplayer'),
-              'name' => 'ad_skip',
-              'description' => sprintf( __('Use to disable ad set in <a href="%s" target="_blank">Actions -> Ads</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
+              'label' => __('Do not show global overlay', 'fv-wordpress-flowplayer'),
+              'name' => 'overlay_skip',
+              'description' => sprintf( __('Use to disable overlay set in <a href="%s" target="_blank">Actions -> Overlays</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
               'visible' => true,
-              'dependencies' => array( 'ad_custom' => false )
+              'dependencies' => array( 'toggle_overlay' => false )
             );
           }
         
@@ -1005,13 +1064,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           </td>
         </tr>
         -->
-        
+
           <?php
           // Legacy
-          // TODO: Will these still actually work?
-          do_action('fv_flowplayer_shortcode_editor_after');
+          echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
 
-          do_action('fv_flowplayer_shortcode_editor_tab_actions'); ?>
+            // TODO: Will these still actually work?
+            do_action('fv_flowplayer_shortcode_editor_after');
+            do_action('fv_flowplayer_shortcode_editor_tab_actions');
+
+          echo "</div>\n";
+          ?>
 
         </div>
 

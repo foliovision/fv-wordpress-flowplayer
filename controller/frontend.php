@@ -79,6 +79,7 @@ function fv_flowplayer_get_js_translations() {
   'live_stream_retry'=>__( '<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'live_stream_continue'=>__( '<h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>', 'fv-wordpress-flowplayer'),
   'embed_copied' =>__('Embed Code Copied to Clipboard','fv-wordpress-flowplayer'),
+  'error_copy_clipboard' => __('Error copying text into clipboard!', 'fv-wordpress-flowplayer'),
   'subtitles_disabled' =>__('Subtitles disabled','fv-wordpress-flowplayer'),
   'subtitles_switched' =>__('Subtitles switched to ','fv-wordpress-flowplayer'),
   'warning_iphone_subs' => __('This video has subtitles, that are not supported on your device.','fv-wordpress-flowplayer'),
@@ -435,13 +436,12 @@ function flowplayer_prepare_scripts() {
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.2.3';
 
     $dashjs_version = '3.2.2-mod';
+
     $fv_player_dashjs = 'fv-player-dashjs.min.js';
+    if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $fv_player_dashjs = 'fv-player-dashjs.dev.js';
 
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
       wp_enqueue_script( 'dashjs', flowplayer::get_plugin_url().'/flowplayer/dash.mediaplayer.min.js', array('flowplayer'), $dashjs_version, true );
-
-      if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $fv_player_dashjs = 'fv-player-dashjs.dev.js';
-
       wp_enqueue_script( 'fv-player-dash', flowplayer::get_plugin_url().'/flowplayer/'.$fv_player_dashjs, array('dashjs'), $fv_wp_flowplayer_ver, true );
     }
 
@@ -481,10 +481,9 @@ function flowplayer_prepare_scripts() {
 
     $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
-      $aConf['fv_chromecast'] = true;
-      /*$aConf['fv_chromecast'] = array(
+      $aConf['fv_chromecast'] = array(
         'applicationId' => '908E271B'
-      );*/
+      );
     }
 
     if( $fv_fp->_get_option('hd_streaming') ) {
@@ -624,10 +623,10 @@ function fv_flowplayer_attachment_page_video( $c ) {
 add_filter( 'prepend_attachment', 'fv_flowplayer_attachment_page_video' );
 
 
-function fv_player_caption( $caption ) {
+function fv_player_title( $title ) {
   global $post, $authordata;
   $sAuthorInfo = ( $authordata ) ? sprintf( '<a href="%1$s" title="%2$s" rel="author">%3$s</a>', esc_url( get_author_posts_url( $authordata->ID, $authordata->user_nicename ) ), esc_attr( sprintf( __( 'Posts by %s' ), get_the_author() ) ), get_the_author() ) : false;
-  $caption = str_replace(
+  $title = str_replace(
                          array(
                                '%post_title%',
                                '%post_date%',
@@ -640,10 +639,10 @@ function fv_player_caption( $caption ) {
                                $sAuthorInfo,
                                get_the_author()
                               ),
-                        $caption );
-  return $caption;
+                              $title );
+  return $title;
 }
-add_filter( 'fv_player_caption', 'fv_player_caption' );
+add_filter( 'fv_player_title', 'fv_player_title' );
 
 
 add_filter( 'comment_text', 'fv_player_comment_text', 0 );
@@ -785,7 +784,8 @@ function fv_player_js_loader_mark_scripts( $tag, $handle ) {
     (
       stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
       stripos($handle,'fv-player') === 0 ||
-      stripos($handle,'fv_player') === 0
+      stripos($handle,'fv_player') === 0 ||
+      'dashjs' === $handle
     
     // script handle must not be one of
     ) && !in_array( $handle, array(
@@ -806,12 +806,16 @@ function fv_player_js_loader_load() {
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
   $filesystem = new WP_Filesystem_Direct( new StdClass() );
   
-  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.min.js' );
+  $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? 'dev' : 'min';
   
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.'.$suffix.'.js' );
+  
+  if( !defined('SCRIPT_DEBUG') || !SCRIPT_DEBUG ) {
   // remove /* comments */
   $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
   // remove whitespace
   $js = preg_replace( '~\s+~m', ' ', $js );
+  }
   
   echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }
@@ -924,4 +928,317 @@ function fv_player_remove_for_excerpt( $post_content ) {
     $post_content = preg_replace( '~\[fvplayer.*?\]~', '', $post_content );
   }
   return $post_content;
+}
+
+
+/*
+ *  @param array $args {
+ *    @param  int     $count          Number of items to get
+ *    @param  bool    $full_details   Should it return full details about the video progress?
+ *    @param  string  $include        Get only "unfinished" or "finished" videos.
+ *    @param  string  $post_type      Post type where the video is embed
+ *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
+ *  }
+ * 
+ *  @return array   Array of post IDs
+ */
+function fv_player_get_user_watched_post_ids( $args = array() ) {
+  $args = wp_parse_args( $args, array(
+    'count' => 20,
+    'include' => 'all',
+    'post_type' => 'any',
+    'user_id' => get_current_user_id()
+  ) );
+
+  $args['full_details'] = true;
+
+  $video_ids = fv_player_get_user_watched_video_ids( $args );
+  if( count($video_ids) == 0 ) {
+    return array();
+  }
+
+  $post_ids = array();
+  foreach( $video_ids AS $data ) {
+    if( !empty($data['post_id']) ) {
+      $post_ids[] = $data['post_id'];
+    }
+  }
+
+  return $post_ids;
+}
+	
+
+/*
+ *  @param array $args {
+ *    @param  int     $count          Number of items to get
+ *    @param  bool    $full_details   Should it return full details about the video progress?
+ *    @param  string  $include        Get only "unfinished" or "finished" videos.
+ *    @param  string  $post_type      Post type where the video is embed
+ *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
+ *  }
+ * 
+ *  @return array   Array of video IDs, or array of video progress details
+ */
+function fv_player_get_user_watched_video_ids( $args = array() ) {
+  $args = wp_parse_args( $args, array(
+    'count' => 20,
+    'full_details' => false,
+    'include' => 'all',
+    'post_type' => 'any',
+    'user_id' => get_current_user_id()
+  ) );
+
+  $output = array();
+
+  global $wpdb;
+
+  static $user_meta;
+  if( !isset($user_meta) ) {
+    $user_meta = array();
+  }
+  if( !isset($user_meta[ $args['user_id'] ]) ) {
+    $user_meta[ $args['user_id'] ] = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->usermeta WHERE user_id = %d AND ( meta_key LIKE 'fv_wp_flowplayer_position_%' OR meta_key LIKE 'fv_wp_flowplayer_top_position_%' OR meta_key LIKE 'fv_wp_flowplayer_saw_%' ) ORDER BY umeta_id DESC ", $args['user_id'] ) );
+  }
+
+  if( $user_meta[ $args['user_id'] ] ) {
+    $metas = $user_meta[ $args['user_id'] ];
+
+    $output = array();
+
+    foreach( $metas AS $meta ) {
+      if( stripos( $meta->meta_key, 'fv_wp_flowplayer_top_position_') === 0 ) {
+        $video_id = str_replace( 'fv_wp_flowplayer_top_position_', '', $meta->meta_key );
+        if( !is_numeric($video_id) ) continue;
+
+        $output[$video_id] = array(
+          'type' => 'unfinished',
+          'message' => 'Watched until '.flowplayer::format_hms($meta->meta_value),
+          'time' => $meta->meta_value
+        );
+
+      } else if( stripos( $meta->meta_key, 'fv_wp_flowplayer_position_') === 0 ) {
+        $video_id = str_replace( 'fv_wp_flowplayer_position_', '', $meta->meta_key );
+        if( !is_numeric($video_id) ) continue;
+
+        if( empty($output[$video_id]) ) {
+          $output[$video_id] = array(
+            'type' => 'unfinished',
+            'message' => 'Watched until '.flowplayer::format_hms($meta->meta_value),
+            'time' => $meta->meta_value
+          );
+        }
+
+      }
+		
+    // No "else if" as we want the full video watch to take priority over the stored position
+	  if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
+        $video_id = str_replace( 'fv_wp_flowplayer_saw_', '', $meta->meta_key );
+        if( !is_numeric($video_id) ) continue;
+
+        $output[$video_id] = array(
+          'type' => 'finished',
+          'message' => 'Saw whole video'
+        );
+      }
+    }
+  }
+
+  // Filter unfinished or finished videos
+  if( $args['include'] != 'all' ) {
+    foreach( $output AS $video_id => $details ) {
+      if( $args['include'] != $details['type'] ) {
+        unset( $output[$video_id]);
+      }
+    }
+  }
+
+  // Add player_id and post_id for the videos
+  // Remove items which do not belong to a player and published post
+  if( count($output) ) {
+    $post_type_where = $args['post_type'] != 'any' ? 'post_type = %s AND ': '';
+
+    $videos2players2posts = $wpdb->get_results( $wpdb->prepare( "
+      SELECT pl.id AS player_id, v.id AS video_id, pm.meta_value AS post_id FROM
+        {$wpdb->prefix}fv_player_players AS pl
+      JOIN {$wpdb->prefix}fv_player_playermeta AS pm
+        ON pl.id = pm.id_player
+      JOIN {$wpdb->prefix}fv_player_videos AS v
+        ON FIND_IN_SET(v.id, pl.videos)
+      JOIN {$wpdb->posts} AS p
+        ON p.ID = pm.meta_value
+      WHERE
+        pm.meta_key = 'post_id' AND
+        p.post_status = 'publish' AND
+        $post_type_where
+        v.id IN (".implode( ',', array_map( 'intval', array_keys( $output ) ) ).")", $args['post_type'] ) );
+
+    foreach( $output AS $video_id => $details ) {
+      $found = false;
+      foreach( $videos2players2posts AS $more_details ) {
+
+        if( $more_details->video_id == $video_id ) {
+          $found = true;
+          $output[$video_id]['player_id'] = $more_details->player_id;
+          $output[$video_id]['post_id'] = $more_details->post_id;
+          break;
+        }
+      }
+
+      if( !$found ) {
+        unset($output[$video_id]);
+      }
+    }
+  }
+
+  if( !$args['full_details'] ) {
+    $output = array_keys( $output );
+  }
+
+  return $output;
+}
+
+
+add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
+
+/**
+ * @param array $args { 
+ *   @type string $field    jQuery field selector of the field with the shortcode
+ *   @type string $hide     Comma separated list of fields to hide
+ *   @type string $library  Comma separated list of libraries to show in Media Library
+ *   @type string $tabs     Use "none" to only show Playlist and Videos tabs and nothing else, like Options, Actions or Subtitles
+ * }
+ *
+ * @return string HTML code.
+ */
+function fvplayer_editor( $args ) {
+  include_once( ABSPATH.'/wp-admin/includes/plugin.php' );
+  include_once( __DIR__.'/editor.php' );
+
+  if( version_compare(phpversion(),'5.5.0') != -1 ) {
+    include_once( __DIR__ . '/../models/media-browser.php');
+  }
+
+  if ( function_exists( 'FV_Player_Pro' ) && method_exists ( 'FV_Player_Pro', 'include_vimeo_media_browser' ) ) {
+    FV_Player_Pro()->include_vimeo_media_browser( true );
+  }
+
+  do_action( 'fvplayer_editor_load' );
+
+  wp_enqueue_media();
+
+  $args['frontend'] = true;
+
+  fv_player_shortcode_editor_scripts_enqueue( $args );
+
+  ob_start();
+  fv_wp_flowplayer_edit_form_after_editor();
+  ?>
+  <script>
+  var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+
+  document.addEventListener( 'DOMContentLoaded', function() {
+    jQuery(function() {
+
+      // Wait until FV Player Editor $doc.ready() finishes
+      setTimeout( function() {
+        fv_player_editor.editor_open();
+      });
+    });
+  });
+  </script>
+  <style>
+  #fv-player-editor-modal {
+    display: block !important;
+    position: relative !important;
+    top: auto !important;
+    left: unset !important;
+    right: unset !important;
+    bottom: unset !important;
+    z-index: unset !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  }
+  #fv-player-editor-modal h2 {
+    letter-spacing: normal;
+  }
+  #fv-player-editor-modal #fv-player-shortcode-editor {
+    position: static !important;
+  }
+  #fv-player-editor-modal-close {
+    display: none !important;
+  }
+  #fv-player-shortcode-editor-preview {
+    margin-top: 16px;
+  }
+  .fv-player-tab {
+    overflow-y: unset !important;
+  }
+  /* Left-align for the inputs */
+  #fv-player-shortcode-editor #fv-player-shortcode-editor-preview-no .components-base-control__field {
+    justify-content: unset;
+  }
+  /* Hide the intro text */
+  #fv-player-shortcode-editor-preview-no > p {
+    display: none;
+  }
+  /* Somehow the vertical scrolling would appear when one video was inserted */
+  #fv-player-shortcode-editor #fv-player-shortcode-editor-left {
+    overflow-x: unset;
+  }
+
+  /* Core WordPress Admin Button styling */
+  #fv-player-editor-modal .button, #fv-player-editor-modal .button-primary, #fv-player-editor-modal .button-secondary {
+    box-shadow: unset;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 2.15384615;
+    min-height: 30px;
+    margin: 0;
+    margin-top: 0 !important;
+    padding: 0 10px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    text-shadow: unset;
+    text-transform: none;
+    width: auto !important;    
+  }
+  #fv-player-editor-modal .button.hover, #fv-player-editor-modal .button:hover, #fv-player-editor-modal .button-secondary:hover {
+    background: #f0f0f1;
+    border-color: #0a4b78;
+    color: #0a4b78;
+  }
+  #fv-player-editor-modal .button, #fv-player-editor-modal .button-secondary {
+    color: #2271b1;
+    border-color: #2271b1;
+    background: #f6f7f7;
+    vertical-align: top;
+  }
+  #fv-player-editor-modal .button-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+  }
+  #fv-player-editor-modal .button-primary.hover, #fv-player-editor-modal .button-primary:hover, #fv-player-editor-modal .button-primary.focus, #fv-player-editor-modal .button-primary:focus {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+  }
+
+  /* Core WordPress Media Library styles to fix */
+  .media-modal .media-router button.media-menu-item {
+    color: #3c434a;
+    text-transform: none;
+  }
+  </style>
+  <?php
+  return ob_get_clean();
 }

@@ -1,12 +1,12 @@
 /*
  *  Take screenshot from preview
  */
-( function($) {
+( function() {
   var index = 0;
 
   flowplayer( function(api,root) {
     root = jQuery(root);
-    var button = jQuery('<input type="button" value="Screenshot" class="button" id="fv-splash-screen-button" />'),
+    var button = jQuery('<input type="button" value="Make new splash screen" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
       title ='';
 
@@ -28,6 +28,10 @@
     }
 
     button.on('click', function() {
+      var current_video_index = api.video.index || 0;
+
+      console.log('FV Player Editor Screenshots: Taking screenshot for' + current_video_index);
+
       try {
         button.prop("disabled", true);
 
@@ -73,10 +77,13 @@
 
       jQuery.post(fv_player.ajaxurl, data, function(response) {
         if(response.src) {
-          var splashInput = item.find('#fv_wp_flowplayer_field_splash');
+
+          console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+current_video_index);
+
+          var splashInput = fv_player_editor.get_field('splash').eq( current_video_index );
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
-          
+
           // trigger autosave
           splashInput.trigger('keyup');
         }
@@ -97,12 +104,13 @@
 
     // Compatibility test
     api.on('ready', function(e,api) {
-      var src = jQuery('[name="fv_wp_flowplayer_field_src"]:visible').val(), // check using visible src
+      var src = fv_player_editor.get_field('src').eq( api.video.index || 0 ).val(), // get current video src
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
-        fv_player_editor_conf_screenshots.disable_domains.forEach(function(item, index) {
+        fv_player_editor_conf_screenshots.disable_domains.forEach(function(item) {
           if( src.indexOf(item) !== -1 ) {
+            console.log('FV Player Editor Screenshots: Not available for the video source domain.');
             should_show = false;
           }
         });
@@ -119,7 +127,7 @@
     });
 
     // Resume video after setting crossOrigin
-    api.on('resume progress', function(e) {
+    api.on('resume progress', function() {
       if( seek_recovery && api.video.seekable ) {
         api.seek(seek_recovery, function() {
           seek_recovery = false;
@@ -131,7 +139,7 @@
     });
 
     // Show error if video fails after setting crossOrigin
-    api.on('error', function(e, api, err) {
+    api.on('error', function(e, api) {
       if( seek_recovery ) {
         // prevent FV Player Pro from trying to recover
         api.fv_retry_count = 100;

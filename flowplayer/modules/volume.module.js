@@ -25,6 +25,10 @@ flowplayer(function(api, root) {
     if( api.volumeLevel == 0 ) {
       // The click event which follows after mousedown will be affected
       volumebtn.one( 'click', function() {
+        // Fix unmute for Vimeo MPEG-DASH on iPhone, strange!
+        if( api.engine.engineName == 'dash' ) {
+          api.mute(false);
+        }
         api.volume( restore );
         return false;
       });
@@ -92,7 +96,7 @@ flowplayer(function(api, root) {
         root.addClass('has-fp-message-muted');
 
         // Remove the notice after a while
-        setTimeout( remove_volume_notice, 5000 );
+        setTimeout( remove_volume_notice, 10000 );
       }
     }
   } );

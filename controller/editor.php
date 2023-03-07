@@ -3,7 +3,7 @@
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
-  if( $page !== 'post.php' && $page !== 'post-new.php' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
+  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
     return;
   }
   
@@ -13,8 +13,8 @@ function fv_player_shortcode_editor_scripts( $page ) {
 
 
 
-function fv_player_shortcode_editor_scripts_enqueue() {
-  global $fv_wp_flowplayer_ver;
+function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
+  global $current_screen, $fv_wp_flowplayer_ver;
 
   $url = flowplayer::get_plugin_url();
 
@@ -22,15 +22,18 @@ function fv_player_shortcode_editor_scripts_enqueue() {
 
   wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
-  wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js',array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), $fv_wp_flowplayer_ver, true );
+  wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js', array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), filemtime( dirname(__FILE__).'/../js/editor-screenshots.js' ), true );
 
-  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
+  $fv_player_editor_conf = array(
     'admin_url' => admin_url('admin.php?page=fv_player'),
     'home_url' => home_url('/'),
     'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'edit_nonce' => wp_create_nonce( "fv-player-edit" ),
+    'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce-".get_current_user_id() ),
     'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce-".get_current_user_id() ),
     'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
+    'search_nonce' => wp_create_nonce( "fv-player-editor-search-nonce" ),
     'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id()),
     'shortcode_args_to_preserve' => array(
       'ab',
@@ -61,8 +64,29 @@ function fv_player_shortcode_editor_scripts_enqueue() {
       'sort',
       'volume'
     ),
-    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream')
-  ) );
+    'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream'),
+    'is_fv_player_screen' => !empty($current_screen->id) && $current_screen->id == 'toplevel_page_fv_player',
+    'is_edit_posts_screen' => !empty($current_screen->base) && $current_screen->base == 'edit' && !empty($current_screen->post_type)
+  );
+
+  // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
+  if( !empty($extra_args['hide']) ) {
+    $extra_args['hide'] = explode( ',', $extra_args['hide'] );
+  }
+
+  foreach( array(
+    'field'    => 'field_selector',
+    'frontend' => 'frontend',
+    'hide'     => 'hide',
+    'library'  => 'library',  // TODO: Hide the Media Library buttons if the library is not found at all
+    'tabs'     => 'tabs', // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
+  ) AS $key => $setting ) {
+    if( !empty($extra_args[ $key ]) ) {
+      $fv_player_editor_conf[ $setting ] = $extra_args[ $key ];
+    }
+  }
+
+  wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', $fv_player_editor_conf );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_translations', array(
     'embed_notice' => __('Embed feature not supported in editor preview', 'fv-wordpress-flowplayer'),
@@ -255,7 +279,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $aMeta ) {
       foreach( $aMeta AS $meta_value ) {
-        if( preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
+        if ( is_string( $meta_value ) && preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
           foreach( $shortcodes[0] AS $shortcode ) {
             $search_context .= "\n\n".$shortcode;
           }
@@ -279,8 +303,8 @@ function fv_wp_flowplayer_featured_image($post_id) {
     foreach( $ids[1] as $player_id ) {
       $atts = $FV_Player_Db->getPlayerAttsFromDb( array( 'id' => $player_id ) );
 
-      if( !empty($atts['caption']) ) {
-        $title = $atts['caption'];
+      if( !empty($atts['title']) ) {
+        $title = $atts['title'];
       }
 
       if( !empty($atts['splash_attachment_id']) ) { // first check splash_attachment_id
@@ -423,24 +447,24 @@ function fv_player_splashcreen_action() {
   global $wpdb; //access to the database
   $jsonReturn = '';
 
-   function getTitleFromUrl($url) {
+  function getTitleFromUrl($url) {
     $arr = explode('/', $url);
-    $caption = end($arr);
+    $title = end($arr);
 
-    if( strpos($caption, ".m3u8") !== false ) {
+    if( strpos($title, ".m3u8") !== false ) {
       unset($arr[count($arr)-1]);
-      $caption = end($arr);
+      $title = end($arr);
     }
 
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
     );  
-    $caption = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $caption);
+    $title = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $title);
 
-    if( is_numeric($caption) && intval($caption) == $caption && stripos($url,'vimeo.com/') !== false ) {
-      $caption = "Vimeo: ".$caption;
+    if( is_numeric($title) && intval($title) == $title && stripos($url,'vimeo.com/') !== false ) {
+      $title = "Vimeo: ".$title;
     } 
-    return urldecode($caption);
+    return urldecode($title);
   }
 
   if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {

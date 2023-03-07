@@ -22,7 +22,7 @@ class FV_Player_Db_Video {
   private
     $id, // automatic ID for the video
     $is_valid = false, // used when loading the video from DB to determine whether we've found it
-    $caption, // optional video caption
+    $title, // optional video title
     $end, // allows you to show only a specific part of a video
     $mobile, // mobile (smaller-sized) version of this video
     $rtmp, // optional RTMP server URL
@@ -39,6 +39,7 @@ class FV_Player_Db_Video {
     $aspect_ratio,
     $duration,
     $live,
+    $toggle_advanced_settings,
     $last_check,
     $meta_data = null, // object of this video's meta data
     $ignored_video_fields = array(
@@ -61,33 +62,26 @@ class FV_Player_Db_Video {
    */
   public function getAspectRatio() {
     return floatval($this->aspect_ratio);
-  }  
+  }
 
   /**
    * @return string
    */
   public function getCaption() {
-    return $this->caption;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getTitle' );
+
+    return $this->getTitle();
   }
-  
+
   /**
    * @return string
    */
   public function getCaptionFromSrc() {
-    $src = $this->getSrc();
-    $arr = explode('/', $src);
-    $caption = end($arr);
-    
-    if( $caption == 'index.m3u8' ) {
-      unset($arr[count($arr)-1]);
-      $caption = end($arr);
-    }
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getTitleFromSrc' );
 
-    $caption = apply_filters( 'fv_flowplayer_caption_src', $caption , $src );
-
-    return urldecode($caption);
+    return $this->getTitleFromSrc();
   }
-  
+
   /**
    * @return int
    */
@@ -125,7 +119,14 @@ class FV_Player_Db_Video {
    * @return bool
    */
   public function getLive() {
-    return $this->live > 0;
+    return boolval($this->live);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleAdvancedSettings() {
+    return boolval($this->toggle_advanced_settings);
   }
 
   /**
@@ -199,6 +200,32 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * @return string
+   */
+  public function getTitle() {
+    return $this->title;
+  }
+
+  /**
+   * @return string
+   */
+  public function getTitleFromSrc() {
+    $src = $this->getSrc();
+    $arr = explode('/', $src);
+    $title = end($arr);
+
+    if( $title == 'index.m3u8' ) {
+      unset($arr[count($arr)-1]);
+      $title = end($arr);
+    }
+
+    $title = apply_filters( 'fv_flowplayer_caption_src', $title , $src );
+    $title = apply_filters( 'fv_flowplayer_title_src', $title , $src );
+
+    return urldecode($title);
+  }
+
+  /**
    * @return int
    */
   public function getWidth() {
@@ -260,7 +287,7 @@ CREATE TABLE " . self::$db_table_name . " (
   splash_attachment_id bigint(20) unsigned,
   splash varchar(512) NOT NULL,
   splash_text varchar(512) NOT NULL,
-  caption varchar(1024) NOT NULL,
+  title varchar(1024) NOT NULL,
   end varchar(16) NOT NULL,
   mobile varchar(512) NOT NULL,
   rtmp varchar(128) NOT NULL,
@@ -271,16 +298,17 @@ CREATE TABLE " . self::$db_table_name . " (
   aspect_ratio varchar(8) NOT NULL,
   duration decimal(7,2) NOT NULL,
   live tinyint(1) NOT NULL,
-  last_check datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  toggle_advanced_settings varchar(7) NOT NULL,
+  last_check datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY  (id),
   KEY src (src(191)),
-  KEY caption (caption(191))
+  KEY title (title(191))
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
-  
+
       if( $fv_fp->_get_option('video_model_db_checked') != $fv_wp_flowplayer_ver ) {
-        self::meta2TableConversion();
+        self::updateTableConversion();
       }
 
       $fv_fp->_set_option('video_model_db_checked', $fv_wp_flowplayer_ver);
@@ -289,25 +317,33 @@ CREATE TABLE " . self::$db_table_name . " (
     return $res;
   }
 
-  private static function meta2TableConversion() {
-    global $wpdb;
+  /**
+   * Run conversion of old data to new data structure.
+   *
+   * @return void
+   */
+  private static function updateTableConversion() {
+    global $wpdb, $fv_fp;
 
     $table = self::$db_table_name;
     $meta_table = $wpdb->prefix.'fv_player_videometa';
 
-    // update duration
-    $res_duration = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
+    if( $fv_fp->_get_option('video_model_db_updated') != '7.9.3' ) {
+      $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
 
-    // update live
-    $res_live = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
+      // update duration
+      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
 
-    // update last_check
-    $res_last_check = $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
+      // update live
+      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
 
-    // backup old meta
-    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'duration_backup' WHERE meta_key = 'duration'");
-    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'live_backup' WHERE meta_key = 'live'");
-    $wpdb->query("UPDATE `{$meta_table}` SET meta_key = 'last_video_meta_check_backup' WHERE meta_key = 'last_video_meta_check'");
+      // update last_check
+      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
+
+      $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
+      
+      $fv_fp->_set_option('video_model_db_updated', '7.9.3');
+    }
   }
 
   /**
@@ -346,7 +382,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if (is_array($options) && count($options) ) {
       foreach ($options as $key => $value) {
         if( $key == 'meta' ) continue; // meta is handled elsewhere, but it's part of the object when importing from JSON
-        
+
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
             if( !is_string($value) ) $value = '';
@@ -385,13 +421,13 @@ CREATE TABLE " . self::$db_table_name . " (
           $select = '*';
 
           $where = ' WHERE id IN('. implode(',', $query_ids).') ';
-          
+
           $order = '';
-          
+
           $limit = '';
-          
+
           $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
-          
+
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;
           }
@@ -492,11 +528,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
   /**
    * Makes this video linked to a record in database.
-   * 
+   *
    * This is used when loading multiple videos in the constructor,
    * so we can return them as objects from the DB and any saving will
    * not insert their duplicates.
-   * 
+   *
    * Also used when updating video via editor, so we keep certain fields.
    *
    * @param int  $id        The DB ID to which we'll link this video.
@@ -643,9 +679,11 @@ CREATE TABLE " . self::$db_table_name . " (
           return array();
         }
       }
-    } else if ($this->meta_data === null) {
-      // meta data not loaded yet - load them now
-      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array($this->id)), self::$DB_Instance);
+
+    // meta data not loaded yet - load them now if the player exists
+    } else if ($this->meta_data === null && $this->getId() ) {
+
+      $this->meta_data = new FV_Player_Db_Video_Meta(null, array('id_video' => array( $this->getId() ) ), self::$DB_Instance);
 
       // set meta data to -1, so we know we didn't get any meta data for this video
       if (!$this->meta_data->getIsValid()) {
@@ -675,7 +713,7 @@ CREATE TABLE " . self::$db_table_name . " (
       return array();
     }
   }
-  
+
   /**
    * Returns actual meta data for a key for this video.
    */
@@ -693,30 +731,30 @@ CREATE TABLE " . self::$db_table_name . " (
     if( $single ) return false;
     return $output;
   }
-  
+
   /**
    * Updates or instert a video meta row
    *
    * @param string $key       The meta key
-   * @param string $value     The meta value     
+   * @param string $value     The meta value
    * @param int $id           ID of the existing video meta row.
    *                          If it's left empty only one $key is allowed for the $this->getId() video ID.
    *
    * @throws Exception When the underlying Meta object throws.
    *
    * @return bool|int Returns record ID if successful, false otherwise.
-   * 
+   *
    */
   public function updateMetaValue( $key, $value, $id = false ) {
     $to_update = false;
     $data = $this->getMetaData();
 
-    if (count($data)) {      
+    if (count($data)) {
       foreach ($data as $meta_object) {
         // find the matching video meta row and if id is provided as well, match on that too
         if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
           $to_update = $meta_object->getId();
-          
+
           // if there is no change, then do not run any update and instead return the row ID
           if(
             is_string($value) && strcmp($meta_object->getMetaValue(), $value) == 0 ||
@@ -732,17 +770,17 @@ CREATE TABLE " . self::$db_table_name . " (
     if( $to_update || !$to_update && !$id ) {
       $meta = new FV_Player_Db_Video_Meta( null, array( 'id_video' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), self::$DB_Instance );
       if( $to_update ) $meta->link2db($to_update);
-      return $meta->save();        
+      return $meta->save();
     }
-    
+
     return false;
   }
-  
+
   /**
    * Lets you alter any of the video properties and then call save()
    *
    * @param string $key       The meta key
-   * @param string $value     The meta value     
+   * @param string $value     The meta value
    */
   public function set( $key, $value ) {
     $this->$key = stripslashes($value);
@@ -766,12 +804,23 @@ CREATE TABLE " . self::$db_table_name . " (
     $video_url = $this->getSrc();
 
     /*
-     * Check video duration, fetch splash screen and title 
+     * Check video duration, fetch splash screen and title
      */
     $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
+
+    // Meta fields which are not in editor and must be retained
     $last_error = $this->getMetaValue( 'error', true );
     $last_error_count = $this->getMetaValue( 'error_count', true );
+
+    $meta_to_preserve = array(
+      'stats_play' => false
+    );
+
+    // Meta fields which are not in editor and must be retained
+    foreach( $meta_to_preserve AS $meta_key => $meta_value ) {
+      $meta_to_preserve[ $meta_key ] = $this->getMetaValue( $meta_key, true );
+    }
 
     // Check video duration, or even splash image and title if it was not checked previously
     // TODO: What if the video source has changed?
@@ -801,7 +850,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         // only run the actual check for real URLs
-        if( filter_var($video_url, FILTER_VALIDATE_URL) ) {
+        if( filter_var($video_url, FILTER_VALIDATE_URL) && ! defined('PHPUnitTestMode') ) {
           // add duration
           global $FV_Player_Checker, $fv_fp;
           if( $secured_url = $fv_fp->get_video_src( $video_url, array( 'dynamic' => true ) ) ) {
@@ -827,7 +876,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
 
       if( is_array($video_data) ) {
-        $video_data = wp_parse_args( $video_data, 
+        $video_data = wp_parse_args( $video_data,
           array(
             'error' => false,
             'duration' => false,
@@ -928,10 +977,22 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
+        if( !empty($video_data['is_audio']) ) {
+          $meta_data[] = array(
+            'meta_key' => 'audio',
+            'meta_value' => true,
+          );
+        } else {
+          $key = array_search('audio', array_column($meta_data, 'meta_key'));
+          if( $key !== false ) {
+            unset($meta_data[$key]);
+          }
+        }
+
         if( !empty($video_data['name']) && (
-          !$this->getCaption() || $this->getMetaValue( 'auto_caption', true )
+          !$this->getTitle() || $this->getMetaValue( 'auto_caption', true )
         ) ) {
-          $this->caption = $video_data['name'];
+          $this->title = $video_data['name'];
 
           $meta_data[] = array(
             'meta_key' => 'auto_caption',
@@ -953,7 +1014,14 @@ CREATE TABLE " . self::$db_table_name . " (
         if( !empty($video_data['splash_attachment_id']) ) {
           $this->splash_attachment_id = $video_data['splash_attachment_id'];
         }
+      } else {
+        $meta_data = array();
       }
+
+      $meta_data[] = array(
+        'meta_key' => 'last_video_meta_check_src',
+        'meta_value' => $video_url,
+      );
 
     // Meta fields which are not in editor and must be retained
     } else {
@@ -973,6 +1041,17 @@ CREATE TABLE " . self::$db_table_name . " (
         $meta_data[] = array(
           'meta_key' => 'error_count',
           'meta_value' => $last_error_count,
+        );
+      }
+
+    }
+
+    // Meta fields which are not in editor and must be retained
+    foreach( $meta_to_preserve AS $meta_key => $meta_value ) {
+      if( $meta_value ) {
+        $meta_data[] = array(
+          'meta_key' => $meta_key,
+          'meta_value' => $meta_value,
         );
       }
     }
@@ -1046,14 +1125,14 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        
+
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
           // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
           if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
             unset($meta_record['id']);
           }
-          
+
           // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
           if( empty($meta_record['id']) ) {
             foreach( $existing_meta AS $existing ) {
@@ -1063,7 +1142,7 @@ CREATE TABLE " . self::$db_table_name . " (
               }
             }
           }
-          
+
           // add our video ID
           $meta_record['id_video'] = $this->id;
 
@@ -1087,7 +1166,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $cache[$this->id] = $this;
       self::$DB_Instance->setVideosCache($cache);
 
-      $saved_attachments = $wpdb->get_col( 
+      $saved_attachments = $wpdb->get_col(
         $wpdb->prepare( "SELECT post_id FROM `{$wpdb->postmeta}` WHERE meta_key = 'fv_player_video_id' AND meta_value = %d", $this->getId() )
       );
 
@@ -1171,13 +1250,13 @@ CREATE TABLE " . self::$db_table_name . " (
    * @throws Exception    When the underlying Meta object throws.
    *
    * @return int          Returns number of removed meta rows
-   * 
+   *
    */
   public function deleteMetaValue( $key, $value = false ) {
     $deleted = 0;
     $data = $this->getMetaData();
 
-    if( count($data) ) {      
+    if( count($data) ) {
       foreach( $data as $meta_object ) {
         if(
           $meta_object->getMetaKey() == $key &&

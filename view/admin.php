@@ -16,54 +16,66 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+// Set the FV Player wp-admin menu item to be open
+?>
+<script>
+var fv_player_menu_item = document.getElementById('toplevel_page_fv_player');
+if( fv_player_menu_item && fv_player_menu_item.classList ) {
+  fv_player_menu_item.classList.add('wp-menu-open');
+  fv_player_menu_item.classList.add('wp-has-current-submenu');
+  fv_player_menu_item.classList.remove('wp-not-current-submenu');
+}
+</script>
+<?php
+
 /**
  * Displays administrator backend.
  */
 
- 
+
 delete_option('fv_wordpress_flowplayer_deferred_notices');
 
-function fv_flowplayer_admin_ads() {
+function fv_flowplayer_admin_overlay() {
 	global $fv_fp;
-  $lines = substr_count( $fv_fp->_get_option('ad'), "\n" ) + 2;
+  $lines = substr_count( $fv_fp->_get_option('overlay'), "\n" ) + 2;
 ?>
 					<table class="form-table2">	
 						<tr>
 							<td colspan="2">
-								<label for="ad"><?php _e('Default Ad Code', 'fv-wordpress-flowplayer'); ?>:</label><br />
-								<textarea id="ad" name="ad" class="large-text code" rows="<?php echo $lines; ?>"><?php echo esc_textarea($fv_fp->_get_option('ad')); ?></textarea>			
+								<label for="overlay"><?php _e('Default Overlay Code', 'fv-wordpress-flowplayer'); ?>:</label><br />
+								<textarea id="overlay" name="overlay" class="large-text code" rows="<?php echo $lines; ?>"><?php echo esc_textarea($fv_fp->_get_option('overlay')); ?></textarea>			
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><label for="ad_width"><?php _e('Default set size', 'fv-wordpress-flowplayer');?> [px]:</label> 
-								<label for="ad_width">W:</label>&nbsp; <input type="text" name="ad_width" id="ad_width" value="<?php echo intval( $fv_fp->_get_option('ad_width') ); ?>" class="small" /> 
-								<label for="ad_height">H:</label>&nbsp;<input type="text" name="ad_height" id="ad_height" value="<?php echo intval( $fv_fp->_get_option('ad_height') ); ?>" class="small"  />
-								<label for="adTextColor"><?php _e('Ad text', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="adTextColor" id="adTextColor" value="<?php echo esc_attr( $fv_fp->_get_option('adTextColor') ); ?>" /> 
-								<label for="adLinksColor"><?php _e('Ad links', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="adLinksColor" id="adLinksColor" value="<?php echo esc_attr( $fv_fp->_get_option('adLinksColor') ); ?>" /> 
+							<td colspan="2"><label for="overlay_width"><?php _e('Default set size', 'fv-wordpress-flowplayer');?> [px]:</label> 
+								<label for="overlay_width">W:</label>&nbsp; <input type="text" name="overlay_width" id="overlay_width" value="<?php echo intval( $fv_fp->_get_option('overlay_width') ); ?>" class="small" /> 
+								<label for="overlay_height">H:</label>&nbsp;<input type="text" name="overlay_height" id="overlay_height" value="<?php echo intval( $fv_fp->_get_option('overlay_height') ); ?>" class="small"  />
+								<label for="overlayTextColor"><?php _e('Overlay text', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="overlayTextColor" id="overlayTextColor" value="<?php echo esc_attr( $fv_fp->_get_option('overlayTextColor') ); ?>" /> 
+								<label for="overlayLinksColor"><?php _e('Overlay links', 'fv-wordpress-flowplayer');?></label> <input class="color small" type="text" name="overlayLinksColor" id="overlayLinksColor" value="<?php echo esc_attr( $fv_fp->_get_option('overlayLinksColor') ); ?>" /> 
 							</td>			
 						</tr> 
             <tr>
               <td>
-                <label for="ad_show_after"><?php _e('Show After', 'fv-wordpress-flowplayer');?> [s]:</label>&nbsp; <input type="text" name="ad_show_after" id="ad_show_after" value="<?php echo intval( $fv_fp->_get_option('ad_show_after') ); ?>" class="small" /> 
+                <label for="overlay_show_after"><?php _e('Show After', 'fv-wordpress-flowplayer');?> [s]:</label>&nbsp; <input type="text" name="overlay_show_after" id="overlay_show_after" value="<?php echo intval( $fv_fp->_get_option('overlay_show_after') ); ?>" class="small" /> 
               </td>
             </tr> 
 						<tr>
 							<td colspan="2">
-								<label for="ad_css_select"><?php _e('Ad CSS', 'fv-wordpress-flowplayer'); ?>:</label>
-								<a href="#" onclick="jQuery('.ad_css_wrap').show(); jQuery(this).hide(); return false"><?php _e('Show styling options', 'fv-wordpress-flowplayer'); ?></a>
-								<div class="ad_css_wrap" style="display: none; ">
-									<select id="ad_css_select">
+								<label for="overlay_css_select"><?php _e('Overlay CSS', 'fv-wordpress-flowplayer'); ?>:</label>
+								<a href="#" onclick="jQuery('.overlay_css_wrap').show(); jQuery(this).hide(); return false"><?php _e('Show styling options', 'fv-wordpress-flowplayer'); ?></a>
+								<div class="overlay_css_wrap" style="display: none; ">
+									<select id="overlay_css_select">
 										<option value=""><?php _e('Select your preset', 'fv-wordpress-flowplayer'); ?></option>
-										<option value="<?php echo esc_attr($fv_fp->ad_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('ad_css') )) == 0 ) echo ' selected="selected"'; ?>><?php _e('Default (white, centered above the control bar)', 'fv-wordpress-flowplayer'); ?></option>
-										<option value="<?php echo esc_attr($fv_fp->ad_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->ad_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('ad_css') ))  == 0 ) echo ' selected="selected"'; ?>><?php _e('White, centered at the bottom of the video', 'fv-wordpress-flowplayer'); ?></option>					  		
+										<option value="<?php echo esc_attr($fv_fp->overlay_css_default); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->overlay_css_default), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('overlay_css') )) == 0 ) echo ' selected="selected"'; ?>><?php _e('Default (white, centered above the control bar)', 'fv-wordpress-flowplayer'); ?></option>
+										<option value="<?php echo esc_attr($fv_fp->overlay_css_bottom); ?>"<?php if( strcmp( preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->overlay_css_bottom), preg_replace('~[^a-z0-9\.{}:;]~','',$fv_fp->_get_option('overlay_css') ))  == 0 ) echo ' selected="selected"'; ?>><?php _e('White, centered at the bottom of the video', 'fv-wordpress-flowplayer'); ?></option>					  		
 									</select>
 									<br />
-									<textarea rows="5" name="ad_css" id="ad_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('ad_css')); ?></textarea>
+									<textarea rows="5" name="overlay_css" id="overlay_css" class="large-text code"><?php echo esc_textarea($fv_fp->_get_option('overlay_css')); ?></textarea>
 									<p class="description"><?php _e('(Hint: put .wpfp_custom_ad_content before your own CSS selectors)', 'fv-wordpress-flowplayer'); ?></p>
 									<script type="text/javascript">
-									jQuery('#ad_css_select').on('change', function() {
-										if( jQuery('#ad_css_select option:selected').val().length > 0 && jQuery('#ad_css_select option:selected').val() != jQuery('#ad_css').val() && confirm('Are you sure you want to apply the preset?') ) {
-											jQuery('#ad_css').val( jQuery('#ad_css_select option:selected').val() );	
+									jQuery('#overlay_css_select').on('change', function() {
+										if( jQuery('#overlay_css_select option:selected').val().length > 0 && jQuery('#overlay_css_select option:selected').val() != jQuery('#overlay_css').val() && confirm('Are you sure you want to apply the preset?') ) {
+											jQuery('#overlay_css').val( jQuery('#overlay_css_select option:selected').val() );	
 										}									
 									} );
 									</script>
@@ -245,14 +257,17 @@ function fv_flowplayer_admin_default_options() {
             <?php $fv_fp->_get_checkbox(__('Disable Sharing', 'fv-wordpress-flowplayer'), 'disablesharing', __('Removes sharing buttons from top bar.', 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Disable Video Links', 'fv-wordpress-flowplayer'), 'disable_video_hash_links', __('Removes the "Link" item to the top bar.', 'fv-wordpress-flowplayer'), __("Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-wordpress-flowplayer') ); ?>
             <?php $fv_fp->_get_checkbox(__('Enable Chromecast', 'fv-wordpress-flowplayer'), 'chromecast', __('Adds support for Google Chromecast.', 'fv-wordpress-flowplayer') ); ?>
-            <tr>
-              <td><label for="rtmp"><?php _e('Flash Streaming Server', 'fv-wordpress-flowplayer'); ?>:</label></td>
-              <td>
-                <p class="description">
-                  <input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr( $fv_fp->_get_option('rtmp') ); ?>" placeholder="<?php _e('Enter your default RTMP streaming server (Amazon CloudFront domain).', 'fv-wordpress-flowplayer'); ?>" />
-                </p>
-              </td>
-            </tr>
+
+            <?php if( $fv_fp->_get_option('rtmp') ) : ?>
+              <tr>
+                <td><label for="rtmp"><?php _e('Flash Streaming Server (deprecated)', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                <td>
+                  <p class="description">
+                    <input type="text" name="rtmp" id="rtmp" value="<?php echo esc_attr( $fv_fp->_get_option('rtmp') ); ?>" placeholder="<?php _e('Enter your default RTMP streaming server (Amazon CloudFront domain).', 'fv-wordpress-flowplayer'); ?>" />
+                  </p>
+                </td>
+              </tr>
+            <?php endif; ?>
 
             <?php $fv_fp->_get_checkbox(__('Force HD Streaming', 'fv-wordpress-flowplayer'), 'hd_streaming', __('Use HD quality for HLS/MPEG-DASH even on slow connections.', 'fv-wordpress-flowplayer'), __( 'User can still switch to lower quality by hand. Doesn\'t work on iPhones.', 'fv-wordpress-flowplayer') ); ?>
 
@@ -701,7 +716,7 @@ function fv_flowplayer_admin_integrations() {
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('postthumbnail') ) $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
 					<?php if( $fv_fp->_get_option('engine') ) $fv_fp->_get_checkbox(__('Prefer Flash player by default', 'fv-wordpress-flowplayer'), 'engine', __('Provides greater compatibility.', 'fv-wordpress-flowplayer'), __('We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting.', 'fv-wordpress-flowplayer') ); ?>
-          <?php if( $fv_fp->_get_option('rtmp-live-buffer') ) $fv_fp->_get_checkbox(__('RTMP bufferTime tweak', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
+          <?php if( $fv_fp->_get_option('rtmp-live-buffer') ) $fv_fp->_get_checkbox(__('RTMP bufferTime tweak (deprecated)', 'fv-wordpress-flowplayer'), 'rtmp-live-buffer', __('Use if your live streams are not smooth.', 'fv-wordpress-flowplayer'), __('Adobe <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting.', 'fv-wordpress-flowplayer') ); ?>
 
           <!--<tr>
             <td style="width: 350px"><label for="optimizepress2">Handle OptimizePress 2 videos (<abbr title="Following attributes are not currently supported: margin, border">?</abbr>):</label></td>
@@ -929,7 +944,7 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__('Mobile Video', 'fv-wordpress-flowplayer'), array('interface', 'mobile') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Auto Advance', 'fv-wordpress-flowplayer'), array('interface', 'playlist_advance') ); ?>
           <?php $fv_fp->_get_checkbox(__('Playlist Style', 'fv-wordpress-flowplayer'), array('interface', 'playlist') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Playlist Item Titles', 'fv-wordpress-flowplayer'), array('interface', 'playlist_captions') ); ?>
+          <?php $fv_fp->_get_checkbox(__('Playlist Item Titles', 'fv-wordpress-flowplayer'), array('interface', 'playlist_titles') ); ?>
           <?php $fv_fp->_get_checkbox(__('Sharing Buttons', 'fv-wordpress-flowplayer'), array('interface', 'share') ); ?>
           <?php $fv_fp->_get_checkbox(__('Speed Buttons', 'fv-wordpress-flowplayer'), array('interface', 'speed') ); ?>
           <?php $fv_fp->_get_checkbox(__('Splash Text', 'fv-wordpress-flowplayer'), array('interface', 'splash_text') ); ?>
@@ -1538,7 +1553,7 @@ function fv_flowplayer_admin_custom_css() {
   border: 1px solid #ddd;
   }
 </style>
- <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for someusefull CSS tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
+ <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for usefull appearance tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
  <table class="form-table2">
     <tr>
       <td colspan="2">
@@ -1939,16 +1954,41 @@ function fv_flowplayer_admin_database() {
   }
 }
 
+function fv_flowplayer_admin_embedded_on() {
+  global $wpdb;
+  $players_with_no_posts = $wpdb->get_var( "SELECT p.id, m.meta_value FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+  
+  $url = wp_nonce_url(
+    add_query_arg(
+      array(
+        'page'   => 'fvplayer',
+        'action' => 'fv-player-embedded-on-fix',
+      ),
+      admin_url( 'options-general.php' )
+    ),
+    'fv-player-embedded-on-fix'
+  );
+
+  if( $players_with_no_posts > 0 ) :
+    ?>
+    <p>It appears there are <?php echo $players_with_no_posts; ?> players which do not belong to any post.</p>
+    <a href="<?php echo $url ?>" class="button">Fix</a>
+
+  <?php else : ?>
+    <p>All of your FV Players seem to have a post associated.</p>
+  <?php endif;
+}
+
 
 function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>
     <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
-    <p>You can go back to the last 7.4 version - without editor autosaving and JavaScript loading changes:</p>
+    <p>You can go back to the previous 7.5 version - without changes to Chromecast, WordPress audio/video handling, MPEG-DASH and YouTube:</p>
     </div>
 <div class="usage-section">
-<h3><a href="<?php echo wp_nonce_url( admin_url($base.'7.4.47.727'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.4.47.727</a></h3>
+<h3><a href="<?php echo wp_nonce_url( admin_url($base.'7.5.29.7210'), 'fv-player-rollback' ); ?>" class="button">Reinstall version 7.5.29.7210</a></h3>
   <?php
 }
 
@@ -2021,7 +2061,7 @@ add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_end_of_video', __('End of Video', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_end_of_video' , 'fv_flowplayer_settings_actions', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_popups', __('Custom Popups', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_popups' , 'fv_flowplayer_settings_actions', 'normal', 'high' );
-add_meta_box( 'fv_flowplayer_ads', __('Ads', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_ads', 'fv_flowplayer_settings_actions', 'normal' );
+add_meta_box( 'fv_flowplayer_ads', __('Overlay', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_overlay', 'fv_flowplayer_settings_actions', 'normal' );
 
 /* Video Ads Tab */
 if( !class_exists('FV_Player_Pro') ) {
@@ -2033,6 +2073,7 @@ if( !class_exists('FV_Player_Pro') ) {
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_tools', 'fv_flowplayer_settings_tools', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_conversion', __('Conversion', 'fv-wordpress-flowplayer'),  'fv_flowplayer_settings_box_conversion', 'fv_flowplayer_settings_tools', 'normal' );
 add_meta_box( 'fv_flowplayer_database', __('Database', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_database', 'fv_flowplayer_settings_tools', 'normal', 'low' );
+add_meta_box( 'fv_flowplayer_embedded_on', __('Embeded Posts Information', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_embedded_on', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 add_meta_box( 'fv_flowplayer_rollback', __('Rollback', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_rollback', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 add_meta_box( 'fv_flowplayer_uninstall', __('Uninstall', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_uninstall', 'fv_flowplayer_settings_tools', 'normal', 'low' );
 

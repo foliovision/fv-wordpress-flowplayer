@@ -33,18 +33,16 @@ flowplayer(function(api, root) {
   function fv_player_is_in_viewport(el) {
     var rect = el.getBoundingClientRect();
     return (
-      rect.top >= 0 &&
+      rect.top >= 0 - (jQuery(el).outerHeight() / 2) &&
       rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + (jQuery(el).outerHeight() / 2) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
   }
 
   function fv_player_sticky_video() {
     var $window = jQuery(window),
-      $flowplayerDiv = $root,
-      top = $flowplayerDiv.offset().top,
-      offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
+      $flowplayerDiv = $root;
 
     api.on('unload', function() {
       fv_player_sticky_class_remove();
@@ -60,8 +58,6 @@ flowplayer(function(api, root) {
           return;
         }
 
-        top = $flowplayerDiv.offset().top;
-        offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
       })
       .on("scroll", function() {
         if( !is_big_enough() ) {
@@ -71,11 +67,8 @@ flowplayer(function(api, root) {
           return;
         }
 
-        top = $flowplayerDiv.offset().top;
-        offset = Math.floor(top + ($flowplayerDiv.outerHeight() / 2));
-
         // Not in viewport and the player loading, or it is the audible player
-        if ( !fv_player_is_in_viewport($flowplayerDiv[0]) && ( api.loading || flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ) ) {
+        if ( !fv_player_is_in_viewport($flowplayerDiv[0]) && ( api.playing || api.loading || flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ) ) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) { // Sticky already added
             return false;
           } else {

@@ -11,9 +11,11 @@ class FV_Player_List_Table extends WP_List_Table {
   public $args;
 
   public $base_url;
-  
+
   public $counts;
-  
+
+  private $post_types;
+
   public $total_impressions = 0;
   
   public $total_clicks = 0;
@@ -24,7 +26,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
   public function __construct( $args = array() ) {
     $this->args = $args;
-    //var_dump($args);
+
     parent::__construct( array(
       'singular' => 'Log entry',
       'plural'   => 'Log entries',
@@ -37,7 +39,6 @@ class FV_Player_List_Table extends WP_List_Table {
     new FV_Player_Db_Video(-1);
     new FV_Player_Db_Video_Meta(-1);
 
-    $this->get_result_counts();
     $this->process_bulk_action();
     $this->base_url = admin_url( 'admin.php?page=fv_player' );
   }
@@ -63,6 +64,10 @@ class FV_Player_List_Table extends WP_List_Table {
   }
   
   function get_columns() {
+    return self::get_columns_worker();
+  }
+
+  public static function get_columns_worker() {
     $cols = array(
       //'cb'             => '<input type="checkbox" />',
       'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
@@ -150,7 +155,9 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($player->player_name)."</a>\n";
+        $name = $player->player_name ? $player->player_name : join( ', ', $player->video_titles );
+
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($name)."</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
         $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";
@@ -162,21 +169,16 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "</div>\n";
         break;
       case 'embeds':
-        $player = new FV_Player_Db_Player($id);
         $value = '';
-        if( $player->getIsValid() ) {
-          if( $posts = $player->getMetaValue('post_id') ) {
-            foreach( $posts AS $post_id ) {
-              $post = get_post($post_id);
-              if( !isset($post) ) continue;
-              $title = !empty($post->post_title) ? $post->post_title : '#'.$post->ID;
-              if( $post->post_status != 'publish' ) {
-                $title .= ' ('.$post->post_status.')';
-              }
-              
-              $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.$title.'</a></li>';
-            }
+      
+        foreach( $player->embeds AS $post_id => $post ) {
+
+          $title = !empty($post->post_title) ? $post->post_title : '#'.$post->ID;
+          if( $post->post_status != 'publish' ) {
+            $title .= ' ('.$post->post_status.')';
           }
+
+          $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.$title.'</a></li>';
         }
         
         if( $value ) $value = '<ul>'.$value.'</ul>';
@@ -189,17 +191,64 @@ class FV_Player_List_Table extends WP_List_Table {
         $value= '';
         if( $player->stats_play ) $value = '<a href="'. admin_url( 'admin.php?page=fv_player_stats&player_id=' . $id ) .'" target="_blank">'. $player->stats_play .'</a>';
         break;
+      case 'thumbs':
+        $value = join( ' ', $player->thumbs );
+        break;
       default:
         $value = isset($player->$column_name) && $player->$column_name ? $player->$column_name : '';
         break;
 
     }
-    
+
+    // Use manage_toplevel_page_fv_player_columns to add new columns and what's below to add content
+    do_action( "manage_toplevel_page_fv_player_custom_column", $column_name, $player );
+
     return $value;
   }
 
   public function get_bulk_actions() { // todo: any bulk action?
     return array();
+  }
+    
+  public function get_views() {
+    $current = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'all';
+
+    
+    if ( ! empty( $_GET['post_type'] ) ) {
+      // Remove the taxonomy arg from the URL 
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $_GET['post_type'] );
+
+      foreach ( $post_type_taxonomies AS $tax ) {
+        if ( ! empty( $_GET[ $tax ] ) ) {
+          $url = add_query_arg( array(
+            $tax => false
+          ) );
+        }
+      }
+    }
+
+    foreach( $this->post_types AS $k => $v ) {
+
+      // Omit post types which have no player
+      if ( 'all' != $k && ( !isset( $v->player_count ) || $v->player_count === 0 ) ) {
+        continue;
+      }
+
+      $count = $v->player_count;
+
+      $url_post_type = 'all' != $k ? $k : false;
+
+      $url = add_query_arg( array(
+        'post_type' => $url_post_type,
+        'paged' => false
+      ), isset($url) ? $url : false );
+
+      $class = $current == $k ? ' class="current"' : '';
+
+      $views['post_type-'.$k] = sprintf( '<a href="%s"%s>%s</a>', $url, $class, $v->label .  '&nbsp;<span class="count">('.number_format($count).')' );
+    }
+
+    return $views;
   }
 
   public function process_bulk_action() {  // todo: any bulk action?
@@ -209,6 +258,63 @@ class FV_Player_List_Table extends WP_List_Table {
   public function get_result_counts() {
     global $FV_Player_Db;
     $this->total_items = $FV_Player_Db->getListPageCount();
+
+    $all_post_type = new stdClass;
+    $all_post_type->label = 'All';
+
+    $total_count = array();
+
+    // Get counts per post type and only do this once
+    if ( empty( $this->post_types ) ) {
+      $this->post_types = array( 'all' => $all_post_type );
+
+      $this->post_types = array_merge( $this->post_types, get_post_types( array( 'public' => true ), 'objects' ) );
+
+      // Get post IDs, post types and post statuses for each player
+      // Each player might be in multiple posts
+      global $wpdb;
+      $player_to_post_id_to_post_type = $wpdb->get_results( "SELECT pl.id, pm.meta_value, p.ID, p.post_type, p.post_status FROM {$wpdb->prefix}fv_player_players AS pl LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON pl.id = pm.id_player AND pm.meta_key = 'post_id' LEFT JOIN {$wpdb->posts} AS p ON p.ID = pm.meta_value" );
+
+      $no_post_attached = 0;
+
+      foreach ( $player_to_post_id_to_post_type AS $v ) {
+        // Only count for the post type if it's not in Trash
+        if ( 'trash' != $v->post_status ) {
+          foreach ( $this->post_types AS $post_type => $post_type_details ) {
+            if ( $v->post_type == $post_type ) {
+              if ( !isset( $this->post_types[ $post_type ]->player_count ) ) {
+                $this->post_types[ $post_type ]->player_count = 0;
+              }
+              $this->post_types[ $post_type ]->player_count++;
+            }
+          }
+        }
+
+        // Player may not be used in any post
+        if ( ! $v->meta_value ) {
+          $no_post_attached++;
+        }
+
+        $total_count[ $v->id ] = true;
+      }
+
+      if( $no_post_attached ) {
+        $no_post_type = new stdClass;
+        $no_post_type->label = 'None';
+        $no_post_type->player_count = $no_post_attached;
+
+        $this->post_types['none'] = $no_post_type;
+      }
+
+      $this->post_types[ 'all' ]->player_count = count( $total_count ); 
+    }
+
+    if ( ! empty( $_GET['post_type'] ) ) {
+      $post_type = $_GET['post_type'];
+      if ( ! empty( $this->post_types[ $post_type ] ) ) {
+        $this->total_items = $this->post_types[ $post_type ]->player_count;
+      }
+    }
   }
 
   public function get_data() {
@@ -217,14 +323,36 @@ class FV_Player_List_Table extends WP_List_Table {
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
     $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
+    $post_type = !empty($_GET['post_type']) ? trim($_GET['post_type']) : null;
 
     if(!empty($this->args['player_id'])) $single_id = $this->args['player_id'];
 
     $per_page = $this->args['per_page'];
     $offset = ( $current - 1 ) * $per_page;
 
+    $args = array(
+      'offset'    => $offset,
+      'order'     => $order,
+      'order_by'  => $order_by,
+      'player_id' => $single_id,
+      'per_page'  => $per_page,
+      'post_type' => $post_type,
+      'search'    => $search,
+    );
+
+    // Add any know taxonomy to the arguments
+    if( $post_type ) {
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $post_type );
+
+      foreach ( $post_type_taxonomies AS $tax ) {
+        if ( !empty( $_GET[ $tax ] ) ) {
+          $args[ 'tax_'.$tax ] = $_GET[ $tax ];
+        }
+      }
+    }
+
     global $FV_Player_Db;
-    return $FV_Player_Db->getListPageData($order_by, $order, $offset, $per_page, $single_id, $search);
+    return $FV_Player_Db->getListPageData( $args );
   }
   
   public function prepare_items() {
@@ -233,12 +361,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
     $data     = $this->get_data();
 
-    // re-count number of players to show when searching
-    if (isset($_GET['s']) && $_GET['s']) {
-      $this->get_result_counts();
-    }
-
-    $status   = isset( $_GET['status'] ) ? $_GET['status'] : 'all';
+    $this->get_result_counts();
 
     $this->items = $data;
 
@@ -246,8 +369,7 @@ class FV_Player_List_Table extends WP_List_Table {
         'total_items' => $this->total_items,
         'per_page'    => $this->args['per_page'],
         'total_pages' => ceil( $this->total_items / $this->args['per_page'] ),
-      )
-    );
+    ) );
   }
 
 }

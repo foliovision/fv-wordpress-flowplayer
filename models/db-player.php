@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player    
+/*  FV Wordpress Flowplayer - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -27,10 +27,6 @@ class FV_Player_Db_Player {
     $date_created, // date this playlist was created on
     $date_modified, // date this playlist was modified on
     $ab, // whether to show AB loop
-    $ad, // any HTML ad text
-    $ad_height, // height of advertisement for this player
-    $ad_width, // width of advertisement for this player
-    $ad_skip, // whether or not to skip ads for this player
     $align, // alignment position, DEPRECATED
     $autoplay, // whether to autoplay videos on page load
     $controlbar, // whether to show the control bar for this player
@@ -43,8 +39,12 @@ class FV_Player_Db_Player {
     $lightbox, // whether to enable displaying this player in a lightbox
     $lightbox_caption, // title for the lightbox popup
     $lightbox_height, // height for the lightbox popup
-    $lightbox_width, // width for the lightbox popup    
+    $lightbox_width, // width for the lightbox popup
     $loop, // (NON-ORM, class property only) loops player at the end if set
+    $overlay, // any HTML overlay text
+    $overlay_height, // height of overlay for this player
+    $overlay_width, // width of overlay for this player
+    $overlay_skip, // whether or not to use global overlay for this player
     $player_name, // custom name for the player
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
@@ -63,6 +63,8 @@ class FV_Player_Db_Player {
     $width, // with of the player on page
     $status, // draft of published
     $videos, // comma-delimited IDs of videos for this player
+    $toggle_end_action,
+    $toggle_overlay,
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $meta_data = null,
@@ -132,7 +134,9 @@ class FV_Player_Db_Player {
    * @return string
    */
   public function getAd() {
-    return $this->ad;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlay' );
+
+    return $this->getOverlay();
   }
 
   /**
@@ -153,21 +157,27 @@ class FV_Player_Db_Player {
    * @return int
    */
   public function getAdHeight() {
-    return $this->ad_height;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlayHeight' );
+
+    return $this->getOverlayHeight();
   }
 
   /**
    * @return int
    */
   public function getAdWidth() {
-    return $this->ad_width;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlayWidth' );
+
+    return $this->getOverlayWidth();
   }
 
   /**
    * @return string
    */
   public function getAdSkip() {
-    return $this->ad_skip;
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getOverlaySkip' );
+
+    return $this->getOverlaySkip();
   }
 
   /**
@@ -197,7 +207,7 @@ class FV_Player_Db_Player {
   public function getCopyText() {
     return $this->copy_text;
   }
-  
+
   public function getCount($video_meta) {
     if( $video_meta == 'subtitles' && isset($this->subtitles_count) ) return $this->subtitles_count;
     if( $video_meta == 'cues' && isset($this->cues_count) ) return $this->cues_count;
@@ -260,6 +270,34 @@ class FV_Player_Db_Player {
    */
   public function getLightboxWidth() {
     return $this->lightbox_width;
+  }
+
+  /**
+   * @return string
+   */
+  public function getOverlay() {
+    return $this->overlay;
+  }
+
+  /**
+   * @return int
+   */
+  public function getOverlayHeight() {
+    return $this->overlay_height;
+  }
+
+  /**
+   * @return int
+   */
+  public function getOverlayWidth() {
+    return $this->overlay_width;
+  }
+
+  /**
+   * @return string
+   */
+  public function getOverlaySkip() {
+    return $this->overlay_skip;
   }
 
   /**
@@ -378,7 +416,30 @@ class FV_Player_Db_Player {
    * @return bool
    */
   public function getIsValid() {
-    return $this->is_valid;
+    return boolval($this->is_valid);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleEndAction() {
+    return boolval($this->toggle_end_action);
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleAdCustom() {
+    _deprecated_function( __METHOD__, '8.0', __CLASS__ . '::getToggleOverlay' );
+
+    return $this->getToggleOverlay();
+  }
+
+  /**
+   * @return bool
+   */
+  public function getToggleOverlay() {
+    return boolval($this->toggle_overlay);
   }
 
   /**
@@ -426,19 +487,15 @@ CREATE TABLE " . self::$db_table_name . " (
   player_name varchar(255) NOT NULL,
   player_slug varchar(255) NOT NULL,
   videos text NOT NULL,
-  ab varchar(3) NOT NULL,
-  ad text NOT NULL,
-  ad_height varchar(7) NOT NULL,
-  ad_width varchar(7) NOT NULL,
-  ad_skip varchar(7) NOT NULL,
+  ab varchar(7) NOT NULL,
   align varchar(7) NOT NULL,
   author bigint(20) unsigned NOT NULL default '0',
   autoplay varchar(7) NOT NULL,
   controlbar varchar(7) NOT NULL,
   copy_text varchar(120) NOT NULL,
   changed_by bigint(20) unsigned NOT NULL default '0',
-  date_created datetime NOT NULL default '0000-00-00 00:00:00',
-  date_modified datetime NOT NULL default '0000-00-00 00:00:00',
+  date_created datetime NOT NULL default CURRENT_TIMESTAMP,
+  date_modified datetime NOT NULL default CURRENT_TIMESTAMP,
   embed varchar(12) NOT NULL,
   end_actions varchar(10) NOT NULL,
   end_action_value varchar(255) NOT NULL,
@@ -447,7 +504,11 @@ CREATE TABLE " . self::$db_table_name . " (
   lightbox varchar(7) NOT NULL,
   lightbox_caption varchar(120) NOT NULL,
   lightbox_height varchar(7) NOT NULL,
-  lightbox_width varchar(7) NOT NULL,  
+  lightbox_width varchar(7) NOT NULL,
+  overlay text NOT NULL,
+  overlay_height varchar(7) NOT NULL,
+  overlay_width varchar(7) NOT NULL,
+  overlay_skip varchar(7) NOT NULL,
   playlist varchar(10) NOT NULL,
   playlist_advance varchar(7) NOT NULL,
   qsel varchar(25) NOT NULL,
@@ -460,14 +521,55 @@ CREATE TABLE " . self::$db_table_name . " (
   video_ads_post varchar(10) NOT NULL,
   width varchar(7) NOT NULL,
   status varchar(9) NOT NULL default 'published',
+  toggle_end_action varchar(7) NOT NULL,
+  toggle_overlay varchar(7) NOT NULL,
   PRIMARY KEY  (id)
 )" . $wpdb->get_charset_collate() . ";";
       require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
       $res = dbDelta( $sql );
+
+      if( $fv_fp->_get_option('player_model_db_checked') != $fv_wp_flowplayer_ver ) {
+        self::updateTableConversion();
+      }
+
       $fv_fp->_set_option('player_model_db_checked', $fv_wp_flowplayer_ver);
     }
 
     return $res;
+  }
+
+  /**
+   * Run conversion of old data to new data structure.
+   *
+   * @return void
+   */
+  private static function updateTableConversion() {
+    global $fv_fp, $wpdb;
+
+    $table = self::$db_table_name;
+
+    if( $fv_fp->_get_option('player_model_db_updated') != '7.9.3' ) {
+      // enable toggle end action
+      $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
+
+      // enable toggle ad custom
+      $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+
+      foreach ( array(
+        'ad'                => 'overlay',
+        'ad_height'         => 'overlay_height',
+        'ad_skip'           => 'overlay_skip',
+        'ad_width'          => 'overlay_width',
+        'toggle_ad_custom'  => 'toggle_overlay',
+      ) as $from => $to ) {
+        // Is there such column?
+        if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
+          $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
+        }
+      }
+
+      $fv_fp->_set_option('player_model_db_updated', '7.9.3');
+    }
   }
 
   /**
@@ -483,10 +585,10 @@ CREATE TABLE " . self::$db_table_name . " (
             $value = strip_tags($value);
           }
           $this->$key = stripslashes($value);
-          
+
         } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
           $this->$key = stripslashes($value);
-          
+
         } else if (!in_array($key, array('drm_text', 'email_list', 'dvr', 'live', 'popup_id', 'timeline_preview', 'transcript_checkbox'))) {
           if ( defined('WP_DEBUG') && WP_DEBUG ) {
             // generate warning
@@ -495,8 +597,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
         }
       }
-    }    
-    
+    }
+
     // make sure we fill the appropriate non-orm object properties
     $this->propagate_end_action_value();
   }
@@ -716,24 +818,9 @@ CREATE TABLE " . self::$db_table_name . " (
     $player_name = $this->getPlayerName();
 
     // player name is present - return it
-    if( !empty( $player_name ) ) {
-      return $player_name;
+    if( empty( $player_name ) ) {
+      $player_name = join(', ', $this->getPlayerVideoNames() );
     }
-
-    // else assemble player name
-    $player_name = array();
-
-    foreach( $this->getVideos() as $video ) {
-      $caption = $video->getCaption();
-      if( !$caption ) {
-        $caption = $video->getCaptionFromSrc();
-      }
-
-      $player_name[] = $caption;
-    }
-
-    // join name items
-    $player_name = join(', ', $player_name);
 
     // add "Draft" at the end of player, if in draft status
     if ( $this->getStatus() == 'draft' ) {
@@ -741,6 +828,21 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     return $player_name;
+  }
+
+  public function getPlayerVideoNames() {
+    $video_names = array();
+
+    foreach( $this->getVideos() as $video ) {
+      $title = $video->getTitle();
+      if( !$title ) {
+        $title = $video->getTitleFromSrc();
+      }
+
+      $video_names[] = $title;
+    }
+
+    return $video_names;
   }
 
   /**
@@ -809,13 +911,13 @@ CREATE TABLE " . self::$db_table_name . " (
       return array();
     }
   }
-  
+
   /**
    * Returns actual meta data for a key for this player.
    */
   public function getMetaValue( $key, $single = false ) {
     $output = array();
-    $data = $this->getMetaData();    
+    $data = $this->getMetaData();
     if (count($data)) {
       foreach ($data as $meta_object) {
         if ($meta_object->getMetaKey() == $key) {
@@ -826,7 +928,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
     if( $single ) return false;
     return $output;
-  }  
+  }
 
   /**
    * Returns all video objects for this player.
@@ -950,7 +1052,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
-        
+
         if( $property != 'ad' ) {
           $value = strip_tags($value);
         }
@@ -992,15 +1094,15 @@ CREATE TABLE " . self::$db_table_name . " (
           } else {
             $existing_meta_ids[$existing->getId()] = true;
           }
-        }        
-        
+        }
+
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
           // it's possible that we switched the checkbox off and then on, by that time its id won't exist anymore! Todo: remove data-id instead?
           if( !empty($meta_record['id']) && empty($existing_meta_ids[$meta_record['id']]) ) {
-            unset($meta_record['id']);          
+            unset($meta_record['id']);
           }
-          
+
           // if the meta value has no ID associated, we replace the first one which exists, effectively preventing multiple values under the same meta key, which is something to improve, perhaps
           if( empty($meta_record['id']) ) {
             foreach( $existing_meta AS $existing ) {
@@ -1009,8 +1111,8 @@ CREATE TABLE " . self::$db_table_name . " (
                 break;
               }
             }
-          }          
-          
+          }
+
           // add our player ID
           $meta_record['id_player'] = $this->id;
 
@@ -1088,7 +1190,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
         if( $wpdb->get_var("select count(*) from ".self::$db_table_name." where FIND_IN_SET(".$video->getId().",videos)") > 1 ) continue; // only delete videos which are used for this particular player and no other player
-        
+
         $video->delete();
 
         // load all meta data for this video
