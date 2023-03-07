@@ -457,9 +457,9 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking .fp-ui {
+  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui {
     background-image: none; }
-    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking .fp-ui > * {
+    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui > * {
       opacity: 1; }
   .freedomplayer .fp-header {
     top: 0;
@@ -576,13 +576,10 @@
     width: 30%;
     position: absolute;
     left: 0;
-    height: 100%;
-    pointer-events: none; }
-    .freedomplayer .fp-rewind svg, .freedomplayer .fp-forward svg {
-      pointer-events: auto; }
-      .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
-        -webkit-transform: scale(0.9);
-                transform: scale(0.9); }
+    height: 100%; }
+    .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
+      -webkit-transform: scale(0.9);
+              transform: scale(0.9); }
   .freedomplayer .fp-forward {
     left: auto;
     right: 0; }
