@@ -41,6 +41,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'playlist',
       'caption',
       'subtitles',
+      'transcript',
+      'original_formatting',
       'ab',
       'chapters',
       'controlbar',
@@ -309,6 +311,19 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               }
 
               $video_index++;
+            }
+
+          } else if(strcmp( $player_att, 'transcript' ) == 0) { // transcript text
+            $transcript_text = $import_atts[$player_att];
+            if( !empty($transcript_text) ) {
+              $import_video_atts[$video_index]['meta'][] = array( 'meta_key' => 'transcript_text', 'meta_value' => $transcript_text );
+            }
+
+          } else if(strcmp( $player_att, 'original_formatting' ) == 0) { // transcript original formatting
+            $transcript_original_formatting = $import_atts[$player_att];
+
+            if( $transcript_original_formatting === 'true' ) {
+              $import_video_atts[$video_index]['meta'][] = array( 'meta_key' => 'transcript_original_formatting', 'meta_value' => $transcript_original_formatting );
             }
 
           } else if(strcmp( $player_att, 'ab' ) == 0) { // subtitles
