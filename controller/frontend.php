@@ -756,8 +756,7 @@ function fv_player_disable_scroll_autoplay() {
  * @return array $conf
  */
 function fv_player_disable_scroll_autoplay_conf($conf) {
-  if( isset( $conf['autoplay_preload'] ) && $conf['autoplay_preload'] == 'webview' ) unset($conf['autoplay_preload']); // check if value is webview which is for scroll autoplay
-
+  unset($conf['autoplay_preload']);
   return $conf;
 }
 
