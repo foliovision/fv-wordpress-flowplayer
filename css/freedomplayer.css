@@ -465,7 +465,8 @@
     top: 0;
     text-align: left;
     height: 3em;
-    padding-left: .65em; }
+    padding-left: .65em;
+    z-index: 2; }
     .freedomplayer .fp-header .fp-icon {
       padding: .5em 1em; }
       .freedomplayer .fp-header .fp-icon.fp-active {
