@@ -30,9 +30,9 @@ flowplayer( function(api,root) {
           return false;
         }
 
-        alreadyTried.push(videoIndex);
-
         videoIndex = api.video.index;
+
+        alreadyTried.push(videoIndex);
 
         if ( api.conf.video_checker == '1' && playlist[videoIndex].video_checker && playlist[videoIndex].video_checker.length > 0 ) { // Run checker for admin
           console.log('FV Player: Video checker message present, stopping auto-advance to next playlist item');
