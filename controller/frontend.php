@@ -116,6 +116,7 @@ function fv_flowplayer_get_js_translations() {
 
 /**
  * Replaces the flowplayer tags in post content by players and fills the $GLOBALS['fv_fp_scripts'] array.
+ * 
  * @param string Content to be parsed
  * @return string Modified content string
  */
@@ -497,6 +498,10 @@ function flowplayer_prepare_scripts() {
       $aConf['disable_localstorage'] = true;
     }
 
+    if( $fv_fp->_get_option('autoplay_preload') && $fv_fp->_get_option('autoplay_preload') != 'false' ) {
+      $aConf['autoplay_preload'] = $fv_fp->_get_option('autoplay_preload');
+    }
+
     $aConf['hlsjs'] = array(
       'startLevel' => -1,
       'fragLoadingMaxRetry' => 3,
@@ -733,7 +738,28 @@ function fv_player_load_svg_buttons_everywhere() {
 
 add_filter( 'script_loader_tag', 'fv_player_js_loader_mark_scripts', PHP_INT_MAX, 2 );
 
-/*
+/**
+ * Disables scroll auotplay
+ *
+ * @return void
+ */
+function fv_player_disable_scroll_autoplay() {
+  add_filter('fv_flowplayer_conf', 'fv_player_disable_scroll_autoplay');
+}
+
+/**
+ * Removes scroll autoplay from conf
+ *
+ * @param array $conf
+ *
+ * @return array $conf
+ */
+function fv_player_disable_scroll_autoplay_conf($conf) {
+  unset($conf['autoplay_preload']);
+  return $conf;
+}
+
+/**
  * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
  * The reason is that it's a dependency of most of the modules so then each module would have to be 
  * adjusted to be able to load without it.
@@ -794,7 +820,7 @@ function fv_player_js_loader_load() {
   echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }
 
-/*
+/**
  * @param string $min The minimal version to check - like 7.4.44.727
  * 
  * @return bool True if the version is at least $min

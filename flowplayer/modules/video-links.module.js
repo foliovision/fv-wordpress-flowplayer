@@ -72,7 +72,7 @@ if (typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefi
   jQuery(document).on('click','a[href*="fvp_"]', function() {
     var link = jQuery(this)
     setTimeout( function() {
-      if( link.parents('.fvp-share-bar').length == 0 ) fv_autoplay_exec();
+      if( link.parents('.fvp-share-bar').length == 0 ) fv_video_link_autoplay();
     } );
   });
 

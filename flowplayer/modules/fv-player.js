@@ -497,13 +497,13 @@ function fv_player_preload() {
   }
   
   fv_player_load();
-  fv_autoplay_exec();
+  fv_video_link_autoplay();
   
   jQuery(document).ajaxComplete( function() {
     fv_player_load();
   });
   
-  jQuery(window).on('hashchange',fv_autoplay_exec);
+  jQuery(window).on('hashchange',fv_video_link_autoplay);
 }
 
 /*
@@ -907,7 +907,7 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
 
 var fv_autoplay_exec_in_progress = false;
 
-function fv_autoplay_exec(){
+function fv_video_link_autoplay(){
   var autoplay = true;
   //anchor sharing
   if( typeof (flowplayer) !== "undefined" && typeof(fv_flowplayer_conf) != "undefined"  && fv_flowplayer_conf.video_hash_links && window.location.hash.substring(1).length ) {
@@ -937,6 +937,7 @@ function fv_autoplay_exec(){
           else api.conf.clip.prevent_position_restore = true; 
           
           console.log('fv_autoplay_exec for '+id,item);
+
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
 
@@ -953,54 +954,11 @@ function fv_autoplay_exec(){
           else api.conf.clip.prevent_position_restore = true; 
 
           console.log('fv_autoplay_exec for '+src,item);
+
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
           autoplay = false;
 
           return false;
-        }
-      }
-    });
-  }
-
-  // If no video is matched by URL hash string, process autoplay
-  if( autoplay && flowplayer.support.firstframe ) {
-    jQuery('.flowplayer[data-fvautoplay]').each( function() {
-      var root = jQuery(this),
-        api = root.data('flowplayer'),
-        // Not sure why but I saw root.data('fvautoplay') to return false on some
-        // sites while root.attr('data-fvautoplay') worked
-        autoplay = root.attr('data-fvautoplay');
-
-      if( !fv_player_did_autoplay && autoplay ) {
-        if( autoplay == -1 ) {
-          return;
-        }
-
-        if( ( flowplayer.support.android || flowplayer.support.iOS ) && api && api.conf.clip.sources[0].type == 'video/youtube' ) {
-          // don't let these mobile devices autoplay YouTube
-          console.log( 'FV Player: Autoplay for YouTube not supported on Android and iOS');
-          return;
-        } else {
-          fv_player_did_autoplay = true;
-
-          if( api.conf.playlist.length && !isNaN(parseFloat(autoplay)) && isFinite(autoplay) ) {
-            api.play( parseInt(autoplay) );
-          } else {
-            api.load();
-          }
-
-          // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
-          var play_icon = root.find('.fp-play').addClass('invisible'),
-            control_bar = root.find('.fp-controls').addClass('invisible');
-            
-          api.one('progress', function() {
-            play_icon.removeClass('invisible');
-            control_bar.removeClass('invisible');
-          });
-
-          if( autoplay == 'muted' ) {
-            api.mute(true,true);
-          }
         }
       }
     });
