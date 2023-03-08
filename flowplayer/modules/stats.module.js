@@ -48,7 +48,12 @@
 
     }).on( 'progress', function( e, api, time ) {
 
-      if ( time == 0 || api.seeking ) {
+      if ( time == 0 ) {
+        return;
+      }
+
+      if ( api.seeking ) {
+        last_time = time;
         return;
       }
 
