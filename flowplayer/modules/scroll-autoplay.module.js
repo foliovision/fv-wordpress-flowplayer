@@ -27,17 +27,25 @@ if( typeof(flowplayer) !== 'undefined') {
     jQuery('.flowplayer:not(.is-disabled)').each( function(k,v) {
       var root = jQuery(this);
 
+      // Autoplay disabled for he player
       if( typeof root.data('fvautoplay') != 'undefined' && root.data('fvautoplay') == -1 ) {
         return;
       }
 
+      // FV Player in wp-admin = in editor - should not autoplay
       if( jQuery('body').hasClass('wp-admin') ) return;
 
       var api = root.data('flowplayer'),
+        player = root.find('.fp-player'),
         player_autoplay = typeof root.data('fvautoplay') != 'undefined';
 
+      // No ready yet
+      if ( !player.length ) {
+        return;
+      }
+
       if( fv_autoplay_type == 'viewport' || fv_autoplay_type == 'sticky' || player_autoplay ) { // play video when on viewport or sticky or player enabled autoplay
-        var rect = root.find('.fp-player')[0].getBoundingClientRect(); // watch .fp-player because root can ve outside viewport when stickied
+        var rect = player[0].getBoundingClientRect(); // watch .fp-player because root can ve outside viewport when stickied
 
         // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
         // var play_icon = root.find('.fp-play').addClass('invisible'),
