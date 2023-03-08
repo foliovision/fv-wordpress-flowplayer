@@ -9,9 +9,9 @@ Class FvPlayerTrackerWorker {
   private $video_id = false;
   private $post_id = false;
   private $player_id = false;
+  private $user_id = 0;
 
   private $file = false;
-  private $data = array();
 
   function __construct() {
 
@@ -28,6 +28,9 @@ Class FvPlayerTrackerWorker {
     $this->video_id = intval($_REQUEST['video_id']);
     $this->player_id = intval($_REQUEST['player_id']);
     $this->post_id = intval( $_REQUEST['post_id'] );
+    $this->user_id = intval($_REQUEST['user_id']);
+
+    // TODO: Verify some kind of signature here
 
     $this->checkCacheFile();
   }
@@ -86,7 +89,7 @@ Class FvPlayerTrackerWorker {
 
         $found = false;
         foreach( $data as $index => $item ) {
-          if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id ) {
+          if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id ) {
             $data[$index]['play'] += 1;
             $found = true;
             break;
@@ -95,10 +98,11 @@ Class FvPlayerTrackerWorker {
 
         if( !$found ) {
           $data[] = array(
-            'video_id' => $this->video_id,
-            'post_id' => $this->post_id,
+            'video_id'  => $this->video_id,
+            'post_id'   => $this->post_id,
             'player_id' => $this->player_id,
-            'play' => 1
+            'user_id'   => $this->user_id,
+            'play'      => 1
           );
         }
 
