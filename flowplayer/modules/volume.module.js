@@ -9,51 +9,6 @@
  */
 flowplayer(function(api, root) {
   root = jQuery(root);
-  var bean = flowplayer.bean;
-  
-  // Restore volume on click on the speaker icon
-  var restore = flowplayer.conf.default_volume;
-  // Watch out, the website default might be to use a zero volume!
-  if( restore == 0 ) {
-    restore = "0.5";
-  }
-  
-  root.on('mousedown touchstart','.fp-volumebtn', function(e) {
-    var volumebtn = jQuery(this);
-
-    // Only restore if it's muted, we use mousedown event to be able to check this
-    if( api.volumeLevel == 0 ) {
-      // The click event which follows after mousedown will be affected
-      volumebtn.one( 'click', function() {
-        // Fix unmute for Vimeo MPEG-DASH on iPhone, strange!
-        if( api.engine.engineName == 'dash' ) {
-          api.mute(false);
-        }
-        api.volume( restore );
-        return false;
-      });
-    }
-  });
-
-  // Click into volume bar and start dragging it down and drag it to very 0, it would remember the initial volume - the one which was there on mousedown
-  // Other case is click into the volume bar and drag it from 1 to about 0.5. So 0.5 is remembered on mouseup, then drag it to 0. So clicking the mute icon would restore to 0.5
-  // It's not so ideal with touchstart and touchend, it seems to remember some weird volume which user didn't intendt to set, but nothing too critical
-  root.on('mousedown touchstart mouseup touchend','.fp-volumebar', function(e) { 
-    if ( api.volumeLevel != 0 ) { 
-      restore = api.volumeLevel;
-    }
-  })
-
-
-  // Mute
-  api.on('volume', function(e,api) {
-    if( root.hasClass('is-mouseover') && !api.muted ) {
-      if( api.volumeLevel == 0 ) { // Mute when volume is set to 0 by mouse
-        bean.off( flowplayer.support.touch ? root : document, 'mousemove.sld touchmove.sld'); // Stop flowplayer slide api, without this slide event gets incorrect value
-        api.mute(true);
-      }
-    }
-  });
 
   // If video starts muted, show a notice
   var deal_with_muted_start = false;

@@ -223,6 +223,7 @@ function fv_player_preload() {
       root.find('.fp-volume').hide();
     }
     
+    // Hide volume if set to 0 in the player and controlbar is disabled
     if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
       root.find('.fp-volume').remove();
     }
