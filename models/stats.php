@@ -106,7 +106,8 @@ class FV_Player_Stats {
     if( $this->used || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('video_stats_enable') ) { // we want to enable the tracking if it's used, if FV Player JS is enabled globally or if the tracking is enabled globally
       $conf['fv_stats'] = array(
                                 'url' => flowplayer::get_plugin_url().'/controller/track.php',
-                                'blog_id' => $blog_id
+                                'blog_id' => $blog_id,
+                                'user_id' => get_current_user_id()
                                );
       if( $fv_fp->_get_option('video_stats_enable') ) $conf['fv_stats']['enabled'] = true;
       
@@ -141,7 +142,6 @@ class FV_Player_Stats {
         $attributes['data-fv_stats_data'] = json_encode( array(
           'player_id' => $player_id,
           'post_id' => $post->ID,
-          'user_id' => get_current_user_id()
         ) );
       }
     }
