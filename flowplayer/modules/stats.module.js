@@ -25,7 +25,7 @@ flowplayer( function(api,root) {
           'video_id' : api.video.id ? api.video.id : 0,
           'player_id': player_post_data.player_id,
           'post_id' : player_post_data.post_id,
-          'user_id' : player_post_data.user_id,
+          'user_id' : api.conf.fv_stats.user_id,
           'tag' : 'play'
         } );
       }
