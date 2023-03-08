@@ -4,8 +4,6 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
   var player = root.find('.fp-player'),
-    had_no_volume = root.hasClass('no-volume'),
-    had_fp_mute = root.hasClass('fp-mute'),
     had_fp_full = root.hasClass('fp-full'),
     buttons_count = 0;
 
@@ -47,13 +45,6 @@ flowplayer(function(api, root) {
       el.addClass('is-fv-narrow');
     } else {
       el.removeClass('is-fv-narrow');
-    }
-    
-    if(width <= 320) { // remove volue bar on narrow players
-      root.addClass('no-volume fp-mute');
-    } else {
-      if( !had_no_volume && flowplayer.support.volume ) root.removeClass('no-volume');
-      if( !had_fp_mute && flowplayer.support.volume ) root.removeClass('fp-mute');
     }
   }
 
