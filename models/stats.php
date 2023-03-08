@@ -60,6 +60,7 @@ class FV_Player_Stats {
       `id_video` INT(11) NOT NULL,
       `id_player` INT(11) NOT NULL,
       `id_post` INT(11) NOT NULL,
+      `user_id` INT(11) NOT NULL,
       `date` DATE NULL DEFAULT NULL,\n";
 
     foreach( $this->get_stat_columns() AS $column ) {
@@ -70,7 +71,8 @@ class FV_Player_Stats {
       INDEX `date` (`date`),
       INDEX `id_video` (`id_video`),
       INDEX `id_player` (`id_player`),
-      INDEX `id_post` (`id_post`)
+      INDEX `id_post` (`id_post`),
+      INDEX `user_id` (`user_id`)
     ) " . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -135,7 +137,12 @@ class FV_Player_Stats {
       }
 
       if( !empty($post->ID ) ) {
-        $attributes['data-fv_stats_data'] = json_encode( array('player_id' => $player_id, 'post_id' => $post->ID) );
+        // TODO: Add signature to avoid faking the stats by users
+        $attributes['data-fv_stats_data'] = json_encode( array(
+          'player_id' => $player_id,
+          'post_id' => $post->ID,
+          'user_id' => get_current_user_id()
+        ) );
       }
     }
 
@@ -183,6 +190,7 @@ class FV_Player_Stats {
           $video_id = intval($item['video_id']);
           $player_id = intval($item['player_id']);
           $post_id = intval($item['post_id']);
+          $user_id = intval($item['user_id']);
           $value = intval($item[$type]);
 
           if( $video_id ) {
@@ -199,7 +207,7 @@ class FV_Player_Stats {
 
           $table_name = $this->get_table_name();
 
-          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
 
           if( $existing ) {
             $wpdb->update(
@@ -207,7 +215,7 @@ class FV_Player_Stats {
               array(
                 $type => $value + $existing->{$type}, // update plays in db
               ),
-              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id ), // update by video id, date, player id and post id
+              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id ), // update by video id, date, player id, post id and user ID
               array(
                 '%d'
               ),
@@ -222,13 +230,15 @@ class FV_Player_Stats {
             $wpdb->insert(
               $table_name,
               array(
-                'id_video' => $video_id,
+                'id_video'  => $video_id,
                 'id_player' => $player_id,
-                'id_post' => $post_id,
+                'id_post'   => $post_id,
+                'user_id'   => $user_id,
                 'date' => date_i18n( 'Y-m-d' ),
                 $type => $value
               ),
               array(
+                '%d',
                 '%d',
                 '%d',
                 '%d',
