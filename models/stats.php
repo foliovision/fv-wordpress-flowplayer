@@ -37,7 +37,7 @@ class FV_Player_Stats {
   }
 
   function get_stat_columns() {
-    return array( 'play' );
+    return array( 'play', 'seconds' );
   }
 
   function get_table_name() {
