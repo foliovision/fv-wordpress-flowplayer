@@ -1,5 +1,5 @@
 <?php
-/* This file doesn't loading WordPress, it simple increment counters for posts in wp-content/cache/fv-tracker/{tag}-{site id}.data */
+/* This file doesn't load WordPress, it simple increment counters for posts in wp-content/cache/fv-tracker/{tag}-{site id}.data */
 
 Class FvPlayerTrackerWorker {
 
@@ -10,25 +10,34 @@ Class FvPlayerTrackerWorker {
   private $post_id = false;
   private $player_id = false;
   private $user_id = 0;
+  private $watched = false;
+  private $tag = false;
 
   private $file = false;
 
   function __construct() {
 
-    if( !isset( $_REQUEST['blog_id'] ) || !isset( $_REQUEST['tag'] ) || !isset( $_REQUEST['video_id'] ) ){
+    if(
+      !isset( $_REQUEST['blog_id'] ) ||
+      !isset( $_REQUEST['tag'] ) ||
+      !isset( $_REQUEST['video_id'] ) && !isset( $_REQUEST['watched'] )
+    ){
       die( "Error: missing arguments!" );
     }
 
     $blog_id = intval($_REQUEST['blog_id']);
     $tag = preg_replace( '~[^a-z]~', '', substr( $_REQUEST['tag'], 0, 16 ) );
+    $this->tag = $tag;
 
     $this->wp_content = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
     $this->cache_path = $this->wp_content."/fv-player-tracking";
     $this->cache_filename = "{$tag}-{$blog_id}.data";
-    $this->video_id = intval($_REQUEST['video_id']);
-    $this->player_id = intval($_REQUEST['player_id']);
-    $this->post_id = intval( $_REQUEST['post_id'] );
+
+    $this->video_id = !empty($_REQUEST['video_id']) ? intval($_REQUEST['video_id']) : false;
+    $this->player_id = !empty($_REQUEST['player_id']) ? intval($_REQUEST['player_id']) : false;
+    $this->post_id = !empty($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : false;
     $this->user_id = intval($_REQUEST['user_id']);
+    $this->watched = !empty($_REQUEST['watched']) ? $_REQUEST['watched'] : false;
 
     // TODO: Verify some kind of signature here
 
@@ -87,23 +96,63 @@ Class FvPlayerTrackerWorker {
           $data = array();
         }
 
-        $found = false;
-        foreach( $data as $index => $item ) {
-          if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id ) {
-            $data[$index]['play'] += 1;
-            $found = true;
-            break;
-          }
-        }
+        if ( 'seconds' === $this->tag ) {
+          $this->watched = json_decode( urldecode( $this->watched), true );
 
-        if( !$found ) {
-          $data[] = array(
-            'video_id'  => $this->video_id,
-            'post_id'   => $this->post_id,
-            'player_id' => $this->player_id,
-            'user_id'   => $this->user_id,
-            'play'      => 1
-          );
+          $json_error = json_last_error();
+          if( $json_error !== JSON_ERROR_NONE ) {
+            file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r')." JSON decode error for watched:\n".var_export( array( 'err' => $json_error, 'data' => $this->watched ), true )."\n", FILE_APPEND ); // todo: remove
+            return false;
+          }
+
+          foreach ( $this->watched as $player_id => $players ) {
+
+            foreach( $players as $post_id => $videos ) {
+
+              foreach( $videos as $video_id => $seconds ) {
+
+                // Add to the existing JSON data
+                $found = false;
+                foreach( $data as $index => $item ) {
+                  if( $item['video_id'] == $video_id && $item['post_id'] == $post_id && $item['player_id'] == $player_id && $item['user_id'] == $this->user_id ) {
+                    $data[$index]['seconds'] = round( $data[$index]['seconds'] + $seconds );
+                    $found = true;
+                  }
+                }
+
+                // New JSON data
+                if ( ! $found ) {
+                  $data[] = array(
+                    'video_id'  => $video_id,
+                    'post_id'   => $post_id,
+                    'player_id' => $player_id,
+                    'user_id'   => $this->user_id,
+                    'seconds'   => round($seconds)
+                  );
+                }
+              }
+            }
+          }
+
+        } else if ( 'play' === $this->tag ) {
+          $found = false;
+          foreach( $data as $index => $item ) {
+            if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id ) {
+              $data[$index]['play'] += 1;
+              $found = true;
+              break;
+            }
+          }
+
+          if( !$found ) {
+            $data[] = array(
+              'video_id'  => $this->video_id,
+              'post_id'   => $this->post_id,
+              'player_id' => $this->player_id,
+              'user_id'   => $this->user_id,
+              'play'      => 1
+            );
+          }
         }
 
         $encoded_data = json_encode($data);
@@ -142,5 +191,3 @@ Class FvPlayerTrackerWorker {
 
 $fv_player_tracker_worker = new FvPlayerTrackerWorker();
 $fv_player_tracker_worker->track();
-
-?>
