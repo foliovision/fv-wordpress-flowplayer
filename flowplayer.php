@@ -30,8 +30,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.9.3.9';
-$fv_wp_flowplayer_core_ver = '7.2.14.7';
+$fv_wp_flowplayer_ver = '7.9.3.10';
+$fv_wp_flowplayer_core_ver = '7.2.14.8';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
