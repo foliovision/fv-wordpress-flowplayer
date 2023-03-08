@@ -190,9 +190,6 @@
 .freedomplayer.no-volume .fp-volumebar {
   display: none; }
 
-.freedomplayer.fp-mute .fp-volumebtn {
-  display: inline-block; }
-
 @-webkit-keyframes pulse {
   0% {
     opacity: 0; }
@@ -685,8 +682,13 @@
     -ms-flex-align: center;
     -webkit-box-align: center;
             align-items: center; }
-  .freedomplayer .fp-volumebtn {
-    display: none; }
+  .freedomplayer .fp-volumebar.fp-bar-slider {
+    overflow: hidden;
+    -webkit-transition: width .2s;
+    transition: width .2s;
+    width: 0; }
+  .freedomplayer .fp-volume:hover .fp-volumebar {
+    width: 56px; }
   .freedomplayer .fp-bar-slider {
     background-color: transparent;
     -webkit-user-select: none;
