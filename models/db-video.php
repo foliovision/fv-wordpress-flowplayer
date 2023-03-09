@@ -34,10 +34,7 @@ class FV_Player_Db_Video {
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
     $start, // allows you to show only a specific part of a video
-    $meta_data = null, // object of this video's meta data
-    $ignored_video_fields = array(
-      'vr', // VR is a meta value, so it should not be stored globally per-player
-    );
+    $meta_data = null; // object of this video's meta data
 
   private static
     $db_table_name,
@@ -279,9 +276,6 @@ CREATE TABLE " . self::$db_table_name . " (
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
           }
-        } else if ( !in_array( $key, $this->ignored_video_fields ) ) {
-          // generate warning
-          trigger_error('Unknown property for new DB video: ' . $key);
         }
       }
 
@@ -506,7 +500,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
+      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data[$property] = $value;
       }
     }
@@ -681,7 +675,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
         $data_values[] = strip_tags($value);
       }
@@ -800,7 +794,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data' && $property != 'ignored_video_fields') {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $export_data[$property] = $value;
       }
     }
