@@ -424,7 +424,28 @@ class FV_Player_Stats {
 
             if( !isset($datasets[$id_video]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
-                $datasets[$id_video]['name'] = !empty( $row['caption'] ) ? $row['caption'] : $row['src']; // if no caption then use src
+                if( !empty( $row['caption'] ) ) {
+                  $datasets[$id_video]['name'] = $row['caption'];
+                } else {
+
+                  // Using code from FV_Player_Db_Video::getTitleFromSrc
+                  $name = wp_parse_url( $row['src'], PHP_URL_PATH );
+                  $arr = explode('/', $name);
+                  $name = trim( end($arr) );
+
+                  if( in_array( $name, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
+                    unset($arr[count($arr)-1]);
+                    $name = end($arr);
+
+                    // Add parent folder too if there's any
+                    if( !empty( $arr ) && count( $arr ) > 2 ) {
+                      unset($arr[count($arr)-1]);
+                      $name = end($arr) . '/' . $name;
+                    }
+                  }
+                  $datasets[$id_video]['name'] = $name;
+                }
+
               } else if( $type == 'post' ) {
                 $datasets[$id_video]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
               }
