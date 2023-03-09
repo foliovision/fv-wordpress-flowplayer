@@ -158,6 +158,8 @@ class FV_Player_Stats {
   function process_cached_data( &$fp, $type ) {
     global $wpdb;
 
+    $table_name = $this->get_table_name();
+
     if( !in_array($type, $this->get_stat_columns() ) ) return;
 
     if( flock( $fp, LOCK_EX ) ) {
@@ -193,6 +195,24 @@ class FV_Player_Stats {
           $user_id = intval($item['user_id']);
           $value = intval($item[$type]);
 
+          if( $user_id ) {
+            $meta_key = 'fv_player_stats_'.$type;
+            $meta_value = $value + intval( get_user_meta( $user_id, $meta_key, true ) );
+            if( $meta_value > 0 ) {
+              update_user_meta( $user_id, $meta_key, $meta_value );
+            }
+
+            $meta_key = 'fv_player_stats_'.$type.'_today';
+            $today =  $wpdb->get_var(
+              $wpdb->prepare(
+                "SELECT sum(".$type.") FROM $table_name WHERE date = %s AND user_id = %d",
+                date_i18n( 'Y-m-d' ),
+                $user_id
+              )
+            );
+            update_user_meta( $user_id, $meta_key, $today );
+          }
+
           if( $video_id ) {
             global $FV_Player_Db;
             $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
@@ -205,7 +225,6 @@ class FV_Player_Stats {
             }
           }
 
-          $table_name = $this->get_table_name();
 
           $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
 
