@@ -29,7 +29,15 @@ class FV_Player_Stats {
     add_action( 'admin_init', array( $this, 'folder_init' ) );
 
     add_action( 'admin_menu', array( $this, 'stats_link' ), 13 );
-  
+
+    add_filter( 'manage_users_columns', array( $this, 'users_column' ) );
+    add_filter( 'manage_users_custom_column', array( $this, 'users_column_content' ), 10, 3 );
+    add_filter( 'manage_users_sortable_columns', array( $this, 'users_sortable_columns' ) );
+
+    if(is_admin()) {
+      add_action( 'pre_user_query', array( $this, 'users_sort' ) );
+    }
+
   }
 
   function stats_link() {
@@ -225,6 +233,7 @@ class FV_Player_Stats {
             }
           }
 
+          
 
           $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
 
@@ -428,6 +437,61 @@ class FV_Player_Stats {
     $datasets['date-labels'] = $date_labels; // date will be used as X axis label
 
     return $datasets;
+  }
+
+  function users_column( $columns ) {
+    $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
+    $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    return $columns;
+  }
+
+  function users_column_content( $content, $column_name, $user_id ) {
+    if(
+      'fv_player_stats_user_play_today' === $column_name ||
+      'fv_player_stats_user_seconds_today' === $column_name
+    ) {
+
+      $meta_key = str_replace( 'user_', '', $column_name );
+
+      $val = get_user_meta( $user_id, $meta_key, true );
+      if ( $val ) {
+
+        if( 'fv_player_stats_user_seconds_today' === $column_name ) {
+          $val = ceil($val/60) . ' min';
+        }
+
+        $url = add_query_arg(
+          array(
+            'page'    => 'fv_player_stats',
+            'user_id' => $user_id
+          ),
+          admin_url( 'admin.php' )
+        );
+        $content = '<a href="' . $url . '">' . $val . '</a>';
+      }
+    }
+
+    return $content;
+  }
+
+  function users_sortable_columns( $columns ) {
+    $columns['fv_player_stats_user_play_today'] = 'fv_player_stats_user_play_today';
+    $columns['fv_player_stats_user_seconds_today'] = 'fv_player_stats_user_seconds_today';
+    return $columns;
+  }
+
+  function users_sort($userquery) {
+    global $wpdb;
+    if(
+      'fv_player_stats_user_play_today' === $userquery->query_vars['orderby'] ||
+      'fv_player_stats_user_seconds_today' === $userquery->query_vars['orderby']
+    ) {
+      $meta_key = str_replace( 'user_', '', $userquery->query_vars['orderby'] );
+
+      $userquery->query_from .= " LEFT OUTER JOIN $wpdb->usermeta AS alias ON ($wpdb->users.ID = alias.user_id) "; //note use of alias
+      $userquery->query_where .= " AND alias.meta_key = '" . $meta_key . "' ";
+      $userquery->query_orderby = " ORDER BY CAST( alias.meta_value AS SIGNED ) ".($userquery->query_vars["order"] == "ASC" ? "asc " : "desc ");
+    }
   }
 
 }
