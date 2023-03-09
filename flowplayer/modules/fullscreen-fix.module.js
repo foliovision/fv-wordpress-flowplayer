@@ -147,7 +147,7 @@ flowplayer(function(player, root) {
    // Avoid dragging by the edge of the window which acts as the back button on iPhones without home button
    if( flowplayer.support.iOS ) {
       root.querySelector('.fp-player').addEventListener('touchstart', function(e) {
-         if( player.isFullscreen ) {
+         if( player.isFullscreen && e.pageX ) {
             if (e.pageX > 16 && e.pageX < window.innerWidth - 16) return;
 
             e.preventDefault();
