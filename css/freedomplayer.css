@@ -578,9 +578,11 @@
     top: 50%;
     -webkit-transform: translateY(-50%);
             transform: translateY(-50%); }
-    .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
-      -webkit-transform: scale(0.9);
-              transform: scale(0.9); }
+    .freedomplayer .fp-rewind svg, .freedomplayer .fp-forward svg {
+      max-width: 14vw; }
+      .freedomplayer .fp-rewind svg:active, .freedomplayer .fp-forward svg:active {
+        -webkit-transform: scale(0.9);
+                transform: scale(0.9); }
   .freedomplayer .fp-forward {
     left: auto;
     right: 0; }
