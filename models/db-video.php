@@ -207,13 +207,19 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getTitleFromSrc() {
-    $src = $this->getSrc();
+    $src = wp_parse_url( $this->getSrc(), PHP_URL_PATH );
     $arr = explode('/', $src);
-    $title = end($arr);
+    $title = trim( end($arr) );
 
-    if( $title == 'index.m3u8' ) {
+    if( in_array( $title, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
       unset($arr[count($arr)-1]);
       $title = end($arr);
+
+      // Add parent folder too if there's any
+      if( !empty( $arr ) && count( $arr ) > 2 ) {
+        unset($arr[count($arr)-1]);
+        $title = end($arr) . '/' . $title;
+      }
     }
 
     $title = apply_filters( 'fv_flowplayer_caption_src', $title , $src );
