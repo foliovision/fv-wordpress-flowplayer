@@ -281,25 +281,29 @@
   }
 
   function fv_player_editor_input( $args, $is_child = false ) {
-    $args = wp_parse_args( $args, array(
-                          'browser' => false,
-                          'children' => false,
-                          'class' => false,
-                          'default' => false,
-                          'dependencies' => false,
-                          'dropdown' => array( 'Default', 'On', 'Off' ),
-                          'id' => false,
-                          'label' => '',
-                          'multiple' => false, // applies to type = select
-                          'name' => '',
-                          'no_data' => false, // do not save any data based on this input
-                          'options' => array(),
-                          'playlist_label' => false,
-                          'scope' => false,
-                          'subtitle_language' => false,
-                          'type' => false,
-                          'visible' => false,
-                         ) );
+    $args = wp_parse_args(
+      $args,
+      array(
+        'browser'           => false,
+        'children'          => false,
+        'class'             => false,
+        'default'           => false,
+        'dependencies'      => false,
+        'dropdown'          => array( 'Default', 'On', 'Off' ),
+        'id'                => false,
+        'label'             => '',
+        'multiple'          => false, // applies to type = select
+        'name'              => '',
+        'no_data'           => false, // do not save any data based on this input
+        'options'           => array(),
+        'playlist_label'    => false,
+        'scope'             => false,
+        'subtitle_language' => false,
+        'type'              => false,
+        'visible'           => false,
+        'width'             => false,
+      )
+    );
 
     extract($args);
 
@@ -321,6 +325,10 @@
 
     if( !$visible ) {
       $class .= ' fv_player_interface_hide';
+    }
+
+    if ( $width && in_array( $width, array( 'half' ) ) ) {
+      $class .= ' fv-player-editor-field-'.$width;
     }
 
     if( $scope == 'playlist' ) {

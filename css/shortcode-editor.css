@@ -556,6 +556,11 @@ New FV Player Editor inputs styling
 #fv-player-shortcode-editor .components-base-control {
   margin-bottom: 24px;
 }
+.fv-player-editor-field-half {
+  /* TODO: How can this work with 2px? Without it the two .fv-player-editor-field-half won't appear on the same line */
+  width: calc( 50% - 2px );
+  display: inline-block;
+}
 #fv-player-shortcode-editor .components-panel__body>.components-base-control:not(:last-of-type) {
  
 }
