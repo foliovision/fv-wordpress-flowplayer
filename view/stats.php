@@ -1,6 +1,5 @@
 <?php
-  global $FV_Player_Stats;
-  global $fv_wp_flowplayer_ver;
+  global $FV_Player_Stats, $fv_wp_flowplayer_ver, $fv_fp;
 
   if( isset($_GET['player_id']) && intval($_GET['player_id'])  ) {
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']) );
@@ -14,6 +13,11 @@
 
 <div class="wrap">
   <h1>FV Player Stats</h1>
+
+  <?php if( ! $fv_fp->_get_option('video_stats_enable') ) : ?>
+    <p>Please enable Video Stats in <a href="<?php echo admin_url( 'options-general.php?page=fvplayer' ); ?>">FV Player Settings</a>, then wait at least 5 minutes for the stats to start showing.</p>
+  <?php endif; ?>
+
   <script>
   // Randomize color for each line
   var picked = [];
