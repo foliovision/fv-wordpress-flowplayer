@@ -387,11 +387,14 @@ class FV_Player_Stats {
     } else if( $range == 2 ) { // last week
       $previous_week = strtotime("-1 week +1 day");
 
-      $start_week = strtotime("last sunday midnight", $previous_week);
-      $end_week = strtotime("next saturday", $start_week);
+      // convert to datetime
+      $previous_week = date('Y-m-d', $previous_week);
 
-      $start_week = date("Y-m-d",$start_week);
-      $end_week = date("Y-m-d",$end_week);
+      // respect the start of week day by wordpress
+      $start_end_week = get_weekstartend($previous_week);
+
+      $start_week = date('Y-m-d', $start_end_week['start']);
+      $end_week = date('Y-m-d', $start_end_week['end']);
 
       $date_range = "date BETWEEN '$start_week' AND '$end_week'";
 
