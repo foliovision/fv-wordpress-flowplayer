@@ -6,7 +6,11 @@
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week' );
   } else {
     $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+
     $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+
+    $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+
   }
 
   wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
@@ -61,7 +65,7 @@
     return pick;
   };
 
-  var fv_chart_add_dataset_items = function( top_results ) {
+  var fv_chart_add_dataset_items = function( top_results, metric = 'play' ) {
     var top_datasets = [];
 
     for ( var id_video in top_results ) {
@@ -79,7 +83,7 @@
 
       for ( var date in top_results[id_video] ) {
         if( date != 'name' ) {
-          data.push(top_results[id_video][date]['play']);
+          data.push(top_results[id_video][date][metric]);
         }
       }
 
@@ -154,6 +158,44 @@
       data: {
         labels: top_post_results['date-labels'], // dates
         datasets: top_posts_datasets
+      },
+      options: {
+        animation: {
+          duration: 0
+        },
+        responsive: true,
+        scales: {
+          y: {
+            stacked: true,
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+  </script>
+<?php endif; ?>
+
+<?php if( isset($fv_video_watch_time_stats_data) && !empty($fv_video_watch_time_stats_data) ): ?>
+  <div>
+    <h2>Top 10 Video by watch time</h2>
+    <canvas id="chart-top-videos-watchtime" style="max-height: 36vh"></canvas>
+  </div>
+  <script>
+  jQuery( document ).ready(function() {
+    picked = [];
+     // Top Videos Watch Time
+    var ctx_top_videos = document.getElementById('chart-top-videos-watchtime').getContext('2d');
+
+    var top_videos_results = <?php echo json_encode( $fv_video_watch_time_stats_data ); ?>;
+
+    var top_videos_datasets = fv_chart_add_dataset_items( top_videos_results, 'seconds' );
+
+    var top_videos_chart = new Chart(ctx_top_videos, {
+      type: 'line',
+      data: {
+        labels: top_videos_results['date-labels'], // dates
+        datasets: top_videos_datasets
       },
       options: {
         animation: {
