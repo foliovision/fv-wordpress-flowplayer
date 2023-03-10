@@ -3,10 +3,10 @@
   global $fv_wp_flowplayer_ver;
 
   if( isset($_GET['player_id']) && intval($_GET['player_id'])  ) {
-    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_POST['stats_range']) ? intval($_POST['stats_range']) : 1 );
+    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_REQUEST['stats_range']) ? intval($_REQUEST['stats_range']) : 1 );
   } else {
-    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video', isset($_POST['stats_range']) ? intval($_POST['stats_range']) : 1);
-    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post', isset($_POST['stats_range']) ? intval($_POST['stats_range']) : 1);
+    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video', isset($_REQUEST['stats_range']) ? intval($_REQUEST['stats_range']) : 1);
+    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post', isset($_REQUEST['stats_range']) ? intval($_REQUEST['stats_range']) : 1);
   }
 
   wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
@@ -17,11 +17,12 @@
 
   <div>
     Select date range:
-    <form action="" method="post">
+    <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+      <input type="hidden" name="page" value="fv_player_stats" />
       <select name="stats_range">
         <?php
           foreach( array( '1' => 'This Week', '2' => 'Last Week', '3' => 'This Month', '4' => 'Last Month', '5' => 'This Year', '6' => 'Last Year' ) as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_POST['stats_range']) && $_POST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
           }
         ?>
       </select>
