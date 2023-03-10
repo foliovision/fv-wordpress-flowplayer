@@ -382,9 +382,9 @@ class FV_Player_Stats {
   private function range_to_interval( $range ) {
     $date_range = '';
 
-    if( $range == 1 ) { // this week
+    if( strcmp( 'this_week', $range ) === 0 ) { // this week
       $date_range = 'date > now() - INTERVAL 7 day';
-    } else if( $range == 2 ) { // last week
+    } else if( strcmp( 'last_week', $range ) === 0 ) { // last week
       $previous_week = strtotime("-1 week +1 day");
 
       // convert to datetime
@@ -398,13 +398,13 @@ class FV_Player_Stats {
 
       $date_range = "date BETWEEN '$start_week' AND '$end_week'";
 
-    } else if( $range == 3 ) { // this month
+    } else if( strcmp( 'this_month', $range ) === 0 ) { // this month
       $this_month_start = date('Y-m-01');
       $this_month_end = date('Y-m-t');
 
       $date_range = "date BETWEEN '$this_month_start' AND '$this_month_end'";
 
-    } else if( $range == 4 ) { // last month
+    } else if( strcmp( 'last_month', $range ) === 0 ) { // last month
       $first_day_last_month = strtotime('first day of last month');
       $last_day_last_month = strtotime('last day of last month');
 
@@ -413,13 +413,13 @@ class FV_Player_Stats {
 
       $date_range = "date BETWEEN '$last_month_start' AND '$last_month_end'";
 
-    } else if( $range == 5 ) { // this year
+    } else if( strcmp( 'this_year', $range ) === 0 ) { // this year
       $this_year_start = date('Y-01-01');
       $this_year_end = date('Y-12-31');
 
       $date_range = "date BETWEEN '$this_year_start' AND '$this_year_end'";
 
-    } else if( $range == 6 ) { // last year
+    } else if( strcmp( 'last_year', $range ) === 0 ) { // last year
       $last_year_start = date('Y-01-01', strtotime('-1 year'));
       $last_year_end = date('Y-12-31', strtotime('-1 year'));
 
