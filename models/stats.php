@@ -309,6 +309,26 @@ class FV_Player_Stats {
     }
   }
 
+  public function top_ten_users_by_plays( $interval ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(play) DESC LIMIT 10");
+
+    return $results;
+  }
+
+  public function top_ten_users_by_watch_time( $interval ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(seconds) DESC LIMIT 10");
+
+    return $results;
+  }
+
   public function top_ten_videos_by_plays( $interval ) {
     global $wpdb;
 
@@ -343,6 +363,35 @@ class FV_Player_Stats {
     }
 
     return $excluded_posts;
+  }
+
+  public function get_top_user_plays_stats( $range ) {
+    global $wpdb;
+
+    // dynamic interval based on range
+    $interval = $this->range_to_interval( $range );
+
+    $type = 'play';
+    $datasets = false;
+    $top_ids = array();
+    $top_ids_arr = array();
+
+    $top_ids_results = $this->top_ten_users_by_plays( $interval ); // get top user ids
+
+    if( !empty($top_ids_results) ) {
+      $top_ids_arr = array_values( $top_ids_results );
+      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+    } else {
+      return false;
+    }
+
+    $results = $wpdb->get_results( "SELECT date, user_id, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+
+    if( !empty($results) ) {
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $type );
+    }
+
+    return $datasets;
   }
 
   public function get_top_video_watch_time_stats( $range ) {
@@ -494,42 +543,38 @@ class FV_Player_Stats {
     $datasets = array();
     $date_labels = $this->get_date_labels( $results );
 
-    if( $type == 'video' ) {
+    if ( $type == 'video' ) {
       $id_item = 'id_player';
-    } else if( $type == 'player' ) {
+    } else if ( $type == 'player' ) {
       $id_item = 'player_name';
-    } else if( $type == 'post' ) {
+    } else if ( $type == 'post' ) {
       $id_item = 'id_post';
+    } else if ( $type == 'user' ) {
+      $id_item = 'user_id';
     }
 
     // order data for graph,
-    foreach( $top_ids_arr as $id_video ) {
+    foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
         foreach( $results as $row) {
-          if( $row['id_video'] == $id_video ) {
-            if( !isset($datasets[$id_video]) ) {
-              $datasets[$id_video] = array();
-            }
-
-            if( !isset($datasets[$id_video][$date]) ) {
-              $datasets[$id_video][$date] = array(
-                'id_player_post'=> $row[$id_item]
-              );
+          if( $row['id_video'] == $id || ( isset($row['user_id']) && $row['user_id'] == $id ) ) {
+            if( !isset($datasets[$id]) ) {
+              $datasets[$id] = array();
             }
 
             if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
-              if( $metric === 'play' && isset($row['play']) ) $datasets[$id_video][$date]['play'] = $row['play'];
-              if( $metric === 'seconds' && isset($row['seconds']) ) $datasets[$id_video][$date]['seconds'] = $row['seconds'];
+              if( $metric === 'play' && isset($row['play']) ) $datasets[$id][$date]['play'] = $row['play'];
+              if( $metric === 'seconds' && isset($row['seconds']) ) $datasets[$id][$date]['seconds'] = $row['seconds'];
 
             } else { // date row dont exists, add 0 plays/seconds - dont overwrite if value already set
-              if( $metric === 'play' && !isset( $datasets[$id_video][$date]['play']) ) $datasets[$id_video][$date]['play'] = 0;
-              if( $metric === 'seconds' && !isset( $datasets[$id_video][$date]['seconds']) ) $datasets[$id_video][$date]['seconds'] = 0;
+              if( $metric === 'play' && !isset( $datasets[$id][$date]['play']) ) $datasets[$id][$date]['play'] = 0;
+              if( $metric === 'seconds' && !isset( $datasets[$id][$date]['seconds']) ) $datasets[$id][$date]['seconds'] = 0;
             }
 
-            if( !isset($datasets[$id_video]['name']) ) {
+            if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
                 if( !empty( $row['caption'] ) ) {
-                  $datasets[$id_video]['name'] = $row['caption'];
+                  $datasets[$id]['name'] = $row['caption'];
                 } else {
 
                   // Using code from FV_Player_Db_Video::getTitleFromSrc
@@ -547,11 +592,20 @@ class FV_Player_Stats {
                       $name = end($arr) . '/' . $name;
                     }
                   }
-                  $datasets[$id_video]['name'] = $name;
+                  $datasets[$id]['name'] = $name;
                 }
 
               } else if( $type == 'post' ) {
-                $datasets[$id_video]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
+                $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
+              } else if( $type == 'user' ) {
+                $user_data = get_userdata( $row['user_id'] );
+
+                if( $user_data === false ) {
+                  $datasets[$id]['name'] = 'guest';
+                } else {
+                  $datasets[$id]['name'] = $user_data->display_name;
+                }
+
               }
             }
           }

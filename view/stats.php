@@ -11,6 +11,8 @@
 
     $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
 
+    $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_plays_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+
   }
 
   wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
@@ -99,7 +101,7 @@
 
   <div>
     <h2>Top 10 Videos</h2>
-    <canvas id="chart-top-videos" style="max-height: 36vh"></canvas>
+    <canvas id="chart-top-users-play" style="max-height: 36vh"></canvas>
   </div>
 
   <script>
@@ -107,7 +109,7 @@
     picked = [];
 
     // Top Videos
-    var ctx_top_videos = document.getElementById('chart-top-videos').getContext('2d');
+    var ctx_top_videos = document.getElementById('chart-top-users-play').getContext('2d');
 
     var top_video_results = <?php echo json_encode( $fv_video_stats_data ); ?>;
 
@@ -179,13 +181,13 @@
 <?php if( isset($fv_video_watch_time_stats_data) && !empty($fv_video_watch_time_stats_data) ): ?>
   <div>
     <h2>Top 10 Video by watch time</h2>
-    <canvas id="chart-top-videos-watchtime" style="max-height: 36vh"></canvas>
+    <canvas id="chart-top-users-play-watchtime" style="max-height: 36vh"></canvas>
   </div>
   <script>
   jQuery( document ).ready(function() {
     picked = [];
      // Top Videos Watch Time
-    var ctx_top_videos = document.getElementById('chart-top-videos-watchtime').getContext('2d');
+    var ctx_top_videos = document.getElementById('chart-top-users-play-watchtime').getContext('2d');
 
     var top_videos_results = <?php echo json_encode( $fv_video_watch_time_stats_data ); ?>;
 
@@ -213,6 +215,51 @@
   });
   </script>
 <?php endif; ?>
+
+<?php if( isset($fv_user_play_stats_data) && !empty($fv_user_play_stats_data) ): ?>
+
+<div>
+  <h2>Top 10 Users by plays</h2>
+  <canvas id="chart-top-10-users-by-play" style="max-height: 36vh"></canvas>
+</div>
+
+<script>
+jQuery( document ).ready(function() {
+  picked = [];
+
+  // Top Users
+  var ctx_top_users = document.getElementById('chart-top-10-users-by-play').getContext('2d');
+
+  var top_user_results = <?php echo json_encode( $fv_user_play_stats_data ); ?>;
+
+  // Each video data is new dataset
+  var top_user_datasets = fv_chart_add_dataset_items( top_user_results );
+
+  debugger;
+
+  var top_user_chart = new Chart(ctx_top_users, {
+    type: 'line',
+    data: {
+      labels: top_user_results['date-labels'], // dates
+      datasets: top_user_datasets
+    },
+    options: {
+      animation: {
+        duration: 0
+      },
+      responsive: true,
+      scales: {
+        y: {
+          stacked: true,
+          beginAtZero: true
+        }
+      }
+    }
+  });
+})
+</script>
+
+<?php endif;?>
 
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
