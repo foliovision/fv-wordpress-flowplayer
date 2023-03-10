@@ -3,10 +3,10 @@
   global $fv_wp_flowplayer_ver;
 
   if( isset($_GET['player_id']) && intval($_GET['player_id'])  ) {
-    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']) );
+    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_POST['stats_range']) ? intval($_POST['stats_range']) : 1 );
   } else {
-    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video');
-    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post');
+    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video', isset($_POST['stats_range']) ? intval($_POST['stats_range']) : 1);
+    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post', isset($_POST['stats_range']) ? intval($_POST['stats_range']) : 1);
   }
 
   wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
@@ -14,6 +14,21 @@
 
 <div class="wrap">
   <h1>FV Player Stats</h1>
+
+  <div>
+    Select date range:
+    <form action="" method="post">
+      <select name="stats_range">
+        <?php
+          foreach( array( '1' => 'This Week', '2' => 'Last Week', '3' => 'This Month', '4' => 'Last Month', '5' => 'This Year', '6' => 'Last Year' ) as $key => $value ) {
+            echo '<option value="'.$key.'" '.( isset($_POST['stats_range']) && $_POST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+          }
+        ?>
+      </select>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
   <script>
   // Randomize color for each line
   var picked = [];
@@ -70,7 +85,7 @@
       dataset_item['data'] = data;
       top_datasets.push(dataset_item);
     }
-  
+
     return top_datasets;
   }
   </script>
@@ -78,7 +93,7 @@
 <?php if( isset($fv_video_stats_data) && !empty($fv_video_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Videos in past week</h2>
+    <h2>Top 10 Videos</h2>
     <canvas id="chart-top-videos" style="max-height: 36vh"></canvas>
   </div>
 
@@ -120,7 +135,7 @@
 
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
   <div>
-    <h2>Top 10 Post Video plays in past week</h2>
+    <h2>Top 10 Post Video plays</h2>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
   <script>
@@ -158,7 +173,7 @@
 
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>Plays For Player <?php echo intval($_GET['player_id']); ?> in past week</h2>
+    <h2>Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
     <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
   </div>
   <script>
@@ -190,7 +205,7 @@
   </script>
 <?php elseif ( isset($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>No Plays For Player <?php echo intval($_GET['player_id']); ?> in past week</h2>
+    <h2>No Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
   </div>
 <?php endif; ?>
 </div>
