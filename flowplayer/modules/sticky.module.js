@@ -120,7 +120,7 @@ flowplayer(function(api, root) {
   }
 
   function is_big_enough() {
-    return jQuery(window).innerWidth() >= fv_flowplayer_conf.sticky_min_width;
+    return api.autoplayed || jQuery(window).innerWidth() >= fv_flowplayer_conf.sticky_min_width;
   }
   
   api.sticky = function( flag, remember ) {
