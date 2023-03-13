@@ -22,7 +22,8 @@ if( typeof(flowplayer) !== 'undefined') {
       return;
     }
 
-    var i = 0;
+    var i = 0,
+      window_height = (window.innerHeight || document.documentElement.clientHeight );
 
     jQuery('.flowplayer:not(.is-disabled)').each( function(k,v) {
       var root = jQuery(this);
@@ -56,11 +57,11 @@ if( typeof(flowplayer) !== 'undefined') {
         //   control_bar.removeClass('invisible');
         // });
 
-        // looks for a single player which is in the middle of screen
-        // and it also has to be further down than the currently playing player
-        // ...if the conservative mode is on
-        if( i == 0 && rect.top > 0 && ( rect.top + 32 ) < (window.innerHeight || document.documentElement.clientHeight) ||
-        rect.bottom > 16 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) ) {
+        if(
+          i == 0 &&
+          rect.top > 0 && ( rect.top + player.height() / 4 ) < window_height ||
+          rect.bottom > player.height() / 4 && rect.bottom <= window_height
+        ) {
           // disabling for YouTube on iOS
           if( flowplayer.support.iOS && api.conf.clip.sources[0].type == 'video/youtube' ) {
             return;
