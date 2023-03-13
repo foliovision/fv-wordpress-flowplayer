@@ -5,11 +5,9 @@ if( typeof(flowplayer) !== 'undefined') {
   freedomplayer(function(api, root) {
     fv_player_scroll_autoplay = true;
 
-    api.on('pause', function(e,api) {
-      if(api.manual_pause) {
-        console.log('Scroll autoplay: Manual pause for ' + jQuery(root).attr('id'));
-        api.non_viewport_pause = true;
-      }
+    // Any player click will stop the player pausing when out of viewport
+    jQuery( root ).on( 'click', function(e) {
+      api.autoplay_exclude = true;
     });
   })
 
@@ -45,6 +43,10 @@ if( typeof(flowplayer) !== 'undefined') {
         return;
       }
 
+      if ( api.autoplay_exclude ) {
+        return;
+      }
+
       if( fv_autoplay_type == 'viewport' || fv_autoplay_type == 'sticky' || player_autoplay ) { // play video when on viewport or sticky or player enabled autoplay
         var rect = player[0].getBoundingClientRect(); // watch .fp-player because root can ve outside viewport when stickied
 
@@ -74,13 +76,13 @@ if( typeof(flowplayer) !== 'undefined') {
             i++;
             fv_player_load( root );
 
-          } else if( api.ready && api.viewport_pause && !api.non_viewport_pause ) {
+          } else if( api.ready && api.viewport_pause ) {
             api.viewport_pause = false;
             console.log('Scroll autoplay: Resume ' + root.attr('id'));
             i++;
             api.resume();
 
-          } else if( !api.loading && !api.playing && !api.error && !api.non_viewport_pause ) {
+          } else if( !api.loading && !api.playing && !api.error ) {
             api.viewport_pause = false;
             console.log('Scroll autoplay: Load ' + root.attr('id'));
             i++;
