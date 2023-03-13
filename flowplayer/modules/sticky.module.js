@@ -178,6 +178,11 @@ jQuery(function($) {
       api.is_sticky = false;
       api.trigger( 'sticky-exit', [ api ] );
     }
+
+    // Closing sticky player which was autoplaying should pause the video
+    if( api.autoplayed ) {
+      api.pause();
+    }
   });
   $(document).on('click', "div.flowplayer.is-unSticky", function() {
     $("div.flowplayer").removeClass("is-unSticky");

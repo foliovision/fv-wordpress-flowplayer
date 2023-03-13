@@ -76,6 +76,8 @@ if( typeof(flowplayer) !== 'undefined') {
             i++;
             fv_player_load( root );
 
+            api.autoplayed = true;
+
           } else if( api.ready && api.viewport_pause ) {
             api.viewport_pause = false;
             console.log('Scroll autoplay: Resume ' + root.attr('id'));
@@ -88,6 +90,7 @@ if( typeof(flowplayer) !== 'undefined') {
             i++;
             api.load();
 
+            api.autoplayed = true;
           }
         } else {
           if( api && api.playing ) {
