@@ -492,7 +492,7 @@ class FV_Player_Stats {
     $where = '';
 
     if( is_numeric( $user_id ) ) {
-      $where = "AND user_id = $user_id";
+      $where = "AND user_id = " . intval($user_id);
     }
 
     return $where;
