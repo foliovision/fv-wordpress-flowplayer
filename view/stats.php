@@ -41,7 +41,6 @@
   <h1>FV Player Stats</h1>
 
   <div>
-    Select date range:
     <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
       <input type="hidden" name="page" value="fv_player_stats" />
       <select name="stats_range">
@@ -51,7 +50,7 @@
           }
         ?>
       </select>
-      <input type="submit" value="Submit">
+      <input type="submit" value="Filter" class="button" />
     </form>
   </div>
 
