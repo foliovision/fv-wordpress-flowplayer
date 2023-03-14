@@ -13,6 +13,9 @@ class FV_Player_Stats_Export {
 
   public function export_user_data() {
     if( isset($_GET['nonce'] ) && wp_verify_nonce( $_GET['nonce'], 'fv-stats-export-user-' . intval($_GET['fv-stats-export-user']) ) ) {
+
+      if( !current_user_can('manage_options') ) return;
+
       global $wpdb;
 
       $user_id = intval($_GET['fv-stats-export-user']);
