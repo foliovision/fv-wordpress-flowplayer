@@ -375,7 +375,11 @@ class FV_Player_Stats {
     $top_ids = array();
     $top_ids_arr = array();
 
-    $top_ids_results = $this->top_ten_users_by_plays( $interval ); // get top user ids
+    if( $metric == 'play' ) {
+      $top_ids_results = $this->top_ten_users_by_plays( $interval );
+    } else {
+      $top_ids_results = $this->top_ten_users_by_watch_time( $interval );
+    }
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
@@ -385,9 +389,9 @@ class FV_Player_Stats {
     }
 
     if( $metric == 'play' ) {
-      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
     } else {
-      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(seconds) AS seconds  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
     }
 
     if( !empty($results) ) {
@@ -397,11 +401,14 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_top_video_watch_time_stats( $range ) {
+  public function get_top_video_watch_time_stats( $range, $user_id ) {
     global $wpdb;
 
     // dynamic interval based on range
     $interval = $this->range_to_interval( $range );
+
+    // dynamic filter based on user
+    $user_check = $this->where_user( $user_id );
 
     $type = 'video';
     $datasets = false;
@@ -417,7 +424,7 @@ class FV_Player_Stats {
       return false;
     }
 
-    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(seconds) AS seconds  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_video, date", ARRAY_A );
 
     if( !empty($results) ) {
       $datasets = $this->process_graph_data( $results, $top_ids_arr, $type, 'seconds' );
@@ -426,11 +433,14 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_top_video_post_stats( $type, $range ) {
+  public function get_top_video_post_stats( $type, $range, $user_id ) {
     global $wpdb;
 
     // dynamic interval based on range
     $interval = $this->range_to_interval( $range );
+
+    // dynamic filter based on user
+    $user_check = $this->where_user( $user_id );
 
     $datasets = false;
     $top_ids = array();
@@ -445,9 +455,9 @@ class FV_Player_Stats {
     }
 
     if( $type == 'video' ) { // video stats
-      $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+      $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_video, date", ARRAY_A );
     } else if( $type == 'post' ) { // post stats
-      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE $interval AND id_video IN( $top_ids ) GROUP BY id_post, date;
+      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_post, date;
       ", ARRAY_A );
     }
 
@@ -476,6 +486,16 @@ class FV_Player_Stats {
     }
 
     return $datasets;
+  }
+
+  private function where_user( $user_id ) {
+    $where = '';
+
+    if( is_numeric( $user_id ) ) {
+      $where = "AND user_id = $user_id";
+    }
+
+    return $where;
   }
 
   private function range_to_interval( $range ) {
@@ -556,8 +576,21 @@ class FV_Player_Stats {
             }
 
             if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
-              if( $metric === 'play' && isset($row['play']) ) $datasets[$id][$date]['play'] = $row['play'];
-              if( $metric === 'seconds' && isset($row['seconds']) ) $datasets[$id][$date]['seconds'] = $row['seconds'];
+              if( $metric === 'play' && isset($row['play']) ) {
+                if( isset($datasets[$id][$date]['play']) ) {
+                  $datasets[$id][$date]['play'] += $row['play'];
+                } else {
+                  $datasets[$id][$date]['play'] = $row['play'];
+                }
+              }
+
+              if( $metric === 'seconds' && isset($row['seconds']) ) {
+                if( isset($datasets[$id][$date]['seconds']) ) {
+                  $datasets[$id][$date]['seconds'] += $row['seconds'];
+                } else {
+                  $datasets[$id][$date]['seconds'] = $row['seconds'];
+                }
+              }
 
             } else { // date row dont exists, add 0 plays/seconds - dont overwrite if value already set
               if( $metric === 'play' && !isset( $datasets[$id][$date]['play']) ) $datasets[$id][$date]['play'] = 0;

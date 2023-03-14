@@ -2,20 +2,35 @@
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
+  $user_id = isset( $_GET['user_id'] ) ? intval($_GET['user_id']) : false;
+  $user_name = false;
+
+  if( is_numeric( $user_id ) ) {
+    $user_data = get_userdata( $user_id );
+
+    if( $user_data ) {
+      $user_name = $user_data->user_email . ' (' . $user_data->display_name . ')';
+    } else {
+      $user_name = 'Guest';
+    }
+
+  }
+
   if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week' );
-  } else if( isset($_GET['user_id']) && intval($_GET['user_id']) ) { // specific user stats
-    // TODO: implement
   } else { // aggregated top stats
-    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
 
-    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
 
-    $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
 
-    $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+    $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id );
 
-    $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+    if( !isset( $_GET['user_id'] ) ) { // only for all users stats
+      $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
+
+      $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
+    }
 
   }
 
@@ -89,7 +104,15 @@
 
       for ( var date in top_results[id_video] ) {
         if( date != 'name' ) {
-          data.push(parseInt(top_results[id_video][date][metric]));
+          var value = parseInt(top_results[id_video][date][metric]);
+
+          if( metric == 'seconds' ) {
+            top_results[id_video][date][metric] = Math.round(value / 60); // convert to minutes
+          } else {
+            top_results[id_video][date][metric] = value;
+          }
+
+          data.push(value);
         }
       }
 
@@ -104,7 +127,7 @@
 <?php if( isset($fv_video_stats_data) && !empty($fv_video_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Videos</h2>
+    <h2>Top 10 Videos<?php if($user_name) echo ' for ' . $user_name ?></h2>
     <canvas id="chart-top-users-play" style="max-height: 36vh"></canvas>
   </div>
 
@@ -146,7 +169,7 @@
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Post Video plays</h2>
+    <h2>Top 10 Post Video plays<?php if($user_name) echo ' for ' . $user_name ?></h2>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
 
@@ -186,7 +209,7 @@
 <?php if( isset($fv_video_watch_time_stats_data) && !empty($fv_video_watch_time_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Video by watch time</h2>
+    <h2>Top 10 Video by watch time<?php if($user_name) echo ' for ' . $user_name ?></h2>
     <canvas id="chart-top-users-play-watchtime" style="max-height: 36vh"></canvas>
   </div>
 
