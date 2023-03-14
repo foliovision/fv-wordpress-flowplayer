@@ -210,15 +210,6 @@ class FV_Player_Stats {
               update_user_meta( $user_id, $meta_key, $meta_value );
             }
 
-            $meta_key = 'fv_player_stats_'.$type.'_today';
-            $today =  $wpdb->get_var(
-              $wpdb->prepare(
-                "SELECT sum(".$type.") FROM $table_name WHERE date = %s AND user_id = %d",
-                date_i18n( 'Y-m-d' ),
-                $user_id
-              )
-            );
-            update_user_meta( $user_id, $meta_key, $today );
           }
 
           if( $video_id ) {
@@ -467,17 +458,29 @@ class FV_Player_Stats {
   }
 
   function users_column_content( $content, $column_name, $user_id ) {
-    if(
-      'fv_player_stats_user_play_today' === $column_name ||
-      'fv_player_stats_user_seconds_today' === $column_name
-    ) {
+    $field = false;
 
-      $meta_key = str_replace( 'user_', '', $column_name );
+    if ( 'fv_player_stats_user_play_today' === $column_name ) {
+      $field = 'play';
+    } else if ( 'fv_player_stats_user_seconds_today' === $column_name ) {
+      $field = 'seconds';
+    }
 
-      $val = get_user_meta( $user_id, $meta_key, true );
+    if( $field ) {
+
+      // TODO: Preload to avoid too many SQL queries
+      global $wpdb;
+      $val = $wpdb->get_var(
+        $wpdb->prepare(
+          "SELECT sum( " . $field . " ) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
+          $user_id,
+          date_i18n( 'Y-m-d' )
+        )
+      );
+
       if ( $val ) {
 
-        if( 'fv_player_stats_user_seconds_today' === $column_name ) {
+        if( 'seconds' === $field ) {
           $val = ceil($val/60) . ' min';
         }
 
@@ -503,15 +506,20 @@ class FV_Player_Stats {
 
   function users_sort($userquery) {
     global $wpdb;
-    if(
-      'fv_player_stats_user_play_today' === $userquery->query_vars['orderby'] ||
-      'fv_player_stats_user_seconds_today' === $userquery->query_vars['orderby']
-    ) {
-      $meta_key = str_replace( 'user_', '', $userquery->query_vars['orderby'] );
 
-      $userquery->query_from .= " LEFT OUTER JOIN $wpdb->usermeta AS alias ON ($wpdb->users.ID = alias.user_id) "; //note use of alias
-      $userquery->query_where .= " AND alias.meta_key = '" . $meta_key . "' ";
-      $userquery->query_orderby = " ORDER BY CAST( alias.meta_value AS SIGNED ) ".($userquery->query_vars["order"] == "ASC" ? "asc " : "desc ");
+    $field = false;
+
+    if ( 'fv_player_stats_user_play_today' === $userquery->query_vars['orderby'] ) {
+      $field = 'play';
+    } else if ( 'fv_player_stats_user_seconds_today' === $userquery->query_vars['orderby'] ) {
+      $field = 'seconds';
+    }
+
+    if ( $field ) {
+      $userquery->query_fields .= ", sum(" . $field . ") AS " . $field . " ";
+      $userquery->query_from .= " LEFT OUTER JOIN {$wpdb->prefix}fv_player_stats AS stats ON ($wpdb->users.ID = stats.user_id) ";
+      $userquery->query_where .= " AND stats.date = '" . date_i18n( 'Y-m-d' ) . "' ";
+      $userquery->query_orderby = " GROUP BY wp_users.ID ORDER BY " . $field . " ".($userquery->query_vars["order"] == "ASC" ? "ASC " : "DESC ");
     }
   }
 
