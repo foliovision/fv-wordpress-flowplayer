@@ -12,9 +12,9 @@ License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-/* FV Player - HTML5 video player  
+/* FV Player - HTML5 video player
 	Copyright (C) 2020  Foliovision
-		
+
 	This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -91,7 +91,7 @@ if( is_admin() ) {
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
- 
+
   if( version_compare(phpversion(),'7.2.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
@@ -117,6 +117,7 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+include_once(dirname( __FILE__ ) . '/models/stats-export.php');
 
 include_once(dirname( __FILE__ ) . '/models/youtube.php');
 

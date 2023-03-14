@@ -58,6 +58,10 @@
       </select>
       <input type="submit" value="Filter" class="button" />
     </form>
+    <?php if( $user_id ): ?>
+      <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id );?>">Export stats to csv file</a>
+    <?php endif; ?>
+
   </div>
 
   <script>
