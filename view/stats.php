@@ -2,16 +2,20 @@
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
-  if( isset($_GET['player_id']) && intval($_GET['player_id'])  ) {
+  if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week' );
-  } else {
+  } else if( isset($_GET['user_id']) && intval($_GET['user_id']) ) { // specific user stats
+    // TODO: implement
+  } else { // aggregated top stats
     $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
 
     $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
 
     $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
 
-    $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_plays_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+    $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
+
+    $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week');
 
   }
 
@@ -85,7 +89,7 @@
 
       for ( var date in top_results[id_video] ) {
         if( date != 'name' ) {
-          data.push(top_results[id_video][date][metric]);
+          data.push(parseInt(top_results[id_video][date][metric]));
         }
       }
 
@@ -137,14 +141,15 @@
     });
   })
   </script>
-
 <?php endif;?>
 
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
+
   <div>
     <h2>Top 10 Post Video plays</h2>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
+
   <script>
   jQuery( document ).ready(function() {
     picked = [];
@@ -179,10 +184,12 @@
 <?php endif; ?>
 
 <?php if( isset($fv_video_watch_time_stats_data) && !empty($fv_video_watch_time_stats_data) ): ?>
+
   <div>
     <h2>Top 10 Video by watch time</h2>
     <canvas id="chart-top-users-play-watchtime" style="max-height: 36vh"></canvas>
   </div>
+
   <script>
   jQuery( document ).ready(function() {
     picked = [];
@@ -235,7 +242,47 @@ jQuery( document ).ready(function() {
   // Each video data is new dataset
   var top_user_datasets = fv_chart_add_dataset_items( top_user_results );
 
-  debugger;
+  var top_user_chart = new Chart(ctx_top_users, {
+    type: 'line',
+    data: {
+      labels: top_user_results['date-labels'], // dates
+      datasets: top_user_datasets
+    },
+    options: {
+      animation: {
+        duration: 0
+      },
+      responsive: true,
+      scales: {
+        y: {
+          stacked: true,
+          beginAtZero: true
+        }
+      }
+    }
+  });
+})
+</script>
+<?php endif; ?>
+
+<?php if( isset($fv_user_watch_time_stats_data) && !empty($fv_user_watch_time_stats_data) ): ?>
+
+<div>
+  <h2>Top 10 Users by watch time</h2>
+  <canvas id="chart-top-10-users-by-watchtime" style="max-height: 36vh"></canvas>
+</div>
+
+<script>
+jQuery( document ).ready(function() {
+  picked = [];
+
+  // Top Users
+  var ctx_top_users = document.getElementById('chart-top-10-users-by-watchtime').getContext('2d');
+
+  var top_user_results = <?php echo json_encode( $fv_user_watch_time_stats_data ); ?>;
+
+  // Each video data is new dataset
+  var top_user_datasets = fv_chart_add_dataset_items( top_user_results, 'seconds' );
 
   var top_user_chart = new Chart(ctx_top_users, {
     type: 'line',
@@ -258,7 +305,6 @@ jQuery( document ).ready(function() {
   });
 })
 </script>
-
 <?php endif;?>
 
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>

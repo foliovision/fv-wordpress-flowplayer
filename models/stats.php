@@ -365,13 +365,12 @@ class FV_Player_Stats {
     return $excluded_posts;
   }
 
-  public function get_top_user_plays_stats( $range ) {
+  public function get_top_user_stats( $metric, $range ) {
     global $wpdb;
 
     // dynamic interval based on range
     $interval = $this->range_to_interval( $range );
 
-    $type = 'play';
     $datasets = false;
     $top_ids = array();
     $top_ids_arr = array();
@@ -385,10 +384,14 @@ class FV_Player_Stats {
       return false;
     }
 
-    $results = $wpdb->get_results( "SELECT date, user_id, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+    if( $metric == 'play' ) {
+      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+    } else {
+      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(seconds) AS seconds  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+    }
 
     if( !empty($results) ) {
-      $datasets = $this->process_graph_data( $results, $top_ids_arr, $type );
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, 'user', $metric );
     }
 
     return $datasets;
@@ -543,16 +546,6 @@ class FV_Player_Stats {
     $datasets = array();
     $date_labels = $this->get_date_labels( $results );
 
-    if ( $type == 'video' ) {
-      $id_item = 'id_player';
-    } else if ( $type == 'player' ) {
-      $id_item = 'player_name';
-    } else if ( $type == 'post' ) {
-      $id_item = 'id_post';
-    } else if ( $type == 'user' ) {
-      $id_item = 'user_id';
-    }
-
     // order data for graph,
     foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
@@ -598,7 +591,7 @@ class FV_Player_Stats {
               } else if( $type == 'post' ) {
                 $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
               } else if( $type == 'user' ) {
-                $user_data = get_userdata( $row['user_id'] );
+                $user_data = get_userdata( intval($row['user_id']) );
 
                 if( $user_data === false ) {
                   $datasets[$id]['name'] = 'guest';
