@@ -74,7 +74,7 @@ class FV_Player_Stats {
     foreach( $this->get_stat_columns() AS $column ) {
       $sql .= "`".$column."` INT(11) NOT NULL,\n";
     }
-      
+
     $sql .= "PRIMARY KEY (`id`),
       INDEX `date` (`date`),
       INDEX `id_video` (`id_video`),
@@ -84,7 +84,7 @@ class FV_Player_Stats {
     ) " . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-    
+
     dbDelta($sql);
   }
 
@@ -92,7 +92,7 @@ class FV_Player_Stats {
     if ( !WP_Filesystem() ) {
       return;
     }
-  
+
     global $fv_fp;
     global $wp_filesystem;
 
@@ -118,7 +118,7 @@ class FV_Player_Stats {
                                 'user_id' => get_current_user_id()
                                );
       if( $fv_fp->_get_option('video_stats_enable') ) $conf['fv_stats']['enabled'] = true;
-      
+
     }
     return $conf;
   }
@@ -215,7 +215,7 @@ class FV_Player_Stats {
           if( $video_id ) {
             global $FV_Player_Db;
             $video = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
-            
+
             if( $video ) {
               $meta_value = $value + intval($video->getMetaValue('stats_'.$type,true));
               if( $meta_value > 0 ) {
@@ -224,7 +224,7 @@ class FV_Player_Stats {
             }
           }
 
-          
+
 
           $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
 
@@ -282,13 +282,13 @@ class FV_Player_Stats {
     // just in case...
     $this->db_init( true );
     $this->folder_init( true );
-    
+
     $cache_files = scandir( $this->cache_directory );
     foreach( $cache_files as $filename ) {
       if( preg_match( '/^([^-]+)-([^\.]+)\.data$/', $filename, $matches ) ) {
         $type = $matches[1];
         if( !in_array($type, $this->get_stat_columns() ) ) continue;
-        
+
         $blog_id = intval($matches[2]);
 
         if( get_current_blog_id() != $blog_id ) continue;
@@ -300,10 +300,50 @@ class FV_Player_Stats {
     }
   }
 
-  public function top_ten_videos() {
+  public function top_ten_users_by_plays( $interval ) {
     global $wpdb;
 
-    $excluded_posts = false;
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(play) DESC LIMIT 10");
+
+    return $results;
+  }
+
+  public function top_ten_users_by_watch_time( $interval ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(seconds) DESC LIMIT 10");
+
+    return $results;
+  }
+
+  public function top_ten_videos_by_plays( $interval ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
+
+    return $results;
+  }
+
+  public function top_ten_videos_by_watch_time( $interval ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10");
+
+    return $results;
+  }
+
+  public function get_posts_to_exclude() {
+    $excluded_posts = '';
+
+    // exclude posts with filter
     $exclude_posts_query_args = apply_filters( 'fv_player_stats_view_exclude_posts_query_args', false );
     if( $exclude_posts_query_args ) {
       $exclude_posts_query = new WP_Query( $exclude_posts_query_args );
@@ -313,19 +353,91 @@ class FV_Player_Stats {
       }
     }
 
-    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date > now() - INTERVAL 7 day $excluded_posts GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
-
-    return $results;
+    return $excluded_posts;
   }
 
-  public function get_top_video_post_stats( $type ) {
+  public function get_top_user_stats( $metric, $range ) {
     global $wpdb;
+
+    // dynamic interval based on range
+    $interval = $this->range_to_interval( $range );
 
     $datasets = false;
     $top_ids = array();
     $top_ids_arr = array();
-    $top_ids_results = $this->top_ten_videos(); // get top video ids
-    
+
+    if( $metric == 'play' ) {
+      $top_ids_results = $this->top_ten_users_by_plays( $interval );
+    } else {
+      $top_ids_results = $this->top_ten_users_by_watch_time( $interval );
+    }
+
+    if( !empty($top_ids_results) ) {
+      $top_ids_arr = array_values( $top_ids_results );
+      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+    } else {
+      return false;
+    }
+
+    if( $metric == 'play' ) {
+      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+    } else {
+      $results = $wpdb->get_results( "SELECT date, user_id, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+    }
+
+    if( !empty($results) ) {
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, 'user', $metric );
+    }
+
+    return $datasets;
+  }
+
+  public function get_top_video_watch_time_stats( $range, $user_id ) {
+    global $wpdb;
+
+    // dynamic interval based on range
+    $interval = $this->range_to_interval( $range );
+
+    // dynamic filter based on user
+    $user_check = $this->where_user( $user_id );
+
+    $type = 'video';
+    $datasets = false;
+    $top_ids = array();
+    $top_ids_arr = array();
+
+    $top_ids_results = $this->top_ten_videos_by_watch_time( $interval ); // get top video ids
+
+    if( !empty($top_ids_results) ) {
+      $top_ids_arr = array_values( $top_ids_results );
+      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+    } else {
+      return false;
+    }
+
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_video, date", ARRAY_A );
+
+    if( !empty($results) ) {
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $type, 'seconds' );
+    }
+
+    return $datasets;
+  }
+
+  public function get_top_video_post_stats( $type, $range, $user_id ) {
+    global $wpdb;
+
+    // dynamic interval based on range
+    $interval = $this->range_to_interval( $range );
+
+    // dynamic filter based on user
+    $user_check = $this->where_user( $user_id );
+
+    $datasets = false;
+    $top_ids = array();
+    $top_ids_arr = array();
+    $top_ids_results = $this->top_ten_videos_by_plays( $interval ); // get top video ids
+
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
       $top_ids = implode( ',', array_values( $top_ids_arr ) );
@@ -334,9 +446,9 @@ class FV_Player_Stats {
     }
 
     if( $type == 'video' ) { // video stats
-      $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+      $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_video, date", ARRAY_A );
     } else if( $type == 'post' ) { // post stats
-      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE date > now() - INTERVAL 7 day AND id_video IN( $top_ids ) GROUP BY id_post, date;
+      $results = $wpdb->get_results( "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_post, date;
       ", ARRAY_A );
     }
 
@@ -347,12 +459,13 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_player_stats( $player_id ) {
+  public function get_player_stats( $player_id, $range) {
     global $wpdb;
 
+    $interval = $this->range_to_interval( $range );
     $datasets = false;
 
-    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date > now() - INTERVAL 7 day AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
 
     if( !empty($results) ) {
       $ids_arr = array();
@@ -364,6 +477,66 @@ class FV_Player_Stats {
     }
 
     return $datasets;
+  }
+
+  private function where_user( $user_id ) {
+    $where = '';
+
+    if( is_numeric( $user_id ) ) {
+      $where = "AND user_id = " . intval($user_id);
+    }
+
+    return $where;
+  }
+
+  private function range_to_interval( $range ) {
+    $date_range = '';
+
+    if( strcmp( 'this_week', $range ) === 0 ) { // this week
+      $date_range = 'date > now() - INTERVAL 7 day';
+    } else if( strcmp( 'last_week', $range ) === 0 ) { // last week
+      $previous_week = strtotime("-1 week +1 day");
+
+      // convert to datetime
+      $previous_week = date('Y-m-d', $previous_week);
+
+      // respect the start of week day by wordpress
+      $start_end_week = get_weekstartend($previous_week);
+
+      $start_week = date('Y-m-d', $start_end_week['start']);
+      $end_week = date('Y-m-d', $start_end_week['end']);
+
+      $date_range = "date BETWEEN '$start_week' AND '$end_week'";
+
+    } else if( strcmp( 'this_month', $range ) === 0 ) { // this month
+      $this_month_start = date('Y-m-01');
+      $this_month_end = date('Y-m-t');
+
+      $date_range = "date BETWEEN '$this_month_start' AND '$this_month_end'";
+
+    } else if( strcmp( 'last_month', $range ) === 0 ) { // last month
+      $first_day_last_month = strtotime('first day of last month');
+      $last_day_last_month = strtotime('last day of last month');
+
+      $last_month_start = date('Y-m-01', $first_day_last_month );
+      $last_month_end = date('Y-m-t', $last_day_last_month );
+
+      $date_range = "date BETWEEN '$last_month_start' AND '$last_month_end'";
+
+    } else if( strcmp( 'this_year', $range ) === 0 ) { // this year
+      $this_year_start = date('Y-01-01');
+      $this_year_end = date('Y-12-31');
+
+      $date_range = "date BETWEEN '$this_year_start' AND '$this_year_end'";
+
+    } else if( strcmp( 'last_year', $range ) === 0 ) { // last year
+      $last_year_start = date('Y-01-01', strtotime('-1 year'));
+      $last_year_end = date('Y-12-31', strtotime('-1 year'));
+
+      $date_range = "date BETWEEN '$last_year_start' AND '$last_year_end'";
+    }
+
+    return $date_range;
   }
 
   private function get_date_labels( $results ) {
@@ -380,43 +553,45 @@ class FV_Player_Stats {
     return array_values($date_labels);
   }
 
-  private function process_graph_data( $results, $top_ids_arr, $type ) {
+  private function process_graph_data( $results, $top_ids_arr, $type, $metric = 'play' ) {
     $datasets = array();
     $date_labels = $this->get_date_labels( $results );
 
-    if( $type == 'video' ) {
-      $id_item = 'id_player';
-    } else if( $type == 'player' ) {
-      $id_item = 'player_name';
-    } else if( $type == 'post' ) {
-      $id_item = 'id_post';
-    }
-
     // order data for graph,
-    foreach( $top_ids_arr as $id_video ) {
+    foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
         foreach( $results as $row) {
-          if( $row['id_video'] == $id_video ) {
-            if( !isset($datasets[$id_video]) ) {
-              $datasets[$id_video] = array();
+          if( $row['id_video'] == $id || ( isset($row['user_id']) && $row['user_id'] == $id ) ) {
+            if( !isset($datasets[$id]) ) {
+              $datasets[$id] = array();
             }
 
-            if( !isset($datasets[$id_video][$date]) ) {
-              $datasets[$id_video][$date] = array(
-                'id_player_post'=> $row[$id_item]
-              );
-            }
-            
             if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
-              $datasets[$id_video][$date]['play'] = $row['play'];
-            } else if( !isset( $datasets[$id_video][$date]['play']) ) { // date row dont exists, add 0 plays - dont overwrite if value already set
-              $datasets[$id_video][$date]['play'] = 0;
+              if( $metric === 'play' && isset($row['play']) ) {
+                if( isset($datasets[$id][$date]['play']) ) {
+                  $datasets[$id][$date]['play'] += $row['play'];
+                } else {
+                  $datasets[$id][$date]['play'] = $row['play'];
+                }
+              }
+
+              if( $metric === 'seconds' && isset($row['seconds']) ) {
+                if( isset($datasets[$id][$date]['seconds']) ) {
+                  $datasets[$id][$date]['seconds'] += $row['seconds'];
+                } else {
+                  $datasets[$id][$date]['seconds'] = $row['seconds'];
+                }
+              }
+
+            } else { // date row dont exists, add 0 plays/seconds - dont overwrite if value already set
+              if( $metric === 'play' && !isset( $datasets[$id][$date]['play']) ) $datasets[$id][$date]['play'] = 0;
+              if( $metric === 'seconds' && !isset( $datasets[$id][$date]['seconds']) ) $datasets[$id][$date]['seconds'] = 0;
             }
 
-            if( !isset($datasets[$id_video]['name']) ) {
+            if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
                 if( !empty( $row['caption'] ) ) {
-                  $datasets[$id_video]['name'] = $row['caption'];
+                  $datasets[$id]['name'] = $row['caption'];
                 } else {
 
                   // Using code from FV_Player_Db_Video::getTitleFromSrc
@@ -434,11 +609,20 @@ class FV_Player_Stats {
                       $name = end($arr) . '/' . $name;
                     }
                   }
-                  $datasets[$id_video]['name'] = $name;
+                  $datasets[$id]['name'] = $name;
                 }
 
               } else if( $type == 'post' ) {
-                $datasets[$id_video]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
+                $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
+              } else if( $type == 'user' ) {
+                $user_data = get_userdata( intval($row['user_id']) );
+
+                if( $user_data === false ) {
+                  $datasets[$id]['name'] = 'guest';
+                } else {
+                  $datasets[$id]['name'] = $user_data->display_name;
+                }
+
               }
             }
           }
@@ -533,21 +717,21 @@ function fv_player_stats_top( $args = array() ) {
     'post_type' => false,
     'taxonomy' => false,
     'term' => false ) );
-  
+
   extract($args);
-  
+
   $join = $where = "";
   if( $taxonomy && $term ) {
     $join = "
     INNER JOIN {$wpdb->prefix}term_relationships AS tr ON (pm.meta_value = tr.object_id)
     INNER JOIN {$wpdb->prefix}term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
     INNER JOIN {$wpdb->prefix}terms AS t ON (t.term_id = tt.term_id)";
-    
+
     $where = "
     AND tt.taxonomy = '".esc_sql($taxonomy)."'
     AND t.name = '".esc_sql($term)."' ";
   }
-  
+
   global $wpdb;
   $sql = "
 SELECT p.id, vm.id_video, vm.meta_value AS stats_play, pm.meta_value AS post_id
@@ -559,18 +743,18 @@ WHERE vm.meta_key = 'stats_play'
   AND pm.meta_key = 'post_id'
   $where
   ORDER BY CAST(vm.meta_value AS unsigned) DESC;";
-  
+
   $raw = $wpdb->get_results($sql);
-  
+
   // sice there might be multiple players for a single post_id we count these together
   $top = array();
   foreach( $raw AS $record ) {
     if( empty($top[$record->post_id]) ) $top[$record->post_id] = 0;
     $top[$record->post_id] += $record->stats_play;
   }
-  
+
   asort($top);
   $top = array_reverse($top,true);
-  
+
   return $top;
 }
