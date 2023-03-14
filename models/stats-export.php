@@ -16,12 +16,11 @@ class FV_Player_Stats_Export {
 
     $user_id = intval($_GET['fv-stats-export-user']);
 
-    $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, ROUND(meta_value) AS duration
+    $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, duration
       FROM `{$wpdb->prefix}fv_player_stats` AS s
       JOIN `{$wpdb->users}` AS u ON s.user_id = u.ID
       JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID
       JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id
-      JOIN `{$wpdb->prefix}fv_player_videometa` AS vm ON v.id = vm.id_video
       JOIN `{$wpdb->prefix}fv_player_players` AS pl ON FIND_IN_SET( v.id, pl.videos )
       WHERE u.ID = %d
       ORDER BY s.id DESC",
@@ -29,12 +28,16 @@ class FV_Player_Stats_Export {
 
     $results = $wpdb->get_results( $query , ARRAY_A);
 
-    $this->serve_csv($results);
+    $this->serve_csv($results, $user_id);
   }
 
-  private function serve_csv( $data ) {
+  private function serve_csv( $data, $user_id ) {
+    $user = get_user_by('id', $user_id);
+
+    $user_email = $user->user_email;
+
     $header = array('Email', 'Date', 'Player-ID', 'Video-URL', 'Video-Title', 'Play', 'Seconds', 'Duration');
-    $filename = 'fv-player-stats-export-' . date('Y-m-d') . '.csv';
+    $filename = 'fv-player-stats-export-' . $user_email .'-' . date('Y-m-d') . '.csv';
 
     header("Content-type: text/csv");
     header("Content-Disposition: attachment; filename=$filename");
