@@ -86,7 +86,7 @@
     return pick;
   };
 
-  var fv_chart_add_dataset_items = function( top_results, metric = 'play' ) {
+  var fv_chart_add_dataset_items = function( top_results, metric ) {
     var top_datasets = [];
 
     for ( var id_video in top_results ) {
@@ -107,9 +107,7 @@
           var value = parseInt(top_results[id_video][date][metric]);
 
           if( metric == 'seconds' ) {
-            top_results[id_video][date][metric] = Math.round(value / 60); // convert to minutes
-          } else {
-            top_results[id_video][date][metric] = value;
+            if( value > 0 ) value = Math.ceil(value / 60); // convert to minutes
           }
 
           data.push(value);
@@ -141,7 +139,7 @@
     var top_video_results = <?php echo json_encode( $fv_video_stats_data ); ?>;
 
     // Each video data is new dataset
-    var top_videos_datasets = fv_chart_add_dataset_items( top_video_results );
+    var top_videos_datasets = fv_chart_add_dataset_items( top_video_results, 'play' );
 
     var top_videos_chart = new Chart(ctx_top_videos, {
       type: 'line',
@@ -181,7 +179,7 @@
 
     var top_post_results = <?php echo json_encode( $fv_post_stats_data ); ?>;
 
-    var top_posts_datasets = fv_chart_add_dataset_items( top_post_results );
+    var top_posts_datasets = fv_chart_add_dataset_items( top_post_results, 'play' );
 
     var top_posts_chart = new Chart(ctx_top_posts, {
       type: 'line',
@@ -263,7 +261,7 @@ jQuery( document ).ready(function() {
   var top_user_results = <?php echo json_encode( $fv_user_play_stats_data ); ?>;
 
   // Each video data is new dataset
-  var top_user_datasets = fv_chart_add_dataset_items( top_user_results );
+  var top_user_datasets = fv_chart_add_dataset_items( top_user_results, 'play' );
 
   var top_user_chart = new Chart(ctx_top_users, {
     type: 'line',
@@ -343,7 +341,7 @@ jQuery( document ).ready(function() {
 
     var single_player_results = <?php echo json_encode( $fv_single_player_stats_data ); ?>;
 
-    var single_player_datasets = fv_chart_add_dataset_items( single_player_results );
+    var single_player_datasets = fv_chart_add_dataset_items( single_player_results, 'play' );
 
     var single_player_chart = new Chart(ctx_single_player, {
       type: 'line',
