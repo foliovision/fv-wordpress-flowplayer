@@ -5,31 +5,22 @@
   $user_id = isset( $_GET['user_id'] ) ? intval($_GET['user_id']) : false;
   $user_name = false;
 
-  if( is_numeric( $user_id ) ) {
-    $user_data = get_userdata( $user_id );
-
-    if( $user_data ) {
-      $user_name = $user_data->user_email . ' (' . $user_data->display_name . ')';
-    } else {
-      $user_name = 'Guest';
-    }
-
-  }
+  $date_range = isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week';
 
   if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
-    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week' );
+    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), $date_range );
   } else { // aggregated top stats
 
-    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
+    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', $date_range, $user_id);
 
-    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
+    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
 
-    $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id );
+    $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
 
     if( !isset( $_GET['user_id'] ) ) { // only for all users stats
-      $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
+      $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', $date_range, $user_id);
 
-      $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week', $user_id);
+      $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', $date_range, $user_id);
     }
 
   }
@@ -41,6 +32,21 @@
   <h1>FV Player Stats</h1>
 
   <div>
+    <?php if( $user_id ) :
+      if( is_numeric( $user_id ) ) {
+        $user_data = get_userdata( $user_id );
+    
+        if( $user_data ) {
+          $user_name = $user_data->user_email . ' (' . $user_data->display_name . ')';
+        } else {
+          $user_name = 'User not found';
+        }
+    
+      }
+      ?>
+      <p>Showing stats for <?php echo $user_name; ?></p>
+    <?php endif; ?>
+
     <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
       <input type="hidden" name="page" value="fv_player_stats" />
       <select name="stats_range">
@@ -124,7 +130,7 @@
 <?php if( isset($fv_video_stats_data) && !empty($fv_video_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Videos<?php if($user_name) echo ' for ' . $user_name ?></h2>
+    <h2>Top 10 Videos</h2>
     <canvas id="chart-top-users-play" style="max-height: 36vh"></canvas>
   </div>
 
@@ -166,7 +172,7 @@
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Post Video plays<?php if($user_name) echo ' for ' . $user_name ?></h2>
+    <h2>Top 10 Post Video Plays</h2>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
 
@@ -206,7 +212,7 @@
 <?php if( isset($fv_video_watch_time_stats_data) && !empty($fv_video_watch_time_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Video by watch time<?php if($user_name) echo ' for ' . $user_name ?></h2>
+    <h2>Top 10 Videos by Watch Time</h2>
     <canvas id="chart-top-users-play-watchtime" style="max-height: 36vh"></canvas>
   </div>
 
