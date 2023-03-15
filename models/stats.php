@@ -441,7 +441,7 @@ class FV_Player_Stats {
     $datasets = false;
     $top_ids = array();
     $top_ids_arr = array();
-    $top_ids_results = $this->top_ten_videos_by_plays( $interval ); // get top video ids
+    $top_ids_results = $this->top_ten_videos_by_plays( $interval, $user_check ); // get top video ids
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
