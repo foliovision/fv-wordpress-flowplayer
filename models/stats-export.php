@@ -20,13 +20,14 @@ class FV_Player_Stats_Export {
 
       $user_id = intval($_GET['fv-stats-export-user']);
 
-      $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, duration
+      $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, meta_value AS duration
         FROM `{$wpdb->prefix}fv_player_stats` AS s
         JOIN `{$wpdb->users}` AS u ON s.user_id = u.ID
         JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID
         JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id
+        JOIN `{$wpdb->prefix}fv_player_videometa` AS vm ON v.id = vm.id_video
         JOIN `{$wpdb->prefix}fv_player_players` AS pl ON FIND_IN_SET( v.id, pl.videos )
-        WHERE u.ID = %d
+        WHERE u.ID = %d AND meta_key = 'duration'
         ORDER BY s.id DESC",
       $user_id);
 
