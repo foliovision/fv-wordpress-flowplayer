@@ -35,13 +35,13 @@
     <?php if( $user_id ) :
       if( is_numeric( $user_id ) ) {
         $user_data = get_userdata( $user_id );
-    
+
         if( $user_data ) {
           $user_name = $user_data->user_email . ' (' . $user_data->display_name . ')';
         } else {
           $user_name = 'User not found';
         }
-    
+
       }
       ?>
       <p>Showing stats for <?php echo $user_name; ?></p>
@@ -58,6 +58,10 @@
       </select>
       <input type="submit" value="Filter" class="button" />
     </form>
+    <?php if( $user_id ): ?>
+      <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export stats to csv file</a>
+    <?php endif; ?>
+
   </div>
 
   <script>
