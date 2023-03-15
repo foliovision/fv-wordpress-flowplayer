@@ -302,7 +302,11 @@
         scales: {
           y: {
             stacked: true,
-            beginAtZero: true
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Minutes'
+            }
           }
         }
       },
@@ -315,7 +319,7 @@
 <?php if( isset($fv_user_play_stats_data) && !empty($fv_user_play_stats_data) ): ?>
 
 <div>
-  <h2>Top 10 Users by plays</h2>
+  <h2>Top 10 Users by Plays</h2>
   <div id="chart-top-10-users-by-play-legend" class="fv-player-chartjs-html-legend"></div>
   <canvas id="chart-top-10-users-by-play" style="max-height: 36vh"></canvas>
 </div>
@@ -354,7 +358,11 @@ jQuery( document ).ready(function() {
       scales: {
         y: {
           stacked: true,
-          beginAtZero: true
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Minutes'
+          }
         }
       }
     },
@@ -367,7 +375,7 @@ jQuery( document ).ready(function() {
 <?php if( isset($fv_user_watch_time_stats_data) && !empty($fv_user_watch_time_stats_data) ): ?>
 
 <div>
-  <h2>Top 10 Users by watch time</h2>
+  <h2>Top 10 Users by Watch Time</h2>
   <div id="chart-top-10-users-by-watchtime-legend" class="fv-player-chartjs-html-legend"></div>
   <canvas id="chart-top-10-users-by-watchtime" style="max-height: 36vh"></canvas>
 </div>
@@ -406,7 +414,11 @@ jQuery( document ).ready(function() {
       scales: {
         y: {
           stacked: true,
-          beginAtZero: true
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Minutes'
+          }
         }
       }
     },
