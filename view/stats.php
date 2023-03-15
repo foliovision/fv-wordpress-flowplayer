@@ -25,8 +25,35 @@
 
   }
 
-  wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_script( 'fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_script( 'fv-chartjs-html-legend', flowplayer::get_plugin_url().'/js/chartjs/html-legend.js', array('fv-chartjs'), $fv_wp_flowplayer_ver );
 ?>
+
+<style>
+.fv-player-chartjs-html-legend ul {
+  display: flex;
+  flex-direction: row;
+  margin: 0px;
+  padding: 0px;
+}
+.fv-player-chartjs-html-legend ul li {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+.fv-player-chartjs-html-legend ul li span {
+  display: inline-block;
+  height: 20px;
+  margin-right: 10px;
+  width: 20px;
+}
+.fv-player-chartjs-html-legend ul li p {
+  margin: 0px;
+  padding: 0px;
+}
+</style>
 
 <div class="wrap">
   <h1>FV Player Stats</h1>
@@ -35,13 +62,13 @@
     <?php if( $user_id ) :
       if( is_numeric( $user_id ) ) {
         $user_data = get_userdata( $user_id );
-    
+
         if( $user_data ) {
           $user_name = $user_data->user_email . ' (' . $user_data->display_name . ')';
         } else {
           $user_name = 'User not found';
         }
-    
+
       }
       ?>
       <p>Showing stats for <?php echo $user_name; ?></p>
@@ -57,7 +84,13 @@
         ?>
       </select>
       <input type="submit" value="Filter" class="button" />
+
+      <?php if( $user_id ): ?>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+      <?php endif; ?>
+
     </form>
+
   </div>
 
   <script>
@@ -131,6 +164,7 @@
 
   <div>
     <h2>Top 10 Videos</h2>
+    <div id="chart-top-users-play-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-top-users-play" style="max-height: 36vh"></canvas>
   </div>
 
@@ -156,6 +190,14 @@
         animation: {
           duration: 0
         },
+        plugins: {
+          htmlLegend: {
+            containerID: 'chart-top-users-play-legend',
+          },
+          legend: {
+            display: false,
+          }
+        },
         responsive: true,
         scales: {
           y: {
@@ -163,7 +205,8 @@
             beginAtZero: true
           }
         }
-      }
+      },
+      plugins: [ htmlLegendPlugin ],
     });
   })
   </script>
@@ -173,6 +216,7 @@
 
   <div>
     <h2>Top 10 Post Video Plays</h2>
+    <div id="chart-top-posts-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
 
@@ -196,6 +240,14 @@
         animation: {
           duration: 0
         },
+        plugins: {
+          htmlLegend: {
+            containerID: 'chart-top-posts-legend',
+          },
+          legend: {
+            display: false,
+          }
+        },
         responsive: true,
         scales: {
           y: {
@@ -203,7 +255,8 @@
             beginAtZero: true
           }
         }
-      }
+      },
+      plugins: [ htmlLegendPlugin ],
     });
   });
   </script>
@@ -213,6 +266,7 @@
 
   <div>
     <h2>Top 10 Videos by Watch Time</h2>
+    <div id="chart-top-users-play-watchtime-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-top-users-play-watchtime" style="max-height: 36vh"></canvas>
   </div>
 
@@ -236,6 +290,14 @@
         animation: {
           duration: 0
         },
+        plugins: {
+          htmlLegend: {
+            containerID: 'chart-top-users-play-watchtime-legend',
+          },
+          legend: {
+            display: false,
+          }
+        },
         responsive: true,
         scales: {
           y: {
@@ -243,7 +305,8 @@
             beginAtZero: true
           }
         }
-      }
+      },
+      plugins: [ htmlLegendPlugin ],
     });
   });
   </script>
@@ -253,6 +316,7 @@
 
 <div>
   <h2>Top 10 Users by plays</h2>
+  <div id="chart-top-10-users-by-play-legend" class="fv-player-chartjs-html-legend"></div>
   <canvas id="chart-top-10-users-by-play" style="max-height: 36vh"></canvas>
 </div>
 
@@ -278,6 +342,14 @@ jQuery( document ).ready(function() {
       animation: {
         duration: 0
       },
+      plugins: {
+        htmlLegend: {
+          containerID: 'chart-top-10-users-by-play-legend',
+        },
+        legend: {
+          display: false,
+        }
+      },
       responsive: true,
       scales: {
         y: {
@@ -285,7 +357,8 @@ jQuery( document ).ready(function() {
           beginAtZero: true
         }
       }
-    }
+    },
+    plugins: [ htmlLegendPlugin ],
   });
 })
 </script>
@@ -295,6 +368,7 @@ jQuery( document ).ready(function() {
 
 <div>
   <h2>Top 10 Users by watch time</h2>
+  <div id="chart-top-10-users-by-watchtime-legend" class="fv-player-chartjs-html-legend"></div>
   <canvas id="chart-top-10-users-by-watchtime" style="max-height: 36vh"></canvas>
 </div>
 
@@ -320,6 +394,14 @@ jQuery( document ).ready(function() {
       animation: {
         duration: 0
       },
+      plugins: {
+        htmlLegend: {
+          containerID: 'chart-top-10-users-by-watchtime-legend',
+        },
+        legend: {
+          display: false,
+        }
+      },
       responsive: true,
       scales: {
         y: {
@@ -327,7 +409,8 @@ jQuery( document ).ready(function() {
           beginAtZero: true
         }
       }
-    }
+    },
+    plugins: [ htmlLegendPlugin ],
   });
 })
 </script>
@@ -336,6 +419,7 @@ jQuery( document ).ready(function() {
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
     <h2>Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
+    <div id="chart-single-player-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
   </div>
   <script>
@@ -355,13 +439,22 @@ jQuery( document ).ready(function() {
         datasets: single_player_datasets
       },
       options: {
+        plugins: {
+          htmlLegend: {
+            containerID: 'chart-single-player-legend',
+          },
+          legend: {
+            display: false,
+          }
+        },
         responsive: true,
         scales: {
           y: {
             beginAtZero: true
           }
         }
-      }
+      },
+      plugins: [ htmlLegendPlugin ],
     });
   });
   </script>
