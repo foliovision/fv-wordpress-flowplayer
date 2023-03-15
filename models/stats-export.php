@@ -20,7 +20,7 @@ class FV_Player_Stats_Export {
 
       $user_id = intval($_GET['fv-stats-export-user']);
 
-      $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, meta_value AS duration
+      $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, ROUND(meta_value) AS duration
         FROM `{$wpdb->prefix}fv_player_stats` AS s
         JOIN `{$wpdb->users}` AS u ON s.user_id = u.ID
         JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID
@@ -43,7 +43,7 @@ class FV_Player_Stats_Export {
 
     $user_email = $user->user_email;
 
-    $header = array('Email', 'Date', 'Player-ID', 'Video-URL', 'Video-Title', 'Play', 'Seconds', 'Duration');
+    $header = array('User Email', 'Date', 'Player ID', 'Video URL', 'Video Title', 'Plays', 'Seconds Watched', 'Video Duration');
     $filename = 'fv-player-stats-export-' . $user_email .'-' . date('Y-m-d') . '.csv';
 
     header("Content-type: text/csv");
