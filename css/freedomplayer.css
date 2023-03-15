@@ -454,9 +454,9 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui {
+  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui {
     background-image: none; }
-    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui > * {
+    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui > * {
       opacity: 1; }
   .freedomplayer .fp-header {
     top: 0;
@@ -660,6 +660,12 @@
     .freedomplayer .fp-bar.no-animation > *, .freedomplayer .no-animation.fp-bar-slider > * {
       -webkit-transition: none;
       transition: none; }
+  .freedomplayer .fp-bar-vertical {
+    cursor: row-resize;
+    width: .9em; }
+    .freedomplayer .fp-bar-vertical > * {
+      bottom: 0;
+      width: 100%; }
   .freedomplayer .fp-timeline {
     -webkit-transition: height .2s;
     transition: height .2s; }
@@ -687,13 +693,6 @@
     -ms-flex-align: center;
     -webkit-box-align: center;
             align-items: center; }
-  .freedomplayer .fp-volumebar.fp-bar-slider {
-    overflow: hidden;
-    -webkit-transition: width .2s;
-    transition: width .2s;
-    width: 0; }
-  .freedomplayer .fp-volume:hover .fp-volumebar {
-    width: 56px; }
   .freedomplayer .fp-bar-slider {
     background-color: transparent;
     -webkit-user-select: none;
