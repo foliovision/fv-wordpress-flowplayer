@@ -65,7 +65,7 @@ class FV_Player_lightbox {
       !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
     ) return;
     
-    wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
+    // TODO: Should we still enqueue CSS somehow?
   }
 
   function conf_defaults($conf){
@@ -339,10 +339,54 @@ class FV_Player_lightbox {
 
     $aConf = array();
     $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images'); // should FV Player fancybox be used to show images?
+    $aConf['js_url'] = flowplayer::get_plugin_url().'/js/fancybox.js';
+    $aConf['css_url'] = FV_FP_RELATIVE_PATH . '/css/fancybox.css';
     
     $this->css_enqueue(true);
 
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    $script = <<< SCRIPT
+let fv_player_fancybox_loaded = false;
+const images = document.querySelectorAll( '[data-fancybox]' );
+for (let i = 0; i < images.length; i++) {
+  images[i].addEventListener( 'click', function( e ) {
+    if ( fv_player_fancybox_loaded ) {
+      return;
+    }
+    fv_player_fancybox_loaded = true;
+
+    var image = this;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = fv_player_lightbox.css_url;
+    document.head.appendChild(link);
+
+    let script = document.createElement('script');
+    script.onload = function () {
+      let evt = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      // If cancelled, don't dispatch our event
+      let canceled = !image.dispatchEvent(evt);
+    };
+    script.src = fv_player_lightbox.js_url;
+
+    document.head.appendChild(script);
+  });
+}
+SCRIPT;
+
+    // Load inline JS only, but will this work with WordPress 5.7?
+    wp_register_script( 'fv_player_lightbox', '' );
+    wp_enqueue_script( 'fv_player_lightbox' );
+    wp_add_inline_script( 'fv_player_lightbox', $script );
+
     wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
   }
 
