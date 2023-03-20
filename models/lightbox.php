@@ -65,7 +65,12 @@ class FV_Player_lightbox {
       !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
     ) return;
     
-    wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
+    if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox') ) {
+      // TODO: Should we still enqueue CSS somehow?
+
+    } else {
+      wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
+    }
   }
 
   function conf_defaults($conf){
@@ -171,7 +176,7 @@ class FV_Player_lightbox {
    * Controls the stylesheet and script loading
    */
   public function enqueue() {
-    $this->bLoad = true;
+    do_action('fv_player_force_load_lightbox');
   }
 
   function is_text_lightbox($aArgs) {
@@ -197,7 +202,7 @@ class FV_Player_lightbox {
       $args = $aArgs[1]->aCurArgs;
       if( isset($args['lightbox']) && $args['lightbox'] != false && !get_query_var('fv_player_embed') ) {
 
-        $this->enqueue();
+        $this->bLoad = true;
         
         global $fv_fp;
         
@@ -339,10 +344,62 @@ class FV_Player_lightbox {
 
     $aConf = array();
     $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images'); // should FV Player fancybox be used to show images?
+    $aConf['js_url'] = flowplayer::get_plugin_url().'/js/fancybox.js';
+    $aConf['css_url'] = FV_FP_RELATIVE_PATH . '/css/fancybox.css';
     
     $this->css_enqueue(true);
 
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox')  ) {
+
+      $script = <<< SCRIPT
+( function() {
+  let fv_player_fancybox_loaded = false;
+  const triggers = document.querySelectorAll( '[data-fancybox], .fp-playlist-external[rel$=_lightbox_starter] a' );
+  for (let i = 0; i < triggers.length; i++) {
+    triggers[i].addEventListener( 'ontouchstart' in window ? 'touchstart' : 'click', function( e ) {
+      if ( fv_player_fancybox_loaded ) return;
+      fv_player_fancybox_loaded = true;
+
+      let i = this,
+        l = document.createElement('link'),
+        s = document.createElement('script');
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      l.rel = 'stylesheet';
+      l.type = 'text/css';
+      l.href = fv_player_lightbox.css_url;
+      document.head.appendChild(l);
+
+      s.onload = function () {
+        let evt = new MouseEvent('click',{bubbles: true,cancelable:true,view:window});
+        i.dispatchEvent(evt);
+      };
+      s.src = fv_player_lightbox.js_url;
+      document.head.appendChild(s);
+    });
+  }
+})();
+SCRIPT;
+
+      if( !defined('SCRIPT_DEBUG') || !SCRIPT_DEBUG ) {
+        // remove /* comments */
+        $script = preg_replace( '~/\*[\s\S]*?\*/~m', '', $script );
+        // remove whitespace
+        $script = preg_replace( '~\s+~m', ' ', $script );
+      }
+
+      // Load inline JS only, but will this work with WordPress 5.7?
+      wp_register_script( 'fv_player_lightbox', '' );
+      wp_enqueue_script( 'fv_player_lightbox' );
+      wp_add_inline_script( 'fv_player_lightbox', $script );
+
+    } else {
+
+      wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    }
+
     wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
   }
 
@@ -402,7 +459,7 @@ class FV_Player_lightbox {
     $content = preg_replace_callback('~(<a[^>]*?>\s*?)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
 
     if( $count ) {
-      $this->enqueue();
+      $this->bLoad = true;
     }
 
     return $content;
