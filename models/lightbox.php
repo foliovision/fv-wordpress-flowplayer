@@ -65,7 +65,7 @@ class FV_Player_lightbox {
       !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
     ) return;
     
-    if ( $fv_fp->_get_option('js-optimize') ) {
+    if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox') ) {
       // TODO: Should we still enqueue CSS somehow?
 
     } else {
@@ -176,7 +176,7 @@ class FV_Player_lightbox {
    * Controls the stylesheet and script loading
    */
   public function enqueue() {
-    $this->bLoad = true;
+    do_action('fv_player_force_load_lightbox');
   }
 
   function is_text_lightbox($aArgs) {
@@ -202,7 +202,7 @@ class FV_Player_lightbox {
       $args = $aArgs[1]->aCurArgs;
       if( isset($args['lightbox']) && $args['lightbox'] != false && !get_query_var('fv_player_embed') ) {
 
-        $this->enqueue();
+        $this->bLoad = true;
         
         global $fv_fp;
         
@@ -349,7 +349,7 @@ class FV_Player_lightbox {
     
     $this->css_enqueue(true);
 
-    if ( $fv_fp->_get_option('js-optimize') ) {
+    if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox')  ) {
 
       $script = <<< SCRIPT
 ( function() {
@@ -459,7 +459,7 @@ SCRIPT;
     $content = preg_replace_callback('~(<a[^>]*?>\s*?)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
 
     if( $count ) {
-      $this->enqueue();
+      $this->bLoad = true;
     }
 
     return $content;
