@@ -356,7 +356,7 @@ class FV_Player_lightbox {
   let fv_player_fancybox_loaded = false;
   const triggers = document.querySelectorAll( '[data-fancybox], .fp-playlist-external[rel$=_lightbox_starter] a' );
   for (let i = 0; i < triggers.length; i++) {
-    triggers[i].addEventListener( 'click', function( e ) {
+    triggers[i].addEventListener( 'ontouchstart' in window ? 'touchstart' : 'click', function( e ) {
       if ( fv_player_fancybox_loaded ) return;
       fv_player_fancybox_loaded = true;
 
