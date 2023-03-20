@@ -451,6 +451,7 @@ class FV_Player_Db {
               $post_ids[] = $post_id;
             }
 
+            // Load enough to allow get_permalink() to work with the data
             global $wpdb;
             $embeds = $wpdb->get_results( "SELECT ID, post_name, post_title, post_status, post_type, post_date FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
 
