@@ -290,6 +290,12 @@ class flowplayer_frontend extends flowplayer
       $splash_img = $aPlaylistItems[0]['splash'];
     }
 
+    // Load playlists.css later, if it's used.
+    // TODO: Perhaps load right there in the HTML
+    if ( count( $aPlaylistItems ) > 1 ) {
+      wp_enqueue_style( 'fv_freedomplayer_playlists', FV_FP_RELATIVE_PATH.'/css/playlists.css', array('fv_flowplayer'), filemtime( dirname(__FILE__).'/../css/playlists.css' ) );
+    }
+
     if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
       $playlist_items_external_html = false;
 
