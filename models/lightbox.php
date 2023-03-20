@@ -65,7 +65,12 @@ class FV_Player_lightbox {
       !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
     ) return;
     
+    if ( $fv_fp->_get_option('js-optimize') ) {
     // TODO: Should we still enqueue CSS somehow?
+
+    } else {
+      wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
+    }
   }
 
   function conf_defaults($conf){
@@ -344,6 +349,8 @@ class FV_Player_lightbox {
     
     $this->css_enqueue(true);
 
+    if ( $fv_fp->_get_option('js-optimize') ) {
+
     $script = <<< SCRIPT
 let fv_player_fancybox_loaded = false;
 const images = document.querySelectorAll( '[data-fancybox]' );
@@ -386,6 +393,11 @@ SCRIPT;
     wp_register_script( 'fv_player_lightbox', '' );
     wp_enqueue_script( 'fv_player_lightbox' );
     wp_add_inline_script( 'fv_player_lightbox', $script );
+
+    } else {
+
+      wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    }
 
     wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
   }
