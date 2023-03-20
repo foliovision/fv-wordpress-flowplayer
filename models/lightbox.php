@@ -66,7 +66,7 @@ class FV_Player_lightbox {
     ) return;
     
     if ( $fv_fp->_get_option('js-optimize') ) {
-    // TODO: Should we still enqueue CSS somehow?
+      // TODO: Should we still enqueue CSS somehow?
 
     } else {
       wp_enqueue_style( 'fv_player_lightbox', FV_FP_RELATIVE_PATH . '/css/fancybox.css', array(), $fv_wp_flowplayer_ver );
@@ -351,48 +351,49 @@ class FV_Player_lightbox {
 
     if ( $fv_fp->_get_option('js-optimize') ) {
 
-    $script = <<< SCRIPT
-let fv_player_fancybox_loaded = false;
-const images = document.querySelectorAll( '[data-fancybox]' );
-for (let i = 0; i < images.length; i++) {
-  images[i].addEventListener( 'click', function( e ) {
-    if ( fv_player_fancybox_loaded ) {
-      return;
-    }
-    fv_player_fancybox_loaded = true;
+      $script = <<< SCRIPT
+( function() {
+  let fv_player_fancybox_loaded = false;
+  const triggers = document.querySelectorAll( '[data-fancybox], .fp-playlist-external[rel$=_lightbox_starter] a' );
+  for (let i = 0; i < triggers.length; i++) {
+    triggers[i].addEventListener( 'click', function( e ) {
+      if ( fv_player_fancybox_loaded ) return;
+      fv_player_fancybox_loaded = true;
 
-    var image = this;
+      let i = this,
+        l = document.createElement('link'),
+        s = document.createElement('script');
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
 
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = fv_player_lightbox.css_url;
-    document.head.appendChild(link);
+      l.rel = 'stylesheet';
+      l.type = 'text/css';
+      l.href = fv_player_lightbox.css_url;
+      document.head.appendChild(l);
 
-    let script = document.createElement('script');
-    script.onload = function () {
-      let evt = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      // If cancelled, don't dispatch our event
-      let canceled = !image.dispatchEvent(evt);
-    };
-    script.src = fv_player_lightbox.js_url;
-
-    document.head.appendChild(script);
-  });
-}
+      s.onload = function () {
+        let evt = new MouseEvent('click',{bubbles: true,cancelable:true,view:window});
+        i.dispatchEvent(evt);
+      };
+      s.src = fv_player_lightbox.js_url;
+      document.head.appendChild(s);
+    });
+  }
+})();
 SCRIPT;
 
-    // Load inline JS only, but will this work with WordPress 5.7?
-    wp_register_script( 'fv_player_lightbox', '' );
-    wp_enqueue_script( 'fv_player_lightbox' );
-    wp_add_inline_script( 'fv_player_lightbox', $script );
+      if( !defined('SCRIPT_DEBUG') || !SCRIPT_DEBUG ) {
+        // remove /* comments */
+        $script = preg_replace( '~/\*[\s\S]*?\*/~m', '', $script );
+        // remove whitespace
+        $script = preg_replace( '~\s+~m', ' ', $script );
+      }
+
+      // Load inline JS only, but will this work with WordPress 5.7?
+      wp_register_script( 'fv_player_lightbox', '' );
+      wp_enqueue_script( 'fv_player_lightbox' );
+      wp_add_inline_script( 'fv_player_lightbox', $script );
 
     } else {
 
