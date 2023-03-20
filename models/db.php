@@ -452,7 +452,7 @@ class FV_Player_Db {
             }
 
             global $wpdb;
-            $embeds = $wpdb->get_results( "SELECT ID, post_title, post_status, post_type FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
+            $embeds = $wpdb->get_results( "SELECT ID, post_name, post_title, post_status, post_type, post_date FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
 
             foreach( $embeds AS $post_id => $post_data ) {
 
