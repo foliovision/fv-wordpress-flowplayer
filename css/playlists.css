@@ -1,4 +1,4 @@
-.fp-playlist-external h4 { display: none }
+.fp-playlist-external h4 { display: block }
 
 .flowplayer .fv-fp-playlist-menu .screen-reader-text { clip: rect(1px, 1px, 1px, 1px); height: 1px; overflow: hidden; position: absolute !important; width: 1px; }
 .flowplayer .fp-menu.fv-fp-playlist-menu { width: 4em; }
