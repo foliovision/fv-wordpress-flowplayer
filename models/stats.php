@@ -361,7 +361,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->range_to_interval( $range );
+    $interval = $this->get_interval_from_range( $range );
 
     $datasets = false;
     $top_ids = array();
@@ -392,7 +392,7 @@ class FV_Player_Stats {
     }
 
     if( !empty($results) ) {
-      $datasets = $this->process_graph_data( $results, $top_ids_arr, 'user', $metric );
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, 'user', $metric );
     }
 
     return $datasets;
@@ -402,7 +402,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->range_to_interval( $range );
+    $interval = $this->get_interval_from_range( $range );
 
     // dynamic filter based on user
     $user_check = $this->where_user( $user_id );
@@ -424,7 +424,7 @@ class FV_Player_Stats {
     $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) $user_check GROUP BY id_video, date", ARRAY_A );
 
     if( !empty($results) ) {
-      $datasets = $this->process_graph_data( $results, $top_ids_arr, $type, 'seconds' );
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, $type, 'seconds' );
     }
 
     return $datasets;
@@ -434,7 +434,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->range_to_interval( $range );
+    $interval = $this->get_interval_from_range( $range );
 
     // dynamic filter based on user
     $user_check = $this->where_user( $user_id );
@@ -459,7 +459,7 @@ class FV_Player_Stats {
     }
 
     if( !empty($results) ) {
-      $datasets = $this->process_graph_data( $results, $top_ids_arr, $type );
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, $type );
     }
 
     return $datasets;
@@ -468,7 +468,7 @@ class FV_Player_Stats {
   public function get_player_stats( $player_id, $range) {
     global $wpdb;
 
-    $interval = $this->range_to_interval( $range );
+    $interval = $this->get_interval_from_range( $range );
     $datasets = false;
 
     $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
@@ -479,7 +479,7 @@ class FV_Player_Stats {
         $ids_arr[] = $row['id_video'];
       }
 
-      $datasets = $this->process_graph_data( $results, $ids_arr, 'player' );
+      $datasets = $this->process_graph_data( $results, $ids_arr, $range, 'player' );
     }
 
     return $datasets;
@@ -489,7 +489,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
-    $interval = $this->range_to_interval( $range );
+    $interval = $this->get_interval_from_range( $range );
 
     $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
@@ -506,7 +506,7 @@ class FV_Player_Stats {
     return $where;
   }
 
-  private function range_to_interval( $range ) {
+  private function get_interval_from_range( $range ) {
     $date_range = '';
 
     if( strcmp( 'this_week', $range ) === 0 ) { // this week
@@ -556,6 +556,65 @@ class FV_Player_Stats {
     return $date_range;
   }
 
+  private function get_dates_in_range( $range ) {
+    $dates = array();
+
+    if( strcmp( 'this_week', $range ) === 0 ) {
+      $end_day = date('Y-m-d', strtotime('today'));
+      $start_day = date('Y-m-d', strtotime('today - 7 days'));
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
+    } else if( strcmp( 'last_week', $range ) === 0 ) {
+      $previous_week = strtotime("-1 week +1 day");
+
+      // convert to datetime
+      $previous_week = date('Y-m-d', $previous_week);
+
+      // respect the start of week day by wordpress
+      $start_end_week = get_weekstartend($previous_week);
+
+      $start_week = date('Y-m-d', $start_end_week['start']);
+      $end_week = date('Y-m-d', $start_end_week['end']);
+
+      $dates = $this->get_days_between_dates( $start_week, $end_week );
+    } else if( strcmp( 'this_month', $range ) === 0 ) {
+      $start_day = date('Y-m-01');
+      $end_day = date('Y-m-t');
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
+    } else if( strcmp( 'last_month', $range ) === 0 ) {
+      $first_day_last_month = strtotime('first day of last month');
+      $last_day_last_month = strtotime('last day of last month');
+
+      $start_day = date('Y-m-01', $first_day_last_month );
+      $end_day = date('Y-m-t', $last_day_last_month );
+
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
+    } else if( strcmp( 'this_year', $range ) === 0 ) {
+      $start_day = date('Y-01-01');
+      $end_day = date('Y-12-31');
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
+    } else if( strcmp( 'last_year', $range ) === 0 ) {
+      $start_day = date('Y-01-01', strtotime('-1 year'));
+      $end_day = date('Y-12-31', strtotime('-1 year'));
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
+    }
+
+    return $dates;
+  }
+
+  private function get_days_between_dates( $start_day, $end_day ) {
+    $dates = array();
+
+    $current = strtotime($start_day);
+    $end = strtotime($end_day);
+
+    while( $current <= $end ) {
+      $dates[] = date('Y-m-d', $current);
+      $current = strtotime('+1 day', $current);
+    }
+
+    return $dates;
+  }
+
   private function get_date_labels( $results ) {
     $date_labels = array();
 
@@ -570,9 +629,10 @@ class FV_Player_Stats {
     return array_values($date_labels);
   }
 
-  private function process_graph_data( $results, $top_ids_arr, $type, $metric = 'play' ) {
+  private function process_graph_data( $results, $top_ids_arr, $range, $type, $metric = 'play' ) {
     $datasets = array();
-    $date_labels = $this->get_date_labels( $results );
+
+    $date_labels = $this->get_dates_in_range( $range );
 
     // order data for graph,
     foreach( $top_ids_arr as $id ) {
