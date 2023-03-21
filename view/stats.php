@@ -105,16 +105,17 @@
     <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
       <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
         <input type="hidden" name="page" value="fv_player_stats_users" />
+        <input type="hidden" name="stats_range" value="<?php echo $date_range; ?>" />
         <select id="fv_player_stats_users_select" name="user_id">
           <option disabled selected value>Select user you want to show stats for</option>
           <?php
-            $users = $FV_Player_Stats->get_all_users_dropdown();
+            $users = $FV_Player_Stats->get_all_users_dropdown($date_range);
             if( $users ) {
               foreach( $users as $key => $value ) {
                 $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
                 $plays = number_format_i18n( $plays, 0 );
 
-                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['user_login'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
+                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['display_name'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
               }
             }
           ?>

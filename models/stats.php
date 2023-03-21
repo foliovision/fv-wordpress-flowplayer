@@ -485,10 +485,12 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_all_users_dropdown() {
+  public function get_all_users_dropdown( $range ) {
     global $wpdb;
 
-    $result = $wpdb->get_results( "SELECT u.ID, user_login, user_email, SUM( play ) AS play FROM wp_users AS u LEFT JOIN wp_fv_player_stats AS s ON u.ID = s.user_id GROUP BY u.ID ORDER BY user_login", ARRAY_A );
+    $interval = $this->range_to_interval( $range );
+
+    $result = $wpdb->get_results( "SELECT u.ID, user_login, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval GROUP BY u.ID ORDER BY user_login", ARRAY_A );
 
     return $result;
   }
