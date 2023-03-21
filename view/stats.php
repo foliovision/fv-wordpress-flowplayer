@@ -2,6 +2,8 @@
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
+  $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : false;
+
   $user_id = isset( $_GET['user_id'] ) ? intval($_GET['user_id']) : false;
   $user_name = false;
 
@@ -9,7 +11,7 @@
 
   if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), $date_range );
-  } else { // aggregated top stats
+  } else if( ( strcmp($current_page, 'fv_player_stats') === 0 ) || ( strcmp($current_page, 'fv_player_stats_users') === 0 && is_int($user_id) ) ) { // aggregated top stats
 
     $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', $date_range, $user_id);
 
@@ -74,22 +76,40 @@
       <p>Showing stats for <?php echo $user_name; ?></p>
     <?php endif; ?>
 
-    <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
-      <input type="hidden" name="page" value="fv_player_stats" />
-      <select name="stats_range">
-        <?php
-          foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
-          }
-        ?>
-      </select>
-      <input type="submit" value="Filter" class="button" />
+    <?php if( strcmp($current_page, 'fv_player_stats') === 0 ): ?>
+      <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+        <input type="hidden" name="page" value="fv_player_stats" />
+        <select name="stats_range">
+          <?php
+            foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+              echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+            }
+          ?>
+        </select>
+        <input type="submit" value="Filter" class="button" />
 
-      <?php if( $user_id ): ?>
-        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
-      <?php endif; ?>
+        <?php if( $user_id ): ?>
+          <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+        <?php endif; ?>
+      </form>
+    <?php endif; ?>
 
-    </form>
+    <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
+      <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+        <input type="hidden" name="page" value="fv_player_stats_users" />
+        <select name="user_id">
+          <?php
+            $users = $FV_Player_Stats->get_all_users_dropdown();
+            if( $users ) {
+              foreach( $users as $key => $value ) {
+                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $$value['ID'] ? 'selected' : '' ).'>'.$value['user_login'] . ' - ' . $value['user_email'] .'</option>';
+              }
+            }
+          ?>
+        </select>
+        <input type="submit" value="Select User" class="button" />
+      </form>
+    <?php endif; ?>
 
   </div>
 

@@ -42,6 +42,7 @@ class FV_Player_Stats {
 
   function stats_link() {
     add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
+    add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
   }
 
   function get_stat_columns() {
@@ -482,6 +483,14 @@ class FV_Player_Stats {
     }
 
     return $datasets;
+  }
+
+  public function get_all_users_dropdown() {
+    global $wpdb;
+
+    $result = $wpdb->get_results( "SELECT u.ID, user_login, user_email, SUM( play ) AS play FROM wp_users AS u LEFT JOIN wp_fv_player_stats AS s ON u.ID = s.user_id GROUP BY u.ID ORDER BY user_login", ARRAY_A );
+
+    return $result;
   }
 
   private function where_user( $user_id ) {
