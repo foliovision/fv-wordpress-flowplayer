@@ -490,7 +490,7 @@ class FV_Player_Stats {
 
     $interval = $this->range_to_interval( $range );
 
-    $result = $wpdb->get_results( "SELECT u.ID, user_login, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval GROUP BY u.ID ORDER BY user_login", ARRAY_A );
+    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
     return $result;
   }
