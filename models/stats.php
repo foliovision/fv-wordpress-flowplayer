@@ -321,22 +321,22 @@ class FV_Player_Stats {
     return $results;
   }
 
-  public function top_ten_videos_by_plays( $interval ) {
+  public function top_ten_videos_by_plays( $interval, $user_check ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
 
-    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10");
 
     return $results;
   }
 
-  public function top_ten_videos_by_watch_time( $interval ) {
+  public function top_ten_videos_by_watch_time( $interval, $user_check ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
 
-    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10");
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10");
 
     return $results;
   }
@@ -412,7 +412,7 @@ class FV_Player_Stats {
     $top_ids = array();
     $top_ids_arr = array();
 
-    $top_ids_results = $this->top_ten_videos_by_watch_time( $interval ); // get top video ids
+    $top_ids_results = $this->top_ten_videos_by_watch_time( $interval, $user_check ); // get top video ids
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
