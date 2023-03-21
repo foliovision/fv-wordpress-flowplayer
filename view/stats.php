@@ -11,18 +11,20 @@
 
   if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), $date_range );
-  } else if( ( strcmp($current_page, 'fv_player_stats') === 0 ) || ( strcmp($current_page, 'fv_player_stats_users') === 0 && is_int($user_id) ) ) { // aggregated top stats
+  } else { // aggregated top stats
 
-    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', $date_range, $user_id);
+    if( ( strcmp($current_page, 'fv_player_stats') === 0 ) || ( strcmp($current_page, 'fv_player_stats_users') === 0 && is_int($user_id) ) ) { // aggegated top stats for videos, posts and watch time, show for both but for fv_player_stats_users only if user_id is set
+      $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', $date_range, $user_id);
 
-    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
+      $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
 
-    $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+      $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+    }
 
-    if( !isset( $_GET['user_id'] ) ) { // only for all users stats
-      $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', $date_range, $user_id);
+    if( !isset($_GET['user_id']) && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
+      $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', $date_range);
 
-      $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', $date_range, $user_id);
+      $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', $date_range);
     }
 
   }
@@ -102,12 +104,16 @@
     <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
       <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
         <input type="hidden" name="page" value="fv_player_stats_users" />
-        <select data-placeholder="Select user you want to show stats for" id="fv_player_stats_users_select" name="user_id">
+        <select id="fv_player_stats_users_select" name="user_id">
+          <option disabled selected value>Select user you want to show stats for</option>
           <?php
             $users = $FV_Player_Stats->get_all_users_dropdown();
             if( $users ) {
               foreach( $users as $key => $value ) {
-                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ).'>'.$value['user_login'] . ' - ' . $value['user_email'] .'</option>';
+                $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
+                $plays = number_format_i18n( $plays, 0 );
+
+                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['user_login'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
               }
             }
           ?>
@@ -123,7 +129,7 @@
       jQuery('#fv_player_stats_users_select').chosen({
         no_results_text: "User not found.",
         search_contains: true, // allows matches starting from anywhere within a word
-        max_shown_results: 20,
+        // max_shown_results: 20,
       });
     });
   </script>
