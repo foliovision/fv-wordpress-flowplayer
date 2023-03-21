@@ -83,23 +83,24 @@
       <p>Showing stats for <?php echo $user_name; ?></p>
     <?php endif; ?>
 
-    <?php if( strcmp($current_page, 'fv_player_stats') === 0 ): ?>
-      <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
-        <input type="hidden" name="page" value="fv_player_stats" />
-        <select id="fv_player_stats_select" name="stats_range">
-          <?php
-            foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
-              echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
-            }
-          ?>
-        </select>
-        <input type="submit" value="Filter" class="button" />
+    <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+      <input type="hidden" name="page" value="<?php echo $current_page ?>" />
+      <?php if( $user_id ): ?>
+        <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
+      <?php endif; ?>
+      <select id="fv_player_stats_select" name="stats_range">
+        <?php
+          foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+          }
+        ?>
+      </select>
+      <input type="submit" value="Filter" class="button" />
 
-        <?php if( $user_id ): ?>
-          <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
-        <?php endif; ?>
-      </form>
-    <?php endif; ?>
+      <?php if( $user_id ): ?>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+      <?php endif; ?>
+    </form>
 
     <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
       <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
