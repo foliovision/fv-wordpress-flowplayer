@@ -488,9 +488,10 @@ class FV_Player_Stats {
   public function get_all_users_dropdown( $range ) {
     global $wpdb;
 
+    $excluded_posts = $this->get_posts_to_exclude();
     $interval = $this->range_to_interval( $range );
 
-    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval GROUP BY u.ID ORDER BY display_name", ARRAY_A );
+    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
     return $result;
   }
