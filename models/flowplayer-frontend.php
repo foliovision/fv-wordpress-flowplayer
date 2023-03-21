@@ -900,8 +900,8 @@ JS;
           $overlay = html_entity_decode( str_replace('&#039;',"'",$overlay ) );
         }
 
-        $overlay_width = ( isset($this->aCurArgs['overlay_width']) && intval($this->aCurArgs['overlay_width']) > 0 ) ? intval($this->aCurArgs['ad_width']).'px' : '100%';
-        $overlay_height = ( isset($this->aCurArgs['overlay_height']) && intval($this->aCurArgs['overlay_height']) > 0 ) ? intval($this->aCurArgs['ad_height']).'px' : '';
+        $overlay_width = ( isset($this->aCurArgs['overlay_width']) && intval($this->aCurArgs['overlay_width']) > 0 ) ? intval($this->aCurArgs['overlay_width']).'px' : '100%';
+        $overlay_height = ( isset($this->aCurArgs['overlay_height']) && intval($this->aCurArgs['overlay_height']) > 0 ) ? intval($this->aCurArgs['overlay_height']).'px' : '';
       }
       else {
         $overlay = trim( $this->_get_option('overlay') );
