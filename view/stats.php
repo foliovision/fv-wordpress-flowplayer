@@ -27,6 +27,11 @@
 
   }
 
+  if( strcmp($current_page, 'fv_player_stats_users') === 0 ) {
+    wp_enqueue_script( 'fv-chosen-js', flowplayer::get_plugin_url().'/js/chosen/chosen.min.js' , array('jquery'), $fv_wp_flowplayer_ver );
+    wp_enqueue_style('fv-chosen-css', flowplayer::get_plugin_url().'/css/chosen.min.css', array(), $fv_wp_flowplayer_ver );
+  }
+
   wp_enqueue_script( 'fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
   wp_enqueue_script( 'fv-chartjs-html-legend', flowplayer::get_plugin_url().'/js/chartjs/html-legend.js', array('fv-chartjs'), $fv_wp_flowplayer_ver );
 ?>
@@ -79,7 +84,7 @@
     <?php if( strcmp($current_page, 'fv_player_stats') === 0 ): ?>
       <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
         <input type="hidden" name="page" value="fv_player_stats" />
-        <select name="stats_range">
+        <select id="fv_player_stats_select" name="stats_range">
           <?php
             foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
               echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
@@ -97,12 +102,12 @@
     <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
       <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
         <input type="hidden" name="page" value="fv_player_stats_users" />
-        <select name="user_id">
+        <select data-placeholder="Select user you want to show stats for" id="fv_player_stats_users_select" name="user_id">
           <?php
             $users = $FV_Player_Stats->get_all_users_dropdown();
             if( $users ) {
               foreach( $users as $key => $value ) {
-                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $$value['ID'] ? 'selected' : '' ).'>'.$value['user_login'] . ' - ' . $value['user_email'] .'</option>';
+                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ).'>'.$value['user_login'] . ' - ' . $value['user_email'] .'</option>';
               }
             }
           ?>
@@ -112,6 +117,16 @@
     <?php endif; ?>
 
   </div>
+
+  <script>
+    jQuery( document ).ready(function() {
+      jQuery('#fv_player_stats_users_select').chosen({
+        no_results_text: "User not found.",
+        search_contains: true, // allows matches starting from anywhere within a word
+        max_shown_results: 20,
+      });
+    });
+  </script>
 
   <script>
   // Randomize color for each line
