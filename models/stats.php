@@ -578,7 +578,7 @@ class FV_Player_Stats {
       $dates = $this->get_days_between_dates( $start_week, $end_week );
     } else if( strcmp( 'this_month', $range ) === 0 ) {
       $start_day = date('Y-m-01');
-      $end_day = date('Y-m-t');
+      $end_day = date('Y-m-d');
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'last_month', $range ) === 0 ) {
       $first_day_last_month = strtotime('first day of last month');
@@ -590,7 +590,7 @@ class FV_Player_Stats {
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'this_year', $range ) === 0 ) {
       $start_day = date('Y-01-01');
-      $end_day = date('Y-12-31');
+      $end_day = date('Y-m-d');
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'last_year', $range ) === 0 ) {
       $start_day = date('Y-01-01', strtotime('-1 year'));
