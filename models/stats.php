@@ -485,13 +485,25 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_all_users_dropdown( $range ) {
+  public function get_all_users_dropdown( $range, $include_user_id = false ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
     $interval = $this->get_interval_from_range( $range );
 
-    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
+    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
+
+    if ( ! $result ) {
+      $result = array();
+    }
+
+    // Only add the extra user if not already in the results
+    if ( $include_user_id && ! in_array( $include_user_id, wp_list_pluck( $result, 'ID' ) ) ) {
+      $user = $wpdb->get_results( $wpdb->prepare( "SELECT u.ID, display_name, user_email FROM `{$wpdb->users}` AS u WHERE ID = %d", $include_user_id ), ARRAY_A );
+      if ( is_array( $user ) ) {
+        $result = array_merge( $result, $user );
+      }
+    }
 
     return $result;
   }
