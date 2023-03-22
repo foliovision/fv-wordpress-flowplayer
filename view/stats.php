@@ -62,28 +62,18 @@
   margin: 0px;
   padding: 0px;
 }
+
+#fv_player_stats_filter .chosen-container-single .chosen-single {
+  height: 30px;
+  line-height: 28px;
+}
 </style>
 
 <div class="wrap">
   <h1>FV Player Stats</h1>
 
   <div>
-    <?php if( $user_id ) :
-      if( is_numeric( $user_id ) ) {
-        $user_data = get_userdata( $user_id );
-
-        if( $user_data ) {
-          $user_name = $user_data->user_email . ' (' . $user_data->display_name . ')';
-        } else {
-          $user_name = 'User not found';
-        }
-
-      }
-      ?>
-      <p>Showing stats for <?php echo $user_name; ?></p>
-    <?php endif; ?>
-
-    <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+    <form id="fv_player_stats_filter" method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
       <input type="hidden" name="page" value="<?php echo $current_page ?>" />
       <?php if( $user_id ): ?>
         <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
@@ -95,21 +85,12 @@
           }
         ?>
       </select>
-      <input type="submit" value="Filter" class="button" />
-
-      <?php if( $user_id ): ?>
-        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
-      <?php endif; ?>
-    </form>
 
     <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
-      <form method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
-        <input type="hidden" name="page" value="fv_player_stats_users" />
-        <input type="hidden" name="stats_range" value="<?php echo $date_range; ?>" />
         <select id="fv_player_stats_users_select" name="user_id">
           <option disabled selected value>Select user you want to show stats for</option>
           <?php
-            $users = $FV_Player_Stats->get_all_users_dropdown($date_range);
+            $users = $FV_Player_Stats->get_all_users_dropdown( $date_range, $user_id );
             if( $users ) {
               foreach( $users as $key => $value ) {
                 $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
@@ -120,21 +101,30 @@
             }
           ?>
         </select>
-        <input type="submit" value="Select User" class="button" />
-      </form>
     <?php endif; ?>
+
+      <?php if( $user_id ): ?>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+      <?php endif; ?>
+
+    </form>
 
   </div>
 
   <script>
-    jQuery( document ).ready(function() {
-      jQuery('#fv_player_stats_users_select').chosen({
-        no_results_text: "User not found.",
+    jQuery( function($) {
+      $('#fv_player_stats_select').chosen( { disable_search: true } );
+
+      $('#fv_player_stats_users_select').chosen({
+        no_results_text: "User not found or played no videos.",
         search_contains: true, // allows matches starting from anywhere within a word
         // max_shown_results: 20,
       });
+
+      $( '#fv_player_stats_select, #fv_player_stats_users_select' ).on( 'change', function() {
+        $( '#fv_player_stats_filter' ).submit();
     });
-  </script>
+    });
 
   <script>
   // Randomize color for each line
