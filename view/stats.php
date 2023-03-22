@@ -86,7 +86,7 @@
         ?>
       </select>
 
-    <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
+      <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
         <select id="fv_player_stats_users_select" name="user_id">
           <option disabled selected value>Select user you want to show stats for</option>
           <?php
@@ -101,7 +101,7 @@
             }
           ?>
         </select>
-    <?php endif; ?>
+      <?php endif; ?>
 
       <?php if( $user_id ): ?>
         <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
@@ -123,12 +123,55 @@
 
       $( '#fv_player_stats_select, #fv_player_stats_users_select' ).on( 'change', function() {
         $( '#fv_player_stats_filter' ).submit();
-    });
+      });
     });
 
-  <script>
+  function fv_player_stats_chartjs_args( data, data_selector, args ) {
+
+    var conf = {
+      type: 'line',
+      data: {
+        labels: data['date-labels'],
+        datasets: fv_chart_add_dataset_items( data, data_selector )
+      },
+      options: {
+        animation: {
+          duration: 0
+        },
+        plugins: {
+          htmlLegend: {
+            containerID: args.legend_containerID,
+          },
+          legend: {
+            display: false,
+          }
+        },
+        responsive: true,
+        scales: {
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      },
+      plugins: [ htmlLegendPlugin ],
+    }
+
+    if ( args.scales_y_title ) {
+      conf.options.scales.y.title = {
+        display: true,
+        text: args.scales_y_title
+      }
+    }
+
+    return conf;
+  }
+
   // Randomize color for each line
-  var picked = [];
+  var used_colors = [];
 
   var fv_chart_dynamic_color = function() {
     var colors = [
@@ -147,17 +190,19 @@
     var i = 0;
     var pick = colors[i];
 
-    while( i < picked.length && picked.includes(pick) ) {
+    while( i < used_colors.length && used_colors.includes(pick) ) {
       i++;
       pick = colors[i];
     }
 
-    picked.push(pick);
+    used_colors.push(pick);
 
     return pick;
   };
 
   var fv_chart_add_dataset_items = function( top_results, metric ) {
+    used_colors = [];
+
     var top_datasets = [];
 
     for ( var id_video in top_results ) {
@@ -203,45 +248,19 @@
 
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
+    used_colors = [];
 
-    // Top Videos
-    var ctx_top_videos = document.getElementById('chart-top-users-play').getContext('2d');
-
-    var top_video_results = <?php echo json_encode( $fv_video_stats_data ); ?>;
-
-    // Each video data is new dataset
-    var top_videos_datasets = fv_chart_add_dataset_items( top_video_results, 'play' );
-
-    var top_videos_chart = new Chart(ctx_top_videos, {
-      type: 'line',
-      data: {
-        labels: top_video_results['date-labels'], // dates
-        datasets: top_videos_datasets
-      },
-      options: {
-        animation: {
-          duration: 0
-        },
-        plugins: {
-          htmlLegend: {
-            containerID: 'chart-top-users-play-legend',
-          },
-          legend: {
-            display: false,
-          }
-        },
-        responsive: true,
-        scales: {
-          y: {
-            stacked: true,
-            beginAtZero: true
-          }
+    new Chart(
+      document.getElementById('chart-top-users-play').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_video_stats_data ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-top-users-play-legend'
         }
-      },
-      plugins: [ htmlLegendPlugin ],
-    });
-  })
+      )
+    );
+  });
   </script>
 <?php endif;?>
 
@@ -255,42 +274,18 @@
 
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
-     // Top Posts
-    var ctx_top_posts = document.getElementById('chart-top-posts').getContext('2d');
+    used_colors = [];
 
-    var top_post_results = <?php echo json_encode( $fv_post_stats_data ); ?>;
-
-    var top_posts_datasets = fv_chart_add_dataset_items( top_post_results, 'play' );
-
-    var top_posts_chart = new Chart(ctx_top_posts, {
-      type: 'line',
-      data: {
-        labels: top_post_results['date-labels'], // dates
-        datasets: top_posts_datasets
-      },
-      options: {
-        animation: {
-          duration: 0
-        },
-        plugins: {
-          htmlLegend: {
-            containerID: 'chart-top-posts-legend',
-          },
-          legend: {
-            display: false,
-          }
-        },
-        responsive: true,
-        scales: {
-          y: {
-            stacked: true,
-            beginAtZero: true
-          }
+    new Chart(
+      document.getElementById('chart-top-posts').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_post_stats_data ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-top-posts-legend'
         }
-      },
-      plugins: [ htmlLegendPlugin ],
-    });
+      )
+    );
   });
   </script>
 <?php endif; ?>
@@ -305,46 +300,17 @@
 
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
-     // Top Videos Watch Time
-    var ctx_top_videos = document.getElementById('chart-top-users-play-watchtime').getContext('2d');
-
-    var top_videos_results = <?php echo json_encode( $fv_video_watch_time_stats_data ); ?>;
-
-    var top_videos_datasets = fv_chart_add_dataset_items( top_videos_results, 'seconds' );
-
-    var top_videos_chart = new Chart(ctx_top_videos, {
-      type: 'line',
-      data: {
-        labels: top_videos_results['date-labels'], // dates
-        datasets: top_videos_datasets
-      },
-      options: {
-        animation: {
-          duration: 0
-        },
-        plugins: {
-          htmlLegend: {
-            containerID: 'chart-top-users-play-watchtime-legend',
-          },
-          legend: {
-            display: false,
-          }
-        },
-        responsive: true,
-        scales: {
-          y: {
-            stacked: true,
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: 'Minutes'
-            }
-          }
+    new Chart(
+      document.getElementById('chart-top-users-play-watchtime').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_video_watch_time_stats_data ); ?>,
+        'seconds',
+        {
+          legend_containerID: 'chart-top-users-play-watchtime-legend',
+          scales_y_title: "Minutes"
         }
-      },
-      plugins: [ htmlLegendPlugin ],
-    });
+      )
+    );
   });
   </script>
 <?php endif; ?>
@@ -359,48 +325,16 @@
 
 <script>
 jQuery( document ).ready(function() {
-  picked = [];
-
-  // Top Users
-  var ctx_top_users = document.getElementById('chart-top-10-users-by-play').getContext('2d');
-
-  var top_user_results = <?php echo json_encode( $fv_user_play_stats_data ); ?>;
-
-  // Each video data is new dataset
-  var top_user_datasets = fv_chart_add_dataset_items( top_user_results, 'play' );
-
-  var top_user_chart = new Chart(ctx_top_users, {
-    type: 'line',
-    data: {
-      labels: top_user_results['date-labels'], // dates
-      datasets: top_user_datasets
-    },
-    options: {
-      animation: {
-        duration: 0
-      },
-      plugins: {
-        htmlLegend: {
-          containerID: 'chart-top-10-users-by-play-legend',
-        },
-        legend: {
-          display: false,
-        }
-      },
-      responsive: true,
-      scales: {
-        y: {
-          stacked: true,
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Minutes'
-          }
-        }
+  new Chart(
+    document.getElementById('chart-top-10-users-by-play').getContext('2d'),
+    fv_player_stats_chartjs_args(
+      <?php echo json_encode( $fv_user_play_stats_data ); ?>,
+      'play',
+      {
+        legend_containerID: 'chart-top-10-users-by-play-legend'
       }
-    },
-    plugins: [ htmlLegendPlugin ],
-  });
+    )
+  );
 })
 </script>
 <?php endif; ?>
@@ -415,48 +349,17 @@ jQuery( document ).ready(function() {
 
 <script>
 jQuery( document ).ready(function() {
-  picked = [];
-
-  // Top Users
-  var ctx_top_users = document.getElementById('chart-top-10-users-by-watchtime').getContext('2d');
-
-  var top_user_results = <?php echo json_encode( $fv_user_watch_time_stats_data ); ?>;
-
-  // Each video data is new dataset
-  var top_user_datasets = fv_chart_add_dataset_items( top_user_results, 'seconds' );
-
-  var top_user_chart = new Chart(ctx_top_users, {
-    type: 'line',
-    data: {
-      labels: top_user_results['date-labels'], // dates
-      datasets: top_user_datasets
-    },
-    options: {
-      animation: {
-        duration: 0
-      },
-      plugins: {
-        htmlLegend: {
-          containerID: 'chart-top-10-users-by-watchtime-legend',
-        },
-        legend: {
-          display: false,
-        }
-      },
-      responsive: true,
-      scales: {
-        y: {
-          stacked: true,
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Minutes'
-          }
-        }
+  new Chart(
+    document.getElementById('chart-top-10-users-by-watchtime').getContext('2d'),
+    fv_player_stats_chartjs_args(
+      <?php echo json_encode( $fv_user_watch_time_stats_data ); ?>,
+      'seconds',
+      {
+        legend_containerID: 'chart-top-10-users-by-watchtime-legend',
+        scales_y_title: "Minutes"
       }
-    },
-    plugins: [ htmlLegendPlugin ],
-  });
+    )
+  );
 })
 </script>
 <?php endif;?>
@@ -469,38 +372,16 @@ jQuery( document ).ready(function() {
   </div>
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
-
-    var ctx_single_player = document.getElementById('chart-single-player').getContext('2d');
-
-    var single_player_results = <?php echo json_encode( $fv_single_player_stats_data ); ?>;
-
-    var single_player_datasets = fv_chart_add_dataset_items( single_player_results, 'play' );
-
-    var single_player_chart = new Chart(ctx_single_player, {
-      type: 'line',
-      data: {
-        labels: single_player_results['date-labels'],
-        datasets: single_player_datasets
-      },
-      options: {
-        plugins: {
-          htmlLegend: {
-            containerID: 'chart-single-player-legend',
-          },
-          legend: {
-            display: false,
-          }
-        },
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
+    new Chart(
+      document.getElementById('chart-single-player').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_single_player_stats_data ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-single-player-legend'
         }
-      },
-      plugins: [ htmlLegendPlugin ],
-    });
+      )
+    );
   });
   </script>
 <?php elseif ( isset($fv_single_player_stats_data) ): ?>
