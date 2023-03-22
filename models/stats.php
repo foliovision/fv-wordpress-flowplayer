@@ -747,7 +747,7 @@ class FV_Player_Stats {
 
         $url = add_query_arg(
           array(
-            'page'    => 'fv_player_stats',
+            'page'    => 'fv_player_stats_users',
             'user_id' => $user_id
           ),
           admin_url( 'admin.php' )
