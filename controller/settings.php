@@ -62,7 +62,7 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
   
   $args = func_get_args();
   
-  if( $args[1]['Name'] == 'FV Wordpress Flowplayer' ) {    
+  if( $args[1]['Name'] == 'FV Player' ) {    
     $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' || $options['key'] == '' ) :
     ?>
