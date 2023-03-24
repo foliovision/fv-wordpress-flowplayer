@@ -1271,7 +1271,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       $sHTML = "\t<div$attributes_html>\n".$items."\t</div>\n";
-      
+
       if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $sHTML = "<div class='fv-playlist-slider-wrapper'>".$sHTML."</div>\n";
       }
@@ -1818,7 +1818,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $expires++;
           $stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";
 
-          $signature = utf8_encode($stringToSign);
+          $signature = iconv('ISO-8859-1', 'UTF-8', $stringToSign);
 
           $signature = hash_hmac('sha1', $signature, $fv_fp->_get_option( array('amazon_secret', $amazon_key ) ), true);
           $signature = base64_encode($signature);
