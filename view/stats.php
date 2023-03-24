@@ -19,6 +19,8 @@
       $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
 
       $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+
+      if($user_id) $fv_player_interval_valid = $FV_Player_Stats->get_valid_interval($user_id);
     }
 
     if( !isset($_GET['user_id']) && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
@@ -81,7 +83,13 @@
       <select id="fv_player_stats_select" name="stats_range">
         <?php
           foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+            $not_available = false;
+
+            if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {
+              $not_available = true;
+            }
+
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $not_available ? 'disabled' : '' ) . '>'.$value.'</option>';
           }
         ?>
       </select>

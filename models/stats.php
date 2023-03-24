@@ -225,8 +225,6 @@ class FV_Player_Stats {
             }
           }
 
-
-
           $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
 
           if( $existing ) {
@@ -506,6 +504,30 @@ class FV_Player_Stats {
     }
 
     return $result;
+  }
+
+  public function get_valid_interval( $user_id ) {
+    // we need to check every interval for user to check if there is any data
+    $intervals = array(
+      'this_week',
+      'last_week',
+      'this_month',
+      'last_month',
+      'this_year',
+      'last_year'
+    );
+
+    foreach( $intervals as $k => $interval ) {
+      $data = $this->get_top_video_watch_time_stats( $interval, $user_id );
+
+      // if there is no data for this interval, remove it from the list
+      if( empty($data) ) {
+        unset($intervals[$k]);
+      }
+
+    }
+
+    return $intervals;
   }
 
   private function where_user( $user_id ) {
