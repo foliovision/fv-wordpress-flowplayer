@@ -113,17 +113,18 @@
 
   <script>
     jQuery( function($) {
-      $('#fv_player_stats_select').chosen( { disable_search: true } );
+      $(document).on('change', '#fv_player_stats_select, #fv_player_stats_users_select', function() {
+        $('#fv_player_stats_filter').submit();
+      });
 
-      $('#fv_player_stats_users_select').chosen({
+      if( $('#fv_player_stats_select').length > 0 ) $('#fv_player_stats_select').chosen( { disable_search: true } );
+
+      if( $('#fv_player_stats_users_select').length > 0 ) $('#fv_player_stats_users_select').chosen({
         no_results_text: "User not found or played no videos.",
         search_contains: true, // allows matches starting from anywhere within a word
         // max_shown_results: 20,
       });
 
-      $( '#fv_player_stats_select, #fv_player_stats_users_select' ).on( 'change', function() {
-        $( '#fv_player_stats_filter' ).submit();
-      });
     });
 
   function fv_player_stats_chartjs_args( data, data_selector, args ) {
