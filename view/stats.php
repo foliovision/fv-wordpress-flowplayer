@@ -104,7 +104,7 @@
       <?php endif; ?>
 
       <?php if( $user_id ): ?>
-        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&stats_range=' . $date_range . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ));?>">Export CSV</a>
       <?php endif; ?>
 
     </form>

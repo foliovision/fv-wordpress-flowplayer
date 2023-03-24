@@ -361,7 +361,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     $datasets = false;
     $top_ids = array();
@@ -402,7 +402,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     // dynamic filter based on user
     $user_check = $this->where_user( $user_id );
@@ -434,7 +434,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     // dynamic filter based on user
     $user_check = $this->where_user( $user_id );
@@ -468,7 +468,7 @@ class FV_Player_Stats {
   public function get_player_stats( $player_id, $range) {
     global $wpdb;
 
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
     $datasets = false;
 
     $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
@@ -489,7 +489,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
@@ -518,7 +518,7 @@ class FV_Player_Stats {
     return $where;
   }
 
-  private function get_interval_from_range( $range ) {
+  public static function get_interval_from_range( $range ) {
     $date_range = '';
 
     if( strcmp( 'this_week', $range ) === 0 ) { // this week
