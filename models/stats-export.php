@@ -19,6 +19,9 @@ class FV_Player_Stats_Export {
       global $wpdb;
 
       $user_id = intval($_GET['fv-stats-export-user']);
+      $date_range = sanitize_text_field($_GET['stats_range']);
+
+      $interval = FV_Player_Stats::get_interval_from_range($date_range);
 
       $query = $wpdb->prepare( "SELECT user_email, date, pl.id AS player_id, src, post_title, play, seconds, ROUND(duration)
         FROM `{$wpdb->prefix}fv_player_stats` AS s
@@ -26,7 +29,7 @@ class FV_Player_Stats_Export {
         JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID
         JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id
         JOIN `{$wpdb->prefix}fv_player_players` AS pl ON FIND_IN_SET( v.id, pl.videos )
-        WHERE u.ID = %d
+        WHERE u.ID = %d AND $interval
         ORDER BY s.id DESC",
       $user_id);
 

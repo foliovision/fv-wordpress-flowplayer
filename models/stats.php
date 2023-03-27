@@ -225,8 +225,6 @@ class FV_Player_Stats {
             }
           }
 
-
-
           $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
 
           if( $existing ) {
@@ -361,7 +359,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     $datasets = false;
     $top_ids = array();
@@ -402,7 +400,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     // dynamic filter based on user
     $user_check = $this->where_user( $user_id );
@@ -434,7 +432,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     // dynamic interval based on range
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     // dynamic filter based on user
     $user_check = $this->where_user( $user_id );
@@ -468,7 +466,7 @@ class FV_Player_Stats {
   public function get_player_stats( $player_id, $range) {
     global $wpdb;
 
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
     $datasets = false;
 
     $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
@@ -489,7 +487,7 @@ class FV_Player_Stats {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
-    $interval = $this->get_interval_from_range( $range );
+    $interval = self::get_interval_from_range( $range );
 
     $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
@@ -508,6 +506,30 @@ class FV_Player_Stats {
     return $result;
   }
 
+  public function get_valid_interval( $user_id ) {
+    // we need to check every interval for user to check if there is any data
+    $intervals = array(
+      'this_week',
+      'last_week',
+      'this_month',
+      'last_month',
+      'this_year',
+      'last_year'
+    );
+
+    foreach( $intervals as $k => $interval ) {
+      $data = $this->get_top_video_watch_time_stats( $interval, $user_id );
+
+      // if there is no data for this interval, remove it from the list
+      if( empty($data) ) {
+        unset($intervals[$k]);
+      }
+
+    }
+
+    return $intervals;
+  }
+
   private function where_user( $user_id ) {
     $where = '';
 
@@ -518,7 +540,7 @@ class FV_Player_Stats {
     return $where;
   }
 
-  private function get_interval_from_range( $range ) {
+  public static function get_interval_from_range( $range ) {
     $date_range = '';
 
     if( strcmp( 'this_week', $range ) === 0 ) { // this week

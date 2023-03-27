@@ -19,6 +19,8 @@
       $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
 
       $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+
+      if($user_id) $fv_player_interval_valid = $FV_Player_Stats->get_valid_interval($user_id);
     }
 
     if( !isset($_GET['user_id']) && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
@@ -81,7 +83,13 @@
       <select id="fv_player_stats_select" name="stats_range">
         <?php
           foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+            $not_available = false;
+
+            if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {
+              $not_available = true;
+            }
+
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $not_available ? 'disabled' : '' ) . '>'.$value.'</option>';
           }
         ?>
       </select>
@@ -104,7 +112,7 @@
       <?php endif; ?>
 
       <?php if( $user_id ): ?>
-        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&stats_range=' . $date_range . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ));?>">Export CSV</a>
       <?php endif; ?>
 
     </form>
@@ -113,17 +121,18 @@
 
   <script>
     jQuery( function($) {
-      $('#fv_player_stats_select').chosen( { disable_search: true } );
+      $(document).on('change', '#fv_player_stats_select, #fv_player_stats_users_select', function() {
+        $('#fv_player_stats_filter').submit();
+      });
 
-      $('#fv_player_stats_users_select').chosen({
+      if( $('#fv_player_stats_select').length > 0 ) $('#fv_player_stats_select').chosen( { disable_search: true } );
+
+      if( $('#fv_player_stats_users_select').length > 0 ) $('#fv_player_stats_users_select').chosen({
         no_results_text: "User not found or played no videos.",
         search_contains: true, // allows matches starting from anywhere within a word
         // max_shown_results: 20,
       });
 
-      $( '#fv_player_stats_select, #fv_player_stats_users_select' ).on( 'change', function() {
-        $( '#fv_player_stats_filter' ).submit();
-      });
     });
 
   function fv_player_stats_chartjs_args( data, data_selector, args ) {
