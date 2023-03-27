@@ -46,6 +46,7 @@ freedomplayer( function(api,root) {
           // otherwide pause the other player
           } else if( player.playing ) {
             player.pause();
+            player.sticky(false);
           }
         } else {
           player.clearLiveStreamCountdown(); // if not playing stop countdown and unload if other video plays
@@ -81,6 +82,7 @@ freedomplayer( function(api,root) {
 
         if( player && player.playing ) {
           player.pause();
+          player.sticky(false);
         }
       });
     }
