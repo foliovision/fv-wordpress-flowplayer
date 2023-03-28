@@ -517,6 +517,7 @@ class FV_Player_Stats {
       'last_year'
     );
 
+    // TODO: optimize performance, no need to use SUM or ORDER BY, limit 1 would be enough
     foreach( $intervals as $k => $interval ) {
       $data = $this->get_top_video_watch_time_stats( $interval, $user_id );
 
