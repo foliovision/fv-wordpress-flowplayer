@@ -4286,7 +4286,7 @@ jQuery(function() {
 
       preview.addClass('fv_player_interface_hide');
       preview.attr('title', '');
-      preview.siblings('.components-button').show();
+      shortened_field_button.show();
       shortened_field_edited.removeClass('fv_player_interface_hide');
       shortened_field_edited.focus();
     });
@@ -4305,35 +4305,6 @@ jQuery(function() {
       }
     });
 
-    /*
-    End of video action
-    */
-    $doc.on('change', '#fv_wp_flowplayer_field_end_actions', function() {
-      var selected = this.value;
-
-      jQuery('.fv-player-editor-field-wrap-redirect').addClass('fv_player_interface_hide');
-      jQuery('.fv-player-editor-field-wrap-popup_id').addClass('fv_player_interface_hide');
-      jQuery('.fv-player-editor-field-wrap-email_list').addClass('fv_player_interface_hide');
-
-      switch (selected) {
-        case 'redirect':
-          jQuery('.fv-player-editor-field-wrap-redirect').removeClass('fv_player_interface_hide');
-          break;
-
-        case 'popup':
-          jQuery('.fv-player-editor-field-wrap-popup_id').removeClass('fv_player_interface_hide');
-          break;
-
-        case 'email_list':
-          jQuery('.fv-player-editor-field-wrap-email_list').removeClass('fv_player_interface_hide');
-          break;
-
-        default:
-          break;
-      }
-
-    });
-
     // focus lost from input
     $doc.on('change', '.fv_player_editor_url_field', function() {
       show_short_link(jQuery(this));
@@ -4348,7 +4319,7 @@ jQuery(function() {
     function show_short_link(field) {
       var value = field.val().trim(),
         preview = field.prev('.fv_player_editor_url_shortened'),
-        button = preview.siblings('.components-button'); // Media Library Button
+        button = field.closest( '.components-base-control__field').find('.add_media'); // Media Library Button
 
       shortened_field_edited = false;
       shortened_field_button = false;
@@ -4409,6 +4380,35 @@ jQuery(function() {
 
       return new_parts.join('<span class="sep">/</span>');
     }
+
+    /*
+    End of video action
+    */
+    $doc.on('change', '#fv_wp_flowplayer_field_end_actions', function() {
+      var selected = this.value;
+
+      jQuery('.fv-player-editor-field-wrap-redirect').addClass('fv_player_interface_hide');
+      jQuery('.fv-player-editor-field-wrap-popup_id').addClass('fv_player_interface_hide');
+      jQuery('.fv-player-editor-field-wrap-email_list').addClass('fv_player_interface_hide');
+
+      switch (selected) {
+        case 'redirect':
+          jQuery('.fv-player-editor-field-wrap-redirect').removeClass('fv_player_interface_hide');
+          break;
+
+        case 'popup':
+          jQuery('.fv-player-editor-field-wrap-popup_id').removeClass('fv_player_interface_hide');
+          break;
+
+        case 'email_list':
+          jQuery('.fv-player-editor-field-wrap-email_list').removeClass('fv_player_interface_hide');
+          break;
+
+        default:
+          break;
+      }
+
+    });
 
     /*
     Extra fields to reveal when using a HLS or MPD stream
