@@ -954,7 +954,7 @@ jQuery(function() {
           }
         }
 
-        $doc.trigger('fv_flowplayer_shortcode_item_delete');
+        $doc.trigger('fv_player_editor_item_delete');
 
         return false;
       });
@@ -1018,7 +1018,7 @@ jQuery(function() {
 
         playlist_index();
 
-        $doc.trigger('fv_flowplayer_shortcode_item_sort');
+        $doc.trigger('fv_player_editor_playlist_sort');
       }
 
       /*
@@ -1220,8 +1220,8 @@ jQuery(function() {
         //is_draft_changed = false;
       });
 
-      $doc.on('fv_flowplayer_shortcode_item_sort', save );
-      $doc.on('fv_flowplayer_shortcode_item_delete', save );
+      $doc.on('fv_player_editor_playlist_sort', save );
+      $doc.on('fv_player_editor_item_delete', save );
 
       /*
        * @param {object} [e] The event handle is invoked by input change event
