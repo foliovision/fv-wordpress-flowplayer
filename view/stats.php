@@ -19,6 +19,8 @@
       $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
 
       $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+
+      if($user_id) $fv_player_interval_valid = $FV_Player_Stats->get_valid_interval($user_id);
     }
 
     if( !isset($_GET['user_id']) && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
@@ -29,11 +31,11 @@
 
   }
 
-  if( strcmp($current_page, 'fv_player_stats_users') === 0 ) {
-    wp_enqueue_script( 'fv-chosen-js', flowplayer::get_plugin_url().'/js/chosen/chosen.min.js' , array('jquery'), $fv_wp_flowplayer_ver );
-    wp_enqueue_style('fv-chosen-css', flowplayer::get_plugin_url().'/css/chosen.min.css', array(), $fv_wp_flowplayer_ver );
-  }
+  // select2
+  wp_enqueue_script( 'fv-select2-js', flowplayer::get_plugin_url().'/js/select2/select2.full.min.js' , array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_style( 'fv-select2-css', flowplayer::get_plugin_url().'/css/select2.min.css', array(), $fv_wp_flowplayer_ver );
 
+  // chartjs
   wp_enqueue_script( 'fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
   wp_enqueue_script( 'fv-chartjs-html-legend', flowplayer::get_plugin_url().'/js/chartjs/html-legend.js', array('fv-chartjs'), $fv_wp_flowplayer_ver );
 ?>
@@ -81,7 +83,13 @@
       <select id="fv_player_stats_select" name="stats_range">
         <?php
           foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ).'>'.$value.'</option>';
+            $not_available = false;
+
+            if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {
+              $not_available = true;
+            }
+
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $not_available ? 'disabled' : '' ) . '>'.$value.'</option>';
           }
         ?>
       </select>
@@ -90,8 +98,8 @@
         <select id="fv_player_stats_users_select" name="user_id">
           <option disabled selected value>Select user you want to show stats for</option>
           <?php
-            $users = $FV_Player_Stats->get_all_users_dropdown( $date_range, $user_id );
-            if( $users ) {
+            if( $user_id ) {
+              $users = $FV_Player_Stats->get_users_by_time_range( $date_range, $user_id );
               foreach( $users as $key => $value ) {
                 $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
                 $plays = number_format_i18n( $plays, 0 );
@@ -104,7 +112,7 @@
       <?php endif; ?>
 
       <?php if( $user_id ): ?>
-        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ) );?>">Export CSV</a>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&stats_range=' . $date_range . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ));?>">Export CSV</a>
       <?php endif; ?>
 
     </form>
@@ -112,18 +120,38 @@
   </div>
 
   <script>
-    jQuery( function($) {
-      $('#fv_player_stats_select').chosen( { disable_search: true } );
-
-      $('#fv_player_stats_users_select').chosen({
-        no_results_text: "User not found or played no videos.",
-        search_contains: true, // allows matches starting from anywhere within a word
-        // max_shown_results: 20,
+    jQuery(document).ready(function() {
+      jQuery(document).on('change', '#fv_player_stats_select, #fv_player_stats_users_select', function() {
+        jQuery('#fv_player_stats_filter').submit();
       });
 
-      $( '#fv_player_stats_select, #fv_player_stats_users_select' ).on( 'change', function() {
-        $( '#fv_player_stats_filter' ).submit();
+      if( jQuery('#fv_player_stats_select').length > 0 ) {
+        setTimeout(function() {
+          jQuery('#fv_player_stats_select').select2({
+            minimumResultsForSearch: -1 // hide the search
+          });
+        },0);
+      }
+
+      if( jQuery('#fv_player_stats_users_select').length > 0 ) jQuery('#fv_player_stats_users_select').select2({
+        ajax: {
+          url: ajaxurl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term - user
+              date_range: jQuery('#fv_player_stats_select').val(), // date range
+              action: 'fv_player_stats_users_search',
+              nonce: '<?php echo wp_create_nonce( 'fv-player-stats-users-search' ); ?>'
+            };
+          },
+          cache: false
+        },
+        minimumInputLength: 2,
+        placeholder: 'Search for a user',
       });
+
     });
 
   function fv_player_stats_chartjs_args( data, data_selector, args ) {
