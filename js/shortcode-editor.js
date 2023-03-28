@@ -276,14 +276,14 @@ jQuery(function() {
      * A shorthand to save you from all the "fv_wp_flowplayer_field_"
      * when selecting fields
      *
-     * @param {string}         key    The field key. For example "src" gives
-     *                                you "fv_wp_flowplayer_field_src"
-     * @param {object|string}  where  Lets you narrow down the element wher you
-     *                                want to locate he field. You can use a jQuery
-     *                                element or a string selector for jQuery.
-     *                                Or TRUE to get the currently open playlist item.
+     * @param {string}             key   The field key. For example "src" gives
+     *                                   you "fv_wp_flowplayer_field_src"
+     * @param {bool|jQuery|string} where Lets you narrow down the element wher you
+     *                                   want to locate he field. You can use a jQuery
+     *                                   element or a string selector for jQuery.
+     *                                   Or TRUE to get the currently open playlist item.
      *
-     * @return {object}               The field element
+     * @return {jQuery}                  The field element/elements (in case of multiple language subtitles)
      */
     function get_field( key, where ) {
       var element = false,
