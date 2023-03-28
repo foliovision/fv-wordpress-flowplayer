@@ -92,7 +92,6 @@ jQuery(function() {
     // stores parts of editor HTML which are later re-used when adding new items
     template_playlist_item,
     template_video,
-    template_subtitles,
     template_subtitles_tab,
 
     // used to remember which widget we are editing, if any
@@ -1140,7 +1139,6 @@ jQuery(function() {
 
       template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
       template_video = get_tab('first','video-files').parent().html();
-      template_subtitles = jQuery('.fv-player-editor-field-wrap-subtitles').prop('outerHTML')
       template_subtitles_tab = jQuery('.fv-player-tab-subtitles').html();
 
       /*
@@ -1878,18 +1876,6 @@ jQuery(function() {
 
         player_browser.attr( 'data-columns', Math.min( Math.round( player_browser_list.width() / idealColumnWidth ), 12 ) || 1 );
       }
-
-      $doc.on('fv_player_editor_language_add', show_only_one_add_language_button );
-      $doc.on('fv_player_editor_language_delete', show_only_one_add_language_button );
-
-      // Ensure only the last Add Another Language button is shown
-      function show_only_one_add_language_button( e, field_name, tab ) {
-        let fields = get_field( field_name, tab ? tab : true );
-        $.each( fields, function( k, v ) {
-          $( v ).closest( '.components-base-control' ).find( '.add_language' ).toggle( k == fields.length - 1 );
-        });
-      }
-
     });
 
 
@@ -4092,13 +4078,14 @@ jQuery(function() {
         iTabIndex = 0;
       }
 
-      var oTab = get_tab( iTabIndex, field );
+      var oTab = get_tab( iTabIndex, 'subtitles' );
 
       var subElement = false;
 
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
-        subElement = $('.fv-player-editor-field-wrap-' + field + ':last', oTab);
+        // TODO: Function to get last of the language inputs which is not a child
+        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', oTab);
         if( subElement.length ) {
           if( get_field( field,subElement).val() ) {
             subElement = false;
@@ -4108,8 +4095,16 @@ jQuery(function() {
 
       // If we do not have an empty subtitle field, add new
       if( !subElement ) {
-        subElement = $(template_subtitles);
-        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ':last', oTab) );
+
+        // Get the last inputs and clear the values
+        // TODO: Function to get last of the language inputs which is not a child
+        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last').prop('outerHTML') );
+        subElement.find('[name]').val('');
+        subElement.removeAttr('data-id_videometa');
+
+        // Insert the new input after the last exiting input
+        // TODO: Function to get last of the language inputs which is not a child
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', oTab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
@@ -4140,8 +4135,6 @@ jQuery(function() {
 
         get_field( field + '_lang',subElement).val(sLang).trigger('change');
       }
-
-      $doc.trigger( 'fv_player_editor_language_add', [ field, oTab ] );
     }
 
     function tabs_refresh() {
@@ -4209,7 +4202,7 @@ jQuery(function() {
       let button = $( this ),
         field_name = button.data( 'field_name' ),
         field_label = button.data( 'field_label' ),
-        field = jQuery(this).closest( '.fv-player-editor-field-wrap-' + field_name ),
+        field = jQuery(this).closest( '.components-base-control__field' ),
         id = field.attr('data-id_videometa')
 
       if( !confirm('Would you like to remove this ' + field_label + '?') ) {
@@ -4220,10 +4213,13 @@ jQuery(function() {
         deleted_video_meta.push(id);
       }
 
-      let subtitle_fields = get_field( field_name, true );
+      // TODO: How to get the field wrap and how to get its langauge versions?
+      let language_fields = get_field( field_name, true )
+        .closest('.components-base-control')
+        .find( '.components-base-control__field' );
 
       // if it's not the last subtitle, remove it completely
-      if( subtitle_fields.length > 1){
+      if( language_fields.length > 1){
         field.remove();
 
         // otherwise just empty the inputs to let user add new subtitles
@@ -4232,7 +4228,7 @@ jQuery(function() {
         field.removeAttr('data-id_videometa');
       }
 
-      $doc.trigger('fv_player_editor_language_delete', [ field_name ]);
+      $doc.trigger('fv_player_editor_language_delete');
 
       return false;
     });
