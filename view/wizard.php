@@ -245,7 +245,7 @@
       <?php endif; ?>
 
       <?php if( $language ) : ?>
-        <a class="remove_language" href="#" data-field_name="<?php echo $name; ?>" data-field_label="<?php echo $label_signular ? $label_signular : $label; ?>">Remove</a>
+        <a class="remove_language" href="#" data-field_name="<?php echo $name; ?>" data-field_label="<?php echo $label_signular ? $label_signular : $label; ?>"><span class="dashicons dashicons-trash"></span></a>
       <?php endif; ?>
     </div>
 

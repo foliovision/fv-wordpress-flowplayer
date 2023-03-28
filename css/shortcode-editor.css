@@ -578,6 +578,7 @@ New FV Player Editor inputs styling
   flex-wrap: wrap;
   gap: 10px;
   margin-top:5px;
+  position: relative;
 }
 #fv-player-shortcode-editor .components-form-toggle {
   margin-right: 12px;
@@ -1196,7 +1197,10 @@ a.fvp_item_video-filename {
 }
 
 .remove_language {
-  color: red;
+  bottom: 1em;
+  position: absolute;
+  right: 1em;
+  text-decoration: none;
   visibility: hidden;
 }
 .components-base-control__field:hover .remove_language {
