@@ -1179,6 +1179,28 @@ class FV_Player_Db {
               }
             }
 
+            // Video meta with languages
+            // TODO: How to do this automatically for all the fields registered in editor with language => true?
+            foreach( array(
+              'subtitles',
+            ) AS $meta_type ) {
+              foreach ( $post_data['video_meta'][ $meta_type ][$video_index] as $transcript ) {
+                if ($transcript['file']) {
+                  $m = array(
+                    'meta_key' => $meta_type . ($transcript['code'] ? '_'.$transcript['code'] : ''),
+                    'meta_value' => $transcript['file']
+                  );
+          
+                  // add ID, if present
+                  if (!empty($transcript['id'])) {
+                    $m['id'] = $transcript['id'];
+                  }
+          
+                  $video_meta[] = $m;
+                }
+              }
+            }
+
             // call a filter which is server by plugins to augment
             // the $video_meta data with all the plugin data for this
             // particular video
