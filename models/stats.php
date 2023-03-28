@@ -508,6 +508,31 @@ class FV_Player_Stats {
     return $result;
   }
 
+  public function get_valid_interval( $user_id ) {
+    // we need to check every interval for user to check if there is any data
+    $intervals = array(
+      'this_week',
+      'last_week',
+      'this_month',
+      'last_month',
+      'this_year',
+      'last_year'
+    );
+
+    // TODO: optimize performance, no need to use SUM or ORDER BY, limit 1 would be enough
+    foreach( $intervals as $k => $interval ) {
+      $data = $this->get_top_video_watch_time_stats( $interval, $user_id );
+
+      // if there is no data for this interval, remove it from the list
+      if( empty($data) ) {
+        unset($intervals[$k]);
+      }
+
+    }
+
+    return $intervals;
+  }
+
   private function where_user( $user_id ) {
     $where = '';
 
