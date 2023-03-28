@@ -1195,6 +1195,14 @@ a.fvp_item_video-filename {
   background: #f88;
 }
 
+.remove_language {
+  color: red;
+  visibility: hidden;
+}
+.components-base-control__field:hover .remove_language {
+  visibility: visible;
+}
+
 /* Legacy inputs in new editor style */
 .components-panel__body label {
   display: block;

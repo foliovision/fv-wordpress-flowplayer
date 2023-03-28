@@ -211,7 +211,7 @@
   <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
-      <?php if( $subtitle_language ): ?>
+      <?php if( $language ): ?>
         <div class="field-with-language">
           <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
             <option value=""><?php _e('Pick language', 'fv_flowplayer'); ?></option>
@@ -236,14 +236,23 @@
 
       <input class="<?php if($browser) echo "fv_player_interface_hide fv_player_editor_url_field "; ?>components-text-control__input" type="text" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
 
-      <?php if( $subtitle_language ) : ?>
+      <?php if( $language ) : ?>
         </div><!-- /.field-with-language-->
       <?php endif; ?>
       
       <?php if( $browser ) : ?>
         <a class="components-button is-secondary add_media" href="#" data-target="<?php echo $field_id; ?>"><?php _e('Add from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
+
+      <?php if( $language ) : ?>
+        <a class="remove_language" href="#" data-field_name="<?php echo $name; ?>" data-field_label="<?php echo $label_signular ? $label_signular : $label; ?>">Remove</a>
+      <?php endif; ?>
     </div>
+
+    <?php if( $language ) : ?>
+      <a class="components-button is-secondary add_language" href="#" data-field_name="<?php echo $name; ?>"><?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
+    <?php endif; ?>
+
   </div>
     <?php
   }
@@ -292,13 +301,14 @@
         'dropdown'          => array( 'Default', 'On', 'Off' ),
         'id'                => false,
         'label'             => '',
+        'label_signular'    => '',
         'multiple'          => false, // applies to type = select
         'name'              => '',
         'no_data'           => false, // do not save any data based on this input
         'options'           => array(),
         'playlist_label'    => false,
         'scope'             => false,
-        'subtitle_language' => false,
+        'language'          => false,
         'type'              => false,
         'visible'           => false,
         'width'             => false,
@@ -772,17 +782,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 'items' => array(
                   array(
                     'label' => __('Subtitles', 'fv-wordpress-flowplayer'),
+                    'label_signular' => __('Subtitle', 'fv-wordpress-flowplayer'),
                     'name' => 'subtitles',
                     'browser' => true,
-                    'subtitle_language' => true,
+                    'language' => true,
                     'type' => 'text',
                     'visible' => true,
-                  ),
-                  array(
-                    'label' => __('Add Another Language', 'fv-wordpress-flowplayer'),
-                    'name' => 'subtitles_add', // TODO: Do not save
-                    'type' => 'button',
-                    'visible' => true
                   )
                 ),
                 'sort' => false
