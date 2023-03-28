@@ -34,8 +34,9 @@ class FV_Player_Stats {
     add_filter( 'manage_users_custom_column', array( $this, 'users_column_content' ), 10, 3 );
     add_filter( 'manage_users_sortable_columns', array( $this, 'users_sortable_columns' ) );
 
-    if(is_admin()) {
+    if( is_admin() ) {
       add_action( 'pre_user_query', array( $this, 'users_sort' ) );
+      add_action( 'wp_ajax_fv_player_stats_users_search', array( $this, 'user_stats_search' ) );
     }
 
   }
@@ -483,24 +484,23 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_all_users_dropdown( $range, $include_user_id = false ) {
+  public function get_users_by_time_range( $range, $user_id = false ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
     $interval = self::get_interval_from_range( $range );
 
-    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts GROUP BY u.ID ORDER BY display_name", ARRAY_A );
+    if( $user_id ) {
+      $user_id = intval( $user_id );
+      $user_check ="AND u.ID = $user_id";
+    } else {
+      $user_check = '';
+    }
+
+    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts $user_check GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
     if ( ! $result ) {
       $result = array();
-    }
-
-    // Only add the extra user if not already in the results
-    if ( $include_user_id && ! in_array( $include_user_id, wp_list_pluck( $result, 'ID' ) ) ) {
-      $user = $wpdb->get_results( $wpdb->prepare( "SELECT u.ID, display_name, user_email FROM `{$wpdb->users}` AS u WHERE ID = %d", $include_user_id ), ARRAY_A );
-      if ( is_array( $user ) ) {
-        $result = array_merge( $result, $user );
-      }
     }
 
     return $result;
@@ -673,7 +673,7 @@ class FV_Player_Stats {
     foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
         foreach( $results as $row) {
-          if( $row['id_video'] == $id || ( isset($row['user_id']) && $row['user_id'] == $id ) ) {
+          if( ( isset($row['id_video']) && $row['id_video'] == $id ) || ( isset($row['user_id']) && $row['user_id'] == $id ) ) {
             if( !isset($datasets[$id]) ) {
               $datasets[$id] = array();
             }
@@ -817,6 +817,35 @@ class FV_Player_Stats {
       $userquery->query_where .= " AND stats.date = '" . date_i18n( 'Y-m-d' ) . "' ";
       $userquery->query_orderby = " GROUP BY wp_users.ID ORDER BY " . $field . " ".($userquery->query_vars["order"] == "ASC" ? "ASC " : "DESC ");
     }
+  }
+
+  function user_stats_search() {
+    if( isset($_GET['nonce'] ) && wp_verify_nonce( $_GET['nonce'], 'fv-player-stats-users-search' ) && isset($_GET['q']) && isset($_GET['date_range']) ) {
+      $search = sanitize_text_field( $_GET['q'] );
+      $date_range = sanitize_text_field( $_GET['date_range'] );
+
+      // search for users by login, nicename or email
+      $users = get_users( array(
+        'search' => '*' . $search . '*',
+        'search_columns' => array( 'user_login', 'user_nicename', 'user_email' ),
+      ) );
+
+      $results = array();
+      foreach( $users AS $user ) {
+        $data = $this->get_users_by_time_range( $date_range, $user->ID ); // check if user has any data in the selected date range
+
+        if( $data ) {
+          $results[] = array(
+            'id' => $user->ID, // used as value for option
+            'text' => $user->display_name . '-' . $user->user_email . ' ( ' . number_format_i18n( $data[0]['play'], 0) . ' plays )' // used as label for option
+          );
+        }
+      }
+
+      echo json_encode( array( 'results' => $results ) );
+    }
+
+    die();
   }
 
 }
