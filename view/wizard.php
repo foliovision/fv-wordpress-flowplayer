@@ -213,7 +213,7 @@
     <div class="components-base-control__field">
       <?php if( $language ): ?>
         <div class="field-with-language">
-          <select class="fv_wp_flowplayer_field_subtitles_lang" name="fv_wp_flowplayer_field_subtitles_lang">
+          <select class="<?php echo $field_id; ?>_lang" name="<?php echo $field_id; ?>_lang">
             <option value=""><?php _e('Pick language', 'fv_flowplayer'); ?></option>
             <?php
             $aLanguages = flowplayer::get_languages();

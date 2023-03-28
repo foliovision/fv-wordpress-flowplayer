@@ -1183,6 +1183,7 @@ class FV_Player_Db {
             // TODO: How to do this automatically for all the fields registered in editor with language => true?
             foreach( array(
               'subtitles',
+              'transcript_src'
             ) AS $meta_type ) {
               foreach ( $post_data['video_meta'][ $meta_type ][$video_index] as $transcript ) {
                 if ($transcript['file']) {
@@ -1551,6 +1552,7 @@ class FV_Player_Db {
     if( is_admin() ) {
       $meta_table = FV_Player_Db_Video_Meta::get_db_table_name();
 
+      // TODO: Fix bad count if video has multiple "subtitles" and "transcript_src"
       $meta_counts_select = ',
 count(subtitles.id) as subtitles_count,
 count(cues.id) as cues_count,
@@ -1560,7 +1562,7 @@ count(meta_transcript.id) as transcript_count';
 LEFT JOIN `'.$meta_table.'` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
 LEFT JOIN `'.$meta_table.'` AS cues ON v.id = cues.id_video AND cues.meta_key like \'cues%\'
 LEFT JOIN `'.$meta_table.'` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = \'chapters\'
-LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key = \'transcript\'
+LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key LIKE \'transcript_src%\'
 ';
     }
 

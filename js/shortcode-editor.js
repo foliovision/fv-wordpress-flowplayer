@@ -2040,6 +2040,7 @@ jQuery(function() {
           data['videos'] = {};
         } else if (is_subtitles_tab) {
           data['video_meta']['subtitles'] = {};
+          data['video_meta']['transcript_src'] = {};
         }
 
         // iterate over all tables in tabs
@@ -2095,20 +2096,32 @@ jQuery(function() {
 
               // subtitles tab, subtitles inputs
               else if (is_subtitles_tab) {
-                if( $this.attr('name') == 'fv_wp_flowplayer_field_subtitles' ) {
-                  if (!data['video_meta']['subtitles'][save_index]) {
-                    data['video_meta']['subtitles'][save_index] = [];
+
+                // TODO: Adding field in PHP with languages => true should add to this array:
+                let video_meta_languages = {
+                    subtitles:      [],
+                    transcript_src: [],
                   }
 
-                  // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
-                  if (this.nodeName == 'INPUT') {
-                    data['video_meta']['subtitles'][save_index].push({
-                      code : $this.siblings('select:first').val(),
-                      file : this.value,
-                      id: $this.parent().data('id_videometa')
-                    });
+                $.each( video_meta_languages, function( k, v ) {
+                  if( $this.attr('name') == 'fv_wp_flowplayer_field_' + k ) {
+                    if (!data['video_meta'][ k ][save_index]) {
+                      data['video_meta'][ k ][save_index] = [];
+                    }
+
+                    let lang = $this.closest( '.components-base-control__field' ).find( '[name=fv_wp_flowplayer_field_' + k + '_lang]' );
+
+                    // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
+                    if ( $this[0].nodeName == 'INPUT') {
+                      data['video_meta'][ k ][save_index].push({
+                        code : lang.val(),
+                        file : $this.val(),
+                        id: $this.parent().data('id_videometa')
+                      });
+                    }
                   }
-                }
+
+                });
               }
 
               // all other tabs
@@ -2596,21 +2609,26 @@ jQuery(function() {
 
               // add videos from the DB
               for (var x in vids) {
-                var
-                  subs = [],
+                let
+                  video_meta_languages = {
+                    subtitles:      [],
+                    transcript_src: [],
+                  },
                   video_meta = [];
 
                 // add all subtitles
                 if (vids[x].meta && vids[x].meta.length) {
                   for (var m in vids[x].meta) {
-                    // subtitles
-                    if (vids[x].meta[m].meta_key.indexOf('subtitles') > -1) {
-                      subs.push({
-                        lang: vids[x].meta[m].meta_key.replace('subtitles_', ''),
-                        file: vids[x].meta[m].meta_value,
-                        id: vids[x].meta[m].id
-                      });
-                    }
+
+                    $.each( video_meta_languages, function( k, v ) {
+                      if (vids[x].meta[m].meta_key.indexOf( k ) > -1) {
+                        video_meta_languages[k].push({
+                          lang: vids[x].meta[m].meta_key.replace( k + '_', ''),
+                          file: vids[x].meta[m].meta_value,
+                          id: vids[x].meta[m].id
+                        });
+                      }
+                    } );
 
                     // general video meta
                     if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['dvr', 'duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
@@ -2619,8 +2637,14 @@ jQuery(function() {
                   }
                 }
 
-                var $video_data_tab = playlist_item_add(vids[x], false, subs);
+                var $video_data_tab = playlist_item_add(vids[x]);
                 var $subtitles_tab = get_tab( 'last', 'subtitles' );
+
+                $.each( video_meta_languages, function( k, v ) {
+                  for (var i in v) {
+                    language_add( k, v[i].file, v[i].lang, x, v[i].id);
+                  }
+                } );
 
                 if (video_meta.length) {
                   for ( let i in video_meta) {
@@ -3543,8 +3567,15 @@ jQuery(function() {
     });
 
     /**
-    * Adds playlist item
-    * keywords: add playlist item
+     * Adds playlist item
+     * 
+     * @param {object|string} input       Object from FV Player database or legacy shortcode argument 
+     *                                    text which was a comma separated list of URLs
+     * @param {string}        sCaption    Legacy
+     * @param {string}        sSubtitles  Legacy
+     * @param {string}        sSplashText Legacy
+     * 
+     * @return {jQuery}                   New playlist item.
     */
     function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
       var new_playlist_item = $(template_playlist_item);
@@ -3595,12 +3626,6 @@ jQuery(function() {
           if( v.meta_key == 'synopsis' ) get_field('synopsis',new_item).val(v.meta_value).attr('data-id',v.id);
           if( v.meta_key == 'audio' ) get_field('audio',new_item).prop('checked',v.meta_value).attr('data-id',v.id);
         });
-
-        if (typeof sSubtitles === 'object' && sSubtitles.length && sSubtitles[0].lang) {
-          for (var i in sSubtitles) {
-            subtitle_language_add(sSubtitles[i].file, sSubtitles[i].lang, newIndex, sSubtitles[i].id);
-          }
-        }
 
         // processing shortcode input
       } else if( input ) {
