@@ -373,7 +373,7 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['autoplay']) && ($this->aCurArgs['autoplay'] == 'true' || $this->aCurArgs['autoplay'] == 'on')) {
       $autoplay = 0;
     }
-    
+
     /*
      *  Sticky
      */
@@ -507,7 +507,7 @@ class flowplayer_frontend extends flowplayer
         if( !empty($splash_img) && strcmp( $splash_img, $this->_get_option('splash') ) != 0 ) {
           $bIsAudio = false;
         }
-        
+
         if( $this->_get_option('autoplay_preload') == 'preload' ) {
           $splash_preload_class = 'is-poster';
         } else {
@@ -1353,9 +1353,9 @@ JS;
       $sHTMLEmbed = '';
     }
 
-    if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] == 'no' ) {
+    if( isset($this->aCurArgs['share']) && ($this->aCurArgs['share'] == 'no' || $this->aCurArgs['share'] == 'false') ) {
       $sHTMLSharing = '';
-    } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] && $this->aCurArgs['share'] != 'no' ) {
+    } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] && $this->aCurArgs['share'] != 'no' && $this->aCurArgs['share'] != 'false' ) {
 
     } else if( $this->_get_option('disablesharing') ) {
       $sHTMLSharing = '';
