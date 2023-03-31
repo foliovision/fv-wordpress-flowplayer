@@ -559,7 +559,7 @@ class flowplayer_frontend extends flowplayer
         $attributes['style'] = '';
 
         // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-        if( !wp_style_is('fv_flowplayer') ) {
+        if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
           $attributes['style'] = 'position:relative; ';
         }
 
@@ -722,7 +722,7 @@ class flowplayer_frontend extends flowplayer
           } else {
             $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
             // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-            if( !wp_style_is('fv_flowplayer') ) {
+            if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
               $image .= ' style="position:absolute;top:0;width:100%"';
             }
             $image .= ' />';

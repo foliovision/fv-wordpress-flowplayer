@@ -112,6 +112,7 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+include_once(dirname( __FILE__ ) . '/models/stats-export.php');
 
 include_once(dirname( __FILE__ ) . '/models/youtube.php');
 
