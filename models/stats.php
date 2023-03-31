@@ -492,12 +492,12 @@ class FV_Player_Stats {
 
     if( $user_id ) {
       $user_id = intval( $user_id );
-      $user_check ="AND u.ID = $user_id";
+      $user_check ="WHERE u.ID = $user_id";
     } else {
       $user_check = '';
     }
 
-    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts $user_check GROUP BY u.ID ORDER BY display_name", ARRAY_A );
+    $result = $wpdb->get_results( "SELECT u.ID, display_name, user_email, SUM( play ) AS play FROM `{$wpdb->users}` AS u LEFT JOIN `{$wpdb->prefix}fv_player_stats` AS s ON u.ID = s.user_id AND $interval $excluded_posts $user_check GROUP BY u.ID ORDER BY display_name", ARRAY_A );
 
     if ( ! $result ) {
       $result = array();
@@ -835,10 +835,18 @@ class FV_Player_Stats {
         $data = $this->get_users_by_time_range( $date_range, $user->ID ); // check if user has any data in the selected date range
 
         if( $data ) {
-          $results[] = array(
+          $plays = $data[0]['play'] ? $data[0]['play'] : 0;
+
+          $item = array(
             'id' => $user->ID, // used as value for option
-            'text' => $user->display_name . '-' . $user->user_email . ' ( ' . number_format_i18n( $data[0]['play'], 0) . ' plays )' // used as label for option
+            'text' => $user->display_name . '-' . $user->user_email . ' ( ' . number_format_i18n( $plays, 0) . ' plays )' // used as label for option
           );
+
+          if( !$plays ) {
+            $item['disabled'] = true; // disable option if user has no data in the selected date range
+          }
+
+          $results[] = $item;
         }
       }
 
