@@ -1104,7 +1104,7 @@ jQuery(function() {
           } else if( attachment.type == 'image' ) {
             if( attachment.id ) {
               // update splash attachent id
-              target_element.closest('table').find('[name="fv_wp_flowplayer_field_splash_attachment_id"]').val(attachment.id);
+              get_field( 'splash_attachment_id', true ).val(attachment.id);
             }
 
             if( typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
@@ -3568,13 +3568,13 @@ jQuery(function() {
 
     /**
      * Adds playlist item
-     * 
-     * @param {object|string} input       Object from FV Player database or legacy shortcode argument 
+     *
+     * @param {object|string} input       Object from FV Player database or legacy shortcode argument
      *                                    text which was a comma separated list of URLs
      * @param {string}        sCaption    Legacy
      * @param {string}        sSubtitles  Legacy
      * @param {string}        sSplashText Legacy
-     * 
+     *
      * @return {jQuery}                   New playlist item.
     */
     function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
