@@ -359,9 +359,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.31.7212 - 2023/03/31 =
+= 7.5.32.7212 - 2023/03/31 =
 
 * Tested up to WordPress 6.2. Note that the FV Player Editor is not available in the Block Themes Site Editor and you have to put in the shortcode by hand.
+* Video Stats - CSV export function
+* Video Stats - recording each logged in user separately, see wp-admin -> FV Player -> User Stats
+* Video Stats - recording video watch duration
 
 = 7.5.31.7212 - 2023/01/30 =
 
