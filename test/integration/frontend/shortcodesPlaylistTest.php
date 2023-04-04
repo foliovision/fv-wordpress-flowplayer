@@ -8,7 +8,13 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
   
-  public function setUp() {
+  private $playlist_default;
+  private $playlist_vertical;
+  private $playlist_tabs;
+  private $playlist_prevnext;
+  private $playlist_slider;
+
+  protected function setUp(): void {
     parent::setUp();
     
     $shortcode_body = 'src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" playlist="https://cdn.site.com/video2.mp4,https://cdn.site.com/video2.jpg;https://cdn.site.com/video3.mp4,https://cdn.site.com/video3.jpg" caption="Video 1;Video 2;Video 3" share="no" embed="false"';
@@ -156,7 +162,7 @@ HTML;
     $this->assertTrue( $fv_fp->load_tabs );    
   }
   
-  public function tearDown() {
+  protected function tearDown(): void {
     global $fv_fp, $FV_Player_lightbox;
     $fv_fp->load_tabs = false;
     $FV_Player_lightbox = new FV_Player_lightbox(); // reset the lightbox loading flag and footer lightboxed players HTML

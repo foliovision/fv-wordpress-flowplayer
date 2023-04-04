@@ -1,4 +1,6 @@
 <?php
+  include_once("../../vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php");
+
   // configuration
   $config = array(
     'existing_video_id' => 1,

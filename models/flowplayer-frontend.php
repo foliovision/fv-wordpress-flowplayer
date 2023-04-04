@@ -40,6 +40,7 @@ class flowplayer_frontend extends flowplayer
 
   var $currentVideoObject = null;
 
+  private $fRatio = null;
 
   /**
    * Retrieves instance of current player

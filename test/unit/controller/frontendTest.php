@@ -70,7 +70,7 @@ final class FV_Player_Controller extends TestCase {
     )
   );
 
-  public function setUp() {
+  protected function setUp(): void {
     // set an empty global return value to be used
     // in all the mocked global WordPress functions
     // like add_action() and the such
