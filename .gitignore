@@ -11,7 +11,7 @@ test/testSuite
 node_modules/
 
 # ignore composer vendor directory
-/vendor
+#/vendor
 
 # ignore components loaded via Bower
 /bower_components
