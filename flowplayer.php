@@ -89,7 +89,7 @@ if( is_admin() ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
  
-  if( version_compare(phpversion(),'7.2.5') != -1 ) {
+  if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
