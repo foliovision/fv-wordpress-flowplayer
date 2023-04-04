@@ -26,7 +26,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     $fv_fp->_set_conf($_POST);
   }
 
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
   }
 
@@ -58,7 +58,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
       $this->_handleAjax( 'fv_wp_flowplayer_ajax_load_s3_assets' );
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
-      $this->assertInternalType( 'object', $response );
+      $this->assertIsObject( $response );
       $this->assertObjectHasAttribute( 'success', $response );
       $this->assertFalse( $response->success );
     }

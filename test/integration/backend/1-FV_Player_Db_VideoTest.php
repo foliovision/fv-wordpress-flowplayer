@@ -10,7 +10,7 @@
 
 //   var $videos = array();
 
-//   public function setUp() {
+//   protected function setUp(): void {
 //     parent::setUp();
         
 //     global $FV_Player_Db;

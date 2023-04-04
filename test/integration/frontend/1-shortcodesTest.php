@@ -8,7 +8,9 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
   
-  public function setUp() {
+  private $post_id_SimpleShortcode;
+
+  protected function setUp(): void {
     parent::setUp();
 
     // create a post with playlist shortcode
