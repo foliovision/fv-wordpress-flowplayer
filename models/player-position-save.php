@@ -2,11 +2,55 @@
 class FV_Player_Position_Save {
 
   public function __construct() {
+    add_action( 'fv_player_update',  array( $this, 'plugin_update_database' ), 9 );
     add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save') );
     add_filter('fv_player_item', array($this, 'set_last_position'), 10, 3 );
     add_filter('fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );
-    
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
+  }
+
+  function plugin_update_database() {
+    global $wpdb;
+
+    // create table to store user video positions
+    $sql_user_video_positions = "CREATE TABLE ".$wpdb->prefix."fv_player_user_video_positions (
+      id int(11) NOT NULL auto_increment,
+      user_id int(11) NOT NULL,
+      video_id int(11) NOT NULL,
+      type varchar(16) NOT NULL,
+      legacy_video_id varchar(255) NOT NULL,
+      seconds int(11) NOT NULL,
+      PRIMARY KEY  (id)
+      KEY user_id (user_id),
+      KEY video_id (video_id)
+    )" . $wpdb->get_charset_collate() . ";";
+
+    // create table to store position in playlists
+    $sql_playlist_positions = "CREATE TABLE ".$wpdb->prefix."fv_player_user_playlist_positions (
+      id int(11) NOT NULL auto_increment,
+      user_id int(11) NOT NULL,
+      player_id int(11) NOT NULL,
+      index int(11) NOT NULL,
+      PRIMARY KEY  (id)
+      KEY playlist_id (playlist_id),
+      KEY video_id (video_id)
+    )" . $wpdb->get_charset_collate() . ";";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+    dbDelta( $sql_user_video_positions );
+    dbDelta( $sql_playlist_positions );
+  }
+
+  function get_video_position( $user_id, $video_id, $type, $legacy_video_id ) {
+    global $wpdb;
+
+    $sql = "SELECT seconds FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND type = %s AND legacy_video_id = %s";
+    $sql = $wpdb->prepare( $sql, $user_id, $video_id, $type, $legacy_video_id );
+    $seconds = $wpdb->get_var( $sql );
+
+    return $seconds;
   }
 
   public static function get_extensionless_file_name($path) {
@@ -34,7 +78,7 @@ class FV_Player_Position_Save {
       isset($aItem['sources']) &&
       isset($aItem['sources'][0])
     ) {
-      
+
       // Try with the video ID first
       $try = array();
       if( $fv_fp->current_player() ) {
@@ -59,7 +103,7 @@ class FV_Player_Position_Save {
           break;
         }
       }
-      
+
       foreach( $try AS $name ) {
         if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_saw_' . $name, true ) ) {
           $aItem['sources'][0]['saw'] = true;
@@ -76,7 +120,7 @@ class FV_Player_Position_Save {
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
     if( isset( $_POST['videoTimes'] ) ) {
       $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
-    
+
       if ($decoded_times !== false) {
         $_POST['videoTimes'] = $decoded_times;
       }
@@ -84,7 +128,7 @@ class FV_Player_Position_Save {
 
     if( isset( $_POST['playlistItems'] ) ) {
       $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
-    
+
       if ($decoded_playlists !== false) {
         $_POST['playlistItems'] = $decoded_playlists;
       }
@@ -120,14 +164,14 @@ class FV_Player_Position_Save {
               delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name);
             }
           }
-          
+
           // Did the user saw the full video?
           if( !empty($record['saw']) && $record['saw'] == true ) {
             update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
             delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name );
           }
         }
-        
+
         // What are the videos which user saw in full length?
         if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
           foreach ($_POST['sawVideo'] as $record) {
@@ -135,7 +179,7 @@ class FV_Player_Position_Save {
             delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name );
           }
         }
-        
+
         $success = true;
       }
 
