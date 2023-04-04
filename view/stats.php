@@ -290,6 +290,8 @@
     );
   });
   </script>
+<?php else : ?>
+  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
 <?php endif;?>
 
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
