@@ -27,41 +27,18 @@ flowplayer( function(api,root) {
     
   jQuery('.fp-header',root).prepend( jQuery('.fvp-share-bar',root) );
   
-  if( api.conf.playlist.length ) {
-    // Check if playlist is only single video with video ads
-    var show = true;
-    var playlist = api.conf.playlist;
-
-    if( playlist.length == 2 ){
-      // video ad, single video
-      if( typeof(playlist[0].click) != 'undefined' && typeof(playlist[1].click) == 'undefined' ) {
-        show = false;
-      }
-      // single video, video ad
-      if( typeof(playlist[0].click) == 'undefined' && typeof(playlist[1].click) != 'undefined' ) {
-        show = false;
-      }
-    } else if( playlist.length == 3 ) {
-      // video ad, single video, video ad
-      if( typeof(playlist[0].click) != 'undefined' && typeof(playlist[1].click) == 'undefined' && typeof(playlist[2].click) != 'undefined') {
-        show = false;
-      }
-    }
-
-    // Add prev and next buttons
-    if (show) {
-      var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
-      var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
-      root.find('.fp-controls .fp-playbtn').before(prev).after(next);
-      prev.on('click', function() {
-        api.trigger('prev',[api]);
-        api.prev();
-      });
-      next.on('click', function() {
-        api.trigger('next',[api]);
-        api.next();
-      });
-    }
+  if( api.have_visible_playlist() ) {
+    var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
+    var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
+    root.find('.fp-controls .fp-playbtn').before(prev).after(next);
+    prev.on('click', function() {
+      api.trigger('prev',[api]);
+      api.prev();
+    });
+    next.on('click', function() {
+      api.trigger('next',[api]);
+      api.next();
+    });
   }
 
    // show notice in editor
