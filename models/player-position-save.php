@@ -51,7 +51,7 @@ class FV_Player_Position_Save {
    * @param string $type last_position, top_position, finished
    * @param string $legacy_video_id
    *
-   * @return int|null
+   * @return int
    */
   function get_video_position( $user_id, $video_id, $type, $legacy_video_id = '' ) {
     global $wpdb;
@@ -63,7 +63,11 @@ class FV_Player_Position_Save {
       $type,
     ) );
 
-    if( is_numeric($seconds) ) $seconds = intval($seconds);
+    if( is_numeric($seconds) ) {
+      $seconds = intval($seconds);
+    } else {
+      $seconds = 0;
+    }
 
     return $seconds;
   }
@@ -104,7 +108,7 @@ class FV_Player_Position_Save {
    * @param int $user_id
    * @param int $player_id
    *
-   * @return int|null
+   * @return int;
    */
   function get_player_position( $user_id, $player_id ) {
     global $wpdb;
@@ -115,7 +119,11 @@ class FV_Player_Position_Save {
       $player_id
     ) );
 
-    if( is_numeric($index) ) $index = intval($index);
+    if( is_numeric($index) ) {
+      $index = intval($index);
+    } else {
+      $index = 0;
+    }
 
     return $index;
   }
