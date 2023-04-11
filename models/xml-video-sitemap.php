@@ -198,7 +198,9 @@ class FV_Xml_Video_Sitemap {
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // set thumbnail
-            $xml_video['thumbnail_loc'] = apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID );
+            $thumb = apply_filters( 'fv_flowplayer_splash', apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID ) );
+            $thumb_parts = wp_parse_url( $thumb );
+            $xml_video['thumbnail_loc'] = str_replace( $thumb_parts['query'], str_replace('&', '&amp;', $thumb_parts['query'] ), $thumb );
 
             // set video title
             if (!empty($sanitized_caption)) {
