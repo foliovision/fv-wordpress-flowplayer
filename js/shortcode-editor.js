@@ -4647,7 +4647,7 @@ jQuery(function() {
     /*
     Mark each manually updated title or splash field as such
     */
-    $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
+    $doc.on('input change', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
       let $input;
 
       // if this element already has data set, don't do any of the selections below
