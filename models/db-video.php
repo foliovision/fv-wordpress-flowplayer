@@ -893,11 +893,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $this->last_check = current_time( 'mysql', true );
 
-        $meta_data[] = array(
-          'meta_key' => 'last_video_meta_check_src',
-          'meta_value' => $video_url,
-        );
-
         if( $video_data['error'] ) {
           $meta_data[] = array(
             'meta_key' => 'error',
