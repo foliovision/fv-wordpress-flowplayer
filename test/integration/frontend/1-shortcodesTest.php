@@ -37,17 +37,26 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     remove_action('wp_head', 'wp_generator');
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
-    add_filter( 'wp_resource_hints', '__return_empty_array' );    
+    add_filter( 'wp_resource_hints', '__return_empty_array' );
+
+    // Avoid wp-includes/css/dist/block-library/style.css and the inline CSS vars in global-styles-inline-css
+    add_action(
+      'wp_enqueue_scripts',
+      function() {
+        wp_dequeue_style( 'wp-block-library' );
+        wp_dequeue_style( 'global-styles' );
+      }
+    );
 
     wp_deregister_script( 'wp-embed' );
-        
+
     // note that you can only use wp_head() or wp_footer() once!
     ob_start();
     wp_head();
     echo apply_filters( 'the_content', $post->post_content );
     wp_footer();
     $output = ob_get_clean();
-    
+
     // file_put_contents( dirname(__FILE__).'/testSimpleShortcode.html.new', $output );
 
     $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSimpleShortcode.html')), $this->fix_newlines($output) );
