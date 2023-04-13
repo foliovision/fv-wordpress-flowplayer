@@ -77,6 +77,8 @@ final class FV_Player_Controller extends TestCase {
     global $testReturnValue;
     $testReturnValue = '';
 
+    define( 'ABSPATH', dirname( __FILE__ ) );
+
     include_once "../../models/flowplayer.php";
     include_once "../../models/lightbox.php";
     global $fv_fp;

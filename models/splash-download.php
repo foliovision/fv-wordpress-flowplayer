@@ -4,6 +4,11 @@ if( !class_exists('FV_Player_Splash_Download') ) :
 
 class FV_Player_Splash_Download {
   function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_filter('fv_player_meta_data', array( $this, 'splash_data' ), 20, 2);
   }
 

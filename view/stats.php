@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 

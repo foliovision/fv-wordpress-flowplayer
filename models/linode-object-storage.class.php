@@ -5,6 +5,11 @@ if( !class_exists('FV_Player_Linode_Object_Storage') ) :
 class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
   
   function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     // TODO: What if FV Player is not yet loaded?
     add_action( 'plugins_loaded', array( $this, 'include_linode_media_browser' ), 9 );
     parent::__construct( array( 'key' => 'linode_object_storage', 'title' => 'Linode Object Storage') );

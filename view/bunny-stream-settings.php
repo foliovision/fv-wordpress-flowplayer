@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 global $fv_fp;
 ?>
 

@@ -26,6 +26,10 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  return;
+}
+
 global $fv_wp_flowplayer_ver;
 $fv_wp_flowplayer_ver = '7.5.32.7212.1';
 $fv_wp_flowplayer_core_ver = '7.2.12.2';

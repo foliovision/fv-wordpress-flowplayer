@@ -199,7 +199,11 @@ class FV_Player_Custom_Videos_Master {
   var $aMetaBoxes = array();
   
   function __construct() {
-    
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_action( 'init', array( $this, 'save' ) ); //  saving of user profile, both front and back end    
     add_action( 'save_post', array( $this, 'save_post' ) );
 

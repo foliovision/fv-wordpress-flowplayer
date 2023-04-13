@@ -5,6 +5,11 @@ if( !class_exists('FV_Player_DigitalOcean_Spaces') ) :
 class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   
   function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     // TODO: What if FV Player is not yet loaded?
     parent::__construct( array( 'key' => 'digitalocean_spaces', 'title' => 'DigitalOcean Spaces') );
     

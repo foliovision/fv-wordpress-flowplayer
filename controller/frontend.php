@@ -14,7 +14,11 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
+*/
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
 
 add_action('wp_footer','flowplayer_prepare_scripts',9);
 add_action('wp_footer','flowplayer_display_scripts',100);
