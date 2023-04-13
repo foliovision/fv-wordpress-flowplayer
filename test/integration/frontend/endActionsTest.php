@@ -8,7 +8,9 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_EndActionsTest extends FV_Player_UnitTestCase {
   
-  public function setUp() {
+  private $post_id_testEndActions;
+
+  protected function setUp(): void {
     parent::setUp();
 
     // create a post with playlist shortcode
@@ -128,7 +130,7 @@ HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
   } 
   
-  public function tearDown() {
+  protected function tearDown(): void {
     delete_option('fv_player_popups');
   }
 

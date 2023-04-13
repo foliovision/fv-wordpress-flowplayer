@@ -1,5 +1,10 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player    
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
+/*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
     Copyright (C) 2016  Foliovision
 
     This program is free software: you can redistribute it and/or modify

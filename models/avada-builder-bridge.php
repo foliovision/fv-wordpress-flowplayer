@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 add_action( 'admin_footer', 'fv_player_avada_builder_bridge' );
 
 function fv_player_avada_builder_bridge() {

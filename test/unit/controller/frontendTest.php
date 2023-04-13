@@ -70,12 +70,14 @@ final class FV_Player_Controller extends TestCase {
     )
   );
 
-  public function setUp() {
+  protected function setUp(): void {
     // set an empty global return value to be used
     // in all the mocked global WordPress functions
     // like add_action() and the such
     global $testReturnValue;
     $testReturnValue = '';
+
+    define( 'ABSPATH', dirname( __FILE__ ) );
 
     include_once "../../models/flowplayer.php";
     include_once "../../models/lightbox.php";

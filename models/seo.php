@@ -5,6 +5,11 @@ class FV_Player_SEO {
   var $can_seo = false;
   
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_filter('fv_flowplayer_args_pre', array($this, 'should_i'), 10, 3 );
     add_filter('fv_flowplayer_attributes', array($this, 'single_attributes'), 10, 3 );
     add_filter('fv_flowplayer_inner_html', array($this, 'single_video_seo'), 10, 2 );

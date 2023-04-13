@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 /*
  *  Admin menus and such...
  */
@@ -62,14 +66,14 @@ function fv_wp_flowplayer_after_plugin_row( $arg) {
   
   $args = func_get_args();
   
-  if( $args[1]['Name'] == 'FV Wordpress Flowplayer' ) {    
+  if( $args[1]['Name'] == 'FV Player' ) {    
     $options = get_option( 'fvwpflowplayer' );
     if( $options['key'] == 'false' || $options['key'] == '' ) :
     ?>
 <tr class="plugin-update-tr fv-wordpress-flowplayer-tr">
   <td class="plugin-update colspanchange" colspan="3">
     <div class="update-message">
-      <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">All Licenses 20% Off</a> - Summer sale!
+      <a href="https://foliovision.com/player/download">All Licenses 20% Off</a> - Easter sale!
     </div>
   </td>
 </tr>

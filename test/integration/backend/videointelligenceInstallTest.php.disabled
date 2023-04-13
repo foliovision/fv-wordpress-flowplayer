@@ -25,7 +25,7 @@ final class FV_Player_videointelligenceInstallTestCase extends FV_Player_UnitTes
     do_action( 'admin_init' );
   }
 
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // add new user and create last saved position metadata for this new user
@@ -62,7 +62,7 @@ final class FV_Player_videointelligenceInstallTestCase extends FV_Player_UnitTes
     $this->assertEquals( "FV Player video intelligence extension upgraded successfully!", get_option('fv_wordpress_flowplayer_deferred_notices') );
   }
 
-  public function tearDown() {
+  protected function tearDown(): void {
     unset($_POST['vi_login']);
     unset($_POST['vi_pass']);
     unset($_POST['fv_player_vi_install']);

@@ -3,6 +3,11 @@
 class FV_Player_System_Info {
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_action( 'admin_init', array($this, 'admin__add_meta_boxes') );
     add_action('admin_init', array( $this, 'export' ) );
   }
