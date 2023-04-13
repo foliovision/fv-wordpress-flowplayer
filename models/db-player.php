@@ -553,7 +553,9 @@ CREATE TABLE " . self::$db_table_name . " (
       $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
       // enable toggle ad custom
-      $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+      if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = 'ad'" ) ) {
+        $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+      }
 
       foreach ( array(
         'ad'                => 'overlay',
@@ -564,7 +566,9 @@ CREATE TABLE " . self::$db_table_name . " (
       ) as $from => $to ) {
         // Is there such column?
         if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
-          $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
+          if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = '" . $from ."'" ) ) {
+            $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
+          }
         }
       }
 
