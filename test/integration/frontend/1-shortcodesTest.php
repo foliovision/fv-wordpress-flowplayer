@@ -39,12 +39,30 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
     add_filter( 'wp_resource_hints', '__return_empty_array' );
 
-    // Avoid wp-includes/css/dist/block-library/style.css and the inline CSS vars in global-styles-inline-css
+    // Avoid certain CSS files which WordPress started to include as the block themes become the new default
     add_action(
       'wp_enqueue_scripts',
       function() {
+
+        // wp-includes/css/dist/block-library/style.css
         wp_dequeue_style( 'wp-block-library' );
+
+        // inline CSS vars in global-styles-inline-css
         wp_dequeue_style( 'global-styles' );
+
+        // wp-includes/css/classic-themes.css
+        wp_dequeue_style( 'classic-theme-styles' );
+
+        wp_dequeue_style( 'core-block-supports' );
+      }
+    );
+
+    // Avoid more CSS files which WordPress started to include as the block themes become the new default
+    add_action(
+      'wp_footer',
+      function() {
+        // inline style with "Core styles: block-supports"
+        wp_dequeue_style( 'core-block-supports' );
       }
     );
 
