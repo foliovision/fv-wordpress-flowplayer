@@ -332,8 +332,11 @@ CREATE TABLE " . self::$db_table_name . " (
     $meta_table = $wpdb->prefix.'fv_player_videometa';
 
     if( $fv_fp->_get_option('video_model_db_updated') != '7.9.3' ) {
-      $res = $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET title = caption WHERE title = '' AND caption != ''" );
+      if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = 'caption'" ) ) {
+        $res = $wpdb->query( "UPDATE `" . $table . "` SET title = caption WHERE title = '' AND caption != ''" );
+      }
 
+      if( $wpdb->get_var("SHOW TABLES LIKE '$meta_table'") == $meta_table ) {
       // update duration
       $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
 
@@ -344,6 +347,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
 
       $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
+      }
       
       $fv_fp->_set_option('video_model_db_updated', '7.9.3');
     }
