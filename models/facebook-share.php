@@ -4,6 +4,10 @@ class FV_Player_Facebook_Share {
 
   public function __construct() {
 
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_action('wp_head', array($this, 'fb_share_tags'));
     add_action('fv_flowplayer_admin_integration_options_after', array($this, 'setting'), 0);
   }

@@ -5,6 +5,11 @@ class FV_Player_Stats {
   var $cache_directory = false;
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
@@ -42,8 +47,11 @@ class FV_Player_Stats {
   }
 
   function stats_link() {
-    add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
-    add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
+    global $fv_fp;
+    if ( $fv_fp->_get_option('video_stats_enable') ) {
+      add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
+      add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
+    }
   }
 
   function get_stat_columns() {
@@ -748,8 +756,11 @@ class FV_Player_Stats {
   }
 
   function users_column( $columns ) {
-    $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
-    $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    global $fv_fp;
+    if ( $fv_fp->_get_option('video_stats_enable') ) {
+      $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
+      $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    }
     return $columns;
   }
 

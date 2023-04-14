@@ -2,16 +2,7 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
   
-  if( api.conf.playlist.length == 0 ) return;
-  
-  var real_videos = 0;
-  jQuery(api.conf.playlist).each( function(k,v) {
-    if(typeof(v.click) == 'undefined' ) {
-      real_videos++;
-    }
-  });
-  
-  if( real_videos < 2 ) return;
+  if ( ! api.have_visible_playlist() ) return;
   
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
   //if( !playlist.hasClass('fp-playlist-season') ) return; // todo: what about mobile? Should we always allow this?
@@ -50,10 +41,12 @@ flowplayer( function(api,root) {
   playlist_button_name.insertAfter(playlist_button).on('click', playlist_button_click);
 
   jQuery('a',playlist_menu).on('click', function() {
-    if(typeof(api.conf.playlist[jQuery(this).data('index') - 1]) != 'undefined' && typeof(api.conf.playlist[jQuery(this).data('index') - 1].click) != 'undefined' ) { // check if FV Player Pro Video Ad is in front of video - act as if clicked on Ad
-      api.play(jQuery(this).data('index') - 1);
+    var index = jQuery(this).data('index'),
+      prev = index - 1;
+    if( typeof(api.conf.playlist[prev]) != 'undefined' && typeof(api.conf.playlist[prev].click) != 'undefined' ) { // check if FV Player Pro Video Ad is in front of video - act as if clicked on Ad
+      api.play( prev );
     } else {
-      api.play(jQuery(this).data('index'));
+      api.play( index );
     }
   });
   

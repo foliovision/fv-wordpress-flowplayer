@@ -9,8 +9,10 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
 final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   
   var $import_ids = array();
+  private $post_id_testEndActions;
+  private $post_id_testStartEnd;
 
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
         
     global $FV_Player_Db;
@@ -45,7 +47,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   public function testDBExport() {
     global $FV_Player_Db;        
     $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
-    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );  
+    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data-export.json'), $output );  
   }  
   
   public function testDBShortcode() {
@@ -153,7 +155,7 @@ HTML;
 
   }
 
-  public function tearDown() {
+  protected function tearDown(): void {
     delete_option('fv_player_popups');
   }
 

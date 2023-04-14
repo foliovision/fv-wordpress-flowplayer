@@ -2125,13 +2125,23 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
       }
     }
 
-    $remove = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM ".FV_Player_Db_Player_Meta::init_db_name()." WHERE meta_key = 'post_id' AND meta_value = %s ", $post_id ) );
-    if( $remove ) {
-      foreach( $remove AS $removal ) {
-        if( !in_array($removal->id_player,$ids) ) {
-          $d_meta = new FV_Player_Db_Player_Meta($removal->id);
-          $d_meta->link2db( $removal->id );
-          $d_meta->delete();
+    /**
+     * Check if table exists before looking for FV Player that is associated in the post.
+     * We do this because we would run into issues with this in WP Integration tests.
+     * The database tables get created by tests like FV_Player_DBTest::setUp() but somehow 
+     * wptests_fv_player_playermetas is not there
+     */
+    $table_name = FV_Player_Db_Player_Meta::init_db_name();
+
+    if( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+      $remove = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE meta_key = 'post_id' AND meta_value = %s ", $post_id ) );
+      if( $remove ) {
+        foreach( $remove AS $removal ) {
+          if( !in_array($removal->id_player,$ids) ) {
+            $d_meta = new FV_Player_Db_Player_Meta($removal->id);
+            $d_meta->link2db( $removal->id );
+            $d_meta->delete();
+          }
         }
       }
     }

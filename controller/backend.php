@@ -17,6 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
 
 /*
  *  Video Checker support email
@@ -1058,6 +1061,14 @@ function fv_player_edit_posts_cell() {
   }
 }
 
+/**
+ * Get taxonomies registered for the post type. The core WordPress function
+ * to do this does not return taxonomy if it's enabled for multiple
+ * post types. So we do it properly here.
+ * 
+ * @param  string $post_type Post type to check
+ * @return array             Taxonomy slugs
+ */
 function fv_player_get_post_type_taxonomies( $post_type ) {
   $taxonomies = get_taxonomies( array(
     'public'      => true,

@@ -40,6 +40,7 @@ class flowplayer_frontend extends flowplayer
 
   var $currentVideoObject = null;
 
+  private $fRatio = null;
 
   /**
    * Retrieves instance of current player
@@ -158,18 +159,10 @@ class flowplayer_frontend extends flowplayer
           }
         }
       }
+    }
 
-      if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && (
-            $videos[0]->getMetaValue('audio',true) ||
-            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
-          )
-        ) {
-          // force horizontal playlist style for audio as that the only one styled properly
-          $this->aCurArgs['liststyle'] = 'horizontal';
-        }
-      }
-    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+    // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
+    if ( $this->is_audio_playlist() ) {
       $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
@@ -604,7 +597,7 @@ class flowplayer_frontend extends flowplayer
         $attributes['style'] = '';
 
         // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-        if( !wp_style_is('fv_flowplayer') ) {
+        if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
           $attributes['style'] = 'position:relative; ';
         }
 
@@ -764,7 +757,7 @@ class flowplayer_frontend extends flowplayer
           } else {
             $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
             // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-            if( !wp_style_is('fv_flowplayer') ) {
+            if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
               $image .= ' style="position:absolute;top:0;width:100%"';
             }
             $image .= ' />';
@@ -1411,6 +1404,45 @@ JS;
 HTML;
 
     return $sHTML;
+  }
+
+
+  /**
+   * Is it a audio track-only playlist with no splash screens?
+   */
+  function is_audio_playlist() {
+
+    // Are all the database player items audio tracks?
+    if( $player = $this->current_player() ) {
+
+      $items = $player->getVideos();
+      $count_audio_items = 0;
+
+      if( $items ) {
+        foreach( $items AS $item ) {
+          if( $item->getSplash() ) {
+            continue;
+          }
+
+          if(
+            $item->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
+          ) {
+            $count_audio_items++;
+          }
+        }
+      }
+
+      if ( count( $items ) === $count_audio_items ) {
+        return true;
+      }
+
+    // Does the legacy shortcode start with an audio track with no splash?
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+      return true;
+    }
+
+    return false;
   }
 
 
