@@ -1,17 +1,4 @@
-/*global fv_flowplayer_browser_ff_m4v_array, fv_flowplayer_browser_chrome_fail_array, fv_flowplayer_browser_ie_array */
-function fv_flowplayer_browser_ff_m4v( hash ) {
-	if( flowplayer.support.browser && flowplayer.support.browser.mozilla && navigator.userAgentData.platform.indexOf("Win") !=-1 ) {
-		jQuery('#wpfp_'+hash).attr('data-engine','flash');
-	}
-}
-
-if( typeof(fv_flowplayer_browser_ff_m4v_array) != "undefined" ) {
-  for( var fv_flowplayer_browser_ff_m4v_i in fv_flowplayer_browser_ff_m4v_array ) {
-		if( !fv_flowplayer_browser_ff_m4v_array.hasOwnProperty(fv_flowplayer_browser_ff_m4v_i) ) continue;
-
-    fv_flowplayer_browser_ff_m4v( fv_flowplayer_browser_ff_m4v_i );
-  }
-}
+/*global fv_flowplayer_browser_chrome_fail_array, fv_flowplayer_browser_ie_array */
 
 function fv_flowplayer_browser_chrome_fail( hash, sAttributes, sVideo, bAutobuffer ) {
 	jQuery('#wpfp_'+hash).bind('error', function (e,api, error) {
