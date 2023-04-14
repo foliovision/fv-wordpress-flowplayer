@@ -1,4 +1,13 @@
-<?php // hide the "All Categories" and "Most Used" tabs as it's not important ?>
+<?php
+/**
+ * Hide the "All Categories" and "Most Used" tabs as it's not important.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
+?>
 <style>
 #fv_player_encoding_category-tabs {
   display: none;

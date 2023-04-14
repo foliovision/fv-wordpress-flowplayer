@@ -18,6 +18,10 @@ class FV_Player_YouTube {
 
   function __construct() {
 
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     if( !is_admin() ) {
       // Load splash via API if not provided
       add_filter( 'fv_flowplayer_splash', array( $this, 'get__cached_splash' ), 10, 2 );

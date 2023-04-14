@@ -126,21 +126,13 @@ class flowplayer_frontend extends flowplayer
           }
         }
       }
+    }
 
-      if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && (
-            $videos[0]->getMetaValue('audio',true) ||
-            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
-          )
-        ) {
-          // force horizontal playlist style for audio as that the only one styled properly
-          $this->aCurArgs['liststyle'] = 'horizontal';
-        }
-      }
-    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+    // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
+    if ( $this->is_audio_playlist() ) {
       $this->aCurArgs['liststyle'] = 'horizontal';
     }
-    
+
     $media = $this->aCurArgs['src'];
 
     if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
@@ -1345,8 +1337,47 @@ HTML;
 
     return $sHTML;
   }
-  
-  
+
+
+  /**
+   * Is it a audio track-only playlist with no splash screens?
+   */
+  function is_audio_playlist() {
+
+    // Are all the database player items audio tracks?
+    if( $player = $this->current_player() ) {
+
+      $items = $player->getVideos();
+      $count_audio_items = 0;
+
+      if( $items ) {
+        foreach( $items AS $item ) {
+          if( $item->getSplash() ) {
+            continue;
+          }
+
+          if(
+            $item->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
+          ) {
+            $count_audio_items++;
+          }
+        }
+      }
+
+      if ( count( $items ) === $count_audio_items ) {
+        return true;
+      }
+
+    // Does the legacy shortcode start with an audio track with no splash?
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+      return true;
+    }
+
+    return false;
+  }
+
+
   // some themes use wp_filter_post_kses() on output, so we must ensure FV Player markup passes
   function wp_kses_permit( $tags, $context = false ) {
     if( $context != 'post' ) return $tags;

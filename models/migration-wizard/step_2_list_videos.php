@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base_Class {
 
   private $search_string; 

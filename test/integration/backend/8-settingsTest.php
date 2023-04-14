@@ -20,6 +20,8 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
     remove_action( 'admin_init', '_maybe_update_plugins' );
     remove_action( 'admin_init', '_maybe_update_themes' );
 
+    remove_action( 'admin_init', 'send_frame_options_header', 10, 0 );
+
     do_action( 'admin_init' );
   }  
   
