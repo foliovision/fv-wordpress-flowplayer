@@ -91,13 +91,7 @@ if ( ! defined( 'ABSPATH' ) ) {
           $dates = $FV_Player_Stats->get_valid_dates($user_id);
 
           foreach( $dates as $key => $value ) {
-            $not_available = false;
-
-            if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {
-              $not_available = true;
-            }
-
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $not_available ? 'disabled' : '' ) . '>'.$value.'</option>';
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
           }
         ?>
       </select>

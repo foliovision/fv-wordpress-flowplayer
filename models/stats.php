@@ -534,10 +534,15 @@ class FV_Player_Stats {
 
       $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
 
+      $dates[$key] = array();
+
       if( !empty($result) ) {
-        $dates[$key] = $value;
+        $dates[$key]['disabled'] = false;
+      } else {
+        $dates[$key]['disabled'] = true;
       }
 
+      $dates[$key]['value'] = $value;
     }
 
     return $dates;
