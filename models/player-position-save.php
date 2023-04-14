@@ -18,9 +18,10 @@ class FV_Player_Position_Save {
       id int(11) NOT NULL auto_increment,
       user_id int(11) NOT NULL,
       video_id int(11) NOT NULL,
-      type varchar(16) NOT NULL,
+      last_position int(11) NOT NULL,
+      top_position int(11) NOT NULL,
+      finished tinyint(1) NOT NULL,
       legacy_video_id varchar(255) NOT NULL,
-      seconds int(11) NOT NULL,
       PRIMARY KEY  (id),
       KEY user_id (user_id),
       KEY video_id (video_id)
@@ -56,20 +57,19 @@ class FV_Player_Position_Save {
   function get_video_position( $user_id, $video_id, $type, $legacy_video_id = '' ) {
     global $wpdb;
 
-    $seconds = $wpdb->get_var( $wpdb->prepare(
-      "SELECT seconds FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND type = %s",
+    $value = $wpdb->get_var( $wpdb->prepare(
+      "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
       $user_id,
       $video_id,
-      $type,
     ) );
 
-    if( is_numeric($seconds) ) {
-      $seconds = intval($seconds);
+    if( is_numeric($value) ) {
+      $value = intval($value);
     } else {
-      $seconds = 0;
+      $value = 0;
     }
 
-    return $seconds;
+    return $value;
   }
 
   /**
@@ -85,18 +85,25 @@ class FV_Player_Position_Save {
   function delete_video_postion( $user_id, $video_id, $type, $legacy_video_id = '' ) {
     global $wpdb;
 
-    $wpdb->delete(
+    // dont delete the record, just set the value to 0
+
+    // TODO: test if this works
+    $wpdb->update(
       $wpdb->prefix."fv_player_user_video_positions",
+      array(
+        $type => 0,
+      ),
       array(
         'user_id' => $user_id,
         'video_id' => $video_id,
-        'type' => $type,
         'legacy_video_id' => $legacy_video_id,
       ),
       array(
         '%d',
+      ),
+      array(
         '%d',
-        '%s',
+        '%d',
         '%s',
       )
     );
@@ -139,12 +146,12 @@ class FV_Player_Position_Save {
    *
    * @return void
    */
-  function set_video_position( $user_id, $video_id, $type, $seconds, $legacy_video_id = '' ) {
+  function set_video_position( $user_id, $video_id, $type, $value, $legacy_video_id = '' ) {
     global $wpdb;
 
     // check if the record already exists using
     $exits = $wpdb->get_var( $wpdb->prepare(
-      "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND type = %s",
+      "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
       $user_id,
       $video_id,
       $type,
@@ -155,12 +162,11 @@ class FV_Player_Position_Save {
       $wpdb->update(
         $wpdb->prefix."fv_player_user_video_positions",
         array(
-          'seconds' => $seconds,
+          $type => $value,
         ),
         array(
           'user_id' => $user_id,
           'video_id' => $video_id,
-          'type' => $type,
           'legacy_video_id' => $legacy_video_id,
         )
       );
@@ -170,9 +176,8 @@ class FV_Player_Position_Save {
         array(
           'user_id' => $user_id,
           'video_id' => $video_id,
-          'type' => $type,
           'legacy_video_id' => $legacy_video_id,
-          'seconds' => $seconds,
+          $type => $value,
         )
       );
     }
