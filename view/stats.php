@@ -87,7 +87,10 @@ if ( ! defined( 'ABSPATH' ) ) {
       <?php endif; ?>
       <select id="fv_player_stats_select" name="stats_range">
         <?php
-          foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+
+          $dates = $FV_Player_Stats->get_valid_dates($user_id);
+
+          foreach( $dates as $key => $value ) {
             $not_available = false;
 
             if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {

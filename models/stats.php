@@ -514,6 +514,35 @@ class FV_Player_Stats {
     return $result;
   }
 
+  public function get_valid_dates( $user_id ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    if( $user_id ) {
+      $user_id = intval( $user_id );
+      $user_check ="WHERE user_id = $user_id";
+    } else {
+      $user_check = '';
+    }
+
+    $dates = array();
+
+    foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+
+      $interval = self::get_interval_from_range( $key );
+
+      $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
+
+      if( !empty($result) ) {
+        $dates[$key] = $value;
+      }
+
+    }
+
+    return $dates;
+  }
+
   public function get_valid_interval( $user_id ) {
     // we need to check every interval for user to check if there is any data
     $intervals = array(
