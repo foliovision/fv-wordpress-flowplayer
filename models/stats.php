@@ -521,7 +521,7 @@ class FV_Player_Stats {
 
     if( $user_id ) {
       $user_id = intval( $user_id );
-      $user_check ="WHERE user_id = $user_id";
+      $user_check =" AND user_id = $user_id";
     } else {
       $user_check = '';
     }
