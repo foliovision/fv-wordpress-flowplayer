@@ -863,6 +863,17 @@ jQuery( function($) {
     return false;
   }
 
+  function confirm_uploader_close() {
+    if( fv_player_media_browser.get_upload_status() ) {
+      if( confirm('You are currently uploading video, closing uploader will stop it. Do You want to close ?') ) {
+        jQuery('.media-modal-backdrop').click();
+      }
+    }
+  }
+
+  $( document ).on( "mousedown touchstart", ".media-modal-backdrop", confirm_uploader_close );
+  $( document ).on( "mousedown touchstart", '.media-modal-close', confirm_uploader_close );
+
   $( document ).on( "click", "#overlay-loader-li", function() {
     // click the Load More button when the actual DIV is clicked, for accessibility
     jQuery(this).find('button').click();
