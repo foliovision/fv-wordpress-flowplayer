@@ -558,9 +558,11 @@ class FV_Player_Stats {
       'last_week',
       'this_month',
       'last_month',
-      'this_year',
-      'last_year'
     );
+
+    $years = $this->get_all_years();
+
+    $intervals = $intervals + $years; // merge
 
     // TODO: optimize performance, no need to use SUM or ORDER BY, limit 1 would be enough
     foreach( $intervals as $k => $interval ) {
