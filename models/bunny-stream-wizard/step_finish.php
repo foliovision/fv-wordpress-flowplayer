@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Bunny_Stream_Wizard_step_finish extends FV_Player_Wizard_Step_Base_Class {
 
   protected $buttons = array();

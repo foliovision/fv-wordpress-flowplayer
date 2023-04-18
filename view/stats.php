@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
@@ -82,14 +87,11 @@
       <?php endif; ?>
       <select id="fv_player_stats_select" name="stats_range">
         <?php
-          foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
-            $not_available = false;
 
-            if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {
-              $not_available = true;
-            }
+          $dates = $FV_Player_Stats->get_valid_dates($user_id);
 
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $not_available ? 'disabled' : '' ) . '>'.$value.'</option>';
+          foreach( $dates as $key => $value ) {
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
           }
         ?>
       </select>
@@ -290,6 +292,8 @@
     );
   });
   </script>
+<?php elseif ( ( strcmp($current_page, 'fv_player_stats') === 0 ) ) : ?>
+  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
 <?php endif;?>
 
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
@@ -365,6 +369,8 @@ jQuery( document ).ready(function() {
   );
 })
 </script>
+<?php elseif ( ( strcmp($current_page, 'fv_player_stats_users') === 0 ) ) : ?>
+  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
 <?php endif; ?>
 
 <?php if( isset($fv_user_watch_time_stats_data) && !empty($fv_user_watch_time_stats_data) ): ?>

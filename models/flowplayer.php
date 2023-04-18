@@ -16,6 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
 
 class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {

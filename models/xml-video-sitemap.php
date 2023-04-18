@@ -3,17 +3,22 @@
 class FV_Xml_Video_Sitemap {
     
     public function __construct() {
-        // Add our custom rewrite rules
-        add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), 999 );
-        add_action('do_feed_video-sitemap', array($this, 'fv_generate_video_sitemap'), 10, 1);
-        add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
-        
-        add_action( 'parse_request', array($this, 'fix_query_vars') );
-        add_filter( 'query_vars', array($this, 'custom_query_vars') ); // we need to use custom query vars as otherwise Yoast SEO could stop the sitemap from working as it could be detected by $wp_query->is_date
-        
-        add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ) ); // stop trailing slashes on sitemap URLs
-        add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save') ); // whitelist symbols
-        add_action( 'fv_flowplayer_admin_seo_after', array( $this, 'options' ) );
+
+      if ( ! defined( 'ABSPATH' ) ) {
+        exit;
+      }
+
+      // Add our custom rewrite rules
+      add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), 999 );
+      add_action('do_feed_video-sitemap', array($this, 'fv_generate_video_sitemap'), 10, 1);
+      add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
+
+      add_action( 'parse_request', array($this, 'fix_query_vars') );
+      add_filter( 'query_vars', array($this, 'custom_query_vars') ); // we need to use custom query vars as otherwise Yoast SEO could stop the sitemap from working as it could be detected by $wp_query->is_date
+
+      add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ) ); // stop trailing slashes on sitemap URLs
+      add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save') ); // whitelist symbols
+      add_action( 'fv_flowplayer_admin_seo_after', array( $this, 'options' ) );
     }
     
     function custom_query_vars( $vars ) {
@@ -198,7 +203,9 @@ class FV_Xml_Video_Sitemap {
             $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // set thumbnail
-            $xml_video['thumbnail_loc'] = apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID );
+            $thumb = apply_filters( 'fv_flowplayer_splash', apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID ) );
+            $thumb_parts = wp_parse_url( $thumb );
+            $xml_video['thumbnail_loc'] = str_replace( $thumb_parts['query'], str_replace('&', '&amp;', $thumb_parts['query'] ), $thumb );
 
             // set video title
             if (!empty($sanitized_caption)) {

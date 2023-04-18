@@ -14,7 +14,7 @@
 		<style type="text/css">
 			body {
 				font-family: Helvetica, Arial, sans-serif;
-				font-size: 12px;
+				font-size: 14px;
 				color: #545353;
 			}
 			a img {
@@ -26,12 +26,6 @@
 			}
 			#sitemap tbody tr:nth-child(odd) {
 				background-color: #eee;
-			}
-			#sitemap tbody tr:hover {
-				background-color: #ccc;
-			}
-			#sitemap tbody tr:hover td, #sitemap tbody tr:hover td a {
-				color: #000;
 			}
 			#content {
 				margin: 0 auto;
@@ -55,7 +49,7 @@
 				text-decoration: underline;
 			}
 			td {
-				font-size:11px;
+				font-size:14px;
 				padding: 5px 15px 5px 0;
 				vertical-align: top;
 			}
@@ -65,10 +59,7 @@
 			th {
 				text-align:left;
 				padding-right:30px;
-				font-size:11px;
-			}
-			thead th {
-				border-bottom: 1px solid #000;
+				font-size:14px;
 			}
 		</style>
 	</head>

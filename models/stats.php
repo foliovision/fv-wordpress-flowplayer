@@ -5,6 +5,11 @@ class FV_Player_Stats {
   var $cache_directory = false;
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
@@ -42,8 +47,11 @@ class FV_Player_Stats {
   }
 
   function stats_link() {
-    add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
-    add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
+    global $fv_fp;
+    if ( $fv_fp->_get_option('video_stats_enable') ) {
+      add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
+      add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
+    }
   }
 
   function get_stat_columns() {
@@ -506,6 +514,40 @@ class FV_Player_Stats {
     return $result;
   }
 
+  public function get_valid_dates( $user_id ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    if( $user_id ) {
+      $user_id = intval( $user_id );
+      $user_check =" AND user_id = $user_id";
+    } else {
+      $user_check = '';
+    }
+
+    $dates = array();
+
+    foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+
+      $interval = self::get_interval_from_range( $key );
+
+      $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
+
+      $dates[$key] = array();
+
+      if( !empty($result) ) {
+        $dates[$key]['disabled'] = false;
+      } else {
+        $dates[$key]['disabled'] = true;
+      }
+
+      $dates[$key]['value'] = $value;
+    }
+
+    return $dates;
+  }
+
   public function get_valid_interval( $user_id ) {
     // we need to check every interval for user to check if there is any data
     $intervals = array(
@@ -748,8 +790,11 @@ class FV_Player_Stats {
   }
 
   function users_column( $columns ) {
-    $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
-    $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    global $fv_fp;
+    if ( $fv_fp->_get_option('video_stats_enable') ) {
+      $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
+      $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    }
     return $columns;
   }
 
