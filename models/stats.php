@@ -526,26 +526,29 @@ class FV_Player_Stats {
       $user_check = '';
     }
 
-    $dates = array();
+    $dates_all = array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month' );
+    $years = $this->get_all_years();
+    $dates_all = $dates_all + $years; // merge
+    $dates_valid = array();
 
-    foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+    foreach( $dates_all as $key => $value ) {
 
       $interval = self::get_interval_from_range( $key );
 
       $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
 
-      $dates[$key] = array();
+      $dates_valid[$key] = array();
 
       if( !empty($result) ) {
-        $dates[$key]['disabled'] = false;
+        $dates_valid[$key]['disabled'] = false;
       } else {
-        $dates[$key]['disabled'] = true;
+        $dates_valid[$key]['disabled'] = true;
       }
 
-      $dates[$key]['value'] = $value;
+      $dates_valid[$key]['value'] = $value;
     }
 
-    return $dates;
+    return $dates_valid;
   }
 
   public function get_valid_interval( $user_id ) {
@@ -628,6 +631,11 @@ class FV_Player_Stats {
       $last_year_end = date('Y-12-31', strtotime('-1 year'));
 
       $date_range = "date BETWEEN '$last_year_start' AND '$last_year_end'";
+    } else if( is_numeric($range)) { // specific year like 2021
+      $year_start = $range . '-01-01';
+      $year_end = $range . '-12-31';
+
+      $date_range = "date BETWEEN '$year_start' AND '$year_end'";
     }
 
     return $date_range;
@@ -673,9 +681,32 @@ class FV_Player_Stats {
       $start_day = date('Y-01-01', strtotime('-1 year'));
       $end_day = date('Y-12-31', strtotime('-1 year'));
       $dates = $this->get_days_between_dates( $start_day, $end_day );
+    } else if( is_numeric($range) ) { // get dates for specific year like 2021
+      $start_day = $range . '-01-01';
+      $end_day = $range . '-12-31';
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
     }
 
     return $dates;
+  }
+
+  function get_all_years() {
+    global $wpdb;
+
+    $years = array();
+
+    $oldest_year = (int) $wpdb->get_var("SELECT YEAR(date) FROM {$wpdb->prefix}fv_player_stats ORDER BY id ASC LIMIT 1");
+
+    // add every year from oldest to current, when oldest is 2021 and current is 2025, it will add 2021, 2022, 2023, 2024, 2025
+    for( $i = $oldest_year; $i <= date('Y'); $i++ ) {
+      $j = strval($i);
+      $years[$j] = $j;
+    }
+
+    // reorder years from newest to oldest
+    $years = array_reverse( $years, true );
+
+    return $years;
   }
 
   private function get_days_between_dates( $start_day, $end_day ) {
