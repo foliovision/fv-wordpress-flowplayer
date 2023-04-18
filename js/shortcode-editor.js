@@ -1342,6 +1342,7 @@ jQuery(function() {
             debug_log('player ID after save: '+response.id);
 
             current_player_object = response;
+            current_player_db_id = response.id;
 
             try {
               $(response.videos).each( function(k,v) {
@@ -1453,7 +1454,6 @@ jQuery(function() {
                 if ( is_unsaved ) {
                   copy_player_button_toggle(false);
                   init_saved_player_fields();
-                  current_player_db_id = response.id;
                   is_unsaved = false;
                   //is_draft_changed = false;
                   loading = false;
