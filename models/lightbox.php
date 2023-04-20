@@ -17,6 +17,11 @@ class FV_Player_lightbox {
   }
   
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+    
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
     add_filter('fv_flowplayer_shortcode', array($this, 'shortcode'), 15, 3);

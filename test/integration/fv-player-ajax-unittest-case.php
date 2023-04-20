@@ -3,8 +3,9 @@
 abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
   
   protected $backupGlobals = false;
-  
-  public function setUp() {
+  protected $restore;
+
+  protected function setUp(): void {
     parent::setUp();
     
     global $fv_fp;
@@ -14,7 +15,19 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     remove_action( 'admin_init', '_maybe_update_core' );
     remove_action( 'admin_init', '_maybe_update_plugins' );
     remove_action( 'admin_init', '_maybe_update_themes' );    
-  }  
+  }
+
+  public function _handleAjax( $action ) {
+    add_action(
+      'admin_init',
+      function() {
+        remove_action( 'admin_init', 'send_frame_options_header', 10, 0 );
+      },
+      0
+    );
+
+    parent::_handleAjax( $action );
+  }
   
   public function fix_newlines( $html ) {
     $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"some-test-hash"', $html);
@@ -57,7 +70,7 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     //$fv_fp->_set_conf();
   }
   
-  public function tearDown() {
+  protected function tearDown(): void {
     parent::tearDown();
     
     global $fv_fp;

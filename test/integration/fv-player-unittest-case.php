@@ -3,8 +3,9 @@
 abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
   
   protected $backupGlobals = false;
-  
-  public function setUp() {
+  protected $restore;
+
+  protected function setUp(): void {
     parent::setUp();
     
     global $fv_fp;
@@ -68,7 +69,15 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
 
     $html = preg_replace( '~Are you having issues with version [0-9.]+~', 'Are you having issues with version XYZ', $html);
 
-    
+    /**
+     * Somehow WordPress puts 2 spaces into the <link> tags for CSS:
+     * 
+     * <link rel='stylesheet' id='fv_flowplayer-css'  href='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/css/flowplayer.css?ver=1.2.3' type='text/css' media='all' />
+     * 
+     * So we avoid that here.
+     */
+    $html = preg_replace( "~(<link rel='stylesheet'.*)  ~", '$1 ', $html );
+
     return $html;
   }
 
@@ -90,7 +99,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     //$fv_fp->_set_conf();
   }
   
-  public function tearDown() {
+  protected function tearDown(): void {
     parent::tearDown();
     
     global $fv_fp;

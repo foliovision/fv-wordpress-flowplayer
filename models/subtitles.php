@@ -3,6 +3,11 @@
 class FV_Player_Subtitles {
   
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_filter('fv_player_item', array($this, 'add_subtitles'), 10, 3 );
     add_filter('fv_player_db_video_meta_save', array($this, 'parse_post_metadata'), 10, 3);
   }

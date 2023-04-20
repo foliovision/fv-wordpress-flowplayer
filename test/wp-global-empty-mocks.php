@@ -151,7 +151,7 @@ function site_url( $url = false ) {
   return 'https://site.com/wp/'.$url;
 }
 
-function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer ) {
+function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
   echo "Registering $handle for $src?ver=$ver footer? $in_footer\n";
 }
 
