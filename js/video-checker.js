@@ -5,14 +5,12 @@
 
     var fv_flowplayer_scroll_video_checker = false;
     var checked_media = [];
-    
+
     jQuery(document).ready(function() { fv_flowplayer_scroll_video_checker = true; } );
     jQuery(document).on('scroll', function() { fv_flowplayer_scroll_video_checker = true; } );
 
-    var index = api.video.index ? api.video.index : 0;
-
     // Initial video check on pageload
-    setInterval( function() { 
+    setInterval( function() {
       var iMin = jQuery(window).scrollTop();
       var iMax = iMin + jQuery(window).height();
       var iPlayer = jQuery(root).offset().top;
@@ -20,9 +18,9 @@
       if( !fv_flowplayer_scroll_video_checker ) return;
       // console.log('iPlayer',iPlayer,'iMin',iMin,'iMax',iMax);
       if( iPlayer > iMin && iPlayer < iMax ) {
-        if(typeof checked_media[index] == "undefined" ) {
+        if(typeof checked_media[api.get_video_index()] == "undefined" ) {
           check_media( api, root);
-          checked_media[index] = 1;
+          checked_media[api.get_video_index()] = 1;
         }
       }
 
@@ -31,7 +29,7 @@
 
     // TODO: implement robust solution for another items
     // Another checks for playlist
-    // api.bind('load', function(e,api,video){ 
+    // api.bind('load', function(e,api,video){
     //   index = api.video.index ? api.video.index : 0;
     //   if( api.conf.playlist.length > 0 ) {
     //     if(typeof checked_media[index] == "undefined") {
@@ -94,7 +92,7 @@
           jQuery(event.target).parents('.fv-player-video-checker').length == 0 ) {
           if( jQuery('.is-open:visible').length ) {
             fv_wp_flowplayer_admin_show_notice();
-          };
+          }
         }
       });
     }
@@ -138,11 +136,11 @@
           if( typeof(obj[i].errors) != "undefined" && sErrors ) {
             sResponseMsg = fv_flowplayer_translations.video_issues;
             sResponseClass = 'vid-issues';
-            sCheckerInfo += sErrors;   
+            sCheckerInfo += sErrors;
           }
 
           jQuery('#wpfp_notice_'+hash).find('.video-checker-result').addClass(sResponseClass).html(sResponseMsg);
-          
+
           sCheckerDetails += admin_message_parse_group(obj[i].details);
 
         }
@@ -158,7 +156,7 @@
         return;
       }
 
-    } ).fail(function() { 
+    } ).fail(function() {
       if( /MSIE 9/i.test(navigator.userAgent) ){
         jQuery('#wpfp_notice_'+hash).html('<p>'+fv_flowplayer_translations.no_support_IE9+'</p>');
       } else {
@@ -199,7 +197,7 @@ function fv_wp_flowplayer_admin_show_notice( id ) {
     var is_open = jQuery(this).hasClass('is-open'),
       root = jQuery(this).parents('.flowplayer'),
       api = root.data('flowplayer');
-      
+
     if( jQuery(this).attr('id') == 'wpfp_notice_'+id ) {
       if( is_open ) {
         is_open = false;
@@ -207,20 +205,20 @@ function fv_wp_flowplayer_admin_show_notice( id ) {
         is_open = true;
       }
     }
-    
+
     if( id == null ) {
       is_open = false;
     }
-    
+
     jQuery(this).toggleClass("is-open", is_open );
     jQuery(this).find(".fv-player-video-checker-details").toggle( is_open );
-    
+
     if( is_open ) {
       jQuery('#fv_wp_fp_notice_'+id).find('input').show();
     }
 
     root.toggleClass( 'has-video-checker', is_open );
-    
+
     api.disable( is_open );
   });
 }
@@ -239,7 +237,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
 
   if( comment_words.length < 7 ) {
     jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>'+fv_flowplayer_translations.full_sentence+'</strong>:</p>');
-    jQuery('.fv_flowplayer_submit_error').fadeIn();					
+    jQuery('.fv_flowplayer_submit_error').fadeIn();
     return false;
   }
 

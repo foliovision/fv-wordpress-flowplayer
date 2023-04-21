@@ -11,7 +11,7 @@
     var last_tracked = -1, // store video index to check if video was tracked already
       last_time = 0,
       is_first_progress;
-    
+
     if( !api.conf.fv_stats || !api.conf.fv_stats.enabled && ( !root.data('fv_stats') || root.data('fv_stats') == 'no' ) ) return;
 
     try {
@@ -26,9 +26,9 @@
     api.on('ready finish', function(e,api) { // first play and replay
       api.one('progress', function(e,api) {
         // each video should be only tracked once!
-        if( last_tracked == get_index() ) return;
+        if( last_tracked == api.get_video_index() ) return;
 
-        last_tracked = get_index();
+        last_tracked = api.get_video_index();
 
         $.post( api.conf.fv_stats.url, {
           'blog_id' : api.conf.fv_stats.blog_id,
@@ -85,11 +85,6 @@
 
       last_time = time;
     });
-
-    function get_index() {
-      return api.video.index ? api.video.index : 0;
-    }
-
   });
 
   $(window).on('beforeunload pagehide', function () {

@@ -7,11 +7,11 @@ flowplayer(function (api,root) {
     current_overlay = false;
 
   if( root.data('end_popup_preview') ){
-    jQuery(document).ready( function() {      
+    jQuery(document).ready( function() {
       api.trigger('finish', [ api] );
     });
   }
-  
+
   function overlay_height_check() {
     var count = 0;
     var overlay_height_check = setInterval( function() {
@@ -23,7 +23,7 @@ flowplayer(function (api,root) {
       }
     }, 50 );
   }
-  
+
   function show_overlay() {
     var overlay_data = root.attr('data-overlay');
     if( typeof(overlay_data) !='undefined' && overlay_data.length ) {
@@ -65,7 +65,7 @@ flowplayer(function (api,root) {
       }
     }
   }
-  
+
   api.bind("ready", function () {
     if (current_overlay.length == 1) {
       current_overlay.remove();
@@ -74,13 +74,13 @@ flowplayer(function (api,root) {
     if( !root.data('overlay_show_after') ) {
       show_overlay();
     }
-    
+
   }).bind('progress', function(e,api,current) {
     if (current > root.data('overlay_show_after') ){
       show_overlay();
     }
   }).bind("finish", function (e, api) {
-    if( typeof(api.video.index) == "undefined" || api.video.index+1 == api.conf.playlist.length ) {
+    if( !api.is_playlist() || api.is_last_video() ) {
       show_popup(e.type);
     }
   }).bind("pause", function (e) {
@@ -96,10 +96,10 @@ flowplayer(function (api,root) {
 jQuery(document).on('click', '.fv_fp_close', function() {
   var current_overlay = jQuery(this).parents('.wpfp_custom_ad_content'),
     video = current_overlay.find('video');
-    
+
   current_overlay.fadeOut();
   if( video.length ) video[0].pause();
-  
+
   return false;
 } );
 
