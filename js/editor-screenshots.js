@@ -28,9 +28,7 @@
     }
 
     button.on('click', function() {
-      var current_video_index = api.video.index || 0;
-
-      console.log('FV Player Editor Screenshots: Taking screenshot for' + current_video_index);
+      console.log('FV Player Editor Screenshots: Taking screenshot for' + api.get_video_index());
 
       try {
         button.prop("disabled", true);
@@ -78,9 +76,9 @@
       jQuery.post(fv_player.ajaxurl, data, function(response) {
         if(response.src) {
 
-          console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+current_video_index);
+          console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+ api.get_video_index());
 
-          var splashInput = fv_player_editor.get_field('splash').eq( current_video_index );
+          var splashInput = fv_player_editor.get_field('splash').eq( api.get_video_index() );
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
 
@@ -104,7 +102,7 @@
 
     // Compatibility test
     api.on('ready', function(e,api) {
-      var src = fv_player_editor.get_field('src').eq( api.video.index || 0 ).val(), // get current video src
+      var src = fv_player_editor.get_field('src').eq( api.get_video_index() ).val(), // get current video src
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
@@ -155,13 +153,11 @@
     function reload_video() {
       seek_recovery = api.video.time;
 
-      var index = typeof(api.video.index) != "undefined" ? api.video.index : 0;
-
       api.error = api.loading = false;
       jQuery(root).removeClass("is-error").addClass("is-mouseover");
 
       if( api.conf.playlist.length ) {
-        api.setPlaylist(api.conf.playlist).play(index);
+        api.setPlaylist(api.conf.playlist).play(api.get_video_index());
       } else {
         api.load(api.conf.clip);
       }

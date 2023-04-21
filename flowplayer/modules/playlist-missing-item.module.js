@@ -15,11 +15,11 @@ flowplayer( function(api,root) {
     videoIndex,
     alreadyTried = []; // we need to keep track of which videos we already tried to play
 
-  api.bind("load", function (e, api, video) {
-    videoIndex = video.index;
+  api.bind("load", function (e, api) {
+    videoIndex = api.get_video_index();
   });
 
-  api.bind("error", function (e,api, error) {
+  api.bind("error", function (e, api) {
     setTimeout(function() {
       if( playlist.length > 0 && api.error == true) {
 
@@ -30,7 +30,7 @@ flowplayer( function(api,root) {
           return false;
         }
 
-        videoIndex = api.video.index;
+        videoIndex = api.get_video_index();
 
         alreadyTried.push(videoIndex);
 

@@ -62,7 +62,7 @@ if (!Date.now) {
       if( video.id ) {
         return video.id;
       }
-      
+
       // logged-in users will have position stored within that video
       var out = (
         (typeof(video.sources_original) != "undefined" && typeof(video.sources_original[0]) != "undefined") ?
@@ -394,19 +394,19 @@ if (!Date.now) {
           if ( typeof(playTopPositions[video_id]) == "undefined" ) {
             var stored_top_position = 0;
             if ( api.conf.playlist ) {
-              stored_top_position = api.conf.playlist[api.video.index] && api.conf.playlist[api.video.index].sources[0] && api.conf.playlist[api.video.index].sources[0].top_position ? api.conf.playlist[api.video.index].sources[0].top_position : 0;
+              stored_top_position = api.conf.playlist[api.get_video_index()] && api.conf.playlist[api.get_video_index()].sources[0] && api.conf.playlist[api.get_video_index()].sources[0].top_position ? api.conf.playlist[api.get_video_index()].sources[0].top_position : 0;
             } else {
               stored_top_position = api.conf.clip.sources[0] && api.conf.clip.sources[0].top_position ? api.conf.clip.sources[0].top_position : 0;
             }
             playTopPositions[video_id] = stored_top_position;
-            
+
           // only store the top position if the new one is bigger
           } else if( playTopPositions[video_id] < position) {
             playTopPositions[video_id] = position
           }
 
           if( api.conf.playlist.length > 0 ) {
-            if( player_id ) playlistIndexes[ player_id ] = api.video.index; // player_id => playlist_item
+            if( player_id ) playlistIndexes[ player_id ] = api.get_video_index(); // player_id => playlist_item
           }
 
           // make a call home every +-30 seconds to make sure a browser crash doesn't affect the position save too much
@@ -526,7 +526,7 @@ if (!Date.now) {
           if( api.video && api.video.type != 'video/youtube' ) {
             api.play(item_index);
           }
-          
+
           item_changed = true;
 
           // playlist-start-position.module.js should not interfere
@@ -560,9 +560,9 @@ if (!Date.now) {
       item_changed = false;
       api.one('ready', restorePlaylistItem);
     });
-  
+
     api.one('ready', restorePlaylistItem);
-  
+
     jQuery(".fp-ui", root).on('click', function() {
       restorePlaylistItem();
     });
@@ -580,7 +580,7 @@ if (!Date.now) {
         position -= api.get_custom_start(video);
         if( position < 0 ) position = 0;
       }
-      
+
       var duration = video.duration;
 
       // Use the FV Player Pro method for custom duration
@@ -606,7 +606,7 @@ if (!Date.now) {
       var is_playlist = api.conf.playlist.length > 0,
         playlist = is_playlist ? api.conf.playlist : [ api.conf.clip ],
         playlist_external = jQuery('[rel='+jQuery(root).attr('id')+']');
-      
+
       for( var i in playlist ) {
         if (!playlist.hasOwnProperty(i)) continue;
 
@@ -650,13 +650,13 @@ if (!Date.now) {
           }
         }
       }
-      
+
     }
 
     // store saw after finish
     api.bind('finish', function (e, api) {
       if( api.conf.playlist.length ) {
-        api.conf.playlist[api.video.index].sources[0].saw = true;
+        api.conf.playlist[api.get_video_index()].sources[0].saw = true;
       } else {
         api.conf.clip.sources[0].saw = true;
       }
