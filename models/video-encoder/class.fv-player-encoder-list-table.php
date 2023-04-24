@@ -95,15 +95,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     if ( ! empty( $_REQUEST['order'] ) )
       echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
 
-    if (isset($_GET['id'])) {
-      $input_id = $_GET['id'];
-    } else {
-      $input_id = null;
-    }
     ?>
     <p class="search-box">
-      <label class="screen-reader-text" for="<?php echo $input_id ?>">Search jobs:</label>
-      <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>" />
+      <label class="screen-reader-text" for="fv_player_encoding_jobs_search">Search jobs:</label>
+      <input type="search" id="fv_player_encoding_jobs_search" name="s" value="<?php _admin_search_query(); ?>" />
       <?php submit_button( "Search jobs", 'button', false, false, array('ID' => 'search-submit') ); ?><br/>
     </p>
     <?php
