@@ -275,7 +275,7 @@ class flowplayer_frontend extends flowplayer
 
     // remove all playlist items but the one we need if we're previewing
     // and only editing a single video
-    if( isset($args['current_video_to_edit']) && $args['current_video_to_edit'] > -1 ) {
+    if ( $this->get_current_video_to_edit() > - 1 ) {
       $aPlaylistItems = array( $aPlaylistItems[ $args['current_video_to_edit'] ] );
 
       // Pick title and splash from the previewed video
@@ -961,6 +961,20 @@ JS;
     }
 
     return $attributes;
+  }
+
+
+  /**
+   * Get the index of the video in the FV Player Editor preview
+   *
+   * @return int Zero-based index of the video in playlist or -1 if it's the playlist view
+   */
+  function get_current_video_to_edit() {
+    if ( isset( $this->aCurArgs['current_video_to_edit'] ) && $this->aCurArgs['current_video_to_edit'] > -1 ) {
+      return $this->aCurArgs['current_video_to_edit'];
+    }
+
+    return -1;
   }
 
 
