@@ -236,6 +236,7 @@ jQuery(function() {
      * Returns the number of videos in a playlist for the current player.
      */
     function get_playlist_items_count() {
+      // TODO: Could we just use current_player_object.videos.length ? Would that work with editing?
       return jQuery('#fv-player-editor-playlist .fv-player-editor-playlist-item').length;
     }
 
@@ -2541,7 +2542,7 @@ jQuery(function() {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
             playerID :  result[1],
-            current_video_to_edit: current_video_to_edit
+            current_video_to_edit: get_playlist_items_count() > 1 ? current_video_to_edit : -1,
           }, function(response) {
             var vids = response['videos'];
 
@@ -3658,7 +3659,7 @@ jQuery(function() {
 
       tabs_refresh();
 
-      if( previous_index != current_video_to_edit ) {
+      if( previous_index != current_video_to_edit && get_playlist_items_count() > 1 ) {
         reload_preview( current_video_to_edit );
       }
 
@@ -3778,7 +3779,7 @@ jQuery(function() {
         action : 'fv_player_db_load',
         nonce : fv_player_editor_conf.db_load_nonce,
         playerID :  current_player_db_id,
-        current_video_to_edit: video_index,
+        current_video_to_edit: get_playlist_items_count() > 1 ? video_index : -1,
       }, function(response) {
         if ( response.html ) {
           // auto-refresh preview
@@ -3832,7 +3833,7 @@ jQuery(function() {
 
     function set_control_fields( ajax_data ) {
       // add current video that we're editing into the save data
-      ajax_data['current_video_to_edit'] = current_video_to_edit;
+      ajax_data['current_video_to_edit'] = get_playlist_items_count() > 1 ? current_video_to_edit : -1;
 
       if( current_post_id ) {
         ajax_data['current_post_id'] = current_post_id;
