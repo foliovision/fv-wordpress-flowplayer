@@ -104,7 +104,15 @@
 
     // Compatibility test
     api.on('ready', function(e,api) {
-      var src = fv_player_editor.get_field('src').eq( api.video.index || 0 ).val(), // get current video src
+      // get index of actual video and not video ad
+      if( api.conf.playlist.length > 1 ) {
+        var current_index = api.video.index || 0 ;
+        if( typeof api.conf.playlist[current_index - 1 ] != 'undefined' && api.conf.playlist[current_index - 1 ].click ) {
+          current_index = current_index - 1;
+        }
+      }
+
+      var src = fv_player_editor.get_field('src').eq( current_index ).val(), // get current video src
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
@@ -115,6 +123,7 @@
           }
         });
 
+        // do not show for video ads
         if( api.video.click ) {
           should_show = false;
         }
