@@ -283,7 +283,7 @@ a #add-format, a #add-rtmp {
 	clear: both;
 }
 
-#fv-player-shortcode-editor label {
+#fv-player-shortcode-editor-right label {
   color: black;
   font-size: 13px;
 }

@@ -852,13 +852,6 @@ jQuery(function() {
         return false;
       });
 
-      $doc.on('input','.fv_wp_flowplayer_field_width', function(e) {
-        $('.fv_wp_flowplayer_field_width').val(e.target.value);
-      })
-      $doc.on('input','.fv_wp_flowplayer_field_height', function(e) {
-        $('.fv_wp_flowplayer_field_height').val(e.target.value);
-      })
-
       /*
       * Show edit input
       * keywords: edit playlist items edit playlist items
@@ -1091,15 +1084,7 @@ jQuery(function() {
           target_element.removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
-            if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
-              $('.fv_wp_flowplayer_field_width').val(attachment.width);
-            }
-            if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
-              $('.fv_wp_flowplayer_field_height').val(attachment.height);
-            }
-            if( typeof(attachment.fileLength) != "undefined" ) {
-              file_info_show( { duration: attachment.fileLength } );
-            }
+            // TODO: Fill video title
 
           } else if( attachment.type == 'image' ) {
             if( attachment.id ) {
@@ -1928,8 +1913,6 @@ jQuery(function() {
         instance_fp_wysiwyg = FCKeditorAPI.GetInstance('content');
       }
 
-      file_info_hide();
-
       reset_preview();
 
       jQuery('.fv-player-tab-video-files [data-playlist-item]').each( function(i,e) {
@@ -2699,21 +2682,6 @@ jQuery(function() {
               fix_save_btn_text();
             }
 
-            // hotfix:
-            // make sure the width and height inputs are in sync and have the correct value,
-            // as we have duplicate fields for them in 2 places (video tab and options tab)
-            // and if there is only a single video, the video tab takes precedence,
-            // otherwise it's the options tab
-            if ( $('.fv-player-tab-playlist #fv-player-editor-playlist .ui-sortable-handle').length > 1) {
-              // multiple videos playlist, options tab values must be filled-in
-              $('.fv-player-tab-options .fv_wp_flowplayer_field_width').val(response.width);
-              $('.fv-player-tab-options .fv_wp_flowplayer_field_height').val(response.height)
-            } else {
-              // single video playlist, video tab values must be filled-in
-              $('.fv-player-tab-video-files .fv_wp_flowplayer_field_width').val(response.width);
-              $('.fv-player-tab-video-files .fv_wp_flowplayer_field_height').val(response.height);
-            }
-
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
           }).fail(function(xhr) {
@@ -3232,35 +3200,6 @@ jQuery(function() {
 
     function fv_wp_flowplayer_dialog_resize() {
       debug_log('Deprecated fv_wp_flowplayer_dialog_resize() call.');
-    }
-
-    function file_info_hide() {
-      jQuery('#fv_wp_flowplayer_file_info').hide();
-      jQuery('#fv_wp_flowplayer_file_info td').html('');
-    }
-
-    // TODO: Is this needed?
-    function file_info_show( args ) {
-
-      var html = '';
-      if( args.duration ) {
-        var duration = args.duration;
-        if( !isNaN(duration) ) {
-          duration = fv_player_time_hms(duration);
-        }
-        html += 'Duration: '+duration;
-      }
-      if( args.error ) {
-        html += 'Error: '+args.error;
-      }
-
-      if( html ) {
-        $('#fv_wp_flowplayer_file_info').show();
-        $('#fv_wp_flowplayer_file_info td').html(html);
-      } else {
-        file_info_hide();
-      }
-
     }
 
     function get_pretty_aspect_ratio( video ) {
