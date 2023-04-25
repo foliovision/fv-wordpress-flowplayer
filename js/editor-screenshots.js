@@ -115,6 +115,10 @@
           }
         });
 
+        if( api.video.click ) {
+          should_show = false;
+        }
+
         if( should_show ) {
           button.appendTo('#fv-player-shortcode-editor-preview');
           try {
