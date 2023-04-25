@@ -68,7 +68,14 @@
         }
 
         // Not in viewport and the player loading, or it is the audible player
-        if ( !fv_player_is_in_viewport($flowplayerDiv[0]) && ( api.playing || api.loading || flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ) ) {
+        if (
+          !fv_player_is_in_viewport($flowplayerDiv[0]) && (
+            api.playing ||
+            api.loading ||
+            flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ||
+            typeof root.fv_player_vast == 'object' && typeof root.fv_player_vast.adsManager_ == 'object' && typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' && root.fv_player_vast.adsManager_.getRemainingTime() > 0
+          )
+        ) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) { // Sticky already added
             return false;
           } else {

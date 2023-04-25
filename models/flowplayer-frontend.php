@@ -424,17 +424,8 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] = apply_filters( 'fv_flowplayer_amp', $this->ret['html'], $this );
           
           return $this->ret;
-        }    
-    
-        foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-          //if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-          
-          if( !$this->_get_option('engine') && stripos( $media_item, '.m4v' ) !== false ) {
-            $this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
-          }
-          
         }
-        
+
         $popup = '';
         
         $aSubtitles = $this->get_subtitles();
