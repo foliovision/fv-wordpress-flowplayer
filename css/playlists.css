@@ -68,7 +68,7 @@
 	border-right: 1px solid #fff;
 }
 
-.flowplayer.is-tiny .fv-fp-prevbtn, .flowplayer.is-tiny .fv-fp-nextbtn {
+.flowplayer.is-tiny .fp-controls .fv-fp-prevbtn, .flowplayer.is-tiny .fp-controls .fv-fp-nextbtn {
 	display: none;
 }
 
