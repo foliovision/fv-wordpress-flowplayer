@@ -105,12 +105,22 @@
     // Compatibility test
     api.on('ready', function(e,api) {
       // get index of actual video and not video ad
+      var current_index = -1;
+
       if( api.conf.playlist.length > 1 ) {
-        var current_index = api.video.index || 0 ;
-        if( typeof api.conf.playlist[current_index - 1 ] != 'undefined' && api.conf.playlist[current_index - 1 ].click ) {
-          current_index = current_index - 1;
-        }
+        // iterate over all videos in playlist
+        api.conf.playlist.forEach(function(item, index) {
+          if( typeof item.click == 'undefined' ) {
+            if( current_index == -1 ) {
+              current_index = 0;
+            } else {
+              current_index++;
+            }
+          }
+        });
       }
+
+      if( current_index == -1 ) current_index = 0; // only one video
 
       var src = fv_player_editor.get_field('src').eq( current_index ).val(), // get current video src
         should_show = true;
