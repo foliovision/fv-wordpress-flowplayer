@@ -497,7 +497,7 @@ SCRIPT;
   }
 
   function lightbox_playlist_style($aArgs) {
-    if (isset($aArgs['lightbox'])) { // we force the slider playlist style as that' the only one where the lightbox works properly with the sizing right now
+    if ( isset( $aArgs['lightbox'] ) && $aArgs['lightbox'] ) { // we force the slider playlist style as that' the only one where the lightbox works properly with the sizing right now
       $aArgs['liststyle'] = 'slider';
     }
     return $aArgs;
