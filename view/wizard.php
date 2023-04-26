@@ -863,6 +863,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 array(
                   'label'        => __('Playlist Style', 'fv-wordpress-flowplayer'),
                   'name'         => 'playlist',
+                  'dependencies' => array( 'lightbox' => false ),
                   'options'      => array(
                                       array( '',           'Default' ),
                                       array( 'horizontal', 'Horizontal' ),
