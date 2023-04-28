@@ -396,7 +396,7 @@ SCRIPT;
       }
 
       // Load inline JS only, but will this work with WordPress 5.7?
-      wp_register_script( 'fv_player_lightbox', '' );
+      wp_register_script( 'fv_player_lightbox', '', array( 'jquery') );
       wp_enqueue_script( 'fv_player_lightbox' );
       wp_add_inline_script( 'fv_player_lightbox', $script );
 
@@ -473,7 +473,7 @@ SCRIPT;
   function html_lightbox_images_callback($matches) {
     if( stripos($matches[1],'data-fancybox') ) return $matches[0];
     
-    if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
+    if (!preg_match('/href=[\'"][^\'"]*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
     $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
