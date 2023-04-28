@@ -281,6 +281,9 @@ class flowplayer_frontend extends flowplayer
       // Pick title and splash from the previewed video
       $this->aCurArgs['title'] = $aPlaylistItems[0]['fv_title'];
       $splash_img = $aPlaylistItems[0]['splash'];
+
+      // Make sure it's not using a playlist style
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
     // Load playlists.css later, if it's used.

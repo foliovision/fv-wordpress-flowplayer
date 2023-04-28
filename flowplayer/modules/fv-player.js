@@ -576,7 +576,7 @@ function fv_player_load( forced_el ) {
   } );
   
   jQuery('.fv-playlist-slider-wrapper').each( function() {
-    var items = jQuery(this).find('a');
+    var items = jQuery(this).find('a:visible');
     jQuery(this).find('.fp-playlist-external').css( 'width', items.outerWidth() * items.length );
   });
   

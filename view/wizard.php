@@ -855,10 +855,28 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   )
                 ),*/
                 array(
-                  'label' => __('Playlist auto advance', 'fv-wordpress-flowplayer'),
+                  'label' => __('Playlist Auto Advance', 'fv-wordpress-flowplayer'),
                   'name' => 'playlist_advance',
                   'default' => !$fv_fp->_get_option('playlist_advance'),
                   'scope' => 'playlist'
+                ),
+                array(
+                  'label'        => __('Playlist Style', 'fv-wordpress-flowplayer'),
+                  'name'         => 'playlist',
+                  'dependencies' => array( 'lightbox' => false ),
+                  'options'      => array(
+                                      array( '',           'Default' ),
+                                      array( 'horizontal', 'Horizontal' ),
+                                      array( 'tabs',       'Tabs' ),
+                                      array( 'prevnext',   'Prev/Next' ),
+                                      array( 'vertical',   'Vertical' ),
+                                      array( 'slider',     'Slider' ),
+                                      array( 'season',     'Season' ),
+                                      array( 'polaroid',   'Polaroid' ),
+                                      array( 'text',       'Text' )
+                  ),
+                  'scope'        => 'playlist',
+                  'type'         => 'select',
                 ),
                 array(
                   'label' => __('Sticky video', 'fv-wordpress-flowplayer'),
@@ -910,20 +928,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           fv_player_editor_input_group( $player_options );
           ?>
 
-          <table width="100%">            
-            <?php fv_player_shortcode_row( array( 'label' => 'Playlist Style', 'name' => 'playlist', 'dropdown' => array(
-                  array('','Default'),
-                  array('horizontal','Horizontal'),
-                  array('tabs','Tabs'),
-                  array('prevnext','Prev/Next'),
-                  array('vertical','Vertical'),
-                  array('slider','Slider'),
-                  array('season','Season'),
-                  array('polaroid','Polaroid'),
-                  array('text','Text')
-                ), 'class' => 'hide-if-singular' ) );
-                ?>
-            
+          <table width="100%">
             <tr id="fv_wp_flowplayer_field_share_custom" style="display: none">
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_lightbox" class="alignright">Sharing Properties</label></th>
               <td class="field">    
