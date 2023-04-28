@@ -88,7 +88,16 @@ HTML;
 <a data-fancybox='gallery' data-options='{"touch":false}' id="fv_flowplayer_115a93a5af442650797905ae63ef569b_lightbox_starter" title='Video 1' class="fv-player-lightbox-link" href="#" data-src="#wpfp_115a93a5af442650797905ae63ef569b_container">Video 1</a>
 HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
+
+
+    // Avoid more CSS files which WordPress started to include as the block themes become the new default
+    add_action(
+      'wp_footer',
+      function() {
+        // inline style with "Core styles: block-supports"
+        wp_dequeue_style( 'core-block-supports' );
+      }
+    );
     
     ob_start();
     do_action('wp_footer');

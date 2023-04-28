@@ -8,8 +8,8 @@
     root = jQuery(root);
     var button = jQuery('<input type="button" value="Make new splash screen" class="button" id="fv-splash-screen-button" />'),
       spinner =jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner">&nbsp;</div>'),
-      title ='';
-
+      title ='',
+      actual_index;
     // where to seek when trying to setup the crossOrigin attribute for video
     var seek_recovery = false;
 
@@ -28,9 +28,7 @@
     }
 
     button.on('click', function() {
-      var current_video_index = api.video.index || 0;
-
-      console.log('FV Player Editor Screenshots: Taking screenshot for' + current_video_index);
+      console.log('FV Player Editor Screenshots: Taking screenshot for' + actual_index);
 
       try {
         button.prop("disabled", true);
@@ -78,9 +76,9 @@
       jQuery.post(fv_player.ajaxurl, data, function(response) {
         if(response.src) {
 
-          console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+current_video_index);
+          console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+actual_index);
 
-          var splashInput = fv_player_editor.get_field('splash').eq( current_video_index );
+          var splashInput = fv_player_editor.get_field('splash').eq( actual_index );
           splashInput.val(response.src);
           splashInput.css('background-color','#6ef442');
 
@@ -104,25 +102,30 @@
 
     // Compatibility test
     api.on('ready', function(e,api) {
-      // get index of actual video and not video ad
-      var current_index = -1;
 
-      if( api.conf.playlist.length > 1 ) {
-        // iterate over all videos in playlist
-        api.conf.playlist.forEach(function(item, index) {
-          if( typeof item.click == 'undefined' ) {
-            if( current_index == -1 ) {
-              current_index = 0;
-            } else {
-              current_index++;
-            }
+      var ads_before = 0;
+
+      actual_index = parseInt(fv_player_editor.get_current_video_index());
+
+      if( api.conf.playlist.length > 0 ) {
+        for ( var i in api.conf.playlist ) {
+          // we need to check for ads before actual video
+          if( typeof api.conf.playlist[i].click != 'undefined' ) {
+            ads_before++;
           }
-        });
+
+          // stop if we're at the current video
+          if(i == api.video.index) {
+            break;
+          }
+        }
+
+        actual_index = api.video.index - ads_before;
       }
 
-      if( current_index == -1 ) current_index = 0; // only one video
+      console.log('FV Player Editor Screenshots: Video index: '+ actual_index);
 
-      var src = fv_player_editor.get_field('src').eq( current_index ).val(), // get current video src
+      var src = fv_player_editor.get_field('src').eq( actual_index ).val(), // get current video src
         should_show = true;
 
       if ( typeof src != 'undefined' ) {
@@ -134,7 +137,7 @@
         });
 
         // do not show for video ads
-        if( api.video.click ) {
+        if( typeof api.video.click != 'undefined' ) {
           should_show = false;
         }
 
