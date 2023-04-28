@@ -612,7 +612,9 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( !$this->_get_option('allowfullscreen') || isset($this->aCurArgs['fullscreen']) && $this->aCurArgs['fullscreen'] == 'false' ) {
-          $attributes['data-fullscreen'] = 'false';
+          if ( ! in_array( $this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+            $attributes['data-fullscreen'] = 'false';
+          }
         }
 
         if( !$bIsAudio ) {
