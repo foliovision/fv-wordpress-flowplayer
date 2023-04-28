@@ -1,10 +1,12 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
+
+  var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
+    playlist_with_fullscreen =  playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid')
+
   if( flowplayer.conf.wpadmin || jQuery(root).hasClass('is-audio') ) return;
   
-  var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
-    playlist_with_fullscreen =  playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid'),
-    fsforce = root.data('fsforce') == true; // used for players which load using Ajax after click and then they need fullscreen
+  var fsforce = root.data('fsforce') == true; // used for players which load using Ajax after click and then they need fullscreen
 
   // Fullscreen or forcing of fullscreen might be disabled for this player
   if( root.data('fullscreen') == false || root.data('fsforce') == false ) {
