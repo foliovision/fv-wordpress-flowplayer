@@ -359,6 +359,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.35.7212 - 2023/04/26 =
+
+* AWS SDK update - PHP 7.3 is now required for the DigitalOcean Spaces/AWS S3 browser
+* Bugfix - Avoid PHP fatal errors if plugin PHP files are opened directly
+* Bugfix - Fix audio-only playlist detection
+* Bugfix - Sticky player behavior when VAST ad is playing
+* Security - prevent XSS for logged in editors
+
 = 7.5.32.7212 - 2023/03/31 =
 
 * Tested up to WordPress 6.2. Note that the FV Player Editor is not available in the Block Themes Site Editor and you have to put in the shortcode by hand.
