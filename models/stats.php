@@ -341,11 +341,27 @@ class FV_Player_Stats {
   public function top_ten_videos_by_watch_time( $interval, $user_check ) {
     global $wpdb;
 
+    $valid_interval = $this->check_watch_time_in_interval( $interval, $user_check );
+
+    if( !$valid_interval ) {
+      return false;
+    }
+
     $excluded_posts = $this->get_posts_to_exclude();
 
     $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10");
 
     return $results;
+  }
+
+  public function check_watch_time_in_interval( $interval, $user_check ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check AND seconds > 0 LIMIT 1");
+
+    return !empty($results);
   }
 
   public function get_posts_to_exclude() {
@@ -391,11 +407,6 @@ class FV_Player_Stats {
       $results = $wpdb->get_results( "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
     } else {
       $results = $wpdb->get_results( "SELECT date, user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
-    }
-
-    if( isset($_GET['martinv']) ) {
-      var_dump ( 'debug get_top_user_stats', $wpdb->last_query );
-      die();
     }
 
     if( !empty($results) ) {
