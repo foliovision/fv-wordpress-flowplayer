@@ -473,7 +473,7 @@ SCRIPT;
   function html_lightbox_images_callback($matches) {
     if( stripos($matches[1],'data-fancybox') ) return $matches[0];
     
-    if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
+    if (!preg_match('/href=[\'"][^\'"]*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
     $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
