@@ -542,11 +542,22 @@ class FV_Player_Stats {
     $dates_all = $dates_all + $years; // merge
     $dates_valid = array();
 
+    $this_year = (int) date( 'Y' );
+    $last_year = $this_year - 1;
+
     foreach( $dates_all as $key => $value ) {
 
       $interval = self::get_interval_from_range( $key );
 
       $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
+
+      if( $key == $this_year) {
+        $key = 'this_year';
+        $value = 'This Year';
+      } else if( $key == $last_year ) {
+        $key = 'last_year';
+        $value = 'Last Year';
+      }
 
       $dates_valid[$key] = array();
 
