@@ -348,7 +348,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
       $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
       }
-      
+
       $fv_fp->_set_option('video_model_db_updated', '7.9.3');
     }
   }
@@ -996,6 +996,15 @@ CREATE TABLE " . self::$db_table_name . " (
           $meta_data[] = array(
             'meta_key' => 'auto_caption',
             'meta_value' => 1,
+          );
+        }
+
+        if( !empty($video_data['synopsis']) && !$this->getMetaValue( 'synopsis', true ) ) {
+          $synopsis = $video_data['synopsis'];
+
+          $meta_data[] = array(
+            'meta_key' => 'synopsis',
+            'meta_value' => $synopsis
           );
         }
 
