@@ -35,13 +35,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     parent::setUp();
   }
 
-  // this AJAX unit tests fails for unknown reasons, with or without using the --group ajax argument
-  // ... it's been disabled for now
-  public function testStub() {
-    $this->assertFalse( false );
-  }
-
-  public function testAdminAjaxSave() {
+  public function testMediaBrowserS3() {
     global $fv_fp;
 
     $fv_fp->conf;
