@@ -142,6 +142,9 @@
         }
 
         if( should_show ) {
+          // just in case delete all previous buttons
+          jQuery('#fv-splash-screen-button').remove();
+
           button.appendTo('#fv-player-shortcode-editor-preview');
           try {
             takeScreenshot();
