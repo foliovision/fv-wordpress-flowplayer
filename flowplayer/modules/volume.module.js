@@ -1,11 +1,5 @@
 /*
- *  Volume control enhancements
- *  
- *  Dragging the volume down to zero mutes the video and shows the un-mute icon.
- *  What this code does is it remembers the last volume before you finished dragging
- *  the volume control and then clicking the un-mute icon restores back to that volume
- * 
- *  Also show overlay notice when the sound is muted at video start - mostly by autoplay
+ *  Show overlay notice when the sound is muted at video start - mostly by autoplay
  */
 flowplayer(function(api, root) {
   root = jQuery(root);

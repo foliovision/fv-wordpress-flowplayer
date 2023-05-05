@@ -341,11 +341,27 @@ class FV_Player_Stats {
   public function top_ten_videos_by_watch_time( $interval, $user_check ) {
     global $wpdb;
 
+    $valid_interval = $this->check_watch_time_in_interval( $interval, $user_check );
+
+    if( !$valid_interval ) {
+      return false;
+    }
+
     $excluded_posts = $this->get_posts_to_exclude();
 
     $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10");
 
     return $results;
+  }
+
+  public function check_watch_time_in_interval( $interval, $user_check ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check AND seconds > 0 LIMIT 1");
+
+    return !empty($results);
   }
 
   public function get_posts_to_exclude() {
@@ -391,11 +407,6 @@ class FV_Player_Stats {
       $results = $wpdb->get_results( "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
     } else {
       $results = $wpdb->get_results( "SELECT date, user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
-    }
-
-    if( isset($_GET['martinv']) ) {
-      var_dump ( 'debug get_top_user_stats', $wpdb->last_query );
-      die();
     }
 
     if( !empty($results) ) {
@@ -531,11 +542,22 @@ class FV_Player_Stats {
     $dates_all = $dates_all + $years; // merge
     $dates_valid = array();
 
+    $this_year = (int) date( 'Y' );
+    $last_year = $this_year - 1;
+
     foreach( $dates_all as $key => $value ) {
 
       $interval = self::get_interval_from_range( $key );
 
       $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
+
+      if( $key == $this_year) {
+        $key = 'this_year';
+        $value = 'This Year';
+      } else if( $key == $last_year ) {
+        $key = 'last_year';
+        $value = 'Last Year';
+      }
 
       $dates_valid[$key] = array();
 

@@ -1352,7 +1352,8 @@ jQuery(function() {
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                   title_field = get_field( 'title', video_tab ),
                   auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
+                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k ),
+                  synopsis = get_playlist_video_meta_value('synopsis', k);
 
                 if( get_field('auto_splash', video_tab ).val() == '0' ) {
                   auto_splash = false;
@@ -1368,6 +1369,10 @@ jQuery(function() {
                   if( v.splash_attachment_id && !splash_attachment_id_field.val() ) {
                     splash_attachment_id_field.val( v.splash_attachment_id )
                   }
+                }
+
+                if( synopsis && !get_field('synopsis', video_tab ).val() ) {
+                  get_field('synopsis', video_tab ).val( synopsis );
                 }
 
                 if( auto_splash ) {
