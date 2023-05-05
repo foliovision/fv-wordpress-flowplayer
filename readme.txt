@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.36.7212 - 2023/05/03 =
+
+* Bugfix - DigitalOcean Spaces/AWS S3 browser broken after AWS SDK update, fixing tests too
+
 = 7.5.35.7212 - 2023/04/26 =
 
 * AWS SDK update - PHP 7.3 is now required for the DigitalOcean Spaces/AWS S3 browser

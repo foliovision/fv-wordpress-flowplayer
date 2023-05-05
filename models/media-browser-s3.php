@@ -211,5 +211,3 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   }
 
 }
-
-new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
