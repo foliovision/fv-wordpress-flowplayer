@@ -98,6 +98,8 @@ if( is_admin() ) {
  
   if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
+
+    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
 
