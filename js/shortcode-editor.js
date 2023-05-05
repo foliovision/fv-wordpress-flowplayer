@@ -2098,14 +2098,15 @@ jQuery(function() {
                       data['video_meta'][ k ][save_index] = [];
                     }
 
-                    let lang = $this.closest( '.components-base-control__field' ).find( '[name=fv_wp_flowplayer_field_' + k + '_lang]' );
+                    let parent = $this.closest( '.components-base-control__field' ),
+                      lang = parent.find( '[name=fv_wp_flowplayer_field_' + k + '_lang]' );
 
                     // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
                     if ( $this[0].nodeName == 'INPUT') {
                       data['video_meta'][ k ][save_index].push({
                         code : lang.val(),
                         file : $this.val(),
-                        id: $this.parent().data('id_videometa')
+                        id: parent.data('id_videometa')
                       });
                     }
                   }
