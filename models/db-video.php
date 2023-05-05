@@ -812,19 +812,8 @@ CREATE TABLE " . self::$db_table_name . " (
      */
     $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
-
-    // Meta fields which are not in editor and must be retained
     $last_error = $this->getMetaValue( 'error', true );
     $last_error_count = $this->getMetaValue( 'error_count', true );
-
-    $meta_to_preserve = array(
-      'stats_play' => false
-    );
-
-    // Meta fields which are not in editor and must be retained
-    foreach( $meta_to_preserve AS $meta_key => $meta_value ) {
-      $meta_to_preserve[ $meta_key ] = $this->getMetaValue( $meta_key, true );
-    }
 
     // Check video duration, or even splash image and title if it was not checked previously
     // TODO: What if the video source has changed?
@@ -1031,37 +1020,6 @@ CREATE TABLE " . self::$db_table_name . " (
         'meta_value' => $video_url,
       );
 
-    // Meta fields which are not in editor and must be retained
-    } else {
-      $meta_data[] = array(
-        'meta_key' => 'last_video_meta_check_src',
-        'meta_value' => $video_url,
-      );
-
-      if( $last_error ) {
-        $meta_data[] = array(
-          'meta_key' => 'error',
-          'meta_value' => $last_error,
-        );
-      }
-
-      if( $last_error_count ) {
-        $meta_data[] = array(
-          'meta_key' => 'error_count',
-          'meta_value' => $last_error_count,
-        );
-      }
-
-    }
-
-    // Meta fields which are not in editor and must be retained
-    foreach( $meta_to_preserve AS $meta_key => $meta_value ) {
-      if( $meta_value ) {
-        $meta_data[] = array(
-          'meta_key' => $meta_key,
-          'meta_value' => $meta_value,
-        );
-      }
     }
 
     /*
