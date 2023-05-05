@@ -1020,26 +1020,6 @@ CREATE TABLE " . self::$db_table_name . " (
         'meta_value' => $video_url,
       );
 
-    // Meta fields which are not in editor and must be retained
-    } else {
-      $meta_data[] = array(
-        'meta_key' => 'last_video_meta_check_src',
-        'meta_value' => $video_url,
-      );
-
-      if( $last_error ) {
-        $meta_data[] = array(
-          'meta_key' => 'error',
-          'meta_value' => $last_error,
-        );
-      }
-
-      if( $last_error_count ) {
-        $meta_data[] = array(
-          'meta_key' => 'error_count',
-          'meta_value' => $last_error_count,
-        );
-      }
     }
 
     /*
