@@ -430,7 +430,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       $tab.remove();
     }
 
-    return;
+    return $tab;
   }
 
   if (!$tab.length) {
