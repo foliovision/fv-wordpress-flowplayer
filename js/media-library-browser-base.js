@@ -416,8 +416,15 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
 
   // Bail if it's not the Media Library for video src and it's Vimeo
   // Amazon S3 should be allowed
-  // TODO: Coconut, Bunny Stream, PeerTube
-  if ( 'fv_flowplayer_vimeo_browser_media_tab' === tabId && 'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name')   ) {
+  if (
+    [
+      'fv_player_bunny_stream_browser_media_tab',
+      'fv_player_coconut_browser_media_tab',
+      'fv_flowplayer_peertube_private_browser_media_tab',
+      'fv_flowplayer_vimeo_browser_media_tab',
+    ].indexOf( tabId ) > -1 &&
+    'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name')
+  ) {
 
     if ( $tab.length ) {
       $tab.remove();
