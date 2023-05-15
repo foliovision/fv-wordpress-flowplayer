@@ -572,6 +572,168 @@ function fv_player_splashcreen_action() {
 
 
 
+function fv_player_editor_subtitle_fields() {
+  $subtitle_fields = apply_filters('fv_player_editor_subtitle_fields', array(
+    'subtitles' => array(
+      'items' => array(
+        array(
+          'label' => __('Subtitles', 'fv-wordpress-flowplayer'),
+          'label_signular' => __('Subtitle', 'fv-wordpress-flowplayer'),
+          'name' => 'subtitles',
+          'browser' => true,
+          'language' => true,
+          'type' => 'text',
+          'visible'     => true,
+          'video_meta'  => true,
+        )
+      ),
+      'sort' => false
+    )
+  ) );
+
+  return $subtitle_fields;
+}
+
+
+
+
+function fv_player_editor_video_fields() {
+  $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
+
+  $video_fields = apply_filters('fv_player_editor_video_fields', array(
+    'video' => array(
+      'items' => array(
+        array(
+          'label' => __('Video Link', 'fv-wordpress-flowplayer'),
+          'name' => 'src',
+          'browser' => true,
+          'type' => 'text',
+          'visible' => true
+        ),
+        array(
+          'name' => 'video_info',
+          'type' => 'notice_info'
+        ),
+        array(
+          'name' => 'auto_splash',
+          'type' => 'hidden',
+        ),
+        array(
+          'name' => 'auto_caption',
+          'type' => 'hidden',
+        ),
+        array(
+          'name' => 'encoding_job_id',
+          'type' => 'hidden'
+        ),
+        array(
+          'label' => __('Live Stream', 'fv-wordpress-flowplayer'),
+          'name' => 'live',
+          'children' => array(
+            array(
+              'label' => __('DVR Stream', 'fv-wordpress-flowplayer'),
+              'name' => 'dvr',
+              'visible' => true
+            ),
+          ),
+        ),
+        array(
+          'label' => __('Audio Stream', 'fv-wordpress-flowplayer'),
+          'name' => 'audio',
+        ),
+        array(
+          'label' => __('Advanced Settings', 'fv-wordpress-flowplayer'),
+          'name' => 'toggle_advanced_settings',
+          'visible' => true,
+          'children' => array(
+            array(
+              'label' => __('Mobile Video', 'fv-wordpress-flowplayer'),
+              'name' => 'mobile',
+              'browser' => true,
+              'type' => 'text',
+              'visible' => isset($fv_flowplayer_conf["interface"]["mobile"]) && $fv_flowplayer_conf["interface"]["mobile"] == 'true',
+            ),                      
+            array(
+              'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
+              'name' => 'src1',
+              'browser' => true,
+              'type' => 'text',
+              'visible' => true
+            ),
+            array(
+              'label' => __('Alternative Format 2', 'fv-wordpress-flowplayer'),
+              'name' => 'src2',
+              'browser' => true,
+              'type' => 'text',
+              'visible' => true
+            ),
+            array(
+              'label' => __('RTMP', 'fv-wordpress-flowplayer'),
+              'name' => 'rtmp_show',
+              'no_data' => true,
+              'visible' => false,
+              'children' => array(
+                array(
+                  'label' => __('Path', 'fv-wordpress-flowplayer'),
+                  'name' => 'rtmp_path',
+                  'type' => 'text',
+                  'visible' => true
+                ),
+                array(
+                  'label' => __('Server', 'fv-wordpress-flowplayer'),
+                  'name' => 'rtmp',
+                  'type' => 'text',
+                  'visible' => true
+                ),
+              )
+            ),
+          ),
+        ),
+        array(
+          'label' => __('Splash Screen', 'fv-wordpress-flowplayer'),
+          'name' => 'splash',
+          'browser' => true,
+          'type' => 'text',
+          'visible' => true,
+          'description' => __('Will appear in place of the video before it plays.', 'fv-wordpress-flowplayer'),
+        ),
+        array(
+          'name' => 'splash_attachment_id',
+          'type' => 'hidden',
+        ),
+        array(
+          'label' => __('Title', 'fv-wordpress-flowplayer'),
+          'name' => 'title',
+          'type' => 'text',
+          'visible' => isset($fv_flowplayer_conf["interface"]["playlist_titles"]) && $fv_flowplayer_conf["interface"]["playlist_titles"] == 'true',
+          'description' => __('Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-wordpress-flowplayer'),
+        ),
+        array(
+          'label' => __('Splash Text', 'fv-wordpress-flowplayer'),
+          'name' => 'splash_text',
+          'type' => 'text',
+          'visible' => isset($fv_flowplayer_conf["interface"]["splash_text"]) && $fv_flowplayer_conf["interface"]["splash_text"] == 'true',
+          'description' => __('Will appear over the video before it plays.', 'fv-wordpress-flowplayer'),
+        ),
+        array(
+          'label' => __('Synopsis', 'fv-wordpress-flowplayer'),
+          'name' => 'synopsis',
+          'type' => 'textarea',
+          'visible' => isset($fv_flowplayer_conf["interface"]["synopsis"]) && $fv_flowplayer_conf["interface"]["synopsis"] == 'true',
+          'description' => __('Shows for the Vertical Season playlist style.', 'fv-wordpress-flowplayer'),
+          'video_meta'  => true,
+        )
+      ),
+      'sort' => false
+    )
+  ) );
+
+  return $video_fields;
+}
+
+
+
+
 /*
 Elementor support
 */
