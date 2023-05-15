@@ -516,6 +516,7 @@ class FV_Player_Checker {
     curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $iTimeout );
     curl_setopt( $ch, CURLOPT_TIMEOUT, $iTimeout );
     curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
+    curl_setopt( $ch, CURLOPT_REFERER, home_url() );
     
     $data = curl_exec($ch);
       
