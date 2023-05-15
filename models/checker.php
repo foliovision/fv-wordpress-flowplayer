@@ -102,7 +102,7 @@ class FV_Player_Checker {
   
   
   
-  public function check_mimetype( $URLs = false, $meta = false, $force_is_cron = false ) {
+  public function check_mimetype( $URLs = false, $meta = array(), $force_is_cron = false ) {
 
     add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
   
@@ -532,7 +532,7 @@ class FV_Player_Checker {
         }
       }
     }
-    $sError = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : false;
+    $sError = false === $data ? 'CURL Error: '.curl_error ( $ch) : false;
     if( curl_errno($ch) == 28 ) {
       $sError .= "Connection timeout, can't check the video.";
     } else if(!curl_errno($ch) ) {
