@@ -805,6 +805,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
     $is_update   = ($this->id ? true : false);
 
+    // Save new video early so that we can attach video meta to the new video ID
+    if ( ! $is_update ) {
+      $this->save_do( $is_update );
+    }
+
     $video_url = $this->getSrc();
 
     /*
@@ -812,8 +817,6 @@ CREATE TABLE " . self::$db_table_name . " (
      */
     $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
-    $last_error = $this->getMetaValue( 'error', true );
-    $last_error_count = $this->getMetaValue( 'error_count', true );
 
     // Check video duration, or even splash image and title if it was not checked previously
     // TODO: What if the video source has changed?
@@ -887,24 +890,18 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->last_check = current_time( 'mysql', true );
 
         if( $video_data['error'] ) {
-          $meta_data[] = array(
-            'meta_key' => 'error',
-            'meta_value' => $video_data['error'],
-          );
+          $this->updateMetaValue( 'error', $video_data['error'] );
+
+          $last_error_count = $this->getMetaValue( 'error_count', true );
 
           if( empty($last_error_count) ) $last_error_count = 0;
           $last_error_count++;
 
-          $meta_data[] = array(
-            'meta_key' => 'error_count',
-            'meta_value' => $last_error_count,
-          );
+          $this->updateMetaValue( 'error_count', $last_error_count );
 
         } else {
-          $key = array_search('error', array_column($meta_data, 'meta_key'));
-          if( $key !== false ) {
-            unset($meta_data[$key]);
-          }
+          $this->deleteMetaValue( 'error' );
+          $this->deleteMetaValue( 'error_count' );
         }
 
         if( $video_data['width'] ) {
@@ -931,11 +928,7 @@ CREATE TABLE " . self::$db_table_name . " (
           $this->duration = $video_data['duration'];
 
           // Remove the legacy value stored in video meta
-          // TODO: Conversion process
-          $key = array_search('duration', array_column($meta_data, 'meta_key'));
-          if( $key !== false ) {
-            unset($meta_data[$key]);
-          }
+          $this->deleteMetaValue( 'duration' );
         } else {
           $this->duration = 0;
         }
@@ -947,34 +940,20 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         // Remove the legacy value stored in video meta
-        // TODO: Conversion process
-        $live_key = array_search('live', array_column($meta_data, 'meta_key'));
-        if( $live_key !== false ) {
-          unset($meta_data[$live_key]);
-        }
+        $this->deleteMetaValue( 'live' );
 
         if( !empty($video_data['is_encrypted']) ) {
-          $meta_data[] = array(
-            'meta_key' => 'encrypted',
-            'meta_value' => true,
-          );
+          $this->updateMetaValue( 'encrypted', true );
+
         } else {
-          $key = array_search('encrypted', array_column($meta_data, 'meta_key'));
-          if( $key !== false ) {
-            unset($meta_data[$key]);
-          }
+          $this->deleteMetaValue( 'encrypted' );
         }
 
         if( !empty($video_data['is_audio']) ) {
-          $meta_data[] = array(
-            'meta_key' => 'audio',
-            'meta_value' => true,
-          );
+          $this->updateMetaValue( 'audio', true );
+
         } else {
-          $key = array_search('audio', array_column($meta_data, 'meta_key'));
-          if( $key !== false ) {
-            unset($meta_data[$key]);
-          }
+          $this->deleteMetaValue( 'audio' );
         }
 
         if( !empty($video_data['name']) && (
@@ -982,19 +961,13 @@ CREATE TABLE " . self::$db_table_name . " (
         ) ) {
           $this->title = $video_data['name'];
 
-          $meta_data[] = array(
-            'meta_key' => 'auto_caption',
-            'meta_value' => 1,
-          );
+          $this->updateMetaValue( 'auto_caption', 1 );
         }
 
         if( !empty($video_data['synopsis']) && !$this->getMetaValue( 'synopsis', true ) ) {
           $synopsis = $video_data['synopsis'];
 
-          $meta_data[] = array(
-            'meta_key' => 'synopsis',
-            'meta_value' => $synopsis
-          );
+          $this->updateMetaValue( 'synopsis', $synopsis );
         }
 
         if( !empty($video_data['thumbnail']) && (
@@ -1002,10 +975,7 @@ CREATE TABLE " . self::$db_table_name . " (
         ) ) {
           $this->splash = $video_data['thumbnail'];
 
-          $meta_data[] = array(
-            'meta_key' => 'auto_splash',
-            'meta_value' => 1,
-          );
+          $this->updateMetaValue( 'auto_splash', 1 );
         }
 
         if( !empty($video_data['splash_attachment_id']) ) {
@@ -1015,10 +985,7 @@ CREATE TABLE " . self::$db_table_name . " (
         $meta_data = array();
       }
 
-      $meta_data[] = array(
-        'meta_key' => 'last_video_meta_check_src',
-        'meta_value' => $video_url,
-      );
+      $this->updateMetaValue( 'last_video_meta_check_src', $video_url );
 
     }
 
@@ -1044,31 +1011,7 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
-    /*
-     * Prepare SQL
-     */
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
-    $data_values = array();
-
-    foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
-        $data_keys[] = $property . ' = %s';
-        $data_values[] = strip_tags($value);
-      }
-    }
-
-    $sql .= implode(',', $data_keys);
-
-    if ( $is_update ) {
-      $sql .= ' WHERE id = ' . $this->id;
-    }
-
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
-
-    if (!$is_update) {
-      $this->id = $wpdb->insert_id;
-    }
+    $this->save_do( true );
 
     if (!$wpdb->last_error) {
       // check for any meta data
@@ -1120,6 +1063,36 @@ CREATE TABLE " . self::$db_table_name . " (
       /*var_export($wpdb->last_error);
       var_export($wpdb->last_query);*/
       return false;
+    }
+  }
+
+  function save_do( $is_update ) {
+    global $wpdb;
+
+    /*
+     * Prepare SQL
+     */
+    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
+    $data_keys   = array();
+    $data_values = array();
+
+    foreach (get_object_vars($this) as $property => $value) {
+      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+        $data_keys[] = $property . ' = %s';
+        $data_values[] = strip_tags($value);
+      }
+    }
+
+    $sql .= implode(',', $data_keys);
+
+    if ( $is_update ) {
+      $sql .= ' WHERE id = ' . $this->id;
+    }
+
+    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
+
+    if (!$is_update) {
+      $this->id = $wpdb->insert_id;
     }
   }
 
