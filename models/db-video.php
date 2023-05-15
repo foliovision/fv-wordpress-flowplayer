@@ -1014,26 +1014,80 @@ CREATE TABLE " . self::$db_table_name . " (
     $this->save_do( true );
 
     if (!$wpdb->last_error) {
-      // check for any meta data
-      if (is_array($meta_data) && count($meta_data)) {
-        // we check which meta values are no longer set and remove these
-        $existing_meta = $is_update ? $this->getMetaData() : array();
-        $existing_meta_ids = array();
-        foreach( $existing_meta as $existing ) {
-          $found = false;
-          foreach ($meta_data as $meta_record) {
-            if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
-              $found = true;
-              break;
+
+      // Get all registered input names which belong to video meta
+      $video_meta_inputs = array();
+
+      function find_video_meta_inputs( &$video_meta_inputs, $input, $key = false ) {
+        if ( is_array( $input ) ) {
+          if ( ! empty( $input['name'] ) ) {
+
+            if ( ! empty( $input['video_meta'] ) ) {
+              $video_meta_inputs[] = $input['name'];
+              if ( ! empty( $input['language']  ) ) {
+                $video_meta_inputs[] = $input['name'] . '_*';
+              }
             }
+
+            if ( ! empty( $input['children'] ) ) {
+              find_video_meta_inputs( $video_meta_inputs, $input['children'] );
+            }
+            return;
           }
-          if( !$found ) {
-            $existing->delete();
-          } else {
-            $existing_meta_ids[$existing->getId()] = true;
+
+          foreach ( $input AS $k => $v ) {
+            find_video_meta_inputs( $video_meta_inputs, $v, $k );
+          }
+        }
+      }
+
+      foreach (
+        array(
+          fv_player_editor_video_fields(),
+          fv_player_editor_subtitle_fields()
+        ) as $fields
+      ) {
+        find_video_meta_inputs( $video_meta_inputs, $fields );
+      }
+
+      // we check which meta values are no longer set and remove these
+      $existing_meta = $is_update ? $this->getMetaData() : array();
+      $existing_meta_ids = array();
+      foreach( $existing_meta as $existing ) {
+
+        // video meta fields which do not have an input field should be kept
+        $should_skip = true;
+        foreach ( $video_meta_inputs as $match ) {
+          if (
+            // Find exact match
+            $existing->getMetaKey() === $match ||
+            // Wildcard match - for input names like subtitles_*
+            stripos( $match, '_*' ) === strlen( $match ) - 2 && stripos( $existing->getMetaKey(), str_replace( '_*', '', $match ) ) === 0
+          ) {
+            $should_skip = false;
           }
         }
 
+        if ( $should_skip ) {
+          continue;
+        }
+
+        $found = false;
+        foreach ($meta_data as $meta_record) {
+          if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
+            $found = true;
+            break;
+          }
+        }
+        if( !$found ) {
+          $existing->delete();
+        } else {
+          $existing_meta_ids[$existing->getId()] = true;
+        }
+      }
+
+      // check for any meta data
+      if (is_array($meta_data) && count($meta_data)) {
 
         // we have meta, let's insert that
         foreach ($meta_data as $meta_record) {
