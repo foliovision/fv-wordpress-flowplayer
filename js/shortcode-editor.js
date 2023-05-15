@@ -1337,6 +1337,43 @@ jQuery(function() {
                   item.attr('data-id_video',v.id);
                 }
 
+                // Ensure language-dependent fields get their video meta id
+                let video_meta_languages = [
+                  'subtitles',
+                  'transcript_src',
+                ];
+
+                let subtitles_tab = get_tab( k, 'subtitles' );
+
+                $(v.meta).each( function( i, video_meta ) {
+                  let meta_key = video_meta.meta_key;
+
+                  $( video_meta_languages ).each( function( j, field_type ) {
+                    if ( meta_key.indexOf( field_type ) === 0 ) {
+
+                      // Get "_en" out of "subtitles_en"
+                      let meta_lang = meta_key.replace( field_type, '' );
+
+                      if ( meta_lang ) {
+                        meta_lang = meta_lang.replace( /^_/, '' );
+                      }
+
+                      let fields = get_field( field_type, subtitles_tab ),
+                        field_langs = get_field( field_type + '_lang', subtitles_tab );
+
+                      fields.each( function( k, field ) {
+                        let field_wrap = $( field ).closest( '.components-base-control__field' ),
+                          field_lang = field_langs[ k ];
+
+                        if ( meta_lang == $( field_lang ).val() ) {
+                          field_wrap.attr('data-id_videometa', video_meta.id);
+                        }
+                      });
+
+                    }
+                  });
+                });
+
                 if( k == current_video_to_edit ) {
                   debug_log('current_video_db_id after save: '+v.id);
                   current_video_db_id = v.id;
