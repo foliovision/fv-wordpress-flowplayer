@@ -2952,7 +2952,7 @@ jQuery(function() {
           }
         }
 
-        if( store_shortcode_args ) {
+        if( store_shortcode_args.length ) {
           debug_log('Preserving shortcode args', store_shortcode_args );
         }
 
@@ -2963,7 +2963,7 @@ jQuery(function() {
           }
         }
 
-        if( always_keep_shortcode_args ) {
+        if( always_keep_shortcode_args.length ) {
           debug_log('Always preserve shortcode args', always_keep_shortcode_args );
         }
 
