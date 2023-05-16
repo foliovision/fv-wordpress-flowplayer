@@ -643,6 +643,29 @@ CREATE TABLE " . self::$db_table_name . " (
       return true;
     }
   }
+  
+  function find_video_meta_inputs( &$video_meta_inputs, $input ) {
+    if ( is_array( $input ) ) {
+      if ( ! empty( $input['name'] ) ) {
+
+        if ( ! empty( $input['video_meta'] ) ) {
+          $video_meta_inputs[] = $input['name'];
+          if ( ! empty( $input['language']  ) ) {
+            $video_meta_inputs[] = $input['name'] . '_*';
+          }
+        }
+
+        if ( ! empty( $input['children'] ) ) {
+          $this->find_video_meta_inputs( $video_meta_inputs, $input['children'] );
+        }
+        return;
+      }
+
+      foreach ( $input as $v ) {
+        $this->find_video_meta_inputs( $video_meta_inputs, $v );
+      }
+    }
+  }
 
   /**
    * Returns all options data for this video.
@@ -1018,36 +1041,13 @@ CREATE TABLE " . self::$db_table_name . " (
       // Get all registered input names which belong to video meta
       $video_meta_inputs = array();
 
-      function find_video_meta_inputs( &$video_meta_inputs, $input, $key = false ) {
-        if ( is_array( $input ) ) {
-          if ( ! empty( $input['name'] ) ) {
-
-            if ( ! empty( $input['video_meta'] ) ) {
-              $video_meta_inputs[] = $input['name'];
-              if ( ! empty( $input['language']  ) ) {
-                $video_meta_inputs[] = $input['name'] . '_*';
-              }
-            }
-
-            if ( ! empty( $input['children'] ) ) {
-              find_video_meta_inputs( $video_meta_inputs, $input['children'] );
-            }
-            return;
-          }
-
-          foreach ( $input AS $k => $v ) {
-            find_video_meta_inputs( $video_meta_inputs, $v, $k );
-          }
-        }
-      }
-
       foreach (
         array(
           fv_player_editor_video_fields(),
           fv_player_editor_subtitle_fields()
         ) as $fields
       ) {
-        find_video_meta_inputs( $video_meta_inputs, $fields );
+        $this->find_video_meta_inputs( $video_meta_inputs, $fields );
       }
 
       // we check which meta values are no longer set and remove these
