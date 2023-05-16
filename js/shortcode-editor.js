@@ -4049,7 +4049,7 @@ jQuery(function() {
 
       let new_field = get_field( field, subElement);
       if( sInput ) {
-        new_field.val(sInput);
+        new_field.val(sInput).trigger('change');
       }
 
       show_short_link( new_field );
