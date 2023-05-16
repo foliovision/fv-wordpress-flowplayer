@@ -1042,7 +1042,10 @@ JS;
 
 
   function get_popup_code() {
-    if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'no') {
+    if(
+      !empty($this->aCurArgs['end_actions']) &&
+      in_array( $this->aCurArgs['end_actions'], array( 'no', 'redirect', 'loop', 'splashend' ) )
+    ) {
       return false;
     }
 
