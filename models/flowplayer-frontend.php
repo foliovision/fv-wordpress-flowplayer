@@ -1131,7 +1131,9 @@ JS;
 
   function get_speed_attribute( $attributes ) {
     $bShow = false;
-    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && ( $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' ) ) {
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && (
+      $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' || $this->aCurArgs['speed'] == 'true'
+    ) ) {
       $bShow = true;
     }
 
