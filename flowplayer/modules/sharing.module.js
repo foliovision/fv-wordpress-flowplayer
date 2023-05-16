@@ -71,7 +71,11 @@ flowplayer( function(api,root) {
   api.bind('finish', function() {
     var url = root.data('fv_redirect');
     if( url && ( typeof(api.video.is_last) == "undefined" || api.video.is_last ) ) {
-      location.href = url;
+      if ( freedomplayer.conf.wpadmin ) {
+        console.log( 'FV Player: Redirection to ' + location.href + " blocked as it's the editor.");
+      } else {
+        location.href = url;
+      }
     }
   });
   
