@@ -4459,7 +4459,7 @@ jQuery(function() {
       var encrypted = get_current_player_object() ? get_playlist_video_meta_value( 'encrypted', index ) : false;
 
       // hlskey
-      var hlskey = get_field('hlskey', true);
+      var hlskey = get_field('hls_hlskey', true);
       if( encrypted || hlskey.val() ) {
         hlskey.closest('.fv_player_interface_hide').show();
       } else {

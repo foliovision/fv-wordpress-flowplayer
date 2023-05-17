@@ -826,7 +826,7 @@ jQuery( function($) {
     }
 
     if( !is_trailer ) {
-      var hlskey_field = fv_player_editor.get_field('hlskey', true);
+      var hlskey_field = fv_player_editor.get_field('hls_hlskey', true);
       if( extra && extra.hlskey ) {
         hlskey_field.val(extra.hlskey);
         hlskey_field.closest('tr').show();
