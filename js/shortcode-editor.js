@@ -619,18 +619,19 @@ jQuery(function() {
         }, 1000 );
 
         $doc.on( 'click', '.fv-player-export', function(e) {
-          var $element = jQuery(this);
+          let $element = jQuery(this),
+            player_id = $element.data('player_id');
 
           e.preventDefault();
           $.fv_player_box( {
             onComplete : function() {
               overlay_show('loading');
 
-              debug_log('Running fv_player_db_export Ajax.');
+              debug_log('Running fv_player_db_export Ajax for #' + player_id );
 
               $.post(ajaxurl, {
                 action: 'fv_player_db_export',
-                playerID : $element.data('player_id'),
+                playerID : player_id,
                 nonce : $element.data('nonce'),
                 cookie: encodeURIComponent(document.cookie),
               }, function(json_export_data) {
@@ -677,11 +678,12 @@ jQuery(function() {
         });
 
         $doc.on( 'click', '.fv-player-remove-confirm', function() {
-          var
+          let
             $element = $(this),
             $row_actions = $element.closest( '.row-actions' ),
             $element_td = $element.parent(),
-            $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>');
+            $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>'),
+            player_id = $element.data('player_id');
 
           $element_td.find('a, span').hide();
           $element.after($spinner);
@@ -689,12 +691,12 @@ jQuery(function() {
           // Make sure the row actions do not show on hover only, but always appear to make sure the spinner remains visible
           $row_actions.css( 'left', 0 );
 
-          debug_log('Running fv_player_db_remove Ajax.');
+          debug_log('Running fv_player_db_remove Ajax for #' + player_id );
 
           jQuery.post(ajaxurl, {
             action: "fv_player_db_remove",
             nonce: $element.data('nonce'),
-            playerID: $element.data('player_id')
+            playerID: player_id
           }, function(rows_affected){
             if (!isNaN(parseFloat(rows_affected)) && isFinite(rows_affected)) {
               // remove the deleted player's row
