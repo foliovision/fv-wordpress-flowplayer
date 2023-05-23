@@ -55,8 +55,8 @@
 }
 
 .flowplayer { margin: 0 auto 2.8em auto; display: block; max-width: 100%; white-space: normal }
-.flowplayer.has-title { margin: 0 auto; }
-.flowplayer.fixed-controls.has-title, flowplayer.fixed-controls.has-title * { margin-bottom: 2.8em; }
+.flowplayer.has-title-below { margin: 0 auto; }
+.flowplayer.fixed-controls.has-title-below, flowplayer.fixed-controls.has-title-below * { margin-bottom: 2.8em; }
 .flowplayer.fixed-controls, .entry-content .flowplayer.fixed-controls { margin-bottom: 5.2em }
 .flowplayer.fixed-controls.skin-custom {border: none}
 .flowplayer.has-abloop, .entry-content .flowplayer.has-abloop { margin-bottom: 2.8em; }
@@ -397,8 +397,7 @@
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebtn {visibility:visible;display:block}
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebar {display:none}
 
-/* Caption */
-p.fp-caption { text-align: center;max-width: 100%;  }
+p.fp-title { text-align: center;max-width: 100%;  }
 
 /* Buttons, todo: check! or better not use! */
 .is-splash.flowplayer .fv-player-buttons, .is-loading.flowplayer .fv-player-buttons {
