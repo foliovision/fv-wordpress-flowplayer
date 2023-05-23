@@ -96,12 +96,12 @@ class FV_Player_YouTube {
           $bUseAnchor = true;
         }
       }
-      
+
       if( $bUseAnchor ) {
         return $aArgs;
       }
     }
-    
+
     if( isset($aArgs['src']) && $this->is_youtube($aArgs['src']) && $fv_fp->_get_option( array('pro','youtube_titles_disable') )) {
       $aArgs['caption'] = '';
     }
@@ -117,15 +117,15 @@ class FV_Player_YouTube {
     }
 
     if ( $this->is_youtube($video) && $fv_fp->_get_option( array('pro','youtube_key') )) {
-      
+
       $fv_flowplayer_meta = false;
       if( $post_id ) {
         $fv_flowplayer_meta = get_post_meta($post_id, flowplayer::get_video_key($video), true);
         if( !$fv_flowplayer_meta || !isset($fv_flowplayer_meta['date']) || ( $fv_flowplayer_meta['date'] + 24 * 3600 ) < time() || !$fv_flowplayer_meta['duration'] && ( $fv_flowplayer_meta['date'] + 60 ) < time() ) {
           $fv_flowplayer_meta = false;
         }
-      }      
-      
+      }
+
       if( !$fv_flowplayer_meta ) {
         $tStart = microtime(true);
         $aId = $this->is_youtube($video);
@@ -137,14 +137,14 @@ class FV_Player_YouTube {
           'maxWidth' => 1920 // This is a trick to get player->embedWidth and embedHeight to be able to tell the aspect ratio of the video
         ), 'https://www.googleapis.com/youtube/v3/videos' );
 
-        $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );        
+        $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );
 
         $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
 
         if( isset($obj->error) && !empty($obj->error->message) ) {
           update_option('fv_player_pro_youtube_error', date('r').": ".$obj->error->message, false );
         }
-        
+
         if( $obj && !empty($obj->items[0]) ) {
           $obj_item = $obj->items[0];
 
@@ -171,28 +171,28 @@ class FV_Player_YouTube {
               $fv_flowplayer_meta['is_live'] = true;
             }
           }
-          
+
           //  YouTube splash screens come in various sizes and often with black borders. So we use the maxres image to determine image aspect ratio and then look for matching image
           if( !empty($obj_item->snippet->thumbnails) ) {
             $thumbs = $obj_item->snippet->thumbnails;
             $ratio = isset($thumbs->maxres) && intval($thumbs->maxres->width) > 0 && intval($thumbs->maxres->height) > 0 ? $thumbs->maxres->height/$thumbs->maxres->width : false;
-            foreach( (array)$thumbs AS $k => $v ) {            
+            foreach( (array)$thumbs AS $k => $v ) {
               if( !$ratio || $v->height/$v->width == $ratio ) {
                 $fv_flowplayer_meta['splash'] = $v->url;
                 if( $v->width > 600 ) break;
               }
-            }          
+            }
           }
-          
+
           $fv_flowplayer_meta['caption'] = !empty($obj_item->snippet->title) ? $obj_item->snippet->title : false;
         }
         $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
-        
+
         if ($post_id) {
           update_post_meta($post_id, flowplayer::get_video_key($video), $fv_flowplayer_meta);
         }
       }
-      
+
       $videoData = false;
       if( !empty($fv_flowplayer_meta['splash']) && !empty($fv_flowplayer_meta['caption']) ) {
         $videoData = array(
@@ -201,7 +201,7 @@ class FV_Player_YouTube {
             'duration' => $fv_flowplayer_meta['duration'],
             'aspect_ratio' => $fv_flowplayer_meta['aspect_ratio'],
             'is_live'      => $fv_flowplayer_meta['is_live'],
-            // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails            
+            // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails
         );
       }
 
@@ -241,8 +241,8 @@ class FV_Player_YouTube {
       </tr>
       <?php if( $fv_fp->_get_option( array('pro','youtube_titles_disable') ) ) $fv_fp->_get_checkbox(__('Disable video captions', 'fv-player-pro'), array('pro', 'youtube_titles_disable'), __('Normally the video title is parsed into the shortcode when saving the post, with this setting it won\'t appear.', 'fv-player-pro') ); ?>
       <?php $fv_fp->_get_checkbox(__("Use YouTube Cookies", 'fv-player-pro'), array('pro', 'youtube_cookies'), __("Otherwise FV Player Pro uses the youtube-nocookie.com domain to avoid use of YouTube cookies.", 'fv-player-pro') ); ?>
-      
-      <?php 
+
+      <?php
          $fv_fp->_get_input_text( array(
           'key' => array( 'pro', 'youtube_key' ),
           'name' => __('Google Developer Key', 'fv-player-pro'),
@@ -262,11 +262,11 @@ class FV_Player_YouTube {
           </td>
         </tr>
       <?php endif; ?>
-      <tr>    		
+      <tr>
         <td colspan="4">
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-player-pro'); ?>" style="margin-top: 2ex;"/>
         </td>
-      </tr>         
+      </tr>
     </table>
     <?php
   }
@@ -280,7 +280,7 @@ class FV_Player_YouTube {
       if( !empty($sVideoMeta['splash']) ) {
         return $sVideoMeta['splash'];
       }
-      
+
       // If we have no image we accept it if it's recent
       if( !empty($sVideoMeta['date']) && $sVideoMeta['date'] + 3600 > time() ) {
         return false;
@@ -298,7 +298,7 @@ class FV_Player_YouTube {
           $splash = get_option('fv_player_'.$type.'_splash_'.$video_id);
           if( !$splash ) {
             $post_id = !empty($post->ID) ? $post->ID : false;
-            
+
             $videoData = $this->fetch_yt_data($src, $post_id);
             if( $videoData && isset($videoData['thumbnail']) ) {
               $this->fTimeSpent_AutoSplash += microtime(true) - $tStart;
@@ -310,11 +310,11 @@ class FV_Player_YouTube {
             return $splash;
 
           }
-          
+
         }
       }
     }
-    
+
     return $splash;
   }
 
@@ -339,12 +339,12 @@ class FV_Player_YouTube {
 
     if( isset($aArgs[2]->aCurArgs['src']) && $this->is_youtube($aArgs[2]->aCurArgs['src']) ) {
       $aAttributes['data-engine'] = 'fvyoutube';
-      $fv_fp->aCurArgs['engine'] = 'fvyoutube';    
+      $fv_fp->aCurArgs['engine'] = 'fvyoutube';
       if( stripos($aAttributes['class'],' is-youtube') === false ) {
         $aAttributes['class'] .= ' is-youtube';
       }
-    }   
-   
+    }
+
     return $aAttributes;
   }
 
@@ -357,16 +357,16 @@ class FV_Player_YouTube {
         if( !is_array($item[0]) && ( FV_Player_Pro_Vimeo()->is_vimeo(stripslashes($item[0])) || $this->is_youtube(stripslashes($item[0])) ) || apply_filters('fv_player_video_checker_exclude',false,$item[0]) ) {
           unset( $GLOBALS['fv_fp_scripts']['fv_flowplayer_admin_test_media'][$key] );
         }
-      }      
+      }
     }*/
-    
+
     // Was there any player or do we expect any to load in Ajax?
     if(
       isset($GLOBALS['fv_fp_scripts']) ||
       $this->should_force_load_js()
     ) {
-      
-      // If we expect players to load in Ajax, YouTube API needs to 
+
+      // If we expect players to load in Ajax, YouTube API needs to
       // be there at all times
       if( $this->should_force_load_js() ) $this->bYoutube = 1;
 
@@ -390,17 +390,17 @@ class FV_Player_YouTube {
 
   function youtube_duration( $iTime ) {
     return $iTime;
-    
+
     $aArgs = func_get_args();
-    
+
     if( $iTime == 0 && $aId = $this->is_youtube($aArgs[1]) ) {
-      $response = wp_remote_get( 'http://gdata.youtube.com/feeds/api/videos/'.$aId[1].'?v=2&alt=jsonc', array( 'sslverify' => false ) );        
+      $response = wp_remote_get( 'http://gdata.youtube.com/feeds/api/videos/'.$aId[1].'?v=2&alt=jsonc', array( 'sslverify' => false ) );
       $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
 
       if( $obj && isset($obj->data->duration) ) {
         $iTime = $obj->data->duration;
       }
-      
+
     }
 
     return $iTime;
