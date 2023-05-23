@@ -799,7 +799,7 @@ class FV_Player_Stats {
 
             if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
-                $datasets[$id]['name'] = $this->get_video_name( $row['src'], $row['caption'] );
+                $datasets[$id]['name'] = $this->get_video_name( $row['src'], $row['title'] );
               } else if( $type == 'post' ) {
                 $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
               } else if( $type == 'user' ) {
@@ -823,9 +823,9 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  function get_video_name( $src, $caption) {
-    if( !empty($caption) ) {
-      return $caption;
+  function get_video_name( $src, $title = '') {
+    if( !empty($title) ) {
+      return $title;
     }
 
     // check if youtube
@@ -853,22 +853,8 @@ class FV_Player_Stats {
 
     }
 
-
-    // Using code from FV_Player_Db_Video::getTitleFromSrc
-    $name = wp_parse_url( $src, PHP_URL_PATH );
-    $arr = explode('/', $name);
-    $name = trim( end($arr) );
-
-    if( in_array( $name, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
-      unset($arr[count($arr)-1]);
-      $name = end($arr);
-
-      // Add parent folder too if there's any
-      if( !empty( $arr ) && count( $arr ) > 2 ) {
-        unset($arr[count($arr)-1]);
-        $name = end($arr) . '/' . $name;
-      }
-    }
+    // parse title
+    $name = flowplayer::get_title_from_src($src);
 
     return $name;
   }

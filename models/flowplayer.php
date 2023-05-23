@@ -1807,7 +1807,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $resource .= "&X-Amz-Date=$sXAMZDate";
         $resource .= "&X-Amz-Expires=$time";
         $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
-        $resource .= "&X-Amz-Signature=".$sSignature;              
+        $resource .= "&X-Amz-Signature=".$sSignature;
 
       } else {
         $expires = time() + $time;
@@ -2364,6 +2364,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
 
+  public static function get_title_from_src( $src ) {
+    $name = wp_parse_url( $src, PHP_URL_PATH );
+    $arr = explode('/', $name);
+    $name = trim( end($arr) );
+
+    if( in_array( $name, array( 'index.m3u8', 'stream.m3u8', 'master.m3u8' ) ) ) {
+      unset($arr[count($arr)-1]);
+      $name = end($arr);
+
+      // Add parent folder too if there's any
+      if( !empty( $arr ) && count( $arr ) > 2 ) {
+        unset($arr[count($arr)-1]);
+        $name = end($arr) . '/' . $name;
+      }
+    }
+
+    return $name;
+  }
 
 
   function get_video_src($media, $aArgs = array() ) {

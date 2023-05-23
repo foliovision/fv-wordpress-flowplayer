@@ -207,20 +207,9 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getTitleFromSrc() {
+    $title = flowplayer::get_title_from_src($this->getSrc());
+
     $src = wp_parse_url( $this->getSrc(), PHP_URL_PATH );
-    $arr = explode('/', $src);
-    $title = trim( end($arr) );
-
-    if( in_array( $title, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
-      unset($arr[count($arr)-1]);
-      $title = end($arr);
-
-      // Add parent folder too if there's any
-      if( !empty( $arr ) && count( $arr ) > 2 ) {
-        unset($arr[count($arr)-1]);
-        $title = end($arr) . '/' . $title;
-      }
-    }
 
     $title = apply_filters( 'fv_flowplayer_caption_src', $title , $src );
     $title = apply_filters( 'fv_flowplayer_title_src', $title , $src );
@@ -643,7 +632,7 @@ CREATE TABLE " . self::$db_table_name . " (
       return true;
     }
   }
-  
+
   function find_video_meta_inputs( &$video_meta_inputs, $input ) {
     if ( is_array( $input ) ) {
       if ( ! empty( $input['name'] ) ) {
