@@ -1191,12 +1191,12 @@ class FV_Player_Db {
                     'meta_key' => $meta_type . ($transcript['code'] ? '_'.$transcript['code'] : ''),
                     'meta_value' => $transcript['file']
                   );
-          
+
                   // add ID, if present
                   if (!empty($transcript['id'])) {
                     $m['id'] = $transcript['id'];
                   }
-          
+
                   $video_meta[] = $m;
                 }
               }
@@ -1863,6 +1863,11 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         //     before doing so
         if (isset($data['videos'])) {
           foreach ($data['videos'] as $video_data) {
+            // replace caption for title, remove caption
+            if( isset($video_data['caption']) && !empty($video_data['caption']) && ( !isset($video_data['title']) || empty($video_data['title']) ) ) {
+              $video_data['title'] = $video_data['caption'];
+              unset($video_data['caption']);
+            }
 
             foreach( $video_data AS $k => $v ) {
               if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
@@ -2128,7 +2133,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     /**
      * Check if table exists before looking for FV Player that is associated in the post.
      * We do this because we would run into issues with this in WP Integration tests.
-     * The database tables get created by tests like FV_Player_DBTest::setUp() but somehow 
+     * The database tables get created by tests like FV_Player_DBTest::setUp() but somehow
      * wptests_fv_player_playermetas is not there
      */
     $table_name = FV_Player_Db_Player_Meta::init_db_name();
