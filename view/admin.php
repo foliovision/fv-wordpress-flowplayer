@@ -1960,7 +1960,7 @@ function fv_flowplayer_admin_database() {
 
 function fv_flowplayer_admin_embedded_on() {
   global $wpdb;
-  $players_with_no_posts = $wpdb->get_var( "SELECT p.id, m.meta_value FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+  $players_with_no_posts = $wpdb->get_var( "SELECT count(p.id) FROM {$wpdb->prefix}fv_player_players AS p LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
 
   $url = wp_nonce_url(
     add_query_arg(

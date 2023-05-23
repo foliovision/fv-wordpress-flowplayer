@@ -619,18 +619,19 @@ jQuery(function() {
         }, 1000 );
 
         $doc.on( 'click', '.fv-player-export', function(e) {
-          var $element = jQuery(this);
+          let $element = jQuery(this),
+            player_id = $element.data('player_id');
 
           e.preventDefault();
           $.fv_player_box( {
             onComplete : function() {
               overlay_show('loading');
 
-              debug_log('Running fv_player_db_export Ajax.');
+              debug_log('Running fv_player_db_export Ajax for #' + player_id );
 
               $.post(ajaxurl, {
                 action: 'fv_player_db_export',
-                playerID : $element.data('player_id'),
+                playerID : player_id,
                 nonce : $element.data('nonce'),
                 cookie: encodeURIComponent(document.cookie),
               }, function(json_export_data) {
@@ -677,11 +678,12 @@ jQuery(function() {
         });
 
         $doc.on( 'click', '.fv-player-remove-confirm', function() {
-          var
+          let
             $element = $(this),
             $row_actions = $element.closest( '.row-actions' ),
             $element_td = $element.parent(),
-            $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>');
+            $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>'),
+            player_id = $element.data('player_id');
 
           $element_td.find('a, span').hide();
           $element.after($spinner);
@@ -689,12 +691,12 @@ jQuery(function() {
           // Make sure the row actions do not show on hover only, but always appear to make sure the spinner remains visible
           $row_actions.css( 'left', 0 );
 
-          debug_log('Running fv_player_db_remove Ajax.');
+          debug_log('Running fv_player_db_remove Ajax for #' + player_id );
 
           jQuery.post(ajaxurl, {
             action: "fv_player_db_remove",
             nonce: $element.data('nonce'),
-            playerID: $element.data('player_id')
+            playerID: player_id
           }, function(rows_affected){
             if (!isNaN(parseFloat(rows_affected)) && isFinite(rows_affected)) {
               // remove the deleted player's row
@@ -1391,6 +1393,7 @@ jQuery(function() {
                 if( current_video_to_edit == k ) {
                   show_video_details(k);
                   show_stream_fields_worker(k);
+                  show_playlist_not_supported(k);
                 }
               });
 
@@ -1483,50 +1486,6 @@ jQuery(function() {
       var $body = jQuery('body');
       $body.on('focus', '#fv_player_copy_to_clipboard', function() {
         this.select();
-      });
-
-      /**
-       * Ensure user is notified about using video types which are not supported in playlists
-       */
-      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {
-        var result = {
-          'supported': true
-        }
-
-        var url = jQuery(this).val();
-
-        if (
-          url.indexOf('vimeo.com') > -1 ||
-          url.indexOf('vimeopro.com') > -1 ||
-          url.indexOf('youtube.com') > -1 ||
-          url.indexOf('youtube-nocookie.com') > -1 ||
-          url.indexOf('youtu.be') > -1
-        ) {
-          result.supported = false;
-        }
-
-        // fire up a JS event for the FV Player Pro to catch,
-        // so it can check the URL and make sure we don't show
-        // a warning message for PRO-supported video types
-        $doc.trigger('fv-player-editor-src-change', [ url, result, this ]);
-
-        // Notice next to the input field
-        var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
-
-        if( result.supported ) {
-          input_field_notice.hide();
-
-          playlist_buttons_disable(false);
-
-        } else {
-          // Show a notice if you have a playlist already
-          input_field_notice.toggle( get_playlist_items_count() > 1 );
-
-          // Disable the playlist editing buttons if the video type is not supported in playlists
-          playlist_buttons_disable('FV Player Pro required for playlists with this video type');
-
-        }
-
       });
 
       jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only
@@ -2995,7 +2954,7 @@ jQuery(function() {
           }
         }
 
-        if( store_shortcode_args ) {
+        if( store_shortcode_args.length ) {
           debug_log('Preserving shortcode args', store_shortcode_args );
         }
 
@@ -3006,7 +2965,7 @@ jQuery(function() {
           }
         }
 
-        if( always_keep_shortcode_args ) {
+        if( always_keep_shortcode_args.length ) {
           debug_log('Always preserve shortcode args', always_keep_shortcode_args );
         }
 
@@ -3889,7 +3848,7 @@ jQuery(function() {
             });
           }
         } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
-          let checked = real_val === '1' || real_val === 'on' || real_val === 'true';
+          let checked = real_val === '1' || real_val === 'on' || real_val === 'true' || real_val === 'yes';
 
           // Is the value empty and is there default?
           if( real_val == '' && typeof(window.fv_player_editor_defaults[key]) != "undefined" ) {
@@ -4092,7 +4051,7 @@ jQuery(function() {
 
       let new_field = get_field( field, subElement);
       if( sInput ) {
-        new_field.val(sInput);
+        new_field.val(sInput).trigger('change');
       }
 
       show_short_link( new_field );
@@ -4419,6 +4378,7 @@ jQuery(function() {
       show_stream_fields_worker(index);
       show_rtmp_fields();
       show_end_of_video_actions();
+      show_playlist_not_supported(index);
     });
 
     $doc.on('fv_flowplayer_shortcode_new', function() {
@@ -4426,6 +4386,7 @@ jQuery(function() {
       show_stream_fields_worker(0);
       show_rtmp_fields();
       show_end_of_video_actions();
+      show_playlist_not_supported();
     });
 
     function show_end_of_video_actions() {
@@ -4449,6 +4410,38 @@ jQuery(function() {
       }
     }
 
+    function show_playlist_not_supported( index = 0 ) {
+      let video = get_playlist_video_object( index ),
+        result = {
+          'supported': true
+        }
+
+      if ( ! video.src ) {
+        return;
+      }
+
+      if (
+        video.src.indexOf('//vimeo.com') > -1 ||
+        video.src.indexOf('//vimeopro.com') > -1
+      ) {
+        result.supported = false;
+      }
+
+      // fire up a JS event for the FV Player Pro to catch,
+      // so it can check the URL and make sure we don't show
+      // a warning message for PRO-supported video types
+      $doc.trigger('fv-player-editor-src-change', [ video.src, result, this ]);
+
+      if( result.supported ) {
+        playlist_buttons_disable(false);
+
+      } else {
+        // Disable the playlist editing buttons if the video type is not supported in playlists
+        playlist_buttons_disable('FV Player Pro required for playlists with this video type');
+
+      }
+    }
+
     function show_rtmp_fields() {
       var video_object = get_current_video_object(),
         is_enabled = video_object.rtmp || video_object.rtmp_path
@@ -4468,7 +4461,7 @@ jQuery(function() {
       var encrypted = get_current_player_object() ? get_playlist_video_meta_value( 'encrypted', index ) : false;
 
       // hlskey
-      var hlskey = get_field('hlskey', true);
+      var hlskey = get_field('hls_hlskey', true);
       if( encrypted || hlskey.val() ) {
         hlskey.closest('.fv_player_interface_hide').show();
       } else {

@@ -1042,7 +1042,10 @@ JS;
 
 
   function get_popup_code() {
-    if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'no') {
+    if(
+      !empty($this->aCurArgs['end_actions']) &&
+      in_array( $this->aCurArgs['end_actions'], array( 'no', 'redirect', 'loop', 'splashend' ) )
+    ) {
       return false;
     }
 
@@ -1131,7 +1134,9 @@ JS;
 
   function get_speed_attribute( $attributes ) {
     $bShow = false;
-    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && ( $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' ) ) {
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && (
+      $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' || $this->aCurArgs['speed'] == 'true'
+    ) ) {
       $bShow = true;
     }
 
