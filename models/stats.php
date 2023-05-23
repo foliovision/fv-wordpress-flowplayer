@@ -799,28 +799,7 @@ class FV_Player_Stats {
 
             if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
-                if( !empty( $row['caption'] ) ) {
-                  $datasets[$id]['name'] = $row['caption'];
-                } else {
-
-                  // Using code from FV_Player_Db_Video::getTitleFromSrc
-                  $name = wp_parse_url( $row['src'], PHP_URL_PATH );
-                  $arr = explode('/', $name);
-                  $name = trim( end($arr) );
-
-                  if( in_array( $name, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
-                    unset($arr[count($arr)-1]);
-                    $name = end($arr);
-
-                    // Add parent folder too if there's any
-                    if( !empty( $arr ) && count( $arr ) > 2 ) {
-                      unset($arr[count($arr)-1]);
-                      $name = end($arr) . '/' . $name;
-                    }
-                  }
-                  $datasets[$id]['name'] = $name;
-                }
-
+                $datasets[$id]['name'] = $this->get_video_name( $row['src'], $row['caption'] );
               } else if( $type == 'post' ) {
                 $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
               } else if( $type == 'user' ) {
@@ -842,6 +821,56 @@ class FV_Player_Stats {
     $datasets['date-labels'] = $date_labels; // date will be used as X axis label
 
     return $datasets;
+  }
+
+  function get_video_name( $src, $caption) {
+    if( !empty($caption) ) {
+      return $caption;
+    }
+
+    // check if youtube
+    if( FV_Player_YouTube()->is_youtube( $src ) ) {
+      // get youtube id
+      preg_match( '/[\\?\\&]v=([^\\?\\&]+)/', $src, $matches );
+      if( isset($matches[1]) ) {
+        $id = $matches[1];
+        $name = 'Youtube: ' . $id;
+
+        return $name;
+      }
+    }
+
+    // check if vimeo
+    if( function_exists('FV_Player_Pro_Vimeo') && FV_Player_Pro_Vimeo()->is_vimeo($src) ) {
+      // get vimeo id
+      preg_match( '/vimeo\.com\/([0-9]+)/', $src, $matches );
+      if( isset($matches[1]) ) {
+        $id = $matches[1];
+        $name = 'Vimeo: ' . $id;
+
+        return $name;
+      }
+
+    }
+
+
+    // Using code from FV_Player_Db_Video::getTitleFromSrc
+    $name = wp_parse_url( $src, PHP_URL_PATH );
+    $arr = explode('/', $name);
+    $name = trim( end($arr) );
+
+    if( in_array( $name, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
+      unset($arr[count($arr)-1]);
+      $name = end($arr);
+
+      // Add parent folder too if there's any
+      if( !empty( $arr ) && count( $arr ) > 2 ) {
+        unset($arr[count($arr)-1]);
+        $name = end($arr) . '/' . $name;
+      }
+    }
+
+    return $name;
   }
 
   function users_column( $columns ) {
