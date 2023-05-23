@@ -2369,7 +2369,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $arr = explode('/', $name);
     $name = trim( end($arr) );
 
-    if( in_array( $name, array( 'index.m3u8', 'stream.m3u8', 'master.m3u8' ) ) ) {
+    if( in_array( $name, array( 'index.m3u8', 'stream.m3u8', 'master.m3u8', 'playlist.m3u8' ) ) ) {
       unset($arr[count($arr)-1]);
       $name = end($arr);
 
