@@ -2,7 +2,10 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
   
-  if ( ! api.have_visible_playlist() ) return;
+  if (
+    ! api.have_visible_playlist && api.conf.playlist.length == 0 ||
+    ! api.have_visible_playlist()
+  ) return;
   
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
   //if( !playlist.hasClass('fp-playlist-season') ) return; // todo: what about mobile? Should we always allow this?
