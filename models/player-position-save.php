@@ -57,11 +57,19 @@ class FV_Player_Position_Save {
   function get_video_position( $user_id, $video_id, $type, $legacy_video_id = '' ) {
     global $wpdb;
 
-    $value = $wpdb->get_var( $wpdb->prepare(
-      "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
-      $user_id,
-      $video_id,
-    ) );
+    if( $video_id ) {
+      $value = $wpdb->get_var( $wpdb->prepare(
+        "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
+        $user_id,
+        $video_id,
+      ) );
+    } else {
+      $value = $wpdb->get_var( $wpdb->prepare(
+        "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND legacy_video_id = %s",
+        $user_id,
+        $legacy_video_id,
+      ) );
+    }
 
     if( is_numeric($value) ) {
       $value = intval($value);
@@ -73,7 +81,7 @@ class FV_Player_Position_Save {
   }
 
   /**
-   * Delete video position
+   * Delete video position and set it to 0
    *
    * @param int $user_id
    * @param int $video_id
@@ -85,13 +93,10 @@ class FV_Player_Position_Save {
   function delete_video_postion( $user_id, $video_id, $type, $legacy_video_id = '' ) {
     global $wpdb;
 
-    // dont delete the record, just set the value to 0
-
-    // TODO: test if this works
     $wpdb->update(
       $wpdb->prefix."fv_player_user_video_positions",
       array(
-        $type => 0,
+        $type => 0, // dont delete the record, just set the value to 0
       ),
       array(
         'user_id' => $user_id,
@@ -149,16 +154,15 @@ class FV_Player_Position_Save {
   function set_video_position( $user_id, $video_id, $type, $value, $legacy_video_id = '' ) {
     global $wpdb;
 
-    // check if the record already exists using
+    // check if the record already exists
     $exits = $wpdb->get_var( $wpdb->prepare(
-      "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
+      "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND legacy_video_id = %s",
       $user_id,
       $video_id,
-      $type,
       $legacy_video_id
     ) );
 
-    if( $exits ) {
+    if( $exits ) { // update position
       $wpdb->update(
         $wpdb->prefix."fv_player_user_video_positions",
         array(
@@ -170,7 +174,7 @@ class FV_Player_Position_Save {
           'legacy_video_id' => $legacy_video_id,
         )
       );
-    } else {
+    } else { // insert new position
       $wpdb->insert(
         $wpdb->prefix."fv_player_user_video_positions",
         array(
@@ -195,14 +199,14 @@ class FV_Player_Position_Save {
   function set_player_position( $user_id, $player_id, $index ) {
     global $wpdb;
 
-    // check if the record already exists using
+    // check if the record already exists
     $exits = $wpdb->get_var( $wpdb->prepare(
       "SELECT id FROM ".$wpdb->prefix."fv_player_user_playlist_positions WHERE user_id = %d AND player_id = %d",
       $user_id,
       $player_id
     ) );
 
-    if( $exits ) {
+    if( $exits ) { // update index
       $wpdb->update(
         $wpdb->prefix."fv_player_user_playlist_positions",
         array(
@@ -213,7 +217,7 @@ class FV_Player_Position_Save {
           'player_id' => $player_id,
         )
       );
-    } else {
+    } else { // insert new index
       $wpdb->insert(
         $wpdb->prefix."fv_player_user_playlist_positions",
         array(
@@ -266,7 +270,7 @@ class FV_Player_Position_Save {
         if( is_numeric($name) ) {
           $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'last_position' );
         } else {
-          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'last_position', $name );
+          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'last_position', $name ); // legacy
         }
 
         if( $metaPosition ) {
@@ -279,7 +283,7 @@ class FV_Player_Position_Save {
         if( is_numeric($name) ) {
           $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'top_position' );
         } else {
-          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'top_position', $name );
+          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'top_position', $name ); // legacy
         }
 
         if( $metaPosition ) {
@@ -292,7 +296,7 @@ class FV_Player_Position_Save {
         if( is_numeric($name) ) {
           $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'finished' );
         } else {
-          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'finished', $name );
+          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'finished', $name ); // legacy
         }
 
         if( $metaPosition ) {
@@ -340,7 +344,8 @@ class FV_Player_Position_Save {
           } else {
             $position = intval($record['position']);
             $top_position = intval($record['top_position']);
-            if( is_numeric($name) ) {
+            if( is_numeric($name) ) { // if name is numeric, it's a video ID, if not then its legacy video name
+              $name = intval($name);
               $previous_position = $this->get_video_position($uid, $name, 'last_position');
               $previous_top_position = $this->get_video_position($uid, $name, 'top_position');
               $saw = $this->get_video_position($uid,  $name, 'finished');
