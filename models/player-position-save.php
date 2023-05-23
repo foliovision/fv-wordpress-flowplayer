@@ -48,26 +48,26 @@ class FV_Player_Position_Save {
    * Get video position
    *
    * @param int $user_id
-   * @param int $video_id
+   * @param int|string $video_id
    * @param string $type last_position, top_position, finished
-   * @param string $legacy_video_id
    *
    * @return int
    */
-  function get_video_position( $user_id, $video_id, $type, $legacy_video_id = '' ) {
+  function get_video_position( $user_id, $video_id, $type ) {
     global $wpdb;
 
-    if( $video_id ) {
+    if( is_numeric( $video_id) ) { // id
+      $video_id = intval($video_id);
       $value = $wpdb->get_var( $wpdb->prepare(
         "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
         $user_id,
         $video_id,
       ) );
-    } else {
+    } else { // legacy
       $value = $wpdb->get_var( $wpdb->prepare(
-        "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND legacy_video_id = %s",
+        "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND legacy_video_id = %s and video_id = 0",
         $user_id,
-        $legacy_video_id,
+        $video_id,
       ) );
     }
 
@@ -84,14 +84,21 @@ class FV_Player_Position_Save {
    * Delete video position and set it to 0
    *
    * @param int $user_id
-   * @param int $video_id
+   * @param int|string $video_id
    * @param int $type
-   * @param string $legacy_video_id
    *
    * @return void
    */
-  function delete_video_postion( $user_id, $video_id, $type, $legacy_video_id = '' ) {
+  function delete_video_postion( $user_id, $video_id, $type ) {
     global $wpdb;
+
+    $legacy_video_id = '';
+    if( !is_numeric($video_id) ) {
+      $legacy_video_id = $video_id;
+      $video_id = 0;
+    } else {
+      $video_id = intval($video_id);
+    }
 
     $wpdb->update(
       $wpdb->prefix."fv_player_user_video_positions",
@@ -144,24 +151,40 @@ class FV_Player_Position_Save {
    * Save video position
    *
    * @param int $user_id
-   * @param int $video_id
+   * @param int|string $video_id
    * @param string $type
-   * @param int $seconds
-   * @param string $legacy_video_id
+   * @param int $value
    *
    * @return void
    */
-  function set_video_position( $user_id, $video_id, $type, $value, $legacy_video_id = '' ) {
+  function set_video_position( $user_id, $video_id, $type, $value) {
     global $wpdb;
 
-    // check if the record already exists
-    $exits = $wpdb->get_var( $wpdb->prepare(
-      "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND legacy_video_id = %s",
-      $user_id,
-      $video_id,
-      $legacy_video_id
-    ) );
+    if( is_numeric($video_id) ) { // id
+      $video_id = intval($video_id);
+      $exits = $wpdb->get_var( $wpdb->prepare(
+        "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND legacy_video_id = %s",
+        $user_id,
+        $video_id,
+        ''
+      ) );
+    } else { // legacy
+      $exits = $wpdb->get_var( $wpdb->prepare(
+        "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND legacy_video_id = %s",
+        $user_id,
+        0,
+        $video_id
+      ) );
+    }
 
+    // video id and legacy
+    $legacy_video_id = '';
+    if( !is_numeric($video_id) ) {
+      $legacy_video_id = $video_id;
+      $video_id = 0;
+    }
+
+    // check if the record already exists
     if( $exits ) { // update position
       $wpdb->update(
         $wpdb->prefix."fv_player_user_video_positions",
@@ -267,11 +290,7 @@ class FV_Player_Position_Save {
       $try[] = $this->get_extensionless_file_name($aItem['sources'][0]['src']);
 
       foreach( $try AS $name ) {
-        if( is_numeric($name) ) {
-          $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'last_position' );
-        } else {
-          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'last_position', $name ); // legacy
-        }
+        $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'last_position' );
 
         if( $metaPosition ) {
           $aItem['sources'][0]['position'] = $metaPosition;
@@ -280,11 +299,7 @@ class FV_Player_Position_Save {
       }
 
       foreach( $try AS $name ) {
-        if( is_numeric($name) ) {
-          $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'top_position' );
-        } else {
-          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'top_position', $name ); // legacy
-        }
+        $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'top_position' );
 
         if( $metaPosition ) {
           $aItem['sources'][0]['top_position'] = $metaPosition;
@@ -293,11 +308,7 @@ class FV_Player_Position_Save {
       }
 
       foreach( $try AS $name ) {
-        if( is_numeric($name) ) {
-          $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'finished' );
-        } else {
-          $metaPosition = $this->get_video_position( get_current_user_id(), 0, 'finished', $name ); // legacy
-        }
+        $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'finished' );
 
         if( $metaPosition ) {
           $aItem['sources'][0]['saw'] = true;
@@ -336,70 +347,41 @@ class FV_Player_Position_Save {
         foreach ($times as $record) {
           $name = $this->get_extensionless_file_name($record['name']);
           if( intval($record['position']) == 0 ) {
-            if( is_numeric($name) ) {
-              $this->delete_video_postion($uid, $name, 'last_position');
-            } else {
-              $this->delete_video_postion($uid, 0, 'last_position', $name);
-            }
+            $this->delete_video_postion($uid, $name, 'last_position');
           } else {
             $position = intval($record['position']);
             $top_position = intval($record['top_position']);
-            if( is_numeric($name) ) { // if name is numeric, it's a video ID, if not then its legacy video name
-              $name = intval($name);
-              $previous_position = $this->get_video_position($uid, $name, 'last_position');
-              $previous_top_position = $this->get_video_position($uid, $name, 'top_position');
-              $saw = $this->get_video_position($uid,  $name, 'finished');
-              $this->set_video_position($uid,  $name, 'last_position', $position);
-            } else {
-              $previous_position = $this->get_video_position($uid, 0, 'last_position', $name);
-              $previous_top_position = $this->get_video_position($uid, 0, 'top_position', $name);
-              $saw = $this->get_video_position($uid, 0, 'finished', $name);
-              $this->set_video_position($uid, 0, 'last_position', $position, $name);
-            }
+
+            $previous_position = $this->get_video_position($uid, $name, 'last_position');
+            $previous_top_position = $this->get_video_position($uid, $name, 'top_position');
+            $saw = $this->get_video_position($uid,  $name, 'finished');
+            $this->set_video_position($uid,  $name, 'last_position', $position);
 
             // Store the top position if user didn't see the full video
             // and if it's the same or bigger than what it was before
             // and if it's bigger than the last position
             $max = max( array( $previous_top_position, $previous_position, $position, $top_position ) );
             if( !$saw && $max >= $previous_top_position && $max > $position ) {
-              if( is_numeric($name) ) {
-                $this->set_video_position($uid, $name, 'top_position', $max);
-              } else {
-                $this->set_video_position($uid, 0, 'top_position', $max, $name);
-              }
+              $this->set_video_position($uid, $name, 'top_position', $max);
 
             // Otherwise get rid of it
             } else {
-              if( is_numeric($name) ) {
-                $this->delete_video_postion($uid, $name, 'top_position');
-              } else {
-                $this->delete_video_postion($uid, 0, 'top_position', $name);
-              }
+              $this->delete_video_postion($uid, $name, 'top_position');
             }
           }
 
           // Did the user saw the full video?
           if( !empty($record['saw']) && $record['saw'] == true ) {
-            if( is_numeric($name) ) {
-              $this->set_video_position($uid, $name, 'finished', 1);
-              $this->delete_video_postion($uid, $name, 'top_position');
-            } else {
-              $this->set_video_position($uid, 0, 'finished', 1, $name);
-              $this->delete_video_postion($uid, 0, 'top_position', $name);
-            }
+            $this->set_video_position($uid, $name, 'finished', 1);
+            $this->delete_video_postion($uid, $name, 'top_position');
           }
         }
 
         // What are the videos which user saw in full length?
         if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
           foreach ($_POST['sawVideo'] as $record) {
-            if( is_numeric($name) ) {
-              $this->set_video_position($uid, $name, 'finished', 1);
-              $this->delete_video_postion($uid, $name, 'top_position');
-            } else {
-              $this->set_video_position($uid, 0, 'finished', 1, $this->get_extensionless_file_name($record['name']));
-              $this->delete_video_postion($uid, 0, 'top_position', $this->get_extensionless_file_name($record['name']));
-            }
+            $this->set_video_position($uid, $name, 'finished', 1);
+            $this->delete_video_postion($uid, $name, 'top_position');
           }
         }
 
