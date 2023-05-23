@@ -292,8 +292,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     );
   });
   </script>
-<?php elseif ( ( strcmp($current_page, 'fv_player_stats') === 0 ) ) : ?>
-  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
 <?php endif;?>
 
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
@@ -369,8 +367,6 @@ jQuery( document ).ready(function() {
   );
 })
 </script>
-<?php elseif ( ( strcmp($current_page, 'fv_player_stats_users') === 0 ) ) : ?>
-  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
 <?php endif; ?>
 
 <?php if( isset($fv_user_watch_time_stats_data) && !empty($fv_user_watch_time_stats_data) ): ?>
