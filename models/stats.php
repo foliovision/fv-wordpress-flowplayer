@@ -942,7 +942,7 @@ class FV_Player_Stats {
       // search for users by login, nicename or email
       $users = get_users( array(
         'search' => '*' . $search . '*',
-        'search_columns' => array( 'user_login', 'user_nicename', 'user_email' ),
+        'search_columns' => array( 'user_login', 'display_name' ,'user_nicename', 'user_email' ),
       ) );
 
       $results = array();
