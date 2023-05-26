@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.1
+Tested up to: 6.2
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,25 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.36.7212 - 2023/05/03 =
+
+* Bugfix - DigitalOcean Spaces/AWS S3 browser broken after AWS SDK update, fixing tests too
+
+= 7.5.35.7212 - 2023/04/26 =
+
+* AWS SDK update - PHP 7.3 is now required for the DigitalOcean Spaces/AWS S3 browser
+* Bugfix - Avoid PHP fatal errors if plugin PHP files are opened directly
+* Bugfix - Fix audio-only playlist detection
+* Bugfix - Sticky player behavior when VAST ad is playing
+* Security - prevent XSS for logged in editors
+
+= 7.5.32.7212 - 2023/03/31 =
+
+* Tested up to WordPress 6.2. Note that the FV Player Editor is not available in the Block Themes Site Editor and you have to put in the shortcode by hand.
+* Video Stats - CSV export function
+* Video Stats - recording each logged in user separately, see wp-admin -> FV Player -> User Stats
+* Video Stats - recording video watch duration
 
 = 7.5.31.7212 - 2023/01/30 =
 

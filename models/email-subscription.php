@@ -3,6 +3,11 @@
 class FV_Player_Email_Subscription {
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_action( 'admin_init', array($this, 'init_options') );
   
     add_action( 'admin_init', array($this, 'admin__add_meta_boxes') );

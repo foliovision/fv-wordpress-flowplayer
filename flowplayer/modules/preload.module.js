@@ -9,9 +9,13 @@ if (typeof (flowplayer) !== 'undefined'){
     root = jQuery(root);
 
     // Prevent preloading for YouTube videos
-    var sources = api.conf.clip.sources,
+    var sources = false,
       start_index = jQuery(root).data('playlist_start'),
       index = start_index ? start_index-1 : 0;
+    
+    if ( api.conf.clip ) {
+      sources = api.conf.clip.sources;
+    }
 
     if( api.conf.playlist[index] && api.conf.playlist[index].sources ) {
       sources = api.conf.playlist[index].sources

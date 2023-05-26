@@ -17,6 +17,11 @@ class FV_Player_lightbox {
   }
   
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+    
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
     add_filter('fv_flowplayer_shortcode', array($this, 'shortcode'), 15, 3);
@@ -391,7 +396,7 @@ SCRIPT;
       }
 
       // Load inline JS only, but will this work with WordPress 5.7?
-      wp_register_script( 'fv_player_lightbox', '' );
+      wp_register_script( 'fv_player_lightbox', '', array( 'jquery') );
       wp_enqueue_script( 'fv_player_lightbox' );
       wp_add_inline_script( 'fv_player_lightbox', $script );
 
@@ -468,7 +473,7 @@ SCRIPT;
   function html_lightbox_images_callback($matches) {
     if( stripos($matches[1],'data-fancybox') ) return $matches[0];
     
-    if (!preg_match('/href=[\'"].*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
+    if (!preg_match('/href=[\'"][^\'"]*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
     $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
@@ -492,7 +497,7 @@ SCRIPT;
   }
 
   function lightbox_playlist_style($aArgs) {
-    if (isset($aArgs['lightbox'])) { // we force the slider playlist style as that' the only one where the lightbox works properly with the sizing right now
+    if ( isset( $aArgs['lightbox'] ) && $aArgs['lightbox'] ) { // we force the slider playlist style as that' the only one where the lightbox works properly with the sizing right now
       $aArgs['liststyle'] = 'slider';
     }
     return $aArgs;

@@ -16,6 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 // Set the FV Player wp-admin menu item to be open
 ?>
 <script>
@@ -131,13 +135,13 @@ function fv_flowplayer_admin_amazon_options() {
 
           <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
           <?php
-          $can_use_aws_sdk = version_compare(phpversion(),'7.2.5') != -1;
-
+          $can_use_aws_sdk = version_compare(phpversion(),'7.3.5') != -1;
+          
           $fv_fp->_get_checkbox( array(
             'name' => __('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)',
             'key' => 's3_browser',
             'help' =>  !$can_use_aws_sdk ?
-              __('This function requires PHP >= 7.2.5, please contact your web host support.' , 'fv-wordpress-flowplayer')
+              __('This function requires PHP >= 7.3.5, please contact your web host support.' , 'fv-wordpress-flowplayer')
               : __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer'),
             'disabled' => !$can_use_aws_sdk
           ) ); ?>
@@ -975,7 +979,7 @@ function fv_flowplayer_admin_pro() {
   if( isset($aCheck->valid) && $aCheck->valid ) : ?>
     <p><?php _e('Valid license found, click the button at the top of the screen to install FV Player Pro!', 'fv-wordpress-flowplayer'); ?></p>
   <?php else : ?>
-    <p><a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download"><?php _e('Purchase FV Flowplayer license', 'fv-wordpress-flowplayer'); ?></a> <?php _e('to enable Pro features!', 'fv-wordpress-flowplayer'); ?></p>
+    <p><a href="https://foliovision.com/player/download"><?php _e('Purchase FV Flowplayer license', 'fv-wordpress-flowplayer'); ?></a> <?php _e('to enable Pro features!', 'fv-wordpress-flowplayer'); ?></p>
   <?php endif; ?>
   <table class="form-table2">
     <tr>
@@ -1956,7 +1960,7 @@ function fv_flowplayer_admin_database() {
 
 function fv_flowplayer_admin_embedded_on() {
   global $wpdb;
-  $players_with_no_posts = $wpdb->get_var( "SELECT p.id, m.meta_value FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+  $players_with_no_posts = $wpdb->get_var( "SELECT count(p.id) FROM {$wpdb->prefix}fv_player_players AS p LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
 
   $url = wp_nonce_url(
     add_query_arg(
@@ -2151,7 +2155,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <li><?php _e('Or remove the logo completely', 'fv-wordpress-flowplayer'); ?></li>
             <li><?php _e('The best video plugin for Wordpress', 'fv-wordpress-flowplayer'); ?></li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong><?php _e('Easter sale!', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('All Licenses 20% Off', 'fv-wordpress-flowplayer'); ?></a></p>
+              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e('Easter sale!', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('All Licenses 20% Off', 'fv-wordpress-flowplayer'); ?></a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">

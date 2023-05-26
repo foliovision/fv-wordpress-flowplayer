@@ -13,6 +13,11 @@ class FV_Player_Bunny_Stream_Wizard extends FV_Player_Wizard_Base_Class {
   }
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     parent::__construct( array(
       'id' => 'fv_player_bunny_stream_wizard',
       'page' => 'fv_player_bunny_stream',

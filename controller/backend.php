@@ -17,6 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
 
 /*
  *  Video Checker support email
@@ -773,7 +776,7 @@ function fv_player_embedded_on_fix() {
   if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-embedded-on-fix' ) ) {
 
     global $wpdb;
-    $players_with_no_posts = $wpdb->get_col( "SELECT p.id FROM wp_hp_fv_player_players AS p LEFT JOIN wp_hp_fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
+    $players_with_no_posts = $wpdb->get_col( "SELECT p.id FROM {$wpdb->prefix}fv_player_players AS p LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
 
     echo "<h2>FV Player Embedded On Post Scan</h2>\n";
 
@@ -1058,6 +1061,14 @@ function fv_player_edit_posts_cell() {
   }
 }
 
+/**
+ * Get taxonomies registered for the post type. The core WordPress function
+ * to do this does not return taxonomy if it's enabled for multiple
+ * post types. So we do it properly here.
+ * 
+ * @param  string $post_type Post type to check
+ * @return array             Taxonomy slugs
+ */
 function fv_player_get_post_type_taxonomies( $post_type ) {
   $taxonomies = get_taxonomies( array(
     'public'      => true,

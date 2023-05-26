@@ -40,6 +40,7 @@ class flowplayer_frontend extends flowplayer
 
   var $currentVideoObject = null;
 
+  private $fRatio = null;
 
   /**
    * Retrieves instance of current player
@@ -158,18 +159,10 @@ class flowplayer_frontend extends flowplayer
           }
         }
       }
+    }
 
-      if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && (
-            $videos[0]->getMetaValue('audio',true) ||
-            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
-          )
-        ) {
-          // force horizontal playlist style for audio as that the only one styled properly
-          $this->aCurArgs['liststyle'] = 'horizontal';
-        }
-      }
-    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+    // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
+    if ( $this->is_audio_playlist() ) {
       $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
@@ -282,12 +275,15 @@ class flowplayer_frontend extends flowplayer
 
     // remove all playlist items but the one we need if we're previewing
     // and only editing a single video
-    if( isset($args['current_video_to_edit']) && $args['current_video_to_edit'] > -1 ) {
+    if ( $this->get_current_video_to_edit() > - 1 ) {
       $aPlaylistItems = array( $aPlaylistItems[ $args['current_video_to_edit'] ] );
 
       // Pick title and splash from the previewed video
       $this->aCurArgs['title'] = $aPlaylistItems[0]['fv_title'];
       $splash_img = $aPlaylistItems[0]['splash'];
+
+      // Make sure it's not using a playlist style
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
     // Load playlists.css later, if it's used.
@@ -472,15 +468,6 @@ class flowplayer_frontend extends flowplayer
           return $this->ret;
         }
 
-        foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-          //if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-
-          if( !$this->_get_option('engine') && stripos( $media_item, '.m4v' ) !== false ) {
-            $this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
-          }
-
-        }
-
         $popup = '';
 
         $aSubtitles = $this->get_subtitles();
@@ -604,7 +591,7 @@ class flowplayer_frontend extends flowplayer
         $attributes['style'] = '';
 
         // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-        if( !wp_style_is('fv_flowplayer') ) {
+        if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
           $attributes['style'] = 'position:relative; ';
         }
 
@@ -625,7 +612,9 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( !$this->_get_option('allowfullscreen') || isset($this->aCurArgs['fullscreen']) && $this->aCurArgs['fullscreen'] == 'false' ) {
-          $attributes['data-fullscreen'] = 'false';
+          if ( ! in_array( $this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+            $attributes['data-fullscreen'] = 'false';
+          }
         }
 
         if( !$bIsAudio ) {
@@ -669,13 +658,13 @@ class flowplayer_frontend extends flowplayer
           }
 
           if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
-            $attributes['class'] .= ' has-title';
+            $attributes['class'] .= ' has-title-below';
             $this->sHTMLAfter .= apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
           }
           $this->sHTMLAfter .= $playlist_items_external_html;
 
         } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
-          $attributes['class'] .= ' has-title';
+          $attributes['class'] .= ' has-title-below';
           $this->sHTMLAfter = apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
 
         }
@@ -764,7 +753,7 @@ class flowplayer_frontend extends flowplayer
           } else {
             $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
             // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-            if( !wp_style_is('fv_flowplayer') ) {
+            if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
               $image .= ' style="position:absolute;top:0;width:100%"';
             }
             $image .= ' />';
@@ -980,6 +969,20 @@ JS;
   }
 
 
+  /**
+   * Get the index of the video in the FV Player Editor preview
+   *
+   * @return int Zero-based index of the video in playlist or -1 if it's the playlist view
+   */
+  function get_current_video_to_edit() {
+    if ( isset( $this->aCurArgs['current_video_to_edit'] ) && $this->aCurArgs['current_video_to_edit'] > -1 ) {
+      return $this->aCurArgs['current_video_to_edit'];
+    }
+
+    return -1;
+  }
+
+
   function get_embed_url() {
     if( empty($this->aPlayers[get_the_ID()]) ) {
       $num = $this->aPlayers[get_the_ID()] = 1;
@@ -1039,7 +1042,10 @@ JS;
 
 
   function get_popup_code() {
-    if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'no') {
+    if(
+      !empty($this->aCurArgs['end_actions']) &&
+      in_array( $this->aCurArgs['end_actions'], array( 'no', 'redirect', 'loop', 'splashend' ) )
+    ) {
       return false;
     }
 
@@ -1128,7 +1134,9 @@ JS;
 
   function get_speed_attribute( $attributes ) {
     $bShow = false;
-    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && ( $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' ) ) {
+    if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && (
+      $this->aCurArgs['speed'] == 'buttons' || $this->aCurArgs['speed'] == 'yes' || $this->aCurArgs['speed'] == 'true'
+    ) ) {
       $bShow = true;
     }
 
@@ -1411,6 +1419,45 @@ JS;
 HTML;
 
     return $sHTML;
+  }
+
+
+  /**
+   * Is it a audio track-only playlist with no splash screens?
+   */
+  function is_audio_playlist() {
+
+    // Are all the database player items audio tracks?
+    if( $player = $this->current_player() ) {
+
+      $items = $player->getVideos();
+      $count_audio_items = 0;
+
+      if( $items ) {
+        foreach( $items AS $item ) {
+          if( $item->getSplash() ) {
+            continue;
+          }
+
+          if(
+            $item->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
+          ) {
+            $count_audio_items++;
+          }
+        }
+      }
+
+      if ( count( $items ) === $count_audio_items ) {
+        return true;
+      }
+
+    // Does the legacy shortcode start with an audio track with no splash?
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+      return true;
+    }
+
+    return false;
   }
 
 

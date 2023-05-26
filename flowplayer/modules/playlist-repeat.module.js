@@ -27,7 +27,7 @@ flowplayer( function(api,root) {
     }
     
     if( root.data('button-repeat') ) {
-      if( api.conf.playlist.length > 0 && root.find('.fv-fp-playlist').length == 0 ) {
+      if( api.have_visible_playlist() && root.find('.fv-fp-playlist').length == 0 ) {
         var t = fv_flowplayer_translations,
           playlist_button = jQuery(
           '<strong class="fv-fp-playlist mode-normal">\
@@ -138,7 +138,7 @@ flowplayer( function(api,root) {
           }
         });
         
-      } else if( root.find('.fv-fp-track-repeat').length == 0 && api.conf.playlist.length == 0 ) {
+      } else if( root.find('.fv-fp-track-repeat').length == 0 && ! api.have_visible_playlist() ) {
         var button_track_repeat = jQuery('<strong class="fv-fp-track-repeat"><svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-replay-track"><use xlink:href="#fvp-replay-track"></use></svg></strong>');
         button_track_repeat.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
           e.preventDefault();

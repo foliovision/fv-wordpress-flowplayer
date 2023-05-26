@@ -16,6 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 require_once dirname( __FILE__ ) . '/../models/flowplayer.php';
 if (!class_exists('flowplayer_frontend')) 
   require_once dirname( __FILE__ ) . '/../models/flowplayer-frontend.php';

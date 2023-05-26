@@ -29,7 +29,7 @@ function fv_flowplayer_insertUpdateOrDeleteVideoMeta( options ) {
 }
 
 function fv_wp_flowplayer_shortcode_parse_arg( sShortcode, sArg, bHTML, sCallback ) {
-  fv_player_editor.shortcode_parse_arg( sShortcode, sArg, bHTML, sCallback );
+  return fv_player_editor.shortcode_parse_arg( sShortcode, sArg, bHTML, sCallback );
 }
 
 // TODO: This is used in editor-screenshots.js and FV Player Pay Per View!
