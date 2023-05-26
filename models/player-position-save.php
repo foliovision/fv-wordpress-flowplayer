@@ -7,11 +7,254 @@ class FV_Player_Position_Save {
       exit;
     }
 
-    add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save') );
-    add_filter('fv_player_item', array($this, 'set_last_position'), 10, 3 );
-    add_filter('fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );
-    
+    add_action( 'fv_player_update',  array( $this, 'plugin_update_database' ), 9 );
+    add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save' ) );
+    add_filter( 'fv_player_item', array( $this, 'set_last_position' ), 10, 3 );
+    add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
+  }
+
+  function plugin_update_database() {
+    global $wpdb;
+
+    // create table to store user video positions
+    $sql_user_video_positions = "CREATE TABLE ".$wpdb->prefix."fv_player_user_video_positions (
+      id int(11) NOT NULL auto_increment,
+      user_id int(11) NOT NULL,
+      video_id int(11) NOT NULL,
+      last_position int(11) NOT NULL,
+      top_position int(11) NOT NULL,
+      finished tinyint(1) NOT NULL,
+      legacy_video_id varchar(255) NOT NULL,
+      PRIMARY KEY  (id),
+      KEY user_id (user_id),
+      KEY video_id (video_id)
+    )" . $wpdb->get_charset_collate() . ";";
+
+    // create table to store position in playlists
+    $sql_playlist_positions = "CREATE TABLE ".$wpdb->prefix."fv_player_user_playlist_positions (
+      id int(11) NOT NULL auto_increment,
+      user_id int(11) NOT NULL,
+      player_id int(11) NOT NULL,
+      item_index int(11) NOT NULL,
+      PRIMARY KEY  (id),
+      KEY user_id (user_id),
+      KEY player_id (player_id)
+    )" . $wpdb->get_charset_collate() . ";";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+    dbDelta( $sql_user_video_positions );
+    dbDelta( $sql_playlist_positions );
+  }
+
+  /**
+   * Get video position
+   *
+   * @param int $user_id
+   * @param int|string $video_id
+   * @param string $type last_position, top_position, finished
+   *
+   * @return int
+   */
+  function get_video_position( $user_id, $video_id, $type ) {
+    global $wpdb;
+
+    if( is_numeric( $video_id) ) { // id
+      $video_id = intval($video_id);
+      $value = $wpdb->get_var( $wpdb->prepare(
+        "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d",
+        $user_id,
+        $video_id,
+      ) );
+    } else { // legacy
+      $value = $wpdb->get_var( $wpdb->prepare(
+        "SELECT $type FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND legacy_video_id = %s and video_id = 0",
+        $user_id,
+        $video_id,
+      ) );
+    }
+
+    if( is_numeric($value) ) {
+      $value = intval($value);
+    } else {
+      $value = 0;
+    }
+
+    return $value;
+  }
+
+  /**
+   * Delete video position and set it to 0
+   *
+   * @param int $user_id
+   * @param int|string $video_id
+   * @param int $type
+   *
+   * @return void
+   */
+  function delete_video_postion( $user_id, $video_id, $type ) {
+    global $wpdb;
+
+    $legacy_video_id = '';
+    if( !is_numeric($video_id) ) {
+      $legacy_video_id = $video_id;
+      $video_id = 0;
+    } else {
+      $video_id = intval($video_id);
+    }
+
+    $wpdb->update(
+      $wpdb->prefix."fv_player_user_video_positions",
+      array(
+        $type => 0, // dont delete the record, just set the value to 0
+      ),
+      array(
+        'user_id' => $user_id,
+        'video_id' => $video_id,
+        'legacy_video_id' => $legacy_video_id,
+      ),
+      array(
+        '%d',
+      ),
+      array(
+        '%d',
+        '%d',
+        '%s',
+      )
+    );
+  }
+
+  /**
+   * Get player position
+   *
+   * @param int $user_id
+   * @param int $player_id
+   *
+   * @return int;
+   */
+  function get_player_position( $user_id, $player_id ) {
+    global $wpdb;
+
+    $index = $wpdb->get_var( $wpdb->prepare(
+      "SELECT item_index FROM ".$wpdb->prefix."fv_player_user_playlist_positions WHERE user_id = %d AND player_id = %d",
+      $user_id,
+      $player_id
+    ) );
+
+    if( is_numeric($index) ) {
+      $index = intval($index);
+    } else {
+      $index = 0;
+    }
+
+    return $index;
+  }
+
+  /**
+   * Save video position
+   *
+   * @param int $user_id
+   * @param int|string $video_id
+   * @param string $type
+   * @param int $value
+   *
+   * @return void
+   */
+  function set_video_position( $user_id, $video_id, $type, $value) {
+    global $wpdb;
+
+    if( is_numeric($video_id) ) { // id
+      $video_id = intval($video_id);
+      $exits = $wpdb->get_var( $wpdb->prepare(
+        "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND legacy_video_id = %s",
+        $user_id,
+        $video_id,
+        ''
+      ) );
+    } else { // legacy
+      $exits = $wpdb->get_var( $wpdb->prepare(
+        "SELECT id FROM ".$wpdb->prefix."fv_player_user_video_positions WHERE user_id = %d AND video_id = %d AND legacy_video_id = %s",
+        $user_id,
+        0,
+        $video_id
+      ) );
+    }
+
+    // video id and legacy
+    $legacy_video_id = '';
+    if( !is_numeric($video_id) ) {
+      $legacy_video_id = $video_id;
+      $video_id = 0;
+    }
+
+    // check if the record already exists
+    if( $exits ) { // update position
+      $wpdb->update(
+        $wpdb->prefix."fv_player_user_video_positions",
+        array(
+          $type => $value,
+        ),
+        array(
+          'user_id' => $user_id,
+          'video_id' => $video_id,
+          'legacy_video_id' => $legacy_video_id,
+        )
+      );
+    } else { // insert new position
+      $wpdb->insert(
+        $wpdb->prefix."fv_player_user_video_positions",
+        array(
+          'user_id' => $user_id,
+          'video_id' => $video_id,
+          'legacy_video_id' => $legacy_video_id,
+          $type => $value,
+        )
+      );
+    }
+  }
+
+  /**
+   * Save player position
+   *
+   * @param int $user_id
+   * @param int $player_id
+   * @param int $index
+   *
+   * @return void
+   */
+  function set_player_position( $user_id, $player_id, $index ) {
+    global $wpdb;
+
+    // check if the record already exists
+    $exits = $wpdb->get_var( $wpdb->prepare(
+      "SELECT id FROM ".$wpdb->prefix."fv_player_user_playlist_positions WHERE user_id = %d AND player_id = %d",
+      $user_id,
+      $player_id
+    ) );
+
+    if( $exits ) { // update index
+      $wpdb->update(
+        $wpdb->prefix."fv_player_user_playlist_positions",
+        array(
+          'item_index' => $index,
+        ),
+        array(
+          'user_id' => $user_id,
+          'player_id' => $player_id,
+        )
+      );
+    } else { // insert new index
+      $wpdb->insert(
+        $wpdb->prefix."fv_player_user_playlist_positions",
+        array(
+          'user_id' => $user_id,
+          'player_id' => $player_id,
+          'item_index' => $index,
+        )
+      );
+    }
   }
 
   public static function get_extensionless_file_name($path) {
@@ -39,7 +282,7 @@ class FV_Player_Position_Save {
       isset($aItem['sources']) &&
       isset($aItem['sources'][0])
     ) {
-      
+
       // Try with the video ID first
       $try = array();
       if( $fv_fp->current_player() ) {
@@ -52,21 +295,27 @@ class FV_Player_Position_Save {
       $try[] = $this->get_extensionless_file_name($aItem['sources'][0]['src']);
 
       foreach( $try AS $name ) {
-        if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_position_' . $name, true ) ) {
-          $aItem['sources'][0]['position'] = intval($metaPosition);
+        $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'last_position' );
+
+        if( $metaPosition ) {
+          $aItem['sources'][0]['position'] = $metaPosition;
           break;
         }
       }
 
       foreach( $try AS $name ) {
-        if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_top_position_' . $name, true ) ) {
-          $aItem['sources'][0]['top_position'] = intval($metaPosition);
+        $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'top_position' );
+
+        if( $metaPosition ) {
+          $aItem['sources'][0]['top_position'] = $metaPosition;
           break;
         }
       }
-      
+
       foreach( $try AS $name ) {
-        if( $metaPosition = get_user_meta( get_current_user_id(), 'fv_wp_flowplayer_saw_' . $name, true ) ) {
+        $metaPosition = $this->get_video_position( get_current_user_id(), $name, 'finished' );
+
+        if( $metaPosition ) {
           $aItem['sources'][0]['saw'] = true;
           break;
         }
@@ -81,7 +330,7 @@ class FV_Player_Position_Save {
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
     if( isset( $_POST['videoTimes'] ) ) {
       $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
-    
+
       if ($decoded_times !== false) {
         $_POST['videoTimes'] = $decoded_times;
       }
@@ -89,7 +338,7 @@ class FV_Player_Position_Save {
 
     if( isset( $_POST['playlistItems'] ) ) {
       $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
-    
+
       if ($decoded_playlists !== false) {
         $_POST['playlistItems'] = $decoded_playlists;
       }
@@ -103,50 +352,50 @@ class FV_Player_Position_Save {
         foreach ($times as $record) {
           $name = $this->get_extensionless_file_name($record['name']);
           if( intval($record['position']) == 0 ) {
-            delete_user_meta($uid, 'fv_wp_flowplayer_position_'.$name );
+            $this->delete_video_postion($uid, $name, 'last_position');
           } else {
-            $position = floatval($record['position']);
-            $top_position = floatval($record['top_position']);
-            $previous_position = floatval( get_user_meta( $uid, 'fv_wp_flowplayer_position_'.$name, true ) );
-            $previous_top_position = floatval( get_user_meta( $uid, 'fv_wp_flowplayer_top_position_'.$name, true ) );
-            $saw = get_user_meta( $uid, 'fv_wp_flowplayer_saw_'.$name, true );
+            $position = intval($record['position']);
+            $top_position = intval($record['top_position']);
 
-            update_user_meta($uid, 'fv_wp_flowplayer_position_'.$name, $record['position']);
+            $previous_position = $this->get_video_position($uid, $name, 'last_position');
+            $previous_top_position = $this->get_video_position($uid, $name, 'top_position');
+            $saw = $this->get_video_position($uid,  $name, 'finished');
+            $this->set_video_position($uid,  $name, 'last_position', $position);
 
             // Store the top position if user didn't see the full video
             // and if it's the same or bigger than what it was before
             // and if it's bigger than the last position
             $max = max( array( $previous_top_position, $previous_position, $position, $top_position ) );
             if( !$saw && $max >= $previous_top_position && $max > $position ) {
-              update_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name, $max);
+              $this->set_video_position($uid, $name, 'top_position', $max);
 
             // Otherwise get rid of it
             } else {
-              delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name);
+              $this->delete_video_postion($uid, $name, 'top_position');
             }
           }
-          
+
           // Did the user saw the full video?
           if( !empty($record['saw']) && $record['saw'] == true ) {
-            update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$name, true);
-            delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name );
+            $this->set_video_position($uid, $name, 'finished', 1);
+            $this->delete_video_postion($uid, $name, 'top_position');
           }
         }
-        
+
         // What are the videos which user saw in full length?
         if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
           foreach ($_POST['sawVideo'] as $record) {
-            update_user_meta($uid, 'fv_wp_flowplayer_saw_'.$this->get_extensionless_file_name($record['name']), true);
-            delete_user_meta($uid, 'fv_wp_flowplayer_top_position_'.$name );
+            $this->set_video_position($uid, $name, 'finished', 1);
+            $this->delete_video_postion($uid, $name, 'top_position');
           }
         }
-        
+
         $success = true;
       }
 
       if (isset($_POST['playlistItems']) && ($playlistItems = $_POST['playlistItems']) && count($playlistItems)) {
         foreach ($playlistItems as $playeritem) {
-          update_user_meta($uid, 'fv_wp_flowplayer_player_playlist_'.$playeritem['player'], $playeritem['item']);
+          $this->set_player_position($uid, $playeritem['player'], $playeritem['item']);
         }
 
         $success = true;
@@ -182,7 +431,7 @@ class FV_Player_Position_Save {
 
         $user_id = get_current_user_id();
         if( $user_id ) {
-          $metaItem = get_user_meta( $user_id, 'fv_wp_flowplayer_player_playlist_' . $player_id, true );
+          $metaItem = $this->get_player_position($user_id, $player_id);
 
           if ( $metaItem >= 0 ) {
             // playlist item restore
