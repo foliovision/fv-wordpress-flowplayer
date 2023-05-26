@@ -6,6 +6,11 @@ if( !class_exists('FV_Player_Stats_Export') ) :
 class FV_Player_Stats_Export {
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     if( isset( $_GET['fv-stats-export-user']) ) {
       add_action('admin_init', array( $this, 'export_user_data' ) );
     }

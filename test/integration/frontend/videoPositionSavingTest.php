@@ -13,7 +13,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
   protected $backupGlobals = false;
 
-  public function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // create a post with playlist shortcode
@@ -60,7 +60,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
       $this->_handleAjax( 'fv_wp_flowplayer_video_position_save' );
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
-      $this->assertInternalType( 'object', $response );
+      $this->assertIsObject($response );
       $this->assertObjectHasAttribute( 'success', $response );
       $this->assertFalse( $response->success );
     }
@@ -116,7 +116,7 @@ HTML;
       $this->_handleAjax( 'fv_wp_flowplayer_video_position_save' );
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
-      $this->assertInternalType( 'object', $response );
+      $this->assertIsObject( $response );
       $this->assertObjectHasAttribute( 'success', $response );
       $this->assertTrue( $response->success );
     }
@@ -163,7 +163,7 @@ HTML;
       $this->_handleAjax( 'fv_wp_flowplayer_video_position_save' );
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
-      $this->assertInternalType( 'object', $response );
+      $this->assertIsObject( $response );
       $this->assertObjectHasAttribute( 'success', $response );
       $this->assertTrue( $response->success );
     }
@@ -190,7 +190,7 @@ HTML;
       $this->_handleAjax( 'fv_wp_flowplayer_video_position_save' );
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
-      $this->assertInternalType( 'object', $response );
+      $this->assertIsObject( $response );
       $this->assertObjectHasAttribute( 'success', $response );
       $this->assertTrue( $response->success );
     }

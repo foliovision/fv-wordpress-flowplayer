@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 global $fv_fp, $fv_player_MailChimp;
 
 $fv_player_MailChimp = false;

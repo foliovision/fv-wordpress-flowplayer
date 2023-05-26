@@ -5,6 +5,11 @@ class FV_Player_Stats {
   var $cache_directory = false;
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
@@ -42,8 +47,11 @@ class FV_Player_Stats {
   }
 
   function stats_link() {
-    add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
-    add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
+    global $fv_fp;
+    if ( $fv_fp->_get_option('video_stats_enable') ) {
+      add_submenu_page( 'fv_player', 'FV Player Stats', 'Stats', 'manage_options', 'fv_player_stats', 'fv_player_stats_page' );
+      add_submenu_page( 'fv_player', 'FV Player User Stats', 'User Stats', 'manage_options', 'fv_player_stats_users', 'fv_player_stats_page' );
+    }
   }
 
   function get_stat_columns() {
@@ -333,11 +341,27 @@ class FV_Player_Stats {
   public function top_ten_videos_by_watch_time( $interval, $user_check ) {
     global $wpdb;
 
+    $valid_interval = $this->check_watch_time_in_interval( $interval, $user_check );
+
+    if( !$valid_interval ) {
+      return false;
+    }
+
     $excluded_posts = $this->get_posts_to_exclude();
 
     $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10");
 
     return $results;
+  }
+
+  public function check_watch_time_in_interval( $interval, $user_check ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check AND seconds > 0 LIMIT 1");
+
+    return !empty($results);
   }
 
   public function get_posts_to_exclude() {
@@ -383,11 +407,6 @@ class FV_Player_Stats {
       $results = $wpdb->get_results( "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
     } else {
       $results = $wpdb->get_results( "SELECT date, user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
-    }
-
-    if( isset($_GET['martinv']) ) {
-      var_dump ( 'debug get_top_user_stats', $wpdb->last_query );
-      die();
     }
 
     if( !empty($results) ) {
@@ -506,6 +525,54 @@ class FV_Player_Stats {
     return $result;
   }
 
+  public function get_valid_dates( $user_id ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    if( $user_id ) {
+      $user_id = intval( $user_id );
+      $user_check =" AND user_id = $user_id";
+    } else {
+      $user_check = '';
+    }
+
+    $dates_all = array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month' );
+    $years = $this->get_all_years();
+    $dates_all = $dates_all + $years; // merge
+    $dates_valid = array();
+
+    $this_year = (int) date( 'Y' );
+    $last_year = $this_year - 1;
+
+    foreach( $dates_all as $key => $value ) {
+
+      $interval = self::get_interval_from_range( $key );
+
+      $result = $wpdb->get_results( "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $user_check LIMIT 1", ARRAY_A );
+
+      if( $key == $this_year) {
+        $key = 'this_year';
+        $value = 'This Year';
+      } else if( $key == $last_year ) {
+        $key = 'last_year';
+        $value = 'Last Year';
+      }
+
+      $dates_valid[$key] = array();
+
+      if( !empty($result) ) {
+        $dates_valid[$key]['disabled'] = false;
+      } else {
+        $dates_valid[$key]['disabled'] = true;
+      }
+
+      $dates_valid[$key]['value'] = $value;
+    }
+
+    return $dates_valid;
+  }
+
   public function get_valid_interval( $user_id ) {
     // we need to check every interval for user to check if there is any data
     $intervals = array(
@@ -513,9 +580,11 @@ class FV_Player_Stats {
       'last_week',
       'this_month',
       'last_month',
-      'this_year',
-      'last_year'
     );
+
+    $years = $this->get_all_years();
+
+    $intervals = $intervals + $years; // merge
 
     // TODO: optimize performance, no need to use SUM or ORDER BY, limit 1 would be enough
     foreach( $intervals as $k => $interval ) {
@@ -586,6 +655,11 @@ class FV_Player_Stats {
       $last_year_end = date('Y-12-31', strtotime('-1 year'));
 
       $date_range = "date BETWEEN '$last_year_start' AND '$last_year_end'";
+    } else if( is_numeric($range)) { // specific year like 2021
+      $year_start = $range . '-01-01';
+      $year_end = $range . '-12-31';
+
+      $date_range = "date BETWEEN '$year_start' AND '$year_end'";
     }
 
     return $date_range;
@@ -631,9 +705,32 @@ class FV_Player_Stats {
       $start_day = date('Y-01-01', strtotime('-1 year'));
       $end_day = date('Y-12-31', strtotime('-1 year'));
       $dates = $this->get_days_between_dates( $start_day, $end_day );
+    } else if( is_numeric($range) ) { // get dates for specific year like 2021
+      $start_day = $range . '-01-01';
+      $end_day = $range . '-12-31';
+      $dates = $this->get_days_between_dates( $start_day, $end_day );
     }
 
     return $dates;
+  }
+
+  function get_all_years() {
+    global $wpdb;
+
+    $years = array();
+
+    $oldest_year = (int) $wpdb->get_var("SELECT YEAR(date) FROM {$wpdb->prefix}fv_player_stats ORDER BY id ASC LIMIT 1");
+
+    // add every year from oldest to current, when oldest is 2021 and current is 2025, it will add 2021, 2022, 2023, 2024, 2025
+    for( $i = $oldest_year; $i <= date('Y'); $i++ ) {
+      $j = strval($i);
+      $years[$j] = $j;
+    }
+
+    // reorder years from newest to oldest
+    $years = array_reverse( $years, true );
+
+    return $years;
   }
 
   private function get_days_between_dates( $start_day, $end_day ) {
@@ -702,28 +799,7 @@ class FV_Player_Stats {
 
             if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
-                if( !empty( $row['caption'] ) ) {
-                  $datasets[$id]['name'] = $row['caption'];
-                } else {
-
-                  // Using code from FV_Player_Db_Video::getTitleFromSrc
-                  $name = wp_parse_url( $row['src'], PHP_URL_PATH );
-                  $arr = explode('/', $name);
-                  $name = trim( end($arr) );
-
-                  if( in_array( $name, array( 'index.m3u8', 'stream.m3u8' ) ) ) {
-                    unset($arr[count($arr)-1]);
-                    $name = end($arr);
-
-                    // Add parent folder too if there's any
-                    if( !empty( $arr ) && count( $arr ) > 2 ) {
-                      unset($arr[count($arr)-1]);
-                      $name = end($arr) . '/' . $name;
-                    }
-                  }
-                  $datasets[$id]['name'] = $name;
-                }
-
+                $datasets[$id]['name'] = $this->get_video_name( $row['src'], $row['title'] );
               } else if( $type == 'post' ) {
                 $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
               } else if( $type == 'user' ) {
@@ -747,9 +823,48 @@ class FV_Player_Stats {
     return $datasets;
   }
 
+  function get_video_name( $src, $title = '') {
+    if( !empty($title) ) {
+      return $title;
+    }
+
+    // check if youtube
+    if( FV_Player_YouTube()->is_youtube( $src ) ) {
+      // get youtube id
+      preg_match( '/[\\?\\&]v=([^\\?\\&]+)/', $src, $matches );
+      if( isset($matches[1]) ) {
+        $id = $matches[1];
+        $name = 'Youtube: ' . $id;
+
+        return $name;
+      }
+    }
+
+    // check if vimeo
+    if( function_exists('FV_Player_Pro_Vimeo') && FV_Player_Pro_Vimeo()->is_vimeo($src) ) {
+      // get vimeo id
+      preg_match( '/vimeo\.com\/([0-9]+)/', $src, $matches );
+      if( isset($matches[1]) ) {
+        $id = $matches[1];
+        $name = 'Vimeo: ' . $id;
+
+        return $name;
+      }
+
+    }
+
+    // parse title
+    $name = flowplayer::get_title_from_src($src);
+
+    return $name;
+  }
+
   function users_column( $columns ) {
-    $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
-    $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    global $fv_fp;
+    if ( $fv_fp->_get_option('video_stats_enable') ) {
+      $columns['fv_player_stats_user_play_today'] = "Video Plays Today";
+      $columns['fv_player_stats_user_seconds_today'] = "Video Minutes Today";
+    }
     return $columns;
   }
 
@@ -827,7 +942,7 @@ class FV_Player_Stats {
       // search for users by login, nicename or email
       $users = get_users( array(
         'search' => '*' . $search . '*',
-        'search_columns' => array( 'user_login', 'user_nicename', 'user_email' ),
+        'search_columns' => array( 'user_login', 'display_name' ,'user_nicename', 'user_email' ),
       ) );
 
       $results = array();

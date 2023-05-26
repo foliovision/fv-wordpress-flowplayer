@@ -595,7 +595,7 @@
     .freedomplayer.is-mouseover.is-ready .fp-forward svg, .freedomplayer.is-mouseover.is-ready .fp-rewind svg {
       display: block;
       opacity: 1; }
-  .freedomplayer.is-mouseover.is-disabled .fp-forward, .freedomplayer.is-mouseover.is-disabled .fp-rewind {
+  .freedomplayer.is-mouseover.is-disabled .fp-forward, .freedomplayer.is-mouseover.is-disabled .fp-rewind, .freedomplayer.is-mouseover.is-cva .fp-forward, .freedomplayer.is-mouseover.is-cva .fp-rewind {
     display: none; }
   .freedomplayer.is-video-rewind.is-ready .fp-rewind {
     display: block;

@@ -16,6 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
 
 class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
@@ -1313,7 +1317,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
         $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
         $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
-        $css .= $sel.".has-title { margin: 0 auto; }\n";
+        $css .= $sel.".has-title-below { margin: 0 auto; }\n";
 
         // we also use entry-content as some themes use .entry-content > * to set margin
         $css .= $sel.".fixed-controls, .entry-content ".$sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
@@ -1322,7 +1326,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
-      $css .= $sel." .fp-color, ".$sel." .fp-selected, .fp-playlist-external.".$skin." .fvp-progress { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
+      $css .= $sel." .fp-color, ".$sel." .fp-selected, .fp-playlist-external.".$skin." .fvp-progress, .fp-color { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
@@ -1804,8 +1808,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $resource .= "&X-Amz-Expires=$time";
         $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
         $resource .= "&X-Amz-Signature=".$sSignature;
-
-        $this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
 
       } else {
         $expires = time() + $time;
@@ -2362,6 +2364,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
 
+  public static function get_title_from_src( $src ) {
+    $name = wp_parse_url( $src, PHP_URL_PATH );
+    $arr = explode('/', $name);
+    $name = trim( end($arr) );
+
+    if( in_array( $name, array( 'index.m3u8', 'stream.m3u8', 'master.m3u8', 'playlist.m3u8' ) ) ) {
+      unset($arr[count($arr)-1]);
+      $name = end($arr);
+
+      // Add parent folder too if there's any
+      if( !empty( $arr ) && count( $arr ) > 2 ) {
+        unset($arr[count($arr)-1]);
+        $name = end($arr) . '/' . $name;
+      }
+    }
+
+    return $name;
+  }
 
 
   function get_video_src($media, $aArgs = array() ) {

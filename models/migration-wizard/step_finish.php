@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Wizard_Step_Finish extends FV_Player_Wizard_Step_Base_Class {
 
   static $is_finish = true;

@@ -358,7 +358,7 @@ abstract class FV_Player_Video_Encoder {
     // if the same target name already exists and we've not asked to rename it automatically,
     // return an error
     if ( empty( $_POST['rename_if_exists'] ) && empty( $_POST['ignore_duplicates'] ) ) {
-      if ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " . $this->table_name . " WHERE target = %s AND status != 'error' ", $target ) ) ) {
+      if ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " . $this->table_name . " WHERE target = %s AND status != 'error' AND type = %s", $target, $this->encoder_id ) ) ) {
         $error = 'Target stream already exists, please try with different target name.';
         if ( defined( 'DOING_AJAX' ) ) {
           wp_send_json( array( 'error' => $error ) );
@@ -369,7 +369,7 @@ abstract class FV_Player_Video_Encoder {
     } else if ( empty( $_POST['ignore_duplicates'] ) ) {
       $original_target = $target;
       $rename_suffix_counter = 1;
-      while ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " .  $this->table_name . " WHERE target = %s AND status != 'error' ", $target ) ) ) {
+      while ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " .  $this->table_name . " WHERE target = %s AND status != 'error' AND type = %s", $target, $this->encoder_id ) ) ) {
         $rename_suffix_counter++;
         $target = $original_target . '_' . $rename_suffix_counter;
       }

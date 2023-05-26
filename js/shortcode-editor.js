@@ -236,6 +236,7 @@ jQuery(function() {
      * Returns the number of videos in a playlist for the current player.
      */
     function get_playlist_items_count() {
+      // TODO: Could we just use current_player_object.videos.length ? Would that work with editing?
       return jQuery('#fv-player-editor-playlist .fv-player-editor-playlist-item').length;
     }
 
@@ -618,18 +619,19 @@ jQuery(function() {
         }, 1000 );
 
         $doc.on( 'click', '.fv-player-export', function(e) {
-          var $element = jQuery(this);
+          let $element = jQuery(this),
+            player_id = $element.data('player_id');
 
           e.preventDefault();
           $.fv_player_box( {
             onComplete : function() {
               overlay_show('loading');
 
-              debug_log('Running fv_player_db_export Ajax.');
+              debug_log('Running fv_player_db_export Ajax for #' + player_id );
 
               $.post(ajaxurl, {
                 action: 'fv_player_db_export',
-                playerID : $element.data('player_id'),
+                playerID : player_id,
                 nonce : $element.data('nonce'),
                 cookie: encodeURIComponent(document.cookie),
               }, function(json_export_data) {
@@ -676,11 +678,12 @@ jQuery(function() {
         });
 
         $doc.on( 'click', '.fv-player-remove-confirm', function() {
-          var
+          let
             $element = $(this),
             $row_actions = $element.closest( '.row-actions' ),
             $element_td = $element.parent(),
-            $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>');
+            $spinner = $('<div class="fv-player-shortcode-editor-small-spinner"></div>'),
+            player_id = $element.data('player_id');
 
           $element_td.find('a, span').hide();
           $element.after($spinner);
@@ -688,12 +691,12 @@ jQuery(function() {
           // Make sure the row actions do not show on hover only, but always appear to make sure the spinner remains visible
           $row_actions.css( 'left', 0 );
 
-          debug_log('Running fv_player_db_remove Ajax.');
+          debug_log('Running fv_player_db_remove Ajax for #' + player_id );
 
           jQuery.post(ajaxurl, {
             action: "fv_player_db_remove",
             nonce: $element.data('nonce'),
-            playerID: $element.data('player_id')
+            playerID: player_id
           }, function(rows_affected){
             if (!isNaN(parseFloat(rows_affected)) && isFinite(rows_affected)) {
               // remove the deleted player's row
@@ -851,13 +854,6 @@ jQuery(function() {
         playlist_item_show( $(this).parents('.fv-player-editor-playlist-item').attr('data-index') );
         return false;
       });
-
-      $doc.on('input','.fv_wp_flowplayer_field_width', function(e) {
-        $('.fv_wp_flowplayer_field_width').val(e.target.value);
-      })
-      $doc.on('input','.fv_wp_flowplayer_field_height', function(e) {
-        $('.fv_wp_flowplayer_field_height').val(e.target.value);
-      })
 
       /*
       * Show edit input
@@ -1091,15 +1087,7 @@ jQuery(function() {
           target_element.removeClass('fv_flowplayer_target' );
 
           if( attachment.type == 'video' ) {
-            if( typeof(attachment.width) != "undefined" && attachment.width > 0 ) {
-              $('.fv_wp_flowplayer_field_width').val(attachment.width);
-            }
-            if( typeof(attachment.height) != "undefined" && attachment.height > 0 ) {
-              $('.fv_wp_flowplayer_field_height').val(attachment.height);
-            }
-            if( typeof(attachment.fileLength) != "undefined" ) {
-              file_info_show( { duration: attachment.fileLength } );
-            }
+            // TODO: Fill video title
 
           } else if( attachment.type == 'image' ) {
             if( attachment.id ) {
@@ -1342,6 +1330,7 @@ jQuery(function() {
             debug_log('player ID after save: '+response.id);
 
             current_player_object = response;
+            current_player_db_id = response.id;
 
             try {
               $(response.videos).each( function(k,v) {
@@ -1365,7 +1354,8 @@ jQuery(function() {
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                   title_field = get_field( 'title', video_tab ),
                   auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
+                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k ),
+                  synopsis = get_playlist_video_meta_value('synopsis', k);
 
                 if( get_field('auto_splash', video_tab ).val() == '0' ) {
                   auto_splash = false;
@@ -1381,6 +1371,10 @@ jQuery(function() {
                   if( v.splash_attachment_id && !splash_attachment_id_field.val() ) {
                     splash_attachment_id_field.val( v.splash_attachment_id )
                   }
+                }
+
+                if( synopsis && !get_field('synopsis', video_tab ).val() ) {
+                  get_field('synopsis', video_tab ).val( synopsis );
                 }
 
                 if( auto_splash ) {
@@ -1399,6 +1393,7 @@ jQuery(function() {
                 if( current_video_to_edit == k ) {
                   show_video_details(k);
                   show_stream_fields_worker(k);
+                  show_playlist_not_supported(k);
                 }
               });
 
@@ -1453,7 +1448,6 @@ jQuery(function() {
                 if ( is_unsaved ) {
                   copy_player_button_toggle(false);
                   init_saved_player_fields();
-                  current_player_db_id = response.id;
                   is_unsaved = false;
                   //is_draft_changed = false;
                   loading = false;
@@ -1492,50 +1486,6 @@ jQuery(function() {
       var $body = jQuery('body');
       $body.on('focus', '#fv_player_copy_to_clipboard', function() {
         this.select();
-      });
-
-      /**
-       * Ensure user is notified about using video types which are not supported in playlists
-       */
-      $body.on('keyup', '#fv_wp_flowplayer_field_src, #fv_wp_flowplayer_field_src1, #fv_wp_flowplayer_field_src2', function() {
-        var result = {
-          'supported': true
-        }
-
-        var url = jQuery(this).val();
-
-        if (
-          url.indexOf('vimeo.com') > -1 ||
-          url.indexOf('vimeopro.com') > -1 ||
-          url.indexOf('youtube.com') > -1 ||
-          url.indexOf('youtube-nocookie.com') > -1 ||
-          url.indexOf('youtu.be') > -1
-        ) {
-          result.supported = false;
-        }
-
-        // fire up a JS event for the FV Player Pro to catch,
-        // so it can check the URL and make sure we don't show
-        // a warning message for PRO-supported video types
-        $doc.trigger('fv-player-editor-src-change', [ url, result, this ]);
-
-        // Notice next to the input field
-        var input_field_notice = jQuery(this).siblings('.fv-player-src-playlist-support-notice');
-
-        if( result.supported ) {
-          input_field_notice.hide();
-
-          playlist_buttons_disable(false);
-
-        } else {
-          // Show a notice if you have a playlist already
-          input_field_notice.toggle( get_playlist_items_count() > 1 );
-
-          // Disable the playlist editing buttons if the video type is not supported in playlists
-          playlist_buttons_disable('FV Player Pro required for playlists with this video type');
-
-        }
-
       });
 
       jQuery('.fv-player-editor-wrapper').each( function() { fv_show_video( jQuery(this) ) });  //  show last add more button only
@@ -1928,8 +1878,6 @@ jQuery(function() {
         instance_fp_wysiwyg = FCKeditorAPI.GetInstance('content');
       }
 
-      file_info_hide();
-
       reset_preview();
 
       jQuery('.fv-player-tab-video-files [data-playlist-item]').each( function(i,e) {
@@ -2109,14 +2057,15 @@ jQuery(function() {
                       data['video_meta'][ k ][save_index] = [];
                     }
 
-                    let lang = $this.closest( '.components-base-control__field' ).find( '[name=fv_wp_flowplayer_field_' + k + '_lang]' );
+                    let parent = $this.closest( '.components-base-control__field' ),
+                      lang = parent.find( '[name=fv_wp_flowplayer_field_' + k + '_lang]' );
 
                     // jQuery-select the SELECT element when we get an INPUT, since we need to pair them
                     if ( $this[0].nodeName == 'INPUT') {
                       data['video_meta'][ k ][save_index].push({
                         code : lang.val(),
                         file : $this.val(),
-                        id: $this.parent().data('id_videometa')
+                        id: parent.data('id_videometa')
                       });
                     }
                   }
@@ -2558,7 +2507,7 @@ jQuery(function() {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
             playerID :  result[1],
-            current_video_to_edit: current_video_to_edit
+            current_video_to_edit: get_playlist_items_count() > 1 ? current_video_to_edit : -1,
           }, function(response) {
             var vids = response['videos'];
 
@@ -2697,21 +2646,6 @@ jQuery(function() {
               // in draft mode for this player
               insert_button_toggle(true);
               fix_save_btn_text();
-            }
-
-            // hotfix:
-            // make sure the width and height inputs are in sync and have the correct value,
-            // as we have duplicate fields for them in 2 places (video tab and options tab)
-            // and if there is only a single video, the video tab takes precedence,
-            // otherwise it's the options tab
-            if ( $('.fv-player-tab-playlist #fv-player-editor-playlist .ui-sortable-handle').length > 1) {
-              // multiple videos playlist, options tab values must be filled-in
-              $('.fv-player-tab-options .fv_wp_flowplayer_field_width').val(response.width);
-              $('.fv-player-tab-options .fv_wp_flowplayer_field_height').val(response.height)
-            } else {
-              // single video playlist, video tab values must be filled-in
-              $('.fv-player-tab-video-files .fv_wp_flowplayer_field_width').val(response.width);
-              $('.fv-player-tab-video-files .fv_wp_flowplayer_field_height').val(response.height);
             }
 
             $doc.trigger('fv_player_editor_finished');
@@ -3020,7 +2954,7 @@ jQuery(function() {
           }
         }
 
-        if( store_shortcode_args ) {
+        if( store_shortcode_args.length ) {
           debug_log('Preserving shortcode args', store_shortcode_args );
         }
 
@@ -3031,7 +2965,7 @@ jQuery(function() {
           }
         }
 
-        if( always_keep_shortcode_args ) {
+        if( always_keep_shortcode_args.length ) {
           debug_log('Always preserve shortcode args', always_keep_shortcode_args );
         }
 
@@ -3232,35 +3166,6 @@ jQuery(function() {
 
     function fv_wp_flowplayer_dialog_resize() {
       debug_log('Deprecated fv_wp_flowplayer_dialog_resize() call.');
-    }
-
-    function file_info_hide() {
-      jQuery('#fv_wp_flowplayer_file_info').hide();
-      jQuery('#fv_wp_flowplayer_file_info td').html('');
-    }
-
-    // TODO: Is this needed?
-    function file_info_show( args ) {
-
-      var html = '';
-      if( args.duration ) {
-        var duration = args.duration;
-        if( !isNaN(duration) ) {
-          duration = fv_player_time_hms(duration);
-        }
-        html += 'Duration: '+duration;
-      }
-      if( args.error ) {
-        html += 'Error: '+args.error;
-      }
-
-      if( html ) {
-        $('#fv_wp_flowplayer_file_info').show();
-        $('#fv_wp_flowplayer_file_info td').html(html);
-      } else {
-        file_info_hide();
-      }
-
     }
 
     function get_pretty_aspect_ratio( video ) {
@@ -3719,7 +3624,7 @@ jQuery(function() {
 
       tabs_refresh();
 
-      if( previous_index != current_video_to_edit ) {
+      if( previous_index != current_video_to_edit && get_playlist_items_count() > 1 ) {
         reload_preview( current_video_to_edit );
       }
 
@@ -3839,7 +3744,7 @@ jQuery(function() {
         action : 'fv_player_db_load',
         nonce : fv_player_editor_conf.db_load_nonce,
         playerID :  current_player_db_id,
-        current_video_to_edit: video_index,
+        current_video_to_edit: get_playlist_items_count() > 1 ? video_index : -1,
       }, function(response) {
         if ( response.html ) {
           // auto-refresh preview
@@ -3893,7 +3798,7 @@ jQuery(function() {
 
     function set_control_fields( ajax_data ) {
       // add current video that we're editing into the save data
-      ajax_data['current_video_to_edit'] = current_video_to_edit;
+      ajax_data['current_video_to_edit'] = get_playlist_items_count() > 1 ? current_video_to_edit : -1;
 
       if( current_post_id ) {
         ajax_data['current_post_id'] = current_post_id;
@@ -3943,7 +3848,7 @@ jQuery(function() {
             });
           }
         } else if ($element.get(0).nodeName == 'INPUT' && $element.get(0).type.toLowerCase() == 'checkbox') {
-          let checked = real_val === '1' || real_val === 'on' || real_val === 'true';
+          let checked = real_val === '1' || real_val === 'on' || real_val === 'true' || real_val === 'yes';
 
           // Is the value empty and is there default?
           if( real_val == '' && typeof(window.fv_player_editor_defaults[key]) != "undefined" ) {
@@ -4146,7 +4051,7 @@ jQuery(function() {
 
       let new_field = get_field( field, subElement);
       if( sInput ) {
-        new_field.val(sInput);
+        new_field.val(sInput).trigger('change');
       }
 
       show_short_link( new_field );
@@ -4473,6 +4378,7 @@ jQuery(function() {
       show_stream_fields_worker(index);
       show_rtmp_fields();
       show_end_of_video_actions();
+      show_playlist_not_supported(index);
     });
 
     $doc.on('fv_flowplayer_shortcode_new', function() {
@@ -4480,6 +4386,7 @@ jQuery(function() {
       show_stream_fields_worker(0);
       show_rtmp_fields();
       show_end_of_video_actions();
+      show_playlist_not_supported();
     });
 
     function show_end_of_video_actions() {
@@ -4503,6 +4410,38 @@ jQuery(function() {
       }
     }
 
+    function show_playlist_not_supported( index = 0 ) {
+      let video = get_playlist_video_object( index ),
+        result = {
+          'supported': true
+        }
+
+      if ( ! video.src ) {
+        return;
+      }
+
+      if (
+        video.src.indexOf('//vimeo.com') > -1 ||
+        video.src.indexOf('//vimeopro.com') > -1
+      ) {
+        result.supported = false;
+      }
+
+      // fire up a JS event for the FV Player Pro to catch,
+      // so it can check the URL and make sure we don't show
+      // a warning message for PRO-supported video types
+      $doc.trigger('fv-player-editor-src-change', [ video.src, result, this ]);
+
+      if( result.supported ) {
+        playlist_buttons_disable(false);
+
+      } else {
+        // Disable the playlist editing buttons if the video type is not supported in playlists
+        playlist_buttons_disable('FV Player Pro required for playlists with this video type');
+
+      }
+    }
+
     function show_rtmp_fields() {
       var video_object = get_current_video_object(),
         is_enabled = video_object.rtmp || video_object.rtmp_path
@@ -4522,7 +4461,7 @@ jQuery(function() {
       var encrypted = get_current_player_object() ? get_playlist_video_meta_value( 'encrypted', index ) : false;
 
       // hlskey
-      var hlskey = get_field('hlskey', true);
+      var hlskey = get_field('hls_hlskey', true);
       if( encrypted || hlskey.val() ) {
         hlskey.closest('.fv_player_interface_hide').show();
       } else {
@@ -4647,7 +4586,7 @@ jQuery(function() {
     /*
     Mark each manually updated title or splash field as such
     */
-    $doc.on('keydown', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
+    $doc.on('input change', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
       let $input;
 
       // if this element already has data set, don't do any of the selections below

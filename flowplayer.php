@@ -29,9 +29,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  return;
+}
+
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.9.3.23';
-$fv_wp_flowplayer_core_ver = '7.2.14.9';
+$fv_wp_flowplayer_ver = '7.9.3.24';
+$fv_wp_flowplayer_core_ver = '7.2.14.11';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
@@ -91,9 +95,11 @@ if( is_admin() ) {
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
-
-  if( version_compare(phpversion(),'7.2.5') != -1 ) {
+ 
+  if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
+
+    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
 

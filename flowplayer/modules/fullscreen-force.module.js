@@ -1,15 +1,17 @@
 flowplayer(function(api, root) {
   root = jQuery(root);
-  if( flowplayer.conf.wpadmin || jQuery(root).hasClass('is-audio') ) return;
-  
+
   var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
     playlist_with_fullscreen =  playlist.hasClass('fp-playlist-season') || playlist.hasClass('fp-playlist-polaroid'),
     fsforce = root.data('fsforce') == true; // used for players which load using Ajax after click and then they need fullscreen
-  
-  if( root.data('fullscreen') == false ) {
+
+  if( flowplayer.conf.wpadmin && ! playlist_with_fullscreen || jQuery(root).hasClass('is-audio') ) return;
+
+  // Fullscreen or forcing of fullscreen might be disabled for this player
+  if( root.data('fullscreen') == false || root.data('fsforce') == false ) {
     return;
   }
-    
+
   // Force fullscreen on mobile setting
   if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce || playlist_with_fullscreen ) {
     if( !flowplayer.support.fullscreen ) {
