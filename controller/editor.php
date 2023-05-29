@@ -787,6 +787,12 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
     $new_content = $new_content_data['new_content'];
   }
 
+  $new_content = preg_replace(
+    '~<!-- wp:shortcode -->\n(\[fvplayer [\s\S]*?)\n<!-- /wp:shortcode -->~',
+    '<!-- wp:fv-player-gutenberg/basic --><div class="wp-block-fv-player-gutenberg-basic">$1</div><!-- /wp:fv-player-gutenberg/basic -->',
+    $new_content
+  );
+
   if ( strcmp( $original_content, $new_content ) != 0 ) {
     add_filter(
       'rest_prepare_' . $post->post_type,
