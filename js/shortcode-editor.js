@@ -4813,4 +4813,12 @@ jQuery(function() {
     };
 
   })(jQuery);
+
+  wp.data.subscribe( function() {
+    if ( wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
+      setTimeout( function() {
+        location.reload();
+      }, 0 );
+    }
+  } );
 });

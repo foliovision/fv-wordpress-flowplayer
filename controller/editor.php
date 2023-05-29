@@ -764,6 +764,7 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
   // ignore trash
   if ( $post->post_status === 'trash' ) return;
 
+  $original_content = $post->post_content;
   $new_content = $post->post_content;
 
   // if( is_serialized($new_content) ) return; // TODO: is something serializing content?
@@ -784,6 +785,18 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
   $new_content_data = $FV_Player_Shortcode2Database_Conversion->convert_one($post);
   if( $new_content_data['content_updated'] ) {
     $new_content = $new_content_data['new_content'];
+  }
+
+  if ( strcmp( $original_content, $new_content ) != 0 ) {
+    add_filter(
+      'rest_prepare_' . $post->post_type,
+      function( $response, $post, $request ) {
+        $response->data['fv_player_reload'] = true;
+        return $response;
+      },
+      10,
+      3
+    );
   }
 
   // remove current action to prevent infinite loop when using wp_update_post
