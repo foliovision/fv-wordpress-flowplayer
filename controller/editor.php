@@ -756,7 +756,7 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
   }
 
   // check if option is enabled
-  if( !$fv_fp->_get_option('convert_db_save') ) return;
+  if( $fv_fp->_get_option('disable_convert_db_save') ) return;
 
   // ignore revision
   if ( wp_is_post_revision( $post_id ) ) return;
