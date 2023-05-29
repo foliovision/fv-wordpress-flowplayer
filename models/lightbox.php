@@ -17,6 +17,11 @@ class FV_Player_lightbox {
   }
   
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+    
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
     add_filter('fv_flowplayer_shortcode', array($this, 'shortcode'), 15, 3);
@@ -320,7 +325,7 @@ class FV_Player_lightbox {
     
     $this->css_enqueue(true);
 
-    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', 'jquery', $fv_wp_flowplayer_ver, true );
+    wp_enqueue_script( 'fv_player_lightbox', flowplayer::get_plugin_url().'/js/fancybox.js', array( 'jquery' ), $fv_wp_flowplayer_ver, true );
     wp_localize_script( 'fv_player_lightbox', 'fv_player_lightbox', $aConf );
   }
 

@@ -14,7 +14,11 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
+*/
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
 
 // Set the FV Player wp-admin menu item to be open
 ?>
@@ -131,13 +135,13 @@ function fv_flowplayer_admin_amazon_options() {
           
           <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
           <?php
-          $can_use_aws_sdk = version_compare(phpversion(),'7.2.5') != -1;
+          $can_use_aws_sdk = version_compare(phpversion(),'7.3.5') != -1;
           
           $fv_fp->_get_checkbox( array(
             'name' => __('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)',
             'key' => 's3_browser',
             'help' =>  !$can_use_aws_sdk ?
-              __('This function requires PHP >= 7.2.5, please contact your web host support.' , 'fv-wordpress-flowplayer')
+              __('This function requires PHP >= 7.3.5, please contact your web host support.' , 'fv-wordpress-flowplayer')
               : __('Show Amazon S3 Browser in the "Add Video" dialog.' , 'fv-wordpress-flowplayer'),
             'disabled' => !$can_use_aws_sdk
           ) ); ?>
@@ -636,7 +640,18 @@ function fv_flowplayer_admin_integrations() {
 
           <?php $fv_fp->_get_checkbox(__('Handle WordPress audio/video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code>, <code><small>[audio]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load FV Flowplayer JS everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed. Required if you load content using Ajax, like in various LMS systems.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Optimize FV Flowplayer JS loading', 'fv-wordpress-flowplayer'), 'js-optimize', __('Helps with Google PageSpeed scores.', 'fv-wordpress-flowplayer'), __('FV Player JavaScript will be only loaded once the user user start to use the page or on video tap.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(
+            array(
+              'name'     => __('Optimize FV Flowplayer JS loading', 'fv-wordpress-flowplayer'),
+              'key'      => 'js-optimize',
+              'help'     =>
+                flowplayer::is_wp_rocket_setting( 'delay_js' ) ?
+                  sprintf( __('WP Rocket setting to <a href="%s" target="_blank">Delay JavaScript execution</a> is enabled, cannot use this setting.', 'fv-wordpress-flowplayer'), admin_url( 'options-general.php?page=wprocket#file_optimization' ) ) :
+                  __('Helps with Google PageSpeed scores.', 'fv-wordpress-flowplayer'),
+              'more'     => __('FV Player JavaScript will be only loaded once the user user start to use the page or on video tap.', 'fv-wordpress-flowplayer'),
+              'disabled' => flowplayer::is_wp_rocket_setting( 'delay_js' ),
+            )
+          ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('postthumbnail') ) $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>
@@ -935,7 +950,7 @@ function fv_flowplayer_admin_pro() {
   if( isset($aCheck->valid) && $aCheck->valid ) : ?>  
     <p><?php _e('Valid license found, click the button at the top of the screen to install FV Player Pro!', 'fv-wordpress-flowplayer'); ?></p>
   <?php else : ?>
-    <p><a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download"><?php _e('Purchase FV Flowplayer license', 'fv-wordpress-flowplayer'); ?></a> <?php _e('to enable Pro features!', 'fv-wordpress-flowplayer'); ?></p>
+    <p><a href="https://foliovision.com/player/download"><?php _e('Purchase FV Flowplayer license', 'fv-wordpress-flowplayer'); ?></a> <?php _e('to enable Pro features!', 'fv-wordpress-flowplayer'); ?></p>
   <?php endif; ?>
   <table class="form-table2">
     <tr>
@@ -2085,7 +2100,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
             <li><?php _e('Or remove the logo completely', 'fv-wordpress-flowplayer'); ?></li>
             <li><?php _e('The best video plugin for Wordpress', 'fv-wordpress-flowplayer'); ?></li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong><?php _e('Easter sale!', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('All Licenses 20% Off', 'fv-wordpress-flowplayer'); ?></a></p>
+              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e('Easter sale!', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('All Licenses 20% Off', 'fv-wordpress-flowplayer'); ?></a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">

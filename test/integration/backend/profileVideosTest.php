@@ -7,7 +7,9 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  * in the HTML markup.
  */
 final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
-    
+
+  private $userID;
+
   public function testProfileScreen() {
     global $fv_fp;
     $fv_fp->conf['profile_videos_enable_bio'] = true;

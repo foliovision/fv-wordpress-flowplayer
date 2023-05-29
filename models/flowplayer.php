@@ -16,6 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */ 
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
 
 class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
@@ -228,6 +232,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           </td>
       </tr>
       <?php
+
+    // Disabled inputs are not sent in POST so if it's checked we retain the value using hidden input
+    if ( $disabled && $checked ) {
+      ?>
+        <input type="hidden" name="<?php echo $key; ?>" value="true"/>
+      <?php
+    }
   }
 
 
@@ -1746,9 +1757,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $resource .= "&X-Amz-Expires=$time";
         $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
         $resource .= "&X-Amz-Signature=".$sSignature;              
-        
-        $this->ret['script']['fv_flowplayer_amazon_s3'][$this->hash] = $time;
-  
+
       } else {
         $expires = time() + $time;
         
@@ -2381,9 +2390,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return true;
     }
     return false;
-  }    
-  
-  
+  }
+
+
+  public static function is_wp_rocket_setting( $setting ) {
+    return function_exists( 'get_rocket_option') && get_rocket_option( $setting );
+  }
+
+
   public function is_secure_amazon_s3( $url ) {
     return preg_match( '/^.+?s3.*?\.amazonaws\.com\/.+Signature=.+?$/', $url ) || preg_match( '/^.+?\.cloudfront\.net\/.+Signature=.+?$/', $url );
   }

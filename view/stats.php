@@ -1,22 +1,210 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
-  if( isset($_GET['player_id']) && intval($_GET['player_id'])  ) {
-    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']) );
-  } else {
-    $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats('video');
-    $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats('post');
+  $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : false;
+
+  $user_id = isset( $_GET['user_id'] ) ? intval($_GET['user_id']) : false;
+  $user_name = false;
+
+  $date_range = isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week';
+
+  if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
+    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), $date_range );
+  } else { // aggregated top stats
+
+    if( ( strcmp($current_page, 'fv_player_stats') === 0 ) || ( strcmp($current_page, 'fv_player_stats_users') === 0 && is_int($user_id) ) ) { // aggegated top stats for videos, posts and watch time, show for both but for fv_player_stats_users only if user_id is set
+      $fv_video_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'video', $date_range, $user_id);
+
+      $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
+
+      $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+
+      if($user_id) $fv_player_interval_valid = $FV_Player_Stats->get_valid_interval($user_id);
+    }
+
+    if( !isset($_GET['user_id']) && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
+      $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', $date_range);
+
+      $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', $date_range);
+    }
+
   }
 
-  wp_enqueue_script('fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
+  // select2
+  wp_enqueue_script( 'fv-select2-js', flowplayer::get_plugin_url().'/js/select2/select2.full.min.js' , array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_style( 'fv-select2-css', flowplayer::get_plugin_url().'/css/select2.min.css', array(), $fv_wp_flowplayer_ver );
+
+  // chartjs
+  wp_enqueue_script( 'fv-chartjs', flowplayer::get_plugin_url().'/js/chartjs/chart.min.js', array('jquery'), $fv_wp_flowplayer_ver );
+  wp_enqueue_script( 'fv-chartjs-html-legend', flowplayer::get_plugin_url().'/js/chartjs/html-legend.js', array('fv-chartjs'), $fv_wp_flowplayer_ver );
 ?>
+
+<style>
+.fv-player-chartjs-html-legend ul {
+  display: flex;
+  flex-direction: row;
+  margin: 0px;
+  padding: 0px;
+}
+.fv-player-chartjs-html-legend ul li {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+.fv-player-chartjs-html-legend ul li span {
+  display: inline-block;
+  height: 20px;
+  margin-right: 10px;
+  width: 20px;
+}
+.fv-player-chartjs-html-legend ul li p {
+  margin: 0px;
+  padding: 0px;
+}
+
+#fv_player_stats_filter .chosen-container-single .chosen-single {
+  height: 30px;
+  line-height: 28px;
+}
+</style>
 
 <div class="wrap">
   <h1>FV Player Stats</h1>
+
+  <div>
+    <form id="fv_player_stats_filter" method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+      <input type="hidden" name="page" value="<?php echo $current_page ?>" />
+      <?php if( $user_id ): ?>
+        <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
+      <?php endif; ?>
+      <select id="fv_player_stats_select" name="stats_range">
+        <?php
+          foreach( array( 'this_week' => 'This Week', 'last_week' => 'Last Week', 'this_month' => 'This Month', 'last_month' => 'Last Month', 'this_year' => 'This Year', 'last_year' => 'Last Year' ) as $key => $value ) {
+            $not_available = false;
+
+            if( isset( $fv_player_interval_valid ) && !in_array($key ,$fv_player_interval_valid) ) {
+              $not_available = true;
+            }
+
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $not_available ? 'disabled' : '' ) . '>'.$value.'</option>';
+          }
+        ?>
+      </select>
+
+      <?php if( strcmp($current_page, 'fv_player_stats_users') === 0 ): ?>
+        <select id="fv_player_stats_users_select" name="user_id">
+          <option disabled selected value>Select user you want to show stats for</option>
+          <?php
+            if( $user_id ) {
+              $users = $FV_Player_Stats->get_users_by_time_range( $date_range, $user_id );
+              foreach( $users as $key => $value ) {
+                $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
+                $plays = number_format_i18n( $plays, 0 );
+
+                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['display_name'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
+              }
+            }
+          ?>
+        </select>
+      <?php endif; ?>
+
+      <?php if( $user_id ): ?>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&stats_range=' . $date_range . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ));?>">Export CSV</a>
+      <?php endif; ?>
+
+    </form>
+
+  </div>
+
   <script>
+    jQuery(document).ready(function() {
+      jQuery(document).on('change', '#fv_player_stats_select, #fv_player_stats_users_select', function() {
+        jQuery('#fv_player_stats_filter').submit();
+      });
+
+      if( jQuery('#fv_player_stats_select').length > 0 ) {
+        setTimeout(function() {
+          jQuery('#fv_player_stats_select').select2({
+            minimumResultsForSearch: -1 // hide the search
+          });
+        },0);
+      }
+
+      if( jQuery('#fv_player_stats_users_select').length > 0 ) jQuery('#fv_player_stats_users_select').select2({
+        ajax: {
+          url: ajaxurl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term, // search term - user
+              date_range: jQuery('#fv_player_stats_select').val(), // date range
+              action: 'fv_player_stats_users_search',
+              nonce: '<?php echo wp_create_nonce( 'fv-player-stats-users-search' ); ?>'
+            };
+          },
+          cache: false
+        },
+        minimumInputLength: 2,
+        placeholder: 'Search for a user',
+      });
+
+    });
+
+  function fv_player_stats_chartjs_args( data, data_selector, args ) {
+
+    var conf = {
+      type: 'line',
+      data: {
+        labels: data['date-labels'],
+        datasets: fv_chart_add_dataset_items( data, data_selector )
+      },
+      options: {
+        animation: {
+          duration: 0
+        },
+        plugins: {
+          htmlLegend: {
+            containerID: args.legend_containerID,
+          },
+          legend: {
+            display: false,
+          }
+        },
+        responsive: true,
+        scales: {
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      },
+      plugins: [ htmlLegendPlugin ],
+    }
+
+    if ( args.scales_y_title ) {
+      conf.options.scales.y.title = {
+        display: true,
+        text: args.scales_y_title
+      }
+    }
+
+    return conf;
+  }
+
   // Randomize color for each line
-  var picked = [];
+  var used_colors = [];
 
   var fv_chart_dynamic_color = function() {
     var colors = [
@@ -35,17 +223,19 @@
     var i = 0;
     var pick = colors[i];
 
-    while( i < picked.length && picked.includes(pick) ) {
+    while( i < used_colors.length && used_colors.includes(pick) ) {
       i++;
       pick = colors[i];
     }
 
-    picked.push(pick);
+    used_colors.push(pick);
 
     return pick;
   };
 
-  var fv_chart_add_dataset_items = function( top_results ) {
+  var fv_chart_add_dataset_items = function( top_results, metric ) {
+    used_colors = [];
+
     var top_datasets = [];
 
     for ( var id_video in top_results ) {
@@ -63,14 +253,20 @@
 
       for ( var date in top_results[id_video] ) {
         if( date != 'name' ) {
-          data.push(top_results[id_video][date]['play']);
+          var value = parseInt(top_results[id_video][date][metric]);
+
+          if( metric == 'seconds' ) {
+            if( value > 0 ) value = Math.ceil(value / 60); // convert to minutes
+          }
+
+          data.push(value);
         }
       }
 
       dataset_item['data'] = data;
       top_datasets.push(dataset_item);
     }
-  
+
     return top_datasets;
   }
   </script>
@@ -78,119 +274,156 @@
 <?php if( isset($fv_video_stats_data) && !empty($fv_video_stats_data) ): ?>
 
   <div>
-    <h2>Top 10 Videos in past week</h2>
-    <canvas id="chart-top-videos" style="max-height: 36vh"></canvas>
+    <h2>Top 10 Videos</h2>
+    <div id="chart-top-users-play-legend" class="fv-player-chartjs-html-legend"></div>
+    <canvas id="chart-top-users-play" style="max-height: 36vh"></canvas>
   </div>
 
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
+    used_colors = [];
 
-    // Top Videos
-    var ctx_top_videos = document.getElementById('chart-top-videos').getContext('2d');
-
-    var top_video_results = <?php echo json_encode( $fv_video_stats_data ); ?>;
-
-    // Each video data is new dataset
-    var top_videos_datasets = fv_chart_add_dataset_items( top_video_results );
-
-    var top_videos_chart = new Chart(ctx_top_videos, {
-      type: 'line',
-      data: {
-        labels: top_video_results['date-labels'], // dates
-        datasets: top_videos_datasets
-      },
-      options: {
-        animation: {
-          duration: 0
-        },
-        responsive: true,
-        scales: {
-          y: {
-            stacked: true,
-            beginAtZero: true
-          }
+    new Chart(
+      document.getElementById('chart-top-users-play').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_video_stats_data ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-top-users-play-legend'
         }
-      }
-    });
-  })
+      )
+    );
+  });
   </script>
-
+<?php elseif ( ( strcmp($current_page, 'fv_player_stats') === 0 ) ) : ?>
+  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
 <?php endif;?>
 
 <?php if( isset($fv_post_stats_data) && !empty($fv_post_stats_data) ): ?>
+
   <div>
-    <h2>Top 10 Post Video plays in past week</h2>
+    <h2>Top 10 Post Video Plays</h2>
+    <div id="chart-top-posts-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-top-posts" style="max-height: 36vh"></canvas>
   </div>
+
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
-     // Top Posts
-    var ctx_top_posts = document.getElementById('chart-top-posts').getContext('2d');
+    used_colors = [];
 
-    var top_post_results = <?php echo json_encode( $fv_post_stats_data ); ?>;
-
-    var top_posts_datasets = fv_chart_add_dataset_items( top_post_results );
-
-    var top_posts_chart = new Chart(ctx_top_posts, {
-      type: 'line',
-      data: {
-        labels: top_post_results['date-labels'], // dates
-        datasets: top_posts_datasets
-      },
-      options: {
-        animation: {
-          duration: 0
-        },
-        responsive: true,
-        scales: {
-          y: {
-            stacked: true,
-            beginAtZero: true
-          }
+    new Chart(
+      document.getElementById('chart-top-posts').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_post_stats_data ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-top-posts-legend'
         }
-      }
-    });
+      )
+    );
   });
   </script>
 <?php endif; ?>
 
+<?php if( isset($fv_video_watch_time_stats_data) && !empty($fv_video_watch_time_stats_data) ): ?>
+
+  <div>
+    <h2>Top 10 Videos by Watch Time</h2>
+    <div id="chart-top-users-play-watchtime-legend" class="fv-player-chartjs-html-legend"></div>
+    <canvas id="chart-top-users-play-watchtime" style="max-height: 36vh"></canvas>
+  </div>
+
+  <script>
+  jQuery( document ).ready(function() {
+    new Chart(
+      document.getElementById('chart-top-users-play-watchtime').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_video_watch_time_stats_data ); ?>,
+        'seconds',
+        {
+          legend_containerID: 'chart-top-users-play-watchtime-legend',
+          scales_y_title: "Minutes"
+        }
+      )
+    );
+  });
+  </script>
+<?php endif; ?>
+
+<?php if( isset($fv_user_play_stats_data) && !empty($fv_user_play_stats_data) ): ?>
+
+<div>
+  <h2>Top 10 Users by Plays</h2>
+  <div id="chart-top-10-users-by-play-legend" class="fv-player-chartjs-html-legend"></div>
+  <canvas id="chart-top-10-users-by-play" style="max-height: 36vh"></canvas>
+</div>
+
+<script>
+jQuery( document ).ready(function() {
+  new Chart(
+    document.getElementById('chart-top-10-users-by-play').getContext('2d'),
+    fv_player_stats_chartjs_args(
+      <?php echo json_encode( $fv_user_play_stats_data ); ?>,
+      'play',
+      {
+        legend_containerID: 'chart-top-10-users-by-play-legend'
+      }
+    )
+  );
+})
+</script>
+<?php elseif ( ( strcmp($current_page, 'fv_player_stats_users') === 0 ) ) : ?>
+  <p>There are no video stats recorded. Please note that the stats take 5-10 minutes to update.</p>
+<?php endif; ?>
+
+<?php if( isset($fv_user_watch_time_stats_data) && !empty($fv_user_watch_time_stats_data) ): ?>
+
+<div>
+  <h2>Top 10 Users by Watch Time</h2>
+  <div id="chart-top-10-users-by-watchtime-legend" class="fv-player-chartjs-html-legend"></div>
+  <canvas id="chart-top-10-users-by-watchtime" style="max-height: 36vh"></canvas>
+</div>
+
+<script>
+jQuery( document ).ready(function() {
+  new Chart(
+    document.getElementById('chart-top-10-users-by-watchtime').getContext('2d'),
+    fv_player_stats_chartjs_args(
+      <?php echo json_encode( $fv_user_watch_time_stats_data ); ?>,
+      'seconds',
+      {
+        legend_containerID: 'chart-top-10-users-by-watchtime-legend',
+        scales_y_title: "Minutes"
+      }
+    )
+  );
+})
+</script>
+<?php endif;?>
+
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>Plays For Player <?php echo intval($_GET['player_id']); ?> in past week</h2>
+    <h2>Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
+    <div id="chart-single-player-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
   </div>
   <script>
   jQuery( document ).ready(function() {
-    picked = [];
-
-    var ctx_single_player = document.getElementById('chart-single-player').getContext('2d');
-
-    var single_player_results = <?php echo json_encode( $fv_single_player_stats_data ); ?>;
-
-    var single_player_datasets = fv_chart_add_dataset_items( single_player_results );
-
-    var single_player_chart = new Chart(ctx_single_player, {
-      type: 'line',
-      data: {
-        labels: single_player_results['date-labels'],
-        datasets: single_player_datasets
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
+    new Chart(
+      document.getElementById('chart-single-player').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo json_encode( $fv_single_player_stats_data ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-single-player-legend'
         }
-      }
-    });
+      )
+    );
   });
   </script>
 <?php elseif ( isset($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>No Plays For Player <?php echo intval($_GET['player_id']); ?> in past week</h2>
+    <h2>No Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
   </div>
 <?php endif; ?>
 </div>

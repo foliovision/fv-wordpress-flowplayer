@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 /*  FV Wordpress Flowplayer - HTML5 video player with Flash fallback    
     Copyright (C) 2016  Foliovision
 

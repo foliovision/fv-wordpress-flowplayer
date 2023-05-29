@@ -1904,6 +1904,8 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    * @param int $post_id        Populated by WordPress, the post ID
    */  
   public function store_post_ids( $post_id ) {
+    global $wpdb;
+
     if ( wp_is_post_revision( $post_id ) ) return;
     
     $post = get_post($post_id);
@@ -1917,10 +1919,10 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
     if( preg_match_all('~\[fvplayer.*?id=\\\?[\'"]([0-9,]+)~', implode( array_map( 'implode', get_post_custom($post_id) ) ), $matches2 ) ) {
       $matches = array_merge( $matches, $matches2[1] );
     }
-    
+
+    $ids = array();
+
     if( $matches ) {
-      
-      $ids = array();
       foreach( $matches AS $match ) {
         foreach( explode(',',$match) AS $match_match ) {
           $ids[] = $match_match;
@@ -1949,7 +1951,6 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
           // TODO: So here's the temporary work-around which should be removed once FV_Player_Db_Player_Meta()
           // does properly register the player meta with getMetaData()
-          global $wpdb;
           if( $wpdb->get_var( $wpdb->prepare("SELECT meta_value FROM {$wpdb->prefix}fv_player_playermeta WHERE id_player = %d AND meta_key = %s AND meta_value = %d", $player_id, 'post_id', $post_id ) ) ) {
             $add = false;
           }
@@ -1970,9 +1971,18 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         }
 
       }
-      
-      global $wpdb;
-      $remove = $wpdb->get_results( "SELECT * FROM ".FV_Player_Db_Player_Meta::init_db_name()." WHERE meta_key = 'post_id' AND meta_value = '{$post_id}' ");
+    }
+
+    /**
+     * Check if table exists before looking for FV Player that is associated in the post.
+     * We do this because we would run into issues with this in WP Integration tests.
+     * The database tables get created by tests like FV_Player_DBTest::setUp() but somehow 
+     * wptests_fv_player_playermetas is not there
+     */
+    $table_name = FV_Player_Db_Player_Meta::init_db_name();
+
+    if( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+      $remove = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE meta_key = 'post_id' AND meta_value = %s ", $post_id ) );
       if( $remove ) {
         foreach( $remove AS $removal ) {
           if( !in_array($removal->id_player,$ids) ) {
@@ -1982,7 +1992,6 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
           }
         }
       }
-      
     }
   }
 

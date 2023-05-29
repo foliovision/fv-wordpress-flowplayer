@@ -197,16 +197,10 @@ class FV_Player_List_Table extends WP_List_Table {
       echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
     if ( ! empty( $_REQUEST['order'] ) )
       echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
-
-    if (isset($_GET['id'])) {
-      $input_id = $_GET['id'];
-    } else {
-      $input_id = null;
-    }
     ?>
     <p class="search-box">
-      <label class="screen-reader-text" for="<?php echo $input_id ?>">Search players:</label>
-      <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>" />
+      <label class="screen-reader-text" for="fv_player_search">Search players:</label>
+      <input type="search" id="fv_player_search" name="s" value="<?php _admin_search_query(); ?>" />
       <?php submit_button( "Search players", 'button', false, false, array('ID' => 'search-submit') ); ?><br/>
     </p>
     <?php

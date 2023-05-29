@@ -2,6 +2,11 @@
 class FV_Player_Position_Save {
 
   public function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save') );
     add_filter('fv_player_item', array($this, 'set_last_position'), 10, 3 );
     add_filter('fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );

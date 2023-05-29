@@ -47,7 +47,7 @@ flowplayer( function(api,root) {
     // or did the user pick some quality by hand?
     if( localStorage.FVPlayerHLSQuality ) pick_quality = localStorage.FVPlayerHLSQuality;
     // or did we disable it for this player?
-    console.log( 'hd_streaming', jQuery(params.root).data('hd_streaming'), jQuery(params.root).data('hd_streaming') == false );
+
     if( jQuery(params.root).data('hd_streaming') == false ) pick_quality = false;
 
     if( pick_quality ) {

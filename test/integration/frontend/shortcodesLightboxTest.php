@@ -88,15 +88,25 @@ HTML;
 <a data-fancybox='gallery' data-options='{"touch":false}' id="fv_flowplayer_115a93a5af442650797905ae63ef569b_lightbox_starter" title='Video 1' class="fv-player-lightbox-link" href="#" data-src="#wpfp_115a93a5af442650797905ae63ef569b_container">Video 1</a>
 HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
+
+
+    // Avoid more CSS files which WordPress started to include as the block themes become the new default
+    add_action(
+      'wp_footer',
+      function() {
+        // inline style with "Core styles: block-supports"
+        wp_dequeue_style( 'core-block-supports' );
+      }
+    );
     
     ob_start();
     do_action('wp_footer');
     $footer = ob_get_clean();
     
     $sample = <<< HTML
-<div id="wpfp_0960fcb4ba1dd9c649b750aaf5c5da5c_container" class="fv_player_lightbox_hidden" style="display: none">
-<div id="wpfp_0960fcb4ba1dd9c649b750aaf5c5da5c" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}],&quot;fv_title&quot;:&quot;Video 1&quot;,&quot;splash&quot;:&quot;https:\/\/cdn.site.com\/video1.jpg&quot;}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; " data-ratio="0.5625">
+
+<div id="wpfp_a1c867a00a9b9024ba559b457efca492_container" class="fv_player_lightbox_hidden" style="display: none">
+<div id="wpfp_a1c867a00a9b9024ba559b457efca492" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}],&quot;fv_title&quot;:&quot;Video 1&quot;,&quot;splash&quot;:&quot;https:\/\/cdn.site.com\/video1.jpg&quot;}" class="flowplayer lightboxed no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<img class="fp-splash" alt="Video 1" src="https://cdn.site.com/video1.jpg" />
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -105,13 +115,13 @@ HTML;
 </div>
 <!-- lightboxed players -->
 
-<link rel='stylesheet' id='fv_player_lightbox-css'  href='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/css/fancybox.css?ver=7.5.22.728.3' type='text/css' media='all' />
+<link rel='stylesheet' id='fv_player_lightbox-css' href='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/css/fancybox.css?ver=7.5.30.7212' type='text/css' media='all' />
 <script type='text/javascript' id='fv_player_lightbox-js-extra'>
 /* <![CDATA[ */
 var fv_player_lightbox = {"lightbox_images":""};
 /* ]]> */
 </script>
-<script type='text/javascript' src='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/js/fancybox.js?ver=7.5.22.728.3' id='fv_player_lightbox-js'></script>
+<script type='text/javascript' src='http://example.org/wp-content/plugins/fv-wordpress-flowplayer/js/fancybox.js?ver=7.5.30.7212' id='fv_player_lightbox-js'></script>
       <style type="text/css">
     .flowplayer.skin-slim { background-color: #000000 !important; }
 .flowplayer.skin-slim .fp-color, .flowplayer.skin-slim .fp-selected, .fp-playlist-external.skin-slim .fvp-progress { background-color: #bb0000 !important; }
@@ -170,8 +180,23 @@ var fv_player_lightbox = {"lightbox_images":""};
     .flowplayer .fp-player .fp-captions p { font-size: 16px; }        .flowplayer .fp-logo { bottom: 30px; left: 15px }      
     .flowplayer .fp-player .fp-captions p { background-color: rgba(0,0,0,0.5) }
   
-                  </style>  
+                  </style>
+    
 HTML;
+
+    // Compare line by line or even char by char
+    /*$one = explode( "\n", $this->fix_newlines($sample) );
+    $two = explode( "\n", $this->fix_newlines($footer) );
+    foreach( $one as $k => $v ) {
+
+      if( $v != $two[$k]) {
+        for( $i=0; $i<strlen($two[$k]); $i++)  {
+          //var_dump( $two[$k][$i].' '.ord($two[$k][$i]) );
+        }
+      }
+
+      $this->assertEquals( $v, $two[$k] );
+    }*/
     
     $this->assertTrue( stripos( $this->fix_newlines($footer),$this->fix_newlines($sample) ) !== false );  //  is the lightboxed players in the footer?
     

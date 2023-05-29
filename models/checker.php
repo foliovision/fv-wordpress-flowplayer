@@ -201,6 +201,7 @@ class FV_Player_Checker {
           }
 
           $is_audio = false;
+          $is_live = false;
 
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
             $is_audio = -1; // We do not know if it's audio only yet
@@ -356,7 +357,7 @@ class FV_Player_Checker {
 
           }
   
-          if( !empty($meta_data['thumbnail']) ) {
+          if( is_array($meta_data) && !empty($meta_data['thumbnail']) ) {
             if( !$objVideo->getSplash() || $objVideo->getMetaValue('auto_splash',true) ) {
               $video_object = new FV_Player_Db_Video( $objVideo->getId(), array(), $FV_Player_Db );
               $video_object->link2db( $objVideo->getId() );

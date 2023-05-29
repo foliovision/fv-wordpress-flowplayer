@@ -9,6 +9,11 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   var $supported_video_atts;
 
   function __construct() {
+
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     parent::__construct( array(
       'title' => 'FV Player Shortcode2Database Conversion',
       'slug' => 'shortcode2db',

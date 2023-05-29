@@ -40,6 +40,7 @@ class flowplayer_frontend extends flowplayer
 
   var $currentVideoObject = null;
 
+  private $fRatio = null;
 
   /**
    * Retrieves instance of current player
@@ -125,21 +126,13 @@ class flowplayer_frontend extends flowplayer
           }
         }
       }
+    }
 
-      if( $videos = $player->getVideos() ) {
-        if( !empty($videos[0]) && (
-            $videos[0]->getMetaValue('audio',true) ||
-            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $videos[0]->getSrc() )
-          )
-        ) {
-          // force horizontal playlist style for audio as that the only one styled properly
-          $this->aCurArgs['liststyle'] = 'horizontal';
-        }
-      }
-    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
+    // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
+    if ( $this->is_audio_playlist() ) {
       $this->aCurArgs['liststyle'] = 'horizontal';
     }
-    
+
     $media = $this->aCurArgs['src'];
 
     if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
@@ -431,17 +424,8 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] = apply_filters( 'fv_flowplayer_amp', $this->ret['html'], $this );
           
           return $this->ret;
-        }    
-    
-        foreach( array( $media, $src1, $src2 ) AS $media_item ) {
-          //if( ( strpos($media_item, 'amazonaws.com') !== false && stripos( $media_item, 'http://s3.amazonaws.com/' ) !== 0 && stripos( $media_item, 'https://s3.amazonaws.com/' ) !== 0  ) || stripos( $media_item, 'rtmp://' ) === 0 ) {  //  we are also checking amazonaws.com due to compatibility with older shortcodes
-          
-          if( !$this->_get_option('engine') && stripos( $media_item, '.m4v' ) !== false ) {
-            $this->ret['script']['fv_flowplayer_browser_ff_m4v'][$this->hash] = true;
-          }
-          
         }
-        
+
         $popup = '';
         
         $aSubtitles = $this->get_subtitles();
@@ -476,7 +460,13 @@ class flowplayer_frontend extends flowplayer
         } else {
           $skin = 'skin-'.$this->_get_option('skin');
         }
-        $attributes['class'] .= ' no-svg is-paused '.$skin;
+
+        $attributes['class'] .= ' is-paused '.$skin;
+
+        if ( ! flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
+          $attributes['class'] .= ' no-svg';
+        }
+
         $timeline_class = $this->_get_option(array($skin, 'design-timeline'));
         if( $bIsAudio && ( $timeline_class == 'fp-minimal' || $timeline_class == 'fp-full' ) ) {
           $timeline_class = 'fp-slim';
@@ -559,7 +549,7 @@ class flowplayer_frontend extends flowplayer
         $attributes['style'] = '';
 
         // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-        if( !wp_style_is('fv_flowplayer') ) {
+        if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
           $attributes['style'] = 'position:relative; ';
         }
 
@@ -722,7 +712,7 @@ class flowplayer_frontend extends flowplayer
           } else {
             $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
             // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-            if( !wp_style_is('fv_flowplayer') ) {
+            if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
               $image .= ' style="position:absolute;top:0;width:100%"';
             }
             $image .= ' />';
@@ -730,12 +720,18 @@ class flowplayer_frontend extends flowplayer
           
           $this->ret['html'] .= "\t".$image."\n"; 
         }
+
+        $preload = '<div class="fp-preload"><b></b><b></b><b></b><b></b></div>';
+
+        if ( flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
+          $preload = '';
+        }
         
         if( !empty($fv_fp->aCurArgs['error']) ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().'<div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().$preload.'</div>'."\n";
 
         } else if( !$bIsAudio ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().'<div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().$preload.'</div>'."\n";
         }
         
         $this->ret['html'] .= $this->get_buttons();
@@ -1344,8 +1340,47 @@ HTML;
 
     return $sHTML;
   }
-  
-  
+
+
+  /**
+   * Is it a audio track-only playlist with no splash screens?
+   */
+  function is_audio_playlist() {
+
+    // Are all the database player items audio tracks?
+    if( $player = $this->current_player() ) {
+
+      $items = $player->getVideos();
+      $count_audio_items = 0;
+
+      if( $items ) {
+        foreach( $items AS $item ) {
+          if( $item->getSplash() ) {
+            continue;
+          }
+
+          if(
+            $item->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
+          ) {
+            $count_audio_items++;
+          }
+        }
+      }
+
+      if ( count( $items ) === $count_audio_items ) {
+        return true;
+      }
+
+    // Does the legacy shortcode start with an audio track with no splash?
+    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+      return true;
+    }
+
+    return false;
+  }
+
+
   // some themes use wp_filter_post_kses() on output, so we must ensure FV Player markup passes
   function wp_kses_permit( $tags, $context = false ) {
     if( $context != 'post' ) return $tags;

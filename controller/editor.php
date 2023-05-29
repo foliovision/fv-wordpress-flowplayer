@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
@@ -253,7 +257,7 @@ function fv_wp_flowplayer_featured_image($post_id) {
   if( $aMetas = get_post_custom($post_id) ) { // parse [fvplayer id="..."] shortcode in post meta
     foreach( $aMetas AS $aMeta ) {
       foreach( $aMeta AS $meta_value ) {
-        if( preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
+        if ( is_string( $meta_value ) && preg_match_all( '/\[fvplayer.*?\]/', $meta_value, $shortcodes ) ) {
           foreach( $shortcodes[0] AS $shortcode ) {
             $search_context .= "\n\n".$shortcode;
           }

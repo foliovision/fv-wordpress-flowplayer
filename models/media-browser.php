@@ -7,6 +7,10 @@ abstract class FV_Player_Media_Browser {
 
   public function __construct($args) {
 
+    if ( ! defined( 'ABSPATH' ) ) {
+      exit;
+    }
+
     // load base JS
     add_action( 'edit_form_after_editor', array($this, 'init_base'), 1 ); // for old WP editor
     add_action( 'enqueue_block_editor_assets', array($this, 'init_base') ); // for Gutenberg

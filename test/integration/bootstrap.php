@@ -17,6 +17,8 @@
  * Also, please make sure to update the value of "WP_PHP_BINARY" constant to point to your PHP binary.
  */
 
+include_once("../../vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php");
+
 // let whoever is listening know we're in test mode
 define('PHPUnitTestMode', true);
 

@@ -3,7 +3,7 @@
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.8.
-Version: 7.5.30.7212
+Version: 7.5.36.7212
 Author URI: http://foliovision.com/
 License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
@@ -26,9 +26,13 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.txt
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+  return;
+}
+
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.5.30.7212';
-$fv_wp_flowplayer_core_ver = '7.2.12.1';
+$fv_wp_flowplayer_ver = '7.5.36.7212.2';
+$fv_wp_flowplayer_core_ver = '7.2.12.3';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
@@ -90,8 +94,10 @@ if( is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
  
-  if( version_compare(phpversion(),'7.2.5') != -1 ) {
+  if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
+
+    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
   }
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
 
@@ -113,6 +119,7 @@ include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
+include_once(dirname( __FILE__ ) . '/models/stats-export.php');
 
 include_once(dirname( __FILE__ ) . '/models/youtube.php');
 
