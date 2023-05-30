@@ -13,15 +13,15 @@ class FV_Player_Elearning {
 
     add_action( 'admin_init', array( $this, 'admin__add_meta_boxes' ) );
     add_action( 'fv_flowplayer_shortcode_editor_tab_options', array( $this, 'shortcode_editor_options' ) );
-    add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+    add_action( 'wp_footer', array( $this, 'script_enqueue_frontend' ) );
   }
 
   function check_meta( $aItem, $index, $aArgs ) {
     global $fv_fp;
 
     // shortcode args
-    if( isset( $aArgs['1stplaynoseek'] ) ) {
-      if( $aArgs['1stplaynoseek'] == 'yes' || $aArgs['1stplaynoseek'] == 'true' ) {
+    if( isset( $aArgs['lms_teaching '] ) ) {
+      if( $aArgs['lms_teaching '] == 'yes' || $aArgs['lms_teaching '] == 'true' ) {
         $this->is_enabled = true;
       } else {
         $this->is_enabled = false;
@@ -29,16 +29,15 @@ class FV_Player_Elearning {
     } else {
 
       $meta_setting = 'default'; // setting for specific player
-      $lms_global = $fv_fp->_get_option( 'lms_teaching' ); // Disable globally
       if ($fv_fp->current_player() && count($fv_fp->current_player()->getMetaData())) {
         foreach ($fv_fp->current_player()->getMetaData() as $meta_object) {
-          if( strcmp( $meta_object->getMetaKey(), 'lms_teaching_player' ) == 0 ) {
+          if( strcmp( $meta_object->getMetaKey(), 'lms_teaching' ) == 0 ) {
             $meta_setting = $meta_object->getMetaValue();
           }
         }
       }
 
-      if( ($lms_global && $meta_setting !== 'no') || $meta_setting == 'yes' ) {
+      if( $meta_setting == 'yes' ) {
         $this->is_enabled = true;
       } else {
         $this->is_enabled = false;
@@ -90,6 +89,12 @@ class FV_Player_Elearning {
   }
 
   public function shortcode_editor_options() {
+    global $fv_fp;
+
+    if( !$fv_fp->_get_option( 'lms_teaching' ) ) { // check if disabled in settings
+      return;
+    }
+
     ?>
       <tr>
         <th scope="row" class="label"><label for="lms_teaching_player" class="alignright"><?php _e('LMS | Teaching: 1st Play Video Seek Disable', 'fv-wordpress-flowplayer'); ?></label></th>
@@ -104,13 +109,11 @@ class FV_Player_Elearning {
     <?php
   }
 
-  function admin_enqueue_scripts( $page ) {
-    global $fv_wp_flowplayer_ver;
-
-    if( $page == 'post.php' || $page == 'post-new.php' || $page == 'toplevel_page_fv_player' ) {
-      wp_register_script('fvplayer-shortcode-elearning', flowplayer::get_plugin_url() . '/js/shortcode-elearning.js', array('jquery','fvwpflowplayer-shortcode-editor'), $fv_wp_flowplayer_ver );
-      wp_enqueue_script('fvplayer-shortcode-elearning');
-    }
+  function script_enqueue_frontend() {
+    wp_localize_script( 'flowplayer', 'fv_player_elearning', array(
+      'msg_no_skipping' => __('Skipping is not allowed.', 'fv-wordpress-flowplayer'),
+      'msg_watch_video' => __('Please watch the video carefully.', 'fv-wordpress-flowplayer'),
+    ));
   }
 
 }
