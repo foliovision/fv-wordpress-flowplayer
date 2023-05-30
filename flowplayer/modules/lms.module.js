@@ -51,7 +51,7 @@ if( typeof(flowplayer) != "undefined" ) {
           // console.log('beforeseek', time, 'position', position, 'stored_max_position[index]', stored_max_position[index]);
 
           if( time <= position || time <= stored_max_position[index] ) {
-            console.log( 'FV Player Elearning: allow seek to' , time );
+            console.log( 'FV Player lms: allow seek to' , time );
           } else {
             // Remove previously shown warning
             api.trigger('fv-lms-teaching-be-gone');
@@ -61,8 +61,8 @@ if( typeof(flowplayer) != "undefined" ) {
             e.stopPropagation();
 
             // Show the notices
-            var notice = fv_player_notice( root, '<p>'+fv_player_elearning.msg_no_skipping+'<br />'+fv_player_elearning.msg_watch_video+'</p>', 'fv-lms-teaching-be-gone' );
-            notice.addClass('fv-player-elearning-notice')
+            var notice = fv_player_notice( root, '<p>'+fv_flowplayer_translations.msg_no_skipping+'<br />'+fv_flowplayer_translations.msg_watch_video+'</p>', 'fv-lms-teaching-be-gone' );
+            notice.addClass('fv-player-lms-teaching')
 
             // Remove these notices in 2 seconds
             setTimeout( function() {

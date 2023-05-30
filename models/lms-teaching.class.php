@@ -1,6 +1,6 @@
 <?php
 
-class FV_Player_Elearning {
+class FV_Player_LMS_Teaching {
   private $is_enabled = false;
 
   function __construct() {
@@ -10,7 +10,6 @@ class FV_Player_Elearning {
   function loader() {
     add_filter( 'fv_player_item', array( $this, 'check_meta' ), 11, 3 );
     add_filter( 'fv_flowplayer_attributes', array( $this, 'edit_attributes' ), 11, 3 );
-    add_action( 'wp_footer', array( $this, 'script_enqueue_frontend' ) );
   }
 
   function check_meta( $aItem, $index, $aArgs ) {
@@ -57,13 +56,6 @@ class FV_Player_Elearning {
     return $attributes;
   }
 
-  function script_enqueue_frontend() {
-    wp_localize_script( 'flowplayer', 'fv_player_elearning', array(
-      'msg_no_skipping' => __('Skipping is not allowed.', 'fv-wordpress-flowplayer'),
-      'msg_watch_video' => __('Please watch the video carefully.', 'fv-wordpress-flowplayer'),
-    ));
-  }
-
 }
 
-new FV_Player_Elearning;
+new FV_Player_LMS_Teaching;

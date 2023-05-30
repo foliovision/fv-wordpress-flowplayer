@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player    
+/*  FV Wordpress Flowplayer - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ add_action('widget_text','do_shortcode');
 add_filter( 'run_ngg_resource_manager', '__return_false' );
 
 
-function fv_flowplayer_remove_bad_scripts() {  
+function fv_flowplayer_remove_bad_scripts() {
   global $wp_scripts;
   if( isset($wp_scripts->registered['flowplayer']) && isset($wp_scripts->registered['flowplayer']->src) && stripos($wp_scripts->registered['flowplayer']->src, 'fv-wordpress-flowplayer') === false ) {
     wp_deregister_script( 'flowplayer' );
@@ -44,7 +44,7 @@ function fv_flowplayer_ap_action_init(){
 add_action('init', 'fv_flowplayer_ap_action_init');
 
 function fv_flowplayer_get_js_translations() {
-  
+
   $aStrings = array(
   0 => '',
   1 => __('Video loading aborted', 'fv-wordpress-flowplayer'),
@@ -55,7 +55,7 @@ function fv_flowplayer_get_js_translations() {
   6 => __('Skin not found', 'fv-wordpress-flowplayer'),
   7 => __('SWF file not found', 'fv-wordpress-flowplayer'),
   8 => __('Subtitles not found', 'fv-wordpress-flowplayer'),
-  10 => __('Unsupported video format.', 'fv-wordpress-flowplayer'),  
+  10 => __('Unsupported video format.', 'fv-wordpress-flowplayer'),
   11 => __('Click to watch the video', 'fv-wordpress-flowplayer'),
   12 => __('[This post contains video, click to play]', 'fv-wordpress-flowplayer'),
   'video_expired' => __('<h2>Video file expired.<br />Please reload the page and play it again.</h2>', 'fv-wordpress-flowplayer'),
@@ -75,7 +75,7 @@ function fv_flowplayer_get_js_translations() {
   'playlist_play_all_button' =>__('All','fv-wordpress-flowplayer'),
   'playlist_replay_all' =>__('Replay Playlist','fv-wordpress-flowplayer'),
   'playlist_replay_video' =>__('Repeat Track','fv-wordpress-flowplayer'),
-  'playlist_shuffle' =>__('Shuffle Playlist','fv-wordpress-flowplayer'),  
+  'playlist_shuffle' =>__('Shuffle Playlist','fv-wordpress-flowplayer'),
   'video_issues' =>__('Video Issues','fv-wordpress-flowplayer'),
   'video_reload' =>__('Video loading has stalled, click to reload','fv-wordpress-flowplayer'),
   'link_copied' =>__('Video Link Copied to Clipboard','fv-wordpress-flowplayer'),
@@ -113,14 +113,16 @@ function fv_flowplayer_get_js_translations() {
   'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
   'invalid_youtube' => __('Invalid Youtube video ID.', 'fv-player-pro'),
   'video_loaded' => __('Video loaded, click to play.', 'fv-player-pro'),
+  'msg_no_skipping' => __('Skipping is not allowed.', 'fv-wordpress-flowplayer'),
+  'msg_watch_video' => __('Please watch the video carefully.', 'fv-wordpress-flowplayer'),
 );
 
   return $aStrings;
-} 
+}
 
 /**
  * Replaces the flowplayer tags in post content by players and fills the $GLOBALS['fv_fp_scripts'] array.
- * 
+ *
  * @param string Content to be parsed
  * @return string Modified content string
  */
@@ -129,7 +131,7 @@ function flowplayer_content( $content ) {
 
   $content_matches = array();
   preg_match_all('/\[(flowplayer|fvplayer)\ [^\]]+\]/i', $content, $content_matches);
-  
+
   // process all found tags
   foreach ($content_matches[0] as $tag) {
     $ntag = str_replace("\'",'&#039;',$tag);
@@ -140,9 +142,9 @@ function flowplayer_content( $content ) {
       $media = $tmp[1][0];
     }
     else
-      $media = $tmp[1]; 
-    
-    //strip the additional /videos/ from the beginning if present  
+      $media = $tmp[1];
+
+    //strip the additional /videos/ from the beginning if present
     preg_match('/(.*)\/videos\/(.*)/',$media,$matches);
     if ($matches[0] == NULL)
       $media = $media;
@@ -152,10 +154,10 @@ function flowplayer_content( $content ) {
     else {
       $media = $matches[2];
     }
-    
+
     unset($arguments['src']);
     unset($arguments['src1']);
-    unset($arguments['src2']);        
+    unset($arguments['src2']);
     unset($arguments['width']);
     unset($arguments['height']);
     unset($arguments['autoplay']);
@@ -165,7 +167,7 @@ function flowplayer_content( $content ) {
     unset($arguments['controlbar']);
     unset($arguments['redirect']);
     unset($arguments['loop']);
-    
+
     //width and heigth
     preg_match("/width=(\d*)/i",$ntag,$width);
     preg_match("/height=(\d*)/i",$ntag,$height);
@@ -173,12 +175,12 @@ function flowplayer_content( $content ) {
       $arguments['width'] = $width[1];
     if( $height[1] != NULL)
       $arguments['height'] = $height[1];
-      
+
     //search for redirect
     preg_match("/redirect='([^']*?)'/i",$ntag,$tmp);
     if ($tmp[1])
       $arguments['redirect'] = $tmp[1];
-    
+
     //search for autoplay
     preg_match("/[\s]+autoplay([\s]|])+/i",$ntag,$tmp);
     if (isset($tmp[0])){
@@ -191,12 +193,12 @@ function flowplayer_content( $content ) {
       if (isset($tmp[1]))
         $arguments['autoplay'] = $tmp[1];
     }
-    
+
     //search for popup in quotes
     preg_match("/popup='([^']*?)'/i",$ntag,$tmp);
     if ($tmp[1])
       $arguments['popup'] = $tmp[1];
-    
+
     //search for loop
     preg_match("/[\s]+loop([\s]|])+/i",$ntag,$tmp);
     if (isset($tmp[0])){
@@ -209,7 +211,7 @@ function flowplayer_content( $content ) {
       if (isset($tmp[1]))
         $arguments['loop'] = $tmp[1];
     }
-    
+
     //  search for splash image
     preg_match("/splash='([^']*?)'/i",$ntag,$tmp);   //quotes version
      if( $tmp[1] == NULL ) {
@@ -233,7 +235,7 @@ function flowplayer_content( $content ) {
       else
         $arguments['splash'] = $matches[2];//$tmp[1];
     }
-    
+
     //  search for src1
     preg_match("/src1='([^']*?)'/i",$ntag,$tmp);   //quotes version
      if( $tmp[1] == NULL ) {
@@ -257,7 +259,7 @@ function flowplayer_content( $content ) {
       else
         $arguments['src1'] = $matches[2];//$tmp[1];
     }
-    
+
     //  search for src1
     preg_match("/src2='([^']*?)'/i",$ntag,$tmp);   //quotes version
      if( $tmp[1] == NULL ) {
@@ -281,7 +283,7 @@ function flowplayer_content( $content ) {
       else
         $arguments['src2'] = $matches[2];//$tmp[1];
     }
-    
+
     //search for splashend
     preg_match("/[\s]+splashend([\s]|])+/i",$ntag,$tmp);
     if (isset($tmp[0])){
@@ -294,7 +296,7 @@ function flowplayer_content( $content ) {
       if (isset($tmp[1]))
         $arguments['splashend'] = $tmp[1];
     }
-    
+
     //search for controlbar
     preg_match("/[\s]+controlbar([\s]|])+/i",$ntag,$tmp);
     if (isset($tmp[0])){
@@ -307,7 +309,7 @@ function flowplayer_content( $content ) {
       if (isset($tmp[1]))
         $arguments['controlbar'] = $tmp[1];
     }
-    
+
     if (trim($media) != '') {
       // build new player
       $new_player = $fv_fp->build_min_player($media,$arguments);
@@ -322,16 +324,16 @@ function flowplayer_content( $content ) {
 
 function flowplayer_prepare_scripts() {
   global $fv_fp, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
-  
+
   //  don't load script in Optimize Press 2 preview
   if( flowplayer::is_special_editor() ) {
-    return;  
+    return;
   }
 
   if(
      isset($GLOBALS['fv_fp_scripts']) ||
      $fv_fp->should_force_load_js() ||
-     isset($_GET['fv_wp_flowplayer_check_template']) 
+     isset($_GET['fv_wp_flowplayer_check_template'])
   ){
 
     $aDependencies = array('jquery');
@@ -354,33 +356,33 @@ function flowplayer_prepare_scripts() {
     if( file_exists(dirname(__FILE__).'/../flowplayer/freedomplayer.js') ) {
       $path = '/flowplayer/freedomplayer.js';
     }
-    
+
     $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_core_ver;
-    
+
     wp_enqueue_script( 'flowplayer', flowplayer::get_plugin_url().$path, $aDependencies, $version, true );
     $aDependencies[] = 'flowplayer';
-    
+
     // Load modules
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
       $path = '/flowplayer/modules/fv-player.js';
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
-      
+
       foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.module.js') as $filename ) {
         $path = '/flowplayer/modules/'.basename($filename);
         wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
-      
+
     } else {
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/fv-player.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
-      
+
     }
 
     if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') && ( $fv_fp->_get_option('video_checker_agreement') || $fv_fp->_get_option('key_automatic') ) ) {
       wp_enqueue_script( 'fv-player-video-checker', flowplayer::get_plugin_url().'/js/video-checker.js', array('flowplayer'), $fv_wp_flowplayer_ver, true );
       $aConf['video_checker'] = true;
     }
-   
+
     if( $fv_fp->_get_option('ui_speed_increment') == 0.25){
       $aConf['speeds'] = array( 0.25,0.5,0.75,1,1.25,1.5,1.75,2 );
     }elseif( $fv_fp->_get_option('ui_speed_increment') == 0.1){
@@ -390,28 +392,28 @@ function flowplayer_prepare_scripts() {
     }
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
-    
+
     if( $sCommercialKey ) $aConf['key'] = base64_encode($sCommercialKey);
     if( apply_filters( 'fv_flowplayer_safety_resize', true) ) {
       $aConf['safety_resize'] = true;
     }
     if( $fv_fp->_get_option('cbox_compatibility') ) {
       $aConf['cbox_compatibility'] = true;
-    }    
+    }
     if( current_user_can('manage_options') && !$fv_fp->_get_option('disable_videochecker') ) {
       $aConf['video_checker_site'] = home_url();
     }
 
     if( $sLogo ) $aConf['logo'] = $sLogo;
 
-    // Used to restore volume, removed in JS if volume stored in browser localStorage    
+    // Used to restore volume, removed in JS if volume stored in browser localStorage
     $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );
     if( $aConf['volume'] > 1 ) {
       $aConf['volume'] = 1;
     }
-    
+
     $aConf['default_volume'] = $aConf['volume'];
-    
+
     if( $val = $fv_fp->_get_option('mobile_native_fullscreen') ) $aConf['mobile_native_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_force_fullscreen') ) $aConf['mobile_force_fullscreen'] = $val;
     if( $val = $fv_fp->_get_option('mobile_alternative_fullscreen') ) $aConf['mobile_alternative_fullscreen'] = $val;
@@ -427,13 +429,13 @@ function flowplayer_prepare_scripts() {
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width');
     $aConf['sticky_min_width'] = intval( apply_filters( 'fv_player_sticky_min_width', 1020 ) );
-       
+
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {
       if( get_post_meta($post->ID, 'fv_player_mobile_native_fullscreen', true) ) $aConf['mobile_native_fullscreen'] = true;
       if( get_post_meta($post->ID, 'fv_player_mobile_force_fullscreen', true) ) $aConf['mobile_force_fullscreen'] = true;
     }
-    
+
     if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
       wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.2.3', true );
     }
@@ -468,14 +470,14 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('googleanalytics') ) {
       $aConf['fvanalytics'] = $fv_fp->_get_option('googleanalytics');
     }
-    
+
     if( $fv_fp->_get_option('matomo_domain') && $fv_fp->_get_option('matomo_site_id') ) {
       // take the domain name from Matomo Domain setting in case somebody entered full URL
       $matomo_domain = $fv_fp->_get_option('matomo_domain');
       $parsed = parse_url($matomo_domain);
-      if( $parsed && !empty($parsed['host']) ) { 
+      if( $parsed && !empty($parsed['host']) ) {
         $matomo_domain = $parsed['host'];
-        if( !empty($parsed['path']) ) { 
+        if( !empty($parsed['path']) ) {
           $matomo_domain .= '/'.$parsed['path'];
         }
       }
@@ -512,16 +514,16 @@ function flowplayer_prepare_scripts() {
       'levelLoadingMaxRetry' => 3,
       'capLevelToPlayerSize' => true
     );
-    
+
     // The above HLS.js config doesn't work well on Chrome and Firefox, so we detect that in JS and use this config for it instead. Todo: make this a per-video thing
     if( class_exists('FV_Player_Pro_DaCast') ) {
-      $aConf['dacast_hlsjs'] = array(        
+      $aConf['dacast_hlsjs'] = array(
         'autoLevelEnabled' => false // disable ABR. If you set startLevel or capLevelToPlayerSize it will be enabled again. So this way everybody on desktop gets top quality and they have to switch to lower each time.
       );
     }
-    
+
     if( is_admin() ) $aConf['wpadmin'] = true;
-    
+
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
     $aLocalize = array();
 
@@ -534,22 +536,22 @@ function flowplayer_prepare_scripts() {
     if( current_user_can('edit_posts') ) {
       $aLocalize['user_edit'] = true;
     }
-    
+
     $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
 
     wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
 
     wp_localize_script( 'flowplayer', 'fv_flowplayer_translations', fv_flowplayer_get_js_translations());
     wp_localize_script( 'flowplayer', 'fv_flowplayer_playlists', array() );   //  has to be defined for FV Player Pro 0.6.20 and such
-    
+
     if( isset($GLOBALS['fv_fp_scripts']) && count($GLOBALS['fv_fp_scripts']) > 0 ) {
       foreach( $GLOBALS['fv_fp_scripts'] AS $sKey => $aScripts ) {
         wp_localize_script( 'flowplayer', $sKey.'_array', $aScripts );
       }
     }
-    
+
   }
-  
+
   FV_Player_lightbox()->maybe_load();
 }
 
@@ -558,8 +560,8 @@ function flowplayer_prepare_scripts() {
  */
 function flowplayer_display_scripts() {
   if( flowplayer::is_special_editor() ) {
-    return;  
-  }  
+    return;
+  }
 
   if( is_user_logged_in() || isset($_GET['fv_wp_flowplayer_check_template']) ) {
     echo "\n<!--fv-flowplayer-footer-->\n\n";
@@ -579,9 +581,9 @@ Make sure our div won't be wrapped in any P tag and that html attributes don't b
 */
 function fv_flowplayer_the_content( $c ) {
   if( flowplayer::is_special_editor() ) {
-    return $c;  
-  }    
-  
+    return $c;
+  }
+
   $c = preg_replace( '!<p[^>]*?>(\[(?:fvplayer|flowplayer).*?[^\\\]\])</p>!', "\n".'$1'."\n", $c );
   $c = preg_replace_callback( '!\[(?:fvplayer|flowplayer).*?[^\\\]\]!', 'fv_flowplayer_shortfcode_fix_attrs', $c );
   return $c;
@@ -609,16 +611,16 @@ function fv_flowplayer_attachment_page_video( $c ) {
   if( stripos($post->post_mime_type, 'video/') !== 0 && stripos($post->post_mime_type, 'audio/') !== 0 ) {
     return $c;
   }
-  
+
   if( !$src = wp_get_attachment_url($post->ID) ) {
     return $c;
   }
 
   $meta = get_post_meta( $post->ID, '_wp_attachment_metadata', true );
   $size = (isset($meta['width']) && isset($meta['height']) && intval($meta['width'])>0 && intval($meta['height'])>0 ) ? ' width="'.intval($meta['width']).'" height="'.intval($meta['height']).'"' : false;
-  
+
   $shortcode = '[fvplayer src="'.$src.'"'.$size.']';
-  
+
   $c = preg_replace( '~<p class=.attachment.[\s\S]*?</p>~', $shortcode, $c );
   $c = preg_replace( '~<div[^>]*?class="[^"]*?wp-video[^"]*?"[^>]*?>[\s\S]*?<video.*?</video></div>~', $shortcode, $c );
 
@@ -656,7 +658,7 @@ add_filter( 'bbp_get_reply_content', 'fv_player_comment_text', 0 );
 
 function fv_player_comment_text( $comment_text ) {
   if( is_admin() ) return $comment_text;
-  
+
   global $fv_fp;
   if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
     add_filter('comment_text', 'do_shortcode');
@@ -686,7 +688,7 @@ function fv_player_comment_text( $comment_text ) {
       $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
     }
   }
-  
+
   return $comment_text;
 }
 
@@ -765,16 +767,16 @@ function fv_player_disable_scroll_autoplay_conf($conf) {
 
 /**
  * Alters all the script tags related to FV Player, with excetption of the base FV Player library.
- * The reason is that it's a dependency of most of the modules so then each module would have to be 
+ * The reason is that it's a dependency of most of the modules so then each module would have to be
  * adjusted to be able to load without it.
- * 
+ *
  * Fancybox lightbox library with additional code is also excluded.
- * 
+ *
  * @param string $tag The original script tag.
  * @param string $handle The WordPress script handle
- * 
+ *
  * @global object $fv_fp The FV Player plugin instance
- * 
+ *
  * @return string The adjusted script tag
  */
 function fv_player_js_loader_mark_scripts( $tag, $handle ) {
@@ -790,7 +792,7 @@ function fv_player_js_loader_mark_scripts( $tag, $handle ) {
       stripos($handle,'fv-player') === 0 ||
       stripos($handle,'fv_player') === 0 ||
       'dashjs' === $handle
-    
+
     // script handle must not be one of
     ) && !in_array( $handle, array(
       'fv_player_lightbox' // without this it would be impossible to open the lightbox without hovering the page before it, so it's really a problem on mobile
@@ -809,24 +811,24 @@ function fv_player_js_loader_load() {
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
   require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
   $filesystem = new WP_Filesystem_Direct( new StdClass() );
-  
+
   $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? 'dev' : 'min';
-  
+
   $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.'.$suffix.'.js' );
-  
+
   if( !defined('SCRIPT_DEBUG') || !SCRIPT_DEBUG ) {
   // remove /* comments */
   $js = preg_replace( '~/\*[\s\S]*?\*/~m', '', $js );
   // remove whitespace
   $js = preg_replace( '~\s+~m', ' ', $js );
   }
-  
+
   echo '<script data-length="'.strlen($js).'">'.$js.'</script>';
 }
 
 /**
  * @param string $min The minimal version to check - like 7.4.44.727
- * 
+ *
  * @return bool True if the version is at least $min
  */
 function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
@@ -836,19 +838,19 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
     if( isset($FV_Player_Pro) && !empty($FV_Player_Pro->version) ) {
       $version = $FV_Player_Pro->version;
     }
-    
+
   } else if( $extension == 'vast' ) {
     global $FV_Player_VAST;
     if( isset($FV_Player_VAST) && !empty($FV_Player_VAST->version) ) {
       $version = $FV_Player_VAST->version;
     }
-    
+
   } else if( $extension == 'alternative-sources' ) {
     global $FV_Player_Alternative_Sources;
     if( isset($FV_Player_Alternative_Sources) && !empty($FV_Player_Alternative_Sources->version) ) {
       $version = $FV_Player_Alternative_Sources->version;
     }
-    
+
   } else if( $extension == 'ppv' ) {
     global $FV_Player_PayPerView;
     if( isset($FV_Player_PayPerView) && !empty($FV_Player_PayPerView->version) ) {
@@ -860,11 +862,11 @@ function fv_player_extension_version_is_min( $min, $extension = 'pro' ) {
     if( isset($FV_Player_PayPerView_WooCommerce) && !empty($FV_Player_PayPerView_WooCommerce->version) ) {
       $version = $FV_Player_PayPerView_WooCommerce->version;
     }
-    
+
   }
-  
+
   $version = str_replace('.beta','',$version);
-  
+
   return version_compare($version,$min ) != -1;
 }
 
@@ -891,7 +893,7 @@ function fv_player_wp_rocket_used_css( $safelist ) {
 
 /*
  * SiteGround Security "Lock and Protect System Folders" exclusion
- * 
+ *
  * The plugins normally blocks direct PHP calls in wp-content folder, we allow track.php requests for FV Player tracking this way
  * Unfortunately it uses simple rule like <Files track.php> so we cannot include the folder name.
  */
@@ -943,7 +945,7 @@ function fv_player_remove_for_excerpt( $post_content ) {
  *    @param  string  $post_type      Post type where the video is embed
  *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
  *  }
- * 
+ *
  *  @return array   Array of post IDs
  */
 function fv_player_get_user_watched_post_ids( $args = array() ) {
@@ -970,7 +972,7 @@ function fv_player_get_user_watched_post_ids( $args = array() ) {
 
   return $post_ids;
 }
-	
+
 
 /*
  *  @param array $args {
@@ -980,7 +982,7 @@ function fv_player_get_user_watched_post_ids( $args = array() ) {
  *    @param  string  $post_type      Post type where the video is embed
  *    @param  int     $user_id        User ID to operate on, defaults to logged in user.
  *  }
- * 
+ *
  *  @return array   Array of video IDs, or array of video progress details
  */
 function fv_player_get_user_watched_video_ids( $args = array() ) {
@@ -1033,7 +1035,7 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
         }
 
       }
-		
+
     // No "else if" as we want the full video watch to take priority over the stored position
 	  if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
         $video_id = str_replace( 'fv_wp_flowplayer_saw_', '', $meta->meta_key );
@@ -1105,7 +1107,7 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
 add_shortcode( 'fvplayer_editor', 'fvplayer_editor' );
 
 /**
- * @param array $args { 
+ * @param array $args {
  *   @type string $field    jQuery field selector of the field with the shortcode
  *   @type string $hide     Comma separated list of fields to hide
  *   @type string $library  Comma separated list of libraries to show in Media Library
@@ -1211,7 +1213,7 @@ function fvplayer_editor( $args ) {
     box-sizing: border-box;
     text-shadow: unset;
     text-transform: none;
-    width: auto !important;    
+    width: auto !important;
   }
   #fv-player-editor-modal .button.hover, #fv-player-editor-modal .button:hover, #fv-player-editor-modal .button-secondary:hover {
     background: #f0f0f1;

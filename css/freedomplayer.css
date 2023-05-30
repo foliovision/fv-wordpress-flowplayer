@@ -1017,7 +1017,7 @@
   overflow: hidden !important;
   position: absolute; }
 
-.fv-player-elearning-notice {
+.fv-player-lms-teaching {
   background: white;
   color: black;
   text-shadow: none;
@@ -1030,6 +1030,6 @@
   padding: 0.5em;
   margin-top: 10%;
 }
-.fv-player-elearning-notice p {
+.fv-player-lms-teaching p {
   margin: 0;
 }
