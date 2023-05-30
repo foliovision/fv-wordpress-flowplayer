@@ -62,7 +62,7 @@ if (!Date.now) {
       if( video.id ) {
         return video.id;
       }
-      
+
       // logged-in users will have position stored within that video
       var out = (
         (typeof(video.sources_original) != "undefined" && typeof(video.sources_original[0]) != "undefined") ?
@@ -315,7 +315,7 @@ if (!Date.now) {
 
     var
       $root = jQuery(root),
-      enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != false || $root.data('save-position'),
+      enabled = flowplayer.conf.video_position_save_enable && $root.data('save-position') != false || $root.data('save-position') || $root.data('lms_teaching'),
       progressEventsCount = 0,
       player_id = $root.data('player-id') ? $root.data('player-id') : false,
       item_changed = false,
@@ -399,7 +399,7 @@ if (!Date.now) {
               stored_top_position = api.conf.clip.sources[0] && api.conf.clip.sources[0].top_position ? api.conf.clip.sources[0].top_position : 0;
             }
             playTopPositions[video_id] = stored_top_position;
-            
+
           // only store the top position if the new one is bigger
           } else if( playTopPositions[video_id] < position) {
             playTopPositions[video_id] = position
@@ -526,7 +526,7 @@ if (!Date.now) {
           if( api.video && api.video.type != 'video/youtube' ) {
             api.play(item_index);
           }
-          
+
           item_changed = true;
 
           // playlist-start-position.module.js should not interfere
@@ -560,9 +560,9 @@ if (!Date.now) {
       item_changed = false;
       api.one('ready', restorePlaylistItem);
     });
-  
+
     api.one('ready', restorePlaylistItem);
-  
+
     jQuery(".fp-ui", root).on('click', function() {
       restorePlaylistItem();
     });
@@ -580,7 +580,7 @@ if (!Date.now) {
         position -= api.get_custom_start(video);
         if( position < 0 ) position = 0;
       }
-      
+
       var duration = video.duration;
 
       // Use the FV Player Pro method for custom duration
@@ -606,7 +606,7 @@ if (!Date.now) {
       var is_playlist = api.conf.playlist.length > 0,
         playlist = is_playlist ? api.conf.playlist : [ api.conf.clip ],
         playlist_external = jQuery('[rel='+jQuery(root).attr('id')+']');
-      
+
       for( var i in playlist ) {
         if (!playlist.hasOwnProperty(i)) continue;
 
@@ -650,7 +650,7 @@ if (!Date.now) {
           }
         }
       }
-      
+
     }
 
     // store saw after finish
