@@ -10,8 +10,6 @@ class FV_Player_Elearning {
   function loader() {
     add_filter( 'fv_player_item', array( $this, 'check_meta' ), 11, 3 );
     add_filter( 'fv_flowplayer_attributes', array( $this, 'edit_attributes' ), 11, 3 );
-
-    add_action( 'admin_init', array( $this, 'admin__add_meta_boxes' ) );
     add_action( 'wp_footer', array( $this, 'script_enqueue_frontend' ) );
   }
 
@@ -57,34 +55,6 @@ class FV_Player_Elearning {
     }
 
     return $attributes;
-  }
-
-  function admin__add_meta_boxes() {
-    add_meta_box( 'FV_Player_Elearning', __('LMS | Teaching', 'fv-wordpress-flowplayer'), array( $this, 'fv_player_elearning_option' ), 'fv_flowplayer_settings', 'normal', 'low' );
-  }
-
-  function fv_player_elearning_option() {
-    global $fv_fp;
-    $controlbarOpt = $fv_fp->_get_option( 'lms_teaching' );
-    ?>
-    <p><?php _e('Disable player controlbar for users who didn`t see entire video:', 'fv-wordpress-flowplayer'); ?></p>
-    <table class="form-table2" style="margin: 5px; ">
-      <tr>
-        <td class="first" ><label for="lms_teaching"><?php _e('Disable seeking forward for 1st time viewers', 'fv-wordpress-flowplayer' ) ?>:</label></td>
-        <td >
-          <p class="description">
-            <input type="hidden" name="lms_teaching" value="false" >
-            <input type="checkbox" name="lms_teaching" value="true" <?php if( $controlbarOpt ) echo ' checked="checked"'; ?> ></option>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-        </td>
-      </tr>
-    </table>
-    <?php
   }
 
   function script_enqueue_frontend() {
