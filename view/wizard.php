@@ -753,6 +753,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'sticky' => true
                 ),
                 array(
+                  'label'        => __('LMS | Teaching', 'fv-wordpress-flowplayer'),
+                  'name'         => 'lms_teaching',
+                  'description'  => __('Seeking forward not allowed if user did not see the full video.', 'fv-wordpress-flowplayer'),
+                  'dependencies' => array( 'controlbar' => true )
+                ),
+                array(
                   'label' => __('Speed Buttons', 'fv-wordpress-flowplayer'),
                   'name' => 'speed',
                   'description' => __('Allows user to speed up or slow down the video.', 'fv-wordpress-flowplayer'),

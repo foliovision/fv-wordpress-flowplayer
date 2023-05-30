@@ -401,6 +401,10 @@ jQuery(function() {
         isDropdown = $element.get(0).nodeName == 'SELECT',
         value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
 
+      if ( ! options.meta_section ) {
+        options.meta_section = 'player';
+      }
+
       // don't do anything if we've not found the actual element
       if (!$element.length) {
         return;
@@ -444,7 +448,7 @@ jQuery(function() {
             options.edit_callback();
           }
         }
-      } else if (value) {
+      } else if (value || options.handle_delete !== false ) {
         if (typeof(options.data) != 'undefined' && typeof(options.data['player_meta'][options.meta_section]) == 'undefined') {
           options.data['player_meta'][options.meta_section] = {};
         }
@@ -456,10 +460,18 @@ jQuery(function() {
           }
         }
 
-        // execute insert callback, if present
-        if (options.insert_callback && typeof(options.insert_callback) == 'function') {
-          options.insert_callback();
+        if ( value ) {
+          // execute insert callback, if present
+          if (options.insert_callback && typeof(options.insert_callback) == 'function') {
+            options.insert_callback();
+          }
+
+        } else {
+          if (options.delete_callback && typeof(options.delete_callback) == 'function') {
+            options.delete_callback();
+          }
         }
+
       }
     }
 
@@ -4814,11 +4826,13 @@ jQuery(function() {
 
   })(jQuery);
 
-  wp.data.subscribe( function() {
-    if ( wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
-      setTimeout( function() {
-        location.reload();
-      }, 0 );
-    }
-  } );
+  if ( window.wp && wp.data ) {
+    wp.data.subscribe( function() {
+      if ( wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
+        setTimeout( function() {
+          location.reload();
+        }, 0 );
+      }
+    } );
+  }
 });
