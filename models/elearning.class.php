@@ -12,7 +12,6 @@ class FV_Player_Elearning {
     add_filter( 'fv_flowplayer_attributes', array( $this, 'edit_attributes' ), 11, 3 );
 
     add_action( 'admin_init', array( $this, 'admin__add_meta_boxes' ) );
-    add_action( 'fv_flowplayer_shortcode_editor_tab_options', array( $this, 'shortcode_editor_options' ) );
     add_action( 'wp_footer', array( $this, 'script_enqueue_frontend' ) );
   }
 
@@ -37,7 +36,7 @@ class FV_Player_Elearning {
         }
       }
 
-      if( $meta_setting == 'yes' ) {
+      if( $meta_setting == 'true' ) {
         $this->is_enabled = true;
       } else {
         $this->is_enabled = false;
@@ -49,7 +48,7 @@ class FV_Player_Elearning {
 
   function edit_attributes( $attributes, $media, $fv_fp ) {
     if( $this->is_enabled && is_user_logged_in() ) {
-      $attributes['data-1st-play-no-seek'] = true;
+      $attributes['data-lms_teaching'] = true;
 
       // if( strpos( $attributes['class'], 'no-controlbar' ) == false ) {
       //   $attributes['class'] .= ' no-controlbar';
@@ -85,27 +84,6 @@ class FV_Player_Elearning {
         </td>
       </tr>
     </table>
-    <?php
-  }
-
-  public function shortcode_editor_options() {
-    global $fv_fp;
-
-    if( !$fv_fp->_get_option( 'lms_teaching' ) ) { // check if disabled in settings
-      return;
-    }
-
-    ?>
-      <tr>
-        <th scope="row" class="label"><label for="lms_teaching_player" class="alignright"><?php _e('LMS | Teaching: 1st Play Video Seek Disable', 'fv-wordpress-flowplayer'); ?></label></th>
-        <td class="field">
-        <select name="lms_teaching_player" id="lms_teaching_player">
-          <option>Default</option>
-          <option>Yes</option>
-          <option>No</option>
-        </select>
-        </td>
-      </tr>
     <?php
   }
 
