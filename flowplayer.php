@@ -96,7 +96,7 @@ if( is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
- 
+
   if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
 
@@ -106,6 +106,7 @@ if( is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json
 
   include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
   include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
+  include_once(dirname( __FILE__ ). '/models/conversion/positionsMeta2Table.php');
   include_once(dirname( __FILE__ ) . '/models/conversion.php');
   include_once( dirname( __FILE__ ) .'/models/splash-download.php');
 

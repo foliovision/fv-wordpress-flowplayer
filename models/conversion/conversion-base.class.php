@@ -2,6 +2,11 @@
 
 abstract class FV_Player_Conversion_Base {
 
+  /**
+   * If set to true, it will convert data to db
+   *
+   * @var boolean
+   */
   public $set_live = false;
 
   protected $matchers = array();
