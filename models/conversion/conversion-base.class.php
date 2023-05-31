@@ -15,8 +15,6 @@ abstract class FV_Player_Conversion_Base {
 
   abstract function get_items( $offset, $limit );
 
-  abstract function get_count();
-
   abstract function conversion_button();
 
   abstract function iterate_data( $data );
@@ -41,6 +39,21 @@ abstract class FV_Player_Conversion_Base {
     remove_submenu_page( 'fv_player', $this->screen );
   }
 
+  /**
+   * Count old data
+   *
+   * @return int $count
+   */
+  function get_count() {
+    global $wpdb;
+    return $wpdb->get_var( "SELECT FOUND_ROWS()" );
+  }
+
+  /**
+   * Convert data to new format using ajax
+   *
+   * @return void
+   */
   function ajax_convert() {
     if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->screen ) ) {
       if( function_exists( 'FV_Player_Pro' ) ) {
@@ -84,6 +97,11 @@ abstract class FV_Player_Conversion_Base {
     die();
   }
 
+  /**
+   * Create admin page for conversion screen
+   *
+   * @return void
+   */
   function conversion_screen() {
     global $fv_wp_flowplayer_ver;
     wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-convertor.js', array('jquery'), filemtime( dirname(__FILE__).'/../../js/admin-convertor.js' ) );
@@ -152,6 +170,11 @@ abstract class FV_Player_Conversion_Base {
     <?php
   }
 
+  /**
+   * Get live status
+   *
+   * @return boolean
+   */
   function is_live() {
     return (!empty($_POST['make-changes']) && $_POST['make-changes'] == 'true') || $this->set_live ;
   }

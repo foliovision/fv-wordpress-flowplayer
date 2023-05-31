@@ -66,16 +66,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   }
 
   /**
-   * Count posts with old shortcode
-   *
-   * @return int $count
-   */
-  function get_count() {
-    global $wpdb;
-    return $wpdb->get_var( "SELECT FOUND_ROWS()" );
-  }
-
-  /**
    * Get posts with [fvplayer/flowplayer src...] shortcodes
    *
    * @return object|null $result
