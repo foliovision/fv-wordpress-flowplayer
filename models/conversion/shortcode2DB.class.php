@@ -446,6 +446,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
   function iterate_data($data) {
     $conversions_output = array();
+    $convert_error = false;
 
     foreach( $data AS $post ) {
       $result = $this->convert_one($post);
