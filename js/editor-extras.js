@@ -88,3 +88,31 @@ if( typeof(fv_player_editor_conf) != "undefined" ) {
     }
   });
 }
+
+/**
+ * LMS | Teaching saving into Player meta
+ */
+(function ($) {
+  $( document ).on( 'fv_flowplayer_player_meta_save', function( event, data ) {
+    fv_flowplayer_insertUpdateOrDeletePlayerMeta( {
+      data:          data,
+      meta_key:      'lms_teaching',
+      element:       $( '[name=fv_wp_flowplayer_field_lms_teaching]' )[0],
+    } );
+
+  });
+
+  $( document ).on( 'fv_flowplayer_player_meta_load', function( event, data ) {
+    if ( data.meta ) {
+      for ( let i in data.meta ) {
+        if ( 'lms_teaching' == data.meta[i].meta_key ) {
+          $( '[name=fv_wp_flowplayer_field_lms_teaching]' )
+            .prop( 'checked', data.meta[i].meta_value )
+            .attr( 'data-id', data.meta[i].id )
+            .trigger( 'change' );
+        }
+      }
+    }
+  } );
+
+}(jQuery));
