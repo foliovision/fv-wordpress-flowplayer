@@ -80,7 +80,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
    *
    * @return object|null $result
    */
-  function get_posts_with_shortcode($offset, $limit) {
+  function get_items($offset, $limit) {
     global $wpdb;
 
     // Each row is the matching wp_posts row or wp_posts row with matching meta_value

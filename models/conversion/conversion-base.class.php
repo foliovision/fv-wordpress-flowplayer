@@ -13,7 +13,7 @@ abstract class FV_Player_Conversion_Base {
 
   abstract function convert_one($post);
 
-  abstract function get_posts_with_shortcode( $offset, $limit );
+  abstract function get_items( $offset, $limit );
 
   abstract function get_count();
 
@@ -54,7 +54,7 @@ abstract class FV_Player_Conversion_Base {
       $offset = 0 + intval($_POST['offset2']) + $offset;
       $limit = intval($_POST['limit']);
 
-      $posts = $this->get_posts_with_shortcode( $offset, $limit );
+      $posts = $this->get_items( $offset, $limit );
 
       $total = $this->get_count();
 
