@@ -61,6 +61,15 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
 
     $response = json_decode( $this->_last_response );
     $this->assertIsObject( $response );
+
+    // there should be no error
+    $this->assertTrue( !property_exists( $response, 'err' ) );
+
+    // if( isset( $response->err ) ) {
+    //   // check if there is no 403 Forbidden error in string
+    //   $this->assertTrue( strpos( $response->err, '403 Forbidden' ) === false );
+    // }
+
     $this->assertTrue( property_exists( $response, 'items' ) );
     $this->assertTrue( property_exists( $response->items, 'items' ) );
   }

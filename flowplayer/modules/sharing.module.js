@@ -27,7 +27,7 @@ flowplayer( function(api,root) {
     
   jQuery('.fp-header',root).prepend( jQuery('.fvp-share-bar',root) );
   
-  if( api.have_visible_playlist() ) {
+  if( ! api.have_visible_playlist && api.conf.playlist.length > 0 || api.have_visible_playlist() ) {
     var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
     var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
     root.find('.fp-controls .fp-playbtn').before(prev).after(next);
