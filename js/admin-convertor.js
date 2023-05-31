@@ -72,7 +72,7 @@ $.fn.Progressor = function(args) {
     var opts = $.extend({
       action: 'Action',
       cancel: 'Cancel',
-      limit: 1, // limit jobs count
+      limit: 1, // limit jobs count, TODO: increase to 10
       nonce: '',
     }, args);
 
@@ -83,7 +83,7 @@ $.fn.Progressor = function(args) {
     var messages = $('#messages');
     var original = $(opts.start).val();
     var button;
-    
+
     $(opts.start).click(function() {
       button = this;
 
@@ -108,7 +108,7 @@ $.fn.Progressor = function(args) {
         $('#loading').show();
         $(wrapper).fadeIn();
         $('#progress').css('width', '0px');
-      
+
         // Now kick-start a timer to perform the progressor
         setTimeout(timer, 0);
       }
