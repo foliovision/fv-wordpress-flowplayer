@@ -28,7 +28,7 @@ abstract class FV_Player_Conversion_Base {
     $this->matchers = $args['matchers'];
     $this->screen = 'fv_player_conversion_' . $this->slug;
 
-    add_action('admin_menu', array( $this, 'admin_page' ) );
+    add_action( 'admin_menu', array( $this, 'admin_page' ) );
     add_action( 'wp_ajax_'. $this->screen, array( $this, 'ajax_convert') );
     add_action( 'fv_player_conversion_buttons', array( $this, 'conversion_button') );
 
@@ -67,12 +67,12 @@ abstract class FV_Player_Conversion_Base {
       $offset = 0 + intval($_POST['offset2']) + $offset;
       $limit = intval($_POST['limit']);
 
-      $posts = $this->get_items( $offset, $limit );
+      $items = $this->get_items( $offset, $limit );
 
       $total = $this->get_count();
 
       // iterate data
-      $result = $this->iterate_data( $posts );
+      $result = $this->iterate_data( $items );
 
       $convert_error = $result['convert_error'];
       $conversions_output = $result['conversions_output'];
