@@ -64,3 +64,5 @@ content: "\e316"; }
 }
 
 body.fancybox-active #wpadminbar, body.fancybox-active .nc_wrapper.bottom { display: none !important }
+
+.flowplayer .fp-engine:focus { outline: unset }
