@@ -55,7 +55,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     $type = '';
 
     if( strpos($meta_key, 'fv_wp_flowplayer_position') !== false ) { // last
-      $type = 'last_postion';
+      $type = 'last_position';
     } else if ( strpos($meta_key, 'fv_wp_flowplayer_saw') !== false ) { // finished
       $type = 'finished';
     } else if ( strpos($meta_key, 'fv_wp_flowplayer_top_position') !== false ) { // top
@@ -196,7 +196,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
    * @param boolean $row_exitst
    * @param boolean $video_exitst
    *
-   * @return int|false $res result of insert or update
+   * @return boolean $res result of insert or update
    */
   function insert_update_video_row( $user_id, $video_id, $type, $value, $row_exitst, $video_exitst ) {
     global $wpdb;
@@ -221,6 +221,8 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
           'legacy_video_id' => $legacy_id
         )
       );
+
+      $res = is_numeric($res);
     } else {
       $res = $wpdb->insert(
         $wpdb->prefix . 'fv_player_user_video_positions',
@@ -228,10 +230,11 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
           $type => $value,
           'user_id' => $user_id,
           'video_id' => $video_id,
-          'position' => $value,
           'legacy_video_id' => $legacy_id
         )
       );
+
+      $res = !empty($res);
     }
 
     return $res;
@@ -245,7 +248,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
    * @param int $value
    * @param boolean $exitst
    *
-   * @return int|false $res result of insert or update
+   * @return boolean $res result of insert or update
    */
   function insert_update_playlist_row( $user_id, $playlist_id, $value, $exitst ) {
     global $wpdb;
@@ -254,22 +257,26 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       $res = $wpdb->update(
         $wpdb->prefix . 'fv_player_user_playlist_positions',
         array(
-          'position' => $value
+          'item_index' => $value
         ),
         array(
           'user_id' => $user_id,
           'player_id' => $playlist_id
         )
       );
+
+      $res = is_numeric($res);
     } else {
       $res = $wpdb->insert(
         $wpdb->prefix . 'fv_player_user_playlist_positions',
         array(
           'user_id' => $user_id,
           'player_id' => $playlist_id,
-          'position' => $value
+          'item_index' => $value
         )
       );
+
+      $res = !empty($res);
     }
 
     return $res;
