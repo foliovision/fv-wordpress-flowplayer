@@ -4827,7 +4827,7 @@ jQuery(function() {
 
   if ( window.wp && wp.data ) {
     wp.data.subscribe( function() {
-      if ( wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
+      if ( wp.data.select('core/editor') && wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
         setTimeout( function() {
           location.reload();
         }, 0 );
