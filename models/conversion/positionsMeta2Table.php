@@ -19,7 +19,8 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     $this->screen_fields = array(
       'ID',
       'Name',
-      'Error'
+      'Result',
+      'Error',
     );
 
   }
@@ -78,9 +79,18 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
           if( $result ) {
             $output_data[] = array(
               'ID' => $user_id,
-              'Name' => $meta_key
+              'Name' => $meta_key,
+              'output' => 'Playlist position updated',
+              'error' => ''
             );
-          } else {
+          } else { // failed to update
+           $output_data[] = array(
+              'ID' => $user_id,
+              'Name' => $meta_key,
+              'output' => 'Playlist position failed to update',
+              'error' => 'Failed to update playlist position'
+            );
+
             $errors[] = array(
               'ID' => $user_id,
               'Name' => $meta_key
@@ -90,11 +100,20 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
         } else {
           $output_data[] = array(
             'ID' => $user_id,
-            'Name' => $meta_key
+            'Name' => $meta_key,
+            'output' => 'Playlist position updated',
+            'error' => ''
           );
         }
       } else {
         // failed to get playlist id
+        $output_data[] = array(
+          'ID' => $user_id,
+          'Name' => $meta_key,
+          'output' => 'Playlist position failed to update',
+          'error' => 'Cannot get playlist id'
+        );
+
         $errors[] = array(
           'ID' => $user_id,
           'Name' => $meta_key
@@ -106,6 +125,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       if( isset( $matches[1] ) ) {
         $video_id = $matches[1];
 
+        // check if video exitst in db
         $video_exitst = $this->video_exists( $video_id );
         $row_exitst = $this->position_row_exists( $user_id, $video_id, 'position' );
 
@@ -115,9 +135,18 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
           if( $result ) {
             $output_data[] = array(
               'ID' => $user_id,
-              'Name' => $meta_key
+              'Name' => $meta_key,
+              'output' => 'Video position updated',
+              'error' => ''
             );
           } else {
+            $output_data[] = array(
+              'ID' => $user_id,
+              'Name' => $meta_key,
+              'output' => 'Video position failed to update',
+              'error' => 'Failed to update position'
+            );
+
             $errors[] = array(
               'ID' => $user_id,
               'Name' => $meta_key
@@ -127,11 +156,20 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
         } else {
           $output_data[] = array(
             'ID' => $user_id,
-            'Name' => $meta_key
+            'Name' => $meta_key,
+            'output' => 'Video position updated',
+            'error' => ''
           );
         }
 
       } else {
+        $output_data[] = array(
+          'ID' => $user_id,
+          'Name' => $meta_key,
+          'output' => 'Video position failed to update',
+          'error' => 'Cannot get video id'
+        );
+
         // failed to get video id
         $errors[] = array(
           'ID' => $user_id,
@@ -148,14 +186,27 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
 
   }
 
+  /**
+   * Insert or update video row
+   *
+   * @param int $user_id
+   * @param int $video_id
+   * @param string $type
+   * @param int $value
+   * @param boolean $row_exitst
+   * @param boolean $video_exitst
+   *
+   * @return int|false $res result of insert or update
+   */
   function insert_update_video_row( $user_id, $video_id, $type, $value, $row_exitst, $video_exitst ) {
     global $wpdb;
 
-    if( !$video_exitst ) {
+    if( !$video_exitst ) { // non db video
       $legacy_id = $video_id;
       $video_id = 0;
-    } else {
+    } else { // db video
       $legacy_id = '';
+      $video_id = intval($video_id);
     }
 
     if( $row_exitst ) {
@@ -186,12 +237,22 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     return $res;
   }
 
+  /**
+   * Insert or update playlist row
+   *
+   * @param int $user_id
+   * @param int $playlist_id
+   * @param int $value
+   * @param boolean $exitst
+   *
+   * @return int|false $res result of insert or update
+   */
   function insert_update_playlist_row( $user_id, $playlist_id, $value, $exitst ) {
     global $wpdb;
 
     if( $exitst ) {
       $res = $wpdb->update(
-        $wpdb->prefix . 'player_user_playlist_positions',
+        $wpdb->prefix . 'fv_player_user_playlist_positions',
         array(
           'position' => $value
         ),
@@ -202,7 +263,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       );
     } else {
       $res = $wpdb->insert(
-        $wpdb->prefix . 'player_user_playlist_positions',
+        $wpdb->prefix . 'fv_player_user_playlist_positions',
         array(
           'user_id' => $user_id,
           'player_id' => $playlist_id,
@@ -214,6 +275,13 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     return $res;
   }
 
+  /**
+   * Check if video exitst in db
+   *
+   * @param int $video_id
+   *
+   * @return object|null
+   */
   function video_exists( $video_id ) {
     global $wpdb;
 
@@ -222,21 +290,31 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     return $row;
   }
 
+  /**
+   * Check if position or playlist row exitst
+   *
+   * @param int $user_id
+   * @param int|string $id
+   * @param string $type
+   * @param boolean $video_exitst
+   *
+   * @return object|null
+   */
   function position_row_exists( $user_id, $id, $type, $video_exitst = false ) {
     global $wpdb;
 
     if( $type == 'position' ) {
 
-      if( $video_exitst ) {
+      if( $video_exitst ) { // db video
         $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND video_id = {$id}" );
-      } else {
+      } else { // legacy video
         $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND legacy_video_id = {$id}" );
       }
 
     }
 
     if( $type == 'playlist' ) {
-      $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}player_user_playlist_positions` WHERE user_id = {$user_id} AND player_id = {$id}" );
+      $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = {$user_id} AND player_id = {$id}" );
     }
 
     return $row;
@@ -279,11 +357,11 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     $html = array();
 
     foreach( $data as $output_data ) {
-      $html[] = "<tr><td>". $output_data['ID'] . "</td><td>". $output_data['Name'] ."</td><td>". $output_data['Error'] ."</td></tr>";
+      $html[] = "<tr><td>". $output_data['ID'] . "</td><td>". $output_data['Name'] ."</td><td>". $output_data['output'] ."</td><td>". $output_data['error'] ."</td></tr>";
     }
 
     if( empty($html) && $percent_done == 0 ) {
-      $html[] = "<tr><td colspan='6'>No matching players found.</td></tr>";
+      $html[] = "<tr><td colspan='4'>No matching meta found.</td></tr>";
     }
 
     return $html;
