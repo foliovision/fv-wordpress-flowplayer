@@ -29,7 +29,8 @@ class FV_Player_Position_Save {
       legacy_video_id varchar(255) NOT NULL,
       PRIMARY KEY  (id),
       KEY user_id (user_id),
-      KEY video_id (video_id)
+      KEY video_id (video_id),
+      Key legacy_video_id (legacy_video_id)
     )" . $wpdb->get_charset_collate() . ";";
 
     // create table to store position in playlists
