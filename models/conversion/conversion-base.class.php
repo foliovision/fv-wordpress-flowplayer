@@ -15,6 +15,8 @@ abstract class FV_Player_Conversion_Base {
   protected $screen;
   protected $help;
   protected $screen_fields = array();
+  protected $start_warning_text = 'This will convert your data to new format. Please make sure you have a backup of your database before continuing.';
+  protected $conversion_limit = 1;
 
   abstract function convert_one($post);
 
@@ -135,7 +137,7 @@ abstract class FV_Player_Conversion_Base {
           <input type="hidden" name="action" value="rebuild" />
 
           <?php // This checkbox shows the JS confirmation box when clicked to enable ?>
-          <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php _e('Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-wordpress-flowplayer') ?>') " /> <label for="make-changes">Make changes</label>
+          <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo $this->start_warning_text; ?>') " /> <label for="make-changes">Make changes</label>
 
           <input class="button-primary" type="submit" name="convert" value="Start" />
 
@@ -168,7 +170,8 @@ abstract class FV_Player_Conversion_Base {
             cancel:   '<?php echo 'Cancel'; ?>',
             url:      '<?php echo admin_url('admin-ajax.php') ?>',
             nonce:    '<?php echo wp_create_nonce($this->screen)?>',
-            finished: '<?php echo 'Finished'; ?>'
+            finished: '<?php echo 'Finished'; ?>',
+            limit:    '<?php echo $this->conversion_limit; ?>'
           });
         });
       </script>

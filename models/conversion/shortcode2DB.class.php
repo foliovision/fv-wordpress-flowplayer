@@ -24,6 +24,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'help' => __("This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.", 'fv-wordpress-flowplayer')
     ) );
 
+    $this->conversion_limit = 1;
+
+    $this->start_warning_text = __('Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-wordpress-flowplayer');
+
     // atts for video that are supported
     $this->supported_video_atts = array(
       'src',

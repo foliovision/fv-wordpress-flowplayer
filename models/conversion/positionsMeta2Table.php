@@ -16,9 +16,13 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       'help' => __("This converts position values from usermeta to fv_player_user_video_positions table", 'fv-wordpress-flowplayer')
     ) );
 
+    $this->conversion_limit = 100;
+
+    $this->start_warning_text = __('This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-wordpress-flowplayer');
+
     $this->screen_fields = array(
-      'ID',
-      'Name',
+      'User ID',
+      'Video ID',
       'Result',
       'Error',
     );
@@ -69,18 +73,17 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       if( isset( $matches[1] ) ) {
         $playlist_id = $matches[1];
 
+        // check if its db video or external
+        $row_exitst = $this->position_row_exists( $user_id, $playlist_id, 'playlist' );
+
+        $result = $this->insert_update_playlist_row( $user_id, $playlist_id, $meta_value, $row_exitst );
+
         if( $this->is_live() ) {
-
-          // check if its db video or external
-          $row_exitst = $this->position_row_exists( $user_id, $playlist_id, 'playlist' );
-
-          $result = $this->insert_update_playlist_row( $user_id, $playlist_id, $meta_value, $row_exitst );
-
           if( $result ) {
             $output_data[] = array(
               'ID' => $user_id,
               'Name' => $meta_key,
-              'output' => 'Playlist position updated',
+              'output' => $row_exitst ? 'Playlist position updated' : 'Playlist position inserted',
               'error' => ''
             );
           } else { // failed to update
@@ -101,7 +104,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
           $output_data[] = array(
             'ID' => $user_id,
             'Name' => $meta_key,
-            'output' => 'Playlist position updated',
+            'output' => $row_exitst ? 'Playlist position updated' : 'Playlist position inserted',
             'error' => ''
           );
         }
@@ -126,17 +129,17 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
         $video_id = $matches[1];
 
         // check if video exitst in db
-        $video_exitst = $this->video_exists( $video_id );
-        $row_exitst = $this->position_row_exists( $user_id, $video_id, 'position' );
+        $video_exists = $this->video_exists( $video_id );
+        $row_exitst = $this->position_row_exists( $user_id, $video_id, 'position', $video_exists );
 
         if( $this->is_live() ) {
-          $result = $this->insert_update_video_row( $user_id, $video_id, $type, $meta_value, $row_exitst, $video_exitst );
+          $result = $this->insert_update_video_row( $user_id, $video_id, $type, $meta_value, $row_exitst, $video_exists );
 
           if( $result ) {
             $output_data[] = array(
               'ID' => $user_id,
               'Name' => $meta_key,
-              'output' => 'Video position updated',
+              'output' => $row_exitst ? 'Video position updated' : 'Video position inserted',
               'error' => ''
             );
           } else {
@@ -157,7 +160,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
           $output_data[] = array(
             'ID' => $user_id,
             'Name' => $meta_key,
-            'output' => 'Video position updated',
+            'output' => $row_exitst ? 'Video position updated' : 'Video position inserted',
             'error' => ''
           );
         }
@@ -194,14 +197,14 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
    * @param string $type
    * @param int $value
    * @param boolean $row_exitst
-   * @param boolean $video_exitst
+   * @param boolean $video_exists
    *
    * @return boolean $res result of insert or update
    */
-  function insert_update_video_row( $user_id, $video_id, $type, $value, $row_exitst, $video_exitst ) {
+  function insert_update_video_row( $user_id, $video_id, $type, $value, $row_exitst, $video_exists ) {
     global $wpdb;
 
-    if( !$video_exitst ) { // non db video
+    if( !$video_exists ) { // non db video
       $legacy_id = $video_id;
       $video_id = 0;
     } else { // db video
@@ -303,16 +306,16 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
    * @param int $user_id
    * @param int|string $id
    * @param string $type
-   * @param boolean $video_exitst
+   * @param boolean $video_exists
    *
    * @return object|null
    */
-  function position_row_exists( $user_id, $id, $type, $video_exitst = false ) {
+  function position_row_exists( $user_id, $id, $type, $video_exists = false ) {
     global $wpdb;
 
     if( $type == 'position' ) {
 
-      if( $video_exitst ) { // db video
+      if( $video_exists ) { // db video
         $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND video_id = {$id}" );
       } else { // legacy video
         $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND legacy_video_id = {$id}" );
