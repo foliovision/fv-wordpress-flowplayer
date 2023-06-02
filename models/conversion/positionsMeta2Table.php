@@ -124,7 +124,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       }
 
     } else {
-      preg_match('/fv_wp_flowplayer_\w+_(\w+)/', $meta_key, $matches);
+      preg_match('/fv_wp_flowplayer_\w+_(.*)/', $meta_key, $matches);
       if( isset( $matches[1] ) ) {
         $video_id = $matches[1];
 
