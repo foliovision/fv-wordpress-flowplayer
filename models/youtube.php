@@ -26,11 +26,11 @@ class FV_Player_YouTube {
       // Load splash via API if not provided
       add_filter( 'fv_flowplayer_splash', array( $this, 'get__cached_splash' ), 10, 2 );
       add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get__cached_splash' ), 10, 2 );
-
-      // Fallback YouTube splash screen if no API key provided
-      add_filter( 'fv_flowplayer_splash', array( $this, 'youtube_splash' ), 10, 2 );
-      add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'youtube_splash' ), 10, 2 );
     }
+
+    // Fallback YouTube splash screen if no API key provided
+    add_filter( 'fv_flowplayer_splash', array( $this, 'youtube_splash' ), 10, 2 );
+    add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'youtube_splash' ), 10, 2 );
 
     add_action( 'init', array( $this, 'disable_pro_plugin_hooks' ) );
 

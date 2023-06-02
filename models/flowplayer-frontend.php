@@ -508,7 +508,13 @@ class flowplayer_frontend extends flowplayer
         } else {
           $skin = 'skin-'.$this->_get_option('skin');
         }
-        $attributes['class'] .= ' no-svg is-paused '.$skin;
+
+        $attributes['class'] .= ' is-paused '.$skin;
+
+        if ( ! flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
+          $attributes['class'] .= ' no-svg';
+        }
+
         $timeline_class = $this->_get_option(array($skin, 'design-timeline'));
         if( $bIsAudio && ( $timeline_class == 'fp-minimal' || $timeline_class == 'fp-full' ) ) {
           $timeline_class = 'fp-slim';
@@ -762,11 +768,17 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= "\t".$image."\n";
         }
 
+        $preload = '<div class="fp-preload"><b></b><b></b><b></b><b></b></div>';
+
+        if ( flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
+          $preload = '';
+        }
+        
         if( !empty($fv_fp->aCurArgs['error']) ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().'<div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().$preload.'</div>'."\n";
 
         } else if( !$bIsAudio ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().'<div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>'."\n";
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().$preload.'</div>'."\n";
         }
 
         $this->ret['html'] .= $this->get_buttons();

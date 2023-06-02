@@ -716,7 +716,18 @@ function fv_flowplayer_admin_integrations() {
 
           <?php $fv_fp->_get_checkbox(__('Handle WordPress audio/video', 'fv-wordpress-flowplayer'), array( 'integrations', 'wp_core_video' ), 'Make sure shortcodes <code><small>[video]</small></code>, <code><small>[audio]</small></code> and <code><small>[playlist]</small></code>, the Gutenberg video block and the YouTube links use FV Player.', '' ); ?>
           <?php $fv_fp->_get_checkbox(__('Load JavaScript everywhere', 'fv-wordpress-flowplayer'), 'js-everywhere', __('If you use some special JavaScript integration you might prefer this option.', 'fv-wordpress-flowplayer'), __('Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed. Required if you load content using Ajax, like in various LMS systems.', 'fv-wordpress-flowplayer') ); ?>
-          <?php $fv_fp->_get_checkbox(__('Optimize JavaScript loading', 'fv-wordpress-flowplayer'), 'js-optimize', __('Helps with Google PageSpeed scores.', 'fv-wordpress-flowplayer'), __('FV Player JavaScript will be only loaded once the user user start to use the page or on video tap. Lightbox only loads when the player/images is actually clicked.', 'fv-wordpress-flowplayer') ); ?>
+          <?php $fv_fp->_get_checkbox(
+            array(
+              'name'     => __('Optimize JavaScript loading', 'fv-wordpress-flowplayer'),
+              'key'      => 'js-optimize',
+              'help'     =>
+                flowplayer::is_wp_rocket_setting( 'delay_js' ) ?
+                  sprintf( __('WP Rocket setting to <a href="%s" target="_blank">Delay JavaScript execution</a> is enabled, cannot use this setting.', 'fv-wordpress-flowplayer'), admin_url( 'options-general.php?page=wprocket#file_optimization' ) ) :
+                  __('Helps with Google PageSpeed scores.', 'fv-wordpress-flowplayer'),
+              'more'     => __('FV Player JavaScript will be only loaded once the user user start to use the page or on video tap.', 'fv-wordpress-flowplayer'),
+              'disabled' => flowplayer::is_wp_rocket_setting( 'delay_js' ),
+            )
+          ); ?>
 					<?php if( $fv_fp->_get_option('parse_commas') ) $fv_fp->_get_checkbox(__('Parse old shortcodes with commas', 'fv-wordpress-flowplayer'), 'parse_commas', __('Older versions of this plugin used commas to sepparate shortcode parameters.', 'fv-wordpress-flowplayer'), __('This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes.', 'fv-wordpress-flowplayer') ); ?>
           <?php $fv_fp->_get_checkbox(__('Parse Vimeo and YouTube links', 'fv-wordpress-flowplayer'), 'parse_comments', __('Affects comments, bbPress and BuddyPress. These links will be displayed as videos.', 'fv-wordpress-flowplayer'), __('This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress.', 'fv-wordpress-flowplayer') ); ?>
           <?php if( $fv_fp->_get_option('postthumbnail') ) $fv_fp->_get_checkbox(__('Post Thumbnail', 'fv-wordpress-flowplayer'), 'postthumbnail', __('Setting a video splash screen from the media library will automatically make it the splash image if there is none.', 'fv-wordpress-flowplayer') ); ?>

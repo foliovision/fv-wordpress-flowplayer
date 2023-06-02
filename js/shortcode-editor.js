@@ -146,7 +146,6 @@ jQuery(function() {
     function check_for_video_meta_field(fieldName) {
       return [
         'fv_wp_flowplayer_field_duration',
-        'fv_wp_flowplayer_field_live',
         'fv_wp_flowplayer_field_dvr',
         'fv_wp_flowplayer_field_auto_splash',
         'fv_wp_flowplayer_field_auto_caption',
@@ -4482,7 +4481,7 @@ jQuery(function() {
 
       // get live from video object
       var live_field = get_field('live', true),
-        live_value = get_current_video_object() ? parseInt(get_current_video_object().live) : false;
+        live_value = get_current_video_object() ? get_current_video_object().live : false;
 
       live_field.prop('checked', !!live_value);
       live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
@@ -4828,7 +4827,7 @@ jQuery(function() {
 
   if ( window.wp && wp.data ) {
     wp.data.subscribe( function() {
-      if ( wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
+      if ( wp.data.select('core/editor') && wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
         setTimeout( function() {
           location.reload();
         }, 0 );

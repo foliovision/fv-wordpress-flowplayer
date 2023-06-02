@@ -663,6 +663,10 @@ CREATE TABLE " . self::$db_table_name . " (
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+        if ( 'live' === $property ) {
+          $value = $value ? true : false;
+        }
+
         $data[$property] = $value;
       }
     }
@@ -1155,6 +1159,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+
+        if ( 'live' === $property ) {
+          $value = $value ? true : false;
+        }
+
         $data_keys[] = $property . ' = %s';
         $data_values[] = strip_tags($value);
       }
