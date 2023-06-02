@@ -206,22 +206,24 @@ function fv_player_handle_secrets($new, $old) {
 /*
  *  Pointer boxes
  */
-add_action('admin_init', 'fv_player_admin_pointer_boxes');
+add_action('admin_footer', 'fv_player_admin_pointer_boxes');
 
 function fv_player_admin_pointer_boxes() {
   global $fv_fp;
   global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
 
-  if( !$fv_fp->_get_option('notice_user_video_positions_conversion') ) {
+  if(
+    $fv_fp->_get_option('video_position_save_enable') &&
+    ! $fv_fp->_get_option('notice_user_video_positions_conversion')
+  ) {
     $fv_fp->pointer_boxes['fv_flowplayer_video_positions_conversion'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_video_positions_conversion',
-      'heading' => __('FV Player Video Positions Conversion', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>Video positions are now stored in the separate table.</p><p>Would you like to convert your video positions to the new format?</p>"),
+      'heading' => __('FV Player Video Position Conversion', 'fv-wordpress-flowplayer'),
+      'content' => __("<p>In this new version of FV Player the user video positions are stored in separate table. This avoids slowing down the user database (wp_usermeta).</p><p>Please run the tool to migrate the video positions to the new table.</p>"),
       'position' => array( 'edge' => 'top', 'align' => 'left' ),
       'button1' => __('Migrate', 'fv-wordpress-flowplayer'),
-      'button2' => __('Close', 'fv-wordpress-flowplayer'),
-      'function1' => 'location.href = "'.admin_url('admin.php?page=fv_player_conversion_positions_meta2table'),
+      'function1' => 'location.href = "' . admin_url('admin.php?page=fv_player_conversion_positions_meta2table') . '"',
     );
   }
 
