@@ -27,6 +27,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       'Error',
     );
 
+    add_action('admin_init', array($this, 'set_pointer_checked'));
   }
 
   /**
@@ -375,6 +376,16 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     }
 
     return $html;
+  }
+
+  function set_pointer_checked() {
+    if( isset($_GET['page'] ) && $_GET['page'] == $this->screen ) {
+      $conf = get_option( 'fvwpflowplayer' );
+      if( !isset($conf['notice_user_video_positions_conversion']) ) {
+        $conf['notice_user_video_positions_conversion'] = true;
+        update_option( 'fvwpflowplayer', $conf );
+      }
+    }
   }
 
 }
