@@ -42,7 +42,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
   function get_items( $offset, $limit ) {
     global $wpdb;
 
-    $meta_data = $wpdb->get_results( "SELECT * FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%' LIMIT {$offset},{$limit}" );
+    $meta_data = $wpdb->get_results( "SELECT * FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%' ORDER BY umeta_id ASC LIMIT {$offset},{$limit}" );
 
     return $meta_data;
   }
