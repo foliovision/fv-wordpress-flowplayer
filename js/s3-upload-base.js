@@ -11,6 +11,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     $progressBarNumber,
     $progressBarDiv,
     upload_button_class = options.upload_button_class, //'fv-player-coconut-browser-upload',
+    wizard_callback = typeof options.wizard_callback == 'function' ? options.wizard_callback : false,
     s3upload = null,
     file_select_input_name = options.file_select_input_name,
     file_select_input_class = options.file_select_input_class,
@@ -27,8 +28,12 @@ function fv_flowplayer_init_s3_uploader( options ) {
     $uploadButton.after('<input type="file" accept=".mp4,.mov,.web,.flv,.avi,.vmw,.avchd,.swf,.mkv,.webm.,mpeg,.mpg" class="fv-player-s3-upload-file-input ' + input_class_name + '" name="' + input_name + '" />');
 
     $uploadInput = $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
-    $uploadInput.on( 'change', function() {
-      upload( $uploadInput[0].files[0] );
+    $uploadInput.change(function() {
+      if( wizard_callback ) {
+        wizard_callback($uploadInput[0].files[0]);
+      } else {
+        upload( $uploadInput[0].files[0] );
+      }
     });
   }
 
