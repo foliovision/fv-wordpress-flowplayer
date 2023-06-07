@@ -1880,6 +1880,8 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
             // check meta first before importing and migrate to new format
             if (isset($video_data['meta'])) {
               foreach ($video_data['meta'] as $k => $video_meta_data) {
+
+                // Note: Video duration is checked during the import anyway, but we keep the conversion routine and it might come handy in the future
                 if( $video_meta_data['meta_key'] == 'duration') { // duration is now in video data
                   if( !isset( $video_data['duration']) ) {
                     $video_data['duration'] = $video_meta_data['meta_value'];
@@ -1888,6 +1890,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
                   unset($video_data['meta'][$k]);
                 }
 
+                // Note: Video live flag is checked during the import anyway, but we keep the conversion routine and it might come handy in the future
                 if( $video_meta_data['meta_key'] == 'live') { // live is now in video data
                   if( !isset( $video_data['live']) ) {
                     $video_data['live'] = $video_meta_data['meta_value'];
