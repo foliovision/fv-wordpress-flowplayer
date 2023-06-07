@@ -1877,6 +1877,46 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
               }
             }
 
+            // check meta first before importing and migrate to new format
+            if (isset($video_data['meta'])) {
+              foreach ($video_data['meta'] as $k => $video_meta_data) {
+                if( $video_meta_data['meta_key'] == 'duration') { // duration is now in video data
+                  if( !isset( $video_data['duration']) ) {
+                    $video_data['duration'] = $video_meta_data['meta_value'];
+                  }
+
+                  unset($video_data['meta'][$k]);
+                }
+
+                if( $video_meta_data['meta_key'] == 'live') { // live is now in video data
+                  if( !isset( $video_data['live']) ) {
+                    $video_data['live'] = $video_meta_data['meta_value'];
+                  }
+
+                  unset($video_data['meta'][$k]);
+                }
+
+                if( $video_meta_data['meta_key'] == 'transcript' ) { // rename transcript to transcript_src
+                  $new_exists = false;
+                  foreach( $video_data['meta'] as $m2) {
+                    if( $m2['meta_key'] == 'transcript_src' ) {
+                      $new_exists = true;
+                      break;
+                    }
+                  }
+
+                  if(!$new_exists) {
+                    $video_data['meta'][] = array(
+                      'meta_key' => 'transcript_src',
+                      'meta_value' => $video_meta_data['meta_value']
+                    );
+                  }
+
+                  unset($video_data['meta'][$k]);
+                }
+              }
+            }
+
             $video_object = new FV_Player_Db_Video(null, $video_data, $FV_Player_Db);
             $id_video = $video_object->save();
 
