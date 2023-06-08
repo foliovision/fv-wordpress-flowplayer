@@ -91,8 +91,8 @@ abstract class FV_Player_Conversion_Base {
       // build html output
       $html = $this->build_output_html( $conversions_output, $percent_done );
 
-      // check if we are done
-      if( $percent_done >= 100 ) {
+      // check if we are done and no errors
+      if( $percent_done >= 100 && !$convert_error ) {
         // store conversion status
         $options = get_option( 'fvwpflowplayer' );
 
