@@ -45,7 +45,7 @@ $.fn.Progressor = function(args) {
 
             if (left > 0) {
               // More to come
-              offset += opts.limit;
+              offset = parseInt(offset) + parseInt(opts.limit);
               setTimeout(timer, 0);
             } else {
               // Finished
