@@ -304,46 +304,19 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
    */
   function position_row_exists( $user_id, $id, $type, $video_exists = false ) {
     global $wpdb;
-    static $cache = array();
-
-    if( !isset($cache[$user_id]) ) {
-      $cache[$user_id] = array();
-    }
-
-    if( !isset($cache[$user_id][$type]) ) {
-      $cache[$user_id][$type] = array();
-      // get all user positions
-
-      if( $type == 'position' ) {
-        $cache[$user_id][$type] = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id}" );
-      } else {
-        $cache[$user_id][$type] = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = {$user_id}" );
-      }
-    }
 
     if( $type == 'position' ) {
+
       if( $video_exists ) { // db video
-        foreach( $cache[$user_id][$type] as $row ) {
-          if( $row->video_id == $id ) {
-            return $row;
-          }
-        }
+        $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND video_id = {$id}" );
       } else { // legacy video
-        foreach( $cache[$user_id][$type] as $row ) {
-          if( $row->legacy_video_id == $id ) {
-            return $row;
-          }
-        }
+        $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND legacy_video_id = {$id}" );
       }
 
     }
 
     if( $type == 'playlist' ) {
-      foreach( $cache[$user_id][$type] as $row ) {
-        if( $row->player_id == $id ) {
-          return $row;
-        }
-      }
+      $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = {$user_id} AND player_id = {$id}" );
     }
 
     return $row;
