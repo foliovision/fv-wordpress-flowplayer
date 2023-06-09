@@ -110,7 +110,9 @@ abstract class FV_Player_Conversion_Base {
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
           'left' => $left,
-          'convert_error' => $convert_error
+          'convert_error' => $convert_error,
+          'memory_used_peak_mb' => round( memory_get_peak_usage() / 1024 / 1024, 2 ),
+          'memory_used_mb' => round( memory_get_usage() / 1024 / 1024, 2 ),
         )
       );
     }
