@@ -16,7 +16,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       'help' => __("This converts position values from usermeta to fv_player_user_video_positions table", 'fv-wordpress-flowplayer')
     ) );
 
-    $this->conversion_limit = 1000;
+    $this->conversion_limit = 2500;
     $this->make_chages_button = false; // disable make changes button
 
     $this->start_warning_text = __('This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-wordpress-flowplayer');
