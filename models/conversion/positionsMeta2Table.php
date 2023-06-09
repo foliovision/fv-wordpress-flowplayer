@@ -48,12 +48,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     $ids = $wpdb->get_results( "SELECT umeta_id FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%' ORDER BY umeta_id ASC LIMIT {$offset},{$limit}" );
 
     // select all meta data fields by ids
-    $meta_data = $wpdb->get_results( "SELECT * FROM `$wpdb->usermeta` WHERE umeta_id IN (". implode(',', wp_list_pluck($ids, 'umeta_id') ) .")" );
-
-    // order by umeta_id
-    usort($meta_data, function($a, $b) {
-      return $a->umeta_id - $b->umeta_id;
-    });
+    $meta_data = $wpdb->get_results( "SELECT * FROM `$wpdb->usermeta` WHERE umeta_id IN (". implode(',', wp_list_pluck($ids, 'umeta_id') ) .") ORDER BY umeta_id ASC" );
 
     return $meta_data;
   }
