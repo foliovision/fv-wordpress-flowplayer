@@ -17,6 +17,7 @@ abstract class FV_Player_Conversion_Base {
   protected $screen_fields = array();
   protected $start_warning_text = 'This will convert your data to new format. Please make sure you have a backup of your database before continuing.';
   protected $conversion_limit = 1;
+  protected $make_chages_button = true;
 
   abstract function convert_one($post);
 
@@ -90,6 +91,19 @@ abstract class FV_Player_Conversion_Base {
       // build html output
       $html = $this->build_output_html( $conversions_output, $percent_done );
 
+      // check if we are done and no errors
+      if( $percent_done >= 100 && !$convert_error ) {
+        // store conversion status
+        $options = get_option( 'fvwpflowplayer' );
+
+        if( !isset( $options['conversion'] ) ) {
+          $options['conversion'] = array();
+        }
+
+        // store current time as finished time
+        $options['conversion'][$this->slug] = date('Y-m-d H:i:s');
+      }
+
       // response
       echo json_encode(
         array(
@@ -136,8 +150,9 @@ abstract class FV_Player_Conversion_Base {
         <p>
           <input type="hidden" name="action" value="rebuild" />
 
-          <?php // This checkbox shows the JS confirmation box when clicked to enable ?>
-          <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo $this->start_warning_text; ?>') " /> <label for="make-changes">Make changes</label>
+          <?php if( $this->make_chages_button ): // This checkbox shows the JS confirmation box when clicked to enable ?>
+            <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo $this->start_warning_text; ?>') " /> <label for="make-changes">Make changes</label>
+          <?php endif; ?>
 
           <input class="button-primary" type="submit" name="convert" value="Start" />
 
