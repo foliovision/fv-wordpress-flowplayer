@@ -21,6 +21,8 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
 
     $this->start_warning_text = __('This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-wordpress-flowplayer');
 
+    $this->conversion_done_details = __('The conversion has finished. The usermeta table will be purged of the FV Player video position data in 4 weeks.', 'fv-wordpress-flowplayer');
+
     $this->screen_fields = array(
       'User ID',
       'Video ID',
@@ -354,7 +356,9 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     $html = array();
 
     foreach( $data as $output_data ) {
-      $html[] = "<tr><td>". $output_data['ID'] . "</td><td>". $output_data['Name'] ."</td><td>". $output_data['output'] ."</td><td>". $output_data['error'] ."</td></tr>";
+      if(!empty( $output_data['error']) ) { // show only errors
+        $html[] = "<tr><td>". $output_data['ID'] . "</td><td>". $output_data['Name'] ."</td><td>". $output_data['output'] ."</td><td>". $output_data['error'] ."</td></tr>";
+      }
     }
 
     if( empty($html) && $percent_done == 0 ) {

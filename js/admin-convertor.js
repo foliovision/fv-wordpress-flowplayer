@@ -5,6 +5,9 @@ $.fn.Progressor = function(args) {
   return this.each(function() {
     function timer() {
       if (running) {
+        $('.conversion-done').hide();
+        $('.conversion-done-details').hide()
+
         $.ajax({
           url: opts.url,
           cache: false,
@@ -41,7 +44,11 @@ $.fn.Progressor = function(args) {
 
             $('#progress').css('width', percent+'%');
 
-            $("#output").append(table_rows);
+            if( table_rows) {
+              $("#output").append(table_rows);
+            } else {
+              console.log('No table rows');
+            }
 
             if (left > 0) {
               // More to come
@@ -49,6 +56,8 @@ $.fn.Progressor = function(args) {
               setTimeout(timer, 0);
             } else {
               // Finished
+              $('.conversion-done').show();
+              $('.conversion-done-details').show();
 
               $('#progress').css('width', '100%');
 
