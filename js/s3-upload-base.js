@@ -27,7 +27,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     $uploadButton.after('<input type="file" accept=".mp4,.mov,.web,.flv,.avi,.vmw,.avchd,.swf,.mkv,.webm.,mpeg,.mpg" class="fv-player-s3-upload-file-input ' + input_class_name + '" name="' + input_name + '" />');
 
-    $uploadInput = $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
+    $uploadInput = $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
     $uploadInput.change(function() {
       if( wizard_callback ) {
         wizard_callback($uploadInput[0].files[0]);
@@ -143,13 +143,13 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     // add Upload to Coconut button to the media library modal
     if ( !$('.' + upload_button_class).length ) {
-      if ( !$('.media-frame-toolbar .media-toolbar-secondary > #'+upload_button_class+'-wrap').length ) {
-        $('.media-frame-toolbar .media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="upload_buttons" style="display: none" data-tab-id="'+options.tab_id+'"></div>');
+      if ( !$('.media-modal .media-frame-toolbar .media-toolbar-secondary > #'+upload_button_class+'-wrap').length ) {
+        $('.media-modal .media-frame-toolbar .media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="upload_buttons" style="display: none" data-tab-id="'+options.tab_id+'"></div>');
       }
 
       // check if we have the correct player version
       if ( !fv_player_coconut_dos_upload_settings.can_use_get_space ) {
-        $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append('<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>');
+        $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append('<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>');
 
         $('.' + upload_button_class).click(function() {
           alert('This functionality requires the latest version of FV Flowplayer. Please update your WordPress plugins.');
@@ -157,7 +157,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
         return;
       }
 
-      var $uploadDiv = $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap');
+      var $uploadDiv = $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap');
 
       var upload_interface = '<div class="fv-player-s3-upload-buttons">'
       upload_interface += '<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>';
@@ -172,7 +172,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
       upload_interface += '<div class="fv-player-s3-upload-progress-enclosure ' + upload_progress_bar_enclosure_class + '"><div class="fv-player-s3-upload-progress-bar ' + upload_progress_bar_class + '"></div><div class="fv-player-s3-upload-progress-number ' + upload_progress_bar_number_class + '"></div></div>';
       upload_interface += '</div>';
 
-      $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append( upload_interface);
+      $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append( upload_interface);
 
       $uploadButton = $uploadDiv.find('.' + upload_button_class);
       $uploadInput = $uploadDiv.find('.' + file_select_input_class);
