@@ -30,6 +30,7 @@ class FV_Player_Related_Videos {
     // html for related videos
     $related_videos_html = '';
 
+    // keep track of related videos count
     $current_related_videos = 0;
 
     // loop through related posts
@@ -44,7 +45,7 @@ class FV_Player_Related_Videos {
           $id_player = $player_meta->id_player;
 
           // get player data
-          $player_data = $wpdb->get_row("SELECT p.id, videos, v.id, src, splash FROM wp_fv_player_players AS p JOIN wp_fv_player_videos AS v ON find_in_set( p.videos, v.id ) WHERE p.id = $id_player");
+          $player_data = $wpdb->get_row("SELECT p.id, videos, v.id, src, splash FROM {$wpdb->prefix}fv_player_players` AS p JOIN wp_fv_player_videos AS v ON find_in_set( p.videos, v.id ) WHERE p.id = $id_player");
 
           $splash_img = '';
 
