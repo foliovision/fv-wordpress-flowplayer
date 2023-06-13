@@ -7,11 +7,11 @@ flowplayer(function (api,root) {
     current_overlay = false;
 
   if( root.data('end_popup_preview') ){
-    jQuery(document).ready( function() {      
+    jQuery(document).ready( function() {
       api.trigger('finish', [ api] );
     });
   }
-  
+
   function overlay_height_check() {
     var count = 0;
     var overlay_height_check = setInterval( function() {
@@ -23,7 +23,7 @@ flowplayer(function (api,root) {
       }
     }, 50 );
   }
-  
+
   function show_overlay() {
     var overlay_data = root.attr('data-overlay');
     if( typeof(overlay_data) !='undefined' && overlay_data.length ) {
@@ -65,7 +65,22 @@ flowplayer(function (api,root) {
       }
     }
   }
-  
+
+  function show_related_videos() {
+    var related_videos = root.attr('data-related-videos');
+
+    if( typeof(related_videos) !='undefined' && related_videos.length ) {
+      try {
+        related_videos = JSON.parse(related_videos);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    root.addClass('is-popup-showing');
+    root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+related_videos.html+'</div>' );
+  }
+
   api.bind("ready", function () {
     if (current_overlay.length == 1) {
       current_overlay.remove();
@@ -74,7 +89,7 @@ flowplayer(function (api,root) {
     if( !root.data('overlay_show_after') ) {
       show_overlay();
     }
-    
+
   }).bind('progress', function(e,api,current) {
     if (current > root.data('overlay_show_after') ){
       show_overlay();
@@ -85,6 +100,7 @@ flowplayer(function (api,root) {
     }
   }).bind("pause", function (e) {
     show_popup(e.type); // todo: only if showing on pause is enabled or FV Player PPV
+    show_related_videos();
   }).bind("resume unload seek", function () {
     if( root.hasClass('is-popup-showing') ) {
       root.find('.wpfp_custom_popup').remove();
@@ -96,10 +112,10 @@ flowplayer(function (api,root) {
 jQuery(document).on('click', '.fv_fp_close', function() {
   var current_overlay = jQuery(this).parents('.wpfp_custom_ad_content'),
     video = current_overlay.find('video');
-    
+
   current_overlay.fadeOut();
   if( video.length ) video[0].pause();
-  
+
   return false;
 } );
 
