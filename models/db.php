@@ -1267,7 +1267,7 @@ class FV_Player_Db {
       // the $player_meta data with all the plugin data for this
       // particular player
       if (!empty($post_data['player_meta'])) {
-        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta']);
+        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta'], $post_data );
       }
 
       // create and save the player
