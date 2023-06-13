@@ -1,15 +1,45 @@
 # FV Player
 
-WordPress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, stats, Vimeo and YouTube.
+World's most advanced WordPress video plugin with playlists, playback stats, ads, YouTube/Vimeo support, no branding. Pro version supports DRM, encryption, signed URLs, VAST ad support.
 
-* Core video engine: open source Flowplayer 7. 
-* Supported video formats are MP4, WebM and OGV ([read about HTML5 video formats](https://foliovision.com/player/encoding)).
-* Supported video streaming formats are HLS (JavaScript fallback available for incompatible devices) and MPEG DASH.
-* Default options for all the embedded videos can be set in comprehensive administration menu.
+## Description
 
-## Documentation 
+FV Player is an HMTL 5 video player which is completely free for playback of Vimeo, YouTube and HLS video. It includes self-published overlay ads at the end of the video.
 
-[Change Log](https://foliovision.com/player/changelog) | [User Guide and How-Tos](https://foliovision.com/player) | [Demos](https://foliovision.com/player/demos) | [Installation](https://foliovision.com/player/installation)| [Support](https://foliovision.com/support/fv-wordpress-flowplayer/) |
+There are commercial plugins available for HLS encrypted and VAST/Ads (Google Video Ads).
+
+FV Player supports all modern mobile devices (Android 5+, iOS 12+, most features work back to iOS 7) and is fully responsive.
+
+FV Player is completely open source with no playback restrictions or watermarks.
+
+The original HLS player codebase was Flowplayer 3,5,6,7. Since FV Player 8, we maintain the js codebase ourselves. Feel free to access and download the core source code here.
+
+* Automatically saves visitors position in a video to allow them to continue in the same place when they return to your site
+* Built in video plays stats
+* Advanced playlists
+* Video integrity checks for admins
+* Supports Amazon S3, Cloudfront and other CDN’s
+* Built-in social sharing (email, Facebook, Twitter)
+* Full integration with the Coconut.co video encoding service – https://foliovision.com/downloads/fv-player-coconut
+
+**Support**
+
+* [Free forum support](https://foliovision.com/support/fv-wordpress-flowplayer/) available to all users.
+* email support available to Pro users
+
+**Pro Version**
+
+Pro version available with advanced HLS encryption, URL signing and DRM tools.
+
+Affordable [hands-on pro video support](https://foliovision.com/pro-support) available to all our publishers on an incident basis. Full set of [advanced video setup services](https://foliovision.com/store#services).
+
+**Additional Documentation at Foliovision.com**
+
+[Support](https://foliovision.com/support/fv-wordpress-flowplayer/) |\
+[Change Log](https://foliovision.com/player/changelog) |\
+[Installation](https://foliovision.com/player/installation)|\
+[User Guide](https://foliovision.com/player/user-guide) |\
+[Detailed FAQ](https://foliovision.com/player/faq)
 
 ## License
 
