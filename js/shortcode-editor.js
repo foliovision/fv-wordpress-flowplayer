@@ -1470,6 +1470,9 @@ jQuery(function() {
                   insert_shortcode( '[fvplayer id="'+current_player_db_id+'"]');
                 }
 
+                // Allow plugins to fill in the field with data coming back from save response
+                $doc.trigger( 'fv_flowplayer_player_meta_load', [ response ] );
+
                 // Set the current data as previous to let auto-saving detect changes
                 // For new player this will have video and player IDs
                 ajax_save_previous = build_ajax_data(true);
