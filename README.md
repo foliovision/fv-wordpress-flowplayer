@@ -12,7 +12,7 @@ FV Player supports all modern mobile devices (Android 5+, iOS 12+, most features
 
 FV Player is completely open source with no playback restrictions or watermarks.
 
-The original HLS player codebase was Flowplayer 3,5,6,7. Since FV Player 8, we maintain the js codebase ourselves. Feel free to access and download the core source code here.
+The original HLS player codebase was Flowplayer 3,5,6,7. Since FV Player 8, we maintain the js codebase ourselves. Feel free to [download the core source code](https://github.com/foliovision/freedom-video-player) and/or contribute code yourself.
 
 * Automatically saves visitors position in a video to allow them to continue in the same place when they return to your site
 * Built in video plays stats
