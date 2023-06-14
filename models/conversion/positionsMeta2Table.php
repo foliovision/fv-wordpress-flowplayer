@@ -30,7 +30,9 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       'Error',
     );
 
-    add_action('admin_init', array($this, 'set_pointer_checked'));
+    add_action( 'init', array( $this, 'cron_init' ) );
+    add_action( 'admin_init', array( $this, 'set_pointer_checked' ) );
+    add_action( 'fv_flowplayer_' .$this->slug . 'cleanup' , array( $this, 'meta_cleanup' ) );
   }
 
   /**
@@ -368,9 +370,40 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     return $html;
   }
 
+  function cron_init() {
+    global $fv_fp;
+
+    $last_conversions = $fv_fp->_get_option('conversion');
+    $should_cleanup = false;
+
+    if(isset($last_conversions[$this->slug])) {
+      $last_conversions = $last_conversions[$this->slug];
+
+      // check if enough time has passed since last conversion (4 weeks), date is in Y-m-d H:i:s format
+      if( strtotime($last_conversions['date']) < strtotime('-4 weeks') ) {
+        $should_cleanup = true;
+      }
+    }
+
+    if ( $should_cleanup && !wp_next_scheduled( 'fv_flowplayer_' .$this->slug . 'cleanup' ) ) {
+      wp_schedule_event( time(), 'daily', 'fv_flowplayer_' .$this->slug . 'cleanup' );
+    } else if( !$should_cleanup && wp_next_scheduled( 'fv_flowplayer_' .$this->slug . 'cleanup' ) ) {
+      wp_clear_scheduled_hook( 'fv_flowplayer_' .$this->slug . 'cleanup' );
+    }
+  }
+
+  function meta_cleanup() {
+    global $wpdb;
+
+    $wpdb->query( "DELETE FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%'" );
+  }
+
   function set_pointer_checked() {
+    // check if we are on the right page
     if( isset($_GET['page'] ) && $_GET['page'] == $this->screen ) {
       $conf = get_option( 'fvwpflowplayer' );
+
+      // set pointer box to seen
       if( !isset($conf['notice_user_video_positions_conversion']) ) {
         $conf['notice_user_video_positions_conversion'] = true;
         update_option( 'fvwpflowplayer', $conf );
