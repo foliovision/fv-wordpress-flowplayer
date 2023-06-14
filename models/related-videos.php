@@ -5,6 +5,7 @@ if( !class_exists('FV_Player_Related_Videos') ) :
 class FV_Player_Related_Videos {
 
   public $max_related_videos = 4;
+  public $max_related_posts = 10;
 
   function __construct() {
     add_filter('fv_flowplayer_attributes', array($this, 'related_videos_popup'), 10, 3);
@@ -16,7 +17,13 @@ class FV_Player_Related_Videos {
     }
 
     // get related posts
-    $related_posts = yarpp_get_related();
+    $related_posts = yarpp_get_related(
+      array(
+        // 'limit' => $this->max_related_posts, // maximum number of related entries to return
+        'order' => 'score DESC', // column on "wp_posts" to order by, then a space, and whether to order in ascending ("ASC") or descending ("DESC") order
+        'promote_yarpp' => false, // boolean indicating whether to add 'Powered by YARPP' below related posts
+        'post_type' => array('post', 'page'), //  post types to include in results
+      ));
 
     if( !is_array($related_posts ) ) {
       return $attributes;
@@ -45,7 +52,11 @@ class FV_Player_Related_Videos {
           $id_player = $player_meta->id_player;
 
           // get player data
-          $player_data = $wpdb->get_row("SELECT p.id, videos, v.id, src, splash FROM {$wpdb->prefix}fv_player_players` AS p JOIN wp_fv_player_videos AS v ON find_in_set( p.videos, v.id ) WHERE p.id = $id_player");
+          $player_data = $wpdb->get_row("SELECT p.id, videos, v.id, src, splash FROM `{$wpdb->prefix}fv_player_players` AS p JOIN wp_fv_player_videos AS v ON find_in_set( p.videos, v.id ) WHERE p.id = $id_player");
+
+          if( !$player_data ) {
+            continue;
+          }
 
           $splash_img = '';
 
@@ -56,7 +67,7 @@ class FV_Player_Related_Videos {
             $splash_img = get_the_post_thumbnail($post_id, 'thumbnail');
           }
 
-          $related_videos_html .= '<div class="fv_player_related_video"><a href="'.get_permalink($post_id).'"><img src="'.$splash_img.'" alt="'.get_the_title($post_id).'" /></a><a href="'.get_permalink($post_id).'">'.get_the_title($post_id).'</a></div>';
+          $related_videos_html .= '<div class="fv_player_related_video"><a href="'.get_permalink($post_id).'"><img style="width: 100px;" src="'.$splash_img.'" alt="'.get_the_title($post_id).'" /></a><a href="'.get_permalink($post_id).'">'.get_the_title($post_id).'</a></div>';
 
           $current_related_videos++;
 
