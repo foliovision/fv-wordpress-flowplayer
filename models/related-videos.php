@@ -16,6 +16,8 @@ class FV_Player_Related_Videos {
       return $attributes;
     }
 
+    remove_shortcode('fvplayer');
+
     // get related posts
     $related_posts = yarpp_get_related(
       array(
@@ -24,6 +26,8 @@ class FV_Player_Related_Videos {
         'promote_yarpp' => false, // boolean indicating whether to add 'Powered by YARPP' below related posts
         'post_type' => array('post', 'page'), //  post types to include in results
       ));
+
+    add_shortcode('fvplayer','flowplayer_content_handle');
 
     if( !is_array($related_posts ) ) {
       return $attributes;
