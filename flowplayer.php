@@ -96,7 +96,7 @@ if( is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
- 
+
   if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
 
@@ -127,6 +127,8 @@ include_once(dirname( __FILE__ ) . '/models/stats.php');
 include_once(dirname( __FILE__ ) . '/models/stats-export.php');
 
 include_once(dirname( __FILE__ ) . '/models/youtube.php');
+
+include_once(dirname( __FILE__ ) . '/models/related-videos.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 

@@ -77,8 +77,10 @@ flowplayer(function (api,root) {
       }
     }
 
-    root.addClass('is-popup-showing');
-    root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+related_videos.html+'</div>' );
+    if( related_videos && related_videos.html  ) {
+      root.addClass('is-popup-showing');
+      root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+related_videos.html+'</div>' );
+    }
   }
 
   api.bind("ready", function () {
