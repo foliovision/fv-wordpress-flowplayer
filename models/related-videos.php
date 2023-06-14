@@ -16,6 +16,7 @@ class FV_Player_Related_Videos {
       return $attributes;
     }
 
+    // prevent player duplicate
     remove_shortcode('fvplayer');
 
     // get related posts
@@ -27,6 +28,7 @@ class FV_Player_Related_Videos {
         'post_type' => array('post', 'page'), //  post types to include in results
       ));
 
+    // add shortcode back
     add_shortcode('fvplayer','flowplayer_content_handle');
 
     if( !is_array($related_posts ) ) {
@@ -56,7 +58,7 @@ class FV_Player_Related_Videos {
           $id_player = $player_meta->id_player;
 
           // get player data
-          $player_data = $wpdb->get_row("SELECT p.id, videos, v.id, src, splash FROM `{$wpdb->prefix}fv_player_players` AS p JOIN wp_fv_player_videos AS v ON find_in_set( p.videos, v.id ) WHERE p.id = $id_player");
+          $player_data = $wpdb->get_row("SELECT p.id, videos, v.id, src, splash FROM `{$wpdb->prefix}fv_player_players` AS p JOIN wp_fv_player_videos AS v ON find_in_set( v.id, p.videos ) WHERE p.id = $id_player");
 
           if( !$player_data ) {
             continue;
