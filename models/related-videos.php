@@ -19,7 +19,7 @@ class FV_Player_Related_Videos {
     // get related posts
     $related_posts = yarpp_get_related(
       array(
-        // 'limit' => $this->max_related_posts, // maximum number of related entries to return
+        'limit' => $this->max_related_posts, // maximum number of related entries to return
         'order' => 'score DESC', // column on "wp_posts" to order by, then a space, and whether to order in ascending ("ASC") or descending ("DESC") order
         'promote_yarpp' => false, // boolean indicating whether to add 'Powered by YARPP' below related posts
         'post_type' => array('post', 'page'), //  post types to include in results
