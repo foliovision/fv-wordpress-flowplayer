@@ -16,6 +16,7 @@ abstract class FV_Player_Conversion_Base {
   protected $help;
   protected $screen_fields = array();
   protected $start_warning_text = 'This will convert your data to new format. Please make sure you have a backup of your database before continuing.';
+  protected $conversion_done_details =false;
   protected $conversion_limit = 1;
   protected $make_chages_button = true;
 
@@ -110,6 +111,7 @@ abstract class FV_Player_Conversion_Base {
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
           'left' => $left,
+          'total' => $total,
           'convert_error' => $convert_error,
           'memory_used_peak_mb' => round( memory_get_peak_usage() / 1024 / 1024, 2 ),
           'memory_used_mb' => round( memory_get_usage() / 1024 / 1024, 2 ),
@@ -148,6 +150,7 @@ abstract class FV_Player_Conversion_Base {
       </style>
       <div class="wrap">
         <h1><?php echo $this->title; ?></h1>
+
         <?php echo wpautop($this->help); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
@@ -166,6 +169,14 @@ abstract class FV_Player_Conversion_Base {
         </p>
 
         <div id="wrapper" style="display: none"><div id="progress"></div></div>
+
+        <h2 class="conversion-done" style="display: none;">Conversion done!</h2>
+
+        <?php if( $this->conversion_done_details ): ?>
+          <p class="conversion-done-details" style="display: none;">
+            <?php echo $this->conversion_done_details; ?>
+          </p>
+        <?php endif; ?>
 
         <table class="wp-list-table widefat fixed striped table-view-list posts">
           <thead>

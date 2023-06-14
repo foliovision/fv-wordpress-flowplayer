@@ -62,31 +62,48 @@ class FV_Player_Position_Save {
    * Set cache to static variable
    *
    * @param int $user_id
+   * @param string $type video, playlist
    *
    * @return array
    */
-  private function set_cache($user_id) {
+  private function set_cache($user_id, $type) {
     global $wpdb;
 
-    self::$cache[$user_id] = $wpdb->get_results( $wpdb->prepare(
-      "SELECT video_id, last_position, top_position, finished, legacy_video_id FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d",
-      $user_id
-    ) );
+    if( !isset(self::$cache[$user_id]) ) {
+      self::$cache[$user_id] = array();
+    }
+
+    if( $type == 'video') {
+      self::$cache[$user_id][$type] = $wpdb->get_results( $wpdb->prepare(
+        "SELECT video_id, last_position, top_position, finished, legacy_video_id FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d",
+        $user_id
+      ) );
+    }
+
+    if( $type == 'playlist' ) {
+      self::$cache[$user_id][$type] = $wpdb->get_results( $wpdb->prepare(
+        "SELECT player_id, item_index FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = %d",
+        $user_id
+      ) );
+    }
+
+    return self::$cache[$user_id][$type];
   }
 
   /**
    * Get cache from static variable
    *
    * @param int $user_id
+   * @param string $type video, playlist
    *
    * @return array
    */
-  private function get_cache($user_id) {
-    if ( ! isset( self::$cache[$user_id] ) ) {
-      $this->set_cache($user_id);
+  private function get_cache($user_id, $type) {
+    if ( ! isset( self::$cache[$user_id][$type] ) ) {
+      $this->set_cache($user_id, $type);
     }
 
-    return self::$cache[$user_id];
+    return self::$cache[$user_id][$type];
   }
 
   /**
@@ -99,7 +116,7 @@ class FV_Player_Position_Save {
    * @return int
    */
   function get_video_position( $user_id, $video_id, $type ) {
-    $cache = self::get_cache($user_id);
+    $cache = self::get_cache($user_id, 'video');
     $value = 0;
 
     if( is_numeric($video_id) ) { // id
@@ -173,7 +190,8 @@ class FV_Player_Position_Save {
       )
     );
 
-    self::set_cache($user_id);
+    // update cache
+    self::set_cache($user_id, 'video');
   }
 
   /**
@@ -187,11 +205,18 @@ class FV_Player_Position_Save {
   function get_player_position( $user_id, $player_id ) {
     global $wpdb;
 
-    $index = $wpdb->get_var( $wpdb->prepare(
-      "SELECT item_index FROM ".$wpdb->prefix."fv_player_user_playlist_positions WHERE user_id = %d AND player_id = %d",
-      $user_id,
-      $player_id
-    ) );
+    $index = 0;
+
+    $cache = self::get_cache($user_id, 'playlist');
+
+    if( is_array($cache) ) {
+      foreach ($cache as $cache_item) {
+        if ($cache_item->player_id == $player_id) {
+          $index = $cache_item->item_index;
+          break;
+        }
+      }
+    }
 
     if( is_numeric($index) ) {
       $index = intval($index);
@@ -215,7 +240,7 @@ class FV_Player_Position_Save {
   function set_video_position( $user_id, $video_id, $type, $value) {
     global $wpdb;
 
-    $cache = self::get_cache($user_id);
+    $cache = self::get_cache($user_id, 'video');
     $exits = false;
 
     if( is_numeric($video_id) ) { // id
@@ -274,7 +299,7 @@ class FV_Player_Position_Save {
     }
 
     // update cache
-    self::set_cache($user_id);
+    self::set_cache($user_id, 'video');
   }
 
   /**
@@ -289,12 +314,18 @@ class FV_Player_Position_Save {
   function set_player_position( $user_id, $player_id, $index ) {
     global $wpdb;
 
-    // check if the record already exists
-    $exits = $wpdb->get_var( $wpdb->prepare(
-      "SELECT id FROM ".$wpdb->prefix."fv_player_user_playlist_positions WHERE user_id = %d AND player_id = %d",
-      $user_id,
-      $player_id
-    ) );
+    $cache = self::get_cache($user_id, 'playlist');
+    $exits = false;
+
+    if( is_array($cache) ) {
+      // check if the record already exists
+      foreach ($cache as $cache_item) {
+        if ($cache_item->player_id == $player_id) {
+          $exits = true;
+          break;
+        }
+      }
+    }
 
     if( $exits ) { // update index
       $wpdb->update(
@@ -317,6 +348,9 @@ class FV_Player_Position_Save {
         )
       );
     }
+
+    // update cache
+    self::set_cache($user_id, 'playlist');
   }
 
   public static function get_extensionless_file_name($path) {
