@@ -929,10 +929,10 @@ class FV_Player_Db {
     return $atts;
   }
 
-  public function db_load_player_data( $id, $current_video_to_edit = -1 ) {
+  public function db_load_player_data( $player_id, $current_video_to_edit = -1 ) {
     global $fv_fp;
 
-    $this->getPlayerAttsFromDb( array( 'id' => $id ) );
+    $this->getPlayerAttsFromDb( array( 'id' => $player_id ) );
 
     // fill the $out variable with player data
     $out = $fv_fp->current_player()->getAllDataValues();
@@ -976,6 +976,9 @@ class FV_Player_Db {
     if( $embeds_html ) {
       $out['embeds'] = '<ol>'.$embeds_html.'</ol>';
     }
+
+    // Allow plugins to add to the loaded data
+    $out = apply_filters( 'fv_player_editor_db_load', $out, $player_id, $current_video_to_edit );
 
     $args = array( 'id' => $fv_fp->current_player()->getId(), 'lightbox' => false );
     if( $current_video_to_edit > -1 ) {
@@ -1267,7 +1270,7 @@ class FV_Player_Db {
       // the $player_meta data with all the plugin data for this
       // particular player
       if (!empty($post_data['player_meta'])) {
-        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta']);
+        $player_meta = apply_filters( 'fv_player_db_player_meta_save', $player_meta, $post_data['player_meta'], $post_data );
       }
 
       // create and save the player
