@@ -4770,6 +4770,7 @@ jQuery(function() {
 
       copy_player_button_toggle,
 
+      // TODO: Deprecated
       meta_data_load_started() {
         is_loading_meta_data++;
       },
