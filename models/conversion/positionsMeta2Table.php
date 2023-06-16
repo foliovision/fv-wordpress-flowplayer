@@ -398,17 +398,17 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
 
     global $wpdb;
 
+    $options = get_option( 'fvwpflowplayer' );
+    $options['conversion'][$this->slug]['did_cleanup'] = true;
+
+    update_option( 'fvwpflowplayer', $options );
+
     // delete all meta
     $wpdb->query( "DELETE FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%'" );
 
     // optimize table
     $wpdb->query( "OPTIMIZE TABLE `$wpdb->usermeta`" );
 
-    $options = get_option( 'fvwpflowplayer' );
-
-    $options[$this->slug]['did_cleanup'] = true;
-
-    update_option( 'fvwpflowplayer', $options );
   }
 
   function set_pointer_checked() {
