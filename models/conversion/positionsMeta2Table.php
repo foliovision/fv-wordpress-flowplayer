@@ -32,7 +32,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
 
     add_action( 'init', array( $this, 'cron_init' ) );
     add_action( 'admin_init', array( $this, 'set_pointer_checked' ) );
-    add_action( 'fv_flowplayer_' .$this->slug . 'cleanup' , array( $this, 'meta_cleanup' ) );
+    add_action( 'fv_flowplayer_' .$this->slug . '_cleanup' , array( $this, 'meta_cleanup' ) );
   }
 
   /**
