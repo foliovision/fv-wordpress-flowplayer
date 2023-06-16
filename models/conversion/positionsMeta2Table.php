@@ -377,18 +377,19 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     $should_cleanup = false;
 
     if(isset($last_conversions[$this->slug])) {
-      $last_conversions = $last_conversions[$this->slug];
+      $last_conversion = $last_conversions[$this->slug]['date'];
+      $did_cleanup = $last_conversions[$this->slug]['did_cleanup'];
 
       // check if enough time has passed since last conversion (4 weeks), date is in Y-m-d H:i:s format
-      if( strtotime($last_conversions['date']) < strtotime('-4 weeks') ) {
+      if( !$did_cleanup && strtotime($last_conversion) < strtotime('-4 weeks') ) {
         $should_cleanup = true;
       }
     }
 
-    if ( $should_cleanup && !wp_next_scheduled( 'fv_flowplayer_' .$this->slug . 'cleanup' ) ) {
-      wp_schedule_event( time(), 'daily', 'fv_flowplayer_' .$this->slug . 'cleanup' );
-    } else if( !$should_cleanup && wp_next_scheduled( 'fv_flowplayer_' .$this->slug . 'cleanup' ) ) {
-      wp_clear_scheduled_hook( 'fv_flowplayer_' .$this->slug . 'cleanup' );
+    if ( $should_cleanup && !wp_next_scheduled( 'fv_flowplayer_' .$this->slug . '_cleanup' ) ) {
+      wp_schedule_event( time(), '5minutes', 'fv_flowplayer_' .$this->slug . '_cleanup' );
+    } else if( !$should_cleanup && wp_next_scheduled( 'fv_flowplayer_' .$this->slug . '_cleanup' ) ) {
+      wp_clear_scheduled_hook( 'fv_flowplayer_' .$this->slug . '_cleanup' );
     }
   }
 
@@ -396,6 +397,12 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     global $wpdb;
 
     $wpdb->query( "DELETE FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%'" );
+
+    $options = get_option( 'fvwpflowplayer' );
+
+    $options[$this->slug]['did_cleanup'] = true;
+
+    update_option( 'fvwpflowplayer', $options );
   }
 
   function set_pointer_checked() {
