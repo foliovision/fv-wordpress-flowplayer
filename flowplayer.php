@@ -89,7 +89,7 @@ global $fv_fp;
 $fv_fp = new flowplayer_frontend();
 
 // If it's in wp-admin, cron or if it's Gutenberg post saving
-if( defined( 'DOING_CRON' ) || (is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json/wp/v2/posts/\d+~', $_SERVER['REQUEST_URI'] ) ) ) {
+if( wp_doing_cron() || (is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json/wp/v2/posts/\d+~', $_SERVER['REQUEST_URI'] ) ) ) {
   include_once( dirname( __FILE__ ) . '/controller/backend.php' );
   include_once( dirname( __FILE__ ) . '/controller/editor.php' );
   include_once( dirname( __FILE__ ) . '/controller/settings.php' );
