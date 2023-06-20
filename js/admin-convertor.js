@@ -5,6 +5,9 @@ $.fn.Progressor = function(args) {
   return this.each(function() {
     function timer() {
       if (running) {
+        $('.conversion-done').hide();
+        $('.conversion-done-details').hide()
+
         $.ajax({
           url: opts.url,
           cache: false,
@@ -41,14 +44,20 @@ $.fn.Progressor = function(args) {
 
             $('#progress').css('width', percent+'%');
 
-            $("#output").append(table_rows);
+            if( table_rows) {
+              $("#output").append(table_rows);
+            } else {
+              console.log('No table rows');
+            }
 
             if (left > 0) {
               // More to come
-              offset += opts.limit;
+              offset = parseInt(offset) + parseInt(opts.limit);
               setTimeout(timer, 0);
             } else {
               // Finished
+              $('.conversion-done').show();
+              $('.conversion-done-details').show();
 
               $('#progress').css('width', '100%');
 
@@ -72,7 +81,7 @@ $.fn.Progressor = function(args) {
     var opts = $.extend({
       action: 'Action',
       cancel: 'Cancel',
-      limit: 1, // limit jobs count
+      limit: 1, // limit jobs count, TODO: increase to 10
       nonce: '',
     }, args);
 
@@ -83,7 +92,7 @@ $.fn.Progressor = function(args) {
     var messages = $('#messages');
     var original = $(opts.start).val();
     var button;
-    
+
     $(opts.start).click(function() {
       button = this;
 
@@ -108,7 +117,7 @@ $.fn.Progressor = function(args) {
         $('#loading').show();
         $(wrapper).fadeIn();
         $('#progress').css('width', '0px');
-      
+
         // Now kick-start a timer to perform the progressor
         setTimeout(timer, 0);
       }

@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.9.3.24';
+$fv_wp_flowplayer_ver = '7.9.3.25';
 $fv_wp_flowplayer_core_ver = '7.2.14.11';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -88,15 +88,15 @@ include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
 global $fv_fp;
 $fv_fp = new flowplayer_frontend();
 
-// If it's in wp-admin or if it's Gutenberg post saving
-if( is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json/wp/v2/posts/\d+~', $_SERVER['REQUEST_URI'] ) ) {
+// If it's in wp-admin, cron or if it's Gutenberg post saving
+if( wp_doing_cron() || (is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json/wp/v2/posts/\d+~', $_SERVER['REQUEST_URI'] ) ) ) {
   include_once( dirname( __FILE__ ) . '/controller/backend.php' );
   include_once( dirname( __FILE__ ) . '/controller/editor.php' );
   include_once( dirname( __FILE__ ) . '/controller/settings.php' );
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
- 
+
   if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
 
@@ -106,6 +106,7 @@ if( is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json
 
   include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
   include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
+  include_once(dirname( __FILE__ ). '/models/conversion/positionsMeta2Table.php');
   include_once(dirname( __FILE__ ) . '/models/conversion.php');
   include_once( dirname( __FILE__ ) .'/models/splash-download.php');
 
