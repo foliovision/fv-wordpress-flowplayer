@@ -840,6 +840,23 @@ jQuery( function($) {
       } else {
         timeline_previews_field.val('');
       }
+
+      var sd_download_field = fv_player_editor.get_field('sd_download', true);
+      var hd_download_field = fv_player_editor.get_field('hd_download', true);
+      if( extra ) {
+        if( extra.sd_download ) {
+          sd_download_field.val(extra.sd_download);
+        } else {
+          sd_download_field.val('');
+        }
+
+        if( extra.hd_download ) {
+          hd_download_field.val(extra.hd_download);
+        } else {
+          hd_download_field.val('');
+        }
+      }
+
     }
 
     // TODO: Proper API!
