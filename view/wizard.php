@@ -115,9 +115,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       $id = ' id="'.$id.'"';
     }
     ?>
-  <div <?php echo $id; ?> class="components-base-control__field">
     <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>"><?php _e( $label, 'fv_flowplayer'); ?></a>
-  </div>
     <?php
   }
 
@@ -128,14 +126,12 @@ if ( ! defined( 'ABSPATH' ) ) {
       $id = ' id="'.$id.'"';
     }
     ?>
-  <div <?php echo $id; ?> class="components-base-control__field">
     <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
       <input class="components-form-toggle__input<?php if( $no_data ) echo ' no-data'; ?>" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>" />
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
     <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php _e( $label, 'fv_flowplayer'); ?></label>
-  </div>
     <?php
   }
 
@@ -148,12 +144,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
     ?>
-  <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
       <input class="components-text-control__input" type="number" id="<?php echo $field_id; ?>" name="<?php echo $field_id; ?>" />
     </div>
-  </div>
     <?php
   }
 
@@ -215,7 +209,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     $field_id = esc_attr('fv_wp_flowplayer_field_'.$name);
     ?>
-  <div <?php echo $id; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo $field_id; ?>"><?php echo $label; ?></label>
     <div class="components-base-control__field">
       <?php if( $language ): ?>
@@ -260,7 +253,6 @@ if ( ! defined( 'ABSPATH' ) ) {
       <a class="components-button is-secondary add_language" href="#" data-field_name="<?php echo $name; ?>"><?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
     <?php endif; ?>
 
-  </div>
     <?php
   }
 
