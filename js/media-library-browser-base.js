@@ -826,45 +826,26 @@ jQuery( function($) {
     }
 
     if( !is_trailer ) {
-      var hlskey_field = fv_player_editor.get_field('hls_hlskey', true);
-      if( extra && extra.hlskey ) {
-        hlskey_field.val(extra.hlskey);
-        hlskey_field.closest('tr').show();
-      } else {
-        hlskey_field.val('');
-      }
-
-      var timeline_previews_field = fv_player_editor.get_field('timeline_previews', true);
-      if( extra && extra.timeline_previews ) {
-        timeline_previews_field.val(extra.timeline_previews);
-      } else {
-        timeline_previews_field.val('');
-      }
-
-      var sd_download_field = fv_player_editor.get_field('download_sd', true);
-      var hd_download_field = fv_player_editor.get_field('download_hd', true);
       if( extra ) {
-        if( extra.sd_download ) {
-          sd_download_field.val(extra.sd_download);
-        } else {
-          sd_download_field.val('');
-        }
+        fv_player_editor.get_field( 'hls_hlskey', true ).val( extra.hlskey ).trigger( 'change' );
 
-        if( extra.hd_download ) {
-          hd_download_field.val(extra.hd_download);
-        } else {
-          hd_download_field.val('');
+        fv_player_editor.get_field( 'timeline_previews', true ).val( extra.timeline_previews ).trigger( 'change' );
+
+        fv_player_editor.get_field( 'download_sd', true ).val( extra.sd_download ).trigger( 'change' );
+
+        fv_player_editor.get_field( 'download_hd', true ).val( extra.hd_download ).trigger( 'change' );
+
+        fv_player_editor.get_field( 'encoding_job_id', true).val( extra.encoding_job_id ).trigger( 'change' );
+
+
+        if( extra.title ) {
+          let title_input = fv_player_editor.get_field( 'caption', true );
+          if( title_input.val() == '' ) {
+            title_input.val( extra.title ).trigger( 'change' );
+          }
         }
       }
 
-    }
-
-    // TODO: Proper API!
-    var encoding_job_id_field = fv_player_editor.get_field('encoding_job_id', true);
-    if( extra && extra.encoding_job_id ) {
-      encoding_job_id_field.val(extra.encoding_job_id);
-    } else {
-      encoding_job_id_field.val('');
     }
 
     var audio_checkbox = fv_player_editor.get_field('audio', true);
@@ -873,14 +854,6 @@ jQuery( function($) {
         audio_checkbox.prop( "checked", true );
       } else {
         audio_checkbox.prop( "checked", false );
-      }
-    }
-
-    if( extra && extra.title ) {
-      var title_input = fv_player_editor.get_field('caption', true);
-      if( title_input.val() == '' ) {
-        title_input.val(extra.title);
-        title_input.closest('tr').show();
       }
     }
 
