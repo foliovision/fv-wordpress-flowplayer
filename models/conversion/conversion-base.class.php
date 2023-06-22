@@ -2,6 +2,11 @@
 
 abstract class FV_Player_Conversion_Base {
 
+  /**
+   * If set to true, it will convert data to db
+   *
+   * @var boolean
+   */
   public $set_live = false;
 
   protected $matchers = array();
@@ -9,14 +14,21 @@ abstract class FV_Player_Conversion_Base {
   protected $slug = 'conversion-slug';
   protected $screen;
   protected $help;
+  protected $screen_fields = array();
+  protected $start_warning_text = 'This will convert your data to new format. Please make sure you have a backup of your database before continuing.';
+  protected $conversion_done_details =false;
+  protected $conversion_limit = 1;
+  protected $make_chages_button = true;
 
   abstract function convert_one($post);
 
-  abstract function get_posts_with_shortcode( $offset, $limit );
-
-  abstract function get_count();
+  abstract function get_items( $offset, $limit );
 
   abstract function conversion_button();
+
+  abstract function iterate_data( $data );
+
+  abstract function build_output_html( $data , $percent_done);
 
   function __construct( $args ) {
     $this->title = $args['title'];
@@ -25,13 +37,10 @@ abstract class FV_Player_Conversion_Base {
     $this->matchers = $args['matchers'];
     $this->screen = 'fv_player_conversion_' . $this->slug;
 
-    add_action('admin_menu', array( $this, 'admin_page' ) );
+    add_action( 'admin_menu', array( $this, 'admin_page' ) );
     add_action( 'wp_ajax_'. $this->screen, array( $this, 'ajax_convert') );
     add_action( 'fv_player_conversion_buttons', array( $this, 'conversion_button') );
 
-    if( isset($_GET['fv-conversion-export']) && !empty($_GET['page']) && $_GET['page'] === $this->screen ) {
-      add_action('admin_init', array( $this, 'csv_export' ) );
-    }
   }
 
   function admin_page() {
@@ -39,56 +48,62 @@ abstract class FV_Player_Conversion_Base {
     remove_submenu_page( 'fv_player', $this->screen );
   }
 
+  /**
+   * Count old data
+   *
+   * @return int $count
+   */
+  function get_count() {
+    global $wpdb;
+    return $wpdb->get_var( "SELECT FOUND_ROWS()" );
+  }
+
+  /**
+   * Convert data to new format using ajax
+   *
+   * @return void
+   */
   function ajax_convert() {
     if ( current_user_can( 'install_plugins' ) && check_ajax_referer( $this->screen ) ) {
-      
       if( function_exists( 'FV_Player_Pro' ) ) {
         // takes too long to save if not removed
         remove_filter( 'content_save_pre', array( FV_Player_Pro(), 'save_post' ), 10 );
       }
 
-      $conversions_output = array();
       $convert_error = false;
-      $html = array();
 
       $offset = intval($_POST['offset']);
       $offset = 0 + intval($_POST['offset2']) + $offset;
       $limit = intval($_POST['limit']);
 
-      $posts = $this->get_posts_with_shortcode( $offset, $limit );
+      $items = $this->get_items( $offset, $limit );
 
       $total = $this->get_count();
 
-      foreach( $posts AS $post ) {
-        $result = $this->convert_one($post);
-        // mark post if conversion failed
-        if( !empty( $result['errors'] ) ) {
-          update_post_meta( $post->ID, '_fv_player_' . $this->slug . '_failed', $result['errors'] );
-          $convert_error = true;
-        } else {
-          if( $result['content_updated'] ) {
-            // no problem, unmark
-            delete_post_meta( $post->ID, '_fv_player_' . $this->slug . '_failed' );
-          }
-        }
+      // iterate data
+      $result = $this->iterate_data( $items );
 
-        $conversions_output = array_merge( $conversions_output, $result['output_data'] );
-
-        if( $this->is_live() && $result['content_updated'] ) {
-          wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
-        }
-      }
+      $convert_error = $result['convert_error'];
+      $conversions_output = $result['conversions_output'];
 
       $percent_done = $total > 0 ? round ( (($offset + $limit) / $total) * 100 ) : 0;
       $left = $total - ($offset + $limit);
 
       // build html output
-      foreach( $conversions_output as $output_data ) {
-        $html[] = "<tr><td><a href='" . get_edit_post_link( $output_data['ID'] ) . "' target='_blank'> #". $output_data['ID'] . "</a></td><td><a href='" . get_permalink( $output_data['ID'] ) ."' target='_blank'>". $output_data['title'] . "</a></td><td>" . $output_data['type'] . "</td><td>". $output_data['shortcode'] . "</td><td>" . $output_data['output'] . "</td><td>" . $output_data['error'] . "</td></tr>";
-      }
-      
-      if( empty($html) && $percent_done == 0 ) {
-        $html[] = "<tr><td colspan='6'>No matching players found.</td></tr>";
+      $html = $this->build_output_html( $conversions_output, $percent_done );
+
+      // check if we are done
+      if( $percent_done >= 100 ) {
+        // store conversion status
+        $options = get_option( 'fvwpflowplayer' );
+
+        if( !isset( $options['conversion'] ) ) {
+          $options['conversion'] = array();
+        }
+
+        // store current time as finished time
+        $options['conversion'][$this->slug] = array( 'date' => date('Y-m-d H:i:s'), 'did_cleanup' => false );
+        update_option( 'fvwpflowplayer', $options );
       }
 
       // response
@@ -97,7 +112,10 @@ abstract class FV_Player_Conversion_Base {
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,
           'left' => $left,
-          'convert_error' => $convert_error
+          'total' => $total,
+          'convert_error' => $convert_error,
+          'memory_used_peak_mb' => round( memory_get_peak_usage() / 1024 / 1024, 2 ),
+          'memory_used_mb' => round( memory_get_usage() / 1024 / 1024, 2 ),
         )
       );
     }
@@ -105,47 +123,11 @@ abstract class FV_Player_Conversion_Base {
     die();
   }
 
-  function csv_export() {
-    if( !current_user_can('install_plugins') ) return;
-
-    global $wpdb;
-
-    $filename = $this->slug . '-export-' . date('Y-m-d') . '.csv';
-
-    header('Content-type: text/csv');
-    header("Content-Disposition: attachment; filename=$filename");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-
-    $meta_key = '_fv_player_' . $this->slug . '_failed';
-
-    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s' ORDER BY {$wpdb->posts}.post_date_gmt DESC ", $meta_key );
-
-    $results = $wpdb->get_col( $sql );
-
-    if( !empty( $results ) ) {
-      $fp = fopen('php://output', 'wb');
-
-      $header = array('ID','Title','Post-Link','Edit-Link','Shortcode','Message');
-
-      fputcsv($fp, $header);
-
-      foreach( $results as $result ) {
-        $unserialized = unserialize( $result );
-  
-        foreach( $unserialized as $row ) {
-          $row['post_link'] = htmlspecialchars_decode( $row['post_link'] );
-          $row['post_edit'] = htmlspecialchars_decode( $row['post_edit'] );
-          fputcsv($fp, $row);
-        }
-      }
-
-      fclose($fp);
-    }
-
-    die();
-  }
-
+  /**
+   * Create admin page for conversion screen
+   *
+   * @return void
+   */
   function conversion_screen() {
     global $fv_wp_flowplayer_ver;
     wp_enqueue_script('fv-player-convertor', flowplayer::get_plugin_url().'/js/admin-convertor.js', array('jquery'), filemtime( dirname(__FILE__).'/../../js/admin-convertor.js' ) );
@@ -169,12 +151,14 @@ abstract class FV_Player_Conversion_Base {
       </style>
       <div class="wrap">
         <h1><?php echo $this->title; ?></h1>
+
         <?php echo wpautop($this->help); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
-          
-          <?php // This checkbox shows the JS confirmation box when clicked to enable ?>
-          <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php _e('Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-wordpress-flowplayer') ?>') " /> <label for="make-changes">Make changes</label>
+
+          <?php if( $this->make_chages_button ): // This checkbox shows the JS confirmation box when clicked to enable ?>
+            <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo $this->start_warning_text; ?>') " /> <label for="make-changes">Make changes</label>
+          <?php endif; ?>
 
           <input class="button-primary" type="submit" name="convert" value="Start" />
 
@@ -187,15 +171,22 @@ abstract class FV_Player_Conversion_Base {
 
         <div id="wrapper" style="display: none"><div id="progress"></div></div>
 
+        <div style="max-width: 30em; background: white; padding: .5em 1em; margin: 5em auto; box-shadow: 0px 0px 10px 5px rgba(0,0,0,.5)">
+          <h1 class="conversion-done" style="display: none;">Conversion done!</h1>
+
+          <?php if( $this->conversion_done_details ): ?>
+            <p class="conversion-done-details" style="display: none;">
+              <?php echo $this->conversion_done_details; ?>
+            </p>
+          <?php endif; ?>
+        </div>
+
         <table class="wp-list-table widefat fixed striped table-view-list posts">
           <thead>
             <tr>
-              <th style="width: 5em">ID</th>
-              <th>Title</th>
-              <th style="width: 5em">Post Type</th>
-              <th>Shortcode</th>
-              <th>Result</th>
-              <th>Error</th>
+              <?php foreach( $this->screen_fields as $field ) : ?>
+                <th><?php echo $field; ?></th>
+              <?php endforeach; ?>
             </tr>
           </thead>
           <tbody id="output"></tbody>
@@ -210,13 +201,19 @@ abstract class FV_Player_Conversion_Base {
             cancel:   '<?php echo 'Cancel'; ?>',
             url:      '<?php echo admin_url('admin-ajax.php') ?>',
             nonce:    '<?php echo wp_create_nonce($this->screen)?>',
-            finished: '<?php echo 'Finished'; ?>'
+            finished: '<?php echo 'Finished'; ?>',
+            limit:    '<?php echo $this->conversion_limit; ?>'
           });
         });
       </script>
     <?php
   }
-  
+
+  /**
+   * Get live status
+   *
+   * @return boolean
+   */
   function is_live() {
     return (!empty($_POST['make-changes']) && $_POST['make-changes'] == 'true') || $this->set_live ;
   }
