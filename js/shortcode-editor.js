@@ -799,6 +799,11 @@ jQuery(function() {
           parent = input.parents('.fv-player-editor-children-wrap'),
           name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
+        // Reveal hidden field if it has a value
+        if ( input.val() ) {
+          input.closest( '.components-base-control' ).removeClass( 'fv_player_interface_hide' );
+        }
+
         if( parent.length == 1 ) {
           if( input.val() ) {
             parent.find('.fv-player-editor-field-children-' + name ).show();
@@ -3542,25 +3547,25 @@ jQuery(function() {
         get_field('src1',new_item).val(objVid.src1);
         get_field('src2',new_item).val(objVid.src2);
 
-        get_field('mobile',new_item).val(objVid.mobile);
+        get_field('mobile',new_item).val(objVid.mobile).trigger( 'change' );
 
         get_field('rtmp',new_item).val(objVid.rtmp);
         get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
-        get_field('title',new_item).val(objVid.title);
+        get_field('title',new_item).val(objVid.title).trigger( 'change' );
         get_field('splash',new_item).val(objVid.splash);
-        get_field('splash_text',new_item).val(objVid.splash_text);
+        get_field('splash_text',new_item).val(objVid.splash_text).trigger( 'change' );
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
 
-        get_field('start',new_item).val(objVid.start);
-        get_field('end',new_item).val(objVid.end);
+        get_field('start',new_item).val(objVid.start).trigger( 'change' );
+        get_field('end',new_item).val(objVid.end).trigger( 'change' );
 
         get_field('toggle_advanced_settings',new_item).prop('checked', objVid.toggle_advanced_settings).trigger('change');
 
         jQuery(objVid.meta).each( function(k,v) {
           Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
             if ( v.meta_key == field_name ) {
-              get_field( field_name, new_item ).val( v.meta_value ).attr('data-id',v.id);
+              get_field( field_name, new_item ).val( v.meta_value ).attr('data-id',v.id).trigger( 'change' );
             }
           } );
 
@@ -3586,13 +3591,13 @@ jQuery(function() {
           }
         }
         if( sCaption ) {
-          get_field('title',new_item).val(sCaption);
+          get_field('title',new_item).val(sCaption).trigger( 'change' );
         }
         if( sSubtitles ) {
           get_field('subtitles',new_item_subtitles).val(sSubtitles);
         }
         if( sSplashText ) {
-          get_field('splash_text',new_item).val(sSplashText);
+          get_field('splash_text',new_item).val(sSplashText).trigger( 'change' );
         }
 
       // new item
