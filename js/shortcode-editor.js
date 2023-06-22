@@ -144,12 +144,22 @@ jQuery(function() {
     }
 
     function check_for_video_meta_field(fieldName) {
+
+      let fieldName_check = get_field_name( fieldName );
+
+      if (
+        window.fv_player_editor_fields &&
+        window.fv_player_editor_fields[ fieldName_check ] &&
+        'video_meta' == window.fv_player_editor_fields[ fieldName_check ]
+      ) {
+        return true;
+      }
+
       return [
         'fv_wp_flowplayer_field_duration',
         'fv_wp_flowplayer_field_dvr',
         'fv_wp_flowplayer_field_auto_splash',
         'fv_wp_flowplayer_field_auto_caption',
-        'fv_wp_flowplayer_field_synopsis',
         'fv_wp_flowplayer_field_audio'
       ].indexOf(fieldName) > -1;
     }
@@ -1228,8 +1238,8 @@ jQuery(function() {
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
         if ( loading ) {
-            return;
-          }
+          return;
+        }
 
         // Skips the interface toggles (Advanced Settings, RTMP)
         if( e && $(e.target).hasClass('no-data') ) {
@@ -1365,8 +1375,7 @@ jQuery(function() {
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                   title_field = get_field( 'title', video_tab ),
                   auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k ),
-                  synopsis = get_playlist_video_meta_value('synopsis', k);
+                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
 
                 if( get_field('auto_splash', video_tab ).val() == '0' ) {
                   auto_splash = false;
@@ -1384,9 +1393,13 @@ jQuery(function() {
                   }
                 }
 
-                if( synopsis && !get_field('synopsis', video_tab ).val() ) {
-                  get_field('synopsis', video_tab ).val( synopsis );
-                }
+                // Populate video meta fields for which the video checking on video save has added value
+                Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
+                  let field_value = get_playlist_video_meta_value( field_name, k );
+                  if( field_value && !get_field( field_name, video_tab ).val() ) {
+                    get_field( field_name, video_tab ).val( field_value );
+                  }
+                } );
 
                 if( auto_splash ) {
                   get_field('auto_splash', video_tab ).val( auto_splash );
@@ -3542,7 +3555,12 @@ jQuery(function() {
         get_field('toggle_advanced_settings',new_item).prop('checked', objVid.toggle_advanced_settings).trigger('change');
 
         jQuery(objVid.meta).each( function(k,v) {
-          if( v.meta_key == 'synopsis' ) get_field('synopsis',new_item).val(v.meta_value).attr('data-id',v.id);
+          Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
+            if ( v.meta_key == field_name ) {
+              get_field( field_name, new_item ).val( v.meta_value ).attr('data-id',v.id);
+            }
+          } );
+
           if( v.meta_key == 'audio' ) get_field('audio',new_item).prop('checked',v.meta_value).attr('data-id',v.id);
         });
 

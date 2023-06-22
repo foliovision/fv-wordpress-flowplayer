@@ -26,7 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   $post_id = isset($post->ID) ? $post->ID : 0;
 
   $script_fv_player_editor_defaults = array();
-  
+
+  $script_fv_player_editor_fields = array();
+
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
   
   function fv_flowplayer_admin_select_popups() {
@@ -400,7 +402,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   }
 
   function fv_player_editor_input_group( $settings ) {
-    global $script_fv_player_editor_defaults;
+    global $script_fv_player_editor_defaults, $script_fv_player_editor_fields;
 
     // Check if the field is enabled in Post Interface Options
     $conf = get_option( 'fvwpflowplayer' );
@@ -442,6 +444,10 @@ if ( ! defined( 'ABSPATH' ) ) {
       foreach( $group_options['items'] AS $input ) {
         if( isset($input['default']) ) {
           $script_fv_player_editor_defaults[$input['name']] = $input['default'];
+        }
+
+        if ( isset($input['video_meta']) ) {
+          $script_fv_player_editor_fields[ $input['name'] ] = 'video_meta';
         }
 
         fv_player_editor_input( $input );
@@ -999,9 +1005,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </div>
 
 <?php
-global $script_fv_player_editor_defaults;
-global $script_fv_player_editor_dependencies;
+global $script_fv_player_editor_defaults, $script_fv_player_editor_dependencies, $script_fv_player_editor_fields;
 
 echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>\n";
 echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>\n";
+echo "<script>var fv_player_editor_fields = ".json_encode($script_fv_player_editor_fields)."</script>\n";
 ?>
