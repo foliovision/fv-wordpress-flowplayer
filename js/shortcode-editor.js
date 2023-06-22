@@ -1212,10 +1212,7 @@ jQuery(function() {
         loading = false;
       });
 
-      $doc.on('fv_flowplayer_video_meta_load', function() {
-        insert_button_toggle(false);
-        copy_player_button_toggle(false);
-
+      $doc.on('fv_player_editor_player_loaded', function() {
         loading = false;
         is_unsaved = false;
       });
@@ -2673,7 +2670,13 @@ jQuery(function() {
               // in draft mode for this player
               insert_button_toggle(true);
               fix_save_btn_text();
+
+            } else {
+              insert_button_toggle(false);
+              copy_player_button_toggle(false);
             }
+
+            $doc.trigger('fv_player_editor_player_loaded');
 
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
