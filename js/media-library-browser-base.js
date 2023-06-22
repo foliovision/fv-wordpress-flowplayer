@@ -841,8 +841,8 @@ jQuery( function($) {
         timeline_previews_field.val('');
       }
 
-      var sd_download_field = fv_player_editor.get_field('sd_download', true);
-      var hd_download_field = fv_player_editor.get_field('hd_download', true);
+      var sd_download_field = fv_player_editor.get_field('download_sd', true);
+      var hd_download_field = fv_player_editor.get_field('download_hd', true);
       if( extra ) {
         if( extra.sd_download ) {
           sd_download_field.val(extra.sd_download);
