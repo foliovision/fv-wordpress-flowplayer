@@ -799,7 +799,7 @@ jQuery(function() {
           parent = input.parents('.fv-player-editor-children-wrap'),
           name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
-        // Reveal hidden field if it has a value
+        // Reveal the input if it has value even if it's not enabled in Post Interface options
         if ( input.val() ) {
           input.closest( '.components-base-control' ).removeClass( 'fv_player_interface_hide' );
         }
