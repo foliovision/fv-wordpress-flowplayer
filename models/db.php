@@ -1949,15 +1949,11 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         );
 
       } catch (Exception $e) {
-        if (WP_DEBUG) {
-          var_dump($e);
-
-          if (!$output_result) {
-            exit;
-          }
+        if ($output_result) {
+          die( $e );
+        } else {
+          return $e;
         }
-
-        die( '0' );
       }
 
       if ($output_result) {
