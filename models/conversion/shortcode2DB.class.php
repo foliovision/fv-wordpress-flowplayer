@@ -99,7 +99,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     if( !empty( $post->post_content) ) {
 
       // match shortcodes in post_content
-      preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $post->post_content, $matched_shortcodes );
+      preg_match_all( '~\[(?:flowplayer|fvplayer) .*?\]~', $post->post_content, $matched_shortcodes );
 
       if( !empty($matched_shortcodes) ) {
         foreach( $matched_shortcodes[0] as $shortcode ) {

@@ -150,8 +150,12 @@ class FV_Player_List_Table extends WP_List_Table {
         break;
       case 'player_name' :
         $name = $player->player_name ? $player->player_name : join( ', ', $player->video_titles );
+        $name = flowplayer::filter_possible_html($name);
+        if ( 'published' !== $player->status ) {
+          $name .= ' (' . ucfirst( $player->status ) . ')';
+        }
 
-        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>".flowplayer::filter_possible_html($name)."</a>\n";
+        $value = "<a href='#' class='fv-player-edit' data-player_id='{$id}'>" . $name . "</a>\n";
         $value .= "<div class='row-actions'>";
         $value .= "<a href='#' class='fv-player-edit' data-player_id='{$id}'>Edit</a> | ";
         $value .= "<a href='#' class='fv-player-export' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Export</a> | ";

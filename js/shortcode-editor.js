@@ -144,12 +144,22 @@ jQuery(function() {
     }
 
     function check_for_video_meta_field(fieldName) {
+
+      let fieldName_check = get_field_name( fieldName );
+
+      if (
+        window.fv_player_editor_fields &&
+        window.fv_player_editor_fields[ fieldName_check ] &&
+        'video_meta' == window.fv_player_editor_fields[ fieldName_check ]
+      ) {
+        return true;
+      }
+
       return [
         'fv_wp_flowplayer_field_duration',
         'fv_wp_flowplayer_field_dvr',
         'fv_wp_flowplayer_field_auto_splash',
         'fv_wp_flowplayer_field_auto_caption',
-        'fv_wp_flowplayer_field_synopsis',
         'fv_wp_flowplayer_field_audio'
       ].indexOf(fieldName) > -1;
     }
@@ -789,6 +799,11 @@ jQuery(function() {
           parent = input.parents('.fv-player-editor-children-wrap'),
           name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
 
+        // Reveal the input if it has value even if it's not enabled in Post Interface options
+        if ( input.val() ) {
+          input.closest( '.fv_player_interface_hide' ).removeClass( 'fv_player_interface_hide' );
+        }
+
         if( parent.length == 1 ) {
           if( input.val() ) {
             parent.find('.fv-player-editor-field-children-' + name ).show();
@@ -1202,10 +1217,7 @@ jQuery(function() {
         loading = false;
       });
 
-      $doc.on('fv_flowplayer_video_meta_load', function() {
-        insert_button_toggle(false);
-        copy_player_button_toggle(false);
-
+      $doc.on('fv_player_editor_player_loaded', function() {
         loading = false;
         is_unsaved = false;
       });
@@ -1228,8 +1240,8 @@ jQuery(function() {
         // "loading" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
         if ( loading ) {
-            return;
-          }
+          return;
+        }
 
         // Skips the interface toggles (Advanced Settings, RTMP)
         if( e && $(e.target).hasClass('no-data') ) {
@@ -1365,8 +1377,7 @@ jQuery(function() {
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                   title_field = get_field( 'title', video_tab ),
                   auto_splash = get_playlist_video_meta_value( 'auto_splash', k ),
-                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k ),
-                  synopsis = get_playlist_video_meta_value('synopsis', k);
+                  auto_caption = get_playlist_video_meta_value( 'auto_caption', k );
 
                 if( get_field('auto_splash', video_tab ).val() == '0' ) {
                   auto_splash = false;
@@ -1384,9 +1395,13 @@ jQuery(function() {
                   }
                 }
 
-                if( synopsis && !get_field('synopsis', video_tab ).val() ) {
-                  get_field('synopsis', video_tab ).val( synopsis );
-                }
+                // Populate video meta fields for which the video checking on video save has added value
+                Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
+                  let field_value = get_playlist_video_meta_value( field_name, k );
+                  if( field_value && !get_field( field_name, video_tab ).val() ) {
+                    get_field( field_name, video_tab ).val( field_value );
+                  }
+                } );
 
                 if( auto_splash ) {
                   get_field('auto_splash', video_tab ).val( auto_splash );
@@ -2660,7 +2675,13 @@ jQuery(function() {
               // in draft mode for this player
               insert_button_toggle(true);
               fix_save_btn_text();
+
+            } else {
+              insert_button_toggle(false);
+              copy_player_button_toggle(false);
             }
+
+            $doc.trigger('fv_player_editor_player_loaded');
 
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
@@ -3526,23 +3547,28 @@ jQuery(function() {
         get_field('src1',new_item).val(objVid.src1);
         get_field('src2',new_item).val(objVid.src2);
 
-        get_field('mobile',new_item).val(objVid.mobile);
+        get_field('mobile',new_item).val(objVid.mobile).trigger( 'change' );
 
         get_field('rtmp',new_item).val(objVid.rtmp);
         get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
-        get_field('title',new_item).val(objVid.title);
+        get_field('title',new_item).val(objVid.title).trigger( 'change' );
         get_field('splash',new_item).val(objVid.splash);
-        get_field('splash_text',new_item).val(objVid.splash_text);
+        get_field('splash_text',new_item).val(objVid.splash_text).trigger( 'change' );
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
 
-        get_field('start',new_item).val(objVid.start);
-        get_field('end',new_item).val(objVid.end);
+        get_field('start',new_item).val(objVid.start).trigger( 'change' );
+        get_field('end',new_item).val(objVid.end).trigger( 'change' );
 
         get_field('toggle_advanced_settings',new_item).prop('checked', objVid.toggle_advanced_settings).trigger('change');
 
         jQuery(objVid.meta).each( function(k,v) {
-          if( v.meta_key == 'synopsis' ) get_field('synopsis',new_item).val(v.meta_value).attr('data-id',v.id);
+          Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
+            if ( v.meta_key == field_name ) {
+              get_field( field_name, new_item ).val( v.meta_value ).attr('data-id',v.id).trigger( 'change' );
+            }
+          } );
+
           if( v.meta_key == 'audio' ) get_field('audio',new_item).prop('checked',v.meta_value).attr('data-id',v.id);
         });
 
@@ -3565,13 +3591,13 @@ jQuery(function() {
           }
         }
         if( sCaption ) {
-          get_field('title',new_item).val(sCaption);
+          get_field('title',new_item).val(sCaption).trigger( 'change' );
         }
         if( sSubtitles ) {
           get_field('subtitles',new_item_subtitles).val(sSubtitles);
         }
         if( sSplashText ) {
-          get_field('splash_text',new_item).val(sSplashText);
+          get_field('splash_text',new_item).val(sSplashText).trigger( 'change' );
         }
 
       // new item
