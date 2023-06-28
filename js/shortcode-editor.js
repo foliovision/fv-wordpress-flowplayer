@@ -407,8 +407,7 @@ jQuery(function() {
      function insertUpdateOrDeletePlayerMeta(options) {
       var
         $element = jQuery(options.element),
-        isDropdown = $element.get(0).nodeName == 'SELECT',
-        value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
+        value = map_input_value( $element );
 
       if ( ! options.meta_section ) {
         options.meta_section = 'player';
@@ -417,11 +416,6 @@ jQuery(function() {
       // don't do anything if we've not found the actual element
       if (!$element.length) {
         return;
-      }
-
-      // check for a select without any option values, in which case we'll use their text
-      if (isDropdown) {
-        value = map_dropdown_value( $element );
       }
 
       // check whether to update or delete this meta
@@ -501,16 +495,11 @@ jQuery(function() {
      function insertUpdateOrDeleteVideoMeta(options) {
       var
         $element = jQuery(options.element),
-        isDropdown = $element.get(0).nodeName == 'SELECT',
-        value = ($element.get(0).type.toLowerCase() == 'checkbox' ? $element.get(0).checked ? 'true' : '' : $element.val());
+        value = map_input_value( $element );
+
       // don't do anything if we've not found the actual element
       if (!$element.length) {
         return;
-      }
-
-      // check for a select without any option values, in which case we'll use their text
-      if (isDropdown) {
-        value = map_dropdown_value( $element );
       }
 
       // check whether to update or delete this meta
@@ -3406,6 +3395,15 @@ jQuery(function() {
       }
     }
 
+    function map_checkbox_value( $element ) {
+      var input_type = $element.get(0).type.toLowerCase(),
+        is_checked = $element.get(0).checked;
+
+      if ( 'checkbox' == input_type ) {
+          return is_checked ? 'true' : '';
+      }
+    }
+
     function map_dropdown_value( dropdown_element ) {
       var $valueLessOptions = dropdown_element.find('option:not([value])'),
         value = dropdown_element[0].value.toLowerCase(),
@@ -3438,14 +3436,28 @@ jQuery(function() {
       }
     }
 
-    function map_input_value( $el ) {
-      let value = $el.val();
-      if ($el[0].nodeName == 'INPUT' && $el[0].type.toLowerCase() == 'checkbox') {
-        value = $el[0].checked ? 'true' : '';
+    function map_input_type( $el ) {
+      var input_type = $el.get(0).type.toLowerCase();
 
-      } else if ( $el[0].nodeName == 'SELECT' ) {
-        value = map_dropdown_value( $el );
+      if ( 'SELECT' == $el.get(0).nodeName ) {
+        input_type = 'select';
       }
+
+      return input_type;
+    }
+
+    function map_input_value( $el ) {
+      let input_type = map_input_type( $el ),
+        value = $el.val();
+
+      // check for a select without any option values, in which case we'll use their text
+      if ( 'select' == input_type ) {
+        value = map_dropdown_value( $el );
+
+      } else if ( 'checkbox' == input_type ) {
+        value = map_checkbox_value( $el );
+      }
+
       return value;
     }
 
