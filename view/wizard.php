@@ -446,8 +446,12 @@ if ( ! defined( 'ABSPATH' ) ) {
           $script_fv_player_editor_defaults[$input['name']] = $input['default'];
         }
 
+        if ( ! isset( $script_fv_player_editor_fields[ $input['name'] ] ) ) {
+          $script_fv_player_editor_fields[ $input['name'] ] = array();
+        }
+
         if ( isset($input['video_meta']) ) {
-          $script_fv_player_editor_fields[ $input['name'] ] = 'video_meta';
+          $script_fv_player_editor_fields[ $input['name'] ]['store'] = 'video_meta';
         }
 
         fv_player_editor_input( $input );
