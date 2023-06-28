@@ -145,13 +145,7 @@ jQuery(function() {
 
     function check_for_video_meta_field(fieldName) {
 
-      let fieldName_check = get_field_name( fieldName );
-
-      if (
-        window.fv_player_editor_fields &&
-        window.fv_player_editor_fields[ fieldName_check ] &&
-        'video_meta' == window.fv_player_editor_fields[ fieldName_check ]
-      ) {
+      if ( get_field_conf( fieldName ).store == 'video_meta' ) {
         return true;
       }
 
@@ -315,6 +309,16 @@ jQuery(function() {
       }
 
       return element;
+    }
+
+    function get_field_conf( name ) {
+      name = get_field_name( name );
+
+      if ( window.fv_player_editor_fields && window.fv_player_editor_fields[ name ] ) {
+        return window.fv_player_editor_fields[ name ];
+      }
+
+      return {};
     }
 
     /**
@@ -1386,9 +1390,11 @@ jQuery(function() {
 
                 // Populate video meta fields for which the video checking on video save has added value
                 Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
-                  let field_value = get_playlist_video_meta_value( field_name, k );
-                  if( field_value && !get_field( field_name, video_tab ).val() ) {
-                    get_field( field_name, video_tab ).val( field_value );
+                  if ( 'video_meta' == window.fv_player_editor_fields[ field_name].store ) {
+                    let field_value = get_playlist_video_meta_value( field_name, k );
+                    if( field_value && !get_field( field_name, video_tab ).val() ) {
+                      get_field( field_name, video_tab ).val( field_value );
+                    }
                   }
                 } );
 
@@ -3576,8 +3582,10 @@ jQuery(function() {
 
         jQuery(objVid.meta).each( function(k,v) {
           Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
-            if ( v.meta_key == field_name ) {
-              get_field( field_name, new_item ).val( v.meta_value ).attr('data-id',v.id).trigger( 'change' );
+            if ( 'video_meta' == window.fv_player_editor_fields[ field_name].store ) {
+              if ( v.meta_key == field_name ) {
+                get_field( field_name, new_item ).val( v.meta_value ).attr('data-id',v.id).trigger( 'change' );
+              }
             }
           } );
 
