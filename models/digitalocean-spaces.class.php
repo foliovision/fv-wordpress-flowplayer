@@ -168,7 +168,10 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $sCredentialScope = $sDate."/".$endpoint."/s3/aws4_request"; //  todo: variable
     $sSignedHeaders = "host";
     $sXAMZCredential = urlencode( $key.'/'.$sCredentialScope);
-    
+
+    // Support DigitalOcean Spaces CDN
+    $url_components['host'] = str_replace( 'cdn.', '', $url_components['host'] );
+
     //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
     $sCanonicalRequest = "GET\n";
     $sCanonicalRequest .= $url_components['path']."\n";
