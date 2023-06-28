@@ -878,6 +878,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           }
 
           $temp_media = $this->get_video_src( $v['src'], array( 'dynamic' => true ) );
+
+          // Encode components of the URL path
+          $url_path = wp_parse_url( $temp_media, PHP_URL_PATH );
+          $temp_media = str_replace( $url_path, implode( '/', array_map( 'urlencode', explode( '/', $url_path ) ) ), $temp_media );
+
           if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
             if($FV_Player_Pro->is_vimeo($temp_media) || method_exists($FV_Player_Pro, 'is_vimeo_event') && $FV_Player_Pro->is_vimeo_event($temp_media) || $FV_Player_Pro->is_youtube($temp_media)) {
               continue;
