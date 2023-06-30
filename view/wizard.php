@@ -297,6 +297,8 @@ if ( ! defined( 'ABSPATH' ) ) {
   }
 
   function fv_player_editor_input( $args, $is_child = false ) {
+    global $script_fv_player_editor_fields;
+
     $args = wp_parse_args(
       $args,
       array(
@@ -317,12 +319,21 @@ if ( ! defined( 'ABSPATH' ) ) {
         'scope'             => false,
         'language'          => false,
         'type'              => false,
+        'video_meta'        => false,
         'visible'           => false,
         'width'             => false,
       )
     );
 
     extract($args);
+
+    if ( ! isset( $script_fv_player_editor_fields[ $name ] ) ) {
+      $script_fv_player_editor_fields[ $name ] = array();
+    }
+
+    if ( $video_meta ) {
+      $script_fv_player_editor_fields[ $name ]['store'] = 'video_meta';
+    }
 
     if( !empty($dependencies) ) {
       global $script_fv_player_editor_dependencies;
@@ -402,7 +413,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   }
 
   function fv_player_editor_input_group( $settings ) {
-    global $script_fv_player_editor_defaults, $script_fv_player_editor_fields;
+    global $script_fv_player_editor_defaults;
 
     // Check if the field is enabled in Post Interface Options
     $conf = get_option( 'fvwpflowplayer' );
@@ -444,14 +455,6 @@ if ( ! defined( 'ABSPATH' ) ) {
       foreach( $group_options['items'] AS $input ) {
         if( isset($input['default']) ) {
           $script_fv_player_editor_defaults[$input['name']] = $input['default'];
-        }
-
-        if ( ! isset( $script_fv_player_editor_fields[ $input['name'] ] ) ) {
-          $script_fv_player_editor_fields[ $input['name'] ] = array();
-        }
-
-        if ( isset($input['video_meta']) ) {
-          $script_fv_player_editor_fields[ $input['name'] ]['store'] = 'video_meta';
         }
 
         fv_player_editor_input( $input );
