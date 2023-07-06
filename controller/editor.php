@@ -612,7 +612,8 @@ function fv_player_editor_video_fields() {
         ),
         array(
           'name' => 'video_info',
-          'type' => 'notice_info'
+          'type' => 'notice_info',
+          'content' => '<ul></ul>',
         ),
         array(
           'name' => 'auto_splash',

@@ -290,7 +290,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     ?>
   <div <?php echo $id; ?> class="components-base-control">
     <div class="components-base-control__field">
-      <ul class="<?php echo $field_class; ?>"></ul>
+      <div class="<?php echo $field_class; ?>">
+        <?php echo $content; ?>
+      </div>
     </div>
   </div>
     <?php
@@ -305,6 +307,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         'browser'           => false,
         'children'          => false,
         'class'             => false,
+        'content'           => false,
         'default'           => false,
         'dependencies'      => false,
         'dropdown'          => array( 'Default', 'On', 'Off' ),

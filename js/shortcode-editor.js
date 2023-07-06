@@ -4555,7 +4555,7 @@ jQuery(function() {
         video = get_playlist_video_object( index ),
         error = get_playlist_video_meta_value( 'error', index )
 
-      var video_info = get_field('video_info', video_tab),
+      var video_info = get_field('video_info', video_tab).find('ul'),
         show = false;
 
       video_info.html('');

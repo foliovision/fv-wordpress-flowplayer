@@ -1180,7 +1180,7 @@ a.fvp_item_video-filename {
 .fv-player-editor-field-wrap-video_info {
   margin-top: -24px;
 }
-.fv_wp_flowplayer_field_video_info {
+.fv_wp_flowplayer_field_video_info ul {
   list-style: none;
   margin: 0;
 }
