@@ -42,12 +42,18 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   function get_space() {
     global $fv_fp;
-    return $fv_fp->_get_option( array($this->key,'space' ) );
+    $space = $fv_fp->_get_option( array($this->key,'space' ) );
+
+    // If multiple DigitalOcean Spaces are configured, use the first one
+    $spaces = explode( ',', $space );
+    $space = $spaces[0];
+
+    return $space;
   }
 
   function get_domains() {
-    global $fv_fp;
-    $space = $fv_fp->_get_option( array($this->key,'space' ) );
+    $space = $this->get_space();
+
     $endpoint = $this->get_endpoint();
     if( $space && $endpoint ) {
       return array( $space.'.'.$endpoint, $endpoint.'/'.$space );
