@@ -68,12 +68,12 @@ class FV_Player_Related_Videos {
 
           // check if there is splash
           if( $player_data->splash ) {
-            $splash_img = $player_data->splash;
+            $splash_img = apply_filters( 'fv_flowplayer_resource', $player_data->splash );
           } else {
             $splash_img = get_the_post_thumbnail($post_id, 'thumbnail');
           }
 
-          $related_videos_html .= '<div class="fv_player_related_video"><a href="'.get_permalink($post_id).'"><img style="width: 100px;" src="'.$splash_img.'" alt="'.get_the_title($post_id).'" /></a><a href="'.get_permalink($post_id).'">'.get_the_title($post_id).'</a></div>';
+          $related_videos_html .= '<div class="fv_player_related_video"><a href="'.get_permalink($post_id).'"><img src="'.$splash_img.'" alt="'.get_the_title($post_id).'" /></a><a href="'.get_permalink($post_id).'">'.get_the_title($post_id).'</a></div>';
 
           $current_related_videos++;
 
@@ -87,7 +87,7 @@ class FV_Player_Related_Videos {
     }
 
     if( $related_videos_html ) {
-      $popup = '<div class="fv_player_popup wpfp_custom_popup_content"><p>'.__('Related videos','fv-player-ppv') .'</p>' . $related_videos_html . '</div>';
+      $popup = '<div class="fv_player_popup wpfp_custom_popup_content fv_player_related_videos_wrap"><p>'.__('Related videos','fv-player-ppv') .'</p>' . '<div class="fv_player_related_videos">' . $related_videos_html . '</div></div>';
 
       $attributes['data-related-videos'] = $player->json_encode( array( 'html' => $popup ) );
     }
