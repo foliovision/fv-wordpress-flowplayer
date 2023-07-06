@@ -837,6 +837,9 @@ jQuery( function($) {
 
         fv_player_editor.get_field( 'encoding_job_id', true).val( extra.encoding_job_id ).trigger( 'change' );
 
+        if(extra.sd_download || extra.hd_download) {
+          fv_player_editor.get_field('download_enabled').prop('checked', true).trigger('change');
+        }
 
         if( extra.title ) {
           let title_input = fv_player_editor.get_field( 'caption', true );
