@@ -52,13 +52,33 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
   }
 
   function get_domains() {
-    $space = $this->get_space();
+    global $fv_fp;
+    $spaces = $fv_fp->_get_option( array($this->key,'space' ) );
+    $spaces = explode( ',', $spaces );
 
     $endpoint = $this->get_endpoint();
-    if( $space && $endpoint ) {
-      return array( $space.'.'.$endpoint, $endpoint.'/'.$space );
+
+    $domains = array();
+
+    foreach ( $spaces as $space ) {
+      if( $space && $endpoint ) {
+        /**
+         * TODO: These two domains are really a problem. We do not store the endpoint for each Space, so here we just assume any.
+         *       It's used in case of redundant Spaces which are not properly defined yet.
+         */
+        $domains[] = $space . '.';
+        $domains[] = '/' . $space;
+
+        $domains[] = $space . '.' . $endpoint;
+        $domains[] = $endpoint . '/' . $space;
+      }
     }
-    return false;
+
+    if ( count( $domains ) ) {
+      return $domains;
+    } else {
+      return false;
+    }
   }
   
   function get_region() {
