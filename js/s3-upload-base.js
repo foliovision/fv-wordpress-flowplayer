@@ -211,5 +211,6 @@ function fv_flowplayer_init_s3_uploader( options ) {
       $progressBarDiv.hide();
     },
     upload: upload,
+    recreate_file_input: recreate_file_input
   }
 }
