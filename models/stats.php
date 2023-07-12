@@ -79,6 +79,7 @@ class FV_Player_Stats {
       `id_player` INT(11) NOT NULL,
       `id_post` INT(11) NOT NULL,
       `user_id` INT(11) NOT NULL,
+      `guest_user_id` INT(11) NOT NULL,
       `date` DATE NULL DEFAULT NULL,\n";
 
     foreach( $this->get_stat_columns() AS $column ) {
@@ -90,7 +91,8 @@ class FV_Player_Stats {
       INDEX `id_video` (`id_video`),
       INDEX `id_player` (`id_player`),
       INDEX `id_post` (`id_post`),
-      INDEX `user_id` (`user_id`)
+      INDEX `user_id` (`user_id`),
+      INDEX `guest_user_id` (`guest_user_id`)
     ) " . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -211,6 +213,7 @@ class FV_Player_Stats {
           $player_id = intval($item['player_id']);
           $post_id = intval($item['post_id']);
           $user_id = intval($item['user_id']);
+          $guest_user_id = intval($item['guest_user_id']);
           $value = intval($item[$type]);
 
           if( $user_id ) {
@@ -242,13 +245,14 @@ class FV_Player_Stats {
               array(
                 $type => $value + $existing->{$type}, // update plays in db
               ),
-              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id ), // update by video id, date, player id, post id and user ID
+              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id, 'guest_user_id' => $guest_user_id ), // update by video id, date, player id, post id, user ID and guest user ID
               array(
                 '%d'
               ),
               array(
                 '%d',
                 '%s',
+                '%d',
                 '%d',
                 '%d'
               )
@@ -261,10 +265,12 @@ class FV_Player_Stats {
                 'id_player' => $player_id,
                 'id_post'   => $post_id,
                 'user_id'   => $user_id,
+                'guest_user_id' => $guest_user_id,
                 'date' => date_i18n( 'Y-m-d' ),
                 $type => $value
               ),
               array(
+                '%d',
                 '%d',
                 '%d',
                 '%d',
