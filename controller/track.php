@@ -125,7 +125,7 @@ Class FvPlayerTrackerWorker {
                 // Add to the existing JSON data
                 $found = false;
                 foreach( $data as $index => $item ) {
-                  if( $item['video_id'] == $video_id && $item['post_id'] == $post_id && $item['player_id'] == $player_id && $item['user_id'] == $this->user_id ) {
+                  if( $item['video_id'] == $video_id && $item['post_id'] == $post_id && $item['player_id'] == $player_id && $item['user_id'] == $this->user_id  && $item['guest_user_id'] == $this->guest_user_id ) {
                     $data[$index]['seconds'] = round( $data[$index]['seconds'] + $seconds );
                     $found = true;
                   }
@@ -149,7 +149,7 @@ Class FvPlayerTrackerWorker {
         } else if ( 'play' === $this->tag ) {
           $found = false;
           foreach( $data as $index => $item ) {
-            if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id ) {
+            if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id && $item['guest_user_id'] == $this->guest_user_id ) {
               $data[$index]['play'] += 1;
               $found = true;
               break;
