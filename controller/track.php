@@ -47,7 +47,6 @@ Class FvPlayerTrackerWorker {
     $this->player_id = !empty($_REQUEST['player_id']) ? intval($_REQUEST['player_id']) : false;
     $this->post_id = !empty($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : false;
     $this->user_id = intval($_REQUEST['user_id']);
-    $this->guest_user_id = intval($_REQUEST['guest_user_id']);
     $this->watched = !empty($_REQUEST['watched']) ? $_REQUEST['watched'] : false;
 
     // TODO: Verify some kind of signature here
@@ -197,12 +196,12 @@ Class FvPlayerTrackerWorker {
     if( $_REQUEST['user_id'] == 0 ) { // guest user
 
       if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
-        $_REQUEST['guest_user_id'] = (int) $_COOKIE['fv_player_stats_guest_user_id'];
+        $guest_user_id = (int) $_COOKIE['fv_player_stats_guest_user_id'];
       } else { // create new guest user id
         $last_guest_id = get_option( 'fv_player_stats_last_guest_user_id', 0 );
         $last_guest_id = $last_guest_id + 1;
 
-        $_REQUEST['guest_user_id'] = $last_guest_id;
+        $guest_user_id = $last_guest_id;
 
         update_option( 'fv_player_stats_last_guest_user_id', $last_guest_id );
 
@@ -210,8 +209,10 @@ Class FvPlayerTrackerWorker {
         setcookie( 'fv_player_stats_guest_user_id', $last_guest_id, time() + 60 * 60 * 24 * 365, '/' );
       }
     } else {
-      $_REQUEST['guest_user_id'] = 0;
+      $guest_user_id = 0;
     }
+
+    $this->guest_user_id = $guest_user_id;
 
     if( ! $this->incrementCacheCounter() ){
       file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
