@@ -129,6 +129,8 @@ include_once(dirname( __FILE__ ) . '/models/stats-export.php');
 
 include_once(dirname( __FILE__ ) . '/models/youtube.php');
 
+include_once(dirname( __FILE__ ) . '/models/lms-teaching.class.php');
+
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
 if( !function_exists( 'fv_player_bunny_stream_include' ) && version_compare(PHP_VERSION, '5.2.17') >= 0 ) {
