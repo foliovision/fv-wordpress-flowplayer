@@ -412,10 +412,10 @@ class FV_Player_Stats {
     $results_user = array();
     $results_guest = array();
 
-    if( $metric == 'play' ) {
+    if( $metric == 'play' ) { // play stats
       $top_ids_results_user = $this->top_ten_users_by_plays( $interval, 'user' );
       $top_ids_results_guest = $this->top_ten_users_by_plays( $interval, 'guest' );
-    } else {
+    } else { // watch time stats
       $top_ids_results_user = $this->top_ten_users_by_watch_time( $interval, 'user' );
       $top_ids_results_guest = $this->top_ten_users_by_watch_time( $interval, 'guest' );
     }
@@ -424,6 +424,7 @@ class FV_Player_Stats {
       return false;
     }
 
+    // regular users
     if( !empty($top_ids_results_user) ) {
       $top_ids_arr_user = array_values( $top_ids_results_user );
       $top_ids_user = implode( ',', array_values( $top_ids_arr_user ) );
@@ -435,6 +436,7 @@ class FV_Player_Stats {
       }
     }
 
+    // guest users
     if( !empty($top_ids_results_guest) ) {
       $top_ids_arr_guest = array_values( $top_ids_results_guest );
       $top_ids_guest = implode( ',', array_values( $top_ids_arr_guest ) );
@@ -446,14 +448,17 @@ class FV_Player_Stats {
       }
     }
 
+    // process data for regular users
     if( !empty($results_user) ) {
       $datasets_users = $this->process_graph_data( $results_user, $top_ids_arr_user, $range, 'user', $metric );
     }
 
+    // process data for guest users
     if( !empty($results_guest) ) {
       $datasets_guests = $this->process_graph_data( $results_guest, $top_ids_arr_guest, $range, 'guest', $metric );
     }
 
+    // merge datasets
     $datasets = array_merge( $datasets_users, $datasets_guests );
 
     return $datasets;
