@@ -419,6 +419,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
   if (
     [
       'fv_player_bunny_stream_browser_media_tab',
+      'fv_flowplayer_cloudflare_stream_browser_media_tab',
       'fv_player_coconut_browser_media_tab',
       'fv_flowplayer_peertube_private_browser_media_tab',
       'fv_flowplayer_vimeo_browser_media_tab',
