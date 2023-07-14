@@ -193,7 +193,10 @@ Class FvPlayerTrackerWorker {
   function track() {
     $this->file = fopen( $this->cache_path."/".$this->cache_filename, 'r+');
 
-    if( $_REQUEST['user_id'] == 0 ) { // guest user
+    $options = get_option('fvwpflowplayer');
+    $guest_user_id = 0;
+
+    if( $_REQUEST['user_id'] == 0 && !empty($options['video_stats_enable_guest']) ) { // guest user
 
       if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
         $guest_user_id = (int) $_COOKIE['fv_player_stats_guest_user_id'];
@@ -208,13 +211,11 @@ Class FvPlayerTrackerWorker {
         // save cookie fo 1 year
         setcookie( 'fv_player_stats_guest_user_id', $last_guest_id, time() + 60 * 60 * 24 * 365, '/' );
       }
-    } else {
-      $guest_user_id = 0;
     }
 
     $this->guest_user_id = $guest_user_id;
 
-    if( ! $this->incrementCacheCounter() ){
+    if( ! $this->incrementCacheCounter() ) {
       file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
     }
 

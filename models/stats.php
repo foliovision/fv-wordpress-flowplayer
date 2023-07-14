@@ -138,6 +138,7 @@ class FV_Player_Stats {
   function options_html() {
     global $fv_fp;
     $fv_fp->_get_checkbox(__('Video Stats', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
+    $fv_fp->_get_checkbox(__('Track Guest Users', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Tracks also guest users using cookies.'), '');
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
@@ -399,27 +400,34 @@ class FV_Player_Stats {
   }
 
   public function get_top_user_stats( $metric, $range ) {
-    global $wpdb;
+    global $wpdb, $fv_fp;
 
     // dynamic interval based on range
     $interval = self::get_interval_from_range( $range );
+
+    $guest_stats = $fv_fp->_get_option('video_stats_enable_guest');
 
     $datasets = false;
     $top_ids_user = array();
     $top_ids_arr_user = array();
     $top_ids_guest = array();
     $top_ids_arr_guest = array();
+    $top_ids_results_user = array();
+    $top_ids_results_guest = array();
     $results_user = array();
     $results_guest = array();
+    $datasets_users = array();
+    $datasets_guests = array();
 
     if( $metric == 'play' ) { // play stats
       $top_ids_results_user = $this->top_ten_users_by_plays( $interval, 'user' );
-      $top_ids_results_guest = $this->top_ten_users_by_plays( $interval, 'guest' );
+      if( $guest_stats ) $top_ids_results_guest = $this->top_ten_users_by_plays( $interval, 'guest' );
     } else { // watch time stats
       $top_ids_results_user = $this->top_ten_users_by_watch_time( $interval, 'user' );
-      $top_ids_results_guest = $this->top_ten_users_by_watch_time( $interval, 'guest' );
+      if( $guest_stats ) $top_ids_results_guest = $this->top_ten_users_by_watch_time( $interval, 'guest' );
     }
 
+    // if both empty, return false
     if ( empty( $top_ids_results_user ) && empty( $top_ids_results_guest ) ) {
       return false;
     }
@@ -437,7 +445,7 @@ class FV_Player_Stats {
     }
 
     // guest users
-    if( !empty($top_ids_results_guest) ) {
+    if( $guest_stats && !empty($top_ids_results_guest) ) {
       $top_ids_arr_guest = array_values( $top_ids_results_guest );
       $top_ids_guest = implode( ',', array_values( $top_ids_arr_guest ) );
 
