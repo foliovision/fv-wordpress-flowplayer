@@ -52,6 +52,10 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     global $fv_fp, $s3Client;
 
     $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
+
+    $bucket = explode( ',', $bucket );
+    $bucket = $bucket[0];
+
     //$domain = $fv_fp->_get_option(array('digitalocean_spaces','space'));
 
     $output = $this->get_output();

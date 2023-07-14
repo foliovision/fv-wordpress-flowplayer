@@ -499,7 +499,7 @@ class FV_Player_Checker {
   public static function http_request( $sURL, $args ) {
     global $fv_wp_flowplayer_ver;
     
-    $args = wp_parse_args( $args, array( 'file' => false, 'size' => 4194304, 'quick_check' => false ) );
+    $args = wp_parse_args( $args, array( 'file' => false, 'size' => 8 * 1024 * 1024, 'quick_check' => false ) );
     extract($args);
     
     $iTimeout = ($quick_check) ? $quick_check : 20;

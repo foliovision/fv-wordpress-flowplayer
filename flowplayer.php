@@ -34,7 +34,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $fv_wp_flowplayer_ver;
-$fv_wp_flowplayer_ver = '7.9.3.26';
+
+$fv_wp_flowplayer_ver = '7.9.6';
 $fv_wp_flowplayer_core_ver = '7.2.14.12';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -128,6 +129,8 @@ include_once(dirname( __FILE__ ) . '/models/stats.php');
 include_once(dirname( __FILE__ ) . '/models/stats-export.php');
 
 include_once(dirname( __FILE__ ) . '/models/youtube.php');
+
+include_once(dirname( __FILE__ ) . '/models/lms-teaching.class.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 

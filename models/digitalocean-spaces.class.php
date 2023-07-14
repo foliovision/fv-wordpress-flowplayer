@@ -42,17 +42,43 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   function get_space() {
     global $fv_fp;
-    return $fv_fp->_get_option( array($this->key,'space' ) );
+    $space = $fv_fp->_get_option( array($this->key,'space' ) );
+
+    // If multiple DigitalOcean Spaces are configured, use the first one
+    $spaces = explode( ',', $space );
+    $space = $spaces[0];
+
+    return $space;
   }
 
   function get_domains() {
     global $fv_fp;
-    $space = $fv_fp->_get_option( array($this->key,'space' ) );
+    $spaces = $fv_fp->_get_option( array($this->key,'space' ) );
+    $spaces = explode( ',', $spaces );
+
     $endpoint = $this->get_endpoint();
-    if( $space && $endpoint ) {
-      return array( $space.'.'.$endpoint, $endpoint.'/'.$space );
+
+    $domains = array();
+
+    foreach ( $spaces as $space ) {
+      if( $space && $endpoint ) {
+        /**
+         * TODO: These two domains are really a problem. We do not store the endpoint for each Space, so here we just assume any.
+         *       It's used in case of redundant Spaces which are not properly defined yet.
+         */
+        $domains[] = $space . '.';
+        $domains[] = '/' . $space;
+
+        $domains[] = $space . '.' . $endpoint;
+        $domains[] = $endpoint . '/' . $space;
+      }
     }
-    return false;
+
+    if ( count( $domains ) ) {
+      return $domains;
+    } else {
+      return false;
+    }
   }
   
   function get_region() {
@@ -168,7 +194,10 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $sCredentialScope = $sDate."/".$endpoint."/s3/aws4_request"; //  todo: variable
     $sSignedHeaders = "host";
     $sXAMZCredential = urlencode( $key.'/'.$sCredentialScope);
-    
+
+    // Support DigitalOcean Spaces CDN
+    $url_components['host'] = str_replace( 'cdn.', '', $url_components['host'] );
+
     //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
     $sCanonicalRequest = "GET\n";
     $sCanonicalRequest .= $url_components['path']."\n";
