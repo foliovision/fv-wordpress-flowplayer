@@ -885,12 +885,12 @@ class FV_Player_Stats {
                 $user_data = get_userdata( intval($row['user_id']) );
 
                 if( $user_data === false ) {
-                  $datasets[$id]['name'] = 'unknown user';
+                  $datasets[$id]['name'] = 'Guest Users';
                 } else {
                   $datasets[$id]['name'] = $user_data->display_name;
                 }
               } else if( $type == 'guest') {
-                $datasets[$id]['name'] = 'guest ' . $row['guest_user_id'];
+                $datasets[$id]['name'] = 'Guest ' . $row['guest_user_id'];
               }
             }
           }
