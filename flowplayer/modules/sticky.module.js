@@ -4,26 +4,17 @@
     $playerDiv = $root.find('.fp-player'),
     sticky = $root.data("fvsticky"),
     globalSticky = false,
-    videoRatio = $root.data("ratio");
+    videoRatio = $root.find(".fp-ratio");
 
   api.is_sticky = false;
 
-  if (typeof(videoRatio) == "undefined") {
-    videoRatio = 0.5625;
-  }
-  if (flowplayer.conf.sticky_video == 1 && typeof(sticky) == "undefined") {
+  if (flowplayer.conf.sticky_video != 'off' && typeof(sticky) == "undefined") {
     globalSticky = true;
   }
   if (globalSticky || sticky) {
     if (flowplayer.support.firstframe) {
-      var stickyPlace = flowplayer.conf.sticky_place,
-        stickyWidth = flowplayer.conf.sticky_width;
+      var stickyPlace = flowplayer.conf.sticky_place;
 
-      if (stickyWidth == "") {
-        stickyWidth = 380;
-      }
-
-      var stickyHeight = stickyWidth * videoRatio;
       fv_player_sticky_video();
     } else {
       return;
@@ -51,7 +42,7 @@
 
      $window
       .on("resize", function() {
-        if( !is_big_enough() ) {
+        if( !is_big_enough() && flowplayer.conf.sticky_video != 'all' ) {
           if( api.is_sticky ) {
             fv_player_sticky_class_remove();
           }
@@ -60,7 +51,7 @@
 
       })
       .on("scroll", function() {
-        if( !is_big_enough() ) {
+        if( !is_big_enough() && flowplayer.conf.sticky_video != 'all' ) {
           if( api.is_sticky ) {
             fv_player_sticky_class_remove();
           }
@@ -98,9 +89,7 @@
         $root.find('div.fp-header').prepend('<a class="fp-sticky fp-icon"></a>');
       }
 
-      $playerDiv.css("width", stickyWidth);
-      $playerDiv.css("height", stickyHeight);
-      $playerDiv.css("max-height", stickyHeight);
+      $playerDiv.prepend( videoRatio.clone() );
 
       sanitize_parent_elements(true);
 
@@ -113,9 +102,8 @@
   function fv_player_sticky_class_remove() {
     $playerDiv.removeClass("is-sticky");
     $playerDiv.removeClass("is-sticky-" + stickyPlace);
-    $playerDiv.css("width", "");
-    $playerDiv.css("height", "");
-    $playerDiv.css("max-height", "");
+    $playerDiv.css("max-width", "");
+    $playerDiv.find( '.fp-ratio' ).remove();
     $playerDiv.parent(".flowplayer").removeClass("is-stickable");
 
     if( api.is_sticky ) {

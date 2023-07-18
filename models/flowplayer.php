@@ -257,7 +257,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $more           = (!empty($options['more']) ? $options['more'] : '');
     $default        = (!empty($options['default']) ? $options['default'] : reset($value_keys));
 
-    if (!$key || !$name || !$values) {
+    if (!$key || !$values) {
       throw new Exception('The "name", "key" and "values" options need to be set for _get_radio()!');
     }
 
@@ -662,9 +662,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
     
-    if( !isset( $conf['sticky_video'] ) ) $conf['sticky_video'] = 'false';
+    if( !isset( $conf['sticky_video'] ) ) $conf['sticky_video'] = 'off';
     if( !isset( $conf['sticky_place'] ) ) $conf['sticky_place'] = 'right-bottom';
     if( !isset( $conf['sticky_width'] ) ) $conf['sticky_width'] = '380';
+    if( !isset( $conf['sticky_width_mobile'] ) ) $conf['sticky_width_mobile'] = '100';
     
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
@@ -1415,6 +1416,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .flowplayer .fp-player .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
   
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
+
+    .flowplayer .fp-player.is-sticky { max-width: <?php echo intval( $this->_get_option('sticky_width') ); ?>px }
+    @media screen and ( max-width: 480px ) {
+      .flowplayer .fp-player.is-sticky { max-width: <?php echo intval( $this->_get_option('sticky_width_mobile') ); ?>% }
+    }
+
     <?php echo apply_filters('fv_player_custom_css',''); ?>
     <?php if( !$skip_style_tag ) : ?>
       </style>  
