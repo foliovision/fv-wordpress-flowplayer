@@ -319,14 +319,16 @@ class FV_Player_Stats {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
+    $guest_where = '';
 
     if( $user_type == 'user' ) {
       $user_id = 'user_id';
     } else {
       $user_id = 'guest_user_id';
+      $guest_where = 'AND guest_user_id > 0';
     }
 
-    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY $user_id ORDER BY sum(play) DESC LIMIT 10");
+    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $guest_where GROUP BY $user_id ORDER BY sum(play) DESC LIMIT 10");
 
     return $results;
   }
@@ -335,14 +337,16 @@ class FV_Player_Stats {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
+    $guest_where = '';
 
     if( $user_type == 'user' ) {
       $user_id = 'user_id';
     } else {
       $user_id = 'guest_user_id';
+      $guest_where = 'AND guest_user_id > 0';
     }
 
-    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY $user_id ORDER BY sum(seconds) DESC LIMIT 10");
+    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $guest_where GROUP BY $user_id ORDER BY sum(seconds) DESC LIMIT 10");
 
     return $results;
   }
@@ -862,12 +866,12 @@ class FV_Player_Stats {
                 $user_data = get_userdata( intval($row['user_id']) );
 
                 if( $user_data === false ) {
-                  $datasets[$id]['name'] = 'guest';
+                  $datasets[$id]['name'] = 'unknown user';
                 } else {
                   $datasets[$id]['name'] = $user_data->display_name;
                 }
               } else if( $type == 'guest') {
-                $datasets[$id]['name'] = 'guest' . $row['guest_user_id'];
+                $datasets[$id]['name'] = 'guest ' . ( $row['guest_user_id'] - 1 );
               }
             }
           }
