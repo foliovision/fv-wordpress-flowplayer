@@ -1,6 +1,15 @@
 <?php
 /* This file doesn't load WordPress, it simple increment counters for posts in wp-content/cache/fv-tracker/{tag}-{site id}.data */
 
+if( !defined('SHORTINIT') ) {
+  define('SHORTINIT',true);
+}
+
+// include wp-load.php
+if( file_exists('../../../../wp-load.php') ) {
+  require('../../../../wp-load.php');
+}
+
 Class FvPlayerTrackerWorker {
 
   private $wp_content = false;
@@ -10,6 +19,7 @@ Class FvPlayerTrackerWorker {
   private $post_id = false;
   private $player_id = false;
   private $user_id = 0;
+  private $guest_user_id = 0;
   private $watched = false;
   private $tag = false;
 
@@ -83,7 +93,7 @@ Class FvPlayerTrackerWorker {
         $data = false;
         if( $encoded_data ) {
           $data = json_decode( $encoded_data, true );
-  
+
           $json_error = json_last_error();
           if( $json_error !== JSON_ERROR_NONE ) {
             file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r')." JSON decode error:\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND ); // todo: remove
@@ -92,7 +102,7 @@ Class FvPlayerTrackerWorker {
           }
         }
 
-        if( !$data ) { 
+        if( !$data ) {
           $data = array();
         }
 
@@ -114,7 +124,7 @@ Class FvPlayerTrackerWorker {
                 // Add to the existing JSON data
                 $found = false;
                 foreach( $data as $index => $item ) {
-                  if( $item['video_id'] == $video_id && $item['post_id'] == $post_id && $item['player_id'] == $player_id && $item['user_id'] == $this->user_id ) {
+                  if( $item['video_id'] == $video_id && $item['post_id'] == $post_id && $item['player_id'] == $player_id && $item['user_id'] == $this->user_id  && $item['guest_user_id'] == $this->guest_user_id ) {
                     $data[$index]['seconds'] = round( $data[$index]['seconds'] + $seconds );
                     $found = true;
                   }
@@ -127,6 +137,7 @@ Class FvPlayerTrackerWorker {
                     'post_id'   => $post_id,
                     'player_id' => $player_id,
                     'user_id'   => $this->user_id,
+                    'guest_user_id' => $this->guest_user_id,
                     'seconds'   => round($seconds)
                   );
                 }
@@ -137,7 +148,7 @@ Class FvPlayerTrackerWorker {
         } else if ( 'play' === $this->tag ) {
           $found = false;
           foreach( $data as $index => $item ) {
-            if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id ) {
+            if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id && $item['guest_user_id'] == $this->guest_user_id ) {
               $data[$index]['play'] += 1;
               $found = true;
               break;
@@ -150,6 +161,7 @@ Class FvPlayerTrackerWorker {
               'post_id'   => $this->post_id,
               'player_id' => $this->player_id,
               'user_id'   => $this->user_id,
+              'guest_user_id' => $this->guest_user_id,
               'play'      => 1
             );
           }
@@ -181,7 +193,29 @@ Class FvPlayerTrackerWorker {
   function track() {
     $this->file = fopen( $this->cache_path."/".$this->cache_filename, 'r+');
 
-    if( ! $this->incrementCacheCounter() ){
+    $options = get_option('fvwpflowplayer');
+    $guest_user_id = 0;
+
+    if( $_REQUEST['user_id'] == 0 && !empty($options['video_stats_enable_guest']) ) { // guest user
+
+      if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
+        $guest_user_id = (int) $_COOKIE['fv_player_stats_guest_user_id'];
+      } else { // create new guest user id
+        $last_guest_id = get_option( 'fv_player_stats_last_guest_user_id', 0 );
+        $last_guest_id = $last_guest_id + 1;
+
+        $guest_user_id = $last_guest_id;
+
+        update_option( 'fv_player_stats_last_guest_user_id', $last_guest_id );
+
+        // save cookie fo 1 year
+        setcookie( 'fv_player_stats_guest_user_id', $last_guest_id, time() + 60 * 60 * 24 * 365, '/' );
+      }
+    }
+
+    $this->guest_user_id = $guest_user_id;
+
+    if( ! $this->incrementCacheCounter() ) {
       file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
     }
 

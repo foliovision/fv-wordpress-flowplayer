@@ -13,8 +13,10 @@ class FV_Player_Stats {
     global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
-    add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'options_html' ) );
+    add_action( 'admin_init', array( $this, 'register_meta_boxes' ), 9 );
+
     add_filter( 'fv_flowplayer_conf', array( $this, 'option' ) );
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
 
     if ( function_exists('wp_next_scheduled') ) {
@@ -79,6 +81,7 @@ class FV_Player_Stats {
       `id_player` INT(11) NOT NULL,
       `id_post` INT(11) NOT NULL,
       `user_id` INT(11) NOT NULL,
+      `guest_user_id` INT(11) NOT NULL,
       `date` DATE NULL DEFAULT NULL,\n";
 
     foreach( $this->get_stat_columns() AS $column ) {
@@ -90,7 +93,8 @@ class FV_Player_Stats {
       INDEX `id_video` (`id_video`),
       INDEX `id_player` (`id_player`),
       INDEX `id_post` (`id_post`),
-      INDEX `user_id` (`user_id`)
+      INDEX `user_id` (`user_id`),
+      INDEX `guest_user_id` (`guest_user_id`)
     ) " . $wpdb->get_charset_collate() . ";";
 
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -133,9 +137,27 @@ class FV_Player_Stats {
     return $conf;
   }
 
+  function register_meta_boxes() {
+    add_meta_box( 'fv_player_stats' , 'Video Stats', array( $this, 'options_html' ), 'fv_flowplayer_settings', 'normal', 'low' );
+  }
+
   function options_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Video Stats', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
+    ?>
+    <p><?php _e('Track user activity on your site. You can see the stats in the FV Player menu.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2">
+      <?php
+        $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
+        $fv_fp->_get_checkbox(__('Track Guest Users', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Tracks also guest users using cookies.'), '');
+      ?>
+      <tr>
+        <td colspan="4">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <a class="button fv-help-link" href="https://foliovision.com/player/analytics/user-stats" target="_blank">Help</a>
+        </td>
+      </tr>
+    </table>
+    <?php
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
@@ -211,6 +233,7 @@ class FV_Player_Stats {
           $player_id = intval($item['player_id']);
           $post_id = intval($item['post_id']);
           $user_id = intval($item['user_id']);
+          $guest_user_id = intval($item['guest_user_id']);
           $value = intval($item[$type]);
 
           if( $user_id ) {
@@ -234,7 +257,7 @@ class FV_Player_Stats {
             }
           }
 
-          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
 
           if( $existing ) {
             $wpdb->update(
@@ -242,13 +265,14 @@ class FV_Player_Stats {
               array(
                 $type => $value + $existing->{$type}, // update plays in db
               ),
-              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id ), // update by video id, date, player id, post id and user ID
+              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id, 'guest_user_id' => $guest_user_id ), // update by video id, date, player id, post id, user ID and guest user ID
               array(
                 '%d'
               ),
               array(
                 '%d',
                 '%s',
+                '%d',
                 '%d',
                 '%d'
               )
@@ -261,10 +285,12 @@ class FV_Player_Stats {
                 'id_player' => $player_id,
                 'id_post'   => $post_id,
                 'user_id'   => $user_id,
+                'guest_user_id' => $guest_user_id,
                 'date' => date_i18n( 'Y-m-d' ),
                 $type => $value
               ),
               array(
+                '%d',
                 '%d',
                 '%d',
                 '%d',
@@ -308,22 +334,38 @@ class FV_Player_Stats {
     }
   }
 
-  public function top_ten_users_by_plays( $interval ) {
+  public function top_ten_users_by_plays( $interval, $user_type = 'user' ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
+    $guest_where = '';
 
-    $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(play) DESC LIMIT 10");
+    if( $user_type == 'user' ) {
+      $user_id = 'user_id';
+    } else {
+      $user_id = 'guest_user_id';
+      $guest_where = 'AND guest_user_id > 0';
+    }
+
+    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $guest_where GROUP BY $user_id ORDER BY sum(play) DESC LIMIT 10");
 
     return $results;
   }
 
-  public function top_ten_users_by_watch_time( $interval ) {
+  public function top_ten_users_by_watch_time( $interval, $user_type = 'user' ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
+    $guest_where = '';
 
-    $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(seconds) DESC LIMIT 10");
+    if( $user_type == 'user' ) {
+      $user_id = 'user_id';
+    } else {
+      $user_id = 'guest_user_id';
+      $guest_where = 'AND guest_user_id > 0';
+    }
+
+    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $guest_where GROUP BY $user_id ORDER BY sum(seconds) DESC LIMIT 10");
 
     return $results;
   }
@@ -381,37 +423,74 @@ class FV_Player_Stats {
   }
 
   public function get_top_user_stats( $metric, $range ) {
-    global $wpdb;
+    global $wpdb, $fv_fp;
 
     // dynamic interval based on range
     $interval = self::get_interval_from_range( $range );
 
-    $datasets = false;
-    $top_ids = array();
-    $top_ids_arr = array();
+    $guest_stats = $fv_fp->_get_option('video_stats_enable_guest');
 
-    if( $metric == 'play' ) {
-      $top_ids_results = $this->top_ten_users_by_plays( $interval );
-    } else {
-      $top_ids_results = $this->top_ten_users_by_watch_time( $interval );
+    $datasets = false;
+    $top_ids_user = array();
+    $top_ids_arr_user = array();
+    $top_ids_guest = array();
+    $top_ids_arr_guest = array();
+    $top_ids_results_user = array();
+    $top_ids_results_guest = array();
+    $results_user = array();
+    $results_guest = array();
+    $datasets_users = array();
+    $datasets_guests = array();
+
+    if( $metric == 'play' ) { // play stats
+      $top_ids_results_user = $this->top_ten_users_by_plays( $interval, 'user' );
+      if( $guest_stats ) $top_ids_results_guest = $this->top_ten_users_by_plays( $interval, 'guest' );
+    } else { // watch time stats
+      $top_ids_results_user = $this->top_ten_users_by_watch_time( $interval, 'user' );
+      if( $guest_stats ) $top_ids_results_guest = $this->top_ten_users_by_watch_time( $interval, 'guest' );
     }
 
-    if( !empty($top_ids_results) ) {
-      $top_ids_arr = array_values( $top_ids_results );
-      $top_ids = implode( ',', array_values( $top_ids_arr ) );
-    } else {
+    // if both empty, return false
+    if ( empty( $top_ids_results_user ) && empty( $top_ids_results_guest ) ) {
       return false;
     }
 
-    if( $metric == 'play' ) {
-      $results = $wpdb->get_results( "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
-    } else {
-      $results = $wpdb->get_results( "SELECT date, user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids ) GROUP BY user_id, date", ARRAY_A );
+    // regular users
+    if( !empty($top_ids_results_user) ) {
+      $top_ids_arr_user = array_values( $top_ids_results_user );
+      $top_ids_user = implode( ',', array_values( $top_ids_arr_user ) );
+
+      if( $metric == 'play' ) {
+        $results_user = $wpdb->get_results( "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids_user ) GROUP BY user_id, date", ARRAY_A );
+      } else {
+        $results_user = $wpdb->get_results( "SELECT date, user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids_user ) GROUP BY user_id, date", ARRAY_A );
+      }
     }
 
-    if( !empty($results) ) {
-      $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, 'user', $metric );
+    // guest users
+    if( $guest_stats && !empty($top_ids_results_guest) ) {
+      $top_ids_arr_guest = array_values( $top_ids_results_guest );
+      $top_ids_guest = implode( ',', array_values( $top_ids_arr_guest ) );
+
+      if( $metric == 'play' ) {
+        $results_guest = $wpdb->get_results( "SELECT date, guest_user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND guest_user_id IN( $top_ids_guest ) GROUP BY guest_user_id, date", ARRAY_A );
+      } else {
+        $results_guest = $wpdb->get_results( "SELECT date, guest_user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND guest_user_id IN( $top_ids_guest ) GROUP BY guest_user_id, date", ARRAY_A );
+      }
     }
+
+    // process data for regular users
+    if( !empty($results_user) ) {
+      $datasets_users = $this->process_graph_data( $results_user, $top_ids_arr_user, $range, 'user', $metric );
+    }
+
+    // process data for guest users
+    if( !empty($results_guest) ) {
+      $datasets_guests = $this->process_graph_data( $results_guest, $top_ids_arr_guest, $range, 'guest', $metric );
+    }
+
+    // merge datasets
+    $datasets = array_merge( $datasets_users, $datasets_guests );
 
     return $datasets;
   }
@@ -770,7 +849,7 @@ class FV_Player_Stats {
     foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
         foreach( $results as $row) {
-          if( ( isset($row['id_video']) && $row['id_video'] == $id ) || ( isset($row['user_id']) && $row['user_id'] == $id ) ) {
+          if( ( isset($row['id_video']) && $row['id_video'] == $id ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) ) {
             if( !isset($datasets[$id]) ) {
               $datasets[$id] = array();
             }
@@ -806,11 +885,12 @@ class FV_Player_Stats {
                 $user_data = get_userdata( intval($row['user_id']) );
 
                 if( $user_data === false ) {
-                  $datasets[$id]['name'] = 'guest';
+                  $datasets[$id]['name'] = 'Guest Users';
                 } else {
                   $datasets[$id]['name'] = $user_data->display_name;
                 }
-
+              } else if( $type == 'guest') {
+                $datasets[$id]['name'] = 'Guest ' . $row['guest_user_id'];
               }
             }
           }
