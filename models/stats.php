@@ -890,7 +890,7 @@ class FV_Player_Stats {
                   $datasets[$id]['name'] = $user_data->display_name;
                 }
               } else if( $type == 'guest') {
-                $datasets[$id]['name'] = 'guest ' . ( $row['guest_user_id'] - 1 );
+                $datasets[$id]['name'] = 'guest ' . $row['guest_user_id'];
               }
             }
           }
