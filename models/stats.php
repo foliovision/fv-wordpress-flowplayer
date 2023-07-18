@@ -13,8 +13,10 @@ class FV_Player_Stats {
     global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 
-    add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'options_html' ) );
+    add_action( 'admin_init', array( $this, 'register_meta_boxes' ), 9 );
+
     add_filter( 'fv_flowplayer_conf', array( $this, 'option' ) );
+
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
 
     if ( function_exists('wp_next_scheduled') ) {
@@ -135,10 +137,27 @@ class FV_Player_Stats {
     return $conf;
   }
 
+  function register_meta_boxes() {
+    add_meta_box( 'fv_player_stats' , 'Video Stats', array( $this, 'options_html' ), 'fv_flowplayer_settings', 'normal', 'low' );
+  }
+
   function options_html() {
     global $fv_fp;
-    $fv_fp->_get_checkbox(__('Video Stats', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
-    $fv_fp->_get_checkbox(__('Track Guest Users', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Tracks also guest users using cookies.'), '');
+    ?>
+    <p><?php _e('Track user activity on your site. You can see the stats in the FV Player menu.', 'fv-wordpress-flowplayer'); ?></p>
+    <table class="form-table2">
+      <?php
+        $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
+        $fv_fp->_get_checkbox(__('Track Guest Users', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Tracks also guest users using cookies.'), '');
+      ?>
+      <tr>
+        <td colspan="4">
+          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <a class="button fv-help-link" href="https://foliovision.com/player/analytics/user-stats" target="_blank">Help</a>
+        </td>
+      </tr>
+    </table>
+    <?php
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
