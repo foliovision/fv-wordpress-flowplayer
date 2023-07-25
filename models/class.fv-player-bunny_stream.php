@@ -181,6 +181,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       $job_id = $job_details->guid;
     }
 
+    require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php' );
     $api = new FV_Player_Bunny_Stream_API();
     $job = $api->api_call( 'https://video.bunnycdn.com/library/' . $fv_fp->_get_option( array(
         'bunny_stream',
@@ -272,6 +273,8 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
     $body = array(
       'title' => $target_name,
     );
+
+    require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php');
 
     $api = new FV_Player_Bunny_Stream_API();
 
@@ -449,6 +452,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
         // check if we have this job in the DB and if not, add it there
         if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " . $this->table_name . " WHERE job_id = %s", $job_id ) ) ) {
           // get info about this job first, so we can set up DB data correctly
+          require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php' );
           $api = new FV_Player_Bunny_Stream_API();
           $job = $api->api_call( 'https://video.bunnycdn.com/library/' . $fv_fp->_get_option( array(
               'bunny_stream',

@@ -16,7 +16,9 @@ class FV_Player_Bunny_Stream_Wizard_API_Key extends FV_Player_Wizard_Step_Base_C
     )
   );
 
-  public function __construct() {}
+  public function __construct() {
+    require_once( dirname(__FILE__).'/../class.fv-player-bunny_stream-api.php' );
+  }
 
   function display() {
     ?>
