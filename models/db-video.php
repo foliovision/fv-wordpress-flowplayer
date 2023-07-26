@@ -209,8 +209,8 @@ class FV_Player_Db_Video {
   public function getTitleFromSrc() {
     $title = flowplayer::get_title_from_src($this->getSrc());
 
-    $title = apply_filters( 'fv_flowplayer_caption_src', $title , $this->getSrc() );
-    $title = apply_filters( 'fv_flowplayer_title_src', $title , $this->getSrc() );
+    $title = apply_filters( 'fv_flowplayer_caption_src', $title , $this->getSrc(), $this );
+    $title = apply_filters( 'fv_flowplayer_title_src', $title , $this->getSrc(), $this );
 
     return urldecode($title);
   }
