@@ -215,6 +215,16 @@ if ( ! defined( 'ABSPATH' ) ) {
       '#7DD181',
       '#914D76',
       '#08415C',
+      '#F2B705',
+      '#8C9EFF',
+      '#FF8C9E',
+      '#5CFFB8',
+      '#FF5C5C',
+      '#5CFFD8',
+      '#FF5C8C',
+      '#5C8CFF',
+      '#5CFF5C',
+      '#8C5CFF',
     ];
 
     var i = 0;
