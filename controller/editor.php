@@ -537,18 +537,78 @@ function fv_player_splashcreen_action() {
     );
   }
 
-  header('Content-Type: application/json');      
+  header('Content-Type: application/json');
   echo json_encode($jsonReturn);
 
-  wp_die(); 
+  wp_die();
 }
 
 
 
 
-/*
-Elementor support
-*/
+add_filter( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9, 3 );
+
+/**
+ * Convert shortcodes and links to DB on save
+ *
+ * @param int $post_id
+ * @param WP_Post $post
+ * @param bool $update
+ *
+ * @return void
+ */
+function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
+  global $wp, $wp_embed, $fv_fp, $FV_Player_Shortcode2Database_Conversion;
+
+  $is_classic_editor_save = !empty($_POST['action']) && $_POST['action'] === 'editpost' && !empty($_POST['post_ID']) && $_POST['post_ID'] == $post_id;
+  $is_gutenberg_post_save = !empty($wp->query_vars['rest_route']) && $wp->query_vars['rest_route'] == '/wp/v2/posts/'.$post_id;
+
+  if( !$is_classic_editor_save && !$is_gutenberg_post_save ) {
+    return;
+  }
+
+  // check if option is enabled
+  if( !$fv_fp->_get_option('convert_db_save') ) return;
+
+  // ignore revision
+  if ( wp_is_post_revision( $post_id ) ) return;
+
+  // ignore trash
+  if ( $post->post_status === 'trash' ) return;
+
+  $new_content = $post->post_content;
+
+  // if( is_serialized($new_content) ) return; // TODO: is something serializing content?
+
+  // convert links to embed
+  $new_content = $wp_embed->autoembed( $new_content );
+
+  // convert iframe/video tags to src shortcodes
+  $new_content = fv_player_handle_video_tags($new_content);
+  $new_content = fv_player_handle_youtube_links($new_content);
+  $new_content = fv_player_handle_vimeo_links($new_content);
+
+  $post->post_content = $new_content;
+
+  $FV_Player_Shortcode2Database_Conversion->set_live = true;
+
+  // convert src shortcodes to db
+  $new_content_data = $FV_Player_Shortcode2Database_Conversion->convert_one($post);
+  if( $new_content_data['content_updated'] ) {
+    $new_content = $new_content_data['new_content'];
+  }
+
+  // remove current action to prevent infinite loop when using wp_update_post
+  remove_action( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9 );
+  wp_update_post( array( 'ID' => $post->ID, 'post_content' => $new_content ) );
+}
+
+
+
+
+/**
+ * Elementor support
+ */
 add_action( 'elementor/editor/wp_head', 'fv_player_shortcode_editor_scripts_enqueue' );
 add_action( 'elementor/editor/wp_head', 'fv_wp_flowplayer_edit_form_after_editor' );
 add_action( 'elementor/editor/wp_head', 'flowplayer_prepare_scripts' );

@@ -41,6 +41,8 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'playlist',
       'caption',
       'subtitles',
+      'transcript',
+      'original_formatting',
       'ab',
       'chapters',
       'controlbar',
@@ -184,8 +186,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     $atts = shortcode_parse_atts( trim(rtrim($shortcode,']')) );
     $import_video_atts = array();
     $import_player_atts = array();
+    $errors = array();
 
     $import_atts = array();
+    $errors = array();
 
     unset( $atts[0] ); // remove [fvplayer or [flowplayer
 
@@ -311,6 +315,19 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
               $video_index++;
             }
 
+          } else if(strcmp( $player_att, 'transcript' ) == 0) { // transcript text
+            $transcript_text = $import_atts[$player_att];
+            if( !empty($transcript_text) ) {
+              $import_video_atts[$video_index]['meta'][] = array( 'meta_key' => 'transcript_text', 'meta_value' => $transcript_text );
+            }
+
+          } else if(strcmp( $player_att, 'original_formatting' ) == 0) { // transcript original formatting
+            $transcript_original_formatting = $import_atts[$player_att];
+
+            if( $transcript_original_formatting === 'true' ) {
+              $import_video_atts[$video_index]['meta'][] = array( 'meta_key' => 'transcript_original_formatting', 'meta_value' => $transcript_original_formatting );
+            }
+
           } else if(strcmp( $player_att, 'ab' ) == 0) { // subtitles
             if( $import_atts[$player_att] == 'true' ) {
               $import_player_atts[$player_att] = 'on';
@@ -352,7 +369,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       $import_player_atts['status'] = 'published';
 
       // add date_created
-      $import_player_atts['date_created'] = $post->post_date_gmt;
+      $import_player_atts['date_created'] = strtotime($post->post_date_gmt) > 0 ? $post->post_date_gmt : current_time( 'mysql' );
 
       // add player_name
       // $import_player_atts['player_name'] = 'player_name';
@@ -391,7 +408,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         $output_msg = "Would create new FV Player";
       }
     }
-
+    
     $type = $post->post_type;
     if( $meta_key ) {
       $type .= '<br />meta_key: <code>'.$meta_key.'</code>';
@@ -414,4 +431,5 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
 }
 
-new FV_Player_Shortcode2Database_Conversion;
+global $FV_Player_Shortcode2Database_Conversion;
+$FV_Player_Shortcode2Database_Conversion = new FV_Player_Shortcode2Database_Conversion;
