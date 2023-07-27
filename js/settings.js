@@ -1,4 +1,6 @@
 jQuery(function() {
+  var is_saving = false;
+
   function show_popup(message, bgColor) {
     var popup = jQuery('<div>').text(message).css('background-color', bgColor);
     jQuery('#fv-player-popup-container').empty().append(popup).fadeIn();
@@ -10,6 +12,12 @@ jQuery(function() {
 
   jQuery('.fv-wordpress-flowplayer-save').on('click', function(e) {
     e.preventDefault();
+
+    if (is_saving) {
+      return false;
+    }
+
+    is_saving = true;
 
     var $this = jQuery(this),
       $postbox = $this.closest('.postbox'),
