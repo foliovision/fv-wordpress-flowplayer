@@ -739,7 +739,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       unset($aNewOptions['fv-wp-flowplayer-submit']);
     }
 
-    $sKey = $is_ajax && !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
+    $sKey = !$is_ajax && !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
 
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
