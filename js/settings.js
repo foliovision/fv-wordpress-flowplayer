@@ -1,5 +1,6 @@
 jQuery(function() {
-  jQuery('.fv-wordpress-flowplayer-save').on('click', function() {
+  jQuery('.fv-wordpress-flowplayer-save').on('click', function(e) {
+    e.preventDefault();
 
     var $this = jQuery(this),
       $postbox = $this.closest('.postbox'),
@@ -18,14 +19,13 @@ jQuery(function() {
         success: function(data) {
           // get new postbox
           var $new = jQuery(data).find('#' + $postbox.attr('id'));
-
           // replace old postbox with new one
           $postbox.replaceWith($new);
-
           return false;
         },
         error: function(data) {
           alert('Error: Cannot save settings.');
+          return false;
         }
       });
   });
