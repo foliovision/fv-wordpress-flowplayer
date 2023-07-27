@@ -3,7 +3,7 @@
 if( !class_exists('FV_Player_DigitalOcean_Spaces') ) :
 
 class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
-  
+
   function __construct() {
 
     if ( ! defined( 'ABSPATH' ) ) {
@@ -12,7 +12,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
     // TODO: What if FV Player is not yet loaded?
     parent::__construct( array( 'key' => 'digitalocean_spaces', 'title' => 'DigitalOcean Spaces') );
-    
+
     // we use priority of 9 to make sure it's loaded before FV Player Pro would load it
     add_action( 'plugins_loaded', array( $this, 'include_dos_media_browser' ), 9 );
     add_action( 'admin_init', array( $this, 'remove_fv_player_pro_dos' ), 21 );
@@ -25,17 +25,17 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       include( dirname( __FILE__ ) . '/digitalocean-spaces-browser.class.php' );
     }
   }
-  
+
   function get_endpoint() {
     global $fv_fp;
     $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
-    
+
     if( count($parsed) == 1 && !empty($parsed['path']) ) { // for input like "region.digitaloceanspaces.com" it returns it as path, not realizing it's the hostname
       return $parsed['path'];
-      
+
     } else if( !empty($parsed['host']) ) {
       return $parsed['host'];
-      
+
     }
     return false;
   }
@@ -80,7 +80,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       return false;
     }
   }
-  
+
   function get_region() {
     $parts = explode( '.', $this->get_endpoint() );
     return $parts[0];
@@ -96,7 +96,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
    */
   function migrate_fv_player_pro_dos() {
     $option = get_option('fvwpflowplayer');
-    
+
     $found_anything = false;
 
     global $fv_fp;
@@ -112,19 +112,19 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
       if( $value = $fv_fp->_get_option( array( 'pro', 'digitalocean_spaces_'.$key ) ) ) {
         if( empty($option['digitalocean_spaces']) ) $option['digitalocean_spaces'] = array();
-      
+
         $option['digitalocean_spaces'][$key] = $value;
 
         $found_anything = true;
       }
     }
-    
+
     if( $found_anything ) {
       update_option('fvwpflowplayer', $option);
     }
 
   }
-  
+
   function options() {
     // TODO: Fix width
     // TODO: Add custom domain for CDN
@@ -153,7 +153,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
       ?>
       <tr>
         <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" style="margin-top: 2ex;"/>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
         </td>
       </tr>
     </table>
@@ -162,9 +162,9 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   function remove_fv_player_pro_dos() {
     // remove the legacy settings box in FV Player Pro
-    remove_meta_box('fv_player_pro_digitalocean_spaces', 'fv_flowplayer_settings_hosting', 'normal');    
+    remove_meta_box('fv_player_pro_digitalocean_spaces', 'fv_flowplayer_settings_hosting', 'normal');
   }
-  
+
   function secure_link( $url, $secret, $ttl = false ) {
 
     if( stripos($url,'X-Amz-Expires') !== false ) return $url;
@@ -175,19 +175,19 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $endpoint = $fv_fp->_get_option( array($this->key,'endpoint' ) );
     $endpoint = explode('.',$endpoint);
     $endpoint = $endpoint[0];
-    
+
     $time = $ttl ? $ttl : apply_filters('fv_player_secure_link_timeout', 900);
 
     $url_components = parse_url($url);
 
     $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
-  
+
     $url_components['path'] = rawurlencode($url_components['path']);
     $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
     $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
     $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
-    $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
-    $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
+    $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);
+    $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);
 
     $sXAMZDate = gmdate('Ymd\THis\Z');
     $sDate = gmdate('Ymd');
@@ -198,29 +198,29 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     // Support DigitalOcean Spaces CDN
     $url_components['host'] = str_replace( 'cdn.', '', $url_components['host'] );
 
-    //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
+    //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
     $sCanonicalRequest = "GET\n";
     $sCanonicalRequest .= $url_components['path']."\n";
     $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
-    $sCanonicalRequest .= "host:".$url_components['host']."\n";        
+    $sCanonicalRequest .= "host:".$url_components['host']."\n";
     $sCanonicalRequest .= "\n$sSignedHeaders\n";
     $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
-    
+
     //  2. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
     $sStringToSign = "AWS4-HMAC-SHA256\n";
     $sStringToSign .= "$sXAMZDate\n";
     $sStringToSign .= "$sCredentialScope\n";
     $sStringToSign .= hash('sha256',$sCanonicalRequest);
-    
+
     //  3. http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
     $sSignature = hash_hmac('sha256', $sDate, "AWS4".$secret, true );
     $sSignature = hash_hmac('sha256', $endpoint, $sSignature, true );  //  todo: variable
     $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
     $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
     $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
-            
-    //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html        
-    $url .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";        
+
+    //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html
+    $url .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";
     $url .= "&X-Amz-Credential=$sXAMZCredential";
     $url .= "&X-Amz-Date=$sXAMZDate";
     $url .= "&X-Amz-Expires=$time";

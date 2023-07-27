@@ -2209,6 +2209,9 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
     wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
     ?>
+
+  <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
+
   </form>
 
 </div>
