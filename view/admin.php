@@ -898,7 +898,7 @@ function fv_flowplayer_admin_popups(){
                       	</tr>
                         <tr>
                         	<td><label><?php _e('Custom<br />CSS', 'fv-wordpress-flowplayer'); ?>:</label></td>
-                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]' placeholder='.fv_player_popup-<?php echo $key; ?> { }'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '' ); ?></textarea></td>
+                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '.wpfp_custom_popup .fv_player_popup-' . $key . ' { }' ); ?></textarea></td>
                       	</tr>
                       </table>
                     </td>
@@ -1641,8 +1641,19 @@ function fv_flowplayer_admin_skin_sticky() {
 ?>
   <p><?php _e('This feature lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-    <?php $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'sticky_video'); ?>
-    <tr>
+    <?php
+    $fv_fp->_get_radio( array(
+      'key' => 'sticky_video',
+      'name' => __('', 'fv-wordpress-flowplayer'),
+      'style' => 'columns',
+      'values' => array(
+        'off'     => 'Off',
+        'desktop' => 'Desktop',
+        'all'     => 'Desktop and Mobile'
+      ),
+    ) );
+    ?>
+    <tr>  
       <td><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="sticky_place" name="sticky_place">
@@ -1654,10 +1665,21 @@ function fv_flowplayer_admin_skin_sticky() {
       </td>
     </tr>
     <tr>
-      <td><label for="sticky_width"><?php _e('Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td><label for="sticky_width"><?php _e('Desktop Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
       <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
     </tr>
-
+    <?php
+	  $fv_fp->_get_select(
+			__('Mobile Player Width', 'fv-wordpress-flowplayer'),
+			'sticky_width_mobile',
+			false,
+			false,
+			array(
+				'100' => '100%',
+				'75'  => '75%',
+				'50'  => '50%'
+			)
+		); ?>
 
     <tr>
       <td colspan="2">

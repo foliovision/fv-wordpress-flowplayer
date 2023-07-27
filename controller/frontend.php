@@ -427,9 +427,8 @@ function flowplayer_prepare_scripts() {
 
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
-    $aConf['sticky_width'] = $fv_fp->_get_option('sticky_width');
-    $aConf['sticky_min_width'] = intval( apply_filters( 'fv_player_sticky_min_width', 1020 ) );
-
+    $aConf['sticky_min_width'] = intval( apply_filters( 'fv_player_sticky_desktop_min_width', 1020 ) );
+       
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {
       if( get_post_meta($post->ID, 'fv_player_mobile_native_fullscreen', true) ) $aConf['mobile_native_fullscreen'] = true;
@@ -437,9 +436,9 @@ function flowplayer_prepare_scripts() {
     }
 
     if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.2.3', true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.4.10', true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.2.3';
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.4.10';
 
     $dashjs_version = '3.2.2-mod';
 
