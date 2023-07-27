@@ -39,10 +39,12 @@ jQuery(function() {
           // replace old postbox with new one
           $postbox.replaceWith($new);
           show_popup('Settings saved', 'green');
-          return false;
         },
         error: function(data) {
           show_popup('Error saving settings', 'red');
+        },
+        complete: function() {
+          is_saving = false;
           return false;
         }
       });
