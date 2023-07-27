@@ -829,8 +829,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public function _set_option($key, $value) {
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
-    // TODO: key can be an array
-    $aNewOptions = array_merge($aOldOptions,array($key => $value));
+    if( ! is_array($key) ) {
+      $aNewOptions = array_merge($aOldOptions,array($key => $value));
+    } else {
+      $aNewOptions = $aOldOptions;
+
+      if( !isset($aNewOptions[$key[0]]) || !is_array($aNewOptions[$key[0]]) ) {
+        $aNewOptions[$key[0]] = array();
+      }
+
+      $aNewOptions[$key[0]][$key[1]] = $value;
+    }
+
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->_get_conf();
