@@ -136,7 +136,7 @@ function fv_flowplayer_admin_amazon_options() {
           <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
           <?php
           $can_use_aws_sdk = version_compare(phpversion(),'7.3.5') != -1;
-          
+
           $fv_fp->_get_checkbox( array(
             'name' => __('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)',
             'key' => 's3_browser',
@@ -919,7 +919,8 @@ function fv_flowplayer_admin_popups(){
       </tr>
       <tr>
         <td>
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <!-- <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" /> -->
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#">Save</a>
           <input type="button" value="<?php _e('Add more Popups', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-popups-add" />
         </td>
       </tr>
