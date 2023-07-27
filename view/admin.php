@@ -2214,6 +2214,8 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
   </form>
 
+  <div id="fv-player-popup-container"></div>
+
 </div>
 <script type="text/javascript" >
   function flowplayer_conversion_script() {

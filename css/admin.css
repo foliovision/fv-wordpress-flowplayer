@@ -46,15 +46,15 @@
 .fv-wp-fp-hidden { display: none; }
 .fv-wp-flowplayer-notice-parsed .row { text-align: left; border-bottom: 1px solid lightgray; border-right: 1px solid lightgray; border-left: 1px solid lightgray; padding-left: 5px; font-size: 12px; clear: both; }
 .fv-wp-flowplayer-notice-parsed .close { height: 0px; }
-.fv-wp-flowplayer-notice-parsed .value { border-left: 1px solid lightgray; display: inline-block; float: right; padding-left: 5px; width: 270px; /*height: 21px; overflow: hidden;*/ }	
-.fv-wp-flowplayer-notice-parsed.indent { margin-left: 10px; }	
+.fv-wp-flowplayer-notice-parsed .value { border-left: 1px solid lightgray; display: inline-block; float: right; padding-left: 5px; width: 270px; /*height: 21px; overflow: hidden;*/ }
+.fv-wp-flowplayer-notice-parsed.indent { margin-left: 10px; }
 .fv-wp-flowplayer-notice-parsed.level-1 { background: #f8f8f8; }
-.fv-wp-flowplayer-notice-parsed.level-2 { background: #f0f0f0; }	
-.fv-wp-flowplayer-notice-parsed.level-3 { background: #e8e8e8; }	
-.fv-wp-flowplayer-notice-parsed.level-4 { background: #e0e0e0; }	
-.fv-wp-flowplayer-notice-parsed.level-5 { background: #d8d8d8; }	
-.fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }	
-.fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }		
+.fv-wp-flowplayer-notice-parsed.level-2 { background: #f0f0f0; }
+.fv-wp-flowplayer-notice-parsed.level-3 { background: #e8e8e8; }
+.fv-wp-flowplayer-notice-parsed.level-4 { background: #e0e0e0; }
+.fv-wp-flowplayer-notice-parsed.level-5 { background: #d8d8d8; }
+.fv-wp-flowplayer-notice-parsed.level-6 { background: #d0d0d0; }
+.fv-wp-flowplayer-notice-parsed.level-7 { background: #c8c8c8; }
 .mail-content-details { height: 200px; overflow: auto; width: 100%; }
 .fv-player-interface-form-group td { width:50%; }
 
@@ -103,7 +103,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   padding-top:0!important;
 }
 #fv-player-email_lists-settings select {
-  width: 95%; 
+  width: 95%;
 }
 
 .fv-nav-tab-wrapper {
@@ -193,4 +193,16 @@ Brizy editor support
 */
 .brz-ed .brz-blocked .flowplayer, .brz-ed .brz-blocked .fp-playlist-external {
   pointer-events: all;
+}
+
+/*
+Popup
+*/
+#fv-player-popup-container {
+  position: fixed; z-index: 99;
+  top: 60px; right: 5px;
+  width: 200px;
+  border: 1px solid #000;
+  display: none;
+  font-size: 16px;
 }

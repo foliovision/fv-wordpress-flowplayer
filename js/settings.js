@@ -1,4 +1,13 @@
 jQuery(function() {
+  function show_popup(message, bgColor) {
+    var popup = jQuery('<div>').text(message).css('background-color', bgColor);
+    jQuery('#fv-player-popup-container').empty().append(popup).fadeIn();
+
+    setTimeout(function() {
+      jQuery('#fv-player-popup-container').fadeOut();
+    }, 3000);
+  }
+
   jQuery('.fv-wordpress-flowplayer-save').on('click', function(e) {
     e.preventDefault();
 
@@ -21,10 +30,11 @@ jQuery(function() {
           var $new = jQuery(data).find('#' + $postbox.attr('id'));
           // replace old postbox with new one
           $postbox.replaceWith($new);
+          show_popup('Settings saved', 'green');
           return false;
         },
         error: function(data) {
-          alert('Error: Cannot save settings.');
+          show_popup('Error saving settings', 'red');
           return false;
         }
       });
