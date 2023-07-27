@@ -1,74 +1,32 @@
 jQuery(function() {
   jQuery('.fv-wordpress-flowplayer-save').on('click', function() {
+
     var $this = jQuery(this),
       $postbox = $this.closest('.postbox'),
-      $inputs = $postbox.find('input, select, textarea'),
-      formData  = {}; // settings object that we need to assemble
+      serialized = jQuery($postbox).find(':input').serializeArray();
 
-      // Iterate inputs
-      $inputs.each(function(i, input) {
+      // add 'fv-wp-flowplayer-submit-ajax' to serialized data
+      serialized.push({name: 'fv-wp-flowplayer-submit-ajax', value: 'fv-wp-flowplayer-submit-ajax'});
 
-        var $input = jQuery(input),
-          name = $input.attr('name'),
-          value = $input.val(),
-          type = $input.attr('type');
+      // add nonce 'fv_flowplayer_settings_ajax_nonce' to serialized data
+      serialized.push({name: 'fv_flowplayer_settings_ajax_nonce', value: jQuery('#fv_flowplayer_settings_ajax_nonce').val()});
 
-        if ( name && value !== undefined ) {
-          // handle checkboxes and radio buttons
-          if ( type === 'checkbox' || type === 'radio' && ! $input.is(':checked') ) {
-            // skip unchecked checkboxes and radio buttons
-            return;
-          }
+      jQuery.ajax({
+        url: window.location.href,
+        type: 'POST',
+        data: serialized,
+        success: function(data) {
+          // get new postbox
+          var $new = jQuery(data).find('#' + $postbox.attr('id'));
 
-          var keys = name.match(/[^\[\]]+/g);
-          var currentObj = formData;
+          // replace old postbox with new one
+          $postbox.replaceWith($new);
 
-          // we need to create same structure as in $_POST
-          for (var i = 0; i < keys.length; i++) {
-            // debugger; // eslint-disable-line
-            var key = keys[i];
-
-            if (i === keys.length - 1) {
-              // last key, handle arrays or regular key-value pairs
-              if (/\[\]$/.test(key)) {
-                // handle arrays (e.g., popups[])
-                key = key.replace(/\[\]$/, '');
-                currentObj[key] = currentObj[key] || [];
-                currentObj[key].push(value);
-              } else {
-                // Handle regular key-value pairs
-                currentObj[key] = value;
-              }
-            } else {
-              // create nested objects if they don't exist yet
-              if (!currentObj[key]) {
-                // check if the next key is an array index (e.g., popups[1][html])
-                currentObj[key] = /^\d+$/.test(keys[i + 1]) ? [] : {};
-              } else if (currentObj[key] && !Array.isArray(currentObj[key])) {
-                // convert to array if the key already exists
-                currentObj[key] = [currentObj[key]];
-              }
-
-            }
-          }
+          return false;
+        },
+        error: function(data) {
+          alert('Error: Cannot save settings.');
         }
       });
-
-      // Send to server
-      jQuery.post( window.location.href, formData , function( data ) {
-        console.log( data );
-
-        // replace current psotbox with new one
-
-        var $new_postbox = jQuery(data).find('#' + $postbox.attr('id'));
-
-        $postbox.replaceWith($new_postbox);
-
-      }).fail(function() {
-        alert("Error: Failed to save settings");
-      }).always(function() {
-        console.log( "complete" );
-      });
-
   });
 });

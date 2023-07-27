@@ -2206,6 +2206,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     </div>
     <?php
     wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' );
+    wp_nonce_field( 'fv_flowplayer_settings_ajax_nonce', 'fv_flowplayer_settings_ajax_nonce', false );
     wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
     wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
     ?>
