@@ -33,6 +33,9 @@ jQuery(function() {
     // add nonce 'fv_flowplayer_settings_ajax_nonce' to serialized data
     serialized.push({name: 'fv_flowplayer_settings_ajax_nonce', value: jQuery('#fv_flowplayer_settings_ajax_nonce').val()});
 
+    // add postbox id to serialized data
+    serialized.push({name: 'postbox_id', value: $postbox.attr('id')});
+
     // use custom action if not reloading
     if( !reload ) {
       serialized.push({name: 'action', value: 'fv_flowplayer_settings_save'});
