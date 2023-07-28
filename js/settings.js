@@ -40,6 +40,11 @@ jQuery(function() {
       return false;
     }
 
+    // save custom CSS
+    if( window.fv_player_settings_custom_css_codeMirror ) {
+      window.fv_player_settings_custom_css_codeMirror.codemirror.save();
+    }
+
     is_saving = true;
 
     var $this = jQuery(this),
