@@ -132,6 +132,7 @@ function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
  *  Saving settings
  */
 add_action('admin_init', 'fv_player_settings_save', 9);
+add_action('wp_ajax_fv_flowplayer_settings_save', 'fv_player_settings_save', 9);
 
 function fv_player_settings_save() {
   //  Trick media uploader to show video only, while making sure we use our custom type; Also save options
@@ -147,6 +148,10 @@ function fv_player_settings_save() {
   if( isset($_POST['fv-wp-flowplayer-submit']) || isset($_POST['fv-wp-flowplayer-submit-ajax']) ) {
 
     if( isset($_POST['fv-wp-flowplayer-submit-ajax']) ) {
+      if( wp_doing_ajax() ) {
+        unset($_POST['action']);
+      }
+
      if(! wp_verify_nonce( $_POST['fv_flowplayer_settings_ajax_nonce'], 'fv_flowplayer_settings_ajax_nonce' ) ) {
         wp_die('Security check failed');
      }
