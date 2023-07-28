@@ -65,6 +65,14 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
     !flowplayer.support.iOS && flowplayer.support.browser.safari && parseInt(flowplayer.support.browser.version) >= 8
   ) {
     flowplayer.conf.hlsjs.safari = true;
+
+    /**
+     * Some streams fail to start on a single click, seems like we could trap it using the 
+     * hlsBufferFlushing event or hlsFragParsingInitSegment if it occurs multiple times.
+     */
+    if ( flowplayer.support.browser.safari && parseFloat( flowplayer.support.browser.version ) >= 16.5 ) {
+      flowplayer.conf.hlsjs.safari = false;
+    }
   }
   
   flowplayer.support.fvmobile = !!( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android );
