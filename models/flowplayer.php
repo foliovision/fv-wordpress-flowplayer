@@ -731,7 +731,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   public function _set_conf( $aNewOptions ) {
-    $sKey = !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
+    $is_ajax = isset($aNewOptions['fv-wp-flowplayer-submit-ajax']);
+
+    if( $is_ajax ) {
+      unset($aNewOptions['fv-wp-flowplayer-submit-ajax']);
+      unset($aNewOptions['fv_flowplayer_settings_ajax_nonce']);
+    } else {
+      unset($aNewOptions['fv-wp-flowplayer-submit']);
+    }
+
+    $sKey = !$is_ajax && !empty($aNewOptions['key']) ? trim($aNewOptions['key']) : false;
 
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
@@ -779,17 +788,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
 
-    if( !isset($aNewOptions['pro']) || !is_array($aNewOptions['pro']) ) {
-      $aNewOptions['pro'] = array();
-    }
-
+    // add pro options if they are not set
     if( !isset($aOldOptions['pro']) || !is_array($aOldOptions['pro']) ) {
       $aOldOptions['pro'] = array();
     }
 
-    $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
-    $aNewOptions = array_merge($aOldOptions,$aNewOptions);
+    // merge pro options
+    if( isset($aNewOptions['pro']) ) $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
 
+    // merge the rest of the options
+    $aNewOptions = array_merge($aOldOptions,$aNewOptions);
 
     // Ensure only one of "Load FV Flowplayer JS everywhere" and
     // "Optimize FV Flowplayer JS loading" can be enabled
@@ -822,7 +830,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public function _set_option($key, $value) {
     $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
-    $aNewOptions = array_merge($aOldOptions,array($key => $value));
+    if( ! is_array($key) ) {
+      $aNewOptions = array_merge($aOldOptions,array($key => $value));
+    } else {
+      $aNewOptions = $aOldOptions;
+
+      if( !isset($aNewOptions[$key[0]]) || !is_array($aNewOptions[$key[0]]) ) {
+        $aNewOptions[$key[0]] = array();
+      }
+
+      $aNewOptions[$key[0]][$key[1]] = $value;
+    }
+
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->_get_conf();

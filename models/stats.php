@@ -152,7 +152,7 @@ class FV_Player_Stats {
       ?>
       <tr>
         <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
           <a class="button fv-help-link" href="https://foliovision.com/player/analytics/user-stats" target="_blank">Help</a>
         </td>
       </tr>

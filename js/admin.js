@@ -2,7 +2,7 @@
 
 (function ($) {
   ('use strict');
-  
+
   /*
    * Skin live preview
    */
@@ -14,7 +14,7 @@
       parseInt(result[3], 16)
     ] : null;
   }
-  
+
   function rgb2hex(rgb){
     rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
     return (rgb && rgb.length === 4) ? "#" +
@@ -23,18 +23,18 @@
       ("0" + parseInt(rgb[3],10).toString(16)).slice(-2).toUpperCase() : '';
   }
 
-  
+
   function sanitizeCSS(val) {
     if (val.indexOf('#rgba') > -1) {
       val = val.replace(/#rgba/g, 'rgba');
     } else if (val.indexOf('#transparent') > -1) {
       val = val.replace(/#transparent/g, 'transparent');
     }
-    
+
     if( val.match(/# !/) ) {
       val = false;
     }
-    
+
     return val;
   }
 
@@ -56,14 +56,14 @@
         $('.flowplayer').removeClass( 'skin-'+$(this).val() );
       });
       $('.flowplayer').addClass( 'skin-'+$(this).val() );
-      
+
       // hide currently visible settings tables
       $('#skin-Custom-settings, #skin-Slim-settings, #skin-YouTuby-settings').hide();
 
       // show the relevant settings table
       $('#' + this.id + '-settings').show();
-      
-      
+
+
 
       // update CSS
       skinPreviewInputChanged();
@@ -116,12 +116,12 @@
       var style = '';
 
       $previewElements.each(function () {
-        
+
         var
           newStyle = '',
           $this = $(this),
           $parent = $this.closest('table');
-        
+
         var preview = $this.data('fv-preview').replace(/\.flowplayer/g,'.flowplayer.skin-'+jQuery('[data-fv-skin]:checked').val() );
 
         if ($parent.css('display') == 'none') {
@@ -139,14 +139,14 @@
             jQuery('.flowplayer').removeClass('bottom-fs');
           }
 
-        } else if($this.attr('type') == 'checkbox' ) {          
+        } else if($this.attr('type') == 'checkbox' ) {
           if ($this.prop('checked')) {
             newStyle = preview.replace(/%val%/g, '1');
           } else {
             newStyle = preview.replace(/%val%/g, '0');
           }
           style += sanitizeCSS(newStyle);
-          
+
         } else {
           var value = $this.val().replace(/^#/,'');
           if( opacity = $this.minicolors('opacity') ) {
@@ -155,10 +155,10 @@
           }
           newStyle = preview.replace(/%val%/g, value);
           style += sanitizeCSS(newStyle);
-          
+
         }
       }, 0);
-      
+
       $('#fv-style-preview').html(style);
 
       // update progress bar + icons style
@@ -180,11 +180,11 @@
     }
     $('input.color').minicolors(settings);
     settings.opacity = true;
-    $('input.color-opacity').minicolors(settings);    
-    
+    $('input.color-opacity').minicolors(settings);
+
     $('input.color, input.color-opacity').on('change', color_inputs);
     $('input.color, input.color-opacity').each(color_inputs);
-    
+
     $('form#wpfp_options').on('submit', function(e) {
       $('input.color-opacity').each( function() {
         var input = $(this);
@@ -217,7 +217,7 @@
       }
 
       var secret_preview = $(this).siblings('.secret-preview');
-  
+
       if( hidden_input.val() == '1' ) {
         hidden_input.val('0');
         password_input.show();
@@ -234,7 +234,7 @@
 
     });
   });
-  
+
   function color_inputs() {
     var input = $(this);
     var color = input.val();
@@ -243,13 +243,13 @@
       rgba = hexToRgb( rgb2hex(color) );
       input.val( rgb2hex(color) );
     }
-    
-    if( rgba && ( opacity = input.minicolors('opacity') ) ) {      
+
+    if( rgba && ( opacity = input.minicolors('opacity') ) ) {
       input.css('box-shadow', 'inset 0 0 0 1000px rgba('+rgba[0]+','+rgba[1]+','+rgba[2]+','+opacity+')' );
     } else {
       input.css('background-color', input.val());
     }
-    
+
     if( rgba && (
       (rgba[0] < 160 && rgba[1] < 160) || (rgba[1] < 160 && rgba[2] < 160) || (rgba[0] < 160 && rgba[2] < 160)
     ) ) {
@@ -262,7 +262,11 @@
   /* CodeMirror */
   jQuery(function($) {
     if( $('#customCSS').length && wp.codeEditor ) {
-      wp.codeEditor.initialize($('#customCSS'), cm_settings);
+      var editor_instance = wp.codeEditor.initialize($('#customCSS'), cm_settings);
+
+      // Used in ajax saving
+      window.fv_player_settings_custom_css_codeMirror = editor_instance;
+
     }
   });
 

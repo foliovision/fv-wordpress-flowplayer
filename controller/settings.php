@@ -132,6 +132,7 @@ function fv_flowplayer_settings_skin_closed_meta_boxes( $closed ) {
  *  Saving settings
  */
 add_action('admin_init', 'fv_player_settings_save', 9);
+add_action('wp_ajax_fv_flowplayer_settings_save', 'fv_player_settings_save', 9);
 
 function fv_player_settings_save() {
   //  Trick media uploader to show video only, while making sure we use our custom type; Also save options
@@ -144,8 +145,19 @@ function fv_player_settings_save() {
     }
   }
 
-  if( isset($_POST['fv-wp-flowplayer-submit']) ) {
-    check_admin_referer('fv_flowplayer_settings_nonce','fv_flowplayer_settings_nonce');
+  if( isset($_POST['fv-wp-flowplayer-submit']) || isset($_POST['fv-wp-flowplayer-submit-ajax']) ) {
+
+    if( isset($_POST['fv-wp-flowplayer-submit-ajax']) ) {
+      if( wp_doing_ajax() ) {
+        unset($_POST['action']);
+      }
+
+     if(! wp_verify_nonce( $_POST['fv_flowplayer_settings_ajax_nonce'], 'fv_flowplayer_settings_ajax_nonce' ) ) {
+        wp_die('Security check failed');
+     }
+    } else {
+      check_admin_referer('fv_flowplayer_settings_nonce','fv_flowplayer_settings_nonce');
+    }
 
     global $fv_fp;
     if( method_exists($fv_fp,'_set_conf') ) {
@@ -442,6 +454,8 @@ function fv_flowplayer_admin_scripts() {
 
     wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), filemtime( (__DIR__).'/../js/admin.js' ), true );
+
+    wp_enqueue_script('fv-player-settings', flowplayer::get_plugin_url().'/js/settings.js',array('jquery'), $fv_wp_flowplayer_ver );
 
     if( function_exists('wp_enqueue_code_editor') ) {
       wp_localize_script('fv-player-admin', 'cm_settings', wp_enqueue_code_editor(array('type' => 'text/css')) );
