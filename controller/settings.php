@@ -172,6 +172,10 @@ function fv_player_settings_save() {
         $to_save = $_POST;
       }
 
+      if( isset($to_save['postbox_id']) ) {
+        unset($to_save['postbox_id']);
+      }
+
       $fv_fp->_set_conf($to_save);
     } else {
       echo 'Error saving FV Flowplayer options.';
