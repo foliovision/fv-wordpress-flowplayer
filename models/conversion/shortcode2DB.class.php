@@ -144,7 +144,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           preg_match_all( '~(?<!\[)\[(?:flowplayer|fvplayer) .*?\](?!\[)~', $meta_value, $matched_shortcodes );
 
-          if( !empty($matched_shortcodes) ) {
+          if( !empty($matched_shortcodes) && !empty($matched_shortcodes[0]) ) {
             foreach( $matched_shortcodes[0] as $shortcode ) {
               $result = $this->worker( $shortcode, $post, $meta_value, $meta_key );
               if( $result ) {
