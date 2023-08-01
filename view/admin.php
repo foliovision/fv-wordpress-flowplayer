@@ -88,7 +88,7 @@ function fv_flowplayer_admin_overlay() {
 						</tr>
 						<tr>
 							<td colspan="4">
-								<input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+								<a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
 							</td>
 						</tr>
 					</table>
@@ -136,7 +136,7 @@ function fv_flowplayer_admin_amazon_options() {
           <?php $fv_fp->_get_checkbox(__('Force the default expiration time', 'fv-wordpress-flowplayer'), 'amazon_expire_force'); ?>
           <?php
           $can_use_aws_sdk = version_compare(phpversion(),'7.3.5') != -1;
-          
+
           $fv_fp->_get_checkbox( array(
             'name' => __('Amazon S3 Browser', 'fv-wordpress-flowplayer').' (beta)',
             'key' => 's3_browser',
@@ -218,7 +218,7 @@ function fv_flowplayer_admin_amazon_options() {
           <tr class="amazon-s3-last"><td colspan="2"></td></tr>
           <tr>
             <td colspan="4">
-              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
               <input type="button" id="amazon-s3-add" class="button" value="<?php _e('Add more Amazon S3 secure buckets', 'fv-wordpress-flowplayer'); ?>" />
               <a class="button fv-help-link" href="https://foliovision.com/player/video-hosting/amazon-s3-guide" target="_blank">Help</a>
             </td>
@@ -401,7 +401,7 @@ function fv_flowplayer_admin_default_options() {
           <table class="form-table2">
             <tr>
               <td colspan="4">
-                <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+                <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
                 <a class="button fv-help-link" href="https://foliovision.com/player/settings/sitewide-fv-player-defaults" target="_blank">Help</a>
               </td>
             </tr>
@@ -537,7 +537,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
   <?php do_action('fv_flowplayer_autoplay_and_preloading_inputs_after'); ?>
   <tr>
     <td colspan="4">
-      <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+      <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
     </td>
   </tr>
   </table>
@@ -745,7 +745,7 @@ function fv_flowplayer_admin_integrations() {
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
           <tr>
             <td colspan="4">
-              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/integrations-compatibility-options" target="_blank">Help</a>
             </td>
           </tr>
@@ -765,7 +765,7 @@ function fv_flowplayer_admin_mobile() {
           ?>
           <tr>
             <td colspan="4">
-              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/mobile-settings-behaviors" target="_blank">Help</a>
             </td>
           </tr>
@@ -781,7 +781,7 @@ function fv_flowplayer_admin_privacy() {
           <?php $fv_fp->_get_checkbox(__('Disable local storage', 'fv-wordpress-flowplayer'), 'disable_localstorage', __('Remember video position will not work for non logged users. Video volume, mute status and subtitles selection will also not be stored.', 'fv-wordpress-flowplayer') ); ?>
           <tr>
             <td colspan="4">
-              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/2021/12/private-video-no-cookies" target="_blank">Help</a>
             </td>
           </tr>
@@ -798,7 +798,7 @@ function fv_flowplayer_admin_seo() {
           <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
           <tr>
             <td colspan="4">
-              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/video-seo-schema-xml" target="_blank">Help</a>
               </td>
           </tr>
@@ -850,7 +850,7 @@ function fv_flowplayer_admin_end_of_video(){
       </tr>
       <tr>
         <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
         </td>
       </tr>
     </table>
@@ -919,7 +919,7 @@ function fv_flowplayer_admin_popups(){
       </tr>
       <tr>
         <td>
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
           <input type="button" value="<?php _e('Add more Popups', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-popups-add" />
         </td>
       </tr>
@@ -973,7 +973,7 @@ function fv_flowplayer_admin_interface_options() {
 
           <tr>
             <td colspan="4">
-              <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/post-interface-settings" target="_blank">Help</a>
             </td>
           </tr>
@@ -1204,9 +1204,9 @@ function fv_flowplayer_admin_skin_get_table($options) {
       }
       ?>
         <tr>
-            <td colspan="2">
-                <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
-            </td>
+          <td colspan="2">
+            <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
+          </td>
         </tr>
     </table>
 <?php
@@ -1553,7 +1553,7 @@ function fv_flowplayer_admin_skin_playlist() {
     </tr>
     <tr>
       <td colspan="2">
-        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
       </td>
     </tr>
   </table>
@@ -1580,7 +1580,7 @@ function fv_flowplayer_admin_custom_css() {
 
     <tr>
       <td colspan="2">
-        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
       </td>
     </tr>
   </table>
@@ -1621,7 +1621,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>
     <tr>
       <td colspan="2">
-        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
       </td>
     </tr>
   </table>
@@ -1683,7 +1683,7 @@ function fv_flowplayer_admin_skin_sticky() {
 
     <tr>
       <td colspan="2">
-        <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
       </td>
     </tr>
   </table>
@@ -2040,7 +2040,7 @@ function fv_flowplayer_admin_uninstall() {
       <?php   $fv_fp->_get_checkbox(__('Remove all data', 'fv-wordpress-flowplayer'), 'remove_all_data' , __('This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-wordpress-flowplayer')); ?>
       <tr>
         <td colspan="4">
-          <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="<?php _e('Save All Changes', 'fv-wordpress-flowplayer'); ?>" />
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
         </td>
       </tr>
     </table>
@@ -2227,10 +2227,16 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     </div>
     <?php
     wp_nonce_field( 'fv_flowplayer_settings_nonce', 'fv_flowplayer_settings_nonce' );
+    wp_nonce_field( 'fv_flowplayer_settings_ajax_nonce', 'fv_flowplayer_settings_ajax_nonce', false );
     wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
     wp_nonce_field( 'meta-box-order-nonce', 'meta-box-order-nonce', false );
     ?>
+
+  <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
+
   </form>
+
+  <div id="fv-player-popup-container"></div>
 
 </div>
 <script type="text/javascript" >

@@ -98,10 +98,10 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
     if( !empty( $post->post_content) ) {
 
-      // match shortcodes in post_content
-      preg_match_all( '~\[(?:flowplayer|fvplayer) .*?\]~', $post->post_content, $matched_shortcodes );
+      // match shortcodes in post_content, ignore shotcodes in double brackets like [[fvplayer src="https://your-website.com/videos/video.mp4"]]
+      preg_match_all( '~(?<!\[)\[(?:flowplayer|fvplayer) .*?\](?!\[)~', $post->post_content, $matched_shortcodes );
 
-      if( !empty($matched_shortcodes) ) {
+      if( !empty($matched_shortcodes) && !empty($matched_shortcodes[0]) ) {
         foreach( $matched_shortcodes[0] as $shortcode ) {
           $result = $this->worker( $shortcode, $post, $new_content );
           if( $result ) {
@@ -118,6 +118,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       }
     }
 
+    // match shortcodes also in post meta
     $meta = get_post_custom( $post->ID );
 
     if( is_array($meta) ) {
@@ -141,9 +142,9 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
           $meta_updated = false;
 
-          preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $meta_value, $matched_shortcodes );
+          preg_match_all( '~(?<!\[)\[(?:flowplayer|fvplayer) .*?\](?!\[)~', $meta_value, $matched_shortcodes );
 
-          if( !empty($matched_shortcodes) ) {
+          if( !empty($matched_shortcodes) && !empty($matched_shortcodes[0]) ) {
             foreach( $matched_shortcodes[0] as $shortcode ) {
               $result = $this->worker( $shortcode, $post, $meta_value, $meta_key );
               if( $result ) {
