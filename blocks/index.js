@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { createElement, RawHTML } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, MediaUpload } from '@wordpress/block-editor';
+import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SVG, Path, PanelBody, TextControl, TextareaControl, Button } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
@@ -49,13 +49,15 @@ registerBlockType( 'fv-player-gutenberg/basic', {
               value={src}
               onChange={(value) => setAttributes({ src: value })}
             />
-            <MediaUpload
-              onSelect={(src) => setAttributes({ src: src.url })}
-              type="video"
-              render={({ open }) => (
-                <Button onClick={open}>Select Video</Button>
-              )}
-            />
+            <MediaUploadCheck>
+              <MediaUpload
+                onSelect={(src) => setAttributes({ src: src.url })}
+                allowedTypes={['video', 'audio']}
+                render={({ open }) => (
+                  <Button onClick={open} className='is-primary'>Select Media</Button>
+                )}
+              />
+            </MediaUploadCheck>
             <TextControl
               label="Splash URL"
               value={splash}
@@ -71,7 +73,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
         <div className="fv-player-gutenberg">
           <h4>{title}</h4>
-          <Button className="fv-wordpress-flowplayer-button">Open in Editor</Button>
+          <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
         </div>
 
         <TextareaControl
