@@ -38,7 +38,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     },
   },
   edit: ({ attributes, setAttributes, clientId }) => {
-    const { src, splash, title } = attributes;
+    const { src, splash, title, shortcodeContent } = attributes;
 
     return (
       <>
@@ -75,7 +75,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         </div>
 
         <TextareaControl
-            value='shortcodeContent'
+            value={shortcodeContent}
             onChange={(value) => setAttributes({ shortcodeContent: value })}
             className="fv-player-editor-field" // Add custom class to the textarea
           />
