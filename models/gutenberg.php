@@ -7,10 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 function fv_player_gutenberg() {
   wp_register_script( 'fv-player-gutenberg', flowplayer::get_plugin_url().'/build/index.js', array( 'wp-blocks', 'wp-element', 'wp-components'), filemtime( __DIR__.'/../build/index.js' ) );
 
+  wp_localize_script( 'fv-player-gutenberg', 'fv_player_gutenberg', array(
+    'nonce' => wp_create_nonce( 'fv_player_gutenberg' ),
+  ));
+
   if( function_exists('register_block_type') ) {
     register_block_type( 'fv-player-gutenberg/basic', array(
       'editor_script' => 'fv-player-gutenberg',
-    ) );
+    ));
   }
 }
 

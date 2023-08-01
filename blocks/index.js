@@ -36,9 +36,47 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       type: 'string',
       default: '',
     },
+    player_id: {
+      type: 'string',
+      default: '0',
+    }
   },
   edit: ({ attributes, setAttributes, clientId }) => {
     const { src, splash, title, shortcodeContent } = attributes;
+
+    // handle ajax update of attributes
+    const ajaxUpdateAttributes = (newAttributes) => {
+      const data = new FormData();
+      data.append('action', 'fv_player_guttenberg_attributes_save');
+      data.append('player_id', newAttributes.player_id);
+      data.append('src', newAttributes.src);
+      data.append('splash', newAttributes.splash);
+      data.append('title', newAttributes.title);
+
+      // nonce is required for security
+      data.append('security', fv_player_gutenberg.nonce);
+
+      fetch(ajaxurl, {
+        method: 'POST',
+        body: data,
+        credentials: 'same-origin',
+      }).
+      then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          console.error('Error:', data.error);
+          return;
+        }
+
+        //  update the shortcode content and player id
+        setAttributes({ shortcodeContent: data.shortcodeContent });
+        setAttributes({ player_id: data.player_id });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+    }
 
     return (
       <>
@@ -47,7 +85,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
             <TextControl
               label="Source URL"
               value={src}
-              onChange={(value) => setAttributes({ src: value })}
+              onChange={(newSrc) => {
+                setAttributes({ src: newSrc });
+                ajaxUpdateAttributes({ ...attributes, src: newSrc });
+              }}
             />
             <MediaUploadCheck>
               <MediaUpload
@@ -61,12 +102,18 @@ registerBlockType( 'fv-player-gutenberg/basic', {
             <TextControl
               label="Splash URL"
               value={splash}
-              onChange={(value) => setAttributes({ splash: value })}
+              onChange={(newSplash) => {
+                setAttributes({ splash: newSplash });
+                ajaxUpdateAttributes({ ...attributes, splash: newSplash });
+              }}
             />
             <TextControl
               label="Title"
               value={title}
-              onChange={(value) => setAttributes({ title: value })}
+              onChange={(newTitle) => {
+                setAttributes({ title: newTitle });
+                ajaxUpdateAttributes({ ...attributes, title: newTitle });
+              }}
             />
           </PanelBody>
         </InspectorControls>

@@ -570,6 +570,24 @@ function fv_player_splashcreen_action() {
 }
 
 
+add_action( 'wp_ajax_fv_player_guttenberg_attributes_save', 'fv_player_guttenberg_attributes_save' );
+
+function fv_player_guttenberg_attributes_save() {
+  if( check_ajax_referer( "fv_player_gutenberg", "security" , false ) == 1 ) {
+    $player_id = intval($_POST['player_id']);
+    $src = sanitize_text_field($_POST['src']);
+    $splash = sanitize_text_field($_POST['splash']);
+    $title = sanitize_text_field($_POST['title']);
+
+    // TODO: create or update player
+
+  }
+
+  wp_send_json( array(
+    'error' => 'Nonce error - please reload your page'
+  ) );
+}
+
 
 
 function fv_player_editor_subtitle_fields() {
