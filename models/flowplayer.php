@@ -657,12 +657,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
-    
+
     if( !isset( $conf['sticky_video'] ) ) $conf['sticky_video'] = 'off';
     if( !isset( $conf['sticky_place'] ) ) $conf['sticky_place'] = 'right-bottom';
     if( !isset( $conf['sticky_width'] ) ) $conf['sticky_width'] = '380';
     if( !isset( $conf['sticky_width_mobile'] ) ) $conf['sticky_width_mobile'] = '100';
-    
+
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
     if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();
@@ -2834,6 +2834,18 @@ function fv_wp_flowplayer_save_post( $post_id ) {
 
   $saved_post = get_post($post_id);
   $videos = FV_Player_Checker::get_videos($saved_post->ID);
+
+  // TODO: add support for Gutenberg
+  if (get_post_type($post_id) === 'post') {
+    $block_data = parse_blocks(get_post_field('post_content', $post_id));
+
+    foreach ($block_data as $block) {
+      if (isset($block['blockName']) && $block['blockName'] === 'fv-player-gutenberg/basic') {
+        $attributes = isset($block['attrs']) ? $block['attrs'] : array();
+        // TODO: handle attributes
+      }
+    }
+  }
 
   $iDone = 0;
   if( is_array($videos) && count($videos) > 0 ) {
