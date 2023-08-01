@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { createElement } from '@wordpress/element';
+import { createElement, RawHTML } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload } from '@wordpress/block-editor';
 import { SVG, Path, PanelBody, TextControl, TextareaControl, Button } from '@wordpress/components';
@@ -18,7 +18,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
   title: __( 'FV Player', 'fv-player-gutenberg' ),
   description: __( 'Embed a video from your Media Library or upload a new one.', 'fv-player-gutenberg' ),
   category: 'media',
-  keywords: ['fv player', 'player', 'fv', 'flowplayer'],
+  keywords: ['fv player', 'player', 'fv', 'flowplayer', 'freedomplayer', 'video', 'embed', 'media', 'stream'],
   attributes: {
     src: {
       type: 'string',
@@ -75,29 +75,18 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         </div>
 
         <TextareaControl
-            // value={shortcode}
-            // onChange={(value) => setAttributes({ shortcode: value })}
+            value='shortcodeContent'
+            onChange={(value) => setAttributes({ shortcodeContent: value })}
             className="fv-player-editor-field" // Add custom class to the textarea
           />
       </>
     );
   },
-  save: ({ attributes }) => {
-    const { src, splash, title } = attributes;
-
+  save: (props) => {
     return (
       <>
-        <div className="fv-player-gutenberg">
-          <h3>{title}</h3>
-          <Button className="fv-wordpress-flowplayer-button">Open in Editor</Button>
-        </div>
-
-        <TextareaControl
-            // value={shortcode}
-            // onChange={(value) => setAttributes({ shortcode: value })}
-            className="fv-player-editor-field" // Add custom class to the textarea
-        />
+        <RawHTML>{props.attributes.shortcodeContent}</RawHTML>
       </>
     );
   }
-});
+})
