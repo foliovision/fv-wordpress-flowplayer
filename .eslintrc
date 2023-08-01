@@ -18,7 +18,12 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "jquery": true
+    "jquery": true,
+    "jsx": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
   },
   "globals": {
     "wp": true,

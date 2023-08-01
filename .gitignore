@@ -22,6 +22,9 @@ node_modules/
 # ignore distribution folder
 /dist
 
+# ignore compiled files
+/build
+
 # ignore OS generated files
 ehthumbs.db
 Thumbs.db
