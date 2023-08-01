@@ -1927,7 +1927,12 @@ jQuery(function() {
       reset_editor_ids();
 
       editing_video_details = true;
-      $el_editor.attr('class','is-singular is-singular-active');
+
+      $el_editor
+        .addClass( 'is-singular' )
+        .addClass( 'is-singular-active' )
+        .removeClass( 'is-playlist-active' )
+        .removeClass( 'is-playlist' );
 
       //hide empy tabs hide tabs
       jQuery('.fv-player-tab-playlist').hide();
@@ -3646,7 +3651,10 @@ jQuery(function() {
       set_current_video_to_edit( new_index );
 
       editing_video_details = true;
-      $el_editor.attr('class','is-playlist is-singular-active');
+      
+      $el_editor
+        .removeClass( 'is-playlist-active' )
+        .addClass( 'is-singular-active' );
 
       jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
 
@@ -3669,10 +3677,12 @@ jQuery(function() {
         $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
         $('.playlist_edit').html($('.playlist_edit').data('edit'));
 
+        $el_editor.addClass( 'is-playlist' );
+
       }else{
         $('.playlist_edit').html($('.playlist_edit').data('create'));
 
-        $el_editor.attr('class','is-singular is-singular-active');
+        $el_editor.addClass( 'is-singular' );
       }
 
       // As Flowplayer only lets us set RTMP server for the first video in playlist, prefill it for this new item as well
@@ -3764,7 +3774,12 @@ jQuery(function() {
       current_video_db_id = 0;
 
       editing_video_details = false;
-      $el_editor.attr('class','is-playlist-active');
+
+      $el_editor
+        .addClass( 'is-playlist-active' )
+        .removeClass( 'is-playlist' )
+        .removeClass( 'is-singular' )
+        .removeClass( 'is-singular-active' );
 
       // show all the tabs previously hidden
       jQuery('.fv-player-tabs-header .nav-tab').attr('style',false);
