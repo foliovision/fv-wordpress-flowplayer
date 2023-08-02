@@ -63,7 +63,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       }).
       then((response) => response.json())
       .then((data) => {
-        if (!data.success) {
+        if (data.error) {
           console.error('Error:', data.error);
           return;
         }

@@ -579,12 +579,43 @@ function fv_player_guttenberg_attributes_save() {
     $splash = sanitize_text_field($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
 
-    // TODO: create or update player
+    global $FV_Player_Db;
+
+    if( !$player_id ) {
+      $player_id =  $FV_Player_Db->import_player_data(false, false, array(
+        'date_created' => date('Y-m-d H:i:s'),
+        'videos' => array(
+          array(
+            'src' => $src,
+            'splash' => $splash,
+            'title' => $title,
+          )
+        )
+      ));
+
+    } else {
+      $player = new FV_Player_Db_Player($player_id);
+      $player_id = $player->getId();
+
+      //TODO: update player
+
+    }
+
+    if( $player_id ) {
+      wp_send_json( array(
+        'player_id' => $player_id,
+        'shortcodeContent' => '[fvplayer id="' . $player_id . '"]'
+      ) );
+    } else {
+      wp_send_json( array(
+        'error' => 'Error: Player not saved'
+      ) );
+    }
 
   }
 
   wp_send_json( array(
-    'error' => 'Nonce error - please reload your page'
+    'error' => 'Nonce error: please reload your page'
   ) );
 }
 
