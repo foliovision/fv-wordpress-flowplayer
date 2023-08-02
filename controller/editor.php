@@ -594,10 +594,18 @@ function fv_player_guttenberg_attributes_save() {
       ));
 
     } else {
-      $player = new FV_Player_Db_Player($player_id);
-      $player_id = $player->getId();
 
-      //TODO: update player
+      $player = new FV_Player_Db_Player( $player_id );
+      if( $player && $player->getIsValid() ) {
+        $player_id = $player->getId();
+
+        foreach( $player->getVideos() AS $video ) {
+          $video->set( 'src', $src );
+          $video->set( 'splash', $splash );
+          $video->set( 'title', $title );
+          $video->save();
+        }
+      }
 
     }
 
