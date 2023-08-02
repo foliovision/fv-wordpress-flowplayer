@@ -705,6 +705,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
 
+    if ( ! empty( $conf['sticky_video'] ) && 'true' === $conf['sticky_video'] ) {
+      $conf['sticky_video'] = 'desktop';
+    }
+
     $conf = apply_filters('fv_player_conf_defaults', $conf);
     
     update_option( 'fvwpflowplayer', $conf );
