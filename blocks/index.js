@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 import ServerSideRender from '@wordpress/server-side-render';
-import { createElement, RawHTML } from '@wordpress/element';
+import { createElement, RawHTML, useEffect } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import { SVG, Path, PanelBody, TextControl, TextareaControl, Button } from '@wordpress/components';
@@ -45,8 +45,14 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     }
   },
   edit: ({ attributes, setAttributes, context, clientId}) => {
-    const { src, splash, title, shortcodeContent } = attributes;
+    const { src, splash, title, shortcodeContent, player_id } = attributes;
     const blockProps = useBlockProps();
+
+    useEffect(() => {
+      setTimeout( function() {
+        fv_player_load();
+      }, 1000);
+    }, []);
 
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {
