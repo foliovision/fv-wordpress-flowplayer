@@ -559,6 +559,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && strcmp($selected ,$k) == 0 ) || (strcmp($option,$k) == 0) ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
             <?php endforeach; ?>      
           </select>
+
+          <?php if ( $help ) {
+            echo $help;
+          } ?>
+          <?php if ( $more ) { ?>
+            <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+          <?php } ?>
         </td>   
       </tr>
 
