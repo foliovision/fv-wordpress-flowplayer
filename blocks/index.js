@@ -52,6 +52,11 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       setTimeout( function() {
         fv_player_load();
       }, 1000);
+
+      // just in case if the player is not loaded yet
+      setTimeout( function() {
+        fv_player_load();
+      }, 5000);
     }, []);
 
     // handle ajax update of attributes
