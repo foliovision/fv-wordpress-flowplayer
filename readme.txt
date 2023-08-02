@@ -359,6 +359,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.37.7212 - 2023/08/02 =
+
+* HLS.js - upgrade to 1.4.10
+* Optimize FV Flowplayer JS loading - disabled if using WP Rocket "Delay JavaScript execution"
+* Remember video position - on by default for now plugin users
+* Sticky player - option to enable for mobile users. Thanks to Dennis Isseult https://www.dmimedia.nl
+* Bugfix - Safari - disable HLS.js for Safari 16.5 and above due to playback issues on some websites
+
 = 7.5.36.7212 - 2023/05/03 =
 
 * Bugfix - DigitalOcean Spaces/AWS S3 browser broken after AWS SDK update, fixing tests too
