@@ -580,6 +580,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $conf['notice_db'] = true;
       $conf['notice_xml_sitemap_iframes'] = true;
 
+      $conf['video_position_save_enable'] = true;
+
       $conf['js-optimize'] = true;
     }
 
