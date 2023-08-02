@@ -35,6 +35,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     shortcodeContent: {
       type: 'string',
       default: '',
+      source: 'text'
     },
     player_id: {
       type: 'string',
@@ -123,11 +124,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
         </div>
 
-        <TextareaControl
-            value={shortcodeContent}
-            onChange={(value) => setAttributes({ shortcodeContent: value })}
-            className="fv-player-editor-field" // Add custom class to the textarea
-          />
+        <RawHTML>{shortcodeContent}</RawHTML>
       </>
     );
   },
