@@ -49,7 +49,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     }
   },
   edit: ({ attributes, setAttributes, context, clientId}) => {
-    const { src, splash, title, shortcodeContent, player_id } = attributes;
+    const { src, splash, title, shortcodeContent, player_id, splash_attachment_id } = attributes;
     const blockProps = useBlockProps();
 
     useEffect(() => {
@@ -61,7 +61,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       setTimeout( function() {
         fv_player_load();
       }, 8000);
-    }, []);
+    }, [src, splash, title, shortcodeContent, player_id, splash_attachment_id]);
 
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {
@@ -71,6 +71,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       data.append('src', newAttributes.src);
       data.append('splash', newAttributes.splash);
       data.append('title', newAttributes.title);
+      data.append('splash_attachment_id', newAttributes.splash_attachment_id);
 
       // nonce is required for security
       data.append('security', fv_player_gutenberg.nonce);
@@ -90,7 +91,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         //  update the shortcode content and player id
         setAttributes({ shortcodeContent: data.shortcodeContent });
         setAttributes({ player_id: data.player_id });
-        setAttributes({ splash_attachment_id: data.splash_attachment_id });
       })
       .catch((error) => {
         console.error('Error:', error);

@@ -584,6 +584,7 @@ function fv_player_guttenberg_attributes_save() {
 
     global $FV_Player_Db;
 
+    // new player
     if( !$player_id ) {
       $player_id =  $FV_Player_Db->import_player_data(false, false, array(
         'date_created' => date('Y-m-d H:i:s'),
@@ -596,10 +597,9 @@ function fv_player_guttenberg_attributes_save() {
           )
         )
       ));
-
-    } else {
-
+    } else { // existing player
       $player = new FV_Player_Db_Player( $player_id );
+
       if( $player && $player->getIsValid() ) {
         $player_id = $player->getId();
 
@@ -612,7 +612,6 @@ function fv_player_guttenberg_attributes_save() {
           break; // only first video
         }
       }
-
     }
 
     if( $player_id ) {
