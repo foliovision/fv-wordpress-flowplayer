@@ -2835,18 +2835,6 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   $saved_post = get_post($post_id);
   $videos = FV_Player_Checker::get_videos($saved_post->ID);
 
-  // TODO: add support for Gutenberg
-  if (get_post_type($post_id) === 'post') {
-    $block_data = parse_blocks(get_post_field('post_content', $post_id));
-
-    foreach ($block_data as $block) {
-      if (isset($block['blockName']) && $block['blockName'] === 'fv-player-gutenberg/basic') {
-        $attributes = isset($block['attrs']) ? $block['attrs'] : array();
-        // TODO: handle attributes
-      }
-    }
-  }
-
   $iDone = 0;
   if( is_array($videos) && count($videos) > 0 ) {
     $tStart = microtime(true);

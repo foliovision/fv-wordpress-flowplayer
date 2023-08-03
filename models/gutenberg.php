@@ -37,6 +37,10 @@ function fv_player_gutenberg() {
           'type' => 'string',
           'default' => '0',
         ),
+        'splash_attachment_id' => array(
+          'type' => 'string',
+          'default' => '0',
+        ),
       ),
     ));
   }

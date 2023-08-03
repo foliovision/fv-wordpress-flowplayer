@@ -575,6 +575,7 @@ add_action( 'wp_ajax_fv_player_guttenberg_attributes_save', 'fv_player_guttenber
 function fv_player_guttenberg_attributes_save() {
   if( check_ajax_referer( "fv_player_gutenberg", "security" , false ) == 1 ) {
     $player_id = intval($_POST['player_id']);
+    $splash_attachment_id = intval($_POST['splash_attachment_id']);
     $src = sanitize_text_field($_POST['src']);
     $splash = sanitize_text_field($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
@@ -589,6 +590,7 @@ function fv_player_guttenberg_attributes_save() {
             'src' => $src,
             'splash' => $splash,
             'title' => $title,
+            'splash_attachment_id' => $splash_attachment_id
           )
         )
       ));
@@ -603,7 +605,9 @@ function fv_player_guttenberg_attributes_save() {
           $video->set( 'src', $src );
           $video->set( 'splash', $splash );
           $video->set( 'title', $title );
+          $video->set( 'splash_attachment_id', $splash_attachment_id );
           $video->save();
+          break; // only first video
         }
       }
 

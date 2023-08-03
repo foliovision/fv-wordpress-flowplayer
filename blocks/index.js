@@ -4,7 +4,7 @@ import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { SVG, Path, PanelBody, TextControl, TextareaControl, Button } from '@wordpress/components';
+import { SVG, Path, Panel, PanelBody, TextControl, TextareaControl, Button } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
   icon: {
@@ -42,6 +42,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     player_id: {
       type: 'string',
       default: '0',
+    },
+    splash_attachment_id: {
+      type: 'string',
+      default: '0',
     }
   },
   edit: ({ attributes, setAttributes, context, clientId}) => {
@@ -56,7 +60,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       // just in case if the player is not loaded yet
       setTimeout( function() {
         fv_player_load();
-      }, 5000);
+      }, 8000);
     }, []);
 
     // handle ajax update of attributes
@@ -86,6 +90,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         //  update the shortcode content and player id
         setAttributes({ shortcodeContent: data.shortcodeContent });
         setAttributes({ player_id: data.player_id });
+        setAttributes({ splash_attachment_id: data.splash_attachment_id });
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -96,47 +101,77 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     return (
       <>
         <InspectorControls>
-          <PanelBody title="Player Settings" initialOpen={true}>
-            <TextControl
-              label="Source URL"
-              value={src}
-              onChange={(newSrc) => {
-                setAttributes({ src: newSrc });
-                ajaxUpdateAttributes({ ...attributes, src: newSrc });
-              }}
-            />
-            <MediaUploadCheck>
-              <MediaUpload
-                onSelect={(src) => setAttributes({ src: src.url })}
-                allowedTypes={['video', 'audio']}
-                render={({ open }) => (
-                  <Button onClick={open} className='is-primary'>Select Media</Button>
-                )}
+          <Panel header='FV Player'>
+            <PanelBody title="Player Settings" initialOpen={true}>
+              <TextControl
+                label="Source URL"
+                value={src}
+                onChange={(newSrc) => {
+                  setAttributes({ src: newSrc });
+                  ajaxUpdateAttributes({ ...attributes, src: newSrc });
+                }}
               />
-            </MediaUploadCheck>
-            <TextControl
-              label="Splash URL"
-              value={splash}
-              onChange={(newSplash) => {
-                setAttributes({ splash: newSplash });
-                ajaxUpdateAttributes({ ...attributes, splash: newSplash });
-              }}
-            />
-            <TextControl
-              label="Title"
-              value={title}
-              onChange={(newTitle) => {
-                setAttributes({ title: newTitle });
-                ajaxUpdateAttributes({ ...attributes, title: newTitle });
-              }}
-            />
-          </PanelBody>
-        </InspectorControls>
+              <MediaUploadCheck>
+                <MediaUpload
+                  onSelect={(attachment) => {
+                      setAttributes({ src: attachment.url })
+                      ajaxUpdateAttributes({ ...attributes, src: attachment.url });
+                    }
+                  }
+                  allowedTypes={['video', 'audio']}
+                  render={({ open }) => (
+                    <Button onClick={open} className='is-primary'>Select Media</Button>
+                  )}
+                />
+              </MediaUploadCheck>
+              <TextControl
+                label="Splash URL"
+                value={splash}
+                onChange={(newSplash) => {
+                  setAttributes({ splash: newSplash });
+                  ajaxUpdateAttributes({ ...attributes, splash: newSplash });
+                }}
+              />
+              <MediaUploadCheck>
+                <MediaUpload
+                  onSelect={(attachment) => {
+                      setAttributes({ splash: attachment.url });
+                      setAttributes({ splash_attachment_id: attachment.id });
 
-        <div className="fv-player-gutenberg">
-          <h4>{title}</h4>
-          <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
-        </div>
+                      let newAttributes = { ...attributes, splash: attachment.url };
+                      newAttributes.splash_attachment_id = attachment.id;
+
+                      ajaxUpdateAttributes(newAttributes);
+                    }
+                  }
+                  allowedTypes={['image']}
+                  render={({ open }) => (
+                    <Button onClick={open} className='is-primary'>Select Image</Button>
+                  )}
+                />
+              </MediaUploadCheck>
+              <TextControl
+                label="Title"
+                value={title}
+                onChange={(newTitle) => {
+                  setAttributes({ title: newTitle });
+                  ajaxUpdateAttributes({ ...attributes, title: newTitle });
+                }}
+              />
+              <div className="fv-player-gutenberg">
+                <p>{__('Looking for advanced properties?', 'fv-player-gutenberg')}</p>
+                <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
+                <input
+                  className=" attachement-shortcode fv-player-editor-field"
+                  type="hidden"
+                  onChange={() =>{
+                    ajaxUpdateAttributes( attributes );
+                  }}
+                />
+              </div>
+            </PanelBody>
+          </Panel>
+        </InspectorControls>
 
         <RawHTML>{shortcodeContent}</RawHTML>
 
