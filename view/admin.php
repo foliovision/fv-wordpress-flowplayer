@@ -1627,14 +1627,17 @@ function fv_flowplayer_admin_skin_sticky() {
       </td>
     </tr>
     <tr>
-      <td><label for="sticky_width"><?php _e('Desktop Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
+      <td><label for="sticky_width"><?php _e('Desktop Player Width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/>
+        <?php _e( 'Used on desktop and (if enabled) also on mobile in landscape orientation and tablets.', 'fv-wordpress-flowplayer' ); ?>
+      </td>
     </tr>
     <?php
 	  $fv_fp->_get_select(
 			__( 'Mobile Player Width', 'fv-wordpress-flowplayer' ),
 			'sticky_width_mobile',
-			__( 'Used if the device width is 480 pixels or lower.', 'fv-wordpress-flowplayer' ),
+			__( 'Used on mobile (device width lower than 480 pixels).', 'fv-wordpress-flowplayer' ),
 			false,
 			array(
 				'100' => '100%',
