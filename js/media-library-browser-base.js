@@ -885,7 +885,7 @@ jQuery( function($) {
 
   $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
     var
-      activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
+      activeTabId = jQuery('.media-router .media-menu-item.active:visible').attr('id'), // TODO: API to get back to actual tab
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
 
     $('#media-search-input').val(''); // remove search when clicked on folder
