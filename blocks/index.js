@@ -164,6 +164,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 <input
                   className=" attachement-shortcode fv-player-editor-field"
                   type="hidden"
+                  value={shortcodeContent}
                   onChange={() =>{
                     ajaxUpdateAttributes( attributes );
                   }}
