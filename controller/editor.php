@@ -430,6 +430,8 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
       // Insert the attachment
       $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
 
+      require_once(ABSPATH . 'wp-admin/includes/image.php');
+
       // Define attachment metadata
       $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
 
