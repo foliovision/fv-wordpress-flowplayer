@@ -101,10 +101,11 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     return (
       <>
         <InspectorControls>
-          <Panel header='FV Player'>
+          <Panel>
             <PanelBody title="Player Settings" initialOpen={true}>
               <TextControl
                 label="Source URL"
+                className='fv-player-gutenberg-src'
                 value={src}
                 onChange={(newSrc) => {
                   setAttributes({ src: newSrc });
@@ -126,6 +127,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
               </MediaUploadCheck>
               <TextControl
                 label="Splash URL"
+                className='fv-player-gutenberg-splash'
                 value={splash}
                 onChange={(newSplash) => {
                   setAttributes({ splash: newSplash });
@@ -152,6 +154,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
               </MediaUploadCheck>
               <TextControl
                 label="Title"
+                className='fv-player-gutenberg-title'
                 value={title}
                 onChange={(newTitle) => {
                   setAttributes({ title: newTitle });
@@ -161,6 +164,8 @@ registerBlockType( 'fv-player-gutenberg/basic', {
               <div className="fv-player-gutenberg">
                 <p>{__('Looking for advanced properties?', 'fv-player-gutenberg')}</p>
                 <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
+                <input className='fv-player-gutenberg-splash-attachement-id' type="hidden" value={splash_attachment_id} />
+                <input className='fv-player-gutenberg-player-id' type="hidden" value={player_id} />
                 <input
                   className=" attachement-shortcode fv-player-editor-field"
                   type="hidden"
