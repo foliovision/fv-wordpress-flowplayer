@@ -97,10 +97,6 @@ jQuery(function() {
     // used to remember which widget we are editing, if any
     widget_id,
 
-    // used in Gutenberg preview to store a preview timeout task due to REACT not being fast enough to allow us previewing
-    // player directly after we close the editor
-    gutenberg_previews_loading = {},
-
     is_editing_playlist_item_title = false,
 
     // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
@@ -2208,10 +2204,8 @@ jQuery(function() {
           $fv_player_custom_meta_box.trigger('fv_flowplayer_shortcode_insert');
         }
 
-        if ( $fv_player_gutenberg.length ) {
-          var gutenbergTextarea = ($fv_player_gutenberg[0].tagName == 'TEXTAREA' ? $fv_player_gutenberg[0] : $fv_player_gutenberg.find('textarea').first()[0]);
-          fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
-        }
+        // TODO: Update the fields in the Gutenberg block
+
       } else if( current_player_db_id > 0 ) {
 
         // Append or update player row in wp-admin -> FV Player
@@ -3297,17 +3291,9 @@ jQuery(function() {
 
       // is there a Gutenberg field together in wrapper with the button?
       } else if( gutenberg.length ) {
-        var
-          nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
-          gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
+        // TODO: Update the fields in the Gutenberg block
 
-        nativeInputValueSetter.call(gutenbergTextarea, shortcode);
-        var ev2 = new Event('change', { bubbles: true});
-        gutenbergTextarea.dispatchEvent(ev2,shortcode);
-
-        fv_player_editor.gutenberg_preview( jQuery(editor_button_clicked).parents('.fv-player-editor-wrapper'), shortcode );
-
-        // is there a plain text field together in wrapper with the button?
+      // is there a plain text field together in wrapper with the button?
       } else if (field.length) {
         field.val(shortcode);
         // Prevents double event triggering in FV Player Custom Video box
@@ -4772,43 +4758,6 @@ jQuery(function() {
 
       // We keep it for backwards compatibility
       editor_resize: function() {},
-
-      /**
-       * Adds a preview to the Gutenberg FV Player block.
-       *
-       * @param parent Parent Gutenberg element in which we'll be showing the preview for.
-       * @param shortcode The actual player shortcode to generate the preview from.
-       */
-      gutenberg_preview: function( parent, shortcode ) {
-        // No preview if the element is in the Site Editor iframe
-        // The iframe would have to load all the FV Player JS and CSS
-        if( jQuery(parent).closest('body').hasClass('block-editor-iframe__body') ) {
-          return;
-        }
-
-        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
-          return;
-        }
-
-        var id = parent[0].id;
-
-        if (gutenberg_previews_loading[id] !== false) {
-          clearTimeout(gutenberg_previews_loading[id]);
-        }
-
-        var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + fv_player_editor.b64EncodeUnicode( shortcode );
-
-        // set timeout for the loading AJAX and wait a moment, as REACT will call this function
-        // even when we click into the Gutenberg block without actually editing anything
-        // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
-        gutenberg_previews_loading[id] = setTimeout(function() {
-          jQuery.get(url, function(response) {
-            jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
-          } ).always(function() {
-            gutenberg_previews_loading[id] = false;
-          })
-        }, 1500);
-      },
 
       get_playlist_items_count,
 
