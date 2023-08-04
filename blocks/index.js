@@ -1,10 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 import ServerSideRender from '@wordpress/server-side-render';
-import { createElement, RawHTML, useEffect } from '@wordpress/element';
+import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { SVG, Path, Panel, PanelBody, TextControl, TextareaControl, Button } from '@wordpress/components';
+import { SVG, Path, Panel, PanelBody, TextControl, TextareaControl, Popover, Button } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
   icon: {
@@ -52,7 +52,17 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     const { src, splash, title, shortcodeContent, player_id, splash_attachment_id } = attributes;
     const blockProps = useBlockProps();
 
+    // block is being loaded
     useEffect(() => {
+      // TODO: fetch data from server
+
+      ajaxUpdateAttributes({ ...attributes });
+    }, []);
+
+    // block is being updated
+    useEffect(() => {
+      ajaxUpdateAttributes({ ...attributes });
+
       setTimeout( function() {
         fv_player_load();
       }, 1000);
@@ -61,6 +71,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       setTimeout( function() {
         fv_player_load();
       }, 8000);
+
     }, [src, splash, title, shortcodeContent, player_id, splash_attachment_id]);
 
     // handle ajax update of attributes
@@ -85,6 +96,11 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       .then((data) => {
         if (data.error) {
           console.error('Error:', data.error);
+          return;
+        }
+
+        if(data.info) {
+          console.info('Info:', data.info);
           return;
         }
 
@@ -165,9 +181,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 <p>{__('Looking for advanced properties?', 'fv-player-gutenberg')}</p>
                 <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
                 <input className='fv-player-gutenberg-splash-attachement-id' type="hidden" value={splash_attachment_id} />
+                <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
                 <input className='fv-player-gutenberg-player-id' type="hidden" value={player_id} />
                 <input
-                  className=" attachement-shortcode fv-player-editor-field"
+                  className="attachement-shortcode fv-player-editor-field"
                   type="hidden"
                   value={shortcodeContent}
                   onChange={() =>{

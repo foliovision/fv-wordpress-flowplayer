@@ -584,6 +584,12 @@ function fv_player_guttenberg_attributes_save() {
 
     global $FV_Player_Db;
 
+    if( empty( $player_id) && empty($splash_attachment_id) && empty($src) && empty($splash) && empty($title) ) {
+      wp_send_json(array(
+        'info' => 'No data to save'
+      ));
+    }
+
     // new player
     if( !$player_id ) {
       $player_id =  $FV_Player_Db->import_player_data(false, false, array(

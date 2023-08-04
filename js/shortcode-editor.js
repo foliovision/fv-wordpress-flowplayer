@@ -2204,7 +2204,14 @@ jQuery(function() {
           $fv_player_custom_meta_box.trigger('fv_flowplayer_shortcode_insert');
         }
 
-        // TODO: Update the fields in the Gutenberg block
+        // Update the Gutenberg fields
+        if( get_current_player_object().videos && get_current_player_object().videos[0] && fv_player_editor.clientId ) {
+          var src = get_current_player_object().videos[0].src,
+          splash = get_current_player_object().videos[0].splash,
+          title = get_current_player_object().videos[0].title;
+
+          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title});
+        }
 
       } else if( current_player_db_id > 0 ) {
 
@@ -2317,9 +2324,16 @@ jQuery(function() {
 
       var
         field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
+        clientId = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-gutenberg-client-id').val(),
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length,
         shortcode = false,
         shortcode_parse_fix = false;
+
+      if( clientId ) {
+        fv_player_editor.clientId = clientId;
+      } else {
+        fv_player_editor.clientId = null;
+      }
 
       // if we've got a numeric DB ID passed to this function, use it directly
       // but don't replace editor_content, since we'll need that to be actually updated
@@ -3168,6 +3182,10 @@ jQuery(function() {
 
             insert_shortcode( shortcode_insert );
 
+            if( fv_player_editor.clientId ) {
+              wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { shortcodeContent: shortcode_insert });
+            }
+
             jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
 
           } else {
@@ -3291,7 +3309,7 @@ jQuery(function() {
 
       // is there a Gutenberg field together in wrapper with the button?
       } else if( gutenberg.length ) {
-        // TODO: Update the fields in the Gutenberg block
+        // TODO: Update the fields in the Gutenberg block ?
 
       // is there a plain text field together in wrapper with the button?
       } else if (field.length) {
