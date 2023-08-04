@@ -16,6 +16,14 @@ function fv_player_gutenberg() {
       'editor_script' => 'fv-player-gutenberg',
       'render_callback' => 'fv_player_block_render',
       'attributes' => array(
+        'align' => array( // block alignment in popover
+          'type' => 'string',
+          'default' => '',
+        ),
+        'className' => array( // set in advanced block settings
+          'type' => 'string',
+          'default' => '',
+        ),
         'src' => array(
           'type' => 'string',
           'default' => '',
@@ -48,7 +56,7 @@ function fv_player_gutenberg() {
 
 function fv_player_block_render($attributes, $content, $block) {
   ob_start();
-  echo ! empty( $attributes['player_id'] ) ? do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '"]' ) : '';
+  echo ! empty( $attributes['player_id'] ) ? '<div class="'.$attributes['className'].'">' . do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '"]' ) . '</div>' : 'No player created yet.';
   $output = ob_get_clean();
   return $output;
 }

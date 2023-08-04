@@ -21,6 +21,9 @@ registerBlockType( 'fv-player-gutenberg/basic', {
   description: __( 'Embed a video from your Media Library or upload a new one.', 'fv-player-gutenberg' ),
   category: 'media',
   keywords: ['fv player', 'player', 'fv', 'flowplayer', 'freedomplayer', 'video', 'embed', 'media', 'stream'],
+  supports: {
+    align: true,
+  },
   attributes: {
     src: {
       type: 'string',
@@ -195,8 +198,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
             </PanelBody>
           </Panel>
         </InspectorControls>
-
-        <RawHTML>{shortcodeContent}</RawHTML>
 
         <div { ...blockProps }>
             <ServerSideRender
