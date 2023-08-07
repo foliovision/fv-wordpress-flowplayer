@@ -218,6 +218,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         </InspectorControls>
 
         <div { ...blockProps }>
+          <p>Player ID: {player_id}</p>
             <ServerSideRender
               block="fv-player-gutenberg/basic"
               attributes={ attributes }
