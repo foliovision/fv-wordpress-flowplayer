@@ -61,6 +61,8 @@ function fv_player_block_render($attributes, $content, $block) {
 
     if( $attributes['align'] == 'wide' || $attributes['align'] == 'full' ) {
       $shortcode_dimensions = 'width="100%" height="100%"';
+    } else  if( $attributes['align'] == 'left' || $attributes['align'] == 'right' ) {
+      $shortcode_dimensions = 'align="left|right"';
     }
 
     echo '<div class="'.$attributes['className'].' align'. $attributes['align'] .'">' . do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '" '.$shortcode_dimensions.']' ) . '</div>';
