@@ -56,7 +56,27 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     const blockProps = useBlockProps();
     const [count, setCount] = useState(0);
 
-    // block is being loaded
+    const [debouncedSrc, setDebouncedSrc] = useState('');
+    const [debouncedTitle, setDebouncedTitle] = useState('');
+    const [debouncedSplash, setDebouncedSplash] = useState('');
+
+    // debounce block ajax
+    useEffect(() => {
+      const timeoutId = setTimeout(() => {
+        if (debouncedSrc !== attributes.src || debouncedTitle !== attributes.title || debouncedSplash !== attributes.splash) {
+          setDebouncedSrc(attributes.src);
+          setDebouncedTitle(attributes.title);
+          setDebouncedSplash(attributes.splash);
+          ajaxUpdateAttributes({ ...attributes });
+        }
+      }, 500);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, [src, title, splash]);
+
+    // block interval to load player
     useEffect(() => {
       const intervalId = setInterval(() => {
         fv_player_load();
@@ -76,8 +96,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // block is being updated
     useEffect(() => {
       ajaxUpdateAttributes({ ...attributes });
-
-    }, [src, splash, title, shortcodeContent, player_id, splash_attachment_id]);
+    }, [shortcodeContent, player_id, splash_attachment_id]);
 
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {
@@ -130,7 +149,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 value={src}
                 onChange={(newSrc) => {
                   setAttributes({ src: newSrc });
-                  ajaxUpdateAttributes({ ...attributes, src: newSrc });
                 }}
               />
               <MediaUploadCheck>
@@ -152,7 +170,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 value={splash}
                 onChange={(newSplash) => {
                   setAttributes({ splash: newSplash });
-                  ajaxUpdateAttributes({ ...attributes, splash: newSplash });
                 }}
               />
               <MediaUploadCheck>
@@ -179,7 +196,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 value={title}
                 onChange={(newTitle) => {
                   setAttributes({ title: newTitle });
-                  ajaxUpdateAttributes({ ...attributes, title: newTitle });
                 }}
               />
               <div className="fv-player-gutenberg">
