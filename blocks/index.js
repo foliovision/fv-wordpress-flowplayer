@@ -54,26 +54,28 @@ registerBlockType( 'fv-player-gutenberg/basic', {
   edit: ({ attributes, setAttributes, context, clientId}) => {
     const { src, splash, title, shortcodeContent, player_id, splash_attachment_id } = attributes;
     const blockProps = useBlockProps();
+    const [count, setCount] = useState(0);
 
     // block is being loaded
     useEffect(() => {
-      // TODO: fetch data from server
+      const intervalId = setInterval(() => {
+        fv_player_load();
+        setCount(count + 1);
+      }, 1000);
 
+      return () => {
+        clearInterval(intervalId);
+      };
+    }, [count]);
+
+    // block is being loaded
+    useEffect(() => {
       ajaxUpdateAttributes({ ...attributes });
     }, []);
 
     // block is being updated
     useEffect(() => {
       ajaxUpdateAttributes({ ...attributes });
-
-      setTimeout( function() {
-        fv_player_load();
-      }, 1000);
-
-      // just in case if the player is not loaded yet
-      setTimeout( function() {
-        fv_player_load();
-      }, 8000);
 
     }, [src, splash, title, shortcodeContent, player_id, splash_attachment_id]);
 
