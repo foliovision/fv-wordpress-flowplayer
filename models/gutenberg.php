@@ -56,7 +56,18 @@ function fv_player_gutenberg() {
 
 function fv_player_block_render($attributes, $content, $block) {
   ob_start();
-  echo ! empty( $attributes['player_id'] ) ? '<div class="'.$attributes['className'].' align'. $attributes['align'] .'">' . do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '"]' ) . '</div>' : 'No player created yet.';
+
+  if( !empty( $attributes['player_id'] ) ) {
+
+    if( $attributes['align'] == 'wide' || $attributes['align'] == 'full' ) {
+      $shortcode_dimensions = 'width="100%" height="100%"';
+    }
+
+    echo '<div class="'.$attributes['className'].' align'. $attributes['align'] .'">' . do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '" '.$shortcode_dimensions.']' ) . '</div>';
+  } else {
+    echo 'No player created yet.';
+  }
+
   $output = ob_get_clean();
   return $output;
 }
