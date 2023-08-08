@@ -111,11 +111,11 @@ function fv_player_add_missing_attributes_callback($matches) {
 
   $content = $attributes['shortcodeContent'];
 
-  return '<!-- wp:fv-player-gutenberg/basic ' . json_encode($attributes) . ' -->' . $content . '<!-- /wp:fv-player-gutenberg/basic -->';
+  return '<!-- wp:fv-player-gutenberg/basic ' . json_encode($attributes) . ' -->'. PHP_EOL . $content . PHP_EOL . '<!-- /wp:fv-player-gutenberg/basic -->';
 }
 
 function fv_player_update_block_attributes($content) {
-  $content = preg_replace_callback('/<!-- wp:fv-player-gutenberg\/basic -->(.*?)<!-- \/wp:fv-player-gutenberg\/basic -->/', 'fv_player_add_missing_attributes_callback', $content);
+  $content = preg_replace_callback('/<!-- wp:fv-player-gutenberg\/basic -->(.*?)<!-- \/wp:fv-player-gutenberg\/basic -->/s', 'fv_player_add_missing_attributes_callback', $content);
 
   return $content;
 }
