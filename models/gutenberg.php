@@ -79,3 +79,94 @@ function fv_player_block_render($attributes, $content, $block) {
 }
 
 add_action( 'init', 'fv_player_gutenberg' );
+
+function fv_player_add_missing_attributes_callback($matches) {
+  $player_id = preg_match('/id="(\d+)"/', $matches[0], $player_id_matches) ? $player_id_matches[1] : 0;
+
+  $player = new FV_Player_Db_Player( $player_id );
+
+  $attributes = array(
+    'align' => '',
+    'className' => '',
+    'src' => '',
+    'splash' => '',
+    'title' => '',
+    'shortcodeContent' => '',
+    'player_id' => '',
+    'splash_attachment_id' => '',
+    'forceUpdate' => 0
+  );
+
+  $attributes['player_id'] = $player_id;
+  $attributes['shortcodeContent'] = '[fvplayer id="' . $player_id . '"]';
+
+  // get data from first video
+  foreach( $player->getVideos() AS $video ) {
+    $attributes['src'] = $video->getSrc();
+    $attributes['splash'] = $video->getSplash();
+    $attributes['title'] = $video->getTitle();
+    $attributes['splash_attachment_id'] = $video->getSplashAttachmentId();
+    break;
+  }
+
+  $content = $attributes['shortcodeContent'];
+
+  return '<!-- wp:fv-player-gutenberg/basic ' . json_encode($attributes) . ' -->' . $content . '<!-- /wp:fv-player-gutenberg/basic -->';
+}
+
+function fv_player_update_block_attributes($content) {
+  $content = preg_replace_callback('/<!-- wp:fv-player-gutenberg\/basic -->(.*?)<!-- \/wp:fv-player-gutenberg\/basic -->/', 'fv_player_add_missing_attributes_callback', $content);
+
+  return $content;
+}
+
+function fv_player_handle_post_content($content) {
+  if ( ! is_singular() ) {
+    return $content;
+  }
+
+  // get post object
+  global $post;
+
+  if ( ! $post ) {
+    return $content;
+  }
+
+  $post_id = $post->ID;
+
+  $updated_content = fv_player_update_block_attributes($content);
+
+  // check if changed
+  if ( $updated_content !== $content ) {
+    // update post
+    wp_update_post( array(
+      'ID' => $post_id,
+      'post_content' => $updated_content,
+    ) );
+  }
+
+  return $updated_content;
+}
+
+// frontend
+add_filter( 'the_content', 'fv_player_handle_post_content' );
+
+function fv_player_handle_rest_content($response) {
+  $updated_content = fv_player_update_block_attributes($response->data['content']['raw']);
+
+  // check if changed
+  if ( $updated_content !== $response->data['content']['raw'] ) {
+    // update post
+    wp_update_post( array(
+      'ID' => $response->data['id'],
+      'post_content' => $updated_content,
+    ) );
+
+    $response->data['content']['raw'] = $updated_content;
+  }
+
+  return $response;
+}
+
+// editor - TODO: handle every post type
+add_filter( 'rest_prepare_post', 'fv_player_handle_rest_content' );
