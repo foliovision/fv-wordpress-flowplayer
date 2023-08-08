@@ -132,11 +132,15 @@ class flowplayer_frontend extends flowplayer
 
     // restore list styling from the shortcode, if provided,
     // as it needs to override the DB value
-    if (!empty($args['liststyle'])) {
-      $this->aCurArgs['liststyle'] = $args['liststyle'];
-    }
-    if ( isset($args['lightbox']) ) {
-      $this->aCurArgs['lightbox'] = $args['lightbox'];
+    foreach(
+      array(
+        'height',
+        'lightbox',
+        'liststyle',
+        'width',
+      ) as $arg
+    ) {
+      $this->aCurArgs[ $arg ] = $args[ $arg ];
     }
 
     // load attributes from player into $this->aCurArgs if we're receiving
