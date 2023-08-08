@@ -49,6 +49,10 @@ function fv_player_gutenberg() {
           'type' => 'string',
           'default' => '0',
         ),
+        'forceUpdate' => array(
+          'type' => 'string',
+          'default' => 0,
+        )
       ),
     ));
   }

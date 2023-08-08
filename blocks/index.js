@@ -49,6 +49,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     splash_attachment_id: {
       type: 'string',
       default: '0',
+    },
+    forceUpdate: {
+      type: 'string',
+      default: '0',
     }
   },
   edit: ({ attributes, setAttributes, context, clientId}) => {
@@ -63,10 +67,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // debounce block ajax
     useEffect(() => {
       const timeoutId = setTimeout(() => {
-        if (debouncedSrc !== attributes.src || debouncedTitle !== attributes.title || debouncedSplash !== attributes.splash) {
-          setDebouncedSrc(attributes.src);
-          setDebouncedTitle(attributes.title);
-          setDebouncedSplash(attributes.splash);
+        if (debouncedSrc !== src || debouncedTitle !== title || debouncedSplash !== splash) {
+          setDebouncedSrc(src);
+          setDebouncedTitle(title);
+          setDebouncedSplash(splash);
           ajaxUpdateAttributes({ ...attributes });
         }
       }, 500);
@@ -119,24 +123,16 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       }).
       then((response) => response.json())
       .then((data) => {
-        if (data.error) {
-          console.error('Error:', data.error);
-          return;
+        if( data.shortcodeContent && data.player_id ) {
+          //  update the shortcode content and player id
+          setAttributes({ shortcodeContent: data.shortcodeContent });
+          setAttributes({ player_id: data.player_id });
+          setAttributes({ forceUpdate: Math.random() });
         }
-
-        if(data.info) {
-          console.info('Info:', data.info);
-          return;
-        }
-
-        //  update the shortcode content and player id
-        setAttributes({ shortcodeContent: data.shortcodeContent });
-        setAttributes({ player_id: data.player_id });
       })
       .catch((error) => {
         console.error('Error:', error);
       });
-
     }
 
     return (
