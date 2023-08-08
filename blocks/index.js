@@ -76,10 +76,11 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       };
     }, [src, title, splash]);
 
-    // block interval to load player
+    // block interval to load player and resize
     useEffect(() => {
       const intervalId = setInterval(() => {
         fv_player_load();
+        fv_flowplayer_safety_resize();
         setCount(count + 1);
       }, 1000);
 
@@ -218,7 +219,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         </InspectorControls>
 
         <div { ...blockProps }>
-          <p>Player ID: {player_id}</p>
             <ServerSideRender
               block="fv-player-gutenberg/basic"
               attributes={ attributes }
