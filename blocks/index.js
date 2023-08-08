@@ -4,7 +4,7 @@ import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { SVG, Path, Panel, PanelBody, TextControl, TextareaControl, Popover, Button } from '@wordpress/components';
+import { SVG, Path, Panel, PanelBody, TextControl, Button } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
   icon: {
