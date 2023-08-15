@@ -2343,7 +2343,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
 
-    return apply_filters( 'fv_flowplayer_get_mime_type', $output, $media );
+    $output = apply_filters( 'fv_flowplayer_get_mime_type', $output, $media );
+
+    // The custom HTML5 engine to support Ajax loading of video source URL is now part of core, no need to init it in any special way
+    if ( 'video/fv-mp4' === $output ) {
+      $output = 'video/mp4';
+    }
+
+    return $output;
   }
 
 
