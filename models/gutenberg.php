@@ -141,32 +141,17 @@ function fv_player_handle_post_content($content) {
 
   $updated_content = fv_player_update_block_attributes($content);
 
-  // check if changed
-  if ( $updated_content !== $content ) {
-    // update post
-    wp_update_post( array(
-      'ID' => $post_id,
-      'post_content' => $updated_content,
-    ) );
-  }
-
   return $updated_content;
 }
 
-// frontend
-add_filter( 'the_content', 'fv_player_handle_post_content' );
+// frontend, before block generates HTML
+add_filter( 'the_content', 'fv_player_handle_post_content', 8 );
 
 function fv_player_handle_rest_content($response) {
   $updated_content = fv_player_update_block_attributes($response->data['content']['raw']);
 
   // check if changed
   if ( $updated_content !== $response->data['content']['raw'] ) {
-    // update post
-    wp_update_post( array(
-      'ID' => $response->data['id'],
-      'post_content' => $updated_content,
-    ) );
-
     $response->data['content']['raw'] = $updated_content;
   }
 
@@ -175,3 +160,4 @@ function fv_player_handle_rest_content($response) {
 
 // editor - TODO: handle every post type
 add_filter( 'rest_prepare_post', 'fv_player_handle_rest_content' );
+add_filter( 'rest_prepare_page', 'fv_player_handle_rest_content' );
