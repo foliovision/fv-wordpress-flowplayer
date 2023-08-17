@@ -368,17 +368,17 @@ class FV_Player_Checker {
           
           $objVideo->updateMetaValue('last_video_meta_check', time());
 
-          if( $meta_data['is_live'] ) {
+          if( is_array($meta_data) && !empty($meta_data['is_live']) && $meta_data['is_live'] ) {
             $objVideo->updateMetaValue( 'live', true );
           } else {
             $objVideo->deleteMetaValue( 'live', true );
           }
           
-          if( $meta_data['duration'] ) {
+          if( is_array($meta_data) && !empty($meta_data['duration']) && $meta_data['duration'] ) {
             $objVideo->updateMetaValue( 'duration', $meta_data['duration'] );
           }
 
-          if( $meta_data['error'] ) {
+          if( is_array($meta_data) && !empty($meta_data['error']) && $meta_data['error'] ) {
             $objVideo->updateMetaValue( 'error', $meta_data['error'] );
 
             $error_count = $objVideo->getMetaValue( 'error_count', true );
