@@ -1525,7 +1525,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   
   
   function css_option() {
-    return 'css_writeout-'.sanitize_title(home_url());
+    global $fv_wp_flowplayer_ver;
+    return 'css_writeout-'.sanitize_title(home_url()) . '-' . $fv_wp_flowplayer_ver;
   }
   
   
