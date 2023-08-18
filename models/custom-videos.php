@@ -87,15 +87,22 @@ class FV_Player_Custom_Videos {
     $defaults = array( 'labels' => array( 'edit' => 'Edit Video', 'remove' => 'Remove Video' ), 'multiple' => true );
     $args = !empty($post) && !empty($FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type]) ? $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta] : $defaults;
     
+    if( $video ) {
+      $video = wp_kses( $video, 'post' );
+    }
+
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
     if( $edit ) {
       $add_another = $args['multiple'] ? "<button class='button fv-player-editor-more' style='display:none'>Add Another Video</button>" : false;
       
       $preview = false;
       $before = 0;
+
       if( $video ) {
-        $preview = do_shortcode( str_replace( '[fvplayer ', '[fvplayer autoplay="false" ', $video ) );
         global $fv_fp;
+
+        $preview = do_shortcode( str_replace( '[fvplayer ', '[fvplayer autoplay="false" ', $video ) );
+        
         if( $fv_fp->current_player() ) {
           $before = count($fv_fp->current_player()->getVideos());
         }
@@ -119,7 +126,7 @@ class FV_Player_Custom_Videos {
           </div>
         </div>";
     } else {
-      $html = do_shortcode($video);      
+      $html = do_shortcode($video);
     }
     return $html;
   }
@@ -145,9 +152,9 @@ class FV_Player_Custom_Videos {
       
     } else if( $args['edit'] ) {
       $html .= '<'.$args['wrapper'].' class="fv-player-custom-video">';
-        $html .= $this->get_html_part(false, true);        
-        $html .= '<div style="clear: both"></div>'."\n";      
-      $html .= '</'.$args['wrapper'].'>';      
+        $html .= $this->get_html_part(false, true);
+        $html .= '<div style="clear: both"></div>'."\n";
+      $html .= '</'.$args['wrapper'].'>';
     }
     
     $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."]' value='".esc_attr($this->id)."' />";
@@ -158,7 +165,7 @@ class FV_Player_Custom_Videos {
   
   public function get_videos() {
     if( $this->type == 'user' ) {
-      $aMeta = get_user_meta( $this->id, $this->meta );      
+      $aMeta = get_user_meta( $this->id, $this->meta );
     } else if( $this->type == 'post' ) {
       $aMeta = get_post_meta( $this->id, $this->meta );
     }
@@ -323,44 +330,48 @@ class FV_Player_Custom_Videos_Master {
   
   
   function save() {
-    
     if( !isset($_POST['fv_player_videos']) || !isset($_POST['fv-player-custom-videos-entity-type']) || !isset($_POST['fv-player-custom-videos-entity-id']) ) {
       return;
     }
-    
-    
-    
+
     //  todo: permission check!
     foreach( $_POST['fv_player_videos'] AS $meta => $videos ) {
+      $meta = sanitize_text_field( $meta );
+
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'user' ) {
         delete_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta );
 
         foreach( $videos AS $video ) {
           if( strlen($video) == 0 ) continue;
-              
+
+          // strip html tags to prevent XSS
+          $video = sanitize_text_field( $video );
+
           add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $video );
         }
-      } 
-      
+      }
     }
-    
   }
   
   function save_post( $post_id ) {
     if( !isset($_POST['fv_player_videos']) || !isset($_POST['fv-player-custom-videos-entity-type']) || !isset($_POST['fv-player-custom-videos-entity-id']) ) {
       return;
     }
-    
+
     //  todo: permission check!
-    
     foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
+      $meta = sanitize_text_field( $meta );
+
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' && $_POST['fv-player-custom-videos-entity-id'][$meta] == $post_id ) {
         delete_post_meta( $post_id, $meta );
 
         if( is_array($value) && count($value) > 0 ) {
-          foreach( $value AS $k => $v ) {            
+          foreach( $value AS $k => $v ) {
             if( strlen($v) == 0 ) continue;
-            
+
+            // strip html tags to prevent XSS
+            $v = sanitize_text_field( $v );
+
             add_post_meta( $post_id, $meta, $v );
           }
         }
