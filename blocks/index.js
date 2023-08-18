@@ -64,6 +64,8 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     const [debouncedTitle, setDebouncedTitle] = useState('');
     const [debouncedSplash, setDebouncedSplash] = useState('');
 
+    let firstLoad = true;
+
     // debounce block ajax
     useEffect(() => {
       const timeoutId = setTimeout(() => {
@@ -95,13 +97,46 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
     // block is being loaded
     useEffect(() => {
-      ajaxUpdateAttributes({ ...attributes });
+      if (firstLoad && player_id > 0) {
+        console.log('first load');
+        firstLoad = false;
+        ajaxUpdateFromDB();
+      } else {
+        ajaxUpdateAttributes({ ...attributes });
+      }
     }, []);
 
     // block is being updated
     useEffect(() => {
       ajaxUpdateAttributes({ ...attributes });
     }, [shortcodeContent, player_id, splash_attachment_id]);
+
+    const ajaxUpdateFromDB = () => {
+      const data = new FormData();
+      data.append('action', 'fv_player_guttenberg_attributes_load');
+      data.append('player_id', player_id);
+
+      // nonce is required for security
+      data.append('security', fv_player_gutenberg.nonce);
+
+      fetch(ajaxurl, {
+        method: 'POST',
+        body: data,
+        credentials: 'same-origin',
+      }).then((response) => response.json())
+      .then((data) => {
+        if( data.src && data.splash && data.title ) {
+          setAttributes({ splash: data.splash });
+          setAttributes({ title: data.title });
+          setAttributes({ src: data.src });
+          setAttributes({ splash_attachment_id: data.splash_attachment_id });
+          setAttributes({ forceUpdate: Math.random() });
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    };
 
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {

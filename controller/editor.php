@@ -571,6 +571,49 @@ function fv_player_splashcreen_action() {
   wp_die();
 }
 
+add_action( 'wp_ajax_fv_player_guttenberg_attributes_load', 'fv_player_guttenberg_attributes_load' );
+
+function fv_player_guttenberg_attributes_load() {
+  if( check_ajax_referer( "fv_player_gutenberg", "security" , false ) == 1 ) {
+    $player_id = intval($_POST['player_id']);
+
+    if( empty( $player_id ) ) {
+      wp_send_json(array(
+        'info' => 'No player ID'
+      ));
+    }
+
+    $player = new FV_Player_Db_Player( $player_id );
+
+    if( $player && $player->getIsValid() ) {
+      $player_id = $player->getId();
+      $video_src = '';
+      $video_splash = '';
+      $video_title = '';
+      $video_splash_attachment_id = '';
+
+      foreach( $player->getVideos() AS $video ) {
+        $video_src = $video->getSrc();
+        $video_splash = $video->getSplash();
+        $video_title = $video->getTitle();
+        $video_splash_attachment_id = $video->getSplashAttachmentId();
+        break; // only first video
+      }
+
+      wp_send_json( array(
+        'src' => $video_src,
+        'splash' => $video_splash,
+        'title' => $video_title,
+        'splash_attachment_id' => $video_splash_attachment_id
+      ) );
+    }
+  }
+
+  wp_send_json( array(
+    'error' => 'Nonce error: please reload your page'
+  ) );
+}
+
 
 add_action( 'wp_ajax_fv_player_guttenberg_attributes_save', 'fv_player_guttenberg_attributes_save' );
 
