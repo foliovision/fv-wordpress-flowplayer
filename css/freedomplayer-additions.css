@@ -599,6 +599,7 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer.is-audio .fp-play.fp-visible svg .flowplayer.is-audio .fp-speed-flash { display:none; }
 .flowplayer.is-audio .fp-waiting { margin:0 auto; }
 .flowplayer.is-audio .fp-speed.fp-hilite { opacity:0;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0); }
+.flowplayer.is-audio .fp-ui> .fp-play, .flowplayer.is-audio .fp-ui> .fp-forward, .flowplayer.is-audio .fp-ui> .fp-rewind {display: none}
 
 .flowplayer.fixed-controls.is-audio, .flowplayer.skin-custom.fixed-controls.is-audio { margin-bottom:2.8em;height:2.8em }
 .flowplayer.fixed-controls.is-audio.fp-slim { height:2.8em }

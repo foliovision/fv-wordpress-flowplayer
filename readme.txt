@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.2
+Tested up to: 6.3
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.37.7212 - 2023/08/02 =
+
+* HLS.js - upgrade to 1.4.10
+* Optimize FV Flowplayer JS loading - disabled if using WP Rocket "Delay JavaScript execution"
+* Remember video position - on by default for now plugin users
+* Sticky player - option to enable for mobile users. Thanks to Dennis Isseult https://www.dmimedia.nl
+* Bugfix - Safari - disable HLS.js for Safari 16.5 and above due to playback issues on some websites
 
 = 7.5.36.7212 - 2023/05/03 =
 

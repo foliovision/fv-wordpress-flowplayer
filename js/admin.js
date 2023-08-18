@@ -148,8 +148,10 @@
           style += sanitizeCSS(newStyle);
 
         } else {
-          var value = $this.val().replace(/^#/,'');
-          if( opacity = $this.minicolors('opacity') ) {
+          var value = $this.val().replace(/^#/,''),
+            opacity = $this.minicolors('opacity');
+
+          if( opacity ) {
             value = hexToRgb(value);
             value = 'rgba('+value[0]+','+value[1]+','+value[2]+','+opacity+')';
           }
@@ -187,8 +189,10 @@
 
     $('form#wpfp_options').on('submit', function(e) {
       $('input.color-opacity').each( function() {
-        var input = $(this);
-        if( opacity = input.minicolors('opacity') ) {
+        var input = $(this),
+          opacity = input.minicolors('opacity');
+
+        if( opacity ) {
           var color = hexToRgb( input.val() );
           input.val( 'rgba('+color[0]+','+color[1]+','+color[2]+','+opacity+')' );
         }
@@ -197,7 +201,7 @@
   });
 
   $(document).ready( function() {
-    $("a[data-setting-change]").on('click', function(e) {
+    $(document).on('click', 'a[data-setting-change]', function(e) {
       e.preventDefault();
 
       var name = $(this).data('setting-change'),
@@ -226,7 +230,7 @@
       } else {
         hidden_input.val('1');
         password_input.hide();
-        if(password_input.val() || !$(this).data('is-empty') ) {
+        if( password_input.val() || !$(this).data('is-empty') ) {
           $(this).text('Change');
           secret_preview.show();
         }
@@ -244,7 +248,9 @@
       input.val( rgb2hex(color) );
     }
 
-    if( rgba && ( opacity = input.minicolors('opacity') ) ) {
+    var opacity = input.minicolors('opacity');
+
+    if( rgba && ( opacity ) ) {
       input.css('box-shadow', 'inset 0 0 0 1000px rgba('+rgba[0]+','+rgba[1]+','+rgba[2]+','+opacity+')' );
     } else {
       input.css('background-color', input.val());

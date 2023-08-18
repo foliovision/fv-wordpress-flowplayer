@@ -830,7 +830,7 @@ jQuery( function($) {
     }
 
     if( !is_trailer ) {
-      if( extra ) {
+      if( extra && window.fv_player_editor ) {
         fv_player_editor.get_field( 'hls_hlskey', true ).val( extra.hlskey ).trigger( 'change' );
 
         fv_player_editor.get_field( 'timeline_previews', true ).val( extra.timeline_previews ).trigger( 'change' );
@@ -855,12 +855,14 @@ jQuery( function($) {
 
     }
 
-    var audio_checkbox = fv_player_editor.get_field('audio', true);
-    if( extra && extra.mime ) {
-      if( extra.mime.indexOf('audio') !== -1 ) {
-        audio_checkbox.prop( "checked", true );
-      } else {
-        audio_checkbox.prop( "checked", false );
+    if ( window.fv_player_editor ) {
+      var audio_checkbox = fv_player_editor.get_field('audio', true);
+      if( extra && extra.mime ) {
+        if( extra.mime.indexOf('audio') !== -1 ) {
+          audio_checkbox.prop( "checked", true );
+        } else {
+          audio_checkbox.prop( "checked", false );
+        }
       }
     }
 
@@ -885,7 +887,7 @@ jQuery( function($) {
 
   $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
     var
-      activeTabId = jQuery('.media-router .media-menu-item.active').attr('id'),
+      activeTabId = jQuery('.media-modal:visible .media-router .media-menu-item.active').attr('id'), // TODO: API to get back to actual tab
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
 
     $('#media-search-input').val(''); // remove search when clicked on folder

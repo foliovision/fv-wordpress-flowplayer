@@ -443,17 +443,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
       $class = $have_visible_setting ? 'is-open' : 'fv_player_interface_hide';
 
-      echo "<div class='components-panel__body fv-player-editor-options-".$group." ".$class."'>\n";
+      echo "<div class='fv_player_editor-panel__body fv-player-editor-options-".$group." ".$class."'>\n";
       
       if( !empty($group_options['label']) ) {
-        echo "<h2 class='components-panel__body-title'><button type='button' aria-expanded='true' class='components-button components-panel__body-toggle'>".$group_options['label']."</button></h2>\n";
+        echo "<h2 class='fv_player_editor-panel__body-title'><button type='button' aria-expanded='true' class='components-button fv_player_editor-panel__body-toggle'>".$group_options['label']."</button></h2>\n";
       }
 
       if( $group_options['sort'] ) {
         usort( $group_options['items'], 'fv_player_editor_input_sort' );
       }
 
-      echo "<div class='fv-components-panel__body-content'>\n";
+      echo "<div class='fv-fv_player_editor-panel__body-content'>\n";
       
       foreach( $group_options['items'] AS $input ) {
         if( isset($input['default']) ) {
@@ -464,8 +464,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
       }
 
-      echo "</div><!-- .fv-components-panel__body-content -->\n";
-      echo "</div><!-- .components-panel__body -->\n";
+      echo "</div><!-- .fv-fv_player_editor-panel__body-content -->\n";
+      echo "</div><!-- .fv_player_editor-panel__body -->\n";
     }
   }
   
@@ -655,7 +655,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( fv_player_editor_video_fields() );
 
             // Legacy
-            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
+            echo "<div class='fv_player_editor-panel__body fv-player-editor-legacy'>\n";
 
               // TODO: Will these still actually work?
               do_action('fv_flowplayer_shortcode_editor_before');
@@ -673,7 +673,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             fv_player_editor_input_group( fv_player_editor_subtitle_fields() );
 
             // Legacy
-            echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
+            echo "<div class='fv_player_editor-panel__body fv-player-editor-legacy'>\n";
 
               // TODO: Will these still actually work?
               do_action('fv_flowplayer_shortcode_editor_subtitles_tab_prepend');
@@ -967,7 +967,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
           <?php
           // Legacy
-          echo "<div class='components-panel__body fv-player-editor-legacy'>\n";
+          echo "<div class='fv_player_editor-panel__body fv-player-editor-legacy'>\n";
 
             // TODO: Will these still actually work?
             do_action('fv_flowplayer_shortcode_editor_after');

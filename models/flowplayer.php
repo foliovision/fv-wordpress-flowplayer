@@ -559,7 +559,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && strcmp($selected ,$k) == 0 ) || (strcmp($option,$k) == 0) ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
             <?php endforeach; ?>
           </select>
-        </td>
+
+          <?php if ( $help ) {
+            echo $help;
+          } ?>
+          <?php if ( $more ) { ?>
+            <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+          <?php } ?>
+        </td>   
       </tr>
 
     <?php
@@ -579,6 +586,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $conf['notice_new_lightbox'] = true;
       $conf['notice_db'] = true;
       $conf['notice_xml_sitemap_iframes'] = true;
+
+      $conf['video_position_save_enable'] = true;
 
       $conf['js-optimize'] = true;
     }
@@ -691,6 +700,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // set to slim, if no skin set
     if (!isset($conf['skin'])) $conf['skin'] = 'slim';
+
+    if ( ! empty( $conf['sticky_video'] ) && 'true' === $conf['sticky_video'] ) {
+      $conf['sticky_video'] = 'desktop';
+    }
 
     $conf = apply_filters('fv_player_conf_defaults', $conf);
 
@@ -1589,7 +1602,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   function css_option() {
-    return 'css_writeout-'.sanitize_title(home_url());
+    global $fv_wp_flowplayer_ver;
+    return 'css_writeout-'.sanitize_title(home_url()) . '-' . $fv_wp_flowplayer_ver;
   }
 
 
@@ -2330,7 +2344,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
 
-    return apply_filters( 'fv_flowplayer_get_mime_type', $output, $media );
+    $output = apply_filters( 'fv_flowplayer_get_mime_type', $output, $media );
+
+    // The custom HTML5 engine to support Ajax loading of video source URL is now part of core, no need to init it in any special way
+    if ( 'video/fv-mp4' === $output ) {
+      $output = 'video/mp4';
+    }
+
+    return $output;
   }
 
 

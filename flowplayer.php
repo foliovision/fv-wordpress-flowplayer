@@ -3,7 +3,7 @@
 Plugin Name: FV Player
 Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.8.
-Version: 7.9.3
+Version: 7.9.8
 Author URI: http://foliovision.com/
 Requires PHP: 5.6
 Text Domain: fv-wordpress-flowplayer
@@ -35,8 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '7.9.6';
-$fv_wp_flowplayer_core_ver = '7.2.14.12';
+$fv_wp_flowplayer_ver = '7.9.9';
+$fv_wp_flowplayer_core_ver = '7.2.14.14';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
@@ -89,8 +89,19 @@ include_once(dirname( __FILE__ ) . '/models/xml-video-sitemap.php');
 global $fv_fp;
 $fv_fp = new flowplayer_frontend();
 
-// If it's in wp-admin, cron or if it's Gutenberg post saving
-if( wp_doing_cron() || (is_admin() || $_SERVER['REQUEST_METHOD'] == "POST" && preg_match( '~/wp-json/wp/v2/posts/\d+~', $_SERVER['REQUEST_URI'] ) ) ) {
+/**
+ * Load back-end code if it's wp-admin, cron or if it's Gutenberg post saving.
+ * 
+ * For the URL match we must consider:
+ * 
+ * * /wp-json/wp/v2/posts/{post ID}
+ * * /index.php?rest_route=%2Fwp%2Fv2%2Fposts%2F{post ID}
+ */
+if (
+  wp_doing_cron() ||
+  is_admin() ||
+  "POST" === $_SERVER['REQUEST_METHOD'] && preg_match( '~/wp/v2/posts/\d+~', urldecode( $_SERVER['REQUEST_URI'] ) )
+) {
   include_once( dirname( __FILE__ ) . '/controller/backend.php' );
   include_once( dirname( __FILE__ ) . '/controller/editor.php' );
   include_once( dirname( __FILE__ ) . '/controller/settings.php' );

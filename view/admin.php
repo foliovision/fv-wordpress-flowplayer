@@ -1639,22 +1639,26 @@ function fv_flowplayer_admin_skin_subtitles() {
 function fv_flowplayer_admin_skin_sticky() {
 	global $fv_fp;
 ?>
-  <p><?php _e('This feature lets your viewers continue watching the video as they scroll past it. It applies to desktop computer displays - minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
-  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
-    <?php
-    $fv_fp->_get_radio( array(
-      'key' => 'sticky_video',
-      'name' => __('', 'fv-wordpress-flowplayer'),
-      'style' => 'columns',
-      'values' => array(
-        'off'     => 'Off',
-        'desktop' => 'Desktop',
-        'all'     => 'Desktop and Mobile'
-      ),
-    ) );
-    ?>
+  <p><?php _e('This feature lets your viewers continue watching the video as they scroll past it. For desktop computers we consider a display with minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
+  <table class="thirds">
+    <tr>
+      <?php
+      $fv_fp->_get_radio( array(
+        'key' => 'sticky_video',
+        'name' => __('', 'fv-wordpress-flowplayer'),
+        'style' => 'columns',
+        'values' => array(
+          'off'     => 'Off',
+          'desktop' => 'Desktop',
+          'all'     => 'Desktop and Mobile'
+        ),
+      ) );
+      ?>
+    </tr>
+  </table>  
+  <table class="form-table2">
     <tr>  
-      <td><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td class="first"><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="sticky_place" name="sticky_place">
           <option value="right-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
@@ -1665,14 +1669,17 @@ function fv_flowplayer_admin_skin_sticky() {
       </td>
     </tr>
     <tr>
-      <td><label for="sticky_width"><?php _e('Desktop Player width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
-      <td><input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/></td>
+      <td><label for="sticky_width"><?php _e('Desktop Player Width [px]', 'fv-wordpress-flowplayer'); ?></label></td>
+      <td>
+        <input id="sticky_width" name="sticky_width" title="<?php _e('Enter value in pixels', 'fv-wordpress-flowplayer'); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/>
+        <?php _e( 'Used on desktop and (if enabled) also on mobile in landscape orientation and tablets.', 'fv-wordpress-flowplayer' ); ?>
+      </td>
     </tr>
     <?php
 	  $fv_fp->_get_select(
-			__('Mobile Player Width', 'fv-wordpress-flowplayer'),
+			__( 'Mobile Player Width', 'fv-wordpress-flowplayer' ),
 			'sticky_width_mobile',
-			false,
+			__( 'Used on mobile (device width lower than 480 pixels).', 'fv-wordpress-flowplayer' ),
 			false,
 			array(
 				'100' => '100%',
@@ -1680,7 +1687,6 @@ function fv_flowplayer_admin_skin_sticky() {
 				'50'  => '50%'
 			)
 		); ?>
-
     <tr>
       <td colspan="2">
         <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>

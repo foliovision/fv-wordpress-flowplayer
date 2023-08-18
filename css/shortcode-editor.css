@@ -541,15 +541,15 @@ body.is-fv-player-editor-modal-open {
 /*
 New FV Player Editor inputs styling
 */
-#fv-player-shortcode-editor .components-panel__body {
+#fv-player-shortcode-editor .fv_player_editor-panel__body {
   border: none;
   border-top: 1px solid #e0e0e0;
   padding: 16px;
 }
-#fv-player-shortcode-editor .components-panel__body.fv-player-editor-legacy {
+#fv-player-shortcode-editor .fv_player_editor-panel__body.fv-player-editor-legacy {
   border-top: none;
 }
-#fv-player-shortcode-editor .fv-player-tab .components-panel__body:first-of-type {
+#fv-player-shortcode-editor .fv-player-tab .fv_player_editor-panel__body:first-of-type {
   border-top: 0;
 }
 
@@ -561,7 +561,7 @@ New FV Player Editor inputs styling
   width: calc( 50% - 2px );
   display: inline-block;
 }
-#fv-player-shortcode-editor .components-panel__body>.components-base-control:not(:last-of-type) {
+#fv-player-shortcode-editor .fv_player_editor-panel__body>.components-base-control:not(:last-of-type) {
  
 }
 
@@ -893,7 +893,7 @@ div#fv-player-editor-field-children-align {
     color: #585757;
 }
 
-#fv-player-shortcode-editor .components-panel__body-toggle.components-button .components-panel__arrow {
+#fv-player-shortcode-editor .fv_player_editor-panel__body-toggle.components-button .components-panel__arrow {
     position: absolute;
     right: 16px;
     top: 50%;
@@ -903,7 +903,7 @@ div#fv-player-editor-field-children-align {
     transition: 0.1s color ease-in-out;
 }
 
-#fv-player-shortcode-editor .components-panel__body > .components-panel__body-title {
+#fv-player-shortcode-editor .fv_player_editor-panel__body > .fv_player_editor-panel__body-title {
     display: block;
     padding: 0;
     font-size: inherit;
@@ -912,7 +912,7 @@ div#fv-player-editor-field-children-align {
     transition: 0.1s background ease-in-out;
 }
 
-#fv-player-shortcode-editor .components-panel__body > .components-panel__body-title {
+#fv-player-shortcode-editor .fv_player_editor-panel__body > .fv_player_editor-panel__body-title {
     margin: -16px;
     margin-bottom: 5px;
 }
@@ -935,7 +935,7 @@ div#fv-player-editor-field-children-align {
     color: #1e1e1e;
 }
 
-#fv-player-shortcode-editor .components-panel__body-toggle.components-button {
+#fv-player-shortcode-editor .fv_player_editor-panel__body-toggle.components-button {
     position: relative;
     padding: 16px 48px 16px 16px;
     outline: none;
@@ -1208,10 +1208,10 @@ a.fvp_item_video-filename {
 }
 
 /* Legacy inputs in new editor style */
-.components-panel__body label {
+.fv_player_editor-panel__body label {
   display: block;
 }
-.components-panel__body .alignright {
+.fv_player_editor-panel__body .alignright {
   float: unset;
 }
 
