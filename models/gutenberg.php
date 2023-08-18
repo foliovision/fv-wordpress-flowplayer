@@ -126,18 +126,12 @@ function fv_player_update_block_attributes($content) {
 }
 
 function fv_player_handle_post_content($content) {
-  if ( ! is_singular() ) {
-    return $content;
-  }
-
   // get post object
   global $post;
 
   if ( ! $post ) {
     return $content;
   }
-
-  $post_id = $post->ID;
 
   $updated_content = fv_player_update_block_attributes($content);
 
@@ -158,6 +152,8 @@ function fv_player_handle_rest_content($response) {
   return $response;
 }
 
-// editor - TODO: handle every post type
-add_filter( 'rest_prepare_post', 'fv_player_handle_rest_content' );
-add_filter( 'rest_prepare_page', 'fv_player_handle_rest_content' );
+$post_types = get_post_types( array( 'show_in_rest' => true ), 'names' );
+
+foreach ( $post_types as $post_type ) {
+  add_filter( 'rest_prepare_' . $post_type, 'fv_player_handle_rest_content' );
+}
