@@ -40,7 +40,6 @@ class FV_Player_Custom_Videos {
     }
     
     if( is_admin() ) {
-      global $fv_fp;
       if( $this->have_videos() ) {
         global $FV_Player_Pro;
         if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
@@ -64,13 +63,11 @@ class FV_Player_Custom_Videos {
     
     $html .= $this->get_html( $args );
     
-    if( !is_admin() ) {
-      $html .= wp_nonce_field( 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), true, false );
-    }
+    $html .= wp_nonce_field( 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), true, false );
     
-    if( !is_admin() && !$args['no_form'] ) {      
+    if( !is_admin() && !$args['no_form'] ) {
       $html .= "<input type='hidden' name='action' value='fv-player-custom-videos-save' />";
-      $html .= "<input type='submit' value='Save Videos' />";   
+      $html .= "<input type='submit' value='Save Videos' />";
       $html .= "</form>";
     }
     
@@ -334,9 +331,12 @@ class FV_Player_Custom_Videos_Master {
       return;
     }
 
-    //  todo: permission check!
     foreach( $_POST['fv_player_videos'] AS $meta => $videos ) {
       $meta = sanitize_text_field( $meta );
+
+      if( !wp_verify_nonce($_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ,'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
+        continue;
+      }
 
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'user' ) {
         delete_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta );
@@ -358,9 +358,12 @@ class FV_Player_Custom_Videos_Master {
       return;
     }
 
-    //  todo: permission check!
     foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
       $meta = sanitize_text_field( $meta );
+
+      if( !wp_verify_nonce($_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ,'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
+        continue;
+      }
 
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' && $_POST['fv-player-custom-videos-entity-id'][$meta] == $post_id ) {
         delete_post_meta( $post_id, $meta );
