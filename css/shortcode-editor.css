@@ -475,10 +475,11 @@ body.is-fv-player-editor-modal-open {
   display: flex;
   justify-content: center;
   align-items: center; 
+  box-sizing: border-box;
 }
 #fv-player-shortcode-editor-right {
   float: left;
-  width: calc(33% - 1px);
+  width: 33%;
   position: relative;
   height: calc(100% - 60px);
 }
