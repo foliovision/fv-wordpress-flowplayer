@@ -55,15 +55,16 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       default: '0',
     }
   },
-  edit: ({ attributes, setAttributes, context, clientId}) => {
+  edit: ({ isSelected ,attributes, setAttributes, context, clientId}) => {
     const { src, splash, title, shortcodeContent, player_id, splash_attachment_id } = attributes;
     const blockProps = useBlockProps();
     const [count, setCount] = useState(0);
 
-    const [debouncedSrc, setDebouncedSrc] = useState('');
-    const [debouncedTitle, setDebouncedTitle] = useState('');
-    const [debouncedSplash, setDebouncedSplash] = useState('');
+    const [debouncedSrc, setDebouncedSrc] = useState(src);
+    const [debouncedTitle, setDebouncedTitle] = useState(title);
+    const [debouncedSplash, setDebouncedSplash] = useState(splash);
 
+    // we need to handle first load
     let firstLoad = true;
 
     // debounce block ajax
@@ -98,17 +99,16 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // block is being loaded
     useEffect(() => {
       if (firstLoad && player_id > 0) {
-        console.log('first load');
         firstLoad = false;
         ajaxUpdateFromDB();
-      } else {
-        ajaxUpdateAttributes({ ...attributes });
       }
     }, []);
 
-    // block is being updated
+    // used shorctcode editor or media library
     useEffect(() => {
-      ajaxUpdateAttributes({ ...attributes });
+      if( isSelected ) { // run only when block is selected
+        ajaxUpdateAttributes({ ...attributes });
+      }
     }, [shortcodeContent, player_id, splash_attachment_id]);
 
     const ajaxUpdateFromDB = () => {
@@ -123,14 +123,15 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         method: 'POST',
         body: data,
         credentials: 'same-origin',
-      }).then((response) => response.json())
+      })
+      .then((response) => response.json())
       .then((data) => {
         if( data.src && data.splash && data.title ) {
-          setAttributes({ splash: data.splash });
-          setAttributes({ title: data.title });
-          setAttributes({ src: data.src });
-          setAttributes({ splash_attachment_id: data.splash_attachment_id });
-          setAttributes({ forceUpdate: Math.random() });
+          setAttributes({ splash: String(data.splash) });
+          setAttributes({ title: String(data.title) });
+          setAttributes({ src: String(data.src) });
+          setAttributes({ splash_attachment_id: String(data.splash_attachment_id) });
+          setAttributes({ forceUpdate: String(Math.random()) });
         }
       })
       .catch((error) => {
@@ -155,14 +156,14 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         method: 'POST',
         body: data,
         credentials: 'same-origin',
-      }).
-      then((response) => response.json())
+      })
+      .then((response) => response.json())
       .then((data) => {
         if( data.shortcodeContent && data.player_id ) {
           //  update the shortcode content and player id
-          setAttributes({ shortcodeContent: data.shortcodeContent });
-          setAttributes({ player_id: data.player_id });
-          setAttributes({ forceUpdate: Math.random() });
+          setAttributes({ shortcodeContent: String(data.shortcodeContent) });
+          setAttributes({ player_id: String(data.player_id) });
+          setAttributes({ forceUpdate: String(Math.random()) });
         }
       })
       .catch((error) => {
@@ -208,7 +209,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 <MediaUpload
                   onSelect={(attachment) => {
                       setAttributes({ splash: attachment.url });
-                      setAttributes({ splash_attachment_id: attachment.id });
+                      setAttributes({ splash_attachment_id: String(attachment.id) });
 
                       let newAttributes = { ...attributes, splash: attachment.url };
                       newAttributes.splash_attachment_id = attachment.id;
