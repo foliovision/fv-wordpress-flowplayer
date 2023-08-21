@@ -107,10 +107,10 @@ function fv_player_add_missing_attributes_callback($matches) {
 
   // get data from first video
   foreach( $player->getVideos() AS $video ) {
-    $attributes['src'] = $video->getSrc();
-    $attributes['splash'] = $video->getSplash();
-    $attributes['title'] = $video->getTitle();
-    $attributes['splash_attachment_id'] = $video->getSplashAttachmentId();
+    $attributes['src'] = $video->getSrc() ? $video->getSrc() : '';
+    $attributes['splash'] = $video->getSplash() ? $video->getSplash() : '';
+    $attributes['title'] = $video->getTitle() ? $video->getTitle() : '';
+    $attributes['splash_attachment_id'] = $video->getSplashAttachmentId() ? $video->getSplashAttachmentId() : '0';
     break;
   }
 

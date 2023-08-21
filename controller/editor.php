@@ -899,9 +899,13 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
     $new_content = $new_content_data['new_content'];
   }
 
-  $new_content = preg_replace(
-    '~<!-- wp:shortcode -->\n(\[fvplayer [\s\S]*?)\n<!-- /wp:shortcode -->~',
-    '<!-- wp:fv-player-gutenberg/basic --><div class="wp-block-fv-player-gutenberg-basic">$1</div><!-- /wp:fv-player-gutenberg/basic -->',
+  // add gutenberg shortcode attributes
+  $new_content = preg_replace_callback(
+    array(
+      '~<!-- wp:shortcode -->\n(\[fvplayer [\s\S]*?)\n<!-- /wp:shortcode -->~',
+      '~<!-- wp:paragraph -->\n.*?(\[fvplayer [\s\S]*?).*?\n<!-- /wp:paragraph -->~',
+    ),
+    'fv_player_add_missing_attributes_callback',
     $new_content
   );
 
@@ -919,6 +923,8 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
 
   // remove current action to prevent infinite loop when using wp_update_post
   remove_action( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9 );
+
+  // update post with updated content
   wp_update_post( array( 'ID' => $post->ID, 'post_content' => $new_content ) );
 }
 
