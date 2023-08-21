@@ -1734,13 +1734,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
       
       $url_components = parse_url($resource);
-      
-      $url_components['path'] = rawurlencode($url_components['path']);
+
+      // decode the path, as it might come partially URL encoded already
+      $url_components['path'] = urldecode( $url_components['path'] );
+
+      // URL encode the decoded path
+      $url_components['path'] = rawurlencode( $url_components['path'] );
+
+      // Restore the directory separators
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
-      $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
-      $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
-      $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);  
-      $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);  
 
       $sXAMZDate = gmdate('Ymd\THis\Z');
       $sDate = gmdate('Ymd');
