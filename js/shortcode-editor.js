@@ -4861,7 +4861,7 @@ jQuery(function() {
     wp.data.subscribe( function() {
       if ( wp.data.select('core/editor') && wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
         setTimeout( function() {
-          location.reload();
+          location.href = location.href;
         }, 0 );
       }
     } );
