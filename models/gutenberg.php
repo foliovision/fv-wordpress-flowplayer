@@ -129,7 +129,7 @@ function fv_player_handle_post_content($content) {
   // get post object
   global $post;
 
-  if ( ! $post ) {
+  if ( ! $post || !$content ) {
     return $content;
   }
 
