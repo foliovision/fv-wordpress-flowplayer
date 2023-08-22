@@ -84,7 +84,20 @@ class FV_Player_Db_Player_Meta {
     self::$db_table_name = $wpdb->prefix.'fv_player_playermeta';
     return self::$db_table_name;
   }
-  
+
+  /**
+   * Returns name of the video DB table.
+   *
+   * @return mixed The name of the video DB table.
+   */
+  public static function get_db_table_name() {
+    if ( !self::$db_table_name ) {
+      self::init_db_name();
+    }
+
+    return self::$db_table_name;
+  }
+
   /**
    * Checks for DB tables existence and creates it as necessary.
    *

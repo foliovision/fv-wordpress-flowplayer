@@ -58,7 +58,7 @@ class FV_Player_Stats {
     return array( 'play', 'seconds' );
   }
 
-  function get_table_name() {
+  public static function get_table_name() {
     global $wpdb;
     return $wpdb->prefix . 'fv_player_stats';
   }

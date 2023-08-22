@@ -132,3 +132,20 @@ if( !function_exists( 'fv_player_bunny_stream_include' ) && version_compare(PHP_
     }
   }
 }
+
+add_filter( 'tables_to_repair', 'fv_player_tables_to_repair' );
+
+function fv_player_tables_to_repair( $tables ) {
+  global $wpdb;
+
+  $tables[] = FV_Player_Db_Player::get_db_table_name();
+  $tables[] = FV_Player_Db_Player_Meta::get_db_table_name();
+  $tables[] = FV_Player_Db_Video::get_db_table_name();
+  $tables[] = FV_Player_Db_Video_Meta::get_db_table_name();
+  $tables[] = FV_Player_Stats::get_table_name();
+  $tables[] = $wpdb->prefix . 'fv_player_emails';
+  $tables[] = $wpdb->prefix . 'fv_player_encoding_jobs';
+  $tables[] = $wpdb->prefix . 'fv_fp_hls_access_tokens';
+
+  return $tables;
+}
