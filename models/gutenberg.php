@@ -96,14 +96,13 @@ function fv_player_add_missing_attributes_callback($matches) {
     'src' => '',
     'splash' => '',
     'title' => '',
-    'shortcodeContent' => '',
     'player_id' => '',
     'splash_attachment_id' => '',
     'forceUpdate' => 0
   );
 
   $attributes['player_id'] = $player_id;
-  $attributes['shortcodeContent'] = '[fvplayer id="' . $player_id . '"]';
+  $content = '[fvplayer id="' . $player_id . '"]';
 
   // get data from first video
   foreach( $player->getVideos() AS $video ) {
@@ -113,8 +112,6 @@ function fv_player_add_missing_attributes_callback($matches) {
     $attributes['splash_attachment_id'] = $video->getSplashAttachmentId() ? $video->getSplashAttachmentId() : '0';
     break;
   }
-
-  $content = $attributes['shortcodeContent'];
 
   return '<!-- wp:fv-player-gutenberg/basic ' . json_encode($attributes) . ' -->'. PHP_EOL . $content . PHP_EOL . '<!-- /wp:fv-player-gutenberg/basic -->';
 }
