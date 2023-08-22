@@ -106,7 +106,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
     // used shorctcode editor or media library
     useEffect(() => {
-      if( isSelected ) { // run only when block is selected
+      if( isSelected &&  player_id > 0 && player_id != 'undefined'  ) { // run only when block is selected
         ajaxUpdateAttributes({ ...attributes });
       }
     }, [shortcodeContent, player_id, splash_attachment_id]);
