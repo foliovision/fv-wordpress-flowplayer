@@ -106,7 +106,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
     // used shorctcode editor or media library
     useEffect(() => {
-      if( isSelected ) { // run only when block is selected
+      if( isSelected &&  player_id > 0 && player_id != 'undefined'  ) { // run only when block is selected
         ajaxUpdateAttributes({ ...attributes });
       }
     }, [shortcodeContent, player_id, splash_attachment_id]);
@@ -126,7 +126,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       })
       .then((response) => response.json())
       .then((data) => {
-        if( data.src && data.splash && data.title ) {
+        if( data.src != 'undefined' && data.splash != 'undefined' && data.title != 'undefined' ) {
           setAttributes({ splash: String(data.splash) });
           setAttributes({ title: String(data.title) });
           setAttributes({ src: String(data.src) });
@@ -159,7 +159,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       })
       .then((response) => response.json())
       .then((data) => {
-        if( data.shortcodeContent && data.player_id ) {
+        if( data.shortcodeContent != 'undefined' && data.player_id != 'undefined' ) {
           //  update the shortcode content and player id
           setAttributes({ shortcodeContent: String(data.shortcodeContent) });
           setAttributes({ player_id: String(data.player_id) });
