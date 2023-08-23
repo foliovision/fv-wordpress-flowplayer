@@ -903,7 +903,7 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
   $new_content = preg_replace_callback(
     array(
       '~<!-- wp:shortcode -->\n(\[fvplayer [\s\S]*?)\n<!-- /wp:shortcode -->~',
-      '~<!-- wp:paragraph -->\n.*?(\[fvplayer [\s\S]*?).*?\n<!-- /wp:paragraph -->~',
+      '~<!-- wp:paragraph -->\n<p>(\[fvplayer [\s\S]*?)<\/p>\n<!-- /wp:paragraph -->~',
     ),
     'fv_player_add_missing_attributes_callback',
     $new_content
