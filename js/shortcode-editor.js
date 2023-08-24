@@ -2592,14 +2592,16 @@ jQuery(function() {
                     subtitles:      [],
                     transcript_src: [],
                   },
-                  video_meta = [];
+                  video_meta_to_set = [];
 
                 // add all subtitles
                 if (vids[x].meta && vids[x].meta.length) {
                   for (var m in vids[x].meta) {
-
+                    let is_languages_meta = false;
                     $.each( video_meta_languages, function( k, v ) {
                       if (vids[x].meta[m].meta_key.indexOf( k ) > -1) {
+                        is_languages_meta = true;
+
                         video_meta_languages[k].push({
                           lang: vids[x].meta[m].meta_key.replace( k + '_', ''),
                           file: vids[x].meta[m].meta_value,
@@ -2608,9 +2610,8 @@ jQuery(function() {
                       }
                     } );
 
-                    // general video meta
-                    if (vids[x].meta[m].meta_key.indexOf('live') > -1 || ['dvr', 'duration', 'last_video_meta_check', 'auto_splash', 'auto_caption'].indexOf(vids[x].meta[m].meta_key) > -1) {
-                      video_meta.push(vids[x].meta[m]);
+                    if ( ! is_languages_meta ) {
+                      video_meta_to_set.push(vids[x].meta[m]);
                     }
                   }
                 }
@@ -2624,10 +2625,10 @@ jQuery(function() {
                   }
                 } );
 
-                if (video_meta.length) {
-                  for ( let i in video_meta) {
+                if (video_meta_to_set.length) {
+                  for ( let i in video_meta_to_set) {
                     // predefined meta input with field already existing in the dialog
-                    set_editor_field(video_meta[i].meta_key, video_meta[i].meta_value, video_meta[i].id, video_meta[i].id_video);
+                    set_editor_field(video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, video_meta_to_set[i].id_video);
                   }
                 }
 
