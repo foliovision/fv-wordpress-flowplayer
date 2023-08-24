@@ -185,6 +185,35 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       return <img src={ attributes.cover } />;
     }
 
+    // show initial state when no player
+    if( player_id == 'undefined' || player_id == 0 ) {
+      return(
+        <div className='fv-player-editor-wrapper fv-player-gutenberg'>
+          <p>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</p>
+          <Button className="fv-wordpress-flowplayer-button is-primary">FV player Editor</Button>
+          <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
+          <input
+            className="attachement-shortcode fv-player-editor-field"
+            type="hidden"
+            value=""
+          />
+          <MediaUploadCheck>
+              <MediaUpload
+                onSelect={(attachment) => {
+                    setAttributes({ src: attachment.url })
+                    ajaxUpdateAttributes({ ...attributes, src: attachment.url });
+                  }
+                }
+                allowedTypes={['video', 'audio']}
+                render={({ open }) => (
+                  <Button onClick={open} className='is-primary'>Select Media</Button>
+                )}
+              />
+            </MediaUploadCheck>
+        </div>
+      )
+    }
+
     return (
       <>
         <InspectorControls>
