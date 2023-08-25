@@ -498,7 +498,14 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         foreach ($cached_video->getAllDataValues() as $key => $value) {
-          $this->$key = stripslashes($value);
+          /**
+           * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
+           */
+          if ( is_string( $value ) ) {
+            $value = stripslashes( $value );
+          }
+
+          $this->$key = $value;
         }
 
         // add meta data
@@ -1165,7 +1172,15 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         $data_keys[] = $property . ' = %s';
-        $data_values[] = strip_tags($value);
+
+        /**
+         * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
+         */
+        if ( is_string( $value ) ) {
+          $value = strip_tags( $value );
+        }
+
+        $data_values[] = $value;
       }
     }
 

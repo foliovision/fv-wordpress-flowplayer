@@ -585,10 +585,19 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach ($options as $key => $value) {
       if (!in_array($key, $this->ignored_input_fields)) {
         if (property_exists($this, $key)) {
-          if( $key != 'ad' ) {
-            $value = strip_tags($value);
+
+          /**
+           * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
+           */
+          if ( is_string( $value ) ) {
+            if( $key != 'ad' ) {
+              $value = strip_tags($value);
+            }
+
+            $value = stripslashes( $value );
           }
-          $this->$key = stripslashes($value);
+
+          $this->$key = $value;
 
         } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
           $this->$key = stripslashes($value);
@@ -1051,8 +1060,13 @@ CREATE TABLE " . self::$db_table_name . " (
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 
-        if( $property != 'ad' ) {
-          $value = strip_tags($value);
+        /**
+         * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
+         */
+        if ( is_string( $value ) ) {
+          if( $property != 'ad' ) {
+            $value = strip_tags($value);
+          }
         }
 
         if (!$numeric_value) {
