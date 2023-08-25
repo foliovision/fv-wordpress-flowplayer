@@ -155,6 +155,7 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 #wpfp_options input[data-opacity] { background-image: url(checkered.png) }
 
 .fv-player-editor-wrapper { float: left; width: 100%}
+.wp-block .fv-player-editor-wrapper { float: none; }
 .fv-player-editor-player-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; opacity:.7}
 .fv-player-editor-player-loading .spinner { position: absolute; left: 0; right: 0; margin: auto; top: 0; bottom: 0 }
 
