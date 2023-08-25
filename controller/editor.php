@@ -345,6 +345,10 @@ function fv_wp_flowplayer_featured_image($post_id) {
     } else {
       $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title); // download splash
 
+      if ( is_wp_error( $thumbnail_id ) ) {
+        return;
+      }
+
       if($thumbnail_id) {
         update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
       }
