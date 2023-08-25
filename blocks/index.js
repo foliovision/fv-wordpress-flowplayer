@@ -3,8 +3,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { SVG, Path, Panel, PanelBody, TextControl, Button, Flex } from '@wordpress/components';
+import { InspectorControls, MediaUpload, MediaUploadCheck, URLPopover } from '@wordpress/block-editor';
+import { SVG, Path, Panel, PanelBody, TextControl, Button } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
   icon: {
@@ -67,11 +67,17 @@ registerBlockType( 'fv-player-gutenberg/basic', {
   edit: ({ isSelected ,attributes, setAttributes, context, clientId}) => {
     const { src, splash, title, shortcodeContent, player_id, splash_attachment_id } = attributes;
     const blockProps = useBlockProps();
+
+    // interval
     const [count, setCount] = useState(0);
 
+    // debounce
     const [debouncedSrc, setDebouncedSrc] = useState(src);
     const [debouncedTitle, setDebouncedTitle] = useState(title);
     const [debouncedSplash, setDebouncedSplash] = useState(splash);
+
+    // popover
+    const [URLPopoverIsOpen, setURLPopoverIsOpen] = useState(false);
 
     // we need to handle first load
     let firstLoad = true;
@@ -189,37 +195,65 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     if( player_id == 'undefined' || player_id == 0 ) {
       return(
         <div className='fv-player-editor-wrapper fv-player-gutenberg'>
-          <p>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</p>
-          <Flex align="center">
-            <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
-            <input
-              className="attachement-shortcode fv-player-editor-field"
-              type="hidden"
-              value=""
+        <p>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</p>
+        <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
+        <input
+          className="attachement-shortcode fv-player-editor-field"
+          type="hidden"
+          value=""
+        />
+        <MediaUploadCheck>
+            <MediaUpload
+              onSelect={(attachment) => {
+                  setAttributes({ src: attachment.url })
+                  ajaxUpdateAttributes({ ...attributes, src: attachment.url });
+                }
+              }
+              allowedTypes={['video', 'audio']}
+              render={({ open }) => (
+                <Button onClick={open} className='is-primary'>Select Media</Button>
+              )}
             />
-            <MediaUploadCheck>
-                <MediaUpload
-                  onSelect={(attachment) => {
-                      setAttributes({ src: attachment.url })
-                      ajaxUpdateAttributes({ ...attributes, src: attachment.url });
-                    }
-                  }
-                  allowedTypes={['video', 'audio']}
-                  render={({ open }) => (
-                    <Button onClick={open} className='is-primary'>Select Media</Button>
-                  )}
-                />
-              </MediaUploadCheck>
-              <Button className="fv-wordpress-flowplayer-button is-secondary">FV player Editor</Button>
-              <TextControl
-                label="Source URL"
-                className='fv-player-gutenberg-src'
-                value=''
-                onChange={(newSrc) => {
-                  setAttributes({ src: newSrc });
+          </MediaUploadCheck>
+          <Button className="fv-wordpress-flowplayer-button is-secondary">FV player Editor</Button>
+          <Button
+            className="is-secondary"
+            onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
+            >Video URL</Button>
+          {URLPopoverIsOpen && (
+            <URLPopover>
+              <form
+                className="block-editor-media-placeholder__url-input-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  // get input value
+                  const input = event.target.querySelector(
+                    ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
+                  );
+                  setAttributes({ src: input.value });
+                  setURLPopoverIsOpen(false);
                 }}
+              >
+              <input
+                data-cy="url-input"
+                className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
+                type="url"
+                aria-label={__("URL", "fv-player-gutenberg/basic")}
+                placeholder={__(
+                  "Add video URL",
+                  "fv-player-gutenberg/basic"
+                )}
               />
-          </Flex>
+              <Button
+                data-cy="url-submit"
+                className="block-editor-media-placeholder__url-input-submit-button"
+                icon={"editor-break"}
+                label={__("Submit", "fv-player-gutenberg/basic")}
+                type="submit"
+              />
+              </form>
+            </URLPopover>
+          )}
         </div>
       )
     }
