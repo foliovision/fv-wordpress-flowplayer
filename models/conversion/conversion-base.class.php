@@ -72,6 +72,7 @@ abstract class FV_Player_Conversion_Base {
 
         $update_result = true;
 
+        // update post content if conversion was successful and is live
         if( $this->is_live() && $result['content_updated'] ) {
           $update_result = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
         }
