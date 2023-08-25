@@ -65,7 +65,7 @@ function fv_player_gutenberg() {
 function fv_player_block_render($attributes, $content, $block) {
   ob_start();
 
-  if( !empty( $attributes['player_id'] ) ) {
+  if( !empty( $attributes['player_id'] ) && !empty( $attributes['src'] ) ) {
 
     if( $attributes['align'] == 'wide' || $attributes['align'] == 'full' ) {
       $shortcode_dimensions = 'width="100%" height="100%"';
@@ -74,8 +74,10 @@ function fv_player_block_render($attributes, $content, $block) {
     }
 
     echo '<div class="'.$attributes['className'].' align'. $attributes['align'] .'">' . do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '" '.$shortcode_dimensions.']' ) . '</div>';
-  } else {
+  } else if ( empty( $attributes['player_id']) ) {
     echo 'No player created yet.';
+  } else if ( empty( $attributes['src']) ) {
+    echo 'No video added yet.';
   }
 
   $output = ob_get_clean();
