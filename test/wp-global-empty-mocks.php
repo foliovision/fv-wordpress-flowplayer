@@ -151,11 +151,19 @@ function site_url( $url = false ) {
   return 'https://site.com/wp/'.$url;
 }
 
+function wp_add_inline_script( $handle, $data ) {
+  echo "Adding inline script for $handle: $data\n";
+}
+
 function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
   echo "Registering $handle for $src?ver=$ver footer? $in_footer\n";
 }
 
 function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
+  echo "Registering $handle for $src?ver=$ver\n";
+}
+
+function wp_register_script( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
   echo "Registering $handle for $src?ver=$ver\n";
 }
 
