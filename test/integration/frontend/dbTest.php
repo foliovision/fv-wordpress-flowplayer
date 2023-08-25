@@ -14,7 +14,9 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
 
   protected function setUp(): void {
     parent::setUp();
-        
+
+    require_once "../../../fv-wordpress-flowplayer/controller/editor.php";
+
     global $FV_Player_Db;
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data-start-end.json'), true) );
@@ -47,7 +49,30 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   public function testDBExport() {
     global $FV_Player_Db;        
     $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
-    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data-export.json'), $output );  
+
+    // Compare two JSONs - we replace the last_check as it might differ and also decore and print_r them to make it readable
+    $this->assertEquals(
+      print_r(
+        json_decode(
+          preg_replace(
+            '~"last_check":".*?"~',
+            '"last_check":"some-date-was-here"',
+            file_get_contents(dirname(__FILE__).'/player-data-export.json')
+          )
+        ),
+        true
+      ),
+      print_r(
+        json_decode(
+          preg_replace(
+            '~"last_check":".*?"~',
+            '"last_check":"some-date-was-here"',
+            $output
+          )
+        ),
+        true
+      )
+    );  
   }  
   
   public function testDBShortcode() {
