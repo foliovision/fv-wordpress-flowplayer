@@ -211,11 +211,20 @@ registerBlockType( 'fv-player-gutenberg/basic', {
               }
               allowedTypes={['video', 'audio']}
               render={({ open }) => (
-                <Button onClick={open} className='is-primary'>Select Media</Button>
+                <Button onClick={() => {
+                  open();
+                  setURLPopoverIsOpen(false);
+                }} className='is-primary'>Select Media</Button>
               )}
             />
           </MediaUploadCheck>
-          <Button className="fv-wordpress-flowplayer-button is-secondary">FV player Editor</Button>
+          <Button
+            className="fv-wordpress-flowplayer-button is-secondary"
+            onClick={() => {
+              setURLPopoverIsOpen(false);
+            }}
+            >
+              FV player Editor</Button>
           <Button
             className="is-secondary"
             onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
@@ -280,7 +289,12 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   }
                   allowedTypes={['video', 'audio']}
                   render={({ open }) => (
-                    <Button onClick={open} className={ src ? 'is-secondary' : 'is-primary' }>Select Media</Button>
+                    <Button onClick={() => {
+                      open();
+                      setTimeout(() => {
+                        jQuery(document).trigger('mediaBrowserOpen');
+                      }, 1000)
+                    }} className={ src ? 'is-secondary' : 'is-primary' }>Select Media</Button>
                   )}
                 />
               </MediaUploadCheck>
