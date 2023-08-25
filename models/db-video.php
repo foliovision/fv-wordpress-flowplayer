@@ -109,7 +109,7 @@ class FV_Player_Db_Video {
    * @return int
    */
   public function getLastCheck() {
-    return strtotime($this->last_check);
+    return ! empty( $this->last_check ) ? strtotime( $this->last_check ) : false;
   }
 
   /**
