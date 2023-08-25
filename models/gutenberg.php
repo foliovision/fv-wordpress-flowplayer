@@ -66,6 +66,7 @@ function fv_player_block_render($attributes, $content, $block) {
   ob_start();
 
   if( !empty( $attributes['player_id'] ) && !empty( $attributes['src'] ) ) {
+    $shortcode_dimensions = '';
 
     if( $attributes['align'] == 'wide' || $attributes['align'] == 'full' ) {
       $shortcode_dimensions = 'width="100%" height="100%"';
