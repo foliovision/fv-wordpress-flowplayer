@@ -70,11 +70,19 @@ abstract class FV_Player_Conversion_Base {
           }
         }
 
-        $conversions_output = array_merge( $conversions_output, $result['output_data'] );
+        $update_result = true;
 
         if( $this->is_live() && $result['content_updated'] ) {
-          wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
+          $update_result = wp_update_post( array( 'ID' => $post->ID, 'post_content' => $result['new_content'] ) );
         }
+
+        // check if post update failed
+        if( !$update_result || is_wp_error($update_result) ) {
+          $result['error'] = !$update_result ? 'Post update failed.' : $update_result->get_error_message();
+          $convert_error = true;
+        }
+
+        $conversions_output = array_merge( $conversions_output, $result['output_data'] );
       }
 
       $percent_done = $total > 0 ? round ( (($offset + $limit) / $total) * 100 ) : 0;
