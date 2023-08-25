@@ -4,7 +4,7 @@ import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { SVG, Path, Panel, PanelBody, TextControl, Button } from '@wordpress/components';
+import { SVG, Path, Panel, PanelBody, TextControl, Button, Flex } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
   icon: {
@@ -190,26 +190,36 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       return(
         <div className='fv-player-editor-wrapper fv-player-gutenberg'>
           <p>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</p>
-          <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
-          <input
-            className="attachement-shortcode fv-player-editor-field"
-            type="hidden"
-            value=""
-          />
-          <MediaUploadCheck>
-              <MediaUpload
-                onSelect={(attachment) => {
-                    setAttributes({ src: attachment.url })
-                    ajaxUpdateAttributes({ ...attributes, src: attachment.url });
+          <Flex align="center">
+            <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
+            <input
+              className="attachement-shortcode fv-player-editor-field"
+              type="hidden"
+              value=""
+            />
+            <MediaUploadCheck>
+                <MediaUpload
+                  onSelect={(attachment) => {
+                      setAttributes({ src: attachment.url })
+                      ajaxUpdateAttributes({ ...attributes, src: attachment.url });
+                    }
                   }
-                }
-                allowedTypes={['video', 'audio']}
-                render={({ open }) => (
-                  <Button onClick={open} className='is-primary'>Select Media</Button>
-                )}
+                  allowedTypes={['video', 'audio']}
+                  render={({ open }) => (
+                    <Button onClick={open} className='is-primary'>Select Media</Button>
+                  )}
+                />
+              </MediaUploadCheck>
+              <Button className="fv-wordpress-flowplayer-button is-secondary">FV player Editor</Button>
+              <TextControl
+                label="Source URL"
+                className='fv-player-gutenberg-src'
+                value=''
+                onChange={(newSrc) => {
+                  setAttributes({ src: newSrc });
+                }}
               />
-            </MediaUploadCheck>
-            <Button className="fv-wordpress-flowplayer-button is-secondary">FV player Editor</Button>
+          </Flex>
         </div>
       )
     }
