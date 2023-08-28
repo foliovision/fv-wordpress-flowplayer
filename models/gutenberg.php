@@ -75,9 +75,9 @@ function fv_player_block_render($attributes, $content, $block) {
     }
 
     echo '<div class="'.$attributes['className'].' align'. $attributes['align'] .'">' . do_shortcode( '[fvplayer id="' . $attributes['player_id'] . '" '.$shortcode_dimensions.']' ) . '</div>';
-  } else if ( empty( $attributes['player_id']) ) {
+  } else if ( empty( $attributes['player_id']) && is_admin() ) {
     echo 'No player created yet.';
-  } else if ( empty( $attributes['src']) ) {
+  } else if ( empty( $attributes['src']) && is_admin() ) {
     echo 'No video added yet.';
   }
 
