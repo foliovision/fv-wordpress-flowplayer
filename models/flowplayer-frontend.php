@@ -666,13 +666,17 @@ class flowplayer_frontend extends flowplayer
           if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
             $attributes['class'] .= ' has-title-below';
             $this->sHTMLAfter .= apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
+          } else {
+            $this->sHTMLAfter .= apply_filters( 'fv_player_title', '', $this );
           }
+
           $this->sHTMLAfter .= $playlist_items_external_html;
 
         } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
           $attributes['class'] .= ' has-title-below';
           $this->sHTMLAfter = apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
-
+        } else {
+          $this->sHTMLAfter = apply_filters( 'fv_player_title', '', $this );
         }
 
         if( !empty($this->aCurArgs['chapters']) ) {
@@ -773,7 +777,7 @@ class flowplayer_frontend extends flowplayer
         if ( flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
           $preload = '';
         }
-        
+
         if( !empty($fv_fp->aCurArgs['error']) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().$preload.'</div>'."\n";
 
