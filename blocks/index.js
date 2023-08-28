@@ -194,76 +194,78 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // show initial state when no player
     if( player_id == 'undefined' || player_id == 0 ) {
       return(
-        <div className='fv-player-editor-wrapper fv-player-gutenberg'>
-        <p>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</p>
-        <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
-        <input
-          className="attachement-shortcode fv-player-editor-field"
-          type="hidden"
-          value=""
-        />
-        <MediaUploadCheck>
-            <MediaUpload
-              onSelect={(attachment) => {
-                  setAttributes({ src: attachment.url })
-                  ajaxUpdateAttributes({ ...attributes, src: attachment.url });
-                }
-              }
-              allowedTypes={['video', 'audio']}
-              render={({ open }) => (
-                <Button onClick={() => {
-                  open();
-                  setURLPopoverIsOpen(false);
-                }} className='is-primary'>Select Media</Button>
-              )}
+        <fieldset class="components-placeholder__fieldset">
+          <div className='fv-player-editor-wrapper fv-player-gutenberg'>
+            <legend className='components-placeholder__instructions'>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</legend>
+            <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
+            <input
+              className="attachement-shortcode fv-player-editor-field"
+              type="hidden"
+              value=""
             />
-          </MediaUploadCheck>
-          <Button
-            className="fv-wordpress-flowplayer-button is-secondary"
-            onClick={() => {
-              setURLPopoverIsOpen(false);
-            }}
-            >
-              FV player Editor</Button>
-          <Button
-            className="is-secondary"
-            onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
-            >Video URL</Button>
-          {URLPopoverIsOpen && (
-            <URLPopover>
-              <form
-                className="block-editor-media-placeholder__url-input-form"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  // get input value
-                  const input = event.target.querySelector(
-                    ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
-                  );
-                  setAttributes({ src: input.value });
+            <MediaUploadCheck>
+                <MediaUpload
+                  onSelect={(attachment) => {
+                      setAttributes({ src: attachment.url })
+                      ajaxUpdateAttributes({ ...attributes, src: attachment.url });
+                    }
+                  }
+                  allowedTypes={['video', 'audio']}
+                  render={({ open }) => (
+                    <Button onClick={() => {
+                      open();
+                      setURLPopoverIsOpen(false);
+                    }} className='is-primary'>Select Media</Button>
+                  )}
+                />
+              </MediaUploadCheck>
+              <Button
+                className="fv-wordpress-flowplayer-button is-secondary"
+                onClick={() => {
                   setURLPopoverIsOpen(false);
                 }}
-              >
-              <input
-                data-cy="url-input"
-                className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
-                type="url"
-                aria-label={__("URL", "fv-player-gutenberg/basic")}
-                placeholder={__(
-                  "Add video URL",
-                  "fv-player-gutenberg/basic"
-                )}
-              />
+                >
+                  FV player Editor</Button>
               <Button
-                data-cy="url-submit"
-                className="block-editor-media-placeholder__url-input-submit-button"
-                icon={"editor-break"}
-                label={__("Submit", "fv-player-gutenberg/basic")}
-                type="submit"
-              />
-              </form>
-            </URLPopover>
-          )}
-        </div>
+                className="is-secondary"
+                onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
+                >Video URL</Button>
+              {URLPopoverIsOpen && (
+                <URLPopover>
+                  <form
+                    className="block-editor-media-placeholder__url-input-form"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      // get input value
+                      const input = event.target.querySelector(
+                        ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
+                      );
+                      setAttributes({ src: input.value });
+                      setURLPopoverIsOpen(false);
+                    }}
+                  >
+                  <input
+                    data-cy="url-input"
+                    className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
+                    type="url"
+                    aria-label={__("URL", "fv-player-gutenberg/basic")}
+                    placeholder={__(
+                      "Add video URL",
+                      "fv-player-gutenberg/basic"
+                    )}
+                  />
+                  <Button
+                    data-cy="url-submit"
+                    className="block-editor-media-placeholder__url-input-submit-button"
+                    icon={"editor-break"}
+                    label={__("Submit", "fv-player-gutenberg/basic")}
+                    type="submit"
+                  />
+                  </form>
+                </URLPopover>
+              )}
+          </div>
+        </fieldset>
       )
     }
 
