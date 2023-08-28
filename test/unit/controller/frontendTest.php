@@ -97,6 +97,7 @@ final class FV_Player_Controller extends TestCase {
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/freedomplayer.min.css?ver=1.2.3.4
+Registering fv_freedomplayer_playlists for fv-wordpress-flowplayer/css/playlists.css?ver=1.2.3.4
 Registering flowplayer for fv-wordpress-flowplayer/flowplayer/freedomplayer.min.js?ver=1.2.3.4 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver=1.2.3.4 footer? 1
 Registering flowplayer-hlsjs for fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4 footer? 1
@@ -125,9 +126,9 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [volume] => 0.7
     [default_volume] => 0.7
     [mobile_landscape_fullscreen] => 1
-    [sticky_video] => 
+    [video_position_save_enable] => 1
+    [sticky_video] => off
     [sticky_place] => right-bottom
-    [sticky_width] => 380
     [sticky_min_width] => 1020
     [script_hls_js] => fv-wordpress-flowplayer/flowplayer/hls.min.js?ver=1.2.3.4
     [script_dash_js] => fv-wordpress-flowplayer/flowplayer/dash.mediaplayer.min.js?ver=1.2.3.4
@@ -217,17 +218,22 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
     [invalid_youtube] => Invalid Youtube video ID.
     [video_loaded] => Video loaded, click to play.
+    [msg_no_skipping] => Skipping is not allowed.
+    [msg_watch_video] => Please watch the video carefully.
 )
 
 Localizing flowplayer with fv_flowplayer_playlists = Array
 (
 )
 
-Registering fv_player_lightbox for fv-wordpress-flowplayer/css/fancybox.css?ver=1.2.3.4
-Registering fv_player_lightbox for fv-wordpress-flowplayer/js/fancybox.js?ver=1.2.3.4 footer? 1
+Registering fv_player_lightbox for ?ver=
+Registering fv_player_lightbox for ?ver= footer? 
+Adding inline script for fv_player_lightbox: ( function() { let fv_player_fancybox_loaded = false; const triggers = document.querySelectorAll( '[data-fancybox], .fp-playlist-external[rel$=_lightbox_starter] a' ); for (let i = 0; i < triggers.length; i++) { triggers[i].addEventListener( 'ontouchstart' in window ? 'touchstart' : 'click', function( e ) { if ( fv_player_fancybox_loaded ) return; fv_player_fancybox_loaded = true; let i = this, l = document.createElement('link'), s = document.createElement('script'); e.preventDefault(); e.stopPropagation(); l.rel = 'stylesheet'; l.type = 'text/css'; l.href = fv_player_lightbox.css_url; document.head.appendChild(l); s.onload = function () { let evt = new MouseEvent('click',{bubbles: true,cancelable:true,view:window}); i.dispatchEvent(evt); }; s.src = fv_player_lightbox.js_url; document.head.appendChild(s); }); } })();
 Localizing fv_player_lightbox with fv_player_lightbox = Array
 (
     [lightbox_images] => 
+    [js_url] => fv-wordpress-flowplayer/js/fancybox.js
+    [css_url] => fv-wordpress-flowplayer/css/fancybox.css
 )
 
 ";  

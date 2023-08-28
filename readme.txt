@@ -359,6 +359,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.39.7212 - 2023/08/23 =
+
+* Security - prevent XSS when "Enable profile videos" is on
+* Allow DB tables to be fixed with WP_ALLOW_REPAIR
+* Bugfix - Amazon S3 - fix when using commas in the URLs
+* Bugfix - Video Checker - fix checking of dynamic URLs (Amazon S3, or FV Player Pro CDNs like Bunny CDN)
+
 = 7.5.37.7212 - 2023/08/02 =
 
 * HLS.js - upgrade to 1.4.10

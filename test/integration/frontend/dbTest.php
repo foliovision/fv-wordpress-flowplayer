@@ -14,7 +14,9 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
 
   protected function setUp(): void {
     parent::setUp();
-        
+
+    require_once "../../../fv-wordpress-flowplayer/controller/editor.php";
+
     global $FV_Player_Db;
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data-start-end.json'), true) );
@@ -47,7 +49,30 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   public function testDBExport() {
     global $FV_Player_Db;        
     $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
-    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data-export.json'), $output );  
+
+    // Compare two JSONs - we replace the last_check as it might differ and also decore and print_r them to make it readable
+    $this->assertEquals(
+      print_r(
+        json_decode(
+          preg_replace(
+            '~"last_check":".*?"~',
+            '"last_check":"some-date-was-here"',
+            file_get_contents(dirname(__FILE__).'/player-data-export.json')
+          )
+        ),
+        true
+      ),
+      print_r(
+        json_decode(
+          preg_replace(
+            '~"last_check":".*?"~',
+            '"last_check":"some-date-was-here"',
+            $output
+          )
+        ),
+        true
+      )
+    );  
   }  
   
   public function testDBShortcode() {
@@ -55,7 +80,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     $output = apply_filters( 'the_content', '[fvplayer id="1"]' );     
     
     $sample = <<< HTML
-<div id="wpfp_034c92b7716ddbcf3a90a3a26440386e" class="freedomplayer flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
+<div id="wpfp_034c92b7716ddbcf3a90a3a26440386e" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625" data-player-id="1">
 <div class="fp-ratio" style="padding-top: 56.25%"></div>
   <img class="fp-splash" alt="Fire" src="https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg" />
   <div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -75,7 +100,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="1" sort="oldest"]' );
     
     $sample = <<< HTML
-<div id="wpfp_3ba46ddc9ef7b689d5aebe50a6555ca5" class="freedomplayer flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
+<div id="wpfp_3ba46ddc9ef7b689d5aebe50a6555ca5" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625" data-player-id="1">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<img class="fp-splash" alt="Fire" src="https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg" />
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -93,7 +118,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="1" sort="newest"]' );
     
     $sample = <<< HTML
-<div id="wpfp_06932b2e3a1414f9bf45398a401e055c" class="freedomplayer flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
+<div id="wpfp_06932b2e3a1414f9bf45398a401e055c" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625" data-player-id="1">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<img class="fp-splash" alt="Carly Simon" src="https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png" />
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -111,7 +136,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="1" sort="title"]' );
     
     $sample = <<< HTML
-<div id="wpfp_854a8e2bb53b053ae55cc34018d829b8" class="freedomplayer flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
+<div id="wpfp_854a8e2bb53b053ae55cc34018d829b8" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625" data-player-id="1">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<img class="fp-splash" alt="Carly Simon" src="https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png" />
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -138,7 +163,7 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer id="'.$this->import_ids[1].'"]' );
     
     $sample = <<< HTML
-<div id="wpfp_f82d3dac387dcb3fa70cbb1614e64a66" class="freedomplayer flowplayer no-brand is-splash no-svg is-paused skin-slim fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
+<div id="wpfp_f82d3dac387dcb3fa70cbb1614e64a66" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625" data-player-id="1">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<img class="fp-splash" alt="Fire" src="https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg" />
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
