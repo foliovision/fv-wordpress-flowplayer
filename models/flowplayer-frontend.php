@@ -651,8 +651,12 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' no-volume';
         }
 
+        $show_title_div = false;
+
         $playlist = '';
         $is_preroll = false;
+
+        // Is playlist
         if( isset($playlist_items_external_html) ) {
 
           if( $bIsAudio ) {
@@ -663,16 +667,27 @@ class flowplayer_frontend extends flowplayer
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
 
-          if( count($aPlaylistItems) == 1 && $this->get_title() && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
-            $attributes['class'] .= ' has-title-below';
-            $this->sHTMLAfter .= apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
+          // Is a playlist with one item only (why?)
+          if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
+            $show_title_div = true;
           }
+
           $this->sHTMLAfter .= $playlist_items_external_html;
 
-        } else if( $this->get_title() && empty($this->aCurArgs['lightbox']) ) {
-          $attributes['class'] .= ' has-title-below';
-          $this->sHTMLAfter = apply_filters( 'fv_player_title', "<p class='fp-title'>".$this->get_title()."</p>", $this );
+        // Not a playlist and not using lightbox
+        } else if( empty($this->aCurArgs['lightbox']) ) {
+          $show_title_div = true;
+        }
 
+        if ( $show_title_div ) {
+          $title = apply_filters( 'fv_player_title', $this->get_title(), $this );
+          if ( $title ) {
+            $attributes['class'] .= ' has-title-below';
+            
+            $title = "<p class='fp-title'>" . $title . "</p>";
+          }
+
+          $this->sHTMLAfter = $title;
         }
 
         if( !empty($this->aCurArgs['chapters']) ) {
@@ -1405,6 +1420,7 @@ JS;
 
     $title = flowplayer::filter_possible_html($title);
     $title = trim($title);
+
     return $title;
   }
 
