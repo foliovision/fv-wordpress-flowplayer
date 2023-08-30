@@ -1037,13 +1037,21 @@ jQuery(function() {
       var fv_flowplayer_uploader;
       var fv_flowplayer_uploader_button;
 
-      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media', function(e) {
+      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media, .fv-player-gutenberg-media', function(e) {
+        console.log('Fv player uploader loaded.')
+
         e.preventDefault();
 
         fv_flowplayer_uploader_button = jQuery(this);
-        jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
-        fv_flowplayer_uploader_button.closest('.components-base-control').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']').addClass('fv_flowplayer_target');
 
+        var el_input = fv_flowplayer_uploader_button.closest('.components-base-control').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']');
+
+        // Fallback to previous input, used in FV Player Block
+        if ( ! el_input.length ) {
+          el_input = fv_flowplayer_uploader_button.prev('[class*=fv-player-gutenberg-]').find('input');
+        }
+
+        el_input.addClass('fv_flowplayer_target');
         //If the uploader object has already been created, reopen the dialog
         if (fv_flowplayer_uploader) {
           fv_flowplayer_uploader.open();
@@ -3655,7 +3663,7 @@ jQuery(function() {
       set_current_video_to_edit( new_index );
 
       editing_video_details = true;
-      
+
       $el_editor
         .removeClass( 'is-playlist-active' )
         .addClass( 'is-singular-active' );

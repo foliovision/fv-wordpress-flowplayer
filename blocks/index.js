@@ -282,21 +282,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   setAttributes({ src: newSrc });
                 }}
               />
-              <MediaUploadCheck>
-                <MediaUpload
-                  onSelect={(attachment) => {
-                      setAttributes({ src: attachment.url })
-                      ajaxUpdateAttributes({ ...attributes, src: attachment.url });
-                    }
-                  }
-                  allowedTypes={['video', 'audio']}
-                  render={({ open }) => (
-                    <Button onClick={() => {
-                      open();
-                    }} className={ src ? 'is-secondary' : 'is-primary' }>Select Media</Button>
-                  )}
-                />
-              </MediaUploadCheck>
+              <Button className={ ( src ? 'is-secondary' : 'is-primary' ) + ' fv-player-gutenberg-media' }>Select Media</Button>
               <TextControl
                 label="Splash URL"
                 className='fv-player-gutenberg-splash'
