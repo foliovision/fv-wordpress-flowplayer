@@ -667,8 +667,16 @@ class flowplayer_frontend extends flowplayer
             $playlist_items_external_html = str_replace( 'class="fp-playlist-external', 'style="display: none" class="fp-playlist-external', $playlist_items_external_html );
           }
 
+          // Ignore video ads
+          $visible_items = 0;
+          foreach ( $aPlaylistItems AS $aPlaylistItem ) {
+            if ( ! isset( $aPlaylistItem['click'] ) ) {
+              $visible_items++;
+            }
+          }
+
           // Is a playlist with one item only (why?)
-          if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
+          if( 1 === $visible_items && empty($this->aCurArgs['listshow']) && empty($this->aCurArgs['lightbox']) ) {
             $show_title_div = true;
           }
 
@@ -687,7 +695,7 @@ class flowplayer_frontend extends flowplayer
             $title = "<p class='fp-title'>" . $title . "</p>";
           }
 
-          $this->sHTMLAfter = $title;
+          $this->sHTMLAfter .= $title;
         }
 
         if( !empty($this->aCurArgs['chapters']) ) {
