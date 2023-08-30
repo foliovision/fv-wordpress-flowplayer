@@ -218,52 +218,52 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                     }} className='is-primary'>Select Media</Button>
                   )}
                 />
-              </MediaUploadCheck>
-              <Button
-                className="fv-wordpress-flowplayer-button is-secondary"
-                onClick={() => {
-                  setURLPopoverIsOpen(false);
-                }}
+            </MediaUploadCheck>
+            <Button
+              className="fv-wordpress-flowplayer-button is-secondary"
+              onClick={() => {
+                setURLPopoverIsOpen(false);
+              }}
+              >
+                FV player Editor</Button>
+            <Button
+              className="is-secondary"
+              onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
+              >Video URL</Button>
+            {URLPopoverIsOpen && (
+              <URLPopover>
+                <form
+                  className="block-editor-media-placeholder__url-input-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    // get input value
+                    const input = event.target.querySelector(
+                      ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
+                    );
+                    setAttributes({ src: input.value });
+                    setURLPopoverIsOpen(false);
+                  }}
                 >
-                  FV player Editor</Button>
-              <Button
-                className="is-secondary"
-                onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
-                >Video URL</Button>
-              {URLPopoverIsOpen && (
-                <URLPopover>
-                  <form
-                    className="block-editor-media-placeholder__url-input-form"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      // get input value
-                      const input = event.target.querySelector(
-                        ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
-                      );
-                      setAttributes({ src: input.value });
-                      setURLPopoverIsOpen(false);
-                    }}
-                  >
-                  <input
-                    data-cy="url-input"
-                    className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
-                    type="url"
-                    aria-label={__("URL", "fv-player-gutenberg/basic")}
-                    placeholder={__(
-                      "Add video URL",
-                      "fv-player-gutenberg/basic"
-                    )}
-                  />
-                  <Button
-                    data-cy="url-submit"
-                    className="block-editor-media-placeholder__url-input-submit-button"
-                    icon={"editor-break"}
-                    label={__("Submit", "fv-player-gutenberg/basic")}
-                    type="submit"
-                  />
-                  </form>
-                </URLPopover>
-              )}
+                <input
+                  data-cy="url-input"
+                  className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
+                  type="url"
+                  aria-label={__("URL", "fv-player-gutenberg/basic")}
+                  placeholder={__(
+                    "Add video URL",
+                    "fv-player-gutenberg/basic"
+                  )}
+                />
+                <Button
+                  data-cy="url-submit"
+                  className="block-editor-media-placeholder__url-input-submit-button"
+                  icon={"editor-break"}
+                  label={__("Submit", "fv-player-gutenberg/basic")}
+                  type="submit"
+                />
+                </form>
+              </URLPopover>
+            )}
           </div>
         </fieldset>
       )
@@ -293,9 +293,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   render={({ open }) => (
                     <Button onClick={() => {
                       open();
-                      setTimeout(() => {
-                        jQuery(document).trigger('mediaBrowserOpen');
-                      }, 1000)
                     }} className={ src ? 'is-secondary' : 'is-primary' }>Select Media</Button>
                   )}
                 />
