@@ -1,6 +1,6 @@
 jQuery(function() {
   var is_saving = false,
-    spinner = jQuery('<div id="fv-editor-screenshot-spinner" class="fv-player-shortcode-editor-small-spinner" style="float: right;">&nbsp;</div>'),
+    spinner = jQuery('<div class="fv-player-shortcode-editor-small-spinner" style="float: right;">&nbsp;</div>'),
     postbox_data_changed = [];
 
   function closeWarning(e) {
