@@ -1,5 +1,4 @@
 import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
 import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
@@ -66,7 +65,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
   },
   edit: ({ isSelected ,attributes, setAttributes, context, clientId}) => {
     const { src, splash, title, shortcodeContent, player_id, splash_attachment_id } = attributes;
-    const blockProps = useBlockProps();
 
     // interval
     const [count, setCount] = useState(0);
@@ -336,12 +334,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           </Panel>
         </InspectorControls>
 
-        <div { ...blockProps }>
-            <ServerSideRender
-              block="fv-player-gutenberg/basic"
-              attributes={ attributes }
-            />
-        </div>
+        <ServerSideRender
+          block="fv-player-gutenberg/basic"
+          attributes={ attributes }
+        />
 
       </>
     );
