@@ -205,22 +205,12 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 type="hidden"
                 value=""
               />
-              <MediaUploadCheck>
-                  <MediaUpload
-                    onSelect={(attachment) => {
-                        setAttributes({ src: attachment.url })
-                        ajaxUpdateAttributes({ ...attributes, src: attachment.url });
-                      }
-                    }
-                    allowedTypes={['video', 'audio']}
-                    render={({ open }) => (
-                      <Button onClick={() => {
-                        open();
-                        setURLPopoverIsOpen(false);
-                      }} className='is-primary'>Select Media</Button>
-                    )}
-                  />
-              </MediaUploadCheck>
+              <Button
+                className='is-primary fv-player-gutenberg-media'
+                onClick={() => {
+                  setURLPopoverIsOpen(false);
+                }}
+                >Select Media</Button>
               <Button
                 className="fv-wordpress-flowplayer-button is-secondary"
                 onClick={() => {
