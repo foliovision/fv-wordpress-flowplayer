@@ -321,7 +321,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   type="hidden"
                   value={shortcodeContent}
                   onChange={() =>{
-                    ajaxUpdateAttributes( attributes );
+                    setAttributes({ shortcodeContent: shortcodeContent });
                   }}
                 />
               </div>
