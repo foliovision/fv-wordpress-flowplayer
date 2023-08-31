@@ -821,7 +821,7 @@ jQuery( function($) {
       .trigger('change'); // this check the video duration etc.
 
 
-    var clientId = jQuery( '.is-selected' ).data('block');
+    var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
 
     if( clientId ) {
       wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: href});
