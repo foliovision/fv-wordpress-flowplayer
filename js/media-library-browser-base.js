@@ -842,13 +842,13 @@ jQuery( function($) {
 
         fv_player_editor.get_field( 'timeline_previews', true ).val( extra.timeline_previews ).trigger( 'change' );
 
-        fv_player_editor.get_field( 'download_sd', true ).val( extra.sd_download ).trigger( 'change' );
+        if( extra.sd_download ) fv_player_editor.get_field( 'download_sd', true ).val( extra.sd_download ).trigger( 'change' );
 
-        fv_player_editor.get_field( 'download_hd', true ).val( extra.hd_download ).trigger( 'change' );
+        if( extra.hd_download ) fv_player_editor.get_field( 'download_hd', true ).val( extra.hd_download ).trigger( 'change' );
 
         fv_player_editor.get_field( 'encoding_job_id', true).val( extra.encoding_job_id ).trigger( 'change' );
 
-        if(extra.sd_download || extra.hd_download) {
+        if( extra.sd_download || extra.hd_download ) {
           fv_player_editor.get_field('download_enabled').prop('checked', true).trigger('change');
         }
 
