@@ -9,7 +9,8 @@
     "yoast/phpunit-polyfills": "dev-main"
   },
   "require": {
-    "aws/aws-sdk-php": "^3.235"
+    "aws/aws-sdk-php": "^3.235",
+    "async-aws/s3": "^2.0"
   },
   "scripts": {
     "pre-autoload-dump": "Aws\\Script\\Composer\\Composer::removeUnusedServices"

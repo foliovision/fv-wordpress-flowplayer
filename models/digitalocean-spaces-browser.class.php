@@ -37,19 +37,20 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     $secret = $fv_fp->_get_option(array('digitalocean_spaces','secret'));
     $key    = $fv_fp->_get_option(array('digitalocean_spaces','key'));
 
-    $credentials = new Aws\Credentials\Credentials( $key, $secret );
-
-    return Aws\S3\S3Client::factory( array(
-      'credentials' => $credentials,
+    return new AsyncAws\S3\S3Client( array(
+      'accessKeyId' => $key,
+      'accessKeySecret' => $secret,
       'region'      => $region,
-      'version'     => 'latest',
       'endpoint' => $endpoint
     ) );
+
   }
 
   function get_formatted_assets_data() {
-    $this->include_aws_sdk();
-    global $fv_fp, $s3Client;
+    // $this->include_aws_sdk();
+    $this->include_async_aws_sdk();
+
+    global $fv_fp;
 
     $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
 
@@ -63,13 +64,52 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     // instantiate the S3 client with AWS credentials
     $s3Client = $this->get_s3_client();
 
-    try {
-    
-      list( $request_path, $paged, $date_format ) = $this->get_metadata( $s3Client, $bucket );
 
-      list($output, $sum_up ) = $this->get_output_items( $output, $s3Client, $request_path, $paged, $date_format, $bucket );
- 
-    } catch ( Aws\S3\Exception\S3Exception $e ) {
+    try {
+      $args = array(
+        'Bucket' => $bucket,
+        'Delimiter' => '/',
+      );
+
+      $date_format = get_option( 'date_format' );
+
+      $request_path = !empty($_POST['path']) ? str_replace( 'Home/', '', stripslashes($_POST['path']) ) : false;
+
+      if ( $request_path ) {
+        $args['Prefix'] = $request_path;
+      }
+
+      $paged = $s3Client->listObjectsV2($args);
+
+      foreach ($paged->getContents() as $object) {
+        $path = $object->getKey();
+
+        $item['path'] = 'Home/' . $path;
+
+        if( $request_path ) {
+          $item['name'] = str_replace( $request_path, '', $path );
+        } else {
+          $item['name'] = $path;
+        }
+
+        if( $object->getSize() ) {
+          $dateString = $object->getLastModified()->format('Y-m-d H:i:s');
+          $timetamp = strtotime($dateString);
+          $item['modified'] = date($date_format, $timetamp);
+          $item['size'] = $object->getSize();
+          $item['type'] = 'file';
+
+          $item['link'] = '';
+
+        } else {
+          $item['type'] = 'folder';
+          $item['items'] = array();
+        }
+
+        $output['items'][] = $item;
+      }
+
+    } catch ( Exception $e ) {
       //echo $e->getMessage() . "\n";
       $err = $e->getMessage();
       $output = array(
