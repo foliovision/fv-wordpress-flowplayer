@@ -29,9 +29,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
   function get_endpoint() {
     global $FV_Player_DigitalOcean_Spaces;
 
-    $endpoint = 'https://' . $FV_Player_DigitalOcean_Spaces->get_endpoint();
-
-    return $endpoint;
+    return $FV_Player_DigitalOcean_Spaces->get_endpoint();
   }
 
   function get_s3_client() {
@@ -59,7 +57,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     global $fv_fp, $FV_Player_DigitalOcean_Spaces;
 
     // instantiate the S3 client with AWS credentials
-    $endpoint = $this->get_endpoint();
+    $endpoint = 'https://' . $this->get_endpoint();
 
     $region = $FV_Player_DigitalOcean_Spaces->get_region();
 
@@ -127,11 +125,12 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
         $item['size'] = $object->getSize();
         $item['type'] = 'file';
 
-        $link = $this->get_endpoint() . '/' . $bucket . '/' . $path;
+        $endpoint = $this->get_endpoint();
+
+        $link = 'https://' . $bucket . '.' . $endpoint . '/' . $path;
 
         $item['link'] = $link;
 
-    
         $output['items'][] = $item;
       }
 
