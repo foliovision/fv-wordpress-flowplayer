@@ -147,6 +147,8 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
           $item['name'] = $path;
         }
 
+        $item['LastModified'] = 0;
+
         $item['type'] = 'folder';
         $item['items'] = array();
 
