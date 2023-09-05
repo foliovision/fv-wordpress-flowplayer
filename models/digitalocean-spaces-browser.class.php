@@ -123,6 +123,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
         $dateString = $object->getLastModified()->format('Y-m-d H:i:s');
         $timetamp = strtotime($dateString);
         $item['modified'] = date($date_format, $timetamp);
+        $item['LastModified'] = $timetamp;
         $item['size'] = $object->getSize();
         $item['type'] = 'file';
 
