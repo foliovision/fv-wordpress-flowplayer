@@ -67,6 +67,12 @@ abstract class FV_Player_Media_Browser {
     add_action( $this->ajax_action_name, array($this, 'load_assets') );
   }
 
+  function include_async_aws_sdk() {
+    if ( ! class_exists( 'AsyncAws\S3\S3Client' ) ) {
+      require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
+    }
+  }
+
   function include_aws_sdk() {
     if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
       require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
