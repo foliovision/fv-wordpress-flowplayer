@@ -26,11 +26,19 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
   // Legacy
   function init_for_gutenberg() {}
 
+  function get_endpoint() {
+    global $FV_Player_DigitalOcean_Spaces;
+
+    $endpoint = 'https://' . $FV_Player_DigitalOcean_Spaces->get_endpoint();
+
+    return $endpoint;
+  }
+
   function get_s3_client() {
     global $fv_fp, $FV_Player_DigitalOcean_Spaces;
 
     // instantiate the S3 client with AWS credentials
-    $endpoint = 'https://' . $FV_Player_DigitalOcean_Spaces->get_endpoint();
+    $endpoint = $this->get_endpoint();
 
     $region = $FV_Player_DigitalOcean_Spaces->get_region();
 
@@ -99,7 +107,9 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
           $item['size'] = $object->getSize();
           $item['type'] = 'file';
 
-          $item['link'] = '';
+          $link = $this->get_endpoint() . '/' . $bucket . '/' . $path;
+
+          $item['link'] = $link;
 
         } else {
           $item['type'] = 'folder';
