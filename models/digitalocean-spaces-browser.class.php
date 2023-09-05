@@ -95,6 +95,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
       $args = array(
         'Bucket' => $bucket,
         'Delimiter' => '/',
+        'MaxKeys' => 1000,
       );
 
       $date_format = get_option( 'date_format' );
@@ -107,36 +108,14 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
 
       $paged = $s3Client->listObjectsV2($args);
 
-      // files
-      foreach ($paged->getContents() as $object) {
-        $path = $object->getKey();
-
-        $item['path'] = 'Home/' . $path;
-
-        if( $request_path ) {
-          $item['name'] = str_replace( $request_path, '', $path );
+      foreach($paged->getIterator() as $object) {
+        if( $object instanceof \AsyncAws\S3\ValueObject\AwsObject ) {
+          $path = $object->getKey();
         } else {
-          $item['name'] = $path;
+          $path = $object->getPrefix();
         }
-        $dateString = $object->getLastModified()->format('Y-m-d H:i:s');
-        $timetamp = strtotime($dateString);
-        $item['modified'] = date($date_format, $timetamp);
-        $item['LastModified'] = $timetamp;
-        $item['size'] = $object->getSize();
-        $item['type'] = 'file';
 
-        $endpoint = $this->get_endpoint();
-
-        $link = 'https://' . $bucket . '.' . $endpoint . '/' . $path;
-
-        $item['link'] = $link;
-
-        $output['items'][] = $item;
-      }
-
-      // folders
-      foreach( $paged->getCommonPrefixes() as $object ) {
-        $path = $object->getPrefix();
+        $item = array();
 
         $item['path'] = 'Home/' . $path;
 
@@ -146,10 +125,24 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
           $item['name'] = $path;
         }
 
-        $item['LastModified'] = 0;
-
-        $item['type'] = 'folder';
-        $item['items'] = array();
+        if( $object instanceof \AsyncAws\S3\ValueObject\AwsObject ) {
+          $dateString = $object->getLastModified()->format('Y-m-d H:i:s');
+          $timetamp = strtotime($dateString);
+          $item['modified'] = date($date_format, $timetamp);
+          $item['LastModified'] = $timetamp;
+          $item['size'] = $object->getSize();
+          $item['type'] = 'file';
+  
+          $endpoint = $this->get_endpoint();
+  
+          $link = 'https://' . $bucket . '.' . $endpoint . '/' . $path;
+  
+          $item['link'] = $link;
+        } else {
+          $item['LastModified'] = 0;
+          $item['type'] = 'folder';
+          $item['items'] = array();
+        }
 
         $output['items'][] = $item;
       }
