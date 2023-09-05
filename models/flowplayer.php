@@ -1729,51 +1729,68 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
       
       $url_components = parse_url($resource);
+      
+      $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region', $amazon_key ) ) ? 4 : 2;
+      
+      if( $iAWSVersion == 4 ) {
+        $sXAMZDate = gmdate('Ymd\THis\Z');
+        $sDate = gmdate('Ymd');
+        $sCredentialScope = $sDate."/".$fv_fp->_get_option( array('amazon_region', $amazon_key ) )."/s3/aws4_request"; //  todo: variable
+        $sSignedHeaders = "host";
+        $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key', $amazon_key ) ).'/'.$sCredentialScope);
+        
+        //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
+        $sCanonicalRequest = "GET\n";
+        $sCanonicalRequest .= $url_components['path']."\n";
+        $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
+        $sCanonicalRequest .= "host:".$url_components['host']."\n";        
+        $sCanonicalRequest .= "\n$sSignedHeaders\n";
+        $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
+        
+        //  2. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
+        $sStringToSign = "AWS4-HMAC-SHA256\n";
+        $sStringToSign .= "$sXAMZDate\n";
+        $sStringToSign .= "$sCredentialScope\n";
+        $sStringToSign .= hash('sha256',$sCanonicalRequest);
+        
+        //  3. http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
+        $sSignature = hash_hmac('sha256', $sDate, "AWS4".$fv_fp->_get_option( array('amazon_secret', $amazon_key) ), true );
+        $sSignature = hash_hmac('sha256', $fv_fp->_get_option( array('amazon_region', $amazon_key) ), $sSignature, true );  //  todo: variable
+        $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
+        $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
+        $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
+                
+        //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html        
+        $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";        
+        $resource .= "&X-Amz-Credential=$sXAMZCredential";
+        $resource .= "&X-Amz-Date=$sXAMZDate";
+        $resource .= "&X-Amz-Expires=$time";
+        $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
+        $resource .= "&X-Amz-Signature=".$sSignature;
 
-      // decode the path, as it might come partially URL encoded already
-      $url_components['path'] = urldecode( $url_components['path'] );
-
-      // URL encode the decoded path
-      $url_components['path'] = rawurlencode( $url_components['path'] );
-
-      // Restore the directory separators
-      $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
-
-      $sXAMZDate = gmdate('Ymd\THis\Z');
-      $sDate = gmdate('Ymd');
-      $sCredentialScope = $sDate."/".$fv_fp->_get_option( array('amazon_region', $amazon_key ) )."/s3/aws4_request";
-      $sSignedHeaders = "host";
-      $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key', $amazon_key ) ).'/'.$sCredentialScope);
-
-      //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
-      $sCanonicalRequest = "GET\n";
-      $sCanonicalRequest .= $url_components['path']."\n";
-      $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
-      $sCanonicalRequest .= "host:".$url_components['host']."\n";        
-      $sCanonicalRequest .= "\n$sSignedHeaders\n";
-      $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
-
-      //  2. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
-      $sStringToSign = "AWS4-HMAC-SHA256\n";
-      $sStringToSign .= "$sXAMZDate\n";
-      $sStringToSign .= "$sCredentialScope\n";
-      $sStringToSign .= hash('sha256',$sCanonicalRequest);
-
-      //  3. http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
-      $sSignature = hash_hmac('sha256', $sDate, "AWS4".$fv_fp->_get_option( array('amazon_secret', $amazon_key) ), true );
-      $sSignature = hash_hmac('sha256', $fv_fp->_get_option( array('amazon_region', $amazon_key) ), $sSignature, true );
-      $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
-      $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
-      $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
-  
-      //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html        
-      $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";        
-      $resource .= "&X-Amz-Credential=$sXAMZCredential";
-      $resource .= "&X-Amz-Date=$sXAMZDate";
-      $resource .= "&X-Amz-Expires=$time";
-      $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
-      $resource .= "&X-Amz-Signature=".$sSignature;              
-
+      } else {
+        $expires = time() + $time;
+        
+        if( strpos( $url_components['path'], $fv_fp->_get_option( array('amazon_bucket', $amazon_key) ) ) === false ) {
+          $url_components['path'] = '/'.$fv_fp->_get_option( array('amazon_bucket', $amazon_key) ).$url_components['path'];
+        }        
+            
+        do {
+          $expires++;
+          $stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";  
+        
+          $signature = utf8_encode($stringToSign);
+    
+          $signature = hash_hmac('sha1', $signature, $fv_fp->_get_option( array('amazon_secret', $amazon_key ) ), true);
+          $signature = base64_encode($signature);
+          
+          $signature = urlencode($signature);        
+        } while( stripos($signature,'%2B') !== false );      
+      
+        $resource .= '?AWSAccessKeyId='.$fv_fp->_get_option( array('amazon_key', $amazon_key) ).'&Expires='.$expires.'&Signature='.$signature;
+        
+      }
+      
       $media = $resource;
     
     }
