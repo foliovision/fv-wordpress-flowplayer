@@ -38,6 +38,27 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     global $fv_fp, $FV_Player_DigitalOcean_Spaces;
 
     // instantiate the S3 client with AWS credentials
+    $endpoint = 'https://' . $FV_Player_DigitalOcean_Spaces->get_endpoint();
+
+    $region = $FV_Player_DigitalOcean_Spaces->get_region();
+
+    $secret = $fv_fp->_get_option(array('digitalocean_spaces','secret'));
+    $key    = $fv_fp->_get_option(array('digitalocean_spaces','key'));
+
+    $credentials = new Aws\Credentials\Credentials( $key, $secret );
+
+    return Aws\S3\S3Client::factory( array(
+      'credentials' => $credentials,
+      'region'      => $region,
+      'version'     => 'latest',
+      'endpoint' => $endpoint
+    ) );
+  }
+
+  function get_s3_async_aws_client() {
+    global $fv_fp, $FV_Player_DigitalOcean_Spaces;
+
+    // instantiate the S3 client with AWS credentials
     $endpoint = $this->get_endpoint();
 
     $region = $FV_Player_DigitalOcean_Spaces->get_region();
@@ -70,8 +91,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     $output = $this->get_output();
 
     // instantiate the S3 client with AWS credentials
-    $s3Client = $this->get_s3_client();
-
+    $s3Client = $this->get_s3_async_aws_client();
 
     try {
       $args = array(
@@ -89,6 +109,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
 
       $paged = $s3Client->listObjectsV2($args);
 
+      // files
       foreach ($paged->getContents() as $object) {
         $path = $object->getKey();
 
@@ -99,22 +120,34 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
         } else {
           $item['name'] = $path;
         }
+        $dateString = $object->getLastModified()->format('Y-m-d H:i:s');
+        $timetamp = strtotime($dateString);
+        $item['modified'] = date($date_format, $timetamp);
+        $item['size'] = $object->getSize();
+        $item['type'] = 'file';
 
-        if( $object->getSize() ) {
-          $dateString = $object->getLastModified()->format('Y-m-d H:i:s');
-          $timetamp = strtotime($dateString);
-          $item['modified'] = date($date_format, $timetamp);
-          $item['size'] = $object->getSize();
-          $item['type'] = 'file';
+        $link = $this->get_endpoint() . '/' . $bucket . '/' . $path;
 
-          $link = $this->get_endpoint() . '/' . $bucket . '/' . $path;
+        $item['link'] = $link;
 
-          $item['link'] = $link;
+    
+        $output['items'][] = $item;
+      }
 
+      // folders
+      foreach( $paged->getCommonPrefixes() as $object ) {
+        $path = $object->getPrefix();
+
+        $item['path'] = 'Home/' . $path;
+
+        if( $request_path ) {
+          $item['name'] = str_replace( $request_path, '', $path );
         } else {
-          $item['type'] = 'folder';
-          $item['items'] = array();
+          $item['name'] = $path;
         }
+
+        $item['type'] = 'folder';
+        $item['items'] = array();
 
         $output['items'][] = $item;
       }
