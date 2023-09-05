@@ -1729,7 +1729,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
       
       $url_components = parse_url($resource);
-      
+
+      // decode the path, as it might come partially URL encoded already
+      $url_components['path'] = urldecode( $url_components['path'] );
+
+      // URL encode the decoded path
+      $url_components['path'] = rawurlencode( $url_components['path'] );
+
+      // Restore the directory separators
+      $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
+
       $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region', $amazon_key ) ) ? 4 : 2;
       
       if( $iAWSVersion == 4 ) {
