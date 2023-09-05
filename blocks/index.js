@@ -3,7 +3,7 @@ import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls, MediaUpload, MediaUploadCheck, URLPopover } from '@wordpress/block-editor';
-import { SVG, Path, Panel, PanelBody, TextControl, Button } from '@wordpress/components';
+import { SVG, Path, Panel, PanelBody, TextControl, Button, PanelRow } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
   icon: {
@@ -267,6 +267,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
         <InspectorControls>
           <Panel>
             <PanelBody title="Player Settings" initialOpen={true}>
+              <PanelRow>
               <TextControl
                 label="Source URL"
                 className='fv-player-gutenberg-src'
@@ -275,7 +276,13 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   setAttributes({ src: newSrc });
                 }}
               />
+              </PanelRow>
+
+              <PanelRow>
               <Button className={ ( src ? 'is-secondary' : 'is-primary' ) + ' fv-player-gutenberg-media' }>Select Media</Button>
+              </PanelRow>
+
+              <PanelRow>
               <TextControl
                 label="Splash URL"
                 className='fv-player-gutenberg-splash'
@@ -284,6 +291,9 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   setAttributes({ splash: newSplash });
                 }}
               />
+              </PanelRow>
+
+              <PanelRow>
               <MediaUploadCheck>
                 <MediaUpload
                   onSelect={(attachment) => {
@@ -302,6 +312,9 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   )}
                 />
               </MediaUploadCheck>
+              </PanelRow>
+
+              <PanelRow>
               <TextControl
                 label="Title"
                 className='fv-player-gutenberg-title'
@@ -310,6 +323,9 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   setAttributes({ title: newTitle });
                 }}
               />
+              </PanelRow>
+
+              <PanelRow>
               <div className="fv-player-gutenberg">
                 <p>{__('Looking for advanced properties?', 'fv-player-gutenberg')}</p>
                 <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
@@ -325,6 +341,8 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   }}
                 />
               </div>
+              </PanelRow>
+
             </PanelBody>
           </Panel>
         </InspectorControls>
