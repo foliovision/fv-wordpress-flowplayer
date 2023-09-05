@@ -7,10 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
-  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
+  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && $page !== 'fv-player_page_fv_player_video_ads' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
     return;
   }
-  
+
   fv_player_shortcode_editor_scripts_enqueue();
 }
 
@@ -127,7 +127,7 @@ function flowplayer_add_media_button() {
     $button_tip = 'Insert a video';
     $wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
     $icon = '<span> </span>';
-  
+
     echo '<a title="' . __('Add FV Player', 'fv-wordpress-flowplayer') . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
   }
 }
@@ -142,7 +142,7 @@ add_action( 'enqueue_block_editor_assets', 'fv_wp_flowplayer_gutenberg_editor_lo
 
 function fv_wp_flowplayer_gutenberg_editor_load() {
   add_action( 'admin_footer', 'fv_wp_flowplayer_edit_form_after_editor', 0 );
-	
+
   // if we are loading for Gutenberg, then forget about the load method for old editor
   remove_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' );
 }
@@ -151,14 +151,14 @@ add_action( 'edit_form_after_editor', 'fv_wp_flowplayer_edit_form_after_editor' 
 
 function fv_wp_flowplayer_edit_form_after_editor( ) {
   require_once dirname( __FILE__ ) . '/../view/wizard.php';
-  
+
   // todo: will some of this break page builders?
   global $fv_fp_scripts, $fv_fp;
   $fv_fp_scripts = array( 'fv_player_admin_load' => array( 'load' => true ) ); //  without this or option js-everywhere the JS won't load
   $fv_fp->load_hlsjs= true;
   $fv_fp->load_dash = true;
   $fv_fp->load_tabs = true;
-  
+
   if( !fv_player_extension_version_is_min('7.4.46.727','pro') ) {
     global $FV_Player_Pro;
     if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
@@ -174,15 +174,15 @@ function fv_wp_flowplayer_edit_form_after_editor( ) {
       add_action('admin_footer', array( $FV_Player_VAST , 'func__wp_enqueue_scripts' ) );
     }
   }
-  
+
   if( !fv_player_extension_version_is_min('7.4.46.727','alternative-sources') ) {
     global $FV_Player_Alternative_Sources ;
     if( isset($FV_Player_Alternative_Sources ) && $FV_Player_Alternative_Sources ) {
       add_action('admin_footer', array( $FV_Player_Alternative_Sources , 'enqueue_scripts' ) );
     }
   }
-  
-  // Tell all the (modern) extensions to load frontend+backend assets 
+
+  // Tell all the (modern) extensions to load frontend+backend assets
   do_action('fv_player_extensions_admin_load_assets');
 
   add_action('admin_footer','flowplayer_prepare_scripts');
@@ -197,7 +197,7 @@ function fv_flowplayer_filetypes( $aFile ) {
     if( isset($aArgs[2]) && preg_match( '~\.'.$item.'~', $aArgs[2] ) ) {
       $aFile['type'] = $item;
       $aFile['ext'] = $item;
-      $aFile['proper_filename'] = $aArgs[2];    
+      $aFile['proper_filename'] = $aArgs[2];
     }
   }
   return $aFile;
@@ -384,7 +384,7 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
     $image_contents = $response['body'];
     $image_type = wp_remote_retrieve_header( $response, 'content-type' );
   }
-  
+
   if ( $error != '' || $image_contents == '' ) {
     return false;
   } else {
@@ -407,8 +407,8 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
       $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
     }
 
-    // Save the image bits using the new filename    
-    $upload = wp_upload_bits( $new_filename, null, $image_contents );    
+    // Save the image bits using the new filename
+    $upload = wp_upload_bits( $new_filename, null, $image_contents );
 
     // Stop for any errors while saving the data or else continue adding the image to the media library
     if ( $upload['error'] ) {
@@ -433,10 +433,10 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
       );
       // Insert the attachment
       $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
-      
+
       // Define attachment metadata
       $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
-      
+
       // Assign metadata to attachment
       wp_update_attachment_metadata( $attach_id,  $attach_data );
 
@@ -466,12 +466,12 @@ function fv_player_splashcreen_action() {
 
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
-    );  
+    );
     $title = str_replace(array_keys($vid_replacements), array_values($vid_replacements), $title);
 
     if( is_numeric($title) && intval($title) == $title && stripos($url,'vimeo.com/') !== false ) {
       $title = "Vimeo: ".$title;
-    } 
+    }
     return urldecode($title);
   }
 
@@ -482,10 +482,10 @@ function fv_player_splashcreen_action() {
 
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
-    
+
     $title = getTitleFromUrl($title);
     $title = sanitize_title($title);
-    
+
     if( function_exists('mb_strinwidth') ) {
       $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
     } else if( strlen( $title ) > $limit ) {
@@ -493,12 +493,12 @@ function fv_player_splashcreen_action() {
     }
 
     $decoded = base64_decode($img);
-    
+
     $upload_dir = wp_upload_dir();
     $upload_path = str_replace( '/', DIRECTORY_SEPARATOR, $upload_dir['path'] ) . DIRECTORY_SEPARATOR;
 
     $filename = $title .'.jpg';
-    
+
     // $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
 
     $image_upload = file_put_contents( $upload_path . $filename, $decoded );
@@ -512,7 +512,7 @@ function fv_player_splashcreen_action() {
     if( !function_exists( 'wp_get_current_user' ) ) {
       require_once( ABSPATH . 'wp-includes/pluggable.php' );
     }
-    
+
     // New file
     $file             = array();
     $file['error']    = '';
@@ -527,7 +527,7 @@ function fv_player_splashcreen_action() {
       $jsonReturn = array(
         'src'     =>  '',
         'error'   =>  $file_return['error']
-      ); 
+      );
     } else {
       $filename = $file_return['file'];
 
@@ -548,12 +548,12 @@ function fv_player_splashcreen_action() {
         );
       } else {
         require_once(ABSPATH . 'wp-admin/includes/image.php');
-      
+
         $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
         wp_update_attachment_metadata( $attach_id, $attach_data );
-  
+
         $src = wp_get_attachment_image_url($attach_id, $size = 'full', false);
-  
+
         $jsonReturn = array(
           'src'     =>  $src,
           'error'   =>  ''
@@ -657,7 +657,7 @@ function fv_player_editor_video_fields() {
               'browser' => true,
               'type' => 'text',
               'visible' => isset($fv_flowplayer_conf["interface"]["mobile"]) && $fv_flowplayer_conf["interface"]["mobile"] == 'true',
-            ),                      
+            ),
             array(
               'label' => __('Alternative Format 1', 'fv-wordpress-flowplayer'),
               'name' => 'src1',
