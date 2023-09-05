@@ -794,7 +794,7 @@ jQuery(function() {
 
         // Reveal the input if it has value even if it's not enabled in Post Interface options
         if ( input.val() ) {
-          input.closest( '.fv_player_interface_hide' ).removeClass( 'fv_player_interface_hide' );
+          input.closest( '.fv_player_interface_hide' ).show();
         }
 
         if( parent.length == 1 ) {
