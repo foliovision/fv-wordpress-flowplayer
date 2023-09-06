@@ -138,9 +138,11 @@ class flowplayer_frontend extends flowplayer
         'lightbox',
         'liststyle',
         'width',
-      ) as $arg
+      ) as $key
     ) {
-      $this->aCurArgs[ $arg ] = $args[ $arg ];
+      if ( isset($args[ $key ]) ) {
+        $this->aCurArgs[ $key ] = $args[ $key ];
+      }
     }
 
     // load attributes from player into $this->aCurArgs if we're receiving
