@@ -424,10 +424,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       'fv_flowplayer_peertube_private_browser_media_tab',
       'fv_flowplayer_vimeo_browser_media_tab',
       'fv_player_cloudflare_stream_browser_media_tab'
-    ].indexOf( tabId ) > -1 &&
-    'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name') &&
-    'fv_wp_flowplayer_field_src1' !== jQuery('.fv_flowplayer_target').attr('name') &&
-    'fv_wp_flowplayer_field_src2' !== jQuery('.fv_flowplayer_target').attr('name')
+    ].indexOf( tabId ) > -1
+     &&
+    ( 'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name') &&
+      'fv_wp_flowplayer_field_src1' !== jQuery('.fv_flowplayer_target').attr('name') &&
+      'fv_wp_flowplayer_field_src2' !== jQuery('.fv_flowplayer_target').attr('name') &&
+      'fv-player-gutenberg-media' !== jQuery('.fv_flowplayer_target').attr('name')
+    )
   ) {
 
     if ( $tab.length ) {

@@ -193,10 +193,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     if( player_id == 'undefined' || player_id == 0 ) {
       return(
         <div className="components-placeholder block-editor-media-placeholder is-large">
-          <div class="components-placeholder__label">
+          <div className="components-placeholder__label">
             FV Player
           </div>
-          <fieldset class="components-placeholder__fieldset">
+          <fieldset className="components-placeholder__fieldset">
             <div className='fv-player-editor-wrapper fv-player-gutenberg'>
               <legend className='components-placeholder__instructions'>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</legend>
               <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
@@ -207,6 +207,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
               />
               <Button
                 className='is-primary fv-player-gutenberg-media'
+                name="fv-player-gutenberg-media"
                 onClick={() => {
                   setURLPopoverIsOpen(false);
                 }}
@@ -273,6 +274,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 <TextControl
                   label="Source URL"
                   className='fv-player-gutenberg-src'
+                  name="fv-player-gutenberg-media"
                   value={src}
                   onChange={(newSrc) => {
                     setAttributes({ src: newSrc });

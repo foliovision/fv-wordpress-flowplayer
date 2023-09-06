@@ -1048,7 +1048,12 @@ jQuery(function() {
 
         // Fallback to previous input, used in FV Player Block
         if ( ! el_input.length ) {
-          el_input = fv_flowplayer_uploader_button.prev('[class*=fv-player-gutenberg-]').find('input');
+          el_input = fv_flowplayer_uploader_button.prev('.components-panel__row').find('input');
+        }
+
+        // Initial state of fv player block
+        if( ! el_input.length ) {
+          el_input = jQuery(this);
         }
 
         el_input.addClass('fv_flowplayer_target');
