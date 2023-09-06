@@ -8,7 +8,7 @@ flowplayer(function(api, root) {
 
   api.is_sticky = false;
 
-  if (flowplayer.conf.sticky_video != 'off' && typeof(sticky) == "undefined") {
+  if ( flowplayer.conf.sticky_video && flowplayer.conf.sticky_video != 'off' && typeof(sticky) == "undefined") {
     globalSticky = true;
   }
   if (globalSticky || sticky) {
