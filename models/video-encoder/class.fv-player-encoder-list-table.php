@@ -160,8 +160,14 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         $value = $job->date_created > 0 ? "<abbr title='$job->date_created'>".date('Y/m/d',strtotime($job->date_created))."</abbr>" : false;
         break;
       case 'source':
-        $nice_src = preg_replace( '~\?.+$~', '', $job->$column_name );
-        $value = "<a href='".esc_attr($job->$column_name)."' target='_blank'>".$nice_src."</a>";
+
+        // The video source URL might have the URL signature on it, so we need to strip it off to make it easy to read
+        $source_no_query_string = preg_replace( '~\?.+$~', '', $job->$column_name );
+
+        // The video source URL might require the URL signature to allow opening, so we add that here
+        $source_signed = apply_filters( 'fv_flowplayer_video_src', $source_no_query_string, array( 'dynamic' => true ) );
+
+        $value = "<a href='" . esc_attr( $source_signed ) . "' target='_blank'>" . $source_no_query_string . "</a>";
         break;
       case 'status':
         $error = !empty($job->error) ? "<p><b>".$job->error."</b></p>" : "";
