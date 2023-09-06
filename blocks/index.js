@@ -210,18 +210,20 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                 onClick={() => {
                   setURLPopoverIsOpen(false);
                 }}
-                >Select Media</Button>
+              >Select Media
+              </Button>
               <Button
                 className="fv-wordpress-flowplayer-button is-secondary"
                 onClick={() => {
                   setURLPopoverIsOpen(false);
                 }}
-                >
-                  FV player Editor</Button>
+              >FV Player Editor
+              </Button>
               <Button
                 className="is-secondary"
                 onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
-                >Video URL</Button>
+              >Video URL
+              </Button>
               {URLPopoverIsOpen && (
                 <URLPopover>
                   <form
@@ -268,32 +270,30 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           <Panel>
             <PanelBody title="Player Settings" initialOpen={true}>
               <PanelRow>
-              <TextControl
-                label="Source URL"
-                className='fv-player-gutenberg-src'
-                value={src}
-                onChange={(newSrc) => {
-                  setAttributes({ src: newSrc });
-                }}
-              />
+                <TextControl
+                  label="Source URL"
+                  className='fv-player-gutenberg-src'
+                  value={src}
+                  onChange={(newSrc) => {
+                    setAttributes({ src: newSrc });
+                  }}
+                />
               </PanelRow>
-
+              <Button
+                className={ ( src ? 'is-secondary' : 'is-primary' ) + ' fv-player-gutenberg-media' }
+                style={{ marginBottom: '10px' }}
+              >Select Media
+              </Button>
               <PanelRow>
-              <Button className={ ( src ? 'is-secondary' : 'is-primary' ) + ' fv-player-gutenberg-media' }>Select Media</Button>
+                <TextControl
+                  label="Splash URL"
+                  className='fv-player-gutenberg-splash'
+                  value={splash}
+                  onChange={(newSplash) => {
+                    setAttributes({ splash: newSplash });
+                  }}
+                />
               </PanelRow>
-
-              <PanelRow>
-              <TextControl
-                label="Splash URL"
-                className='fv-player-gutenberg-splash'
-                value={splash}
-                onChange={(newSplash) => {
-                  setAttributes({ splash: newSplash });
-                }}
-              />
-              </PanelRow>
-
-              <PanelRow>
               <MediaUploadCheck>
                 <MediaUpload
                   onSelect={(attachment) => {
@@ -308,24 +308,25 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   }
                   allowedTypes={['image']}
                   render={({ open }) => (
-                    <Button onClick={open} className={ splash ? 'is-secondary' : 'is-primary' }>Select Image</Button>
+                    <Button
+                      onClick={open}
+                      className={ splash ? 'is-secondary' : 'is-primary' }
+                      style={{ marginBottom: '10px' }}
+                    >Select Image
+                    </Button>
                   )}
                 />
               </MediaUploadCheck>
-              </PanelRow>
-
               <PanelRow>
-              <TextControl
-                label="Title"
-                className='fv-player-gutenberg-title'
-                value={title}
-                onChange={(newTitle) => {
-                  setAttributes({ title: newTitle });
-                }}
-              />
+                <TextControl
+                  label="Title"
+                  className='fv-player-gutenberg-title'
+                  value={title}
+                  onChange={(newTitle) => {
+                    setAttributes({ title: newTitle });
+                  }}
+                />
               </PanelRow>
-
-              <PanelRow>
               <div className="fv-player-gutenberg">
                 <p>{__('Looking for advanced properties?', 'fv-player-gutenberg')}</p>
                 <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
@@ -341,8 +342,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   }}
                 />
               </div>
-              </PanelRow>
-
             </PanelBody>
           </Panel>
         </InspectorControls>
