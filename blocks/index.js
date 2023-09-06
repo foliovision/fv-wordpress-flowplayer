@@ -79,6 +79,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
     // we need to handle first load
     let firstLoad = true;
+    let firstInsert = false;
 
     // debounce block ajax
     useEffect(() => {
@@ -124,10 +125,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       }
     }, [shortcodeContent, player_id, splash_attachment_id]);
 
-    const ajaxUpdateFromDB = () => {
+    const ajaxUpdateFromDB = (id = null) => {
       const data = new FormData();
       data.append('action', 'fv_player_guttenberg_attributes_load');
-      data.append('player_id', player_id);
+      data.append('player_id', id ? id : player_id);
 
       // nonce is required for security
       data.append('security', fv_player_gutenberg.nonce);
@@ -154,6 +155,12 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {
+      if( player_id == 'undefined' || player_id == 0  ) {
+        console.log('firstInsert set');
+
+        firstInsert = true;
+      }
+
       const data = new FormData();
       data.append('action', 'fv_player_guttenberg_attributes_save');
       data.append('player_id', newAttributes.player_id);
@@ -177,6 +184,13 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           setAttributes({ shortcodeContent: String(data.shortcodeContent) });
           setAttributes({ player_id: String(data.player_id) });
           setAttributes({ forceUpdate: String(Math.random()) });
+
+          if( firstInsert ) {
+            console.log('firstInsert loading');
+            ajaxUpdateFromDB(data.player_id);
+            firstInsert = false;
+          }
+
         }
       })
       .catch((error) => {
