@@ -2443,11 +2443,22 @@ jQuery(function() {
           // look for start of shortcode
           var shotcode_pattern = new RegExp(/\[fvplayer[^\[\]]*]?/g);
 
-          if( shotcode_pattern.test(line_value) && ch >= line_value.indexOf('[fvplayer') && ch <= line_value.indexOf(']') ) {
-            var match = line_value.match(shotcode_pattern);
-            if( match ) {
-              shortcode = match[0];
+          if( shotcode_pattern.test(line_value) ) {
+            for( var start = ch; start--; start >= 0 ) {
+              if( line_value[start] == '[' ) {
+                var sliced_content = line_value.slice(start);
+                var matched = sliced_content.match(shotcode_pattern);
+
+                if( matched ) {
+                  shortcode = matched[0];
+                }
+
+                break;
+              } else if( line_value[start] == ']' ) {
+                break
+              }
             }
+
           } else {
             // add placeholder for new editor
             instance_code_mirror.getDoc().replaceRange('#fvp_codemirror_placeholder#', {line: line, ch: ch}, {line: line, ch: ch});
