@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
-  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
+  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && $page !== 'fv-player_page_fv_player_video_ads' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
     return;
   }
 
@@ -345,6 +345,10 @@ function fv_wp_flowplayer_featured_image($post_id) {
     } else {
       $thumbnail_id = fv_wp_flowplayer_save_to_media_library($url, $post_id, $title); // download splash
 
+      if ( is_wp_error( $thumbnail_id ) ) {
+        return;
+      }
+
       if($thumbnail_id) {
         update_post_meta( $thumbnail_id, '_fv_player_splash_image_url', $url );
       }
@@ -429,8 +433,6 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
       );
       // Insert the attachment
       $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
-
-      require_once(ABSPATH . 'wp-admin/includes/image.php');
 
       // Define attachment metadata
       $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );

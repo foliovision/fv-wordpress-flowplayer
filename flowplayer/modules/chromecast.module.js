@@ -349,14 +349,7 @@ flowplayer(function(api, root) {
       return false;
     }
   });
-  
-  jQuery(window).on('unload', function(){
-    if( session ) {
-      session.stop();
-    }
-  });
-  
-  
+
   function hilight_audio_track( attr, chromecast_language ) {
     var audio_tracks_menu = jQuery(root).find(".fv-fp-hls-menu a"),
       found = false;

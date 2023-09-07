@@ -398,6 +398,11 @@
 .flowplayer.no-controlbar.is-muted .fp-controls .fp-volumebar {display:none}
 
 p.fp-title { text-align: center;max-width: 100%;  }
+p.fp-title::after {
+  content: ' ';
+  display: block;
+  clear: both;
+}
 
 /* Buttons, todo: check! or better not use! */
 .is-splash.flowplayer .fv-player-buttons, .is-loading.flowplayer .fv-player-buttons {

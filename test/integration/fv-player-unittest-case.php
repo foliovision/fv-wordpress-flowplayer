@@ -34,6 +34,9 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     
     // DB IDs in JSON
     $html = preg_replace( '~"id":\d+~', '"id":1234', $html);
+
+    // data-player-id on main player DIV
+    $html = preg_replace( '~data-player-id=".*?"~', 'data-player-id="some-id-here"', $html);
     
     $html = explode("\n",$html);
     foreach( $html AS $k => $v ) {
