@@ -2300,8 +2300,6 @@ jQuery(function() {
     * @param {int} selected_player_id Optional, force load of specified player ID using "Pick existing player"
     */
     function editor_open( selected_player_id ) {
-      debugger
-
       if( !selected_player_id ) {
         editor_init();
       }
