@@ -162,8 +162,10 @@ function fv_player_handle_rest_content($response) {
   return $response;
 }
 
-$post_types = get_post_types( array( 'show_in_rest' => true ), 'names' );
+if ( function_exists( 'get_post_types' ) ) {
+  $post_types = get_post_types( array( 'show_in_rest' => true ), 'names' );
 
-foreach ( $post_types as $post_type ) {
-  add_filter( 'rest_prepare_' . $post_type, 'fv_player_handle_rest_content' );
+  foreach ( $post_types as $post_type ) {
+    add_filter( 'rest_prepare_' . $post_type, 'fv_player_handle_rest_content' );
+  }
 }
