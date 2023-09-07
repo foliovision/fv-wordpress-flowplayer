@@ -2226,9 +2226,10 @@ jQuery(function() {
         if( get_current_player_object().videos && get_current_player_object().videos[0] && fv_player_editor.clientId ) {
           var src = get_current_player_object().videos[0].src,
           splash = get_current_player_object().videos[0].splash,
-          title = get_current_player_object().videos[0].title;
+          title = get_current_player_object().videos[0].title,
+          timeline_previews = get_playlist_video_meta_value( 'timeline_previews', 0 )
 
-          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title});
+          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews });
         }
 
       } else if( current_player_db_id > 0 ) {

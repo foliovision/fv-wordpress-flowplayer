@@ -591,12 +591,14 @@ function fv_player_guttenberg_attributes_load() {
       $video_splash = '';
       $video_title = '';
       $video_splash_attachment_id = '';
+      $timeline_previews = '';
 
       foreach( $player->getVideos() AS $video ) {
         $video_src = $video->getSrc();
         $video_splash = $video->getSplash();
         $video_title = $video->getTitle();
         $video_splash_attachment_id = $video->getSplashAttachmentId();
+        $timeline_previews = $video->getMetaValue('timeline_previews',true) ? $video->getMetaValue('timeline_previews', true) : '';
         break; // only first video
       }
 
@@ -604,7 +606,8 @@ function fv_player_guttenberg_attributes_load() {
         'src' => $video_src,
         'splash' => $video_splash,
         'title' => $video_title,
-        'splash_attachment_id' => $video_splash_attachment_id
+        'splash_attachment_id' => $video_splash_attachment_id,
+        'timeline_previews' => $timeline_previews,
       ) );
     }
   }
@@ -624,6 +627,7 @@ function fv_player_guttenberg_attributes_save() {
     $src = sanitize_text_field($_POST['src']);
     $splash = sanitize_text_field($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
+    $timeline_previews = sanitize_text_field($_POST['timeline_previews']);
 
     global $FV_Player_Db;
 
@@ -642,7 +646,8 @@ function fv_player_guttenberg_attributes_save() {
             'src' => $src,
             'splash' => $splash,
             'title' => $title,
-            'splash_attachment_id' => $splash_attachment_id
+            'splash_attachment_id' => $splash_attachment_id,
+            'timeline_previews' => $timeline_previews,
           )
         )
       ));
@@ -657,6 +662,7 @@ function fv_player_guttenberg_attributes_save() {
           $video->set( 'splash', $splash );
           $video->set( 'title', $title );
           $video->set( 'splash_attachment_id', $splash_attachment_id );
+          $video->set( 'timeline_previews', $timeline_previews );
           $video->save();
           break; // only first video
         }
