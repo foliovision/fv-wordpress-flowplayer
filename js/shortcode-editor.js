@@ -2433,10 +2433,11 @@ jQuery(function() {
             var match = line_value.match(shotcode_pattern);
             if( match ) {
               shortcode = match[0];
-            } else {
-              // add placeholder for new editor
-              instance_code_mirror.getDoc().replaceRange('#fvp_placeholder#', {line: line, ch: ch}, {line: line, ch: ch});
             }
+          } else {
+            // add placeholder for new editor
+            instance_code_mirror.getDoc().replaceRange('#fvp_codemirror_placeholder#', {line: line, ch: ch}, {line: line, ch: ch});
+            editor_content = instance_code_mirror.getDoc().getValue();
           }
 
         }
@@ -3364,7 +3365,7 @@ jQuery(function() {
 
         // tinyMCE Text tab
       } else if(instance_code_mirror) {
-        editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
+        editor_content = editor_content.replace(/#fvp_codemirror_placeholder#/, shortcode);
         set_post_editor_content(editor_content);
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
         // editing
