@@ -1868,6 +1868,10 @@ jQuery(function() {
 
       jQuery('#player_id_top_text').html('');
 
+      /**
+       * Get the active post editor instance
+       */
+
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
@@ -2177,10 +2181,11 @@ jQuery(function() {
     }
 
     /**
-     *  Closing the editor
-     *  * updates the wp-admin -> FV Player screen
-     *  * sets data for WordPress Heartbeat to unlock the player
-     *  * calls editor_init() for editor clean-up
+     * Closing the editor
+     * * remove hidden tags from post editor
+     * * updates the wp-admin -> FV Player screen
+     * * sets data for WordPress Heartbeat to unlock the player
+     * * calls editor_init() for editor clean-up
      */
     function editor_close() {
       // don't close editor if we have errors showing, otherwise we'd just overlay them by an infinite loader
@@ -2348,6 +2353,11 @@ jQuery(function() {
         }
 
       } else {
+
+        /**
+         * Load shortcode for the active post editor
+         */
+
         if( fv_player_editor_conf.field_selector ){
           let custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
 
@@ -3283,8 +3293,8 @@ jQuery(function() {
     }
 
     /**
-    * Sends new shortcode to editor
-    */
+     * Sends new shortcode to post editor
+     */
     function insert_shortcode( shortcode ) {
 
       // do not insert new shortcode if using button on wp-admin -> FV Player
