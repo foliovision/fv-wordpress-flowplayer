@@ -573,6 +573,121 @@ function fv_player_splashcreen_action() {
   wp_die();
 }
 
+add_action( 'wp_ajax_fv_player_guttenberg_attributes_load', 'fv_player_guttenberg_attributes_load' );
+
+function fv_player_guttenberg_attributes_load() {
+  if( check_ajax_referer( "fv_player_gutenberg", "security" , false ) == 1 ) {
+    $player_id = intval($_POST['player_id']);
+
+    if( empty( $player_id ) ) {
+      wp_send_json(array(
+        'info' => 'No player ID'
+      ));
+    }
+
+    $player = new FV_Player_Db_Player( $player_id );
+
+    if( $player && $player->getIsValid() ) {
+      $player_id = $player->getId();
+      $video_src = '';
+      $video_splash = '';
+      $video_title = '';
+      $video_splash_attachment_id = '';
+      $timeline_previews = '';
+
+      foreach( $player->getVideos() AS $video ) {
+        $video_src = $video->getSrc();
+        $video_splash = $video->getSplash();
+        $video_title = $video->getTitle();
+        $video_splash_attachment_id = $video->getSplashAttachmentId();
+        $timeline_previews = $video->getMetaValue('timeline_previews', true) ? $video->getMetaValue('timeline_previews', true) : '';
+        break; // only first video
+      }
+
+      wp_send_json( array(
+        'src' => $video_src,
+        'splash' => $video_splash,
+        'title' => $video_title,
+        'splash_attachment_id' => $video_splash_attachment_id,
+        'timeline_previews' => $timeline_previews,
+      ) );
+    }
+  }
+
+  wp_send_json( array(
+    'error' => 'Nonce error: please reload your page'
+  ) );
+}
+
+
+add_action( 'wp_ajax_fv_player_guttenberg_attributes_save', 'fv_player_guttenberg_attributes_save' );
+
+function fv_player_guttenberg_attributes_save() {
+  if( check_ajax_referer( "fv_player_gutenberg", "security" , false ) == 1 ) {
+    $player_id = intval($_POST['player_id']);
+    $splash_attachment_id = intval($_POST['splash_attachment_id']);
+    $src = sanitize_text_field($_POST['src']);
+    $splash = sanitize_text_field($_POST['splash']);
+    $title = sanitize_text_field($_POST['title']);
+    $timeline_previews = sanitize_text_field($_POST['timeline_previews']);
+
+    global $FV_Player_Db;
+
+    if( empty( $player_id) && empty($splash_attachment_id) && empty($src) && empty($splash) && empty($title) ) {
+      wp_send_json(array(
+        'info' => 'No data to save'
+      ));
+    }
+
+    // new player
+    if( !$player_id ) {
+      $player_id =  $FV_Player_Db->import_player_data(false, false, array(
+        'date_created' => date('Y-m-d H:i:s'),
+        'videos' => array(
+          array(
+            'src' => $src,
+            'splash' => $splash,
+            'title' => $title,
+            'splash_attachment_id' => $splash_attachment_id,
+            'timeline_previews' => $timeline_previews,
+          )
+        )
+      ));
+    } else { // existing player
+      $player = new FV_Player_Db_Player( $player_id );
+
+      if( $player && $player->getIsValid() ) {
+        $player_id = $player->getId();
+
+        foreach( $player->getVideos() AS $video ) {
+          $video->set( 'src', $src );
+          $video->set( 'splash', $splash );
+          $video->set( 'title', $title );
+          $video->set( 'splash_attachment_id', $splash_attachment_id );
+          $video->save();
+          $video->updateMetaValue( 'timeline_previews', $timeline_previews );
+          break; // only first video
+        }
+      }
+    }
+
+    if( $player_id ) {
+      wp_send_json( array(
+        'player_id' => $player_id,
+        'shortcodeContent' => '[fvplayer id="' . $player_id . '"]'
+      ) );
+    } else {
+      wp_send_json( array(
+        'error' => 'Error: Player not saved'
+      ) );
+    }
+
+  }
+
+  wp_send_json( array(
+    'error' => 'Nonce error: please reload your page'
+  ) );
+}
 
 
 
@@ -792,9 +907,13 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
     $new_content = $new_content_data['new_content'];
   }
 
-  $new_content = preg_replace(
-    '~<!-- wp:shortcode -->\n(\[fvplayer [\s\S]*?)\n<!-- /wp:shortcode -->~',
-    '<!-- wp:fv-player-gutenberg/basic --><div class="wp-block-fv-player-gutenberg-basic">$1</div><!-- /wp:fv-player-gutenberg/basic -->',
+  // add gutenberg shortcode attributes
+  $new_content = preg_replace_callback(
+    array(
+      '~<!-- wp:shortcode -->\n(\[fvplayer [\s\S]*?)\n<!-- /wp:shortcode -->~',
+      '~<!-- wp:paragraph -->\n<p>(\[fvplayer [\s\S]*?)<\/p>\n<!-- /wp:paragraph -->~',
+    ),
+    'fv_player_add_missing_attributes_callback',
     $new_content
   );
 
@@ -812,6 +931,8 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
 
   // remove current action to prevent infinite loop when using wp_update_post
   remove_action( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9 );
+
+  // update post with updated content
   wp_update_post( array( 'ID' => $post->ID, 'post_content' => $new_content ) );
 }
 

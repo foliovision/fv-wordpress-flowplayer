@@ -424,10 +424,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       'fv_flowplayer_peertube_private_browser_media_tab',
       'fv_flowplayer_vimeo_browser_media_tab',
       'fv_player_cloudflare_stream_browser_media_tab'
-    ].indexOf( tabId ) > -1 &&
-    'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name') &&
-    'fv_wp_flowplayer_field_src1' !== jQuery('.fv_flowplayer_target').attr('name') &&
-    'fv_wp_flowplayer_field_src2' !== jQuery('.fv_flowplayer_target').attr('name')
+    ].indexOf( tabId ) > -1
+     &&
+    ( 'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name') &&
+      'fv_wp_flowplayer_field_src1' !== jQuery('.fv_flowplayer_target').attr('name') &&
+      'fv_wp_flowplayer_field_src2' !== jQuery('.fv_flowplayer_target').attr('name') &&
+      'fv-player-gutenberg-media' !== jQuery('.fv_flowplayer_target').attr('name')
+    )
   ) {
 
     if ( $tab.length ) {
@@ -820,6 +823,16 @@ jQuery( function($) {
       .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
       .trigger('change'); // this check the video duration etc.
 
+
+    var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+
+    if( clientId ) {
+      var editor_splash = splash ? splash : '',
+        editor_timeline_previews = extra && extra.timeline_previews ? extra.timeline_previews : '';
+
+      wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: href, splash: editor_splash, timeline_previews: editor_timeline_previews });
+    }
+
     var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);
 
     if( splash && are_we_picking_the_video ) {
@@ -835,13 +848,13 @@ jQuery( function($) {
 
         fv_player_editor.get_field( 'timeline_previews', true ).val( extra.timeline_previews ).trigger( 'change' );
 
-        fv_player_editor.get_field( 'download_sd', true ).val( extra.sd_download ).trigger( 'change' );
+        if( extra.sd_download ) fv_player_editor.get_field( 'download_sd', true ).val( extra.sd_download ).trigger( 'change' );
 
-        fv_player_editor.get_field( 'download_hd', true ).val( extra.hd_download ).trigger( 'change' );
+        if( extra.hd_download ) fv_player_editor.get_field( 'download_hd', true ).val( extra.hd_download ).trigger( 'change' );
 
         fv_player_editor.get_field( 'encoding_job_id', true).val( extra.encoding_job_id ).trigger( 'change' );
 
-        if(extra.sd_download || extra.hd_download) {
+        if( extra.sd_download || extra.hd_download ) {
           fv_player_editor.get_field('download_enabled').prop('checked', true).trigger('change');
         }
 

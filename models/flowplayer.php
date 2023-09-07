@@ -666,12 +666,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
-    
+
     if( !isset( $conf['sticky_video'] ) ) $conf['sticky_video'] = 'off';
     if( !isset( $conf['sticky_place'] ) ) $conf['sticky_place'] = 'right-bottom';
     if( !isset( $conf['sticky_width'] ) ) $conf['sticky_width'] = '380';
     if( !isset( $conf['sticky_width_mobile'] ) ) $conf['sticky_width_mobile'] = '100';
-    
+
     if( !isset( $conf['playlist-design'] ) ) $conf['playlist-design'] = '2017';
 
     if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();

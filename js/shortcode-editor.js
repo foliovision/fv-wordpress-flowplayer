@@ -101,10 +101,6 @@ jQuery(function() {
     // used to remember which widget we are editing, if any
     widget_id,
 
-    // used in Gutenberg preview to store a preview timeout task due to REACT not being fast enough to allow us previewing
-    // player directly after we close the editor
-    gutenberg_previews_loading = {},
-
     is_editing_playlist_item_title = false,
 
     // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
@@ -1045,13 +1041,26 @@ jQuery(function() {
       var fv_flowplayer_uploader;
       var fv_flowplayer_uploader_button;
 
-      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media', function(e) {
+      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media, .fv-player-gutenberg-media', function(e) {
+        console.log('Fv player uploader loaded.')
+
         e.preventDefault();
 
         fv_flowplayer_uploader_button = jQuery(this);
-        jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
-        fv_flowplayer_uploader_button.closest('.components-base-control').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']').addClass('fv_flowplayer_target');
 
+        var el_input = fv_flowplayer_uploader_button.closest('.components-base-control').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']');
+
+        // Fallback to previous input, used in FV Player Block
+        if ( ! el_input.length ) {
+          el_input = fv_flowplayer_uploader_button.prev('.components-panel__row').find('input');
+        }
+
+        // Initial state of fv player block
+        if( ! el_input.length ) {
+          el_input = jQuery(this);
+        }
+
+        el_input.addClass('fv_flowplayer_target');
         //If the uploader object has already been created, reopen the dialog
         if (fv_flowplayer_uploader) {
           fv_flowplayer_uploader.open();
@@ -2233,10 +2242,16 @@ jQuery(function() {
           $fv_player_custom_meta_box.trigger('fv_flowplayer_shortcode_insert');
         }
 
-        if ( $fv_player_gutenberg.length ) {
-          var gutenbergTextarea = ($fv_player_gutenberg[0].tagName == 'TEXTAREA' ? $fv_player_gutenberg[0] : $fv_player_gutenberg.find('textarea').first()[0]);
-          fv_player_editor.gutenberg_preview( $fv_player_gutenberg, gutenbergTextarea.value );
+        // Update the Gutenberg fields
+        if( get_current_player_object().videos && get_current_player_object().videos[0] && fv_player_editor.clientId ) {
+          var src = get_current_player_object().videos[0].src,
+          splash = get_current_player_object().videos[0].splash,
+          title = get_current_player_object().videos[0].title,
+          timeline_previews = get_playlist_video_meta_value( 'timeline_previews', 0 )
+
+          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews });
         }
+
       } else if( current_player_db_id > 0 ) {
 
         // Append or update player row in wp-admin -> FV Player
@@ -2350,9 +2365,16 @@ jQuery(function() {
 
       var
         field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
+        clientId = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-gutenberg-client-id').val(),
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length,
         shortcode = false,
         shortcode_parse_fix = false;
+
+      if( clientId ) {
+        fv_player_editor.clientId = clientId;
+      } else {
+        fv_player_editor.clientId = null;
+      }
 
       // if we've got a numeric DB ID passed to this function, use it directly
       // but don't replace editor_content, since we'll need that to be actually updated
@@ -3243,6 +3265,10 @@ jQuery(function() {
 
             insert_shortcode( shortcode_insert );
 
+            if( fv_player_editor.clientId ) {
+              wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { shortcodeContent: shortcode_insert });
+            }
+
             jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();
 
           } else {
@@ -3366,17 +3392,9 @@ jQuery(function() {
 
       // is there a Gutenberg field together in wrapper with the button?
       } else if( gutenberg.length ) {
-        var
-          nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set,
-          gutenbergTextarea = (gutenberg[0].tagName == 'TEXTAREA' ? gutenberg[0] : gutenberg.find('textarea').first()[0]);
+        // TODO: Update the fields in the Gutenberg block ?
 
-        nativeInputValueSetter.call(gutenbergTextarea, shortcode);
-        var ev2 = new Event('change', { bubbles: true});
-        gutenbergTextarea.dispatchEvent(ev2,shortcode);
-
-        fv_player_editor.gutenberg_preview( jQuery(editor_button_clicked).parents('.fv-player-editor-wrapper'), shortcode );
-
-        // is there a plain text field together in wrapper with the button?
+      // is there a plain text field together in wrapper with the button?
       } else if (field.length) {
         field.val(shortcode);
         // Prevents double event triggering in FV Player Custom Video box
@@ -4857,43 +4875,6 @@ jQuery(function() {
       // We keep it for backwards compatibility
       editor_resize: function() {},
 
-      /**
-       * Adds a preview to the Gutenberg FV Player block.
-       *
-       * @param parent Parent Gutenberg element in which we'll be showing the preview for.
-       * @param shortcode The actual player shortcode to generate the preview from.
-       */
-      gutenberg_preview: function( parent, shortcode ) {
-        // No preview if the element is in the Site Editor iframe
-        // The iframe would have to load all the FV Player JS and CSS
-        if( jQuery(parent).closest('body').hasClass('block-editor-iframe__body') ) {
-          return;
-        }
-
-        if (typeof(parent) == 'undefined' || typeof(shortcode) == 'undefined' || typeof(parent[0]) == 'undefined' ) {
-          return;
-        }
-
-        var id = parent[0].id;
-
-        if (gutenberg_previews_loading[id] !== false) {
-          clearTimeout(gutenberg_previews_loading[id]);
-        }
-
-        var url = window.fv_Player_site_base + '?fv_player_embed=' + window.fv_player_editor_conf.preview_nonce + '&fv_player_preview=' + fv_player_editor.b64EncodeUnicode( shortcode );
-
-        // set timeout for the loading AJAX and wait a moment, as REACT will call this function
-        // even when we click into the Gutenberg block without actually editing anything
-        // and also the user might be still typing the ID (i.e. 183 - which would make 3 preview calls otherwise)
-        gutenberg_previews_loading[id] = setTimeout(function() {
-          jQuery.get(url, function(response) {
-            jQuery(parent).find('.fv-player-gutenberg-preview').html( jQuery('#wrapper',response ) );
-          } ).always(function() {
-            gutenberg_previews_loading[id] = false;
-          })
-        }, 1500);
-      },
-
       get_playlist_items_count,
 
       insert_button_toggle,
@@ -4963,7 +4944,7 @@ jQuery(function() {
     wp.data.subscribe( function() {
       if ( wp.data.select('core/editor') && wp.data.select('core/editor').getCurrentPost().fv_player_reload ) {
         setTimeout( function() {
-          location.reload();
+          location.href = location.href;
         }, 0 );
       }
     } );
