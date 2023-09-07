@@ -2211,9 +2211,11 @@ jQuery(function() {
       set_current_video_to_edit( -1 );
 
       if( instance_code_mirror && instance_code_mirror_cursor_last ) {
-        instance_code_mirror.focus();
-        instance_code_mirror.setCursor( instance_code_mirror_cursor_last, 0 );
-        instance_code_mirror_cursor_last = false;
+        setTimeout(function() {
+          instance_code_mirror.focus();
+          instance_code_mirror.setCursor( instance_code_mirror_cursor_last, 0 );
+          instance_code_mirror_cursor_last = false;
+        },0);
       }
 
       if ( !is_fv_player_screen(editor_button_clicked) ) {
