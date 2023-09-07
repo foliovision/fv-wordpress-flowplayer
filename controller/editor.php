@@ -598,7 +598,7 @@ function fv_player_guttenberg_attributes_load() {
         $video_splash = $video->getSplash();
         $video_title = $video->getTitle();
         $video_splash_attachment_id = $video->getSplashAttachmentId();
-        $timeline_previews = $video->getMetaValue('timeline_previews',true) ? $video->getMetaValue('timeline_previews', true) : '';
+        $timeline_previews = $video->getMetaValue('timeline_previews', true) ? $video->getMetaValue('timeline_previews', true) : '';
         break; // only first video
       }
 
@@ -662,8 +662,8 @@ function fv_player_guttenberg_attributes_save() {
           $video->set( 'splash', $splash );
           $video->set( 'title', $title );
           $video->set( 'splash_attachment_id', $splash_attachment_id );
-          $video->set( 'timeline_previews', $timeline_previews );
           $video->save();
+          $video->updateMetaValue( 'timeline_previews', $timeline_previews );
           break; // only first video
         }
       }
