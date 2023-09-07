@@ -44,6 +44,7 @@ jQuery(function() {
 
     // CodeMirror instance, if any
     instance_code_mirror,
+    instance_code_mirror_cursor_last,
 
     // TinyMCE instance, if any
     instance_tinymce,
@@ -2203,10 +2204,17 @@ jQuery(function() {
       editor_content = editor_content.replace(fv_wp_flowplayer_re_insert,'');
       editor_content = editor_content.replace(fv_wp_flowplayer_re_edit,'');
       editor_content = editor_content.replace(/#fvp_placeholder#/, '');
+      editor_content = editor_content.replace(/#fvp_codemirror_placeholder#/, '');
       set_post_editor_content(editor_content);
 
       // this variable needs to be reset here and not in editor_init
       set_current_video_to_edit( -1 );
+
+      if( instance_code_mirror && instance_code_mirror_cursor_last ) {
+        instance_code_mirror.focus();
+        instance_code_mirror.setCursor( instance_code_mirror_cursor_last, 0 );
+        instance_code_mirror_cursor_last = false;
+      }
 
       if ( !is_fv_player_screen(editor_button_clicked) ) {
         // todo: what it the point of this call being made?
@@ -2303,6 +2311,8 @@ jQuery(function() {
       if( !selected_player_id ) {
         editor_init();
       }
+
+      instance_code_mirror_cursor_last = false;
 
       // remove any DB data IDs that may be left in the form
       $el_editor.find('[data-id]').removeData('id').removeAttr('data-id');
@@ -2425,6 +2435,8 @@ jQuery(function() {
             line = position.line,
             ch = position.ch,
             line_value = instance_code_mirror.getDoc().getLine(line);
+
+          instance_code_mirror_cursor_last = {line: line, ch: ch};
 
           // look for start of shortcode
           var shotcode_pattern = new RegExp(/\[fvplayer[^\[\]]*]?/g);
