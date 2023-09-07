@@ -1899,7 +1899,7 @@ jQuery(function() {
         editor_content = jQuery(field).val();
       } else if( widget.length ){
         editor_content = widget.val();
-      } else if(typeof(CodeMirror) !== 'undefined' ) {
+      } else if( document.querySelector('.CodeMirror') && typeof(CodeMirror) !== 'undefined' ) {
         instance_code_mirror = document.querySelector('.CodeMirror').CodeMirror;
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
