@@ -42,6 +42,9 @@ jQuery(function() {
     // used in WP Heartbeat
     edit_lock_removal = {},
 
+    // CodeMirror instance, if any
+    instance_code_mirror,
+
     // TinyMCE instance, if any
     instance_tinymce,
 
@@ -1896,6 +1899,8 @@ jQuery(function() {
         editor_content = jQuery(field).val();
       } else if( widget.length ){
         editor_content = widget.val();
+      } else if(typeof(CodeMirror) !== 'undefined' ) {
+        instance_code_mirror = document.querySelector('.CodeMirror').CodeMirror;
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length){
         editor_content = jQuery('#content:not([aria-hidden=true])').val();
       } else if( typeof tinymce !== 'undefined' && typeof tinymce.majorVersion !== 'undefined' && typeof tinymce.activeEditor !== 'undefined' && tinymce.majorVersion >= 4 ){
@@ -2295,6 +2300,8 @@ jQuery(function() {
     * @param {int} selected_player_id Optional, force load of specified player ID using "Pick existing player"
     */
     function editor_open( selected_player_id ) {
+      debugger
+
       if( !selected_player_id ) {
         editor_init();
       }
@@ -2410,6 +2417,28 @@ jQuery(function() {
             editor_content = '[<' + helper_tag +' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content.replace('[', '') + '';
           } else {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
+          }
+
+        } else if( instance_code_mirror ) {
+          debug_log('Loading for CodeMirror...' );
+          editor_content = instance_code_mirror.getDoc().getValue();
+
+          var position = instance_code_mirror.getDoc().getCursor(),
+            line = position.line,
+            ch = position.ch,
+            line_value = instance_code_mirror.getDoc().getLine(line);
+
+          // look for start of shortcode
+          var shotcode_pattern = new RegExp(/\[fvplayer[^\[\]]*]?/g);
+
+          if( shotcode_pattern.test(line_value) && ch >= line_value.indexOf('[fvplayer') && ch <= line_value.indexOf(']') ) {
+            var match = line_value.match(shotcode_pattern);
+            if( match ) {
+              shortcode = match[0];
+            } else {
+              // add placeholder for new editor
+              instance_code_mirror.getDoc().replaceRange('#fvp_placeholder#', {line: line, ch: ch}, {line: line, ch: ch});
+            }
           }
 
         }
@@ -3336,6 +3365,9 @@ jQuery(function() {
         widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
 
         // tinyMCE Text tab
+      } else if(instance_code_mirror) {
+        editor_content = editor_content.replace(/#fvp_placeholder#/, shortcode);
+        set_post_editor_content(editor_content);
       } else if (typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length) {
         // editing
         if( editor_content.match(/\[.*?#fvp_placeholder#.*?\]/) ) {
@@ -3662,7 +3694,7 @@ jQuery(function() {
       set_current_video_to_edit( new_index );
 
       editing_video_details = true;
-      
+
       $el_editor
         .removeClass( 'is-playlist-active' )
         .addClass( 'is-singular-active' );
@@ -3959,10 +3991,12 @@ jQuery(function() {
         return;
       }
 
-      if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
+      if ( instance_code_mirror ) {
+        instance_code_mirror.getDoc().setValue( html );
+      } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
         jQuery('#content:not([aria-hidden=true])').val(html);
 
-      }else if( typeof(instance_fp_wysiwyg) != 'undefined' && ( instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) ) {
+      } else if ( typeof(instance_fp_wysiwyg) != 'undefined' && ( instance_tinymce == undefined || typeof tinyMCE !== 'undefined' && tinyMCE.activeEditor.isHidden() ) ) {
         instance_fp_wysiwyg.SetHTML( html );
       }
       else if ( instance_tinymce ) { // instance_tinymce will be null if we're updating custom meta box
