@@ -55,6 +55,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   var $bCSSInline = false;
 
+  var $bCSSPlaylists = false;
+
   public $overlay_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
 
   public $overlay_css_bottom = ".wpfp_custom_ad { position: absolute; bottom: 0; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
@@ -1561,7 +1563,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     if( is_admin() && did_action('admin_footer') ) {
       echo "<link rel='stylesheet' id='fv_freedomplayer-css'  href='".esc_attr($sURL)."?ver=".$sVer."' type='text/css' media='all' />\n";
-      if(isset($sURLAdditions)) echo "<link rel='stylesheet' id='fv_freedomplayer-css-additions'  href='".esc_attr($sURLAdditions)."?ver=".$sVerAdditions."' type='text/css' media='all' />\n";
+      if(isset($sURLAdditions)) {
+        echo "<link rel='stylesheet' id='fv_freedomplayer-css-additions'  href='".esc_attr($sURLAdditions)."?ver=".$sVerAdditions."' type='text/css' media='all' />\n";
+      }
 
       echo "<link rel='stylesheet' id='fv_freedomplayer_playlists-css'  href='".esc_attr( FV_FP_RELATIVE_PATH.'/css/playlists.css' )."?ver=".filemtime( dirname(__FILE__).'/../css/playlists.css' )."' type='text/css' media='all' />\n";
 
@@ -1576,9 +1580,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( class_exists('OptimizePress_Default_Assets') ) $aDeps = array('optimizepress-default'); //  make sure the CSS loads after optimizePressPlugin
 
       wp_enqueue_style( 'fv_flowplayer', $sURL, $aDeps, $sVer );
-      if(isset($sURLAdditions)) wp_enqueue_style( 'fv_freedomplayer_additions', $sURLAdditions, array('fv_flowplayer'), $sVerAdditions );
+      if(isset($sURLAdditions)) {
+        wp_enqueue_style( 'fv_freedomplayer_additions', $sURLAdditions, array('fv_flowplayer'), $sVerAdditions );
+      }
 
-      if ( $force ) {
+      if ( $this->bCSSPlaylists || $force ) {
         wp_enqueue_style( 'fv_freedomplayer_playlists', FV_FP_RELATIVE_PATH.'/css/playlists.css', array('fv_flowplayer'), filemtime( dirname(__FILE__).'/../css/playlists.css' ) );
       }
 
