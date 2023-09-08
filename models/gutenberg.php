@@ -110,6 +110,7 @@ function fv_player_add_missing_attributes_callback($matches) {
     'title' => '',
     'player_id' => '',
     'splash_attachment_id' => '',
+    'cover' => '',
     'forceUpdate' => 0
   );
 
