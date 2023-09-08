@@ -337,14 +337,26 @@ function fv_flowplayer_admin_default_options() {
                   $value = $fv_fp->_get_option('liststyle');
                   ?>
                   <select id="liststyle" name="liststyle">
-                    <option value="horizontal"<?php if( $value == 'horizontal' ) echo ' selected="selected"'; ?> ><?php _e('Horizontal', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="tabs"      <?php if( $value == 'tabs' ) echo ' selected="selected"'; ?> ><?php _e('Tabs', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="prevnext"  <?php if( $value == 'prevnext' ) echo ' selected="selected"'; ?> ><?php _e('Prev/Next', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="vertical"  <?php if( $value == 'vertical' ) echo ' selected="selected"'; ?> ><?php _e('Vertical', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="slider"    <?php if( $value == 'slider' ) echo ' selected="selected"'; ?> ><?php _e('Slider', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="season"    <?php if( $value == 'season' ) echo ' selected="selected"'; ?> ><?php _e('Vertical Season', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="polaroid"  <?php if( $value == 'polaroid' ) echo ' selected="selected"'; ?> ><?php _e('Polaroid', 'fv-wordpress-flowplayer'); ?></option>
-                    <option value="text"  <?php if( $value == 'text' ) echo ' selected="selected"'; ?> ><?php _e('Text', 'fv-wordpress-flowplayer'); ?></option>
+                    <?php
+                    foreach(
+                      array(
+                        'horizontal'  => __( 'Horizontal', 'fv-wordpress-flowplayer' ),
+                        'tabs'        => __( 'Tabland', 'fv-wordpress-flowplayer' ),
+                        'prevnext'    => __( 'Big arrows', 'fv-wordpress-flowplayer' ),
+                        'vertical'    => __( 'Vertical', 'fv-wordpress-flowplayer' ),
+                        'slider'      => __( 'Scrollslider', 'fv-wordpress-flowplayer' ),
+                        'season'      => __( 'Episodes', 'fv-wordpress-flowplayer' ),
+                        'polaroid'    => __( 'Polaroid', 'fv-wordpress-flowplayer' ),
+                        'text'        => __( 'Text', 'fv-wordpress-flowplayer' ),
+                        'version-one' => __( 'Sliderland', 'fv-wordpress-flowplayer' ),
+                        'version-two' => __( 'Sliderbar', 'fv-wordpress-flowplayer' ),
+                      ) as $style => $name
+                    ) {
+                      ?>
+                      <option value="<?php echo $style; ?>"<?php if( $value === $style ) echo ' selected="selected"'; ?>><?php echo $name; ?></option>
+                      <?php
+                    }
+                    ?>
                   </select>
                   <?php _e('Enter your default playlist style here', 'fv-wordpress-flowplayer'); ?>
                 </p>
