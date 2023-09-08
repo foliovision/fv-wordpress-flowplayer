@@ -72,7 +72,9 @@ flowplayer(function(api, root) {
 })
 
 
-jQuery(window).on('resize tabsactivate',function(){
+jQuery(window).on( 'resize tabsactivate', freedomplayer_playlist_size_check );
+
+function freedomplayer_playlist_size_check(){
   jQuery('.fp-playlist-external').each(function(){
     var playlist = jQuery(this),
       parent_width = playlist.parent().width(),
@@ -93,7 +95,9 @@ jQuery(window).on('resize tabsactivate',function(){
       playlist.css('--fp-playlist-items-per-row', String(fit_thumbs));
     }
   })
-}).trigger('resize');
+}
+
+jQuery( document ).ready( freedomplayer_playlist_size_check );
 
 flowplayer(function(api, root) {
   root = jQuery(root);
