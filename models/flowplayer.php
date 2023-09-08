@@ -1297,8 +1297,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $attributes['class'] = 'fp-playlist-external '.$this->get_playlist_class($aCaptions);
       $attributes['rel'] = 'wpfp_'.$this->hash;
       $attributes['id'] = 'wpfp_'.$this->hash.'_playlist';
+
+      // we put in enough to be sure it will fit in, later JS calculates a better value
       if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
-        $attributes['style'] = "width: ".(count($aPlaylistItems)*250)."px"; // we put in enough to be sure it will fit in, later JS calculates a better value
+        $slider_width = count( $aPlaylistItems ) * 200;
+        $attributes['style'] = "width: " . $slider_width . "px; max-width: " . $slider_width . "px !important"; 
       }
 
       $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
