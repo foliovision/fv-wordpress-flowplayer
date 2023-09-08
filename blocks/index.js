@@ -220,7 +220,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           </div>
           <fieldset className="components-placeholder__fieldset">
             <div className='fv-player-editor-wrapper fv-player-gutenberg'>
-              <legend className='components-placeholder__instructions'>{__(' Create a FV new player or select media from your library.', 'fv-player-gutenberg')}</legend>
+              <legend className='components-placeholder__instructions'>{__('Select Media or Use FV Player Editor to see all the features.', 'fv-player-gutenberg')}</legend>
               <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
               <input
                 className="attachement-shortcode fv-player-editor-field"
