@@ -649,8 +649,13 @@ function fv_player_guttenberg_attributes_save() {
             'splash' => $splash,
             'title' => $title,
             'splash_attachment_id' => $splash_attachment_id,
-            'timeline_previews' => $timeline_previews,
-          )
+            'meta' => array(
+              array(
+                'key' => 'timeline_previews',
+                'value' => $timeline_previews
+              )
+            )
+          ),
         )
       ));
     } else { // existing player
