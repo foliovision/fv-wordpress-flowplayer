@@ -341,16 +341,18 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                   )}
                 />
               </MediaUploadCheck>
-              <PanelRow>
-                <TextControl
-                    label="Timeline Previews"
-                    className='fv-player-gutenberg-timeline-previews'
-                    value={timeline_previews}
-                    onChange={(newTimelinePreviews) => {
-                      setAttributes({ timeline_previews: newTimelinePreviews });
-                    }}
-                  />
-              </PanelRow>
+              {timeline_previews && (
+                <PanelRow>
+                  <TextControl
+                      label="Timeline Previews"
+                      className='fv-player-gutenberg-timeline-previews'
+                      value={timeline_previews}
+                      onChange={(newTimelinePreviews) => {
+                        setAttributes({ timeline_previews: newTimelinePreviews });
+                      }}
+                    />
+                </PanelRow>
+              )}
               <PanelRow>
                 <TextControl
                   label="Video Title"
