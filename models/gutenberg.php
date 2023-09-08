@@ -36,6 +36,10 @@ function fv_player_gutenberg() {
           'type' => 'string',
           'default' => '',
         ),
+        'hls_hlskey' => array(
+          'type' => 'string',
+          'default' => '',
+        ),
         'title' => array(
           'type' => 'string',
           'default' => '',
@@ -107,6 +111,7 @@ function fv_player_add_missing_attributes_callback($matches) {
     'src' => '',
     'splash' => '',
     'timeline_previews' => '',
+    'hls_hlskey' => '',
     'title' => '',
     'player_id' => '',
     'splash_attachment_id' => '',
@@ -124,6 +129,7 @@ function fv_player_add_missing_attributes_callback($matches) {
     $attributes['title'] = $video->getTitle() ? $video->getTitle() : '';
     $attributes['splash_attachment_id'] = $video->getSplashAttachmentId() ? $video->getSplashAttachmentId() : '0';
     $attributes['timeline_previews'] = $video->getMetaValue('timeline_previews',true) ? $video->getMetaValue('timeline_previews', true) : '';
+    $attributes['hls_hlskey'] = $video->getMetaValue('hls_hlskey',true) ? $video->getMetaValue('hls_hlskey', true) : '';
     break;
   }
 

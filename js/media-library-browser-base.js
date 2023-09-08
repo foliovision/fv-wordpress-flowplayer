@@ -829,8 +829,9 @@ jQuery( function($) {
     if( clientId ) {
       var editor_splash = splash ? splash : '',
         editor_timeline_previews = extra && extra.timeline_previews ? extra.timeline_previews : '';
+        editor_hlskey = extra && extra.hlskey ? extra.hlskey : '';
 
-      wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: href, splash: editor_splash, timeline_previews: editor_timeline_previews });
+      wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: href, splash: editor_splash, timeline_previews: editor_timeline_previews, hls_hlskey: editor_hlskey });
     }
 
     var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);

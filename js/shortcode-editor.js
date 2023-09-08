@@ -2245,9 +2245,11 @@ jQuery(function() {
         // Update the Gutenberg fields
         if( get_current_player_object().videos && get_current_player_object().videos[0] && fv_player_editor.clientId ) {
           var src = get_current_player_object().videos[0].src,
-          splash = get_current_player_object().videos[0].splash,
-          title = get_current_player_object().videos[0].title,
-          timeline_previews = get_playlist_video_meta_value( 'timeline_previews', 0 )
+            splash = get_current_player_object().videos[0].splash,
+            title = get_current_player_object().videos[0].title,
+            timeline_previews = get_playlist_video_meta_value( 'timeline_previews', 0 ),
+            hlskey = get_playlist_video_meta_value( 'hls_hlskey', 0 );
+
 
           wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews });
         }

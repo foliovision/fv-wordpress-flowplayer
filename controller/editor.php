@@ -594,6 +594,7 @@ function fv_player_guttenberg_attributes_load() {
       $video_title = '';
       $video_splash_attachment_id = '';
       $timeline_previews = '';
+      $hls_hlskey = '';
 
       foreach( $player->getVideos() AS $video ) {
         $video_src = $video->getSrc();
@@ -601,6 +602,7 @@ function fv_player_guttenberg_attributes_load() {
         $video_title = $video->getTitle();
         $video_splash_attachment_id = $video->getSplashAttachmentId();
         $timeline_previews = $video->getMetaValue('timeline_previews', true) ? $video->getMetaValue('timeline_previews', true) : '';
+        $hls_hlskey = $video->getMetaValue('hls_hlskey', true) ? $video->getMetaValue('hls_hlskey', true) : '';
         break; // only first video
       }
 
@@ -610,6 +612,7 @@ function fv_player_guttenberg_attributes_load() {
         'title' => $video_title,
         'splash_attachment_id' => $video_splash_attachment_id,
         'timeline_previews' => $timeline_previews,
+        'hls_hlskey' => $hls_hlskey,
       ) );
     }
   }
@@ -630,6 +633,7 @@ function fv_player_guttenberg_attributes_save() {
     $splash = sanitize_text_field($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
     $timeline_previews = sanitize_text_field($_POST['timeline_previews']);
+    $hls_hlskey = sanitize_text_field($_POST['hls_hlskey']);
 
     global $FV_Player_Db;
 
@@ -653,6 +657,10 @@ function fv_player_guttenberg_attributes_save() {
               array(
                 'key' => 'timeline_previews',
                 'value' => $timeline_previews
+              ),
+              array(
+                'key' => 'hls_hlskey',
+                'value' => $hls_hlskey
               )
             )
           ),
@@ -671,6 +679,7 @@ function fv_player_guttenberg_attributes_save() {
           $video->set( 'splash_attachment_id', $splash_attachment_id );
           $video->save();
           $video->updateMetaValue( 'timeline_previews', $timeline_previews );
+          $video->updateMetaValue( 'hls_hlskey', $hls_hlskey);
           break; // only first video
         }
       }

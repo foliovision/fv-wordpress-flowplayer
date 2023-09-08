@@ -40,6 +40,10 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       type: 'string',
       default: ''
     },
+    hls_hlskey: {
+      type: 'string',
+      default: ''
+    },
     title: {
       type: 'string',
       default: ''
@@ -68,7 +72,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     }
   },
   edit: ({ isSelected ,attributes, setAttributes, context, clientId}) => {
-    const { src, splash, title, shortcodeContent, player_id, splash_attachment_id, timeline_previews } = attributes;
+    const { src, splash, title, shortcodeContent, player_id, splash_attachment_id, timeline_previews, hls_hlskey } = attributes;
 
     // interval
     const [count, setCount] = useState(0);
@@ -77,6 +81,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     const [debouncedSrc, setDebouncedSrc] = useState(src);
     const [debouncedTitle, setDebouncedTitle] = useState(title);
     const [debouncedSplash, setDebouncedSplash] = useState(splash);
+    const [debouncedHlskey, setDebouncedHlskey] = useState(hls_hlskey);
     const [debounceTimelinePreviews, setDebounceTimelinePreviews] = useState(timeline_previews);
 
     // popover
@@ -89,10 +94,11 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // debounce block ajax
     useEffect(() => {
       const timeoutId = setTimeout(() => {
-        if (debouncedSrc !== src || debouncedTitle !== title || debouncedSplash !== splash || debounceTimelinePreviews !== timeline_previews) {
+        if (debouncedSrc !== src || debouncedTitle !== title || debouncedSplash !== splash || debounceTimelinePreviews !== timeline_previews || debouncedHlskey !== hls_hlskey ) {
           setDebouncedSrc(src);
           setDebouncedTitle(title);
           setDebouncedSplash(splash);
+          setDebouncedHlskey(hls_hlskey);
           setDebounceTimelinePreviews(timeline_previews);
           ajaxUpdateAttributes({ ...attributes });
         }
@@ -101,7 +107,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       return () => {
         clearTimeout(timeoutId);
       };
-    }, [src, title, splash, timeline_previews]);
+    }, [src, title, splash, timeline_previews, hls_hlskey]);
 
     // block interval to load player and resize
     useEffect(() => {
@@ -151,6 +157,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           setAttributes({ title: String(data.title) });
           setAttributes({ src: String(data.src) });
           setAttributes({ splash_attachment_id: String(data.splash_attachment_id) });
+          setAttributes({ hls_hlskey: String(data.hls_hlskey) });
           setAttributes({ timeline_previews: String(data.timeline_previews) });
           setAttributes({ forceUpdate: String(Math.random()) });
         }
@@ -175,6 +182,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       data.append('splash', newAttributes.splash);
       data.append('title', newAttributes.title);
       data.append('splash_attachment_id', newAttributes.splash_attachment_id);
+      data.append('hls_hlskey', newAttributes.hls_hlskey);
       data.append('timeline_previews', newAttributes.timeline_previews);
 
       // nonce is required for security
@@ -349,6 +357,18 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                       value={timeline_previews}
                       onChange={(newTimelinePreviews) => {
                         setAttributes({ timeline_previews: newTimelinePreviews });
+                      }}
+                    />
+                </PanelRow>
+              )}
+              {hls_hlskey && (
+                <PanelRow>
+                  <TextControl
+                      label="HLS Key"
+                      className='fv-player-gutenberg-hls-hlskey'
+                      value={hls_hlskey}
+                      onChange={(newHlsHlskey) => {
+                        setAttributes({ hls_hlskey: newHlsHlskey });
                       }}
                     />
                 </PanelRow>
