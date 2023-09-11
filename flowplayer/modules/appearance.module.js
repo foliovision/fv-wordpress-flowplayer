@@ -72,6 +72,9 @@ flowplayer(function(api, root) {
 })
 
 
+/**
+ * What's below must also be updated in flowplayer.php which creates the pure-JavaScript version of it for pageload.
+ */
 jQuery(window).on( 'resize tabsactivate', freedomplayer_playlist_size_check );
 
 function freedomplayer_playlist_size_check(){

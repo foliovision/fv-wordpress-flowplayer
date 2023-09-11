@@ -1311,15 +1311,45 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $items = implode( '', $sHTML );
 
-      if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'version-one', 'version-two' ) ) ) {
-        $items = "<div class='fv-playlist-draggable'>".$items."</div>";
-        $items .= "<div class='fv-playlist-slider-controls'>
-        <button class='fv-playlist-left-arrow'></button>
-        <button class='fv-playlist-right-arrow'></button>
-        </div>";
+      if( isset($aArgs['liststyle']) ){
+        $limit = 150;
+        if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'version-one', 'version-two' ) ) ) {
+          $limit = 250;
+        }
+
+        if( in_array( $this->aCurArgs['liststyle'], array( 'version-one', 'version-two' ) ) ) {
+          $items = "<div class='fv-playlist-draggable'>".$items."</div>";
+          $items .= "<div class='fv-playlist-slider-controls'>
+          <button class='fv-playlist-left-arrow'></button>
+          <button class='fv-playlist-right-arrow'></button>
+          </div>\n";
+        }
       }
 
+      /**
+       * Pure-JavaScript version of freedomplayer_playlist_size_check().
+       */
+      if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'polaroid', 'version-one', 'version-two' ) ) ) {
+        $script_fit_thumbs = "
+        var fit_thumbs = Math.floor( parseInt( getComputedStyle( el ).width ) / " . $limit . " );
+        if( fit_thumbs > 8 ) fit_thumbs = 8;
+        else if( fit_thumbs< 2 ) fit_thumbs = 2;
+        el.style.setProperty('--fp-playlist-items-per-row', String(fit_thumbs));
+        ";
+      }
+
+      $script = "( function() {
+        var el = document.getElementById( '" . $attributes['id'] ."' );
+        if ( el.parentNode.getBoundingClientRect().width >= 900 ) {
+          el.classList.add( 'is-wide' );
+        } " . $script_fit_thumbs . "
+      } )();";
+
+      // remove whitespace
+      $script = preg_replace( '~\s+~m', ' ', $script );
+
       $sHTML = "\t<div$attributes_html>\n".$items."\t</div>\n";
+      $sHTML .= "\t<script>" . $script . "</script>\n";
 
       if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $sHTML = "<div class='fv-playlist-slider-wrapper'>".$sHTML."</div>\n";
