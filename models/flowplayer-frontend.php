@@ -294,7 +294,15 @@ class flowplayer_frontend extends flowplayer
 
     // Load playlists.css later, if it's used.
     if ( count( $aPlaylistItems ) > 1 ) {
-      $this->bCSSPlaylists = true;
+
+      // Did we load FV Player CSS already? Then lets load the playlist CSS as soon as possible
+      if ( $this->bCSSLoaded ) {
+        wp_enqueue_style( 'fv_freedomplayer_playlists', FV_FP_RELATIVE_PATH.'/css/playlists.css', array('fv_flowplayer'), filemtime( dirname(__FILE__).'/../css/playlists.css' ) );
+
+      // Tell the CSS loader to also include playlists.css
+      } else {
+        $this->bCSSPlaylists = true;
+      }
     }
 
     if( count($aPlaylistItems) == 1 && empty($this->aCurArgs['listshow']) ) {
