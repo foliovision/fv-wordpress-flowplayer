@@ -1314,7 +1314,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( isset($aArgs['liststyle']) ){
         $limit = 150;
         if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'version-one', 'version-two' ) ) ) {
-          $limit = 250;
+          $limit = 200;
         }
 
         if( in_array( $this->aCurArgs['liststyle'], array( 'version-one', 'version-two' ) ) ) {

@@ -90,7 +90,7 @@ function freedomplayer_playlist_size_check(){
     else playlist.removeClass('is-wide');
 
     if (playlist.hasClass('fp-playlist-polaroid') || playlist.hasClass('fp-playlist-version-one') || playlist.hasClass('fp-playlist-version-two')) {
-      var limit = playlist.hasClass('fp-playlist-version-one') || playlist.hasClass('fp-playlist-version-two') ? 250 : 150,
+      var limit = playlist.hasClass('fp-playlist-version-one') || playlist.hasClass('fp-playlist-version-two') ? 200 : 150,
         fit_thumbs = Math.floor(width / limit);
 
       if (fit_thumbs > 8) fit_thumbs = 8;
