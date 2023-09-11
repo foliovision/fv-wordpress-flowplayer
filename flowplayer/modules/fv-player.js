@@ -583,9 +583,10 @@ function fv_player_load( forced_el ) {
     }
   } );
   
-  jQuery('.fv-playlist-slider-wrapper').each( function() {
-    var items = jQuery(this).find('a:visible');
-    jQuery(this).find('.fp-playlist-external').css( 'width', items.outerWidth() * items.length );
+  jQuery('.fv-playlist-slider-wrapper').each( function() {;
+    var items = jQuery(this).find('a:visible'),
+      width = items.outerWidth() * items.length;
+    jQuery(this).find('.fp-playlist-external').attr( 'style', 'width: ' + width + 'px; max-width: ' + width + 'px !important' );
   });
   
   if( typeof(jQuery().tabs) != "undefined" ) {
