@@ -46,7 +46,7 @@ abstract class FV_Player_Media_Browser {
 
   // TODO: should be abstract
   public function add_folder_ajax() {}
-  
+
   // TOTO: should be abstract
   function decode_link_components( $link ) {}
 
@@ -58,6 +58,10 @@ abstract class FV_Player_Media_Browser {
     wp_enqueue_media();
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname( __FILE__ ) . '/../js/media-library-browser-base.js' ), true );
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
+    wp_localize_script('flowplayer-browser-base', 'fv_flowplayer_browser', array(
+        'ajaxurl' => flowplayer::get_plugin_url().'/controller/browser.php',
+      )
+    );
     $this->init();
   }
 
@@ -133,7 +137,7 @@ abstract class FV_Player_Media_Browser {
       $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
       $files = $res->get('Contents');
       if( !$files ) $files = array();
-      
+
       $objects = array_merge( $folders, $files );
 
       foreach ( $objects as $object ) {
@@ -152,7 +156,7 @@ abstract class FV_Player_Media_Browser {
         }
 
         $item['path'] = 'Home/' . $path;
-        
+
         if( $request_path ) {
           if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
 

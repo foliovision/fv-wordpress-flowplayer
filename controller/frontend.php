@@ -428,7 +428,7 @@ function flowplayer_prepare_scripts() {
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_min_width'] = intval( apply_filters( 'fv_player_sticky_desktop_min_width', 1020 ) );
-       
+
     global $post;
     if( $post && isset($post->ID) && $post->ID > 0 ) {
       if( get_post_meta($post->ID, 'fv_player_mobile_native_fullscreen', true) ) $aConf['mobile_native_fullscreen'] = true;
@@ -900,9 +900,13 @@ add_filter( 'sgs_whitelist_wp_content' , 'fv_player_sgs_whitelist_wp_content' );
 
 function fv_player_sgs_whitelist_wp_content( $exclusions ) {
   global $fv_fp;
+
+  $exclusions[] = 'browser.php';
+
   if( $fv_fp->_get_option('video_stats_enable') ) {
     $exclusions[] = 'track.php';
   }
+
   return $exclusions;
 }
 
