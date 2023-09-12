@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '7.9.13';
+$fv_wp_flowplayer_ver = '7.9.14';
 $fv_wp_flowplayer_core_ver = '7.2.14.14';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -91,9 +91,9 @@ $fv_fp = new flowplayer_frontend();
 
 /**
  * Load back-end code if it's wp-admin, cron or if it's Gutenberg post saving.
- * 
+ *
  * For the URL match we must consider:
- * 
+ *
  * * /wp-json/wp/v2/posts/{post ID}
  * * /index.php?rest_route=%2Fwp%2Fv2%2Fposts%2F{post ID}
  */
