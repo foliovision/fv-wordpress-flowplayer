@@ -90,6 +90,15 @@ if(strcmp($action, 'load_dos_assets') == 0) {
   $json_final = $FV_Player_DigitalOcean_Spaces_Browser->get_formatted_assets_data();
 
   wp_send_json($json_final);
+} else if(strcmp($action,'load_s3_assets') == 0) {
+  require_once(dirname( __FILE__ ) . '/settings.php');
+  require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
+  require_once(dirname( __FILE__ ) . '/../models/media-browser-s3.php');
+
+  global $FV_Player_Media_Browser_S3;
+  $json_final = $FV_Player_Media_Browser_S3->get_formatted_assets_data();
+
+  wp_send_json($json_final);
 }
 
 die();

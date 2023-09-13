@@ -23,7 +23,7 @@ jQuery( function($) {
       ajax_data['path'] = path;
     }
 
-    jQuery.post(ajaxurl, ajax_data, function(ret) {
+    jQuery.post(window.fv_flowplayer_browser.ajaxurl, ajax_data, function(ret) {
       var
         renderOptions = {
           'dropdownItems' : [],

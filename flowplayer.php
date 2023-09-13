@@ -91,9 +91,9 @@ $fv_fp = new flowplayer_frontend();
 
 /**
  * Load back-end code if it's wp-admin, cron or if it's Gutenberg post saving.
- * 
+ *
  * For the URL match we must consider:
- * 
+ *
  * * /wp-json/wp/v2/posts/{post ID}
  * * /index.php?rest_route=%2Fwp%2Fv2%2Fposts%2F{post ID}
  */
@@ -111,9 +111,8 @@ if (
 
   if( version_compare(phpversion(),'7.3.5') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
-
-    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
   }
+
   include_once(dirname( __FILE__ ) . '/models/system-info.php');
 
   include_once(dirname( __FILE__ ). '/models/conversion/conversion-base.class.php');
