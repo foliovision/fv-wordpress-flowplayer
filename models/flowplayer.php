@@ -993,7 +993,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
           $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='".esc_attr($sSplashImage)."' />";
         } else {
-          $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='".esc_attr($sSplashImage)."' />";
+          $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='".esc_attr($sSplashImage)."' loading='lazy' />";
         }
 
       } else {
