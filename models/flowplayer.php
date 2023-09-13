@@ -568,7 +568,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           <?php if ( $more ) { ?>
             <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
           <?php } ?>
-        </td>   
+        </td>
       </tr>
 
     <?php
@@ -1301,7 +1301,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       // we put in enough to be sure it will fit in, later JS calculates a better value
       if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $slider_width = count( $aPlaylistItems ) * 200;
-        $attributes['style'] = "width: " . $slider_width . "px; max-width: " . $slider_width . "px !important"; 
+        $attributes['style'] = "width: " . $slider_width . "px; max-width: " . $slider_width . "px !important";
       }
 
       $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
@@ -1329,6 +1329,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       /**
        * Pure-JavaScript version of freedomplayer_playlist_size_check().
        */
+      $script_fit_thumbs = '';
       if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'polaroid', 'version-one', 'version-two' ) ) ) {
         $script_fit_thumbs = "
         var fit_thumbs = Math.floor( parseInt( getComputedStyle( el ).width ) / " . $limit . " );
@@ -1861,11 +1862,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sSignedHeaders = "host";
       $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key', $amazon_key ) ).'/'.$sCredentialScope);
 
-      //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html      
+      //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
       $sCanonicalRequest = "GET\n";
       $sCanonicalRequest .= $url_components['path']."\n";
       $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
-      $sCanonicalRequest .= "host:".$url_components['host']."\n";        
+      $sCanonicalRequest .= "host:".$url_components['host']."\n";
       $sCanonicalRequest .= "\n$sSignedHeaders\n";
       $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
 
@@ -1881,14 +1882,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
       $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
       $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
-  
-      //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html        
-      $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";        
+
+      //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html
+      $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";
       $resource .= "&X-Amz-Credential=$sXAMZCredential";
       $resource .= "&X-Amz-Date=$sXAMZDate";
       $resource .= "&X-Amz-Expires=$time";
       $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
-      $resource .= "&X-Amz-Signature=".$sSignature;              
+      $resource .= "&X-Amz-Signature=".$sSignature;
 
       $media = $resource;
 

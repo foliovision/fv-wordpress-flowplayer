@@ -104,4 +104,10 @@ jQuery(function() {
     jQuery.ajax(ajax_obj);
 
   });
+
+  // remove beforeunload event when submit button is clicked
+  jQuery(document).on( 'click', '[name="fv-wp-flowplayer-submit"]', function(e) {
+    window.removeEventListener('beforeunload', closeWarning);
+  });
+
 });

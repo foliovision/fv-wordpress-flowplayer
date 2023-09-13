@@ -44,6 +44,8 @@ jQuery(function() {
 
     // CodeMirror instance, if any
     instance_code_mirror,
+
+    // keep track of the last cursor position in CodeMirror
     instance_code_mirror_cursor_last,
 
     // TinyMCE instance, if any
@@ -2219,7 +2221,9 @@ jQuery(function() {
       // this variable needs to be reset here and not in editor_init
       set_current_video_to_edit( -1 );
 
+      // check if code mirror is active and if so, focus on it & restore cursor position
       if( instance_code_mirror && instance_code_mirror_cursor_last ) {
+        // run after everything else is done
         setTimeout(function() {
           instance_code_mirror.focus();
           instance_code_mirror.setCursor( instance_code_mirror_cursor_last, 0 );
@@ -2453,15 +2457,20 @@ jQuery(function() {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
 
+        // CodeMirror
         } else if( instance_code_mirror ) {
           debug_log('Loading for CodeMirror...' );
+
+          // get content
           editor_content = instance_code_mirror.getDoc().getValue();
 
+          // get cursor position
           var position = instance_code_mirror.getDoc().getCursor(),
             line = position.line,
             ch = position.ch,
             line_value = instance_code_mirror.getDoc().getLine(line);
 
+          // save cursor position
           instance_code_mirror_cursor_last = {line: line, ch: ch};
 
           // look for start of shortcode
@@ -3408,7 +3417,7 @@ jQuery(function() {
         widget.trigger('keyup'); // trigger keyup to make sure Elementor updates the content
         widget.trigger('fv_flowplayer_shortcode_insert', [ shortcode ] );
 
-        // tinyMCE Text tab
+        // CodeMirror tab
       } else if(instance_code_mirror) {
         editor_content = editor_content.replace(/#fvp_codemirror_placeholder#/, shortcode);
         set_post_editor_content(editor_content);
@@ -4036,6 +4045,7 @@ jQuery(function() {
       }
 
       if ( instance_code_mirror ) {
+        // set code mirror content
         instance_code_mirror.getDoc().setValue( html );
       } else if( typeof(FCKeditorAPI) == 'undefined' && jQuery('#content:not([aria-hidden=true])').length ){
         jQuery('#content:not([aria-hidden=true])').val(html);
