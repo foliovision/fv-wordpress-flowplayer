@@ -9,6 +9,7 @@ jQuery( function($) {
       }),
       ajax_data = {
         action: "load_linode_object_storage_assets",
+        nonce: window.fv_player_linode_object_storage.nonce
       };
 
     $this.addClass('active').siblings().removeClass('active');

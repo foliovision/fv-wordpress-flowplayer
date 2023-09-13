@@ -6,6 +6,10 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     global $fv_fp, $fv_wp_flowplayer_ver;
     if ($fv_fp->_get_option('s3_browser')) {
       wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array('flowplayer-browser-base'), $fv_wp_flowplayer_ver, true );
+      wp_localize_script( 'flowplayer-aws-s3', 'flowplayer_aws_s3', array(
+          'nonce' => wp_create_nonce( 'fv_flowplayer_s3_browser' ),
+        )
+      );
     }
   }
 
@@ -29,6 +33,16 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_s3_browser' ) ) {
+      return array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder',
+        'err' => 'Invalid nonce'
+      );
+    }
+
     $this->include_aws_sdk();
     global $fv_fp, $s3Client;
 

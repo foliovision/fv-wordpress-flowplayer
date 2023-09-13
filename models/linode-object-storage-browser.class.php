@@ -8,6 +8,10 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
     if( $this->isSetUpCorrectly() ) {
       global $fv_wp_flowplayer_ver;
       wp_enqueue_script( 'fv-player-linode-browser', flowplayer::get_plugin_url().'/js/linode-object-storage.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
+      wp_localize_script( 'fv-player-linode-browser', 'fv_player_linode_object_storage', array(
+          'nonce' => wp_create_nonce( 'fv_flowplayer_linode_object_storage_browser' ),
+        )
+      );
     }
   }
 
@@ -48,6 +52,16 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_linode_object_storage_browser' ) ) {
+      return array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder',
+        'err' => 'Invalid nonce'
+      );
+    }
+
     $this->include_aws_sdk();
     global $fv_fp, $s3Client;
 
@@ -60,7 +74,7 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
     $s3Client = $this->get_s3_client();
 
     try {
-    
+
       list( $request_path, $paged, $date_format ) = $this->get_metadata( $s3Client, $bucket );
 
       list($output, $sum_up ) = $this->get_output_items( $output, $s3Client, $request_path, $paged, $date_format, $bucket );
@@ -75,18 +89,19 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
         'type' => 'folder'
       );
     }
-    
+
     // sorting by date, descending
     // TODO: Make this an interface option? How to handle it for paged listings, like on Vimeo?
     function date_compare($a, $b) {
       $t1 = strtotime($a['LastModified']);
       $t2 = strtotime($b['LastModified']);
       return $t1 - $t2;
-    }    
+    }
+
     usort($output['items'], 'date_compare');
-    
+
     $output['items'] = array_reverse($output['items']);
-    
+
     $json_final = array(
       'items' => $output
     );

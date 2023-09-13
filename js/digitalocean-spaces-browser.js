@@ -9,6 +9,7 @@ jQuery( function($) {
       }),
       ajax_data = {
         action: "load_dos_assets",
+        nonce: window.fv_player_dos_browser.nonce
       };
 
     $this.addClass('active').siblings().removeClass('active');
