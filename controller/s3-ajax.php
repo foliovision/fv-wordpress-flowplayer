@@ -21,6 +21,8 @@ require_once( ABSPATH . WPINC . '/class-wp-role.php' );
 require_once( ABSPATH . WPINC . '/class-wp-user.php' );
 require_once( ABSPATH . WPINC . '/user.php' );
 require_once( ABSPATH . WPINC . '/l10n.php' );
+require_once( ABSPATH . WPINC . '/class-wp-locale.php' );
+require_once( ABSPATH . WPINC . '/class-wp-locale-switcher.php' );
 require_once( ABSPATH . WPINC . '/pluggable.php' );
 require_once( ABSPATH . WPINC . '/functions.php' );
 require_once( ABSPATH . WPINC . '/formatting.php' );
