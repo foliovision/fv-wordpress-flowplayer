@@ -655,12 +655,12 @@ function fv_player_guttenberg_attributes_save() {
             'splash_attachment_id' => $splash_attachment_id,
             'meta' => array(
               array(
-                'key' => 'timeline_previews',
-                'value' => $timeline_previews
+                'meta_key' => 'timeline_previews',
+                'meta_value' => $timeline_previews
               ),
               array(
-                'key' => 'hls_hlskey',
-                'value' => $hls_hlskey
+                'meta_key' => 'hls_hlskey',
+                'meta_value' => $hls_hlskey
               )
             )
           ),
