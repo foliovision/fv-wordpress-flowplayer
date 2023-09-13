@@ -59,7 +59,7 @@ abstract class FV_Player_Media_Browser {
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname( __FILE__ ) . '/../js/media-library-browser-base.js' ), true );
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
     wp_localize_script('flowplayer-browser-base', 'fv_flowplayer_browser', array(
-        'ajaxurl' => flowplayer::get_plugin_url().'/controller/browser.php',
+        'ajaxurl' => flowplayer::get_plugin_url().'/controller/s3-ajax.php',
       )
     );
     $this->init();

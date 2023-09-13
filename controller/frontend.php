@@ -901,7 +901,7 @@ add_filter( 'sgs_whitelist_wp_content' , 'fv_player_sgs_whitelist_wp_content' );
 function fv_player_sgs_whitelist_wp_content( $exclusions ) {
   global $fv_fp;
 
-  $exclusions[] = 'browser.php';
+  $exclusions[] = 's3-ajax.php';
 
   if( $fv_fp->_get_option('video_stats_enable') ) {
     $exclusions[] = 'track.php';
