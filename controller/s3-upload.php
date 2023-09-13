@@ -40,7 +40,7 @@ class FV_Player_S3_Upload {
       $s3 = $FV_Player_DigitalOcean_Spaces_Browser->get_s3_client();
     }
 
-    if ( $command===null ) return $s3;
+    if ( $command === null ) return $s3;
 
     $args=func_get_args();
     array_shift($args);
@@ -66,6 +66,10 @@ class FV_Player_S3_Upload {
   }
 
   function create_multiupload() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_create_multiupload' ) ) {
+      wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
+    }
+
     global $FV_Player_DigitalOcean_Spaces;
 
     $filename = $this->sanitize_path($_POST['fileInfo']['name']);
@@ -152,6 +156,10 @@ class FV_Player_S3_Upload {
   }
 
   function multiupload_send_part() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_multiupload_send_part' ) ) {
+      wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
+    }
+
     global $FV_Player_DigitalOcean_Spaces;
 
     $command = $this->s3( "getCommand", "UploadPart", array(
@@ -172,6 +180,10 @@ class FV_Player_S3_Upload {
   }
 
   function multiupload_complete() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_multiupload_complete' ) ) {
+      wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
+    }
+
     global $FV_Player_DigitalOcean_Spaces;
 
     try {
@@ -215,6 +227,10 @@ class FV_Player_S3_Upload {
   }
 
   function multiupload_abort() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_multiupload_abort' ) ) {
+      wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
+    }
+
     global $FV_Player_DigitalOcean_Spaces;
 
     // if initial pre-upload request fails, we'll have no sendBackData to abort

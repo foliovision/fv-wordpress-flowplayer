@@ -39,6 +39,7 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
     jQuery.post(self.SERVER_LOC, {
         action: 'create_multiupload',
         fileInfo: self.fileInfo,
+        nonce: window.fv_player_s3_uploader.create_multiupload_nonce
     }).done(function(data) {
         if( data.error ) {
           self.onServerError('create', null, data.error, null);
@@ -80,7 +81,8 @@ S3MultiUpload.prototype.uploadParts = function() {
             action: 'multiupload_send_part',
             sendBackData: this.sendBackData,
             partNumber: i+1,
-            contentLength: blob.size
+            contentLength: blob.size,
+            nonce: window.fv_player_s3_uploader.multiupload_send_part_nonce
         }));
     }
 
@@ -185,7 +187,8 @@ S3MultiUpload.prototype.cancel = function() {
     }
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_abort',
-        sendBackData: self.sendBackData
+        sendBackData: self.sendBackData,
+        nonce: window.fv_player_s3_uploader.multiupload_abort_nonce
     }).done(function(data) {
 
     });
@@ -203,7 +206,8 @@ S3MultiUpload.prototype.completeMultipartUpload = function() {
 
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_complete',
-        sendBackData: self.sendBackData
+        sendBackData: self.sendBackData,
+        nonce: window.fv_player_s3_uploader.multiupload_complete_nonce
     }).done(function(data) {
         self.onUploadCompleted(data);
         self.completeErrors = 1;
