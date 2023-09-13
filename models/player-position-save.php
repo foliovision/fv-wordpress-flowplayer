@@ -17,9 +17,8 @@ class FV_Player_Position_Save {
 
     add_action( 'fv_player_update',  array( $this, 'plugin_update_database' ), 9 );
     add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save' ) );
-    add_filter( 'fv_player_item', array( $this, 'set_last_position' ), 10, 3 );
+    add_filter( 'fv_player_item', array( $this, 'set_last_positions' ), 10, 3 );
     add_filter( 'fv_flowplayer_admin_default_options_after', array( $this, 'player_position_save_admin_default_options_html' ) );
-
     add_filter( 'fv_flowplayer_attributes', array( $this, 'shortcode' ), 10, 3 );
   }
 
@@ -35,6 +34,9 @@ class FV_Player_Position_Save {
       top_position int(11) NOT NULL,
       finished tinyint(1) NOT NULL,
       legacy_video_id varchar(255) NOT NULL,
+      ab_start int(11) NOT NULL,
+      ab_end int(11) NOT NULL,
+      last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY  (id),
       KEY user_id (user_id),
       KEY video_id (video_id),
@@ -47,6 +49,7 @@ class FV_Player_Position_Save {
       user_id int(11) NOT NULL,
       player_id int(11) NOT NULL,
       item_index int(11) NOT NULL,
+      last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY  (id),
       KEY user_id (user_id),
       KEY player_id (player_id)
@@ -75,7 +78,7 @@ class FV_Player_Position_Save {
 
     if( $type == 'video') {
       self::$cache[$user_id][$type] = $wpdb->get_results( $wpdb->prepare(
-        "SELECT video_id, last_position, top_position, finished, legacy_video_id FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d",
+        "SELECT video_id, last_position, top_position, finished, legacy_video_id, ab_start, ab_end FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d",
         $user_id
       ) );
     }
@@ -367,7 +370,7 @@ class FV_Player_Position_Save {
     return pathinfo($video_name, PATHINFO_FILENAME);
   }
 
-  public function set_last_position( $aItem, $index, $aArgs ) {
+  public function set_last_positions( $aItem, $index, $aArgs ) {
     global $fv_fp;
     // we only use the first source to check for stored position,
     // since other sources would be alternatives (in quality, etc.)
@@ -416,6 +419,19 @@ class FV_Player_Position_Save {
           break;
         }
       }
+
+      foreach( $try AS $name ) {
+        $metaPositionStart = $this->get_video_position( get_current_user_id(), $name, 'ab_start' );
+        $metaPositionEnd = $this->get_video_position( get_current_user_id(), $name, 'ab_end' );
+
+        // at least one of the values must be set and the start must be smaller than the end
+        if( ( $metaPositionStart || $metaPositionEnd ) && $metaPositionStart < $metaPositionEnd ) {
+          $aItem['sources'][0]['ab_start'] = $metaPositionStart;
+          $aItem['sources'][0]['ab_end'] = $metaPositionEnd;
+          break;
+        }
+      }
+
     }
     return $aItem;
   }
@@ -469,6 +485,15 @@ class FV_Player_Position_Save {
             } else {
               $this->delete_video_postion($uid, $name, 'top_position');
             }
+          }
+
+          // ab loop times
+          if(!empty($record['ab_start'] && !empty($record['ab_end']))) {
+            $this->set_video_position($uid, $name, 'ab_start', intval($record['ab_start']));
+            $this->set_video_position($uid, $name, 'ab_end', intval($record['ab_end']));
+          } else {
+            $this->delete_video_postion($uid, $name, 'ab_start');
+            $this->delete_video_postion($uid, $name, 'ab_end');
           }
 
           // Did the user saw the full video?
@@ -540,4 +565,5 @@ class FV_Player_Position_Save {
     return $attributes;
   }
 }
+
 $FV_Player_Position_Save = new FV_Player_Position_Save();

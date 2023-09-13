@@ -24,6 +24,8 @@ if (!Date.now) {
     tempTopPositionCookieKeyName = 'video_top_positions_tmp',
     tempPlaylistsCookieKeyName = 'player_playlist_item_tmp',
     tempSawCookieKeyName = 'video_saw_tmp',
+    tempABLoopCookieKeyName = 'video_ab_loop_tmp',
+    abLoopPositions = [],
     playPositions = [],
     playTopPositions = [],
     playlistIndexes = [],
@@ -136,12 +138,20 @@ if (!Date.now) {
         if( !playPositions.hasOwnProperty(video_name) ) continue;
 
         // remove all AWS signatures from this video
-        postDataPositions.push({
+        var item = {
           name: video_name,
           position: playPositions[video_name],
           top_position: playTopPositions[video_name],
-          saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false
-        });
+          saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false,
+        }
+
+        // add ab loop positions
+        if( abLoopPositions.hasOwnProperty(video_name) ) {
+          item.ab_start = abLoopPositions[video_name][0];
+          item.ab_end = abLoopPositions[video_name][1];
+        }
+
+        postDataPositions.push(item);
       }
 
       for (var player_id in playlistIndexes) {
@@ -159,6 +169,7 @@ if (!Date.now) {
 
       if (!postDataPositions.length) {
         // no video positions? remove the temporary position cookie/localStorage data as well
+        removeCookieKey(tempABLoopCookieKeyName);
         removeCookieKey(tempPositionCookieKeyName);
         removeCookieKey(tempTopPositionCookieKeyName);
         removeCookieKey(tempSawCookieKeyName);
@@ -174,7 +185,8 @@ if (!Date.now) {
             var temp_position_data = {},
               temp_top_position_data = {},
               temp_saw_data = {},
-              temp_playlist_data = {};
+              temp_playlist_data = {},
+              temp_ab_loop_data = {};
 
             // add our video positions
             for (var i in postDataPositions) {
@@ -185,6 +197,10 @@ if (!Date.now) {
               temp_position_data[name] = postDataPositions[i].position;
               temp_top_position_data[name] = postDataPositions[i].top_position;
               temp_saw_data[name] = postDataPositions[i].saw;
+
+              if( typeof(postDataPositions[i].ab_start) != "undefined" && typeof(postDataPositions[i].ab_end) != "undefined" ) {
+                temp_ab_loop_data[name] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
+              }
             }
 
             // playlist and item
@@ -197,6 +213,7 @@ if (!Date.now) {
             setCookieKey(tempTopPositionCookieKeyName, getSerialized(temp_top_position_data));
             setCookieKey(tempSawCookieKeyName, getSerialized(temp_saw_data));
             setCookieKey(tempPlaylistsCookieKeyName, getSerialized(temp_playlist_data));
+            setCookieKey(tempABLoopCookieKeyName, getSerialized(temp_ab_loop_data));
           } catch (e) {
             // JSON JS support missing
             return;
@@ -389,6 +406,13 @@ if (!Date.now) {
             position = Math.round(api.video.time);
 
           playPositions[video_id] = position;
+
+          // check if we have a noUiSlider instance and AB loop is active
+          if ( typeof api.fv_noUiSlider != "undefined" && $root.find('.fv-player-ab.is-active').length ) {
+            abLoopPositions[video_id] = api.fv_noUiSlider.get();
+          } else if ( typeof abLoopPositions[video_id] != "undefined" ) {
+            delete abLoopPositions[video_id];
+          }
 
           // initialize top position variable with the already stored top position
           if ( typeof(playTopPositions[video_id]) == "undefined" ) {
@@ -613,7 +637,8 @@ if (!Date.now) {
         var video_id = getVideoId(playlist[i]),
           position = processTempData(tempPositionCookieKeyName,video_id),
           top_position = processTempData(tempTopPositionCookieKeyName,video_id),
-          saw = processTempData(tempSawCookieKeyName,video_id);
+          saw = processTempData(tempSawCookieKeyName,video_id),
+          ab_loop = processTempData(tempABLoopCookieKeyName,video_id);
 
         if( position ) {
           if( is_playlist ) {
@@ -649,6 +674,17 @@ if (!Date.now) {
             api.conf.clip.sources[0].saw = true;
           }
         }
+
+        if( ab_loop ) {
+          if( is_playlist ) {
+            api.conf.playlist[i].sources[0].ab_start = ab_loop[0];
+            api.conf.playlist[i].sources[0].ab_end = ab_loop[1];
+          } else {
+            api.conf.clip.sources[0].ab_start = ab_loop[0];
+            api.conf.clip.sources[0].ab_end = ab_loop[1];
+          }
+        }
+
       }
 
     }
