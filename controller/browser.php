@@ -80,8 +80,8 @@ foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
 }
 unset( $plugin );
 
-// Browsers
-if(strcmp($action, 'load_dos_assets') == 0) {
+
+if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
   require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces.class.php');
@@ -91,7 +91,7 @@ if(strcmp($action, 'load_dos_assets') == 0) {
   $json_final = $FV_Player_DigitalOcean_Spaces_Browser->get_formatted_assets_data();
 
   wp_send_json($json_final);
-} else if(strcmp($action,'load_s3_assets') == 0) {
+} else if(strcmp($action,'load_s3_assets') == 0) { // Amazon S3
   require_once(dirname( __FILE__ ) . '/settings.php');
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ) . '/../models/media-browser-s3.php');
@@ -100,7 +100,7 @@ if(strcmp($action, 'load_dos_assets') == 0) {
   $json_final = $FV_Player_Media_Browser_S3->get_formatted_assets_data();
 
   wp_send_json($json_final);
-} else if (strcmp($action,'load_linode_object_storage_assets') == 0) {
+} else if (strcmp($action,'load_linode_object_storage_assets') == 0) { // Linode Object Storage
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
   require_once(dirname( __FILE__ ). '/../models/linode-object-storage.class.php');
@@ -110,6 +110,24 @@ if(strcmp($action, 'load_dos_assets') == 0) {
   $json_final = $FV_Player_Linode_Object_Storage_Browser->get_formatted_assets_data();
 
   wp_send_json($json_final);
+} else if( strpos($action, 'multiupload') !== false ) { // S3 Multiupload
+  require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
+  require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
+  require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces.class.php');
+  require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces-browser.class.php');
+  require_once(dirname( __FILE__ ) . '/s3-upload.php');
+
+  global $FV_Player_S3_Upload;
+
+  if(strcmp($action,'create_multiupload') == 0 ) {
+    $FV_Player_S3_Upload->create_multiupload();
+  } else if(strcmp($action, 'multiupload_send_part') == 0) {
+    $FV_Player_S3_Upload->multiupload_send_part();
+  } else if(strcmp($action, 'multiupload_abort') == 0) {
+    $FV_Player_S3_Upload->multiupload_abort();
+  } else if(strcmp($action, 'multiupload_complete') == 0) {
+    $FV_Player_S3_Upload->multiupload_complete();
+  }
 }
 
 die();
