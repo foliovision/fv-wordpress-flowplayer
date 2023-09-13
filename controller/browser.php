@@ -80,6 +80,7 @@ foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
 }
 unset( $plugin );
 
+// Browsers
 if(strcmp($action, 'load_dos_assets') == 0) {
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
@@ -97,6 +98,16 @@ if(strcmp($action, 'load_dos_assets') == 0) {
 
   global $FV_Player_Media_Browser_S3;
   $json_final = $FV_Player_Media_Browser_S3->get_formatted_assets_data();
+
+  wp_send_json($json_final);
+} else if (strcmp($action,'load_linode_object_storage_assets') == 0) {
+  require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
+  require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
+  require_once(dirname( __FILE__ ). '/../models/linode-object-storage.class.php');
+  require_once(dirname( __FILE__ ). '/../models/linode-object-storage-browser.class.php');
+
+  global $FV_Player_Linode_Object_Storage_Browser;
+  $json_final = $FV_Player_Linode_Object_Storage_Browser->get_formatted_assets_data();
 
   wp_send_json($json_final);
 }
