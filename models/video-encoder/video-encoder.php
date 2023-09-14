@@ -527,6 +527,9 @@ abstract class FV_Player_Video_Encoder {
 
     $temporary_src = $this->encoder_id . '_processing_' . (int) $job_id;
 
+    if ( strcmp( $check['status'], 'completed' ) == 0 && ! empty( $check['output'] ) ) {
+      $job_output = $check['output'];
+
       // if we don't have current_video then we're on the players listing page, so we need to find and update
       // all players where our temporary "encoder_processing_" placeholder is used
       if ( !$fv_fp->current_video() ) {
@@ -541,18 +544,20 @@ abstract class FV_Player_Video_Encoder {
         if(!empty($videos)) {
           foreach ( $videos as $video) {
             // video processed, replace its SRC
-            $video->set( 'src', $check['output']->src[0] );
+            if ( ! empty( $job_output->src[0] ) ) {
+              $video->set( 'src', $job_output->src[0] );
+            }
   
             // also replace its thumbnail / splash
-            if ( $check['output']->thumbnail ) {
-              $video->set( 'splash', $check['output']->thumbnail );
-            } else if ( $check['output']->splash ) {
-              $video->set( 'splash', $check['output']->splash );
+            if ( !empty( $job_output->thumbnail ) ) {
+              $video->set( 'splash', $job_output->thumbnail );
+            } else if ( ! empty( $job_output->splash ) ) {
+              $video->set( 'splash', $job_output->splash );
             }
   
             // also set its timeline preview, if received
-            if ( $check['output']->timeline_previews ) {
-              $video->updateMetaValue( 'timeline_previews', $check['output']->timeline_previews );
+            if ( ! empty( $job_output->timeline_previews ) ) {
+              $video->updateMetaValue( 'timeline_previews', $job_output->timeline_previews );
             }
   
             // save changes for this video
@@ -571,18 +576,20 @@ abstract class FV_Player_Video_Encoder {
         }
       } else if ( strcmp( $temporary_src, $fv_fp->current_video()->getSrc() ) == 0 ) {
         // video processed, replace its SRC
-        $fv_fp->current_video()->set( 'src', $check['output']->src[0] );
+        if ( ! empty( $job_output->src[0] ) ) {
+          $fv_fp->current_video()->set( 'src', $job_output->src[0] );
+        }
 
         // also replace its thumbnail / splash
-        if ( $check['output']->thumbnail ) {
-          $fv_fp->current_video()->set( 'splash', $check['output']->thumbnail );
-        } else if ( $check['output']->splash ) {
-          $fv_fp->current_video()->set( 'splash', $check['output']->splash );
+        if ( ! empty( $job_output->thumbnail ) ) {
+          $fv_fp->current_video()->set( 'splash', $job_output->thumbnail );
+        } else if ( ! empty( $job_output->splash ) ) {
+          $fv_fp->current_video()->set( 'splash', $job_output->splash );
         }
 
         // also set its timeline preview, if received
-        if ( $check['output']->timeline_previews ) {
-          $fv_fp->current_video()->updateMetaValue( 'timeline_previews', $check['output']->timeline_previews );
+        if ( ! empty( $job_output->timeline_previews ) ) {
+          $fv_fp->current_video()->updateMetaValue( 'timeline_previews', $job_output->timeline_previews );
         }
 
         // save changes for this video
