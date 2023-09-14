@@ -410,8 +410,6 @@ if (!Date.now) {
           // check if we have a noUiSlider instance and AB loop is active
           if ( typeof api.fv_noUiSlider != "undefined" && $root.find('.fv-player-ab.is-active').length ) {
             abLoopPositions[video_id] = api.fv_noUiSlider.get();
-          } else if ( typeof abLoopPositions[video_id] != "undefined" ) {
-            delete abLoopPositions[video_id];
           }
 
           // initialize top position variable with the already stored top position
