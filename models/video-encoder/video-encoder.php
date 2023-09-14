@@ -525,13 +525,14 @@ abstract class FV_Player_Video_Encoder {
       return $check_result;
     }
 
-    if ( $check['status'] == 'completed' ) {
+    $temporary_src = $this->encoder_id . '_processing_' . (int) $job_id;
+
       // if we don't have current_video then we're on the players listing page, so we need to find and update
       // all players where our temporary "encoder_processing_" placeholder is used
       if ( !$fv_fp->current_video() ) {
         $videos = $FV_Player_Db->query_videos( array( 
           'fields_to_search' =>  array('src'), 
-          'search_string' => $this->encoder_id . '_processing_' . (int) $job_id, 
+          'search_string' => $temporary_src, 
           'like' => false, 
           'and_or' => 'OR' 
           )
@@ -568,7 +569,7 @@ abstract class FV_Player_Video_Encoder {
             }
           }
         }
-      } else {
+      } else if ( strcmp( $temporary_src, $fv_fp->current_video()->getSrc() ) == 0 ) {
         // video processed, replace its SRC
         $fv_fp->current_video()->set( 'src', $check['output']->src[0] );
 
