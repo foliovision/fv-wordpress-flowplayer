@@ -1,7 +1,7 @@
 function S3MultiUpload(file) {
     this.PART_SIZE = 100 * 1024 * 1024; // 100 MB per chunk
 //    this.PART_SIZE = 5 * 1024 * 1024 * 1024; // Minimum part size defined by aws s3 is 5 MB, maximum 5 GB
-    this.SERVER_LOC = ajaxurl + '?'; // Location of our server where we'll send all AWS commands and multipart instructions
+    this.SERVER_LOC = window.fv_flowplayer_browser.ajaxurl + '?'; // Location of our server where we'll send all AWS commands and multipart instructions
     this.completed = false;
     this.file = file;
     this.fileInfo = {
@@ -39,6 +39,7 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
     jQuery.post(self.SERVER_LOC, {
         action: 'create_multiupload',
         fileInfo: self.fileInfo,
+        nonce: window.fv_player_s3_uploader.create_multiupload_nonce
     }).done(function(data) {
         if( data.error ) {
           self.onServerError('create', null, data.error, null);
@@ -80,7 +81,8 @@ S3MultiUpload.prototype.uploadParts = function() {
             action: 'multiupload_send_part',
             sendBackData: this.sendBackData,
             partNumber: i+1,
-            contentLength: blob.size
+            contentLength: blob.size,
+            nonce: window.fv_player_s3_uploader.multiupload_send_part_nonce
         }));
     }
 
@@ -185,7 +187,8 @@ S3MultiUpload.prototype.cancel = function() {
     }
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_abort',
-        sendBackData: self.sendBackData
+        sendBackData: self.sendBackData,
+        nonce: window.fv_player_s3_uploader.multiupload_abort_nonce
     }).done(function(data) {
 
     });
@@ -203,7 +206,8 @@ S3MultiUpload.prototype.completeMultipartUpload = function() {
 
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_complete',
-        sendBackData: self.sendBackData
+        sendBackData: self.sendBackData,
+        nonce: window.fv_player_s3_uploader.multiupload_complete_nonce
     }).done(function(data) {
         self.onUploadCompleted(data);
         self.completeErrors = 1;

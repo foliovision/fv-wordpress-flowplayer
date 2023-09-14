@@ -9,6 +9,7 @@ jQuery( function($) {
       }),
       ajax_data = {
         action: "load_s3_assets",
+        nonce: window.flowplayer_aws_s3.nonce
       };
 
     $this.addClass('active').siblings().removeClass('active');
@@ -23,7 +24,7 @@ jQuery( function($) {
       ajax_data['path'] = path;
     }
 
-    jQuery.post(ajaxurl, ajax_data, function(ret) {
+    jQuery.post(window.fv_flowplayer_browser.ajaxurl, ajax_data, function(ret) {
       var
         renderOptions = {
           'dropdownItems' : [],

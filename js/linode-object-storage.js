@@ -9,6 +9,7 @@ jQuery( function($) {
       }),
       ajax_data = {
         action: "load_linode_object_storage_assets",
+        nonce: window.fv_player_linode_object_storage.nonce
       };
 
     $this.addClass('active').siblings().removeClass('active');
@@ -22,7 +23,7 @@ jQuery( function($) {
       ajax_data['path'] = path;
     }
 
-    jQuery.post(ajaxurl, ajax_data, function (ret) {
+    jQuery.post(window.fv_flowplayer_browser.ajaxurl, ajax_data, function (ret) {
       var renderOptions = {};
 
       // add errors, if any

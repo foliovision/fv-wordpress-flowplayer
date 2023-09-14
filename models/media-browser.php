@@ -46,7 +46,7 @@ abstract class FV_Player_Media_Browser {
 
   // TODO: should be abstract
   public function add_folder_ajax() {}
-  
+
   // TOTO: should be abstract
   function decode_link_components( $link ) {}
 
@@ -58,6 +58,10 @@ abstract class FV_Player_Media_Browser {
     wp_enqueue_media();
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname( __FILE__ ) . '/../js/media-library-browser-base.js' ), true );
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
+    wp_localize_script('flowplayer-browser-base', 'fv_flowplayer_browser', array(
+        'ajaxurl' => flowplayer::get_plugin_url().'/controller/s3-ajax.php',
+      )
+    );
     $this->init();
   }
 
@@ -88,6 +92,14 @@ abstract class FV_Player_Media_Browser {
 
     wp_enqueue_script( 'fv-player-s3-uploader', flowplayer::get_plugin_url().'/js/s3upload.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
     wp_enqueue_script( 'fv-player-s3-uploader-base', flowplayer::get_plugin_url().'/js/s3-upload-base.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
+    wp_localize_script( 'fv-player-s3-uploader', 'fv_player_s3_uploader', array(
+        'create_multiupload_nonce' => wp_create_nonce( 'fv_flowplayer_create_multiupload' ),
+        'multiupload_send_part_nonce' => wp_create_nonce( 'fv_flowplayer_multiupload_send_part' ),
+        'multiupload_abort_nonce' => wp_create_nonce( 'fv_flowplayer_multiupload_abort' ),
+        'multiupload_complete_nonce' => wp_create_nonce( 'fv_flowplayer_multiupload_complete' ),
+      )
+    );
+
     $this->include_base_uploader_css();
 
     $this->s3_assets_loaded = true;
@@ -133,7 +145,7 @@ abstract class FV_Player_Media_Browser {
       $folders = !empty($res['CommonPrefixes']) ? $res['CommonPrefixes'] : array();
       $files = $res->get('Contents');
       if( !$files ) $files = array();
-      
+
       $objects = array_merge( $folders, $files );
 
       foreach ( $objects as $object ) {
@@ -152,7 +164,7 @@ abstract class FV_Player_Media_Browser {
         }
 
         $item['path'] = 'Home/' . $path;
-        
+
         if( $request_path ) {
           if( $request_path == $path ) continue; // sometimes the current folder is present in the response, weird
 

@@ -166,7 +166,7 @@ function fv_flowplayer_admin_amazon_options() {
 
                 foreach (fv_player_get_aws_regions() as $aws_region_id => $aws_region_name) {
                   ?>
-                  <option value="<?php echo $aws_region_id; ?>"<?php if( $sRegion == $aws_region_id ) echo " selected"; ?>><?php echo $aws_region_name; ?></option>
+                  <option value="<?php echo $aws_region_id; ?>"<?php if( $sRegion == $aws_region_id ) echo " selected"; ?>><?php echo $aws_region_name .' ('. $aws_region_id.')'; ?></option>
                   <?php
                 }
 
@@ -1667,9 +1667,9 @@ function fv_flowplayer_admin_skin_sticky() {
       ) );
       ?>
     </tr>
-  </table>  
+  </table>
   <table class="form-table2">
-    <tr>  
+    <tr>
       <td class="first"><label for="sticky_place"><?php _e('Placement', 'fv-wordpress-flowplayer'); ?></label></td>
       <td>
         <select id="sticky_place" name="sticky_place">

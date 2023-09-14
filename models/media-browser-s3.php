@@ -6,6 +6,10 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     global $fv_fp, $fv_wp_flowplayer_ver;
     if ($fv_fp->_get_option('s3_browser')) {
       wp_enqueue_script( 'flowplayer-aws-s3', flowplayer::get_plugin_url().'/js/s3-browser.js', array('flowplayer-browser-base'), $fv_wp_flowplayer_ver, true );
+      wp_localize_script( 'flowplayer-aws-s3', 'flowplayer_aws_s3', array(
+          'nonce' => wp_create_nonce( 'fv_flowplayer_s3_browser' ),
+        )
+      );
     }
   }
 
@@ -29,6 +33,16 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_s3_browser' ) ) {
+      return array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder',
+        'err' => 'Invalid nonce'
+      );
+    }
+
     $this->include_aws_sdk();
     global $fv_fp, $s3Client;
 
@@ -91,16 +105,16 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     }
 
     if ($regioned_bucket_found) {
-      
+
       $output = $this->get_output();
-      
+
       $region = $regions[ $array_id ];
       $secret = $secrets[ $array_id ];
       $key    = $keys[ $array_id ];
       $bucket = $buckets[ $array_id ];
 
       $credentials = new Aws\Credentials\Credentials( $key, $secret );
-      
+
       try {
         $cloudfronts = get_transient('fv_player_s3_browser_cf');
         if( !$cloudfronts ) {
@@ -109,16 +123,16 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           'region' => 'us-east-1',
           'version' => 'latest'
           ) );
-  
+
           $cloudfronts = $cfClient->listDistributions();
           if( !empty($cloudfronts['DistributionList']['Items']) ) {
             set_transient('fv_player_s3_browser_cf',$cloudfronts,60);
           }
         }
-        
+
         foreach( $cloudfronts['DistributionList']['Items'] AS $item ) {
           if( !$item['Enabled'] ) continue;
-          
+
           $cf_domain = $item['DomainName'];
           if( !empty($item['Aliases']) && !empty($item['Aliases']['Items']) && !empty($item['Aliases']['Items'][0]) ) {
             $cf_domain = $item['Aliases']['Items'][0];
@@ -127,21 +141,21 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
           if( !empty($item['Origins']) && !empty($item['Origins']['Items']) && !empty($item['Origins']['Items'][0]) && !empty($item['Origins']['Items'][0]['DomainName']) ) {
             $origin = $item['Origins']['Items'][0]['DomainName'];
           }
-          
+
           foreach( $buckets as $bucket_id => $bucket_name ) {
             if( !empty($regions) && !empty($regions[$bucket_id]) && $bucket_name.'.s3.'.$regions[$bucket_id].'.amazonaws.com' == $origin ) {
               $domains[$bucket_id] = 'https://'.$cf_domain; // todo: check if SSL is enabled for custom domains!
             } else if( $bucket_name.'.s3.amazonaws.com' == $origin ) {
               $domains[$bucket_id] = 'https://'.$cf_domain; // todo: check if SSL is enabled for custom domains!
-            }            
+            }
           }
-          
+
         }
 
       } catch ( Aws\CloudFront\Exception\CloudFrontException $e ) {
         $err = 'It appears that the policy of AWS IAM user identified by '.$key.' doesn\'t permit List and Read operations for the CloudFront service. Please add CloudFrontReadOnlyAccess policy for the user if you are using CloudFront for your S3 buckets. Otherwise you won\'t be getting the proper CloudFront links for your videos.';
       }
-      
+
       // instantiate the S3 client with AWS credentials
       $s3Client = Aws\S3\S3Client::factory( array(
         'credentials' => $credentials,
@@ -211,3 +225,6 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
   }
 
 }
+
+global $FV_Player_Media_Browser_S3;
+$FV_Player_Media_Browser_S3 = new FV_Player_Media_Browser_S3('wp_ajax_load_s3_assets');
