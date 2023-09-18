@@ -14,15 +14,28 @@ if( file_exists('../../../../wp-load.php') ) {
   die( "Error: wp-load.php not found!" );
 }
 
-// including what's necessary for user login status, base FV Player and FV Player Pro to load:
+
+/**
+ * Including what's necessary for user login status, base FV Player and FV Player Pro to load:
+ */
 require_once( ABSPATH . WPINC . '/capabilities.php' );
 require_once( ABSPATH . WPINC . '/class-wp-roles.php' );
 require_once( ABSPATH . WPINC . '/class-wp-role.php' );
 require_once( ABSPATH . WPINC . '/class-wp-user.php' );
 require_once( ABSPATH . WPINC . '/user.php' );
+
+// Translation and localization.
+require_once( ABSPATH . WPINC . '/pomo/mo.php' );
 require_once( ABSPATH . WPINC . '/l10n.php' );
+require_once( ABSPATH . WPINC . '/class-wp-textdomain-registry.php' );
 require_once( ABSPATH . WPINC . '/class-wp-locale.php' );
 require_once( ABSPATH . WPINC . '/class-wp-locale-switcher.php' );
+
+global $wp_textdomain_registry;
+if ( ! $wp_textdomain_registry instanceof WP_Textdomain_Registry ) {
+  $wp_textdomain_registry = new WP_Textdomain_Registry();
+}
+
 require_once( ABSPATH . WPINC . '/pluggable.php' );
 require_once( ABSPATH . WPINC . '/functions.php' );
 require_once( ABSPATH . WPINC . '/formatting.php' );
@@ -34,22 +47,6 @@ require_once( ABSPATH . WPINC . '/class-wp-user-meta-session-tokens.php' );
 require_once( ABSPATH . WPINC . '/meta.php' );
 require_once( ABSPATH . WPINC . '/kses.php' );
 require_once( ABSPATH . WPINC . '/rest-api.php' );
-
-// and of course the WP_HTTP
-require_once( ABSPATH . WPINC . '/http.php' );
-if( file_exists( ABSPATH . WPINC . '/class-wp-http.php' ) ) {
-  require_once( ABSPATH . WPINC . '/class-wp-http.php' );
-} else {
-  require_once( ABSPATH . WPINC . '/class-http.php' );
-}
-require_once( ABSPATH . WPINC . '/class-wp-http-streams.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-curl.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-proxy.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-cookie.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-encoding.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-response.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-requests-response.php' );
-require_once( ABSPATH . WPINC . '/class-wp-http-requests-hooks.php' );
 
 if(!empty($_POST['action'])) {
   $action = sanitize_text_field($_POST['action']);
