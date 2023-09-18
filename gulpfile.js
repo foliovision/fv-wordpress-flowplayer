@@ -13,7 +13,7 @@ const sort = require('gulp-sort'); // recommended to prevent unnecessary changes
 const zip = require('gulp-zip'); // zip project
 
 // project
-const projectZipFile = 'fv-wordpress-flowplayer.zip';
+const projectZipFile = 'fv-player.zip';
 
 // translation
 const team = 'foliovision'
@@ -26,10 +26,10 @@ const bugReport = 'https://foliovision.com/support';
 // const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
 // const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
 const freedomPlayerCSS = ['./css/freedomplayer.css', './css/freedomplayer-additions.css'];
-const modulesJs = ['./flowplayer/modules/fv-player.js', './flowplayer/modules/*.module.js'];
-const youtubeJS = './flowplayer/fv-player-youtube.dev.js';
-const dashJS = './flowplayer/fv-player-dashjs.dev.js';
-const loaderJS = './flowplayer/fv-player-loader.dev.js'
+const modulesJs = ['./freedom-video-player/modules/fv-player.js', './freedom-video-player/modules/*.module.js'];
+const youtubeJS = './freedom-video-player/fv-player-youtube.dev.js';
+const dashJS = './freedom-video-player/fv-player-dashjs.dev.js';
+const loaderJS = './freedom-video-player/fv-player-loader.dev.js'
 const projectPHPWatchFiles = ['*.php', './controller/**/*.php', './models/**/*.php', './view/**/*.php'];
 
 // concat js files + uglify
@@ -40,7 +40,7 @@ function jsModulesMinify() {
     ]}))
     .pipe(concat('fv-player.min.js'))
     .pipe(uglify({mangle: true}).on('error', console.error))
-    .pipe(dest('./flowplayer/')
+    .pipe(dest('./freedom-video-player/')
   );
 }
 
@@ -54,7 +54,7 @@ function jsFilessMinify() {
       path.basename = path.basename.replace(/\.dev/, '');
       path.extname = ".min.js";
     }))
-    .pipe(dest('./flowplayer/')
+    .pipe(dest('./freedom-video-player/')
   );
 }
 
