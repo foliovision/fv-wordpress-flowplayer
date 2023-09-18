@@ -107,8 +107,6 @@ Registering fv-player-youtube for fv-wordpress-flowplayer/flowplayer/fv-player-y
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [fv_fullscreen] => 1
-    [swf] => fv-wordpress-flowplayer/flowplayer/flowplayer.swf?ver=1.2.3.4
-    [swfHls] => fv-wordpress-flowplayer/flowplayer/flowplayerhls.swf?ver=1.2.3.4
     [speeds] => Array
         (
             [0] => 0.25

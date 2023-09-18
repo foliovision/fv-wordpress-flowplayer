@@ -349,7 +349,7 @@ function flowplayer_prepare_scripts() {
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
     $sLogo = $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
 
-    $aConf = array( 'fv_fullscreen' => true, 'swf' => $sPluginUrl.'/flowplayer/flowplayer.swf?ver='.$fv_wp_flowplayer_ver, 'swfHls' => $sPluginUrl.'/flowplayer/flowplayerhls.swf?ver='.$fv_wp_flowplayer_ver );
+    $aConf = array( 'fv_fullscreen' => true );
 
     // Load base Flowplayer library
     $path = '/flowplayer/freedomplayer.min.js';
