@@ -1,31 +1,3 @@
-                  ADDITIONAL TERM per GPL Section 7
-
-  If you convey this program (or any modifications of it) and assume 
-contractual liability for the program to recipients of it, you agree to 
-indemnify Flowplayer, Ltd. for any liability that those contractual 
-assumptions impose on Flowplayer, Ltd.
-  
-  Except as expressly provided herein, no trademark rights are granted 
-in any trademarks of Flowplayer, Ltd. Licensees are granted a limited, 
-non-exclusive right to use the mark Flowplayer and the Flowplayer 
-logos in connection with unmodified copies of the Program and the 
-copyright notices required by section 5.d of the GPL license. For the 
-purposes of this limited trademark license grant, customizing the 
-Flowplayer by skinning, scripting, or including plugins provided by 
-Flowplayer, Ltd. is not considered modifying the Program.
-
-  Licensees that do modify the Program, taking advantage of the 
-open-source license, may not use the Flowplayer mark or Flowplayer 
-logos and must change the logo as follows:
-  
-stating that the licensee modified the Flowplayer. A suitable notice 
-might read "Flowplayer Source code modified by ModOrg 2012"; for the 
-canvas, the notice should read "Based on Flowplayer source code".
-  
-  In addition, licensees that modify the Program must give the modified 
-Program a new name that is not confusingly similar to Flowplayer and 
-may not distribute it under the name Flowplayer.
-
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
