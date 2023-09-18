@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player
+/*  FV Player - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -351,10 +351,10 @@ function flowplayer_prepare_scripts() {
 
     $aConf = array( 'fv_fullscreen' => true );
 
-    // Load base Flowplayer library
-    $path = '/flowplayer/freedomplayer.min.js';
-    if( file_exists(dirname(__FILE__).'/../flowplayer/freedomplayer.js') ) {
-      $path = '/flowplayer/freedomplayer.js';
+    // Load base Freedom Video Player library
+    $path = '/freedom-video-player/freedomplayer.min.js';
+    if( file_exists(dirname(__FILE__).'/../freedom-video-player/freedomplayer.js') ) {
+      $path = '/freedom-video-player/freedomplayer.js';
     }
 
     $version = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? filemtime( dirname(__FILE__).'/../'.$path ) : $fv_wp_flowplayer_core_ver;
@@ -364,17 +364,17 @@ function flowplayer_prepare_scripts() {
 
     // Load modules
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      $path = '/flowplayer/modules/fv-player.js';
+      $path = '/freedom-video-player/modules/fv-player.js';
       wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true );
       $aDependencies[] = 'fv-player';
 
-      foreach( glob( dirname(dirname(__FILE__)).'/flowplayer/modules/*.module.js') as $filename ) {
-        $path = '/flowplayer/modules/'.basename($filename);
+      foreach( glob( dirname(dirname(__FILE__)).'/freedom-video-player/modules/*.module.js') as $filename ) {
+        $path = '/freedom-video-player/modules/'.basename($filename);
         wp_enqueue_script( 'fv-player-'.basename($filename), flowplayer::get_plugin_url().$path, $aDependencies, filemtime( dirname(__FILE__).'/../'.$path ), true);
       }
 
     } else {
-      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/flowplayer/fv-player.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'fv-player', flowplayer::get_plugin_url().'/freedom-video-player/fv-player.min.js', $aDependencies, $fv_wp_flowplayer_ver, true );
 
     }
 
@@ -436,9 +436,9 @@ function flowplayer_prepare_scripts() {
     }
 
     if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/flowplayer/hls.min.js', array('flowplayer'), '1.4.10', true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/freedom-video-player/hls.min.js', array('flowplayer'), '1.4.10', true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.4.10';
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/freedom-video-player/hls.min.js?ver=1.4.10';
 
     $dashjs_version = '3.2.2-mod';
 
@@ -446,13 +446,13 @@ function flowplayer_prepare_scripts() {
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) $fv_player_dashjs = 'fv-player-dashjs.dev.js';
 
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
-      wp_enqueue_script( 'dashjs', flowplayer::get_plugin_url().'/flowplayer/dash.mediaplayer.min.js', array('flowplayer'), $dashjs_version, true );
-      wp_enqueue_script( 'fv-player-dash', flowplayer::get_plugin_url().'/flowplayer/'.$fv_player_dashjs, array('dashjs'), $fv_wp_flowplayer_ver, true );
+      wp_enqueue_script( 'dashjs', flowplayer::get_plugin_url().'/freedom-video-player/dash.mediaplayer.min.js', array('flowplayer'), $dashjs_version, true );
+      wp_enqueue_script( 'fv-player-dash', flowplayer::get_plugin_url().'/freedom-video-player/'.$fv_player_dashjs, array('dashjs'), $fv_wp_flowplayer_ver, true );
     }
 
     // Used by FV Player Pro in case Dash.js was not loaded for the page
-    $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/flowplayer/dash.mediaplayer.min.js?ver='.$dashjs_version;
-    $aConf['script_dash_js_engine'] = flowplayer::get_plugin_url().'/flowplayer/'.$fv_player_dashjs.'?ver='.$fv_wp_flowplayer_ver;
+    $aConf['script_dash_js'] = flowplayer::get_plugin_url().'/freedom-video-player/dash.mediaplayer.min.js?ver='.$dashjs_version;
+    $aConf['script_dash_js_engine'] = flowplayer::get_plugin_url().'/freedom-video-player/'.$fv_player_dashjs.'?ver='.$fv_wp_flowplayer_ver;
 
     if( $fv_fp->should_force_load_js() || FV_Player_YouTube()->bYoutube || did_action('fv_player_extensions_admin_load_assets') ) {
       $youtube_js = 'fv-player-youtube.min.js';
@@ -460,10 +460,10 @@ function flowplayer_prepare_scripts() {
 
       if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
         $youtube_js = 'fv-player-youtube.dev.js';
-        $youtube_ver = filemtime( dirname(__FILE__).'/../flowplayer/'.$youtube_js );
+        $youtube_ver = filemtime( dirname(__FILE__).'/../freedom-video-player/'.$youtube_js );
       }
 
-      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/flowplayer/' . $youtube_js , array('flowplayer'), $youtube_ver, true );
+      wp_enqueue_script( 'fv-player-youtube', flowplayer::get_plugin_url().'/freedom-video-player/' . $youtube_js , array('flowplayer'), $youtube_ver, true );
     }
 
     if( $fv_fp->_get_option('googleanalytics') ) {
@@ -484,7 +484,7 @@ function flowplayer_prepare_scripts() {
       $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
     }
 
-    $aConf['chromecast'] = false; // tell core Flowplayer and FV Player Pro <= 7.4.43.727 to not load Chromecast
+    $aConf['chromecast'] = false; // tell core Freedom Video Player and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = array(
         'applicationId' => '908E271B'
@@ -787,7 +787,7 @@ function fv_player_js_loader_mark_scripts( $tag, $handle ) {
   if(
     // script ID must start with one of following
     (
-      stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
+      stripos($handle,'flowplayer-') === 0 || // process HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
       stripos($handle,'fv-player') === 0 ||
       stripos($handle,'fv_player') === 0 ||
       'dashjs' === $handle
@@ -813,7 +813,7 @@ function fv_player_js_loader_load() {
 
   $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? 'dev' : 'min';
 
-  $js = $filesystem->get_contents( dirname(__FILE__).'/../flowplayer/fv-player-loader.'.$suffix.'.js' );
+  $js = $filesystem->get_contents( dirname(__FILE__).'/../freedom-video-player/fv-player-loader.'.$suffix.'.js' );
 
   if( !defined('SCRIPT_DEBUG') || !SCRIPT_DEBUG ) {
   // remove /* comments */

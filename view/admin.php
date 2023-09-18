@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player
+/*  FV Player - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ function fv_flowplayer_admin_amazon_options() {
 					<tr>
 						<td colspan="2">
 							<p><?php _e('Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly.', 'fv-wordpress-flowplayer'); ?></p>
-              <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv-wordpress-flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Flowplayer guide', 'fv-wordpress-flowplayer'); ?></a>.</p>
+              <p><?php _e('If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won\'t be accounted and the video source URLs in your cached pages won\'t expire. Read more in the', 'fv-wordpress-flowplayer'); ?> <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank"><?php _e('Using Amazon S3 secure content in FV Player guide', 'fv-wordpress-flowplayer'); ?></a>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -1004,7 +1004,7 @@ function fv_flowplayer_admin_pro() {
   if( isset($aCheck->valid) && $aCheck->valid ) : ?>
     <p><?php _e('Valid license found, click the button at the top of the screen to install FV Player Pro!', 'fv-wordpress-flowplayer'); ?></p>
   <?php else : ?>
-    <p><a href="https://foliovision.com/player/download"><?php _e('Purchase FV Flowplayer license', 'fv-wordpress-flowplayer'); ?></a> <?php _e('to enable Pro features!', 'fv-wordpress-flowplayer'); ?></p>
+    <p><a href="https://foliovision.com/player/download"><?php _e('Purchase FV Player license', 'fv-wordpress-flowplayer'); ?></a> <?php _e('to enable Pro features!', 'fv-wordpress-flowplayer'); ?></p>
   <?php endif; ?>
   <table class="form-table2">
     <tr>
@@ -1012,7 +1012,7 @@ function fv_flowplayer_admin_pro() {
       <td>
         <p class="description">
           <input type="checkbox" checked="checked" disabled="true" />
-          <?php _e('Use Vimeo as your video host and use all of FV Flowplayer features.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('Use Vimeo as your video host and use all of FV Player features.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -1021,7 +1021,7 @@ function fv_flowplayer_admin_pro() {
       <td>
         <p class="description">
           <input type="checkbox" checked="checked" disabled="true" />
-          <?php _e('Use YouTube as your video host and use all of FV Flowplayer features.', 'fv-wordpress-flowplayer'); ?>
+          <?php _e('Use YouTube as your video host and use all of FV Player features.', 'fv-wordpress-flowplayer'); ?>
         </p>
       </td>
     </tr>
@@ -2201,7 +2201,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     <?php else : ?>
       <div id="fv_flowplayer_ad">
         <div class="text-part">
-          <h2>FV Wordpress<strong>Flowplayer</strong></h2>
+          <h2>FV <strong>Player</strong></h2>
           <span class="red-text"><?php _e('with your own branding', 'fv-wordpress-flowplayer'); ?></span>
             <ul>
             <li><?php _e('Put up your own logo', 'fv-wordpress-flowplayer'); ?></li>

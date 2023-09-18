@@ -75,7 +75,7 @@ if( !function_exists('__') ) {
 // Load FV Player
 foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
   if(
-    stripos($plugin,'/fv-wordpress-flowplayer') !== false && stripos($plugin,'/flowplayer.php') !== false
+    stripos($plugin,'/fv-player') !== false && stripos($plugin,'/fv-player.php') !== false
   ) {
     wp_register_plugin_realpath( $plugin );
     include_once( $plugin );

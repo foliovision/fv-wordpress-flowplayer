@@ -105,9 +105,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     if( is_admin() ) {
       //  update notices
-      $this->readme_URL = 'https://plugins.trac.wordpress.org/browser/fv-wordpress-flowplayer/trunk/readme.txt?format=txt';
-      if( !has_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php' ) ) {
-        add_action( 'in_plugin_update_message-fv-wordpress-flowplayer/flowplayer.php', array( &$this, 'plugin_update_message' ) );
+      $this->readme_URL = 'https://plugins.trac.wordpress.org/browser/fv-player/trunk/readme.txt?format=txt';
+      if( !has_action( 'in_plugin_update_message-fv-player/fv-player.php' ) ) {
+        add_action( 'in_plugin_update_message-fv-player/fv-player.php', array( &$this, 'plugin_update_message' ) );
       }
 
        //  pointer boxes
@@ -1650,7 +1650,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $site_id = 1;
     }
 
-    $name = 'fv-flowplayer-custom/style-'.$site_id.'.css';
+    $name = 'fv-player-custom/style-'.$site_id.'.css';
     if( 'name' == $type ) {
       return $name;
     } else if( 'url' == $type ) {
@@ -1685,8 +1685,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // by this point, the $wp_filesystem global should be working, so let's use it to create a file
 
     $bDirExists = false;
-    if( !$wp_filesystem->exists($wp_filesystem->wp_content_dir().'fv-flowplayer-custom/') ) {
-      if( $wp_filesystem->mkdir($wp_filesystem->wp_content_dir().'fv-flowplayer-custom/') ) {
+    if( !$wp_filesystem->exists($wp_filesystem->wp_content_dir().'fv-player-custom/') ) {
+      if( $wp_filesystem->mkdir($wp_filesystem->wp_content_dir().'fv-player-custom/') ) {
         $bDirExists = true;
       }
     } else {
@@ -1700,7 +1700,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     ob_start();
     $this->css_generate(true);
 
-    $sCSS = "\n\n/*CSS writeout performed on FV Flowplayer Settings save  on ".date('r')."*/\n".ob_get_clean();
+    $sCSS = "\n\n/*CSS writeout performed on FV Player Settings save  on ".date('r')."*/\n".ob_get_clean();
     if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/freedomplayer.min.css' ) ) {
       return false;
     }
@@ -2364,7 +2364,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public static function get_plugin_url() {
     if( stripos( __FILE__, '/themes/' ) !== false || stripos( __FILE__, '\\themes\\' ) !== false ) {
-      return get_template_directory_uri().'/fv-wordpress-flowplayer';
+      return get_template_directory_uri().'/fv-player';
     } else {
       $plugin_folder = basename(dirname(dirname(__FILE__))); // make fv-wordpress-flowplayer out of {anything}/fv-wordpress-flowplayer/models/flowplayer.php
       return plugins_url($plugin_folder);

@@ -1,6 +1,6 @@
 <?php
 
-/*  FV Wordpress Flowplayer - HTML5 video player
+/*  FV Player - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ function fv_wp_flowplayer_support_mail() {
   	add_filter( 'wp_mail_content_type', 'fv_wp_flowplayer_support_mail_content_type' );
 
   	//add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
-  	wp_mail( 'fvplayer@foliovision.com', 'FV Flowplayer Quick Support Submission', $content );
+  	wp_mail( 'fvplayer@foliovision.com', 'FV Player Quick Support Submission', $content );
 
   	die('1');
   }
@@ -212,22 +212,22 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	}
 
 	global $fv_wp_flowplayer_ver;
-	if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-player.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
+	if( strpos( $url, '/fv-player/freedom-video-player/fv-player.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
   }
 
   // when using Google PageSpeed module
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/fv-player.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
+  if( strpos( $url, '/fv-player/freedom-video-player/fv-player.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
     return 1;
   }
 
   // when using SCRIPT_DEBUG
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/freedomplayer.min.js?ver=' ) !== false ) {
+  if( strpos( $url, '/fv-player/freedom-video-player/freedomplayer.min.js?ver=' ) !== false ) {
 		return 1;
   }
 
   // when using SCRIPT_DEBUG with Google PageSpeed module
-  if( strpos( $url, '/fv-wordpress-flowplayer/flowplayer/freedomplayer.min.js,qver=' ) !== false ) {
+  if( strpos( $url, '/fv-player/freedom-video-player/freedomplayer.min.js,qver=' ) !== false ) {
     return 1;
   }
 
@@ -580,7 +580,7 @@ function fv_wp_flowplayer_admin_key_update() {
     update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
     return false;
 	} else {
-    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer License upgrade failed - please check if you are running the plugin on your licensed domain.' );
+    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Player License upgrade failed - please check if you are running the plugin on your licensed domain.' );
     update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
 		return false;
 	}
@@ -629,7 +629,7 @@ function fv_wordpress_flowplayer_expired_license_update_notice() {
   }
 }
 
-add_action( 'after_plugin_row_fv-wordpress-flowplayer/flowplayer.php', 'fv_wordpress_flowplayer_expired_license_update_plugin_row', 0, 3 );
+add_action( 'after_plugin_row_fv-player/fv-player.php', 'fv_wordpress_flowplayer_expired_license_update_plugin_row', 0, 3 );
 
 function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
   if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
@@ -849,7 +849,7 @@ function fv_player_rollback() {
     $plugin_slug = false;
     $active_plugins = get_option( 'active_plugins' );
     foreach( $active_plugins AS $plugin ) {
-      if( stripos($plugin,'fv-wordpress-flowplayer') === 0 && stripos($plugin,'/flowplayer.php') !== false ) {
+      if( stripos($plugin,'fv-player') === 0 && stripos($plugin,'/fv-player.php') !== false ) {
         $plugin_slug = $plugin;
       }
     }
@@ -858,7 +858,7 @@ function fv_player_rollback() {
     $plugin_folder    	= plugin_basename( dirname( $plugin_slug ) );
     $plugin_file      	= basename( $plugin_slug );
     $version            = isset($_GET['version']) ? $_GET['version'] : '6.6.6';
-    $url 				        = 'https://downloads.wordpress.org/plugin/fv-wordpress-flowplayer.'.$version.'.zip';
+    $url 				        = 'https://downloads.wordpress.org/plugin/fv-player.'.$version.'.zip';
     $temp_array 		= array(
       'slug'        => $plugin_folder,
       'new_version' => $version,

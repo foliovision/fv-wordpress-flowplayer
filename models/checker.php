@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player    
+/*  FV Player - HTML5 video player    
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -515,7 +515,7 @@ class FV_Player_Checker {
     curl_setopt( $ch, CURLOPT_VERBOSE, 1 );
     curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $iTimeout );
     curl_setopt( $ch, CURLOPT_TIMEOUT, $iTimeout );
-    curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
+    curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Player video checker/'.$fv_wp_flowplayer_ver);
     curl_setopt( $ch, CURLOPT_REFERER, home_url() );
     
     $data = curl_exec($ch);

@@ -45,7 +45,7 @@ function fv_player_stats_page() {
 add_filter('plugin_action_links', 'fv_wp_flowplayer_plugin_action_links', 10, 2);
 
 function fv_wp_flowplayer_plugin_action_links($links, $file) {
-  if( $file == 'fv-wordpress-flowplayer/flowplayer.php') {
+  if( $file == 'fv-player/fv-player.php') {
     $settings_link = '<a href="https://foliovision.com/pro-support" target="_blank">Premium Support</a>';
     array_unshift($links, $settings_link);
     $settings_link = '<a href="options-general.php?page=fvplayer">Settings</a>';
@@ -178,7 +178,7 @@ function fv_player_settings_save() {
 
       $fv_fp->_set_conf($to_save);
     } else {
-      echo 'Error saving FV Flowplayer options.';
+      echo 'Error saving FV Player options.';
     }
   }
 }
@@ -337,7 +337,7 @@ function fv_player_admin_pointer_boxes() {
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_license_expired',
       'pointerWidth' => 340,
-      'heading' => __('FV Flowplayer License Expired', 'fv-wordpress-flowplayer'),
+      'heading' => __('FV Player License Expired', 'fv-wordpress-flowplayer'),
       'content' => __( $pnotices ),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __('Hide this notice', 'fv-wordpress-flowplayer'),

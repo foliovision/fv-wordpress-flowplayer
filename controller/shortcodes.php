@@ -1,5 +1,5 @@
 <?php
-/*  FV Wordpress Flowplayer - HTML5 video player    
+/*  FV Player - HTML5 video player    
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
-require_once dirname( __FILE__ ) . '/../models/flowplayer.php';
+require_once dirname( __FILE__ ) . '/../models/fv-player.php';
 if (!class_exists('flowplayer_frontend')) 
-  require_once dirname( __FILE__ ) . '/../models/flowplayer-frontend.php';
+  require_once dirname( __FILE__ ) . '/../models/fv-player-frontend.php';
 
 add_shortcode('flowplayer','flowplayer_content_handle');
 
@@ -305,7 +305,7 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
       isset($vars['border_color'])
     )
   ) {
-    $shortcode .= ' admin_warning="Admin note: Some of the OptimizePress styling parameters are not supported by FV Flowplayer. Please visit the <a href=\''.admin_url('options-general.php?page=fvplayer').'\'>settings</a> and set your global appearance preferences there."';
+    $shortcode .= ' admin_warning="Admin note: Some of the OptimizePress styling parameters are not supported by FV Player. Please visit the <a href=\''.admin_url('options-general.php?page=fvplayer').'\'>settings</a> and set your global appearance preferences there."';
   }
   
   $shortcode .= ']';
@@ -393,7 +393,7 @@ function fv_flowplayer_shortcode_video( $output ) {
   }
   
   if( count($bridge_atts) == 0 ) {
-    return "<!--FV Flowplayer video shortcode integration - no attributes recognized-->";
+    return "<!--FV Player video shortcode integration - no attributes recognized-->";
   }
   return flowplayer_content_handle( $bridge_atts, false, 'video' );
 }

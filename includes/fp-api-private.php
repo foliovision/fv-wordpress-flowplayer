@@ -807,7 +807,7 @@ $this->strPrivateAPI - also
       update_option( 'fv_'.$this->strPluginSlug.'_deferred_notices', $data->message );
       return false;
     } else {
-      $message = 'FV Flowplayer License upgrade failed - please check if you are running the plugin on your licensed domain.';
+      $message = 'FV Player License upgrade failed - please check if you are running the plugin on your licensed domain.';
       update_option( 'fv_'.$this->strPluginSlug.'_deferred_notices', $message );
       return false;
     }

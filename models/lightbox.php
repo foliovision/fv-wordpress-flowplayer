@@ -510,7 +510,7 @@ SCRIPT;
     global $fv_fp;
     if(
       $this->should_load() ||
-      $fv_fp->should_force_load_js() || // "Load FV Flowplayer JS everywhere" is enabled
+      $fv_fp->should_force_load_js() || // "Load FV Player JS everywhere" is enabled
       $fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is enabled
     ) {
       $this->load_scripts();

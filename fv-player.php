@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: FV Player
-Plugin URI: http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer
-Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups. Uses Flowplayer 7.2.8.
-Version: 7.9.8
+Plugin URI: http://foliovision.com/player
+Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups.
+Version: 8.0.beta.1
 Author URI: http://foliovision.com/
 Requires PHP: 5.6
 Text Domain: fv-wordpress-flowplayer
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '7.9.15';
+$fv_wp_flowplayer_ver = '8.0.beta.1';
 $fv_wp_flowplayer_core_ver = '7.2.14.14';
 include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -47,8 +47,8 @@ include_once( dirname( __FILE__ ) . '/models/checker.php' );
 global $FV_Player_Checker;
 $FV_Player_Checker = new FV_Player_Checker();
 
-include_once(dirname( __FILE__ ) . '/models/flowplayer.php');
-include_once(dirname( __FILE__ ) . '/models/flowplayer-frontend.php');
+include_once(dirname( __FILE__ ) . '/models/fv-player.php');
+include_once(dirname( __FILE__ ) . '/models/fv-player-frontend.php');
 
 include_once(dirname( __FILE__ ) . '/models/lightbox.php');
 include_once(dirname( __FILE__ ) . '/models/facebook-share.php');
