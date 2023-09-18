@@ -17,7 +17,7 @@ flowplayer(function(api, root) {
       jQuery('.fp-subtitle',root).removeClass('is-wide');
     }
 
-    // core Flowplayer classes which are normally added in requestAnimationFrame, which increases CPU load too much
+    // core FV Player classes which are normally added in requestAnimationFrame, which increases CPU load too much
     root.toggleClass('is-tiny', width < 400);
     root.toggleClass('is-small', width < 600 && width >= 400 );
 

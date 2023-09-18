@@ -80,7 +80,7 @@ flowplayer( function(api,root) {
       timer = setTimeout(function() {
         timer = null;
         if( !is_ga_4( api ) ) {
-          fv_player_track( api, false, "Flowplayer heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
+          fv_player_track( api, false, "FV Player heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
         }
       }, 10*60*1000); // heartbeat every 10 minutes
     }

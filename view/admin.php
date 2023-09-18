@@ -2426,14 +2426,14 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     });
 
     /*
-    Ensure only one of "Load FV Flowplayer JS everywhere" and "Optimize FV Flowplayer JS loading" can be enabled
+    Ensure only one of "Load JavaScript everywhere" and "Optimize JavaScript loading" can be enabled
     */
     var cb_js_everywhere = jQuery('#js-everywhere'),
       cb_js_optimize = jQuery('#js-optimize');
 
     function check_js_everywhere( was_clicked ) {
       if( was_clicked && cb_js_optimize.prop('checked') ) {
-        alert('Cannot be used together with "Optimize FV Flowplayer JS loading".');
+        alert('Cannot be used together with "Optimize JavaScript loading".');
         return false;
       }
 
@@ -2444,7 +2444,7 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
 
     function check_js_optimize( was_clicked ) {
       if( was_clicked && cb_js_everywhere.prop('checked') ) {
-        alert('Cannot be used together with "Load FV Flowplayer JS everywhere".');
+        alert('Cannot be used together with "Load JavaScript everywhere".');
         return false;
       }
 

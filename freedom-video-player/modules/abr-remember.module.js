@@ -138,7 +138,7 @@ flowplayer( function(api,root) {
       // like when the decryption key is loading, so we need to indicate it's loading
       // but only do this if the player was using splash setup, with preloading
       // the ready event would already occur, but no progress until the video is started by click
-      // TODO: What about fixing that ready event instead? Core Flowplayer 7.2.8?
+      // TODO: What about fixing that ready event instead? Core FV Player 7.2.8?
       if( was_splash ) {
         root.addClass('is-loading');
         api.loading = true;
