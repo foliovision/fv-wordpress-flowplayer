@@ -193,7 +193,7 @@ function fv_flowplayer_browser_browse(data, options) {
       current_path: fv_player_media_browser.get_current_folder()
     };
 
-    jQuery.post(fv_player.ajaxurl, data, function (response) {
+    jQuery.post(options.ajaxurl ? options.ajaxurl : fv_player.ajaxurl, data, function (response) {
       if(response.error) {
         alert(response.error);
       } else {
