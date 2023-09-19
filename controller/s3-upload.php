@@ -206,7 +206,7 @@ class FV_Player_S3_Upload {
         'Key' => $_REQUEST['sendBackData']['key'],
         'UploadId' => $_REQUEST['sendBackData']['uploadId'],
         'MultipartUpload' => array(
-          "Parts" => $partsModel["Parts"],
+          "Parts" => $partsModel['data']['Parts']
         ),
         ))->toArray();
 
