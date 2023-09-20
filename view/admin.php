@@ -599,11 +599,11 @@ function fv_flowplayer_admin_youtube_browser_chrome() {
       foreach( array(
         'standard' => array(
           'label' => __('Standard', 'fv-wordpress-flowplayer'),
-          'description' => __('Sharing buttons, Link and Embed wont appear for YouTube videos. It is be possible to click to the video author icon and video title.', 'fv-wordpress-flowplayer')
+          'description' => __('All of the YouTube embedded player interface will show, including related videos on pause.', 'fv-wordpress-flowplayer')
         ),
         'reduced' => array(
           'label' => __('Reduced', 'fv-wordpress-flowplayer'),
-          'description' => __('Dhow the video title and the author logo.', 'fv-wordpress-flowplayer')
+          'description' => __('Show only the video title and the YouTube logo.', 'fv-wordpress-flowplayer')
         ),
         'none' => array(
           'label' => __('None', 'fv-wordpress-flowplayer'),
@@ -656,7 +656,7 @@ function fv_flowplayer_admin_youtube_browser_chrome() {
       $( '#fv_flowplayer_youtube_browser_chrome [data-describe='+$('[name=youtube_browser_chrome]:checked').val()+']' ).show();
     }
   } );
-
+  </script>
   <?php
 }
 
