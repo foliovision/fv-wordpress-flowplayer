@@ -936,6 +936,11 @@ iframe#youtube.fp-engine {
 .flowplayer.is-youtube-standart .fp-header, .flowplayer.is-youtube-reduced .fp-header {
   pointer-events: none !important;
 }
+.flowplayer .fp-youtube-title {
+  top: 0;
+  left: 0;
+  position: absolute;
+}
 
 /* Duration */
 .fp-duration { line-height: 1em; white-space: nowrap; }
