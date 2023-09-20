@@ -598,7 +598,7 @@ function fv_flowplayer_admin_youtube_browser_chrome() {
 
       foreach( array(
         'standart' => array(
-          'label' => __('Standard', 'fv-wordpress-flowplayer'),
+          'label' => __('Standart', 'fv-wordpress-flowplayer'),
           'description' => __('Sharing buttons, Link and Embed wont appear for YouTube videos. It is be possible to click to the video author icon and video title.', 'fv-wordpress-flowplayer')
         ),
         'reduced' => array(

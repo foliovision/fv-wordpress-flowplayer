@@ -3,30 +3,30 @@
  */
 flowplayer( function(api,root) {
   root = jQuery(root);
-  
+
   root.find('.fp-logo').removeAttr('href');
-  
-  if( root.hasClass('no-controlbar') ) {    
+
+  if( root.hasClass('no-controlbar') ) {
     var timelineApi = api.sliders.timeline;
     timelineApi.disable(true);
     api.bind('ready',function() {
       timelineApi.disable(true);
     });
   }
-  
+
   jQuery('.fvfp_admin_error', root).remove();
-  
+
   root.find('.fp-logo, .fp-header').on('click', function(e) {
     if (e.target !== this) return;
     root.find('.fp-ui').trigger('click');
   });
-    
+
   jQuery('.fvp-share-bar .sharing-facebook',root).append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#fff"><title>Facebook</title><path d="M11.9 5.2l-2.6 0 0-1.6c0-0.7 0.3-0.7 0.7-0.7 0.3 0 1.6 0 1.6 0l0-2.9 -2.3 0c-2.6 0-3.3 2-3.3 3.3l0 2 -1.6 0 0 2.9 1.6 0c0 3.6 0 7.8 0 7.8l3.3 0c0 0 0-4.2 0-7.8l2.3 0 0.3-2.9Z"/></svg>');
   jQuery('.fvp-share-bar .sharing-twitter',root).append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#fff"><title>Twitter</title><path d="M16 3.1c-0.6 0.3-1.2 0.4-1.9 0.5 0.7-0.4 1.2-1 1.4-1.8 -0.6 0.4-1.3 0.6-2.1 0.8 -0.6-0.6-1.4-1-2.4-1 -2 0.1-3.2 1.6-3.2 4 -2.7-0.1-5.1-1.4-6.7-3.4 -0.9 1.4 0.2 3.8 1 4.4 -0.5 0-1-0.1-1.5-0.4l0 0.1c0 1.6 1.1 2.9 2.6 3.2 -0.7 0.2-1.3 0.1-1.5 0.1 0.4 1.3 1.6 2.2 3 2.3 -1.6 1.7-4.6 1.4-4.8 1.3 1.4 0.9 3.2 1.4 5 1.4 6 0 9.3-5 9.3-9.3 0-0.1 0-0.3 0-0.4 0.6-0.4 1.2-1 1.6-1.7Z"/></svg>');
   jQuery('.fvp-share-bar .sharing-email',root).append('<svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 16 16" width="16" fill="#fff"><title>Email</title><path d="M8 10c0 0 0 0-1 0L0 6v7c0 1 0 1 1 1h14c1 0 1 0 1-1V6L9 10C9 10 8 10 8 10zM15 2H1C0 2 0 2 0 3v1l8 4 8-4V3C16 2 16 2 15 2z"/></svg>');
-    
+
   jQuery('.fp-header',root).prepend( jQuery('.fvp-share-bar',root) );
-  
+
   if( ! api.have_visible_playlist && api.conf.playlist.length > 0 || api.have_visible_playlist() ) {
     var prev = jQuery('<a class="fp-icon fv-fp-prevbtn"></a>');
     var next = jQuery('<a class="fp-icon fv-fp-nextbtn"></a>');
@@ -51,7 +51,7 @@ flowplayer( function(api,root) {
       return false;
     });
   }
-  
+
   api.bind("pause resume finish unload ready", function(e,api) {
     root.addClass('no-brand');
   });
@@ -62,8 +62,8 @@ flowplayer( function(api,root) {
 
   api.on("ready", function (e, api, video) {
     setTimeout( function () {
-      jQuery('.fvp-share-bar',root).show();
-      
+      if( typeof fv_flowplayer_conf.youtube_browser_chrome == 'undefined' || fv_flowplayer_conf.youtube_browser_chrome != 'standart' ) jQuery('.fvp-share-bar',root).show();
+
       jQuery('.fv-player-buttons-wrap',root).appendTo(jQuery('.fv-player-buttons-wrap',root).parent().find('.fp-ui'));
     }, 100 );
   });
@@ -78,17 +78,17 @@ flowplayer( function(api,root) {
       }
     }
   });
-  
+
   if( flowplayer.support.iOS && flowplayer.support.iOS.version == 11 ) {
     api.bind('error',function(e,api,error){
       if( error.code == 4 ) root.find('.fp-engine').hide();
     });
   }
-  
+
   jQuery(document).on('contextmenu', '.flowplayer', function(e) {
     e.preventDefault();
   });
-  
+
   api.one("ready", function (e, api, video) {
     root.find('.fp-chromecast').insertAfter( root.find('.fp-header .fp-fullscreen') );
   });
@@ -96,8 +96,8 @@ flowplayer( function(api,root) {
   var id = root.attr('id'),
     alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen,
     events_enter = 'fakefullscreen',
-    events_exit = 'fakefullscreen-exit';  
-  
+    events_exit = 'fakefullscreen-exit';
+
   if( !flowplayer.support.fullscreen ) {
     events_enter += ' fullscreen';
     events_exit += ' fullscreen-exit';
@@ -106,7 +106,7 @@ flowplayer( function(api,root) {
   api.bind( events_enter, function(e,api) {
     jQuery('#wpadminbar, .nc_wrapper').hide();
     if( alternative || e.type == 'fakefullscreen' ) {
-      if( api.video.type == 'video/youtube' ) return;		
+      if( api.video.type == 'video/youtube' ) return;
       root.before('<span data-fv-placeholder="'+id+'"></span>');
       root.appendTo('body');
     }
@@ -117,5 +117,5 @@ flowplayer( function(api,root) {
       jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);
     }
   });
-  
+
 });

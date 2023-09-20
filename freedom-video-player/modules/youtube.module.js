@@ -19,16 +19,10 @@ flowplayer(function (api, root) {
     if( video.type == 'video/youtube' ) {
       root.addClass('is-youtube');
 
-      debugger;
-
       if( typeof fv_flowplayer_conf.youtube_browser_chrome != 'undefined' ) {
-        var youtube_icon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="24" height="24" viewBox="0 0 24 24"\ stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">\
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>\
-        <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>\
-        <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>\
-        </svg>';
 
-        var title = video.fv_title;
+
+        var yt_title = video.fv_title;
 
         // no logo
         if( fv_flowplayer_conf.youtube_browser_chrome == 'none' ) {
@@ -37,20 +31,26 @@ flowplayer(function (api, root) {
 
         // standart
         if( fv_flowplayer_conf.youtube_browser_chrome == 'standart' ) {
-          if( root.find('.sharing-link').length ) {
-            root.find('.sharing-link').text('')
-            root.find('.sharing-link').append('<span class="fv-youtube-icon">'+youtube_icon+'</span>');
-          }
+          root.addClass('is-youtube-standart');
         }
 
-        // TODO: reduced
+        // reduced
+        if( fv_flowplayer_conf.youtube_browser_chrome == 'reduced' ) {
+          var youtube_icon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="24" height="24" viewBox="0 0 24 24"\ stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">\
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>\
+          <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>\
+          <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>\
+          </svg>';
+
+          root.addClass('is-youtube-reduced');
+        }
 
       }
     } else {
       root.removeClass('is-youtube');
       root.removeClass('is-youtube-nl');
-      root.find('.sharing-link').text('Link');
-      root.find('.fv-youtube-icon').remove();
+      root.removeClass('is-youtube-standart');
+      root.removeClass('is-youtube-reduced');
     }
   });
 });

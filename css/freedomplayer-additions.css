@@ -929,7 +929,10 @@ iframe#youtube.fp-engine {
   display: block;
 }
 
-/* Youtube reduced - TODO */
+/* Youtube standart */
+.flowplayer.is-youtube-standart .fvp-sharing {
+  display: none;
+}
 
 /* Duration */
 .fp-duration { line-height: 1em; white-space: nowrap; }
