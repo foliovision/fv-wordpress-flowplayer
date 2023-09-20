@@ -571,7 +571,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
 function fv_flowplayer_admin_youtube_browser_chrome() {
   global $fv_fp;
-  $value = $fv_fp->_get_option('youtube_browser_chrome');
+  $value = $fv_fp->_get_option('youtube_browser_chrome', 'standard');
 
   ?>
   <style>
