@@ -929,11 +929,11 @@ iframe#youtube.fp-engine {
   display: block;
 }
 
-/* Youtube standart & reduced */
-.flowplayer.is-youtube-standart .fvp-sharing , .flowplayer.is-youtube-reduced .fvp-sharing {
+/* Youtube standard & reduced */
+.flowplayer.is-youtube-standard .fvp-sharing , .flowplayer.is-youtube-reduced .fvp-sharing {
   display: none;
 }
-.flowplayer.is-youtube-standart .fp-header, .flowplayer.is-youtube-reduced .fp-header {
+.flowplayer.is-youtube-standard .fp-header, .flowplayer.is-youtube-reduced .fp-header {
   pointer-events: none !important;
 }
 .flowplayer .fp-youtube-title {

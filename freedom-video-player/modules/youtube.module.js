@@ -31,9 +31,9 @@ flowplayer(function (api, root) {
           root.addClass('is-youtube-nl');
         }
 
-        // standart
-        if( fv_flowplayer_conf.youtube_browser_chrome == 'standart' ) {
-          root.addClass('is-youtube-standart');
+        // standard
+        if( fv_flowplayer_conf.youtube_browser_chrome == 'standard' ) {
+          root.addClass('is-youtube-standard');
         }
 
         // reduced
@@ -58,7 +58,7 @@ flowplayer(function (api, root) {
     } else {
       root.removeClass('is-youtube');
       root.removeClass('is-youtube-nl');
-      root.removeClass('is-youtube-standart');
+      root.removeClass('is-youtube-standard');
       root.removeClass('is-youtube-reduced');
       root.find('.fp-youtube-title').remove();
       root.find('.fp-youtube-logo').remove();

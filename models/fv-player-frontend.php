@@ -1207,8 +1207,8 @@ JS;
 
     if( !empty($attributes['data-engine']) && strcmp($attributes['data-engine'], 'fvyoutube') == 0 ) {
 
-      if( strcmp($youtube_chrome, 'standart') == 0 ) {
-        $attributes['class'] .= ' is-youtube-standart';
+      if( strcmp($youtube_chrome, 'standard') == 0 ) {
+        $attributes['class'] .= ' is-youtube-standard';
       } else if( strcmp($youtube_chrome, 'reduced') == 0 ) {
         $attributes['class'] .= ' is-youtube-reduced';
       } else if( strcmp($youtube_chrome, 'none') == 0 ) {
