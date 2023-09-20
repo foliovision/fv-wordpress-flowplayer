@@ -445,7 +445,7 @@
     transition: background-image .1s;
     text-align: center;
     cursor: pointer;
-    color: #fff; }
+    color: whitesmoke; }
     .freedomplayer .fp-ui a, .freedomplayer .fp-ui strong, .freedomplayer .fp-ui a:before {
       color: inherit !important;
       font-style: normal !important;

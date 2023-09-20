@@ -77,7 +77,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
           'player-position' => '',
-          'timeColor' => '#ffffff',
+          'timeColor' => 'whitesmoke',
           'durationColor' => false,
           'design-timeline' => 'fp-slim',
           'design-icons' => 'fp-edgy'
