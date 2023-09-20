@@ -933,6 +933,9 @@ iframe#youtube.fp-engine {
 .flowplayer.is-youtube-standart .fvp-sharing , .flowplayer.is-youtube-reduced .fvp-sharing {
   display: none;
 }
+.flowplayer.is-youtube-standart .fp-header, .flowplayer.is-youtube-reduced .fp-header {
+  pointer-events: none !important;
+}
 
 /* Duration */
 .fp-duration { line-height: 1em; white-space: nowrap; }
