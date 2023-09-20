@@ -929,8 +929,8 @@ iframe#youtube.fp-engine {
   display: block;
 }
 
-/* Youtube standart */
-.flowplayer.is-youtube-standart .fvp-sharing {
+/* Youtube standart & reduced */
+.flowplayer.is-youtube-standart .fvp-sharing , .flowplayer.is-youtube-reduced .fvp-sharing {
   display: none;
 }
 
