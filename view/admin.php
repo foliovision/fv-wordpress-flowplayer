@@ -542,7 +542,6 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
         echo implode( $radio_butons );
         ?>
-        </div>
       </td>
     </td>
   </tr>
@@ -557,17 +556,108 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
   <script>
   jQuery( function($) {
-    show_description();
+    show_description_autoplay();
 
-    $('[name=autoplay_preload]' ).on( 'change', show_description );
+    $('[name=autoplay_preload]' ).on( 'change', show_description_autoplay );
 
-    function show_description() {
+    function show_description_autoplay() {
       $( '#fv_flowplayer_autoplay_and_preloading [data-describe]' ).hide();
       $( '#fv_flowplayer_autoplay_and_preloading [data-describe='+$('[name=autoplay_preload]:checked').val()+']' ).show();
     }
   } );
   </script>
 <?php
+}
+
+function fv_flowplayer_admin_youtube_browser_chrome() {
+  global $fv_fp;
+  $value = $fv_fp->_get_option('youtube_browser_chrome');
+
+  ?>
+  <style>
+  #fv_flowplayer_youtube_browser_chrome .descriptions {
+    float: right;
+    position: relative;
+    width: 50%;
+  }
+
+  #fv_flowplayer_youtube_browser_chrome [data-describe] {
+    display: none;
+    position: absolute;
+    top: 0;
+  }
+  </style>
+
+  <table class="form-table2">
+  <tr>
+    <td class="first"></td>
+    <td>
+      <?php
+      $radio_butons = array();
+      $radio_butons_descriptions = array();
+
+      foreach( array(
+        'standart' => array(
+          'label' => __('Standard', 'fv-wordpress-flowplayer'),
+          'description' => __('Sharing buttons, Link and Embed wont appear for YouTube videos. It is be possible to click to the video author icon and video title.', 'fv-wordpress-flowplayer')
+        ),
+        'reduced' => array(
+          'label' => __('Reduced', 'fv-wordpress-flowplayer'),
+          'description' => __('Dhow the video title and the author logo.', 'fv-wordpress-flowplayer')
+        ),
+        'none' => array(
+          'label' => __('None', 'fv-wordpress-flowplayer'),
+          'description' => __('Remove everything.', 'fv-wordpress-flowplayer')
+        )
+      ) AS $key => $field ) {
+        $id = 'youtube_browser_chrome_'.esc_attr($key);
+
+        $radio_button = '<input id="'.$id.'" type="radio" name="youtube_browser_chrome" value="'.esc_attr($key).'"';
+        if( $value === $key || json_encode($value) == $key ) { // use json_encode as value can be boolean
+          $radio_button .= ' checked="checked"';
+        }
+        $radio_button .= '</input>';
+        $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
+
+        $radio_butons[] = $radio_button;
+
+        if( !empty($field['description']) ) {
+          $radio_butons_descriptions[$key] = $field['description'];
+        }
+      }
+
+      echo '<div class="descriptions">';
+      foreach( $radio_butons_descriptions AS $key => $description ) {
+        echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+      }
+      echo '</div>';
+
+      echo implode( $radio_butons );
+      ?>
+    </td>
+  </tr>
+  <?php do_action('fv_flowplayer_youtube_browser_chrome_inputs_after'); ?>
+  <tr>
+    <td colspan="4">
+      <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
+    </td>
+  </tr>
+  </table>
+  <div class="clear"></div>
+
+  <script>
+  jQuery( function($) {
+    show_description_youtube_chrome();
+
+    $('[name=youtube_browser_chrome]').on( 'change', show_description_youtube_chrome );
+
+    function show_description_youtube_chrome() {
+      $( '#fv_flowplayer_youtube_browser_chrome [data-describe]' ).hide();
+      $( '#fv_flowplayer_youtube_browser_chrome [data-describe='+$('[name=youtube_browser_chrome]:checked').val()+']' ).show();
+    }
+  } );
+
+  <?php
 }
 
 /*
@@ -2093,6 +2183,7 @@ add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide FV Player Defaults', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_autoplay_and_preloading', __('Autoplay and preloading', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_autoplay_and_preloading', 'fv_flowplayer_settings', 'normal' );
+add_meta_box( 'fv_flowplayer_youtube_browser_chrome', __('YouTube browser chrome', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_youtube_browser_chrome', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_mobile', __('Mobile Settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_mobile', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_seo', 'fv_flowplayer_settings', 'normal' );
