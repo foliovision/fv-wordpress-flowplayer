@@ -1,3 +1,7 @@
+/**
+ * Youtube module
+ */
+
 flowplayer(function (api, root) {
   root = jQuery(root);
 
@@ -14,15 +18,13 @@ flowplayer(function (api, root) {
     }
   }
 
+  // add or remove youtube class based on video type & settings
   api.on("ready", function (e,api,video) {
 
     if( video.type == 'video/youtube' ) {
       root.addClass('is-youtube');
 
       if( typeof fv_flowplayer_conf.youtube_browser_chrome != 'undefined' ) {
-
-
-        var yt_title = video.fv_title;
 
         // no logo
         if( fv_flowplayer_conf.youtube_browser_chrome == 'none' ) {
@@ -36,12 +38,6 @@ flowplayer(function (api, root) {
 
         // reduced
         if( fv_flowplayer_conf.youtube_browser_chrome == 'reduced' ) {
-          var youtube_icon = '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="24" height="24" viewBox="0 0 24 24"\ stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">\
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>\
-          <path d="M8 8m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"></path>\
-          <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>\
-          </svg>';
-
           root.addClass('is-youtube-reduced');
         }
 
