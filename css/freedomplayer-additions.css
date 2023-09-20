@@ -936,10 +936,37 @@ iframe#youtube.fp-engine {
 .flowplayer.is-youtube-standard .fp-header, .flowplayer.is-youtube-reduced .fp-header {
   pointer-events: none !important;
 }
-.flowplayer .fp-youtube-title {
-  top: 0;
-  left: 0;
+.flowplayer a.fp-youtube-title {
+  top: 4px;
+  left: 12px;
   position: absolute;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  color: rgb(238, 238, 238) !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: calc( 100% - 3em );
+  display: block;
+  white-space: nowrap;
+}
+.flowplayer a.fp-youtube-title:hover {
+  color: white !important;
+}
+.flowplayer .fp-youtube-logo {
+  bottom: 2.5em;
+  right: 10px;
+  position: absolute;
+  fill: rgba(238, 238, 238, .9);
+  width: 95px;
+}
+.flowplayer .fp-youtube-logo:hover {
+  fill: rgba(238, 238, 238, 1);
+}
+.flowplayer.fp-full .fp-youtube-logo {
+  bottom: 4em;
+}
+.flowplayer.fixed-controls .fp-youtube-logo {
+  bottom: 6px;
 }
 
 /* Duration */
