@@ -90,7 +90,7 @@ class FV_Player_S3_Upload {
 
       $s3Client = $this->s3();
 
-      $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
+      $bucket = $FV_Player_DigitalOcean_Spaces->get_space();
 
       // get objects from source space
       $objects = $s3Client->listObjects(array(
