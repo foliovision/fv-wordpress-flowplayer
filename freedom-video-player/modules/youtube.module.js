@@ -61,4 +61,16 @@ flowplayer(function (api, root) {
       root.find('.fp-youtube-logo').remove();
     }
   });
+
+  root.on('click','.fp-youtube-title, .fp-youtube-logo', function(e) {
+    var time = api.video.time;
+
+    // update href with current time
+    if( time > 0 ) {
+      var href = flowplayer(0).video.sources[0].src + '&t=' + parseInt(time) + 's';
+      jQuery(this).attr('href', href);
+    }
+
+  });
+
 });
