@@ -252,9 +252,10 @@
 .flowplayer .fp-engine { max-width:100%; }
 .flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
 .flowplayer .fp-logo {max-width:25%;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-.flowplayer .fp-logo img {box-shadow:none}
-.flowplayer.fixed-controls .fp-logo {bottom: 15px}
-.flowplayer.is-popup-showing .fp-logo {display: none}
+.flowplayer .fp-logo img {box-shadow:none;}
+.flowplayer .fp-logo {pointer-events: none;}
+.flowplayer.fixed-controls .fp-logo {bottom: 15px;}
+.flowplayer.is-popup-showing .fp-logo {display: none;}
 
 /* Share bar  */
 .flowplayer .fp-embed-code{display:none;}
