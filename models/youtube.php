@@ -230,7 +230,22 @@ class FV_Player_YouTube {
 
   function fv_player_admin_youtube() {
     global $fv_fp;
+
+    $value = $fv_fp->_get_option('youtube_browser_chrome', 'standard');
     ?>
+    <style>
+      #fv_player_youtube .descriptions {
+        float: right;
+        position: relative;
+        width: 50%;
+      }
+
+      #fv_player_youtube [data-describe] {
+        display: none;
+        position: absolute;
+        top: 0;
+      }
+    </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td colspan="2">
@@ -239,6 +254,53 @@ class FV_Player_YouTube {
           </p>
         </td>
       </tr>
+      <tr>
+        <td class="first"></td>
+        <td>
+          <?php
+            $radio_butons = array();
+            $radio_butons_descriptions = array();
+
+            foreach( array(
+              'standard' => array(
+                'label' => __('Standard', 'fv-wordpress-flowplayer'),
+                'description' => __('All of the YouTube embedded player interface will show, including related videos on pause.', 'fv-wordpress-flowplayer')
+              ),
+              'reduced' => array(
+                'label' => __('Reduced', 'fv-wordpress-flowplayer'),
+                'description' => __('Show only the video title and the YouTube logo.', 'fv-wordpress-flowplayer')
+              ),
+              'none' => array(
+                'label' => __('None', 'fv-wordpress-flowplayer'),
+                'description' => __('Remove everything.', 'fv-wordpress-flowplayer')
+              )
+            ) AS $key => $field ) {
+              $id = 'youtube_browser_chrome_'.esc_attr($key);
+
+              $radio_button = '<input id="'.$id.'" type="radio" name="youtube_browser_chrome" value="'.esc_attr($key).'"';
+              if( $value === $key || json_encode($value) == $key ) { // use json_encode as value can be boolean
+                $radio_button .= ' checked="checked"';
+              }
+              $radio_button .= '</input>';
+              $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
+
+              $radio_butons[] = $radio_button;
+
+              if( !empty($field['description']) ) {
+                $radio_butons_descriptions[$key] = $field['description'];
+              }
+            }
+
+            echo '<div class="descriptions">';
+            foreach( $radio_butons_descriptions AS $key => $description ) {
+              echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+            }
+            echo '</div>';
+
+            echo implode( $radio_butons );
+          ?>
+      </td>
+    </tr>
       <?php if( $fv_fp->_get_option( array('pro','youtube_titles_disable') ) ) $fv_fp->_get_checkbox(__('Disable video captions', 'fv-player-pro'), array('pro', 'youtube_titles_disable'), __('Normally the video title is parsed into the shortcode when saving the post, with this setting it won\'t appear.', 'fv-player-pro') ); ?>
       <?php $fv_fp->_get_checkbox(__("Use YouTube Cookies", 'fv-player-pro'), array('pro', 'youtube_cookies'), __("Otherwise FV Player Pro uses the youtube-nocookie.com domain to avoid use of YouTube cookies.", 'fv-player-pro') ); ?>
 
@@ -262,12 +324,28 @@ class FV_Player_YouTube {
           </td>
         </tr>
       <?php endif; ?>
-      <tr>
-        <td colspan="4">
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
-        </td>
-      </tr>
+      <?php if( !function_exists('FV_PLayer_Pro')): ?>
+        <tr>
+          <td colspan="4">
+            <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
+          </td>
+        </tr>
+      <?php endif; ?>
+      <?php do_action('fv_player_youtube_inputs_after'); ?>
     </table>
+    <div class="clear"></div>
+    <script>
+      jQuery( function($) {
+        show_description_youtube_chrome();
+
+        $('[name=youtube_browser_chrome]').on( 'change', show_description_youtube_chrome );
+
+        function show_description_youtube_chrome() {
+          $( '#fv_player_youtube [data-describe]' ).hide();
+          $( '#fv_player_youtube [data-describe='+$('[name=youtube_browser_chrome]:checked').val()+']' ).show();
+        }
+      });
+    </script>
     <?php
   }
 

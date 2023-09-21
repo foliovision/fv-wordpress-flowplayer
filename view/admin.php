@@ -569,97 +569,6 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 <?php
 }
 
-function fv_flowplayer_admin_youtube_browser_chrome() {
-  global $fv_fp;
-  $value = $fv_fp->_get_option('youtube_browser_chrome', 'standard');
-
-  ?>
-  <style>
-  #fv_flowplayer_youtube_browser_chrome .descriptions {
-    float: right;
-    position: relative;
-    width: 50%;
-  }
-
-  #fv_flowplayer_youtube_browser_chrome [data-describe] {
-    display: none;
-    position: absolute;
-    top: 0;
-  }
-  </style>
-
-  <table class="form-table2">
-  <tr>
-    <td class="first"></td>
-    <td>
-      <?php
-      $radio_butons = array();
-      $radio_butons_descriptions = array();
-
-      foreach( array(
-        'standard' => array(
-          'label' => __('Standard', 'fv-wordpress-flowplayer'),
-          'description' => __('All of the YouTube embedded player interface will show, including related videos on pause.', 'fv-wordpress-flowplayer')
-        ),
-        'reduced' => array(
-          'label' => __('Reduced', 'fv-wordpress-flowplayer'),
-          'description' => __('Show only the video title and the YouTube logo.', 'fv-wordpress-flowplayer')
-        ),
-        'none' => array(
-          'label' => __('None', 'fv-wordpress-flowplayer'),
-          'description' => __('Remove everything.', 'fv-wordpress-flowplayer')
-        )
-      ) AS $key => $field ) {
-        $id = 'youtube_browser_chrome_'.esc_attr($key);
-
-        $radio_button = '<input id="'.$id.'" type="radio" name="youtube_browser_chrome" value="'.esc_attr($key).'"';
-        if( $value === $key || json_encode($value) == $key ) { // use json_encode as value can be boolean
-          $radio_button .= ' checked="checked"';
-        }
-        $radio_button .= '</input>';
-        $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
-
-        $radio_butons[] = $radio_button;
-
-        if( !empty($field['description']) ) {
-          $radio_butons_descriptions[$key] = $field['description'];
-        }
-      }
-
-      echo '<div class="descriptions">';
-      foreach( $radio_butons_descriptions AS $key => $description ) {
-        echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
-      }
-      echo '</div>';
-
-      echo implode( $radio_butons );
-      ?>
-    </td>
-  </tr>
-  <?php do_action('fv_flowplayer_youtube_browser_chrome_inputs_after'); ?>
-  <tr>
-    <td colspan="4">
-      <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
-    </td>
-  </tr>
-  </table>
-  <div class="clear"></div>
-
-  <script>
-  jQuery( function($) {
-    show_description_youtube_chrome();
-
-    $('[name=youtube_browser_chrome]').on( 'change', show_description_youtube_chrome );
-
-    function show_description_youtube_chrome() {
-      $( '#fv_flowplayer_youtube_browser_chrome [data-describe]' ).hide();
-      $( '#fv_flowplayer_youtube_browser_chrome [data-describe='+$('[name=youtube_browser_chrome]:checked').val()+']' ).show();
-    }
-  } );
-  </script>
-  <?php
-}
-
 /*
  * Setup Tab Description
  */
@@ -2203,7 +2112,6 @@ add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flow
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings_hosting', 'normal' );
-add_meta_box( 'fv_flowplayer_youtube_browser_chrome', __('YouTube browser chrome', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_youtube_browser_chrome', 'fv_flowplayer_settings_hosting', 'normal' );
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
