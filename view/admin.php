@@ -2183,7 +2183,6 @@ add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description
 add_meta_box( 'fv_flowplayer_interface_options', __('Post Interface Options', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_interface_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_default_options', __('Sitewide FV Player Defaults', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_default_options', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_autoplay_and_preloading', __('Autoplay and preloading', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_autoplay_and_preloading', 'fv_flowplayer_settings', 'normal' );
-add_meta_box( 'fv_flowplayer_youtube_browser_chrome', __('YouTube browser chrome', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_youtube_browser_chrome', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_integrations', __('Integrations/Compatibility', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_integrations', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_mobile', __('Mobile Settings', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_mobile', 'fv_flowplayer_settings', 'normal' );
 add_meta_box( 'fv_flowplayer_seo', __('Video SEO', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_seo', 'fv_flowplayer_settings', 'normal' );
@@ -2204,6 +2203,7 @@ add_meta_box( 'fv_flowplayer_skin_sticky', __('Sticky Video', 'fv-wordpress-flow
 /* Hosting Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_hosting', 'fv_flowplayer_settings_hosting', 'normal', 'high' );
 add_meta_box( 'fv_flowplayer_amazon_options', __('Amazon S3 Protected Content', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_amazon_options', 'fv_flowplayer_settings_hosting', 'normal' );
+add_meta_box( 'fv_flowplayer_youtube_browser_chrome', __('YouTube browser chrome', 'fv-wordpress-flowplayer'), 'fv_flowplayer_admin_youtube_browser_chrome', 'fv_flowplayer_settings_hosting', 'normal' );
 
 /* Actions Tab */
 add_meta_box( 'fv_flowplayer_description', ' ', 'fv_flowplayer_admin_description_actions', 'fv_flowplayer_settings_actions', 'normal', 'high' );
