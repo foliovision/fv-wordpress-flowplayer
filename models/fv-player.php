@@ -679,6 +679,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if (!isset($conf['skin-slim'])) $conf['skin-slim'] = array();
     if (!isset($conf['skin-youtuby'])) $conf['skin-youtuby'] = array();
 
+    if ( ! isset( $conf['youtube_browser_chrome'] ) ) $conf['youtube_browser_chrome'] = 'standard';
+
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = array();
