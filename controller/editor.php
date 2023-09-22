@@ -905,9 +905,6 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
 
   // if( is_serialized($new_content) ) return; // TODO: is something serializing content?
 
-  // convert links to embed
-  $new_content = $wp_embed->autoembed( $new_content );
-
   // convert iframe/video tags to src shortcodes
   $new_content = fv_player_handle_video_tags($new_content);
   $new_content = fv_player_handle_youtube_links($new_content);
