@@ -27,13 +27,19 @@ require_once( ABSPATH . WPINC . '/user.php' );
 // Translation and localization.
 require_once( ABSPATH . WPINC . '/pomo/mo.php' );
 require_once( ABSPATH . WPINC . '/l10n.php' );
-require_once( ABSPATH . WPINC . '/class-wp-textdomain-registry.php' );
+
+if ( file_exists( ABSPATH . WPINC . '/class-wp-textdomain-registry.php' ) ) {
+  require_once( ABSPATH . WPINC . '/class-wp-textdomain-registry.php' );
+}
+
 require_once( ABSPATH . WPINC . '/class-wp-locale.php' );
 require_once( ABSPATH . WPINC . '/class-wp-locale-switcher.php' );
 
-global $wp_textdomain_registry;
-if ( ! $wp_textdomain_registry instanceof WP_Textdomain_Registry ) {
-  $wp_textdomain_registry = new WP_Textdomain_Registry();
+if ( class_exists( 'WP_Textdomain_Registry' ) ) {
+  global $wp_textdomain_registry;
+  if ( ! $wp_textdomain_registry instanceof WP_Textdomain_Registry ) {
+    $wp_textdomain_registry = new WP_Textdomain_Registry();
+  }
 }
 
 require_once( ABSPATH . WPINC . '/pluggable.php' );

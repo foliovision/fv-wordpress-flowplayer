@@ -90,7 +90,7 @@ class FV_Player_S3_Upload {
 
       $s3Client = $this->s3();
 
-      $bucket = $fv_fp->_get_option(array('digitalocean_spaces','space'));
+      $bucket = $FV_Player_DigitalOcean_Spaces->get_space();
 
       // get objects from source space
       $objects = $s3Client->listObjects(array(
@@ -200,13 +200,21 @@ class FV_Player_S3_Upload {
       ) );
     }
 
+    $parts = array();
+
+    if (isset($partsModel["Parts"]) ) {
+      $parts = $partsModel["Parts"];
+    } else if (isset($partsModel["data"]["Parts"]) ) {
+      $parts = $partsModel["data"]["Parts"];
+    }
+
     try {
       $ret = $this->s3( "completeMultipartUpload" , array(
         'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
         'Key' => $_REQUEST['sendBackData']['key'],
         'UploadId' => $_REQUEST['sendBackData']['uploadId'],
         'MultipartUpload' => array(
-          "Parts" => $partsModel["Parts"],
+          "Parts" => $parts
         ),
         ))->toArray();
 
