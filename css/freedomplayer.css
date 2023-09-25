@@ -1016,20 +1016,3 @@
   height: 0 !important;
   overflow: hidden !important;
   position: absolute; }
-
-.fv-player-lms-teaching {
-  background: white;
-  color: black;
-  text-shadow: none;
-  max-width: 300px;
-  border-radius: 1em;
-  position: absolute;
-  left: calc( 50% - 150px );
-  right: calc( 50% - 150px );
-  box-shadow: 0 0 10px black;
-  padding: 0.5em;
-  margin-top: 10%;
-}
-.fv-player-lms-teaching p {
-  margin: 0;
-}
