@@ -954,6 +954,7 @@ a.fp-youtube-title {
   white-space: nowrap;
   padding-top: 6px;
   padding-left: 10px;
+  text-shadow: rgba(0, 0, 0, 0.5) 0px 0px 2px;
 }
 .flowplayer a.fp-youtube-title:hover {
   color: white !important;
