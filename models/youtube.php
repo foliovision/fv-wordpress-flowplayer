@@ -40,6 +40,8 @@ class FV_Player_YouTube {
 
     add_filter( 'fv_flowplayer_attributes', array( $this, 'player_attributes' ), 10, 3 );
 
+    add_filter( 'fv_player_item', array($this, 'player_item'), 10, 3 );
+
     add_filter( 'fv_flowplayer_checker_time', array( $this, 'youtube_duration' ), 10, 2 );
 
     add_filter( 'fv_flowplayer_args', array( $this, 'disable_titles_youtube') );
@@ -450,33 +452,28 @@ class FV_Player_YouTube {
       if( stripos($aAttributes['class'],' is-youtube') === false ) {
         $aAttributes['class'] .= ' is-youtube';
       }
-
-      $youtube_channel_thumbails = array();
-
-      if( $fv_fp->current_player() ) { // db player
-        foreach( $fv_fp->current_player()->getVideos() as $video ) {
-          $attachment_id = $video->getMetaValue('author_thumbnail', true);
-
-          if( $attachment_id) {
-            // get attachment url from attachment id
-            $attachment_url = wp_get_attachment_url( $attachment_id );
-
-            if( $attachment_url ) {
-              $youtube_channel_thumbails[$video->getId()] = $attachment_url;
-            }
-
-          }
-
-        }
-
-        if( !empty($youtube_channel_thumbails) ) {
-          $aAttributes['data-youtube-channel-thumbnails'] = json_encode($youtube_channel_thumbails);
-        }
-
-      }
     }
 
     return $aAttributes;
+  }
+
+  function player_item($aItem, $index) {
+    global $fv_fp, $FV_Player_Db;
+
+    if( isset($aItem['sources'][0]['src']) && $this->is_youtube($aItem['sources'][0]['src']) ) {
+      $video = new FV_Player_Db_Video($aItem['id'], array(), $FV_Player_Db);
+      $attachment_id = $video->getMetaValue('author_thumbnail', true);
+      if( $attachment_id) {
+        // get attachment url from attachment id
+        $attachment_url = wp_get_attachment_url( $attachment_id );
+
+        if( $attachment_url ) {
+          $aItem['author_thumbnail'] = $attachment_url;
+        }
+      }
+    }
+
+    return $aItem;
   }
 
 	function scripts() {
