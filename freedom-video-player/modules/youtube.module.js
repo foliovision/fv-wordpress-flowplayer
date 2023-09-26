@@ -22,7 +22,7 @@ flowplayer(function (api, root) {
   api.on("ready", function (e,api,video) {
 
     // remove title & logo first
-    root.find('.fp-youtube-title').remove();
+    root.find('.fp-youtube-wrap').remove();
     root.find('.fp-youtube-logo').remove();
     root.find('.fp-youtube-channel-thumbnail').remove();
 
@@ -63,7 +63,7 @@ flowplayer(function (api, root) {
       root.removeClass('is-youtube-nl');
       root.removeClass('is-youtube-standard');
       root.removeClass('is-youtube-reduced');
-      root.find('.fp-youtube-title').remove();
+      root.find('.fp-youtube-wrap').remove();
       root.find('.fp-youtube-logo').remove();
       root.find('.fp-youtube-channel-thumbnail').remove();
     }
