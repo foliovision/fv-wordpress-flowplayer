@@ -185,6 +185,34 @@ class FV_Player_YouTube {
           }
 
           $fv_flowplayer_meta['caption'] = !empty($obj_item->snippet->title) ? $obj_item->snippet->title : false;
+
+          $fv_flowplayer_meta['author_thumbnail'] = false;
+          $channel_id = !empty($obj_item->snippet->channelId) ? $obj_item->snippet->channelId : false;
+          if( $channel_id ) {
+            $api_url = add_query_arg( array(
+              'part' => 'snippet',
+              'id' => $channel_id,
+              'key' => $fv_fp->_get_option( array('pro','youtube_key') ),
+            ), 'https://www.googleapis.com/youtube/v3/channels' );
+          }
+
+          $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );
+
+          $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
+
+          if( $obj && !empty($obj->items[0]) ) {
+            // get 'default' thumbnail
+            $author_thumbnail_url = !empty($obj->items[0]->snippet->thumbnails->default->url) ? $obj->items[0]->snippet->thumbnails->default->url : false;
+
+            // download channel thumbnail to media library
+            if( $author_thumbnail_url ) {
+              global $FV_Player_Splash_Download;
+              $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url );
+              $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
+              $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
+            }
+          }
+
         }
         $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
 
@@ -201,6 +229,7 @@ class FV_Player_YouTube {
             'duration' => $fv_flowplayer_meta['duration'],
             'aspect_ratio' => $fv_flowplayer_meta['aspect_ratio'],
             'is_live'      => $fv_flowplayer_meta['is_live'],
+            'author_thumbnail' => $fv_flowplayer_meta['author_thumbnail'],
             // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails
         );
       }
@@ -410,7 +439,7 @@ class FV_Player_YouTube {
     return false;
   }
 
-  function player_attributes( $aAttributes ) {
+  function player_attributes( $aAttributes, $media, $fv_fp ) {
     global $fv_fp;
 
     $aArgs = func_get_args();
@@ -420,6 +449,30 @@ class FV_Player_YouTube {
       $fv_fp->aCurArgs['engine'] = 'fvyoutube';
       if( stripos($aAttributes['class'],' is-youtube') === false ) {
         $aAttributes['class'] .= ' is-youtube';
+      }
+
+      $youtube_channel_thumbails = array();
+
+      if( $fv_fp->current_player() ) { // db player
+        foreach( $fv_fp->current_player()->getVideos() as $video ) {
+          $attachment_id = $video->getMetaValue('author_thumbnail', true);
+
+          if( $attachment_id) {
+            // get attachment url from attachment id
+            $attachment_url = wp_get_attachment_url( $attachment_id );
+
+            if( $attachment_url ) {
+              $youtube_channel_thumbails[$video->getId()] = $attachment_url;
+            }
+
+          }
+
+        }
+
+        if( !empty($youtube_channel_thumbails) ) {
+          $aAttributes['data-youtube-channel-thumbnails'] = json_encode($youtube_channel_thumbails);
+        }
+
       }
     }
 

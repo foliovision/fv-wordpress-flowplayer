@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 if( !class_exists('FV_Player_Splash_Download') ) :
 
@@ -12,10 +12,18 @@ class FV_Player_Splash_Download {
     add_filter('fv_player_meta_data', array( $this, 'splash_data' ), 20, 2);
   }
 
-  function splash_data($video, $post_id = false) {
+  /**
+   * Set splash image data
+   *
+   * @param array video
+   * @param int|false $post_id
+   *
+   * @return void
+   */
+  public function splash_data($video, $post_id = false) {
     if( is_array($video) && !empty($video['thumbnail']) ) {
       $splash_data = $this->download_splash( $video['thumbnail'], isset($video['name']) ? $video['name'] : false );
-    
+
       if( !empty( $splash_data ) ) {
         $video['thumbnail'] = $splash_data['url'];
         $video['splash_attachment_id'] = $splash_data['attachment_id'];
@@ -25,7 +33,15 @@ class FV_Player_Splash_Download {
     return $video;
   }
 
-  private function download_splash( $splash_url, $title ) {
+  /**
+   * Download splash image from url and return attachment id
+   *
+   * @param string $splash_url
+   * @param string $title
+   *
+   * @return array
+   */
+  public function download_splash( $splash_url, $title = null ) {
     $limit = 128 - 5; // .jpeg
 
     if( empty($title) ) {
