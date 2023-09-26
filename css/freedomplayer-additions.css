@@ -937,21 +937,31 @@ iframe#youtube.fp-engine {
 .flowplayer.is-youtube-standard .fp-header, .flowplayer.is-youtube-reduced .fp-header {
   pointer-events: none !important;
 }
-.flowplayer a.fp-youtube-title {
-  top: 4px;
-  left: 12px;
+.flowplayer .fp-youtube-wrap {
+  top: 6px;
+  left: 6px;
   position: absolute;
+  display: flex;
+  max-width: calc( 100% - 3em );
+}
+a.fp-youtube-title {
   font-family: Roboto, Arial, Helvetica, sans-serif;
   font-size: 18px;
   color: rgb(238, 238, 238) !important;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: calc( 100% - 3em );
   display: block;
   white-space: nowrap;
+  padding-top: 6px;
+  padding-left: 10px;
 }
 .flowplayer a.fp-youtube-title:hover {
   color: white !important;
+}
+.flowplayer .fp-youtube-channel-thumbnail {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
 }
 .flowplayer .fp-youtube-logo {
   bottom: 2.5em;
