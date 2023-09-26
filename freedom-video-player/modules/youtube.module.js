@@ -58,7 +58,7 @@ flowplayer(function (api, root) {
 
            // append channel name
           if( typeof video.author_name != 'undefined' && typeof video.author_url != 'undefined' ) {
-            root.find('.fp-youtube-wrap').append('<a class="fp-youtube-channel-author" target="_blank" href="' + video.author_url + '">' + video.author_name + '</a>');
+            root.find('.fp-youtube-wrap').prepend('<a class="fp-youtube-channel-author" target="_blank" href="' + video.author_url + '">' + video.author_name + '</a>');
           }
 
         }
