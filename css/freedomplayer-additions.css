@@ -959,7 +959,7 @@ a.fp-youtube-title {
 .flowplayer a.fp-youtube-title:hover {
   color: white !important;
 }
-.flowplayer .fp-youtube-channel-thumbnail {
+.flowplayer .fp-youtube-channel-thumbnail img {
   border-radius: 50%;
   height: 40px;
   width: 40px;

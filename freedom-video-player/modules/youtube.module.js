@@ -24,8 +24,6 @@ flowplayer(function (api, root) {
     // remove title & logo first
     root.find('.fp-youtube-wrap').remove();
     root.find('.fp-youtube-logo').remove();
-    root.find('.fp-youtube-channel-thumbnail').remove();
-    root.find('.fp-youtube-channel-author').remove();
 
     if( video.type == 'video/youtube' ) {
       root.addClass('is-youtube');
@@ -53,12 +51,7 @@ flowplayer(function (api, root) {
 
           // append channel thumbnail
           if( typeof video.author_thumbnail != 'undefined' && typeof video.author_url != 'undefined' ) {
-            root.find('.fp-youtube-wrap').prepend('<a class="fp-youtube-channel-thumbnail" target="_blank" href="' + video.author_url + '"><img src="' + video.author_thumbnail + '" /></a>');
-          }
-
-           // append channel name
-          if( typeof video.author_name != 'undefined' && typeof video.author_url != 'undefined' ) {
-            root.find('.fp-youtube-wrap').prepend('<a class="fp-youtube-channel-author" target="_blank" href="' + video.author_url + '">' + video.author_name + '</a>');
+            root.find('.fp-youtube-wrap').prepend('<a class="fp-youtube-channel-thumbnail" target="_blank" href="' + video.author_url + '" title="' + video.author_name + '"><img src="' + video.author_thumbnail + '" /></a>');
           }
 
         }
@@ -71,8 +64,6 @@ flowplayer(function (api, root) {
       root.removeClass('is-youtube-reduced');
       root.find('.fp-youtube-wrap').remove();
       root.find('.fp-youtube-logo').remove();
-      root.find('.fp-youtube-channel-author').remove();
-      root.find('.fp-youtube-channel-thumbnail').remove();
     }
   });
 
