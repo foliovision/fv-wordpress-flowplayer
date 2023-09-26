@@ -189,6 +189,8 @@ class FV_Player_YouTube {
           $fv_flowplayer_meta['caption'] = !empty($obj_item->snippet->title) ? $obj_item->snippet->title : false;
 
           $fv_flowplayer_meta['author_thumbnail'] = false;
+          $fv_flowplayer_meta['author_name'] = false;
+          $fv_flowplayer_meta['author_url'] = false;
           $channel_id = !empty($obj_item->snippet->channelId) ? $obj_item->snippet->channelId : false;
           if( $channel_id ) {
             $api_url = add_query_arg( array(
@@ -205,6 +207,14 @@ class FV_Player_YouTube {
           if( $obj && !empty($obj->items[0]) ) {
             // get 'default' thumbnail
             $author_thumbnail_url = !empty($obj->items[0]->snippet->thumbnails->default->url) ? $obj->items[0]->snippet->thumbnails->default->url : false;
+
+            // get channel name
+            $author_name = !empty($obj->items[0]->snippet->title) ? $obj->items[0]->snippet->title : false;
+            $fv_flowplayer_meta['author_name'] = $author_name;
+
+            // get channel url
+            $author_url = !empty($obj->items[0]->snippet->customUrl) ? 'https://www.youtube.com/'.$obj->items[0]->snippet->customUrl : false;
+            $fv_flowplayer_meta['author_url'] = $author_url;
 
             // download channel thumbnail to media library
             if( $author_thumbnail_url ) {
@@ -232,6 +242,8 @@ class FV_Player_YouTube {
             'aspect_ratio' => $fv_flowplayer_meta['aspect_ratio'],
             'is_live'      => $fv_flowplayer_meta['is_live'],
             'author_thumbnail' => $fv_flowplayer_meta['author_thumbnail'],
+            'author_name' => $fv_flowplayer_meta['author_name'],
+            'author_url' => $fv_flowplayer_meta['author_url'],
             // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails
         );
       }
@@ -463,6 +475,9 @@ class FV_Player_YouTube {
     if( isset($aItem['sources'][0]['src']) && $this->is_youtube($aItem['sources'][0]['src']) ) {
       $video = new FV_Player_Db_Video($aItem['id'], array(), $FV_Player_Db);
       $attachment_id = $video->getMetaValue('author_thumbnail', true);
+      $author_name = $video->getMetaValue('author_name', true);
+      $author_url = $video->getMetaValue('author_url', true);
+
       if( $attachment_id) {
         // get attachment url from attachment id
         $attachment_url = wp_get_attachment_url( $attachment_id );
@@ -471,6 +486,15 @@ class FV_Player_YouTube {
           $aItem['author_thumbnail'] = $attachment_url;
         }
       }
+
+      if( $author_name ) {
+        $aItem['author_name'] = $author_name;
+      }
+
+      if( $author_url ) {
+        $aItem['author_url'] = $author_url;
+      }
+
     }
 
     return $aItem;

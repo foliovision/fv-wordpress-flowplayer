@@ -883,6 +883,8 @@ CREATE TABLE " . self::$db_table_name . " (
             'is_audio',
             'is_encrypted',
             'author_thumbnail',
+            'author_name',
+            'author_url',
             'is_live',
             'width'
           ) AS $key ) {
@@ -976,6 +978,20 @@ CREATE TABLE " . self::$db_table_name . " (
 
         } else {
           $this->deleteMetaValue( 'author_thumbnail' );
+        }
+
+        if( !empty($video_data['author_name']) ) {
+          $this->updateMetaValue( 'author_name', $video_data['author_name'] );
+
+        } else {
+          $this->deleteMetaValue( 'author_name' );
+        }
+
+        if( !empty($video_data['author_url']) ) {
+          $this->updateMetaValue( 'author_url', $video_data['author_url'] );
+
+        } else {
+          $this->deleteMetaValue( 'author_url' );
         }
 
         if( !empty($video_data['is_audio']) ) {
