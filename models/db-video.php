@@ -848,7 +848,7 @@ CREATE TABLE " . self::$db_table_name . " (
     ) {
 
       // Check if FV Player Pro can fetch the video splash, title and duration
-      $video_data = apply_filters('fv_player_meta_data', $video_url, false);
+      $video_data = apply_filters('fv_player_meta_data', $video_url, false, $this);
 
       // No information obtained, do a basic check
       if( !is_array($video_data) ) {

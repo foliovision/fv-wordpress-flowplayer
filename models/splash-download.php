@@ -10,28 +10,29 @@ class FV_Player_Splash_Download {
       exit;
     }
 
-    add_filter('fv_player_meta_data', array( $this, 'splash_data' ), 20, 2);
+    add_filter('fv_player_meta_data', array( $this, 'splash_data' ), 20, 3);
   }
 
   /**
-   * Set splash image data
+   * Add splash data to video data
    *
-   * @param array video
+   * @param array $video_data
    * @param int|false $post_id
+   * @param FV_Player_Db_Video $videoObj
    *
    * @return array
    */
-  public function splash_data($video, $post_id = false) {
-    if( is_array($video) && !empty($video['thumbnail']) ) {
-      $splash_data = $this->download_splash( $video['thumbnail'], isset($video['name']) ? $video['name'] : false );
+  function splash_data($video_data, $post_id, $videoObj) {
+    if( is_array($video_data) && !empty($video_data['thumbnail']) && !$videoObj->getSplash() ) {
+      $splash_data = $this->download_splash( $video_data['thumbnail'], isset($video_data['name']) ? $video_data['name'] : false );
 
       if( !empty( $splash_data ) ) {
-        $video['thumbnail'] = $splash_data['url'];
-        $video['splash_attachment_id'] = $splash_data['attachment_id'];
+        $video_data['thumbnail'] = $splash_data['url'];
+        $video_data['splash_attachment_id'] = $splash_data['attachment_id'];
       }
     }
 
-    return $video;
+    return $video_data;
   }
 
   /**
