@@ -158,7 +158,7 @@ class FV_Player_YouTube {
               $interval = new DateInterval($duration);
               $fv_flowplayer_meta['duration'] = date_create('@0')->add($interval)->getTimestamp();
             } else {
-              $fv_flowplayer_meta['duration'] = self::hms_to_seconds($duration);
+              $fv_flowplayer_meta['duration'] = flowplayer::hms_to_seconds($duration);
             }
           }
 
@@ -191,18 +191,24 @@ class FV_Player_YouTube {
           $fv_flowplayer_meta['author_thumbnail'] = false;
           $fv_flowplayer_meta['author_name'] = false;
           $fv_flowplayer_meta['author_url'] = false;
+
+          // get channel id
           $channel_id = !empty($obj_item->snippet->channelId) ? $obj_item->snippet->channelId : false;
+
+          $obj = false;
+
           if( $channel_id ) {
             $api_url = add_query_arg( array(
               'part' => 'snippet',
               'id' => $channel_id,
               'key' => $fv_fp->_get_option( array('pro','youtube_key') ),
             ), 'https://www.googleapis.com/youtube/v3/channels' );
+
+
+            $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );
+
+            $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
           }
-
-          $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );
-
-          $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
 
           if( $obj && !empty($obj->items[0]) ) {
             // get 'default' thumbnail
@@ -217,13 +223,13 @@ class FV_Player_YouTube {
             $fv_flowplayer_meta['author_url'] = $author_url;
 
             if( $author_thumbnail_url && $author_name ) { // download channel thumbnail to media library
-              global $FV_Player_Splash_Download;
+              global $FV_Player_Splash_Download, $wpdb;
 
-              // check if we have channel thumbnail
-              $youtube_channel_attachment_cache = get_option('fv_player_youtube_channel_thumbnails', array());
+              // check if author name is already in media library and use its post id as attachment id
+              $youtube_channel_attachment_cache = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_fv_player_youtube_channel_id' AND meta_value = %s", $channel_id ) );
 
-              if( !empty($youtube_channel_attachment_cache[$author_name]) ) {
-                $fv_flowplayer_meta['author_thumbnail'] = $youtube_channel_attachment_cache[$author_name];
+              if( !empty($youtube_channel_attachment_cache) ) {
+                $fv_flowplayer_meta['author_thumbnail'] = $youtube_channel_attachment_cache;
               } else {
                 $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url, $author_name );
 
@@ -231,9 +237,7 @@ class FV_Player_YouTube {
                   $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
                   $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
 
-                  $youtube_channel_attachment_cache = get_option('fv_player_youtube_channel_thumbnails', array());
-                  $youtube_channel_attachment_cache[$author_name] = $author_thumbnail_attachment_id;
-                  update_option('fv_player_youtube_channel_thumbnails', $youtube_channel_attachment_cache, false);
+                  update_post_meta( $author_thumbnail_attachment_id, '_fv_player_youtube_channel_id', $channel_id ); // store splash url in attachment meta
                 }
               }
             }
