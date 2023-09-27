@@ -489,6 +489,11 @@ class FV_Player_YouTube {
 
     if( isset($aItem['sources'][0]['src']) && $this->is_youtube($aItem['sources'][0]['src']) ) {
       $video = $fv_fp->current_video();
+
+      if( !$video ) {
+        return $aItem;
+      }
+
       $attachment_id = $video->getMetaValue('author_thumbnail', true);
       $author_name = $video->getMetaValue('author_name', true);
       $author_url = $video->getMetaValue('author_url', true);
