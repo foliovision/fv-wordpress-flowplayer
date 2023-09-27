@@ -231,7 +231,9 @@ class FV_Player_YouTube {
               if( !empty($youtube_channel_attachment_cache) ) {
                 $fv_flowplayer_meta['author_thumbnail'] = $youtube_channel_attachment_cache;
               } else {
+                add_filter( 'upload_dir', array( $this, 'custom_upload_path' ) );
                 $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url, $author_name );
+                remove_filter( 'upload_dir', array( $this, 'custom_upload_path' ) );
 
                 if( !empty($author_thumbnail_attachment_data) ) {
                   $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
@@ -587,6 +589,12 @@ class FV_Player_YouTube {
       return "https://i.ytimg.com/vi/".$res[1]."/maxresdefault.jpg#auto";
     }
     return $splash;
+  }
+
+  public function custom_upload_path( $upload_dir ) {
+    $upload_dir['path'] = $upload_dir['basedir'].'/fv-player-youtube-channels';
+    $upload_dir['url'] = $upload_dir['baseurl'].'/fv-player-youtube-channels';
+    return $upload_dir;
   }
 
 }
