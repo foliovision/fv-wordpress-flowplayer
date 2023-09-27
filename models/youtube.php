@@ -216,14 +216,25 @@ class FV_Player_YouTube {
             $author_url = !empty($obj->items[0]->snippet->customUrl) ? 'https://www.youtube.com/'.$obj->items[0]->snippet->customUrl : false;
             $fv_flowplayer_meta['author_url'] = $author_url;
 
-            // download channel thumbnail to media library
-            if( $author_thumbnail_url && $author_name ) {
+            if( $author_thumbnail_url && $author_name ) { // download channel thumbnail to media library
               global $FV_Player_Splash_Download;
-              $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url, $author_name );
 
-              if( !empty($author_thumbnail_attachment_data) ) {
-                $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
-                $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
+              // check if we have channel thumbnail
+              $youtube_channel_attachment_cache = get_option('fv_player_youtube_channel_thumbnails', array());
+
+              if( !empty($youtube_channel_attachment_cache[$author_name]) ) {
+                $fv_flowplayer_meta['author_thumbnail'] = $youtube_channel_attachment_cache[$author_name];
+              } else {
+                $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url, $author_name );
+
+                if( !empty($author_thumbnail_attachment_data) ) {
+                  $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
+                  $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
+
+                  $youtube_channel_attachment_cache = get_option('fv_player_youtube_channel_thumbnails', array());
+                  $youtube_channel_attachment_cache[$author_name] = $author_thumbnail_attachment_id;
+                  update_option('fv_player_youtube_channel_thumbnails', $youtube_channel_attachment_cache, false);
+                }
               }
             }
           }
