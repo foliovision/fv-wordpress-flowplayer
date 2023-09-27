@@ -3,7 +3,8 @@
 if( !class_exists('FV_Player_Splash_Download') ) :
 
 class FV_Player_Splash_Download {
-  function __construct() {
+
+  public function __construct() {
 
     if ( ! defined( 'ABSPATH' ) ) {
       exit;
@@ -18,7 +19,7 @@ class FV_Player_Splash_Download {
    * @param array video
    * @param int|false $post_id
    *
-   * @return void
+   * @return array
    */
   public function splash_data($video, $post_id = false) {
     if( is_array($video) && !empty($video['thumbnail']) ) {
@@ -39,7 +40,7 @@ class FV_Player_Splash_Download {
    * @param string $splash_url
    * @param string $title
    *
-   * @return array
+   * @return array|false
    */
   public function download_splash( $splash_url, $title = null ) {
     $limit = 128 - 5; // .jpeg

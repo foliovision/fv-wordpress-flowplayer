@@ -217,15 +217,19 @@ class FV_Player_YouTube {
             $fv_flowplayer_meta['author_url'] = $author_url;
 
             // download channel thumbnail to media library
-            if( $author_thumbnail_url ) {
+            if( $author_thumbnail_url && $author_name ) {
               global $FV_Player_Splash_Download;
-              $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url );
-              $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
-              $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
+              $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url, $author_name );
+
+              if( !empty($author_thumbnail_attachment_data) ) {
+                $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
+                $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
+              }
             }
           }
 
         }
+
         $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
 
         if ($post_id) {
@@ -470,10 +474,10 @@ class FV_Player_YouTube {
   }
 
   function player_item($aItem, $index) {
-    global $fv_fp, $FV_Player_Db;
+    global $fv_fp;
 
     if( isset($aItem['sources'][0]['src']) && $this->is_youtube($aItem['sources'][0]['src']) ) {
-      $video = new FV_Player_Db_Video($aItem['id'], array(), $FV_Player_Db);
+      $video = $fv_fp->current_video();
       $attachment_id = $video->getMetaValue('author_thumbnail', true);
       $author_name = $video->getMetaValue('author_name', true);
       $author_url = $video->getMetaValue('author_url', true);
