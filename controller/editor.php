@@ -642,8 +642,8 @@ function fv_player_guttenberg_attributes_save() {
     $src = sanitize_text_field($_POST['src']);
     $splash = sanitize_text_field($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
-    $timeline_previews = sanitize_text_field($_POST['timeline_previews']);
-    $hls_hlskey = sanitize_text_field($_POST['hls_hlskey']);
+    $timeline_previews = sanitize_text_field(trim($_POST['timeline_previews']));
+    $hls_hlskey = sanitize_text_field(trim($_POST['hls_hlskey']));
 
     global $FV_Player_Db;
 
@@ -697,8 +697,19 @@ function fv_player_guttenberg_attributes_save() {
 
           // Make sure we do no loose video meta!
           $video->save( array(), true );
-          $video->updateMetaValue( 'timeline_previews', $timeline_previews );
-          $video->updateMetaValue( 'hls_hlskey', $hls_hlskey);
+
+          if( empty($timeline_previews) || strcmp($timeline_previews, 'false') == 0 ) {
+            $video->deleteMetaValue( 'timeline_previews' );
+          } else {
+            $video->updateMetaValue( 'timeline_previews', $timeline_previews );
+          }
+
+          if( empty($hls_hlskey) || strcmp($hls_hlskey, 'false') == 0 ) {
+            $video->deleteMetaValue( 'hls_hlskey' );
+          } else {
+            $video->updateMetaValue( 'hls_hlskey', $hls_hlskey );
+          }
+
           break; // only first video
         }
       }
