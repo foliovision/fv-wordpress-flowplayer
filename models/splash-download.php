@@ -54,12 +54,12 @@ class FV_Player_Splash_Download {
       }
     }
 
-    $title = sanitize_title($title);
+    $sanitized_title = sanitize_title($title);
 
     if( function_exists('mb_strinwidth') ) {
-      $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
-    } else if( strlen( $title ) > $limit ) {
-      $title = substr($title, 0, $limit);
+      $sanitized_title = mb_strimwidth($sanitized_title, 0, $limit, '', 'UTF-8');
+    } else if( strlen( $sanitized_title ) > $limit ) {
+      $sanitized_title = substr($sanitized_title, 0, $limit);
     }
 
     $upload_dir = wp_upload_dir();
@@ -70,7 +70,7 @@ class FV_Player_Splash_Download {
       require_once ABSPATH . 'wp-admin/includes/file.php';
     }
 
-    $file_name = $title . '.jpg';
+    $file_name = $sanitized_title . '.jpg';
     $file_path = download_url( $splash_url );
 
     if ( is_wp_error( $file_path ) ) {
@@ -106,7 +106,7 @@ class FV_Player_Splash_Download {
 
     $attachment = array(
       'post_mime_type' => $file_return['type'],
-      'post_title' => preg_replace('/\.[^.]+$/', '', basename($file_name)),
+      'post_title' => $title,
       'post_content' => '',
       'post_status' => 'inherit',
       'guid' => $upload_dir['url'] . '/' . basename($file_name)
