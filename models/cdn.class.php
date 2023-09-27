@@ -21,6 +21,7 @@ abstract class FV_Player_CDN {
       add_action( 'admin_init', array( $this, 'register_meta_boxes' ), 21 );
     }
     add_filter( 'plugins_loaded', array( $this, 'load_options' ), 8 );
+    add_action( 'fv_player_shortinit_loaded', array( $this, 'load_options' ) );
   }
 
 

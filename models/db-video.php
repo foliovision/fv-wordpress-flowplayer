@@ -817,11 +817,15 @@ CREATE TABLE " . self::$db_table_name . " (
    *
    * @param array $meta_data An optional array of key-value objects
    *                         with possible meta data for this video.
+   * @param bool  $skip_meta If true, meta data will not be processed. Used in 
+   *                         fv_player_guttenberg_attributes_save().
+   *                         We need this as empty $meta_data would mean it should
+   *                         all be removed.
    *
    * @return bool|int Returns record ID if successful, false otherwise.
    * @throws Exception When the underlying metadata object throws.
    */
-  public function save($meta_data = array()) {
+  public function save( $meta_data = array(), $skip_meta = false ) {
     global $wpdb;
 
     $is_update   = ($this->id ? true : false);
@@ -1072,40 +1076,44 @@ CREATE TABLE " . self::$db_table_name . " (
         $this->find_video_meta_inputs( $video_meta_inputs, $fields );
       }
 
-      // we check which meta values are no longer set and remove these
-      $existing_meta = $is_update ? $this->getMetaData() : array();
-      $existing_meta_ids = array();
-      foreach( $existing_meta as $existing ) {
+      if ( ! $skip_meta ) {
 
-        // video meta fields which do not have an input field should be kept
-        $should_skip = true;
-        foreach ( $video_meta_inputs as $match ) {
-          if (
-            // Find exact match
-            $existing->getMetaKey() === $match ||
-            // Wildcard match - for input names like subtitles_*
-            stripos( $match, '_*' ) === strlen( $match ) - 2 && stripos( $existing->getMetaKey(), str_replace( '_*', '', $match ) ) === 0
-          ) {
-            $should_skip = false;
+        // we check which meta values are no longer set and remove these
+        $existing_meta = $is_update ? $this->getMetaData() : array();
+        $existing_meta_ids = array();
+        foreach( $existing_meta as $existing ) {
+
+          // video meta fields which do not have an input field should be kept
+          $should_skip = true;
+          foreach ( $video_meta_inputs as $match ) {
+            if (
+              // Find exact match
+              $existing->getMetaKey() === $match ||
+              // Wildcard match - for input names like subtitles_*
+              stripos( $match, '_*' ) === strlen( $match ) - 2 && stripos( $existing->getMetaKey(), str_replace( '_*', '', $match ) ) === 0
+            ) {
+              $should_skip = false;
+            }
+          }
+
+          if ( $should_skip ) {
+            continue;
+          }
+
+          $found = false;
+          foreach ($meta_data as $meta_record) {
+            if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
+              $found = true;
+              break;
+            }
+          }
+          if( !$found ) {
+            $existing->delete();
+          } else {
+            $existing_meta_ids[$existing->getId()] = true;
           }
         }
 
-        if ( $should_skip ) {
-          continue;
-        }
-
-        $found = false;
-        foreach ($meta_data as $meta_record) {
-          if( !empty($meta_record['meta_value']) && $meta_record['meta_key'] == $existing->getMetaKey() ) {
-            $found = true;
-            break;
-          }
-        }
-        if( !$found ) {
-          $existing->delete();
-        } else {
-          $existing_meta_ids[$existing->getId()] = true;
-        }
       }
 
       // check for any meta data

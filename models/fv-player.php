@@ -1620,7 +1620,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         wp_enqueue_style( 'fv_freedomplayer_additions', $sURLAdditions, array('fv_flowplayer'), $sVerAdditions );
       }
 
-      if ( $this->bCSSPlaylists || $force ) {
+      if ( $this->bCSSPlaylists || $force || did_action( 'fv_player_force_load_assets' ) ) {
         wp_enqueue_style( 'fv_freedomplayer_playlists', FV_FP_RELATIVE_PATH.'/css/playlists.css', array('fv_flowplayer'), filemtime( dirname(__FILE__).'/../css/playlists.css' ) );
       }
 
