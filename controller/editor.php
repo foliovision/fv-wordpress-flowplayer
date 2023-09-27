@@ -608,6 +608,14 @@ function fv_player_guttenberg_attributes_load() {
         break; // only first video
       }
 
+      if( strcmp($timeline_previews, 'false') == 0 ) {
+        $timeline_previews = '';
+      }
+
+      if( strcmp($hls_hlskey, 'false') == 0 ) {
+        $hls_hlskey = '';
+      }
+
       wp_send_json( array(
         'src' => $video_src,
         'splash' => $video_splash,
@@ -647,6 +655,22 @@ function fv_player_guttenberg_attributes_save() {
 
     // new player
     if( !$player_id ) {
+      $meta = array();
+
+      if( !empty( $timeline_previews ) && strcmp( $timeline_previews, 'false' ) !== 0 ) {
+        $meta[] = array(
+          'meta_key' => 'timeline_previews',
+          'meta_value' => $timeline_previews
+        );
+      }
+
+      if( !empty( $hls_hlskey ) && strcmp( $hls_hlskey, 'false' ) !== 0  ) {
+        $meta[] = array(
+          'meta_key' => 'hls_hlskey',
+          'meta_value' => $hls_hlskey
+        );
+      }
+
       $player_id =  $FV_Player_Db->import_player_data(false, false, array(
         'date_created' => date('Y-m-d H:i:s'),
         'videos' => array(
@@ -655,16 +679,7 @@ function fv_player_guttenberg_attributes_save() {
             'splash' => $splash,
             'title' => $title,
             'splash_attachment_id' => $splash_attachment_id,
-            'meta' => array(
-              array(
-                'meta_key' => 'timeline_previews',
-                'meta_value' => $timeline_previews
-              ),
-              array(
-                'meta_key' => 'hls_hlskey',
-                'meta_value' => $hls_hlskey
-              )
-            )
+            'meta' => $meta
           ),
         )
       ));
