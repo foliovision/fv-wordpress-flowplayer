@@ -679,7 +679,9 @@ function fv_player_guttenberg_attributes_save() {
           $video->set( 'splash', $splash );
           $video->set( 'title', $title );
           $video->set( 'splash_attachment_id', $splash_attachment_id );
-          $video->save();
+
+          // Make sure we do no loose video meta!
+          $video->save( array(), true );
           $video->updateMetaValue( 'timeline_previews', $timeline_previews );
           $video->updateMetaValue( 'hls_hlskey', $hls_hlskey);
           break; // only first video
