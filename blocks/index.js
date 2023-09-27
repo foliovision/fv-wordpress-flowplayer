@@ -170,8 +170,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {
       if( player_id == 'undefined' || player_id == 0  ) {
-        console.log('firstInsert set');
-
         firstInsert = true;
       }
 
@@ -202,7 +200,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           setAttributes({ forceUpdate: String(Math.random()) });
 
           if( firstInsert ) {
-            console.log('firstInsert loading');
             ajaxUpdateFromDB(data.player_id);
             firstInsert = false;
           }
@@ -417,4 +414,4 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       </>
     );
   }
-})
+});
