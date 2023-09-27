@@ -542,7 +542,6 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
         echo implode( $radio_butons );
         ?>
-        </div>
       </td>
     </td>
   </tr>
@@ -557,11 +556,11 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
   <script>
   jQuery( function($) {
-    show_description();
+    show_description_autoplay();
 
-    $('[name=autoplay_preload]' ).on( 'change', show_description );
+    $('[name=autoplay_preload]' ).on( 'change', show_description_autoplay );
 
-    function show_description() {
+    function show_description_autoplay() {
       $( '#fv_flowplayer_autoplay_and_preloading [data-describe]' ).hide();
       $( '#fv_flowplayer_autoplay_and_preloading [data-describe='+$('[name=autoplay_preload]:checked').val()+']' ).show();
     }

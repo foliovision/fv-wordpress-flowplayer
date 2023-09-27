@@ -1,31 +1,49 @@
-<?php 
+<?php
 
 if( !class_exists('FV_Player_Splash_Download') ) :
 
 class FV_Player_Splash_Download {
-  function __construct() {
+
+  public function __construct() {
 
     if ( ! defined( 'ABSPATH' ) ) {
       exit;
     }
 
-    add_filter('fv_player_meta_data', array( $this, 'splash_data' ), 20, 2);
+    add_filter('fv_player_meta_data', array( $this, 'splash_data' ), 20, 3);
   }
 
-  function splash_data($video, $post_id = false) {
-    if( is_array($video) && !empty($video['thumbnail']) ) {
-      $splash_data = $this->download_splash( $video['thumbnail'], isset($video['name']) ? $video['name'] : false );
-    
+  /**
+   * Add splash data to video data
+   *
+   * @param array $video_data
+   * @param int|false $post_id
+   * @param FV_Player_Db_Video $videoObj
+   *
+   * @return array
+   */
+  function splash_data($video_data, $post_id, $videoObj) {
+    if( is_array($video_data) && !empty($video_data['thumbnail']) && !$videoObj->getSplash() ) {
+      $splash_data = $this->download_splash( $video_data['thumbnail'], isset($video_data['name']) ? $video_data['name'] : false );
+
       if( !empty( $splash_data ) ) {
-        $video['thumbnail'] = $splash_data['url'];
-        $video['splash_attachment_id'] = $splash_data['attachment_id'];
+        $video_data['thumbnail'] = $splash_data['url'];
+        $video_data['splash_attachment_id'] = $splash_data['attachment_id'];
       }
     }
 
-    return $video;
+    return $video_data;
   }
 
-  private function download_splash( $splash_url, $title ) {
+  /**
+   * Download splash image from url and return attachment id
+   *
+   * @param string $splash_url
+   * @param string $title
+   *
+   * @return array|false
+   */
+  public function download_splash( $splash_url, $title = null ) {
     $limit = 128 - 5; // .jpeg
 
     if( empty($title) ) {
@@ -37,12 +55,12 @@ class FV_Player_Splash_Download {
       }
     }
 
-    $title = sanitize_title($title);
+    $sanitized_title = sanitize_title($title);
 
     if( function_exists('mb_strinwidth') ) {
-      $title = mb_strimwidth($title, 0, $limit, '', 'UTF-8');
-    } else if( strlen( $title ) > $limit ) {
-      $title = substr($title, 0, $limit);
+      $sanitized_title = mb_strimwidth($sanitized_title, 0, $limit, '', 'UTF-8');
+    } else if( strlen( $sanitized_title ) > $limit ) {
+      $sanitized_title = substr($sanitized_title, 0, $limit);
     }
 
     $upload_dir = wp_upload_dir();
@@ -53,7 +71,7 @@ class FV_Player_Splash_Download {
       require_once ABSPATH . 'wp-admin/includes/file.php';
     }
 
-    $file_name = $title . '.jpg';
+    $file_name = $sanitized_title . '.jpg';
     $file_path = download_url( $splash_url );
 
     if ( is_wp_error( $file_path ) ) {
@@ -89,7 +107,7 @@ class FV_Player_Splash_Download {
 
     $attachment = array(
       'post_mime_type' => $file_return['type'],
-      'post_title' => preg_replace('/\.[^.]+$/', '', basename($file_name)),
+      'post_title' => $title,
       'post_content' => '',
       'post_status' => 'inherit',
       'guid' => $upload_dir['url'] . '/' . basename($file_name)

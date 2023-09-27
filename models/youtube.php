@@ -40,6 +40,8 @@ class FV_Player_YouTube {
 
     add_filter( 'fv_flowplayer_attributes', array( $this, 'player_attributes' ), 10, 3 );
 
+    add_filter( 'fv_player_item', array($this, 'player_item'), 10, 3 );
+
     add_filter( 'fv_flowplayer_checker_time', array( $this, 'youtube_duration' ), 10, 2 );
 
     add_filter( 'fv_flowplayer_args', array( $this, 'disable_titles_youtube') );
@@ -156,7 +158,7 @@ class FV_Player_YouTube {
               $interval = new DateInterval($duration);
               $fv_flowplayer_meta['duration'] = date_create('@0')->add($interval)->getTimestamp();
             } else {
-              $fv_flowplayer_meta['duration'] = self::hms_to_seconds($duration);
+              $fv_flowplayer_meta['duration'] = flowplayer::hms_to_seconds($duration);
             }
           }
 
@@ -185,7 +187,66 @@ class FV_Player_YouTube {
           }
 
           $fv_flowplayer_meta['caption'] = !empty($obj_item->snippet->title) ? $obj_item->snippet->title : false;
+
+          $fv_flowplayer_meta['author_thumbnail'] = false;
+          $fv_flowplayer_meta['author_name'] = false;
+          $fv_flowplayer_meta['author_url'] = false;
+
+          // get channel id
+          $channel_id = !empty($obj_item->snippet->channelId) ? $obj_item->snippet->channelId : false;
+
+          $obj = false;
+
+          if( $channel_id ) {
+            $api_url = add_query_arg( array(
+              'part' => 'snippet',
+              'id' => $channel_id,
+              'key' => $fv_fp->_get_option( array('pro','youtube_key') ),
+            ), 'https://www.googleapis.com/youtube/v3/channels' );
+
+
+            $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );
+
+            $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
+          }
+
+          if( $obj && !empty($obj->items[0]) ) {
+            // get 'default' thumbnail
+            $author_thumbnail_url = !empty($obj->items[0]->snippet->thumbnails->default->url) ? $obj->items[0]->snippet->thumbnails->default->url : false;
+
+            // get channel name
+            $author_name = !empty($obj->items[0]->snippet->title) ? $obj->items[0]->snippet->title : false;
+            $fv_flowplayer_meta['author_name'] = $author_name;
+
+            // get channel url
+            $author_url = !empty($obj->items[0]->snippet->customUrl) ? 'https://www.youtube.com/'.$obj->items[0]->snippet->customUrl : false;
+            $fv_flowplayer_meta['author_url'] = $author_url;
+
+            if( $author_thumbnail_url && $author_name ) { // download channel thumbnail to media library
+              global $FV_Player_Splash_Download, $wpdb;
+
+              // check if author name is already in media library and use its post id as attachment id
+              $youtube_channel_attachment_cache = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_fv_player_youtube_channel_id' AND meta_value = %s", $channel_id ) );
+
+              if( !empty($youtube_channel_attachment_cache) ) {
+                $fv_flowplayer_meta['author_thumbnail'] = $youtube_channel_attachment_cache;
+              } else {
+                add_filter( 'upload_dir', array( $this, 'custom_upload_path' ) );
+                $author_thumbnail_attachment_data = $FV_Player_Splash_Download->download_splash( $author_thumbnail_url, $author_name );
+                remove_filter( 'upload_dir', array( $this, 'custom_upload_path' ) );
+
+                if( !empty($author_thumbnail_attachment_data) ) {
+                  $author_thumbnail_attachment_id = $author_thumbnail_attachment_data['attachment_id'];
+                  $fv_flowplayer_meta['author_thumbnail'] = $author_thumbnail_attachment_id; // store attachment id in video meta
+
+                  update_post_meta( $author_thumbnail_attachment_id, '_fv_player_youtube_channel_id', $channel_id ); // store splash url in attachment meta
+                }
+              }
+            }
+          }
+
         }
+
         $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
 
         if ($post_id) {
@@ -201,6 +262,9 @@ class FV_Player_YouTube {
             'duration' => $fv_flowplayer_meta['duration'],
             'aspect_ratio' => $fv_flowplayer_meta['aspect_ratio'],
             'is_live'      => $fv_flowplayer_meta['is_live'],
+            'author_thumbnail' => $fv_flowplayer_meta['author_thumbnail'],
+            'author_name' => $fv_flowplayer_meta['author_name'],
+            'author_url' => $fv_flowplayer_meta['author_url'],
             // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails
         );
       }
@@ -230,7 +294,22 @@ class FV_Player_YouTube {
 
   function fv_player_admin_youtube() {
     global $fv_fp;
+
+    $value = $fv_fp->_get_option('youtube_browser_chrome', 'standard');
     ?>
+    <style>
+      #fv_player_youtube .descriptions {
+        float: right;
+        position: relative;
+        width: 50%;
+      }
+
+      #fv_player_youtube [data-describe] {
+        display: none;
+        position: absolute;
+        top: 0;
+      }
+    </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td colspan="2">
@@ -239,6 +318,53 @@ class FV_Player_YouTube {
           </p>
         </td>
       </tr>
+      <tr>
+        <td class="first"></td>
+        <td>
+          <?php
+            $radio_butons = array();
+            $radio_butons_descriptions = array();
+
+            foreach( array(
+              'standard' => array(
+                'label' => __('Standard', 'fv-wordpress-flowplayer'),
+                'description' => __('All of the YouTube embedded player interface will show, including related videos on pause.', 'fv-wordpress-flowplayer')
+              ),
+              'reduced' => array(
+                'label' => __('Reduced', 'fv-wordpress-flowplayer'),
+                'description' => __('Show only the video title and the YouTube logo.', 'fv-wordpress-flowplayer')
+              ),
+              'none' => array(
+                'label' => __('None', 'fv-wordpress-flowplayer'),
+                'description' => __('Remove everything.', 'fv-wordpress-flowplayer')
+              )
+            ) AS $key => $field ) {
+              $id = 'youtube_browser_chrome_'.esc_attr($key);
+
+              $radio_button = '<input id="'.$id.'" type="radio" name="youtube_browser_chrome" value="'.esc_attr($key).'"';
+              if( $value === $key || json_encode($value) == $key ) { // use json_encode as value can be boolean
+                $radio_button .= ' checked="checked"';
+              }
+              $radio_button .= '</input>';
+              $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
+
+              $radio_butons[] = $radio_button;
+
+              if( !empty($field['description']) ) {
+                $radio_butons_descriptions[$key] = $field['description'];
+              }
+            }
+
+            echo '<div class="descriptions">';
+            foreach( $radio_butons_descriptions AS $key => $description ) {
+              echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+            }
+            echo '</div>';
+
+            echo implode( $radio_butons );
+          ?>
+      </td>
+    </tr>
       <?php if( $fv_fp->_get_option( array('pro','youtube_titles_disable') ) ) $fv_fp->_get_checkbox(__('Disable video captions', 'fv-player-pro'), array('pro', 'youtube_titles_disable'), __('Normally the video title is parsed into the shortcode when saving the post, with this setting it won\'t appear.', 'fv-player-pro') ); ?>
       <?php $fv_fp->_get_checkbox(__("Use YouTube Cookies", 'fv-player-pro'), array('pro', 'youtube_cookies'), __("Otherwise FV Player Pro uses the youtube-nocookie.com domain to avoid use of YouTube cookies.", 'fv-player-pro') ); ?>
 
@@ -262,12 +388,28 @@ class FV_Player_YouTube {
           </td>
         </tr>
       <?php endif; ?>
-      <tr>
-        <td colspan="4">
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
-        </td>
-      </tr>
+      <?php if( !function_exists('FV_PLayer_Pro')): ?>
+        <tr>
+          <td colspan="4">
+            <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
+          </td>
+        </tr>
+      <?php endif; ?>
+      <?php do_action('fv_player_youtube_inputs_after'); ?>
     </table>
+    <div class="clear"></div>
+    <script>
+      jQuery( function($) {
+        show_description_youtube_chrome();
+
+        $('[name=youtube_browser_chrome]').on( 'change', show_description_youtube_chrome );
+
+        function show_description_youtube_chrome() {
+          $( '#fv_player_youtube [data-describe]' ).hide();
+          $( '#fv_player_youtube [data-describe='+$('[name=youtube_browser_chrome]:checked').val()+']' ).show();
+        }
+      });
+    </script>
     <?php
   }
 
@@ -332,7 +474,7 @@ class FV_Player_YouTube {
     return false;
   }
 
-  function player_attributes( $aAttributes ) {
+  function player_attributes( $aAttributes, $media, $fv_fp ) {
     global $fv_fp;
 
     $aArgs = func_get_args();
@@ -346,6 +488,42 @@ class FV_Player_YouTube {
     }
 
     return $aAttributes;
+  }
+
+  function player_item($aItem, $index) {
+    global $fv_fp;
+
+    if( isset($aItem['sources'][0]['src']) && $this->is_youtube($aItem['sources'][0]['src']) ) {
+      $video = $fv_fp->current_video();
+
+      if( !$video ) {
+        return $aItem;
+      }
+
+      $attachment_id = $video->getMetaValue('author_thumbnail', true);
+      $author_name = $video->getMetaValue('author_name', true);
+      $author_url = $video->getMetaValue('author_url', true);
+
+      if( $attachment_id) {
+        // get attachment url from attachment id
+        $attachment_url = wp_get_attachment_url( $attachment_id );
+
+        if( $attachment_url ) {
+          $aItem['author_thumbnail'] = $attachment_url;
+        }
+      }
+
+      if( $author_name ) {
+        $aItem['author_name'] = $author_name;
+      }
+
+      if( $author_url ) {
+        $aItem['author_url'] = $author_url;
+      }
+
+    }
+
+    return $aItem;
   }
 
 	function scripts() {
@@ -411,6 +589,12 @@ class FV_Player_YouTube {
       return "https://i.ytimg.com/vi/".$res[1]."/maxresdefault.jpg#auto";
     }
     return $splash;
+  }
+
+  public function custom_upload_path( $upload_dir ) {
+    $upload_dir['path'] = $upload_dir['basedir'].'/fv-player-youtube-channels';
+    $upload_dir['url'] = $upload_dir['baseurl'].'/fv-player-youtube-channels';
+    return $upload_dir;
   }
 
 }

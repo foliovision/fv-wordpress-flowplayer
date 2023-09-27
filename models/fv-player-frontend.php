@@ -704,7 +704,7 @@ class flowplayer_frontend extends flowplayer
           $title = apply_filters( 'fv_player_title', $this->get_title(), $this );
           if ( $title ) {
             $attributes['class'] .= ' has-title-below';
-            
+
             $title = "<p class='fp-title'>" . $title . "</p>";
           }
 
@@ -773,6 +773,7 @@ class flowplayer_frontend extends flowplayer
         }
 
         add_filter( 'fv_flowplayer_attributes', array( $this, 'get_speed_attribute' ) );
+        add_filter( 'fv_flowplayer_attributes', array( $this, 'get_youtube_attribute' ), 14, 3 );
 
         $attributes_html = '';
         $attributes = apply_filters( 'fv_flowplayer_attributes', $attributes, $media, $this );
@@ -809,7 +810,7 @@ class flowplayer_frontend extends flowplayer
         if ( flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
           $preload = '';
         }
-        
+
         if( !empty($fv_fp->aCurArgs['error']) ) {
           $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().$preload.'</div>'."\n";
 
@@ -1194,6 +1195,26 @@ JS;
 
     if( $bShow ) {
       $attributes['data-speedb'] = true;
+    }
+
+    return $attributes;
+  }
+
+
+  function get_youtube_attribute( $attributes ) {
+
+    $youtube_chrome = $this->_get_option('youtube_browser_chrome');
+
+    if( !empty($attributes['data-engine']) && strcmp($attributes['data-engine'], 'fvyoutube') == 0 ) {
+
+      if( strcmp($youtube_chrome, 'standard') == 0 ) {
+        $attributes['class'] .= ' is-youtube-standard';
+      } else if( strcmp($youtube_chrome, 'reduced') == 0 ) {
+        $attributes['class'] .= ' is-youtube-reduced';
+      } else if( strcmp($youtube_chrome, 'none') == 0 ) {
+        $attributes['class'] .= ' is-youtube-nl';
+      }
+
     }
 
     return $attributes;

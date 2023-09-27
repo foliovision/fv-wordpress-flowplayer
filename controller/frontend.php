@@ -507,6 +507,10 @@ function flowplayer_prepare_scripts() {
       $aConf['autoplay_preload'] = $fv_fp->_get_option('autoplay_preload');
     }
 
+    if( $fv_fp->_get_option('youtube_browser_chrome') ) {
+      $aConf['youtube_browser_chrome'] = $fv_fp->_get_option('youtube_browser_chrome');
+    }
+
     $aConf['hlsjs'] = array(
       'startLevel' => -1,
       'fragLoadingMaxRetry' => 3,
