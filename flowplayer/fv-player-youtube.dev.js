@@ -164,7 +164,7 @@ if( typeof(flowplayer) != "undefined" ) {
       playerVars: {
         // seems we need this for mobile load, otherwise onReady calls playVideo()
         // but now we had to exclude Safari (which means iPad too) from it
-        autoplay: !flowplayer.support.browser.safari,
+        autoplay: 0,
         controls: !jQuery(root).hasClass('no-controlbar') && fv_player_pro_youtube_is_old_android() ? 1 : 0, //  todo: no interface if it's a video ad!                       
         disablekb: 1,
         enablejsapi: 1,
