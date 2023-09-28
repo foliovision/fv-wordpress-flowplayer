@@ -139,7 +139,7 @@ if (!Date.now) {
 
         // remove all AWS signatures from this video
         var item = {
-          name: video_name,
+          name: video_name,abLoopPositions,
           position: playPositions[video_name],
           top_position: playTopPositions[video_name],
           saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false,
@@ -147,8 +147,9 @@ if (!Date.now) {
 
         // add ab loop positions
         if( abLoopPositions.hasOwnProperty(video_name) ) {
-          item.ab_start = abLoopPositions[video_name][0];
-          item.ab_end = abLoopPositions[video_name][1];
+          item.ab_start = abLoopPositions[video_name]['positions'][0];
+          item.ab_end = abLoopPositions[video_name]['positions'][1];
+          item.ab_active = abLoopPositions[video_name]['active'];
         }
 
         postDataPositions.push(item);
@@ -200,6 +201,10 @@ if (!Date.now) {
 
               if( typeof(postDataPositions[i].ab_start) != "undefined" && typeof(postDataPositions[i].ab_end) != "undefined" ) {
                 temp_ab_loop_data[name] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
+              }
+
+              if( typeof(postDataPositions[i].ab_active != 'undefined') ) {
+
               }
             }
 
@@ -407,9 +412,21 @@ if (!Date.now) {
 
           playPositions[video_id] = position;
 
+
+          if( typeof abLoopPositions == 'undefined' ) {
+            abLoopPositions[video_id] = {}
+          }
+
+          // check if abloop is active
+          if ( root.haClass('has-abloop') ) {
+            abLoopPositions[video_id]['active'] = true;
+          } else {
+            abLoopPositions[video_id]['active'] = false;
+          }
+
           // check if we have a noUiSlider instance and AB loop is active
           if ( typeof api.fv_noUiSlider != "undefined" && $root.find('.fv-player-ab.is-active').length ) {
-            abLoopPositions[video_id] = api.fv_noUiSlider.get();
+            abLoopPositions[video_id]['positions'] =  api.fv_noUiSlider.get();
           }
 
           // initialize top position variable with the already stored top position
