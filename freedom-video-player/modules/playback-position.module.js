@@ -200,7 +200,8 @@ if (!Date.now) {
               temp_saw_data[name] = postDataPositions[i].saw;
 
               if( typeof(postDataPositions[i].ab_start) != "undefined" && typeof(postDataPositions[i].ab_end) != "undefined" ) {
-                temp_ab_loop_data[name] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
+                temp_ab_loop_data[name]['positions'] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
+                temp_ab_loop_data[name]['active'] = postDataPositions[i].ab_active;
               }
 
               if( typeof(postDataPositions[i].ab_active != 'undefined') ) {
@@ -264,7 +265,7 @@ if (!Date.now) {
             data_playlist_item = {};
           }
 
-          // add / edit our video positions
+          // add / edit our video positionsab
           for (var i in postDataPositions) {
             if( !postDataPositions.hasOwnProperty(i) ) continue;
 
@@ -412,7 +413,7 @@ if (!Date.now) {
 
           playPositions[video_id] = position;
 
-
+          // store ab loop positions as object
           if( typeof abLoopPositions == 'undefined' ) {
             abLoopPositions[video_id] = {}
           }
@@ -692,11 +693,13 @@ if (!Date.now) {
 
         if( ab_loop ) {
           if( is_playlist ) {
-            api.conf.playlist[i].sources[0].ab_start = ab_loop[0];
-            api.conf.playlist[i].sources[0].ab_end = ab_loop[1];
+            api.conf.playlist[i].sources[0].ab_start = ab_loop['positions'][0];
+            api.conf.playlist[i].sources[0].ab_end = ab_loop['positions'][1];
+            api.conf.playlist[i].sources[0].ab_active = ab_loop['active'];
           } else {
-            api.conf.clip.sources[0].ab_start = ab_loop[0];
-            api.conf.clip.sources[0].ab_end = ab_loop[1];
+            api.conf.clip.sources[0].ab_start =ab_loop['positions'][0];
+            api.conf.clip.sources[0].ab_end = ab_loop['positions'][1];
+            api.conf.clip.sources[0].ab_active = ab_loop['active'];
           }
         }
 
