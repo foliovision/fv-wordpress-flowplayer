@@ -186,43 +186,57 @@ class FV_Player_S3_Upload {
 
     global $FV_Player_DigitalOcean_Spaces;
 
-    try {
-      $partsModel = $this->s3("listParts",[
-        'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-        'Key' => $_REQUEST['sendBackData']['key'],
-        'UploadId' => $_REQUEST['sendBackData']['uploadId'],
-      ]);
+    // Try to complete the upload 4 times
+    $attempt = 1;
 
-    } catch ( Exception $e ) {
-      wp_send_json( array(
-        'error'   => true,
-        'message' => $e->getMessage(),
-      ) );
-    }
+    while( 1 ) {
 
-    $parts = array();
+      try {
+        $partsModel = $this->s3("listParts",[
+          'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
+          'Key' => $_REQUEST['sendBackData']['key'],
+          'UploadId' => $_REQUEST['sendBackData']['uploadId'],
+        ]);
 
-    if (isset($partsModel["Parts"]) ) {
-      $parts = $partsModel["Parts"];
-    } else if (isset($partsModel["data"]["Parts"]) ) {
-      $parts = $partsModel["data"]["Parts"];
-    }
+      } catch ( Exception $e ) {
+        wp_send_json( array(
+          'error'   => true,
+          'message' => $e->getMessage(),
+        ) );
+      }
 
-    try {
-      $ret = $this->s3( "completeMultipartUpload" , array(
-        'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-        'Key' => $_REQUEST['sendBackData']['key'],
-        'UploadId' => $_REQUEST['sendBackData']['uploadId'],
-        'MultipartUpload' => array(
-          "Parts" => $parts
-        ),
+      $parts = array();
+
+      if (isset($partsModel["Parts"]) ) {
+        $parts = $partsModel["Parts"];
+      } else if (isset($partsModel["data"]["Parts"]) ) {
+        $parts = $partsModel["data"]["Parts"];
+      }
+
+      try {
+        $ret = $this->s3( "completeMultipartUpload" , array(
+          'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
+          'Key' => $_REQUEST['sendBackData']['key'],
+          'UploadId' => $_REQUEST['sendBackData']['uploadId'],
+          'MultipartUpload' => array(
+            "Parts" => $parts
+          ),
         ))->toArray();
 
-    } catch ( Exception $e ) {
-      wp_send_json( array(
-        'error'   => true,
-        'message' => $e->getMessage(),
-      ) );
+        break;
+
+      } catch ( Exception $e ) {
+        $attempt++;
+
+        if ( $attempt > 4 ) {
+          wp_send_json( array(
+            'error'   => true,
+            'message' => $e->getMessage(),
+          ) );
+        }
+
+        sleep(5);
+      }
     }
 
     wp_send_json( array(
@@ -230,6 +244,7 @@ class FV_Player_S3_Upload {
       'url' => $ret['ObjectURL'],
       'key' => $ret['Key'],
       'nonce' => wp_create_nonce( 'fv_player_coconut' ),
+      'attempt' => $attempt
     ));
     wp_die();
   }
