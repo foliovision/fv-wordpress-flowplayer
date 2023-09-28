@@ -191,6 +191,9 @@ class FV_Player_S3_Upload {
 
     while( 1 ) {
 
+      // Initial wait as these file parts may take a bit of time to really appear
+      sleep(5);
+
       try {
         $partsModel = $this->s3("listParts",[
           'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
