@@ -414,8 +414,11 @@ if (!Date.now) {
           playPositions[video_id] = position;
 
           // store ab loop positions as object
-          if( typeof abLoopPositions == 'undefined' ) {
-            abLoopPositions[video_id] = {}
+          if( typeof abLoopPositions[video_id] == 'undefined' ) {
+            abLoopPositions[video_id] = {
+              positions: [0,0],
+              active: false
+            }
           }
 
           // check if abloop is active
