@@ -437,6 +437,9 @@ class FV_Player_Position_Save {
         $metaPositionEnd = $this->get_video_position( get_current_user_id(), $name, 'ab_end' );
         $metaPositionActive = $this->get_video_position( get_current_user_id(), $name, 'ab_active' );
 
+        // if the active value is set, but the start and end are not, then set them to 0
+        $aItem['sources'][0]['ab_active'] = $metaPositionActive;
+
         // at least one of the values must be set and the start must be smaller than the end
         if( ( $metaPositionStart || $metaPositionEnd ) && $metaPositionStart < $metaPositionEnd ) {
           $aItem['sources'][0]['ab_start'] = $metaPositionStart;
@@ -444,8 +447,6 @@ class FV_Player_Position_Save {
           break;
         }
 
-        // if the active value is set, but the start and end are not, then set them to 0
-        $aItem['sources'][0]['ab_active'] = $metaPositionActive;
       }
 
     }
