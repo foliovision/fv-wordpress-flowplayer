@@ -422,7 +422,7 @@ if (!Date.now) {
           }
 
           // check if abloop is active
-          if ( $root.hasClass('has-abloop') )
+          if ( $root.hasClass('has-abloop') ) {
             abLoopPositions[video_id].active = true;
           } else {
             abLoopPositions[video_id].active = false;
