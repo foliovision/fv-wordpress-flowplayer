@@ -422,15 +422,15 @@ if (!Date.now) {
           }
 
           // check if abloop is active
-          if ( root.haClass('has-abloop') ) {
-            abLoopPositions[video_id]['active'] = true;
+          if ( $root.hasClass('has-abloop') )
+            abLoopPositions[video_id].active = true;
           } else {
-            abLoopPositions[video_id]['active'] = false;
+            abLoopPositions[video_id].active = false;
           }
 
           // check if we have a noUiSlider instance and AB loop is active
           if ( typeof api.fv_noUiSlider != "undefined" && $root.find('.fv-player-ab.is-active').length ) {
-            abLoopPositions[video_id]['positions'] =  api.fv_noUiSlider.get();
+            abLoopPositions[video_id].positions =  api.fv_noUiSlider.get();
           }
 
           // initialize top position variable with the already stored top position
