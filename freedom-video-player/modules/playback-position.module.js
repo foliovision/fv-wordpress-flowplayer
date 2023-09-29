@@ -202,6 +202,8 @@ if (!Date.now) {
               temp_saw_data[name] = postDataPositions[i].saw;
 
               if( typeof(postDataPositions[i].ab_start) != "undefined" && typeof(postDataPositions[i].ab_end) != "undefined" ) {
+                temp_ab_loop_data[name] = {};
+
                 temp_ab_loop_data[name]['positions'] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
                 temp_ab_loop_data[name]['active'] = postDataPositions[i].ab_active;
               }
