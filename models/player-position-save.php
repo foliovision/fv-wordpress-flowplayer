@@ -36,6 +36,7 @@ class FV_Player_Position_Save {
       legacy_video_id varchar(255) NOT NULL,
       ab_start int(11) NOT NULL,
       ab_end int(11) NOT NULL,
+      ab_active tinyint(1) NOT NULL,
       last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY  (id),
       KEY user_id (user_id),
@@ -76,13 +77,15 @@ class FV_Player_Position_Save {
       self::$cache[$user_id] = array();
     }
 
+    // set cache for video data
     if( $type == 'video') {
       self::$cache[$user_id][$type] = $wpdb->get_results( $wpdb->prepare(
-        "SELECT video_id, last_position, top_position, finished, legacy_video_id, ab_start, ab_end FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d",
+        "SELECT video_id, last_position, top_position, finished, legacy_video_id, ab_start, ab_end, ab_active FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d",
         $user_id
       ) );
     }
 
+    // set cache for playlist data
     if( $type == 'playlist' ) {
       self::$cache[$user_id][$type] = $wpdb->get_results( $wpdb->prepare(
         "SELECT player_id, item_index FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = %d",
@@ -370,6 +373,15 @@ class FV_Player_Position_Save {
     return pathinfo($video_name, PATHINFO_FILENAME);
   }
 
+  /**
+   * Set data for video item
+   *
+   * @param array $aItem
+   * @param int $index
+   * @param array $aArgs
+   *
+   * @return array
+   */
   public function set_last_positions( $aItem, $index, $aArgs ) {
     global $fv_fp;
     // we only use the first source to check for stored position,
@@ -423,6 +435,10 @@ class FV_Player_Position_Save {
       foreach( $try AS $name ) {
         $metaPositionStart = $this->get_video_position( get_current_user_id(), $name, 'ab_start' );
         $metaPositionEnd = $this->get_video_position( get_current_user_id(), $name, 'ab_end' );
+        $metaPositionActive = $this->get_video_position( get_current_user_id(), $name, 'ab_active' );
+
+        // if the active value is set, but the start and end are not, then set them to 0
+        $aItem['sources'][0]['ab_active'] = $metaPositionActive;
 
         // at least one of the values must be set and the start must be smaller than the end
         if( ( $metaPositionStart || $metaPositionEnd ) && $metaPositionStart < $metaPositionEnd ) {
@@ -430,6 +446,7 @@ class FV_Player_Position_Save {
           $aItem['sources'][0]['ab_end'] = $metaPositionEnd;
           break;
         }
+
       }
 
     }
@@ -494,6 +511,12 @@ class FV_Player_Position_Save {
           } else {
             $this->delete_video_postion($uid, $name, 'ab_start');
             $this->delete_video_postion($uid, $name, 'ab_end');
+          }
+
+          if(!empty($record['ab_active'])) {
+            $this->set_video_position($uid, $name, 'ab_active', intval($record['ab_active']));
+          } else {
+            $this->delete_video_postion($uid, $name, 'ab_active');
           }
 
           // Did the user saw the full video?

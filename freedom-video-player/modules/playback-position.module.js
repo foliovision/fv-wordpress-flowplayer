@@ -139,16 +139,19 @@ if (!Date.now) {
 
         // remove all AWS signatures from this video
         var item = {
-          name: video_name,
+          name: video_name,abLoopPositions,
           position: playPositions[video_name],
           top_position: playTopPositions[video_name],
           saw: typeof(sawVideo[video_name]) != "undefined" ? sawVideo[video_name] : false,
         }
 
         // add ab loop positions
-        if( abLoopPositions.hasOwnProperty(video_name) ) {
-          item.ab_start = abLoopPositions[video_name][0];
-          item.ab_end = abLoopPositions[video_name][1];
+        if( typeof abLoopPositions[video_name] != 'undefined' ) {
+          console.log('abLoopPositions', abLoopPositions[video_name]);
+
+          item.ab_start = abLoopPositions[video_name]['positions'][0];
+          item.ab_end = abLoopPositions[video_name]['positions'][1];
+          item.ab_active = abLoopPositions[video_name]['active'];
         }
 
         postDataPositions.push(item);
@@ -199,7 +202,14 @@ if (!Date.now) {
               temp_saw_data[name] = postDataPositions[i].saw;
 
               if( typeof(postDataPositions[i].ab_start) != "undefined" && typeof(postDataPositions[i].ab_end) != "undefined" ) {
-                temp_ab_loop_data[name] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
+                temp_ab_loop_data[name] = {};
+
+                temp_ab_loop_data[name]['positions'] = [ postDataPositions[i].ab_start, postDataPositions[i].ab_end ];
+                temp_ab_loop_data[name]['active'] = postDataPositions[i].ab_active;
+              }
+
+              if( typeof(postDataPositions[i].ab_active != 'undefined') ) {
+
               }
             }
 
@@ -259,7 +269,7 @@ if (!Date.now) {
             data_playlist_item = {};
           }
 
-          // add / edit our video positions
+          // add / edit our video positionsab
           for (var i in postDataPositions) {
             if( !postDataPositions.hasOwnProperty(i) ) continue;
 
@@ -407,9 +417,24 @@ if (!Date.now) {
 
           playPositions[video_id] = position;
 
+          // store ab loop positions as object
+          if( typeof abLoopPositions[video_id] == 'undefined' ) {
+            abLoopPositions[video_id] = {
+              positions: [0,0],
+              active: false
+            }
+          }
+
+          // check if abloop is active
+          if ( $root.hasClass('has-abloop') ) {
+            abLoopPositions[video_id].active = true;
+          } else {
+            abLoopPositions[video_id].active = false;
+          }
+
           // check if we have a noUiSlider instance and AB loop is active
           if ( typeof api.fv_noUiSlider != "undefined" && $root.find('.fv-player-ab.is-active').length ) {
-            abLoopPositions[video_id] = api.fv_noUiSlider.get();
+            abLoopPositions[video_id].positions =  api.fv_noUiSlider.get();
           }
 
           // initialize top position variable with the already stored top position
@@ -675,11 +700,13 @@ if (!Date.now) {
 
         if( ab_loop ) {
           if( is_playlist ) {
-            api.conf.playlist[i].sources[0].ab_start = ab_loop[0];
-            api.conf.playlist[i].sources[0].ab_end = ab_loop[1];
+            api.conf.playlist[i].sources[0].ab_start = ab_loop['positions'][0];
+            api.conf.playlist[i].sources[0].ab_end = ab_loop['positions'][1];
+            api.conf.playlist[i].sources[0].ab_active = ab_loop['active'];
           } else {
-            api.conf.clip.sources[0].ab_start = ab_loop[0];
-            api.conf.clip.sources[0].ab_end = ab_loop[1];
+            api.conf.clip.sources[0].ab_start =ab_loop['positions'][0];
+            api.conf.clip.sources[0].ab_end = ab_loop['positions'][1];
+            api.conf.clip.sources[0].ab_active = ab_loop['active'];
           }
         }
 
