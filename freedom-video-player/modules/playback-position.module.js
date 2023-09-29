@@ -146,7 +146,9 @@ if (!Date.now) {
         }
 
         // add ab loop positions
-        if( abLoopPositions.hasOwnProperty(video_name) ) {
+        if( typeof abLoopPositions[video_name] != 'undefined' ) {
+          console.log('abLoopPositions', abLoopPositions[video_name]);
+
           item.ab_start = abLoopPositions[video_name]['positions'][0];
           item.ab_end = abLoopPositions[video_name]['positions'][1];
           item.ab_active = abLoopPositions[video_name]['active'];
