@@ -359,6 +359,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.40.7212 - 2023/09/29 =
+
+* YouTube - fix videos not starging properly on Android
+* Bugfix - stale pending video encoding jobs removing video URLs when using Gutenberg block
+
 = 7.5.39.7212 - 2023/08/23 =
 
 * Security - prevent XSS when "Enable profile videos" is on
