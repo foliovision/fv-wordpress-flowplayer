@@ -869,7 +869,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
    * @return Pseudorandom string hash.
    */
   public function _salt() {
-    $salt = substr(md5(uniqid(rand(), true)), 0, 10);
+    $salt = substr(md5(uniqid( wp_rand(), true) ), 0, 10);
     return $salt;
   }
 

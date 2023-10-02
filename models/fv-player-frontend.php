@@ -1128,7 +1128,7 @@ JS;
     if ($popup === 'random' || is_numeric($popup)) { // we don't get there if it's email-1 or direct HTML
       $aPopupData = get_option('fv_player_popups');
       if ($popup === 'random') {
-        $iPopupIndex = rand(1, count($aPopupData));
+        $iPopupIndex = wp_rand(1, count($aPopupData));
       } elseif (is_numeric($popup)) {
         $iPopupIndex = intval($popup);
       }

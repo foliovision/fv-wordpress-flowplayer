@@ -10,6 +10,8 @@ if( file_exists('../../../../wp-load.php') ) {
   require('../../../../wp-load.php');
 }
 
+require_once( ABSPATH . WPINC . '/pluggable.php' );
+
 Class FvPlayerTrackerWorker {
 
   private $wp_content = false;
@@ -179,7 +181,7 @@ Class FvPlayerTrackerWorker {
       }
       else{
         //wait random interval from 50ms to 100ms
-        usleep( rand(50,100) );
+        usleep( wp_rand(50,100) );
       }
     }
 

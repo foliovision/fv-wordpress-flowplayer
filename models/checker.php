@@ -145,7 +145,7 @@ class FV_Player_Checker {
   
           //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
           $upload_dir = wp_upload_dir();      
-          $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
+          $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5( wp_rand(1,999) ).'_'.basename( substr($remotefilename_encoded,0,32) );
   
           $out = @fopen( $localtempfilename,'wb' );
        
