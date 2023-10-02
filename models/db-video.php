@@ -859,12 +859,12 @@ CREATE TABLE " . self::$db_table_name . " (
         $video_data = array();
 
         // was only the file path provided?
-        $parsed = parse_url($video_url);
+        $parsed = wp_parse_url($video_url);
         if( count($parsed) == 1 && !empty($parsed['path']) ) {
           // then user the WordPress home URL
           $video_url = home_url($video_url);
           // but remove the "path" if WordPress runs in a folder
-          $wordpress_home = parse_url(home_url());
+          $wordpress_home = wp_parse_url(home_url());
           if( !empty($wordpress_home['path']) ) {
             $video_url = str_replace( $wordpress_home['path'], '', $video_url );
           }

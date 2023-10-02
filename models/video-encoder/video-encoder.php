@@ -824,7 +824,7 @@ abstract class FV_Player_Video_Encoder {
    * @return string                 Sanitized file URL
    */
   function util__escape_source( $url ) {
-    $url_components = parse_url($url);
+    $url_components = wp_parse_url($url);
     $old_path = $url_components['path'];
 
     $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
@@ -879,7 +879,7 @@ abstract class FV_Player_Video_Encoder {
     $target = trim($target);
 
     // take path only if it's full URL
-    $parsed = parse_url($target);
+    $parsed = wp_parse_url($target);
 
     if( !empty($parsed['scheme']) ) $target = str_replace($parsed['scheme'].'://', '', $parsed);
     if( !empty($parsed['hostname']) ) $target = str_replace($parsed['hostname'], '', $parsed);

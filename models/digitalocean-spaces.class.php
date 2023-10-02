@@ -28,7 +28,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
   function get_endpoint() {
     global $fv_fp;
-    $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
+    $parsed = wp_parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
 
     if( count($parsed) == 1 && !empty($parsed['path']) ) { // for input like "region.digitaloceanspaces.com" it returns it as path, not realizing it's the hostname
       return $parsed['path'];
@@ -178,7 +178,7 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
     $time = $ttl ? $ttl : apply_filters('fv_player_secure_link_timeout', 900);
 
-    $url_components = parse_url($url);
+    $url_components = wp_parse_url($url);
 
     $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
 

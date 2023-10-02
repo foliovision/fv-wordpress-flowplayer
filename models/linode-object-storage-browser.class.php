@@ -16,7 +16,7 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
   }
 
   function decode_link_components( $link ) {
-    $url_components = parse_url($link);
+    $url_components = wp_parse_url($link);
     $link = str_replace( $url_components['path'], urldecode($url_components['path']), $link );
 
     return $link;

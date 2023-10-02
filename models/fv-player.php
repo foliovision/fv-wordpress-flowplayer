@@ -1847,7 +1847,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
 
-      $url_components = parse_url($resource);
+      $url_components = wp_parse_url($resource);
 
       // decode the path, as it might come partially URL encoded already
       $url_components['path'] = urldecode( $url_components['path'] );
@@ -2003,8 +2003,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public static function get_encoded_url( $sURL ) {
     //if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
-      $url_parts = parse_url( $sURL );
-      $url_parts_encoded = parse_url( $sURL );
+      $url_parts = wp_parse_url( $sURL );
+      $url_parts_encoded = wp_parse_url( $sURL );
       if( !empty($url_parts['path']) ) {
           $url_parts['path'] = join('/', array_map( 'rawurlencode', array_map('urldecode', explode('/', $url_parts_encoded['path']) ) ) );
       }

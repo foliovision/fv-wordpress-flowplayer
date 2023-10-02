@@ -24,7 +24,7 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
 
   function get_endpoint() {
     global $fv_fp;
-    $parsed = parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
+    $parsed = wp_parse_url( $fv_fp->_get_option( array($this->key,'endpoint' ) ) );
 
     if( count($parsed) == 1 && !empty($parsed['path']) ) {
       return $parsed['path'];
@@ -108,7 +108,7 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
 
     $time = $ttl ? $ttl : apply_filters('fv_player_secure_link_timeout', 900);
 
-    $url_components = parse_url($url);
+    $url_components = wp_parse_url($url);
 
     $sXAMZDate = gmdate('Ymd\THis\Z');
     $sDate = gmdate('Ymd');

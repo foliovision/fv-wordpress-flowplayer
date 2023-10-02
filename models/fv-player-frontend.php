@@ -1164,7 +1164,7 @@ JS;
         $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
         $rtmp_server = $aTMP[0];
       } else {
-        $rtmp_info = parse_url($rtmp);
+        $rtmp_info = wp_parse_url($rtmp);
         if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
           $rtmp_server = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
         }

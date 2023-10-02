@@ -473,7 +473,7 @@ function flowplayer_prepare_scripts() {
     if( $fv_fp->_get_option('matomo_domain') && $fv_fp->_get_option('matomo_site_id') ) {
       // take the domain name from Matomo Domain setting in case somebody entered full URL
       $matomo_domain = $fv_fp->_get_option('matomo_domain');
-      $parsed = parse_url($matomo_domain);
+      $parsed = wp_parse_url($matomo_domain);
       if( $parsed && !empty($parsed['host']) ) {
         $matomo_domain = $parsed['host'];
         if( !empty($parsed['path']) ) {
