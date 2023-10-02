@@ -280,7 +280,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     // check if we have collection
     if( isset( $_POST['collection_name'] ) ) {
-      $collection_name = strip_tags( stripslashes( $_POST['collection_name'] ) );
+      $collection_name = wp_strip_all_tags( stripslashes( $_POST['collection_name'] ) );
       $collection_name = str_replace('Home/', '', $collection_name);
       $collection_name = rtrim($collection_name, '/');
 

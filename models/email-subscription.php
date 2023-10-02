@@ -517,16 +517,16 @@ class FV_Player_Email_Subscription {
       die(wp_json_encode($result));
     };
 
-    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", strip_tags($data['email']), intval($list_id) ) );
+    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", wp_strip_all_tags($data['email']), intval($list_id) ) );
 
     if(intval($count) === 0){
       $wpdb->insert($table_name, array(
-        'email' => strip_tags($data['email']),
+        'email' => wp_strip_all_tags($data['email']),
         'data' => serialize($data),
         'id_list'=> intval($list_id),
         'date' => date("Y-m-d H:i:s"),
-        'first_name' => isset($data['first_name']) ? strip_tags($data['first_name']) : '',
-        'last_name' => isset($data['last_name']) ? strip_tags($data['last_name']) : '',
+        'first_name' => isset($data['first_name']) ? wp_strip_all_tags($data['first_name']) : '',
+        'last_name' => isset($data['last_name']) ? wp_strip_all_tags($data['last_name']) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -541,12 +541,12 @@ class FV_Player_Email_Subscription {
 
     }else{
       $wpdb->insert($table_name, array(
-        'email' => strip_tags($data['email']),
+        'email' => wp_strip_all_tags($data['email']),
         'data' => serialize($data),
         'id_list' => intval($list_id),
         'date' => date("Y-m-d H:i:s"),
-        'first_name' => isset($data['first_name']) ? strip_tags($data['first_name']) : '',
-        'last_name' => isset($data['last_name']) ? strip_tags($data['last_name']) : '',
+        'first_name' => isset($data['first_name']) ? wp_strip_all_tags($data['first_name']) : '',
+        'last_name' => isset($data['last_name']) ? wp_strip_all_tags($data['last_name']) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -635,7 +635,7 @@ class FV_Player_Email_Subscription {
             $item = $tmp['title'];
           }
         }
-        echo '<td>' . strip_tags($item) . '</td>';
+        echo '<td>' . wp_strip_all_tags($item) . '</td>';
       }
       echo '</tr>';
     }

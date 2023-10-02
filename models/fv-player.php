@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
-require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
+require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
 
-class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
+class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
   private $count = 0;
   /**
    * Relative URL path
@@ -122,7 +122,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if (!defined('FV_FP_RELATIVE_PATH')) {
       define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
 
-      $aURL = parse_url( home_url() );
+      $aURL = wp_parse_url( home_url() );
       $vid = isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'] : $aURL['scheme'].'://'.$aURL['host'];
       if (dirname($_SERVER['PHP_SELF']) != '/')
         $vid .= dirname($_SERVER['PHP_SELF']);
@@ -2463,7 +2463,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( !$aArgs['suppress_filters'] ) {
         $media = apply_filters( 'fv_flowplayer_video_src', $media, $aArgs );
       }
-      return strip_tags(trim($media));
+      return wp_strip_all_tags(trim($media));
     }
     return null;
   }
@@ -2571,7 +2571,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $aCustomCSS = $fv_fp->_get_option('customCSS');
 
     if( strlen($aCustomCSS) ) {
-      $css .= "\n/*custom css*/\n".strip_tags( stripslashes($aCustomCSS) )."\n/*end custom css*/\n";
+      $css .= "\n/*custom css*/\n".wp_strip_all_tags( stripslashes($aCustomCSS) )."\n/*end custom css*/\n";
     }
     return $css;
   }

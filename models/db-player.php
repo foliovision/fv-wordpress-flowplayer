@@ -591,7 +591,7 @@ CREATE TABLE " . self::$db_table_name . " (
            */
           if ( is_string( $value ) ) {
             if( $key != 'ad' ) {
-              $value = strip_tags($value);
+              $value = wp_strip_all_tags($value);
             }
 
             $value = stripslashes( $value );
@@ -1065,7 +1065,7 @@ CREATE TABLE " . self::$db_table_name . " (
          */
         if ( is_string( $value ) ) {
           if( $property != 'ad' ) {
-            $value = strip_tags($value);
+            $value = wp_strip_all_tags($value);
           }
         }
 

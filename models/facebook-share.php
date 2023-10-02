@@ -53,7 +53,7 @@ class FV_Player_Facebook_Share {
       
       if( !$sSplash ) continue; 
       
-      $sDescription = htmlspecialchars(strip_tags( wp_trim_words(strip_shortcodes(strip_tags($post->post_content)), 20, ' &hellip;') ) );      
+      $sDescription = htmlspecialchars(wp_strip_all_tags( wp_trim_words(strip_shortcodes(wp_strip_all_tags($post->post_content)), 20, ' &hellip;') ) );      
 
       ?>
       <meta property="og:site_name" content="<?php echo esc_attr($sName); ?>">

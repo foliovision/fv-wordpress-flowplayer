@@ -381,7 +381,7 @@ CREATE TABLE " . self::$db_table_name . " (
           if ($key !== 'id') {
             if( !is_string($value) ) $value = '';
 
-            $this->$key = strip_tags( stripslashes($value) );
+            $this->$key = wp_strip_all_tags( stripslashes($value) );
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
@@ -1209,7 +1209,7 @@ CREATE TABLE " . self::$db_table_name . " (
          * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
          */
         if ( is_string( $value ) ) {
-          $value = strip_tags( $value );
+          $value = wp_strip_all_tags( $value );
         }
 
         $data_values[] = $value;

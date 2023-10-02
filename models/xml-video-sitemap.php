@@ -120,7 +120,7 @@ class FV_Xml_Video_Sitemap {
         
         $content_no_tags = preg_replace( '~</p>~', "</p>\n", $content );
         $content_no_tags = preg_replace( '~\n+~', "\n", $content );
-        $content_no_tags = strip_tags( $content_no_tags );
+        $content_no_tags = wp_strip_all_tags( $content_no_tags );
         $content_no_tags = explode( "\n", $content_no_tags );
         
         // we apply the shortcodes to make sure any membership restrictions work, but we omit the FV Player shortcodes as we want to parse these elsewhere
@@ -187,8 +187,8 @@ class FV_Xml_Video_Sitemap {
             // check for caption - if none present, build it up from page title and video position
             // note: html characters must be substituted or enclosed in CDATA, from which the first
             //       is easier to do correctly on a single line
-            $sanitized_caption = !empty($aArgs['caption']) ? htmlspecialchars(strip_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE ) : false;
-            $sanitized_src = htmlspecialchars(strip_tags(trim($aArgs['src'])), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+            $sanitized_caption = !empty($aArgs['caption']) ? htmlspecialchars(wp_strip_all_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE ) : false;
+            $sanitized_src = htmlspecialchars(wp_strip_all_tags(trim($aArgs['src'])), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
             
             // make sure the URLs are absolute
             if( $sanitized_src ) {
@@ -200,7 +200,7 @@ class FV_Xml_Video_Sitemap {
             }            
 
             // sanitized post title, used when no video caption is provided
-            $sanitized_page_title = htmlspecialchars(strip_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
+            $sanitized_page_title = htmlspecialchars(wp_strip_all_tags($objPost->post_title), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // set thumbnail
             $thumb = apply_filters( 'fv_flowplayer_splash', apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID ) );

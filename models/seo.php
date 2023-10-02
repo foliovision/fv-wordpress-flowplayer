@@ -75,7 +75,7 @@ class FV_Player_SEO {
     $post_content = get_the_content();
     if( !$description && strlen($post_content) > 0 ) {
       $post_content = strip_shortcodes( $post_content );
-      $post_content = strip_tags( $post_content );
+      $post_content = wp_strip_all_tags( $post_content );
       $description = wp_trim_words( $post_content, 30 );
     }
     if( !$description ) {

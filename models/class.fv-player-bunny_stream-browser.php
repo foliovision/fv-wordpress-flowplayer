@@ -38,7 +38,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
     $output = array();
 
-    $name = strip_tags($_POST['folder_name']); // new collection to create
+    $name = wp_strip_all_tags($_POST['folder_name']); // new collection to create
     $name = stripslashes($name);
 
     $api = new FV_Player_Bunny_Stream_API();
@@ -85,7 +85,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $body['items'] = array();
 
     if( isset($_POST['path']) ) {
-      $_POST['path'] = strip_tags( stripslashes($_POST['path']) );
+      $_POST['path'] = wp_strip_all_tags( stripslashes($_POST['path']) );
       $path = str_replace('Home/', '', $_POST['path']); // remove Home/
       $path = rtrim($path, '/'); // remove ending /
     } else {
