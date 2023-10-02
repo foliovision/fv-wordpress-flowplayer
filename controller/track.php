@@ -167,7 +167,7 @@ Class FvPlayerTrackerWorker {
           }
         }
 
-        $encoded_data = json_encode($data);
+        $encoded_data = wp_json_encode($data);
 
         ftruncate( $this->file, 0 );
         rewind( $this->file );

@@ -91,11 +91,11 @@ function fv_wp_flowplayer_activate_extension() {
 
   $activate = activate_plugin( $_POST['plugin'] );
   if ( is_wp_error( $activate ) ) {
-    echo "<FVFLOWPLAYER>".json_encode( array( 'message' => $activate->get_error_message(), 'error' => $activate->get_error_message() ) )."</FVFLOWPLAYER>";
+    echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => $activate->get_error_message(), 'error' => $activate->get_error_message() ) )."</FVFLOWPLAYER>";
     die();
   }
 
-  echo "<FVFLOWPLAYER>".json_encode( array( 'message' => 'Success!', 'plugin' => $_POST['plugin'] ) )."</FVFLOWPLAYER>";
+  echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => 'Success!', 'plugin' => $_POST['plugin'] ) )."</FVFLOWPLAYER>";
   die();
 }
 
@@ -125,7 +125,7 @@ function fv_wp_flowplayer_check_template() {
       if( stripos( $plugin, 'wp-minify' ) !== false ) {
         $errors[] = "You are using <strong>WP Minify</strong>, so the script checks would not be accurate. Please check your videos manually.";
         $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-        echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+        echo '<FVFLOWPLAYER>'.wp_json_encode($output).'</FVFLOWPLAYER>';
         die();
       }
     }
@@ -198,7 +198,7 @@ function fv_wp_flowplayer_check_template() {
 
     $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
   }
-  echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+  echo '<FVFLOWPLAYER>'.wp_json_encode($output).'</FVFLOWPLAYER>';
   die();
 }
 
@@ -362,7 +362,7 @@ function fv_wp_flowplayer_check_files() {
   }
 
   $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
-  echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+  echo '<FVFLOWPLAYER>'.wp_json_encode($output).'</FVFLOWPLAYER>';
   die();
 }
 
@@ -383,7 +383,7 @@ function fv_wp_flowplayer_check_license() {
     if( !$message ) $message = get_option('fv_wordpress_flowplayer_persistent_notices');
     $output = array( 'errors' => array($message), 'ok' => false );
   }
-  echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
+  echo '<FVFLOWPLAYER>'.wp_json_encode($output).'</FVFLOWPLAYER>';
   die();
 }
 
@@ -526,7 +526,7 @@ function fv_player_lchecks() {
       if( $aCheck ) {
         set_transient( 'fv_flowplayer_license', $aCheck, 60*60*24 );
       } else {
-        set_transient( 'fv_flowplayer_license', json_decode(json_encode( array('error' => 'Error checking license') ), FALSE), 60*60*24 );
+        set_transient( 'fv_flowplayer_license', json_decode(wp_json_encode( array('error' => 'Error checking license') ), FALSE), 60*60*24 );
       }
     }
 

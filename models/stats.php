@@ -179,7 +179,7 @@ class FV_Player_Stats {
 
       if( !empty($post->ID ) ) {
         // TODO: Add signature to avoid faking the stats by users
-        $attributes['data-fv_stats_data'] = json_encode( array(
+        $attributes['data-fv_stats_data'] = wp_json_encode( array(
           'player_id' => $player_id,
           'post_id' => $post->ID,
         ) );
@@ -1045,7 +1045,7 @@ class FV_Player_Stats {
         }
       }
 
-      echo json_encode( array( 'results' => $results ) );
+      echo wp_json_encode( array( 'results' => $results ) );
     }
 
     die();

@@ -188,7 +188,7 @@ abstract class FV_Player_Wizard_Base_Class {
         
         $extra_fields = "";
         if( $fields = call_user_func( array($step,'extra_fields') ) ) {
-          $extra_fields = " data-extra-fields='".json_encode($fields)."'";
+          $extra_fields = " data-extra-fields='".wp_json_encode($fields)."'";
         }
 
         echo "<table class='form-table fv-player-wizard-step' data-step='".intval($i)."' data-step_name='".esc_attr($class_name)."'".$style.$extra_fields.">\n";

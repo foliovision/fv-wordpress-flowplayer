@@ -1433,9 +1433,9 @@ class FV_Player_Db {
 
       header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
-        echo json_encode($out);
+        echo wp_json_encode($out);
       } else {
-        echo json_encode($out, true);
+        echo wp_json_encode($out, true);
       }
     }
 
@@ -1803,9 +1803,9 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
       if ($output_result) {
         if (version_compare(phpversion(), '5.3', '<')) {
-          echo json_encode($export_data);
+          echo wp_json_encode($export_data);
         } else {
-          echo json_encode($export_data, true);
+          echo wp_json_encode($export_data, true);
         }
         exit;
       } else {

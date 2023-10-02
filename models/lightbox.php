@@ -635,7 +635,7 @@ SCRIPT;
   function fancybox_opts( $splash = false ) {
     $options = array('touch' => false);
     if( !empty($splash) ) $options['thumb'] = $splash;
-    return " data-fancybox='gallery' data-options='".json_encode($options)."'";
+    return " data-fancybox='gallery' data-options='".wp_json_encode($options)."'";
   }
 
   /*

@@ -283,7 +283,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     new Chart(
       document.getElementById('chart-top-users-play').getContext('2d'),
       fv_player_stats_chartjs_args(
-        <?php echo json_encode( $fv_video_stats_data ); ?>,
+        <?php echo wp_json_encode( $fv_video_stats_data ); ?>,
         'play',
         {
           legend_containerID: 'chart-top-users-play-legend'
@@ -309,7 +309,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     new Chart(
       document.getElementById('chart-top-posts').getContext('2d'),
       fv_player_stats_chartjs_args(
-        <?php echo json_encode( $fv_post_stats_data ); ?>,
+        <?php echo wp_json_encode( $fv_post_stats_data ); ?>,
         'play',
         {
           legend_containerID: 'chart-top-posts-legend'
@@ -333,7 +333,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     new Chart(
       document.getElementById('chart-top-users-play-watchtime').getContext('2d'),
       fv_player_stats_chartjs_args(
-        <?php echo json_encode( $fv_video_watch_time_stats_data ); ?>,
+        <?php echo wp_json_encode( $fv_video_watch_time_stats_data ); ?>,
         'seconds',
         {
           legend_containerID: 'chart-top-users-play-watchtime-legend',
@@ -358,7 +358,7 @@ jQuery( document ).ready(function() {
   new Chart(
     document.getElementById('chart-top-10-users-by-play').getContext('2d'),
     fv_player_stats_chartjs_args(
-      <?php echo json_encode( $fv_user_play_stats_data ); ?>,
+      <?php echo wp_json_encode( $fv_user_play_stats_data ); ?>,
       'play',
       {
         legend_containerID: 'chart-top-10-users-by-play-legend'
@@ -382,7 +382,7 @@ jQuery( document ).ready(function() {
   new Chart(
     document.getElementById('chart-top-10-users-by-watchtime').getContext('2d'),
     fv_player_stats_chartjs_args(
-      <?php echo json_encode( $fv_user_watch_time_stats_data ); ?>,
+      <?php echo wp_json_encode( $fv_user_watch_time_stats_data ); ?>,
       'seconds',
       {
         legend_containerID: 'chart-top-10-users-by-watchtime-legend',
@@ -405,7 +405,7 @@ jQuery( document ).ready(function() {
     new Chart(
       document.getElementById('chart-single-player').getContext('2d'),
       fv_player_stats_chartjs_args(
-        <?php echo json_encode( $fv_single_player_stats_data ); ?>,
+        <?php echo wp_json_encode( $fv_single_player_stats_data ); ?>,
         'play',
         {
           legend_containerID: 'chart-single-player-legend'

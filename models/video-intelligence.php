@@ -241,7 +241,7 @@ class FV_Player_video_intelligence_Installer {
 
       $request = wp_remote_post( $data->data->loginAPI, array(
         'headers'   => array('Content-Type' => 'application/json;charset=UTF-8'),
-        'body'      => json_encode(array( 'email' => $_POST['vi_login'], 'password' => $_POST['vi_pass'] )),
+        'body'      => wp_json_encode(array( 'email' => $_POST['vi_login'], 'password' => $_POST['vi_pass'] )),
         'method'    => 'POST'
       ));
 

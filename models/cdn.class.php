@@ -48,7 +48,7 @@ abstract class FV_Player_CDN {
 
       if( $bFound ) {
         echo '<FVFLOWPLAYER>';
-        echo json_encode($_POST['sources']);
+        echo wp_json_encode($_POST['sources']);
         echo '</FVFLOWPLAYER>';
         die();
       }

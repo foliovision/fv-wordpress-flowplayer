@@ -107,7 +107,7 @@ abstract class FV_Player_Conversion_Base {
       }
 
       // response
-      echo json_encode(
+      echo wp_json_encode(
         array(
           'table_rows' => implode( "\n", $html ),
           'percent_done' => $percent_done,

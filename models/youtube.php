@@ -342,7 +342,7 @@ class FV_Player_YouTube {
               $id = 'youtube_browser_chrome_'.esc_attr($key);
 
               $radio_button = '<input id="'.$id.'" type="radio" name="youtube_browser_chrome" value="'.esc_attr($key).'"';
-              if( $value === $key || json_encode($value) == $key ) { // use json_encode as value can be boolean
+              if( $value === $key || wp_json_encode($value) == $key ) { // use wp_json_encode as value can be boolean
                 $radio_button .= ' checked="checked"';
               }
               $radio_button .= '</input>';

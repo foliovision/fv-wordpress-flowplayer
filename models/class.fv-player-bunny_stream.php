@@ -136,7 +136,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
    * Prepares and returns data to be inserted into the "output" column of this encoder's DB table.
    */
   protected function prepare_job_output_column_value() {
-      return json_encode( array(
+      return wp_json_encode( array(
         'base_url' => trailingslashit( $this->get_cdn_conf() ),
         'replacing_url' => trailingslashit( $this->get_cdn_url() )
       ) );
@@ -209,7 +209,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
         );
       } else {
         $wpdb->update( $this->table_name, array(
-          'result'       => json_encode( $job ),
+          'result'       => wp_json_encode( $job ),
           'status'       => $status,
           'date_checked' => date( "Y-m-d H:i:s" ),
           'progress'     => $progress . '%',

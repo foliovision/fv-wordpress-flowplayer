@@ -2542,9 +2542,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   public static function json_encode( $input ) {
     if( version_compare(phpversion(), '5.3.0', '>') ) {
-      return json_encode( $input, JSON_HEX_APOS );
+      return wp_json_encode( $input, JSON_HEX_APOS );
     } else {
-      return str_replace( "'", '\u0027', json_encode( $input ) );
+      return str_replace( "'", '\u0027', wp_json_encode( $input ) );
     }
   }
 

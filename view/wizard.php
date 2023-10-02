@@ -1017,7 +1017,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 <?php
 global $script_fv_player_editor_defaults, $script_fv_player_editor_dependencies, $script_fv_player_editor_fields;
 
-echo "<script>var fv_player_editor_defaults = ".json_encode($script_fv_player_editor_defaults)."</script>\n";
-echo "<script>var fv_player_editor_dependencies = ".json_encode($script_fv_player_editor_dependencies)."</script>\n";
-echo "<script>var fv_player_editor_fields = ".json_encode($script_fv_player_editor_fields)."</script>\n";
+echo "<script>var fv_player_editor_defaults = ".wp_json_encode($script_fv_player_editor_defaults)."</script>\n";
+echo "<script>var fv_player_editor_dependencies = ".wp_json_encode($script_fv_player_editor_dependencies)."</script>\n";
+echo "<script>var fv_player_editor_fields = ".wp_json_encode($script_fv_player_editor_fields)."</script>\n";
 ?>

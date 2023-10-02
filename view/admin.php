@@ -521,7 +521,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
           $id = 'autoplay_preload_'.esc_attr($key);
 
           $radio_button = '<input id="'.$id.'" type="radio" name="autoplay_preload" value="'.esc_attr($key).'"';
-          if( $value === $key || json_encode($value) == $key ) { // use json_encode as value can be boolean
+          if( $value === $key || wp_json_encode($value) == $key ) { // use wp_json_encode as value can be boolean
             $radio_button .= ' checked="checked"';
           }
           $radio_button .= '</input>';

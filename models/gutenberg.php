@@ -133,7 +133,7 @@ function fv_player_add_missing_attributes_callback($matches) {
     break;
   }
 
-  return '<!-- wp:fv-player-gutenberg/basic ' . json_encode($attributes) . ' -->'. PHP_EOL . $content . PHP_EOL . '<!-- /wp:fv-player-gutenberg/basic -->';
+  return '<!-- wp:fv-player-gutenberg/basic ' . wp_json_encode($attributes) . ' -->'. PHP_EOL . $content . PHP_EOL . '<!-- /wp:fv-player-gutenberg/basic -->';
 }
 
 function fv_player_update_block_attributes($content) {

@@ -570,7 +570,7 @@ function fv_player_splashcreen_action() {
   }
 
   header('Content-Type: application/json');
-  echo json_encode($jsonReturn);
+  echo wp_json_encode($jsonReturn);
 
   wp_die();
 }

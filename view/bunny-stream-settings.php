@@ -89,7 +89,7 @@ td.bunny_stream_api_access_key .show-info {
       api_access_key_row = api_access_key_input.closest('tr'),
       security_token_input = jQuery('input[name="bunny_stream[security_token]"]'),
       security_token_row = security_token_input.closest('tr'),
-      pro_compatible = <?php echo json_encode(FV_Player_Bunny_Stream()->fv_player_pro_compatible()); ?>,
+      pro_compatible = <?php echo wp_json_encode(FV_Player_Bunny_Stream()->fv_player_pro_compatible()); ?>,
       checkbox = jQuery('input[name="bunny_stream[video_token]"]:checkbox');
 
     // do not show

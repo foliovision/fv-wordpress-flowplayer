@@ -692,7 +692,7 @@ abstract class FV_Player_Video_Encoder {
 
     // store the final configuration
     $wpdb->update( $this->table_name, array(
-      'args' => json_encode( $conf )
+      'args' => wp_json_encode( $conf )
     ), array(
       'id' => $job_id
     ), array(
