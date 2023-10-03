@@ -744,12 +744,6 @@ if( typeof(flowplayer) != "undefined" ) {
                   youtube.addEventListener('onStateChange',onStateChange);
                   youtube.addEventListener('onError',onError);
                   youtube.addEventListener('onApiChange',onApiChange);
-                  
-                  //  exp: these have to be triggered by hand, as due to some reason the above attached events don't catch onReady nor onStateChange
-                  onReady();
-                  onStateChange( { data: 1 } );
-                  onApiChange();
-                  
                   if( !flowplayer.support.dataload && !flowplayer.support.inlineVideo  ) { //  exp: for old iOS
                     youtube.cueVideoById( video_id, 0, 'default' );
                     
