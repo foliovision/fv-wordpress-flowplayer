@@ -672,7 +672,7 @@ function fv_player_guttenberg_attributes_save() {
       }
 
       $player_id =  $FV_Player_Db->import_player_data(false, false, array(
-        'date_created' => date('Y-m-d H:i:s'),
+        'date_created' => gmdate('Y-m-d H:i:s'),
         'videos' => array(
           array(
             'src' => $src,

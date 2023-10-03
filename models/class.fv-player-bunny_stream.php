@@ -196,7 +196,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       if ( $job->status == 6 ) {
         // job failed upload
         $wpdb->update( $this->table_name, array(
-          'date_checked' => date( "Y-m-d H:i:s" ),
+          'date_checked' => gmdate( "Y-m-d H:i:s" ),
           'status'       => 'error',
           'error'        => 'Upload failed',
         ), array(
@@ -211,7 +211,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
         $wpdb->update( $this->table_name, array(
           'result'       => wp_json_encode( $job ),
           'status'       => $status,
-          'date_checked' => date( "Y-m-d H:i:s" ),
+          'date_checked' => gmdate( "Y-m-d H:i:s" ),
           'progress'     => $progress . '%',
         ), array(
           'id' => $pending_job->id
@@ -226,7 +226,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       }
     } else {
       $wpdb->update( $this->table_name, array(
-        'date_checked' => date( "Y-m-d H:i:s" ),
+        'date_checked' => gmdate( "Y-m-d H:i:s" ),
         'error'        => $job->get_error_message(),
       ), array(
         'id' => $pending_job->id
@@ -461,7 +461,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
           if ( ! is_wp_error( $job ) ) {
             $wpdb->insert( $this->table_name, array(
-              'date_created' => date( "Y-m-d H:i:s" ),
+              'date_created' => gmdate( "Y-m-d H:i:s" ),
               'source'       => $job->title,
               'target'       => $job->title,
               'type'         => 'bunny_stream',

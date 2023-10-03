@@ -59,19 +59,19 @@ Plugin URL:               <?php echo flowplayer::get_plugin_url() . "\n"; ?>
 
 FV Player version:        <?php echo $fv_wp_flowplayer_ver . "\n"; ?>
 FV Player core version:   <?php echo $fv_wp_flowplayer_core_ver . "\n"; ?>
-FV Player license:        <?php $license = get_transient('fv_flowplayer_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv_flowplayer_license'))." GMT)\n"; ?>
+FV Player license:        <?php $license = get_transient('fv_flowplayer_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv_flowplayer_license'))." GMT)\n"; ?>
 
 <?php if( isset($FV_Player_Pro) ) : ?>
 FV Player Pro version:    <?php if( isset($FV_Player_Pro->version) ) echo $FV_Player_Pro->version."\n"; ?>
-FV Player Pro license:    <?php $license = get_transient('fv-player-pro_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pro_license'))." GMT)\n"; ?>
+FV Player Pro license:    <?php $license = get_transient('fv-player-pro_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pro_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_VAST) ) : ?>
 FV Player VAST version:   <?php if( isset($FV_Player_VAST->version) ) echo $FV_Player_VAST->version."\n"; ?>
-FV Player VAST license:   <?php $license = get_transient('fv-player-vast_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-vast_license'))." GMT)\n"; ?>
+FV Player VAST license:   <?php $license = get_transient('fv-player-vast_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-vast_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_PayPerView) ) : ?>
 FV Player PPV version:    <?php if( isset($FV_Player_PayPerView->version) ) echo $FV_Player_PayPerView->version."\n"; ?>
-FV Player PPV license:    <?php $license = get_transient('fv-player-pay-per-view_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".date("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pay-per-view_license'))." GMT)\n"; ?>
+FV Player PPV license:    <?php $license = get_transient('fv-player-pay-per-view_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pay-per-view_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_Video_Intelligence) ) : ?>
 FV Player vi version:     <?php if( isset($FV_Player_Video_Intelligence->version) ) echo $FV_Player_Video_Intelligence->version."\n"; echo "\n"; ?>

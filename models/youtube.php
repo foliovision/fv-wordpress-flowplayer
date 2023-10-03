@@ -144,7 +144,7 @@ class FV_Player_YouTube {
         $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
 
         if( isset($obj->error) && !empty($obj->error->message) ) {
-          update_option('fv_player_pro_youtube_error', date('r').": ".$obj->error->message, false );
+          update_option('fv_player_pro_youtube_error', gmdate('r').": ".$obj->error->message, false );
         }
 
         if( $obj && !empty($obj->items[0]) ) {

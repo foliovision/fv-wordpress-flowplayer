@@ -524,7 +524,7 @@ class FV_Player_Email_Subscription {
         'email' => wp_strip_all_tags($data['email']),
         'data' => serialize($data),
         'id_list'=> intval($list_id),
-        'date' => date("Y-m-d H:i:s"),
+        'date' => gmdate("Y-m-d H:i:s"),
         'first_name' => isset($data['first_name']) ? wp_strip_all_tags($data['first_name']) : '',
         'last_name' => isset($data['last_name']) ? wp_strip_all_tags($data['last_name']) : '',
         'integration' => $list['integration'],
@@ -544,7 +544,7 @@ class FV_Player_Email_Subscription {
         'email' => wp_strip_all_tags($data['email']),
         'data' => serialize($data),
         'id_list' => intval($list_id),
-        'date' => date("Y-m-d H:i:s"),
+        'date' => gmdate("Y-m-d H:i:s"),
         'first_name' => isset($data['first_name']) ? wp_strip_all_tags($data['first_name']) : '',
         'last_name' => isset($data['last_name']) ? wp_strip_all_tags($data['last_name']) : '',
         'integration' => $list['integration'],
@@ -564,7 +564,7 @@ class FV_Player_Email_Subscription {
     $list_id = intval($_GET['fv-email-export']);
     $aLists = get_option('fv_player_email_lists');
     $list = $aLists[$list_id];
-    $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . date('Y-m-d') . '.csv';
+    $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . gmdate('Y-m-d') . '.csv';
 
     header("Content-type: text/csv");
     header("Content-Disposition: attachment; filename=$filename");

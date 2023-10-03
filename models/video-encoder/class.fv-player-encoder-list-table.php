@@ -157,7 +157,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         }
         break;
       case 'date_created' :
-        $value = $job->date_created > 0 ? "<abbr title='$job->date_created'>".date('Y/m/d',strtotime($job->date_created))."</abbr>" : false;
+        $value = $job->date_created > 0 ? "<abbr title='$job->date_created'>".gmdate('Y/m/d',strtotime($job->date_created))."</abbr>" : false;
         break;
       case 'source':
         $nice_src = preg_replace( '~\?.+$~', '', $job->$column_name );

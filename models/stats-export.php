@@ -51,7 +51,7 @@ class FV_Player_Stats_Export {
     $user_email = $user->user_email;
 
     $header = array('User Email', 'Date', 'Player ID', 'Video URL', 'Video Title', 'Plays', 'Seconds Watched', 'Video Duration');
-    $filename = 'fv-player-stats-export-' . $user_email . '-' . date('Y-m-d') . '.csv';
+    $filename = 'fv-player-stats-export-' . $user_email . '-' . gmdate('Y-m-d') . '.csv';
 
     header("Content-type: text/csv");
     header("Content-Disposition: attachment; filename=$filename");

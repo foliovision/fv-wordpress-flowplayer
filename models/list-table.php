@@ -146,7 +146,7 @@ class FV_Player_List_Table extends WP_List_Table {
         $value = '<span class="fv_player_id_value" data-player_id="'. $id .'">' . $id . '</span>';
         break;
       case 'date_created' :
-        $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".date('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
+        $value = $player->date_created > 0 ? "<abbr title='$player->date_created'>".gmdate('Y/m/d',strtotime($player->date_created))."</abbr>" : false;
         break;
       case 'player_name' :
         $name = $player->player_name ? $player->player_name : join( ', ', $player->video_titles );

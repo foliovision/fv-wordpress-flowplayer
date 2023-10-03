@@ -144,7 +144,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
           'type' => 'file',
           'path' => 'Home/' . $video->title,
           'duration' => $video->length,
-          'modified' => date( $date_format, strtotime( $video->dateUploaded ) ),
+          'modified' => gmdate( $date_format, strtotime( $video->dateUploaded ) ),
           'width' => $video->width,
           'height' => $video->height,
           'extra' => array(),

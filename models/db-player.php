@@ -1025,7 +1025,6 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_keys   = array();
     $data_values = array();
 
-    // fill date(s)
     $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
     if (!$is_update && empty($this->date_created) ) {

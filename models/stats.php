@@ -212,7 +212,7 @@ class FV_Player_Stats {
 
       $json_error = json_last_error();
       if( $json_error !== JSON_ERROR_NONE ) {
-        //file_put_contents( ABSPATH . 'failed_json_decode.log', date('r')."\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND );
+        //file_put_contents( ABSPATH . 'failed_json_decode.log', gmdate('r')."\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND );
         return;
       }
 
@@ -621,7 +621,7 @@ class FV_Player_Stats {
     $dates_all = $dates_all + $years; // merge
     $dates_valid = array();
 
-    $this_year = (int) date( 'Y' );
+    $this_year = (int) gmdate( 'Y' );
     $last_year = $this_year - 1;
 
     foreach( $dates_all as $key => $value ) {
@@ -698,19 +698,19 @@ class FV_Player_Stats {
       $previous_week = strtotime("-1 week +1 day");
 
       // convert to datetime
-      $previous_week = date('Y-m-d', $previous_week);
+      $previous_week = gmdate('Y-m-d', $previous_week);
 
       // respect the start of week day by wordpress
       $start_end_week = get_weekstartend($previous_week);
 
-      $start_week = date('Y-m-d', $start_end_week['start']);
-      $end_week = date('Y-m-d', $start_end_week['end']);
+      $start_week = gmdate('Y-m-d', $start_end_week['start']);
+      $end_week = gmdate('Y-m-d', $start_end_week['end']);
 
       $date_range = "date BETWEEN '$start_week' AND '$end_week'";
 
     } else if( strcmp( 'this_month', $range ) === 0 ) { // this month
-      $this_month_start = date('Y-m-01');
-      $this_month_end = date('Y-m-t');
+      $this_month_start = gmdate('Y-m-01');
+      $this_month_end = gmdate('Y-m-t');
 
       $date_range = "date BETWEEN '$this_month_start' AND '$this_month_end'";
 
@@ -718,20 +718,20 @@ class FV_Player_Stats {
       $first_day_last_month = strtotime('first day of last month');
       $last_day_last_month = strtotime('last day of last month');
 
-      $last_month_start = date('Y-m-01', $first_day_last_month );
-      $last_month_end = date('Y-m-t', $last_day_last_month );
+      $last_month_start = gmdate('Y-m-01', $first_day_last_month );
+      $last_month_end = gmdate('Y-m-t', $last_day_last_month );
 
       $date_range = "date BETWEEN '$last_month_start' AND '$last_month_end'";
 
     } else if( strcmp( 'this_year', $range ) === 0 ) { // this year
-      $this_year_start = date('Y-01-01');
-      $this_year_end = date('Y-12-31');
+      $this_year_start = gmdate('Y-01-01');
+      $this_year_end = gmdate('Y-12-31');
 
       $date_range = "date BETWEEN '$this_year_start' AND '$this_year_end'";
 
     } else if( strcmp( 'last_year', $range ) === 0 ) { // last year
-      $last_year_start = date('Y-01-01', strtotime('-1 year'));
-      $last_year_end = date('Y-12-31', strtotime('-1 year'));
+      $last_year_start = gmdate('Y-01-01', strtotime('-1 year'));
+      $last_year_end = gmdate('Y-12-31', strtotime('-1 year'));
 
       $date_range = "date BETWEEN '$last_year_start' AND '$last_year_end'";
     } else if( is_numeric($range)) { // specific year like 2021
@@ -748,41 +748,41 @@ class FV_Player_Stats {
     $dates = array();
 
     if( strcmp( 'this_week', $range ) === 0 ) {
-      $end_day = date('Y-m-d', strtotime('today'));
-      $start_day = date('Y-m-d', strtotime('today - 7 days'));
+      $end_day = gmdate('Y-m-d', strtotime('today'));
+      $start_day = gmdate('Y-m-d', strtotime('today - 7 days'));
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'last_week', $range ) === 0 ) {
       $previous_week = strtotime("-1 week +1 day");
 
       // convert to datetime
-      $previous_week = date('Y-m-d', $previous_week);
+      $previous_week = gmdate('Y-m-d', $previous_week);
 
       // respect the start of week day by wordpress
       $start_end_week = get_weekstartend($previous_week);
 
-      $start_week = date('Y-m-d', $start_end_week['start']);
-      $end_week = date('Y-m-d', $start_end_week['end']);
+      $start_week = gmdate('Y-m-d', $start_end_week['start']);
+      $end_week = gmdate('Y-m-d', $start_end_week['end']);
 
       $dates = $this->get_days_between_dates( $start_week, $end_week );
     } else if( strcmp( 'this_month', $range ) === 0 ) {
-      $start_day = date('Y-m-01');
-      $end_day = date('Y-m-d');
+      $start_day = gmdate('Y-m-01');
+      $end_day = gmdate('Y-m-d');
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'last_month', $range ) === 0 ) {
       $first_day_last_month = strtotime('first day of last month');
       $last_day_last_month = strtotime('last day of last month');
 
-      $start_day = date('Y-m-01', $first_day_last_month );
-      $end_day = date('Y-m-t', $last_day_last_month );
+      $start_day = gmdate('Y-m-01', $first_day_last_month );
+      $end_day = gmdate('Y-m-t', $last_day_last_month );
 
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'this_year', $range ) === 0 ) {
-      $start_day = date('Y-01-01');
-      $end_day = date('Y-m-d');
+      $start_day = gmdate('Y-01-01');
+      $end_day = gmdate('Y-m-d');
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'last_year', $range ) === 0 ) {
-      $start_day = date('Y-01-01', strtotime('-1 year'));
-      $end_day = date('Y-12-31', strtotime('-1 year'));
+      $start_day = gmdate('Y-01-01', strtotime('-1 year'));
+      $end_day = gmdate('Y-12-31', strtotime('-1 year'));
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( is_numeric($range) ) { // get dates for specific year like 2021
       $start_day = $range . '-01-01';
@@ -801,7 +801,7 @@ class FV_Player_Stats {
     $oldest_year = (int) $wpdb->get_var("SELECT YEAR(date) FROM {$wpdb->prefix}fv_player_stats ORDER BY id ASC LIMIT 1");
 
     // add every year from oldest to current, when oldest is 2021 and current is 2025, it will add 2021, 2022, 2023, 2024, 2025
-    for( $i = $oldest_year; $i <= date('Y'); $i++ ) {
+    for( $i = $oldest_year; $i <= gmdate('Y'); $i++ ) {
       $j = strval($i);
       $years[$j] = $j;
     }
@@ -819,7 +819,7 @@ class FV_Player_Stats {
     $end = strtotime($end_day);
 
     while( $current <= $end ) {
-      $dates[] = date('Y-m-d', $current);
+      $dates[] = gmdate('Y-m-d', $current);
       $current = strtotime('+1 day', $current);
     }
 

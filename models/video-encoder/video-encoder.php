@@ -634,7 +634,7 @@ abstract class FV_Player_Video_Encoder {
 
     // first we instert the table row with basic data and remember the row ID
     $wpdb->insert(  $this->table_name, array(
-      'date_created' => date("Y-m-d H:i:s"),
+      'date_created' => gmdate("Y-m-d H:i:s"),
       'id_video' => $args['id_video'],
       'source' => $args['source'],
       'target' => $args['target'],

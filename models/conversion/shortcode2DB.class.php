@@ -484,7 +484,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
     global $wpdb;
 
-    $filename = $this->slug . '-export-' . date('Y-m-d') . '.csv';
+    $filename = $this->slug . '-export-' . gmdate('Y-m-d') . '.csv';
 
     header('Content-type: text/csv');
     header("Content-Disposition: attachment; filename=$filename");

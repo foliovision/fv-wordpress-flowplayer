@@ -98,7 +98,7 @@ Class FvPlayerTrackerWorker {
 
           $json_error = json_last_error();
           if( $json_error !== JSON_ERROR_NONE ) {
-            file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r')." JSON decode error:\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND ); // todo: remove
+            file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r')." JSON decode error:\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND ); // todo: remove
             ftruncate( $this->file, 0 );
             return false;
           }
@@ -113,7 +113,7 @@ Class FvPlayerTrackerWorker {
 
           $json_error = json_last_error();
           if( $json_error !== JSON_ERROR_NONE ) {
-            file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r')." JSON decode error for watched:\n".var_export( array( 'err' => $json_error, 'data' => $this->watched ), true )."\n", FILE_APPEND ); // todo: remove
+            file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r')." JSON decode error for watched:\n".var_export( array( 'err' => $json_error, 'data' => $this->watched ), true )."\n", FILE_APPEND ); // todo: remove
             return false;
           }
 
@@ -218,7 +218,7 @@ Class FvPlayerTrackerWorker {
     $this->guest_user_id = $guest_user_id;
 
     if( ! $this->incrementCacheCounter() ) {
-      file_put_contents( $this->wp_content.'/fv-player-track-error.log', date('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
+      file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
     }
 
     fclose( $this->file );

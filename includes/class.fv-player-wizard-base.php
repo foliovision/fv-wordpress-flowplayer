@@ -101,7 +101,7 @@ abstract class FV_Player_Wizard_Base_Class {
     $args = wp_parse_args( $args, array(
       'title' => false,
       'message' => false,
-      'date' => date('r'),
+      'date' => gmdate('r'),
       'status' => 'info',
       'time' => time()
     ));

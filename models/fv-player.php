@@ -1708,7 +1708,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     ob_start();
     $this->css_generate(true);
 
-    $sCSS = "\n\n/*CSS writeout performed on FV Player Settings save  on ".date('r')."*/\n".ob_get_clean();
+    $sCSS = "\n\n/*CSS writeout performed on FV Player Settings save  on ".gmdate('r')."*/\n".ob_get_clean();
     if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/freedomplayer.min.css' ) ) {
       return false;
     }
@@ -1719,7 +1719,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !$wp_filesystem->put_contents( $filename, "/*\n * FV Player custom styles\n *\n * Warning: This file should not to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n */\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
       return false;
     } else {
-      $aOptions[$this->css_option()] = date('U');
+      $aOptions[$this->css_option()] = gmdate('U');
       update_option( 'fvwpflowplayer', $aOptions );
       $this->_get_conf();
     }

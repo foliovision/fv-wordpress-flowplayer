@@ -2089,7 +2089,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         'player_name' => $player->player_name,
         'video_titles' => $player->video_titles,
         'thumbs' => $player->thumbs,
-        'date_created' => date( get_option( 'date_format' ), strtotime( $player->date_created ) ),
+        'date_created' => gmdate( get_option( 'date_format' ), strtotime( $player->date_created ) ),
         'embeds' => $player->embeds,
       );
     }
