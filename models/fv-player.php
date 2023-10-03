@@ -20,9 +20,15 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
-require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
+if( file_exists( dirname(__FILE__) . '/../includes/fp-api.php') ) {
+  require_once( dirname(__FILE__) . '/../includes/fp-api.php' );
+}
 
-class flowplayer extends FV_Wordpress_Flowplayer_Plugin {
+if( file_exists( dirname(__FILE__) . '/../includes/fp-api-private.php') ) {
+  require_once( dirname(__FILE__) . '/../includes/fp-api-private.php' );
+}
+
+class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   private $count = 0;
   /**
    * Relative URL path
