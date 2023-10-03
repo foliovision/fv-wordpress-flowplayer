@@ -262,6 +262,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
 
     $where = count($aWhere) ? " AND ".implode( " AND ", $aWhere ) : "";
 
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->table_name} WHERE type = %s {$where}", $this->encoder_id ) );
   }
   

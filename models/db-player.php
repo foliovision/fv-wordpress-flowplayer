@@ -567,6 +567,8 @@ CREATE TABLE " . self::$db_table_name . " (
         // Is there such column?
         if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
           if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, $from ) ) ) {
+
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
           }
         }
@@ -1074,6 +1076,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));
 
     if (!$is_update) {

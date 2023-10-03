@@ -294,9 +294,11 @@ class FV_Xml_Video_Sitemap {
       global $wpdb;
       
       // grouped by year and month, each row is year, month, count
+      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
       $years_and_months = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
       
       if( $this->get_meta_keys() ) { // if we have some postmeta values to process
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $years_and_months_meta = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts  FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN('post') AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').") GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
         
         if( $years_and_months_meta ) { // we have to marge these year, month, count rows into one array
@@ -387,9 +389,11 @@ class FV_Xml_Video_Sitemap {
         $date_query = " year(post_date) = ".$year." AND ";
       }
       
+      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
       $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
       
       if( $this->get_meta_keys() ) {
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $videos_meta = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').")" );
         $videos = array_merge($videos,$videos_meta);
       }
@@ -461,8 +465,10 @@ class FV_Xml_Video_Sitemap {
     
     $date_query = !empty($objYear->month) ? " AND month(post_date) = ".intval($objYear->month) : false;    
     
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $last_modified = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
     if( $this->get_meta_keys() ) {
+      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
       $last_modified_meta = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').") AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
       
       if( strtotime($last_modified_meta) > strtotime($last_modified) ) $last_modified = $last_modified_meta;

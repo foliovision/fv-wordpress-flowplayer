@@ -416,6 +416,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
 
   function set_pointer_checked() {
     // check if we are on the right page
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     if( isset($_GET['page'] ) && $_GET['page'] == $this->screen ) {
       $conf = get_option( 'fvwpflowplayer' );
 

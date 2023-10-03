@@ -98,6 +98,7 @@ Class FvPlayerTrackerWorker {
 
           $json_error = json_last_error();
           if( $json_error !== JSON_ERROR_NONE ) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
             file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r')." JSON decode error:\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND ); // todo: remove
             ftruncate( $this->file, 0 );
             return false;
@@ -113,6 +114,7 @@ Class FvPlayerTrackerWorker {
 
           $json_error = json_last_error();
           if( $json_error !== JSON_ERROR_NONE ) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
             file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r')." JSON decode error for watched:\n".var_export( array( 'err' => $json_error, 'data' => $this->watched ), true )."\n", FILE_APPEND ); // todo: remove
             return false;
           }
@@ -193,6 +195,7 @@ Class FvPlayerTrackerWorker {
    * @return void
    */
   function track() {
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
     $this->file = fopen( $this->cache_path."/".$this->cache_filename, 'r+');
 
     $options = get_option('fvwpflowplayer');
@@ -218,9 +221,11 @@ Class FvPlayerTrackerWorker {
     $this->guest_user_id = $guest_user_id;
 
     if( ! $this->incrementCacheCounter() ) {
+      // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
       file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
     }
 
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
     fclose( $this->file );
   }
 }

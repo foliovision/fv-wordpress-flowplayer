@@ -264,6 +264,7 @@ class FV_Player_Db {
         $query .= ' WHERE author = ' . intval( $author_id );
       }
 
+      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
       $total = $wpdb->get_row( $query );
       if ( $total ) {
         $total = $total->Total;
@@ -1609,11 +1610,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       $group_order = ' GROUP BY p.id'.$order.$limit;
     }
 
-    $player_data = $wpdb->get_results('SELECT
-'.$select.$meta_counts_select.'
-FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
-'.$meta_counts_join.$post_type_join.$tax_join.$where.$group_order);
-
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+    $player_data = $wpdb->get_results('SELECT ' . $select . $meta_counts_select . ' FROM `' . FV_Player_Db_Player::get_db_table_name() . '` AS p ' . $meta_counts_join . $post_type_join . $tax_join . $where . $group_order );
 
     if($args['count']) {
       return intval($player_data[0]->row_count);
@@ -2304,6 +2302,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
 
     $query = "SELECT v.* FROM `{$video_table}` AS v JOIN `{$player_table}` AS p ON FIND_IN_SET(v.id, p.videos) WHERE $where ORDER BY v.id DESC";
 
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $video_data = $wpdb->get_results($query);
 
     if (!$video_data) {

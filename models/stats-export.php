@@ -38,6 +38,7 @@ class FV_Player_Stats_Export {
         ORDER BY s.id DESC",
       $user_id);
 
+      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
       $results = $wpdb->get_results( $query , ARRAY_A);
 
       $this->serve_csv($results, $user_id);
@@ -65,6 +66,7 @@ class FV_Player_Stats_Export {
       fputcsv($fp, $row);
     }
 
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
     fclose($fp);
     die();
   }

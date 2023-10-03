@@ -487,6 +487,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));
 
     if (!$is_update) {

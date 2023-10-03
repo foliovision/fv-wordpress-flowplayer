@@ -417,6 +417,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
           $limit = '';
 
+          // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
           $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
 
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
@@ -619,11 +620,13 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if ( $like ) {
       $row = $wpdb->get_row(
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src LIKE %s ORDER BY id DESC", '%' . $wpdb->esc_like( $this->src ) . '%' )
       );
 
     } else {
       $row = $wpdb->get_row(
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src = %s ORDER BY id DESC", $this->src )
       );
     }
@@ -1226,6 +1229,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));
 
     if (!$is_update) {

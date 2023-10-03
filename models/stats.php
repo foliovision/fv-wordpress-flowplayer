@@ -327,8 +327,11 @@ class FV_Player_Stats {
 
         if( get_current_blog_id() != $blog_id ) continue;
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
         $fp = fopen( $this->cache_directory."/".$filename, 'r+');
         $this->process_cached_data( $fp, $type );
+
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
         fclose( $fp );
       }
     }
@@ -1088,6 +1091,7 @@ WHERE vm.meta_key = 'stats_play'
   $where
   ORDER BY CAST(vm.meta_value AS unsigned) DESC;";
 
+  // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
   $raw = $wpdb->get_results($sql);
 
   // sice there might be multiple players for a single post_id we count these together
