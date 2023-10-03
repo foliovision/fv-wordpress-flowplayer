@@ -140,7 +140,7 @@ class Batch
 
         if ($args) {
             $key = ($http_verb == 'GET' ? 'params' : 'body');
-            $operation[$key] = json_encode($args);
+            $operation[$key] = wp_json_encode($args);
         }
 
         $this->operations[] = $operation;
