@@ -963,6 +963,7 @@ a.fp-youtube-title {
   border-radius: 50%;
   height: 40px;
   width: 40px;
+  min-width: 40px;
 }
 .flowplayer .fp-youtube-logo {
   bottom: 2.5em;
