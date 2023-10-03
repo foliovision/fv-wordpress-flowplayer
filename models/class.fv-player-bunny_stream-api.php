@@ -6,15 +6,11 @@ class FV_Player_Bunny_Stream_API {
 
   public function __construct( $access_key = null ) {
     global $fv_fp;
-
     if ( $access_key ) {
       $this->access_key = $access_key;
     } else {
       // if we don't have an access key, try to get it from Bunny Stream config
       $this->access_key = $fv_fp->_get_option( array('bunny_stream','api_key') );
-      if ( !$this->access_key ) {
-        throw new Exception('Bunny.net API class did not receive an API key and could not detect a stored one in the configuration.');
-      }
     }
   }
 
