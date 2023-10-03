@@ -503,7 +503,8 @@ function fv_player_splashcreen_action() {
 
     // $hashed_filename = md5( $filename . microtime() ) . '_' . $filename;
 
-    $image_upload = file_put_contents( $upload_path . $filename, $decoded );
+    global $wp_filesystem;
+    $wp_filesystem->put_contents( $upload_path . $filename, $decoded );
 
     // Handle upload file
     if( !function_exists( 'wp_handle_sideload' ) ) {
