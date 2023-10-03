@@ -569,6 +569,8 @@ function fvplayer_watched( $args = array() ) {
 
   $actual_video_ids = array_filter( array_keys($video_ids), 'is_numeric' );
 
+  $video_ids_sql = implode( ',', array_map( 'intval', $actual_video_ids ) );
+
   global $wpdb;
   $videos2durations = $wpdb->get_results( $wpdb->prepare( "
     SELECT v.id AS video_id, vm.meta_value AS duration FROM
@@ -576,7 +578,7 @@ function fvplayer_watched( $args = array() ) {
     JOIN {$wpdb->prefix}fv_player_videometa AS vm
       ON v.id = vm.id_video
     WHERE
-      v.id IN (".implode( ',', $actual_video_ids ).") AND
+      v.id IN ({$video_ids_sql}) AND
       vm.meta_key = 'duration'" ) );
 
   $html = "<ul>\n";

@@ -567,8 +567,6 @@ CREATE TABLE " . self::$db_table_name . " (
         // Is there such column?
         if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
           if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, $from ) ) ) {
-
-          if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = '" . $from ."'" ) ) {
             $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
           }
         }
