@@ -258,46 +258,6 @@ function fv_player_admin_pointer_boxes() {
     );
   }
 
-  if( !$fv_fp->_get_option('notice_7_5') ) {
-    $fv_fp->pointer_boxes['fv_flowplayer_notice_7_5'] = array(
-      'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_flowplayer_notice_7_5',
-      'heading' => __('FV Player 7.5', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>This new version includes several improvements:</p>
-      <ul style='list-style-type: revert; margin-left: 3em'>
-        <li>Editor autosave and preview improvements</li>
-        <li>FV Player Video Play Stats</li>
-        <li>Improved player JavaScript loading</li>
-        <li>Multiple video playback improvements</li>
-      </ul>
-      <p>You can read more about it in our <a href='https://foliovision.com/?p=137472' target='_blank'>blog announcement</a>.</p>", 'fv-wordpress-flowplayer'),
-      'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
-    );
-  }
-
-  if( !$fv_fp->_get_option('notice_new_lightbox') ) {
-    $fv_fp->pointer_boxes['fv_flowplayer_new_lightbox'] = array(
-      'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_flowplayer_new_lightbox',
-      'heading' => __('FV Player Video Lightbox', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>The lightbox technology has been changed from <a href='http://www.jacklmoore.com/colorbox/' target='_blank'>Colorbox</a> to <a href='https://fancyapps.com/fancybox/3/' target='_blank'>fancyBox</a></p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. You can check <a href='https://foliovision.com/player/demos/fv-flowplayer-lightbox' target='_blank'>our FV Player demo page</a> of it too.</p>", 'fv-wordpress-flowplayer'),
-      'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
-    );
-  }
-
-  if( !$fv_fp->_get_option('notice_db') ) {
-    $fv_fp->pointer_boxes['fv_flowplayer_db'] = array(
-      'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_flowplayer_db',
-      'heading' => __('FV Player database storage is here!', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>Any new or updated FV Player instances will be stored in database. This simplifies the shortcodes and increases FV Player reliability. You can read the full announcement <a href='https://foliovision.com/2018/11/video-database/' target='_blank'>here</a></p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Advanced users can keep using the old shortcodes, but from now on the FV Player editor works with database only.</p>", 'fv-wordpress-flowplayer'),
-      'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer')
-    );
-  }
-
   if( $fv_fp->_get_option('video_sitemap') && !$fv_fp->_get_option('disableembedding') && !$fv_fp->_get_option('notice_xml_sitemap_iframes') ) {
     $fv_fp->pointer_boxes['fv_flowplayer_notice_xml_sitemap_iframes'] = array(
       'id' => '#wp-admin-bar-new-content',
@@ -311,18 +271,23 @@ function fv_player_admin_pointer_boxes() {
     );
   }
 
-  if( !$fv_fp->_get_option('notice_db') && !$fv_fp->_get_option('nag_fv_player_7') ) {
-    $fv_fp->pointer_boxes['fv_flowplayer_fv_player_7'] = array(
+  if( !$fv_fp->_get_option('nag_fv_player_8') ) {
+    $fv_fp->pointer_boxes['fv_flowplayer_fv_player_8'] = array(
       'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_flowplayer_fv_player_7',
-      'heading' => __('FV Player 7', 'fv-wordpress-flowplayer'),
-      'content' => '<p>Welcome to the brand new FV Player 7! Improvements include:</p>'.
-        '<ul style="list-style: circle; padding-left: 3em;"><li>New player design and skin options</li>
-<li>New Flowplayer core video engine</li>
-<li>Support for autoplay on latest Chrome and Safari versions</li>
-<li>Support for autoplay on mobile</li>
-<li>New lightbox look</li>
-<li>Improved video buffering</li></ul>'.
+      'pointerClass' => 'fv_flowplayer_fv_player_8',
+      'heading' => __('FV Player 8', 'fv-wordpress-flowplayer'),
+      'content' => '<p>Welcome to the brand new FV Player 8! Improvements include:</p>'.
+        '<ul style="list-style: circle; padding-left: 3em;">
+<li>New mobile controls</li>
+<li>New editor interface</li>
+<li>Proper Gutenberg block</li>
+<li>Autoplay respects user scroll position</li>
+<li>Two new playlist styles</li>
+<li>Shortcodes and video links converted to database entries on post save</li>
+<li>PageSpeed Score improvements</li>
+<li>Increased compatibility and performance</li>
+<li>User Video Positions stored in separate database table</li>
+</ul>'.
         '<p>More information in our <a href="https://foliovision.com/2018/09/fv-player-7" target="_blank">blog announcement</a>.</p>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
@@ -344,20 +309,6 @@ function fv_player_admin_pointer_boxes() {
       'button2' => __('I\'ll check this later', 'fv-wordpress-flowplayer')
     );
   }
-
-  /*if( !$fv_fp->_get_option('disable_video_hash_links') && !$fv_fp->_get_option('notification_video_links') ) {
-    $fv_fp->pointer_boxes['fv_player_notification_video_links'] = array(
-      'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_player_notification_video_links',
-      'heading' => __('FV Player Video Links', 'fv-wordpress-flowplayer'),
-      'content' => $fv_fp->_get_option('disableembedding') ? __("<p>Now you can enable Video Links to allow people to share exact location in your videos. Clicking that link gives them a link to play that video at the exact time.</p>", 'fv-wordpress-flowplayer') : __("<p>Each video player now contains a link in the top bar. Clicking that link gives your visitors a link to play that video at the exact time where they are watching it.</p>", 'fv-wordpress-flowplayer'),
-      'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Open Settings', 'fv-wordpress-flowplayer'),
-      'button2' => __('Dismiss', 'fv-wordpress-flowplayer')
-    );
-
-    add_action( 'admin_print_footer_scripts', 'fv_player_pointer_scripts' );
-  }*/
 }
 
 
@@ -399,12 +350,8 @@ function fv_wp_flowplayer_pointers_ajax() {
   }
 
   $notices = array(
-    'fv_flowplayer_notice_7_5'                 => 'notice_7_5',
-    'fv_flowplayer_new_lightbox'               => 'notice_new_lightbox',
     'fv_flowplayer_notice_xml_sitemap_iframes' => 'notice_xml_sitemap_iframes',
-    'fv_flowplayer_db'                         => 'notice_db',
-    'fv_flowplayer_fv_player_7'                => 'nag_fv_player_7',
-    'fv_player_notification_video_links'       => 'notification_video_links',
+    'fv_flowplayer_fv_player_8'                => 'nag_fv_player_8',
   );
 
   if( isset($_POST['key']) && isset($_POST['value']) && in_array($_POST['key'], array_keys($notices) ) ) {
@@ -418,25 +365,6 @@ function fv_wp_flowplayer_pointers_ajax() {
   }
 
 }
-
-
-
-
-function fv_player_pointer_scripts() {
-  ?>
-  <script>
-    (function ($) {
-      $(document).on('click', '.fv_player_notification_video_links .button-primary', function(e) {
-        $(document).ajaxComplete( function() {
-          window.location = '<?php echo site_url('wp-admin/options-general.php?page=fvplayer'); ?>#playlist_advance';
-        });
-      });
-    })(jQuery);
-  </script>
-  <?php
-}
-
-
 
 
 /*
