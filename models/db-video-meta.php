@@ -220,7 +220,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
           // select from DB if not cached yet
           if (!$is_cached) {
-            $query_ids[ $id_key ] = (int) $id_value;
+            $query_ids[ $id_key ] = $id_value;
           }
 
           $id[$id_key] = (int) $id_value;
@@ -228,7 +228,14 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (count($query_ids)) {
           // load multiple video metas via their IDs but a single query and return their values
-          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE ' . ( $load_for_video ? 'id_video' : 'id' ) . ' IN(' . implode( ',', $query_ids ) . ')' );
+          $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
+
+          $db_table_name = self::$db_table_name;
+          if ( $load_for_video ) {
+            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id_video IN( {$query_ids_joined} )" );
+          } else {
+            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id IN( {$query_ids_joined} )" );
+          }
 
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
@@ -283,7 +290,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single video meta data record
-          $meta_data = $wpdb->get_row( $wpdb->query( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . intval($id) ) );
+          $db_table_name = self::$db_table_name;
+          $meta_data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM {$db_table_name} WHERE id = %d', $id ) );
 
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
@@ -451,7 +459,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $sql .= implode(', ', $data_keys);
 
     if ($is_update) {
-      $sql .= ' WHERE id = ' . $this->id;
+      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));

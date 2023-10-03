@@ -319,11 +319,11 @@ CREATE TABLE " . self::$db_table_name . " (
     $meta_table = $wpdb->prefix.'fv_player_videometa';
 
     if( $fv_fp->_get_option('video_model_db_updated') != '7.9.3' ) {
-      if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = 'caption'" ) ) {
-        $res = $wpdb->query( "UPDATE `" . $table . "` SET title = caption WHERE title = '' AND caption != ''" );
+      if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = 'caption'", $table ) ) ) {
+        $res = $wpdb->query( "UPDATE `{$table}` SET title = caption WHERE title = '' AND caption != ''" );
       }
 
-      if( $wpdb->get_var("SHOW TABLES LIKE '$meta_table'") == $meta_table ) {
+      if( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $meta_table ) ) == $meta_table ) {
       // update duration
       $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
 
@@ -401,17 +401,17 @@ CREATE TABLE " . self::$db_table_name . " (
         $query_ids = array();
         foreach ($id as $id_key => $id_value) {
           if (!isset($cache[$id_value])) {
-            $query_ids[ $id_key ] = (int) $id_value;
+            $query_ids[ $id_key ] = $id_value;
           }
 
-          $id[ $id_key ] = (int) $id_value;
+          $id[ $id_key ] = $id_value;
         }
 
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
           $select = '*';
 
-          $where = ' WHERE id IN('. implode(',', $query_ids).') ';
+          $where = ' WHERE id IN('. implode(',', array_map( 'intval', $query_ids ) ).') ';
 
           $order = '';
 
@@ -427,15 +427,9 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       } else {
         if (!isset($cache[$id])) {
-          // load a single video
-          $video_data = $wpdb->get_row( '
-          SELECT
-            *
-          FROM
-            ' . self::$db_table_name . '
-          WHERE
-            id = ' . intval($id)
-          );
+          $db_table_name = self::$db_table_name;
+          $video_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ) );
+
         } else {
           $all_cached = true;
         }
@@ -621,8 +615,18 @@ CREATE TABLE " . self::$db_table_name . " (
     _deprecated_function( __FUNCTION__, '7.5.22', 'FV_Player_Db::query_videos' );
 
     global $wpdb;
+    $db_table_name = self::$db_table_name;
 
-    $row = $wpdb->get_row("SELECT ". ($fields ? esc_sql($fields) : '*') ." FROM `" . self::$db_table_name . "` WHERE `src` ". ($like ? 'LIKE "%'.esc_sql($this->src).'%"' : '="'.esc_sql($this->src).'"') ." ORDER BY id DESC");
+    if ( $like ) {
+      $row = $wpdb->get_row(
+        $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src LIKE %s ORDER BY id DESC", '%' . $wpdb->esc_like( $this->src ) . '%' )
+      );
+
+    } else {
+      $row = $wpdb->get_row(
+        $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src = %s ORDER BY id DESC", $this->src )
+      );
+    }
 
     if (!$row) {
       return false;
@@ -1219,7 +1223,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $sql .= implode(',', $data_keys);
 
     if ( $is_update ) {
-      $sql .= ' WHERE id = ' . $this->id;
+      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));

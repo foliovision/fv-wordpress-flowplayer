@@ -253,15 +253,16 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     global $wpdb;
 
     $aWhere = array();
-    $aWhere[] = "type = '{$this->encoder_id}'";
     if( !empty($_GET['s']) ) {
-      $search = sanitize_text_field($_GET['s']);
-      $aWhere[] = "source LIKE '%".$search."%'";
+      $aWhere[] = $wpdb->prepare(
+        "source LIKE %s",
+        '%' . $wpdb->esc_like( $_GET['s'] ) . '%'
+      );
     }
 
-    $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
+    $where = count($aWhere) ? " AND ".implode( " AND ", $aWhere ) : "";
 
-    $this->total_items = $wpdb->get_var( "SELECT COUNT(*) FROM ".$this->table_name." ".$where );
+    $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->table_name} WHERE type = %s {$where}", $this->encoder_id ) );
   }
   
   public function get_columns() {
@@ -320,18 +321,13 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     $offset = ( $args['paged'] - 1 ) * $per_page;
 
     global $wpdb;
-    $sql = "SELECT * FROM {$this->table_name} $where ORDER BY $order_by $order LIMIT $offset, $per_page";
+    $results = $wpdb->get_results( "SELECT * FROM {$this->table_name} $where ORDER BY $order_by $order LIMIT $offset, $per_page" );
 
     // get embeded players using id from job
-    $sql_2 = "SELECT j.id, m.id_video, p.id AS player_id FROM {$this->table_name} AS j
+    $playlist_embed = $wpdb->get_results( "SELECT j.id, m.id_video, p.id AS player_id FROM {$this->table_name} AS j
       JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON j.id = m.meta_value
       JOIN `{$wpdb->prefix}fv_player_players` AS p ON find_in_set(p.videos,m.id_video) > 0
-      WHERE m.meta_key = 'encoding_job_id'";
-    //echo "<pre>".$sql."</pre>";
-    
-    $results = $wpdb->get_results($sql);
-
-    $playlist_embed = $wpdb->get_results($sql_2);
+      WHERE m.meta_key = 'encoding_job_id'" );
 
     // add player id(s) to results
     foreach( $results AS $key => $row ) {

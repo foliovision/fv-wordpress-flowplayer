@@ -553,7 +553,7 @@ CREATE TABLE " . self::$db_table_name . " (
       $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
       // enable toggle ad custom
-      if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = 'ad'" ) ) {
+      if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = 'ad'", $table ) ) ) {
         $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
       }
 
@@ -566,6 +566,8 @@ CREATE TABLE " . self::$db_table_name . " (
       ) as $from => $to ) {
         // Is there such column?
         if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
+          if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, $from ) ) ) {
+
           if ( $wpdb->get_results( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . $table . "' AND column_name = '" . $from ."'" ) ) {
             $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
           }
@@ -678,15 +680,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
       if ($DB_Cache && !$DB_Cache->isPlayerCached($id)) {
         // load a single video
-        $player_data = $wpdb->get_row('
-        SELECT
-          *
-        FROM
-          '.self::$db_table_name.'
-        WHERE
-          id = '.intval($id),
-          ARRAY_A
-        );
+        $db_table_name = self::$db_table_name;
+        $player_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ), ARRAY_A );
+
       } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
         $all_cached = true;
       } else {
@@ -1077,7 +1073,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $sql .= implode(',', $data_keys);
 
     if ($is_update) {
-      $sql .= ' WHERE id = ' . $this->id;
+      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));
@@ -1200,7 +1196,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
-        if( $wpdb->get_var("select count(*) from ".self::$db_table_name." where FIND_IN_SET(".$video->getId().",videos)") > 1 ) continue; // only delete videos which are used for this particular player and no other player
+        // only delete videos which are used for this particular player and no other player
+        $db_table_name = self::$db_table_name;
+        if( $wpdb->get_var( $wpdb->prepare( "select count(*) from {$db_table_name} where FIND_IN_SET( %d, videos )", $video->getId() ) ) > 1 ) {
+          continue; 
+        }
 
         $video->delete();
 

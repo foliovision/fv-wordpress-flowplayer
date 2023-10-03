@@ -75,7 +75,7 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
       $affected_fields = array();
       foreach( array( 'src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) {
         $affected_fields[$field] = $wpdb->query( $wpdb->prepare(
-          "UPDATE `{$wpdb->prefix}fv_player_videos` SET {$field} = REPLACE( {$field}, '%s', '%s' ) WHERE {$field} LIKE %s",
+          "UPDATE `{$wpdb->prefix}fv_player_videos` SET {$field} = REPLACE( {$field}, %s, %s ) WHERE {$field} LIKE %s",
           $search_string,
           $replace_string,
           '%' . $wpdb->esc_like($search_string) . '%'
@@ -83,7 +83,7 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
       }
 
       $affected_fields['meta_value'] = $wpdb->query( $wpdb->prepare(
-        "UPDATE `{$wpdb->prefix}fv_player_videometa` SET meta_value = REPLACE( meta_value, '%s', '%s' ) WHERE meta_value LIKE %s AND meta_value NOT REGEXP '^(a|s|O):[0-9]:'",
+        "UPDATE `{$wpdb->prefix}fv_player_videometa` SET meta_value = REPLACE( meta_value, %s, %s ) WHERE meta_value LIKE %s AND meta_value NOT REGEXP '^(a|s|O):[0-9]:'",
         $search_string,
         $replace_string,
         '%' . $wpdb->esc_like($search_string) . '%'

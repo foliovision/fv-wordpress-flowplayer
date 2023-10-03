@@ -474,10 +474,11 @@ function fv_wp_flowplayer_delete_extensions_transients( $delete_delay = false ){
   global $wpdb;
   $aWhere = array();
   foreach( $aTransientsLike AS $sKey ) {
-    $aWhere[] = 'option_name LIKE "%'.$sKey.'%"';
+    $aWhere[] = $wpdb->prepare( 'option_name LIKE %s', '%' . $wpdb->esc_like( $sKey) . '%' );
   }
   $sWhere = implode(" OR ", $aWhere);
-  $aOptions = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '%_transient_fv%' AND ( ".$sWhere." )" );
+
+  $aOptions = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE '%_transient_fv%' AND ( {$sWhere} )" );
 
   foreach( $aOptions AS $sKey ) {
     if( !$delete_delay ){

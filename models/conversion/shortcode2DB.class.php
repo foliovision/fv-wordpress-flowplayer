@@ -78,7 +78,9 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     global $wpdb;
 
     // Each row is the matching wp_posts row or wp_posts row with matching meta_value
-    $results = $wpdb->get_results( "SELECT SQL_CALC_FOUND_ROWS  ID, post_author, post_date_gmt, post_status, post_title, post_type, post_content FROM {$wpdb->posts} AS p JOIN {$wpdb->postmeta} AS m ON p.ID = m.post_id WHERE post_status NOT IN ('inherit','trash') AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") AND post_type NOT IN ('topic','reply') OR (meta_value LIKE " . implode(' OR meta_value LIKE ',$this->matchers) . " ) AND meta_key NOT LIKE '%_fv_player_%_backup_%' ANd meta_key NOT LIKE '%_fv_player_%_failed' GROUP BY ID ORDER BY post_date_gmt DESC LIMIT {$offset},{$limit}");
+    $results = $wpdb->get_results(
+      $wpdb->prepare( "SELECT SQL_CALC_FOUND_ROWS  ID, post_author, post_date_gmt, post_status, post_title, post_type, post_content FROM {$wpdb->posts} AS p JOIN {$wpdb->postmeta} AS m ON p.ID = m.post_id WHERE post_status NOT IN ('inherit','trash') AND (post_content LIKE " . implode(' OR post_content LIKE ', $this->matchers) . ") AND post_type NOT IN ('topic','reply') OR (meta_value LIKE " . implode(' OR meta_value LIKE ',$this->matchers) . " ) AND meta_key NOT LIKE '%_fv_player_%_backup_%' ANd meta_key NOT LIKE '%_fv_player_%_failed' GROUP BY ID ORDER BY post_date_gmt DESC LIMIT %d, %d", $offset, $limit )
+    );
 
     return $results;
   }
@@ -493,9 +495,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
     $meta_key = '_fv_player_' . $this->slug . '_failed';
 
-    $sql = $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = '%s' ORDER BY {$wpdb->posts}.post_date_gmt DESC ", $meta_key );
-
-    $results = $wpdb->get_col( $sql );
+    $results = $wpdb->get_col( $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = %s ORDER BY {$wpdb->posts}.post_date_gmt DESC ", $meta_key ) );
 
     if( !empty( $results ) ) {
       $fp = fopen('php://output', 'wb');

@@ -180,17 +180,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // first, check if we're not trying to search for a meta item from the database
     if (is_array($options) && count($options) && !empty($options['meta_find_player'])) {
-      $db_data = $wpdb->get_row('
-          SELECT
-            id_player
-          FROM
-            '.self::$db_table_name.'
-          WHERE
-            meta_key = "'.esc_sql($options['meta_find_player']['key']).'"
-            AND
-            meta_value = "'.esc_sql($options['meta_find_player']['value']).'"',
-        ARRAY_A
-      );
+      $db_table_name = self::$db_table_name;
+      $db_data = $wpdb->get_row( $wpdb->prepare( "SELECT id_player FROM {$db_table_name} WHERE meta_key = %s AND meta_value = %s", $options['meta_find_player']['key'], $options['meta_find_player']['value'] ), ARRAY_A );
 
       unset($options['meta_find_player']);
 
@@ -250,7 +241,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
           // select from DB if not cached yet
           if (!$is_cached) {
-            $query_ids[ $id_key ] = (int) $id_value;
+            $query_ids[ $id_key ] = $id_value;
           }
 
           $id[$id_key] = (int) $id_value;
@@ -258,7 +249,14 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (count($query_ids)) {
           // load multiple player metas via their IDs but a single query and return their values
-          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE ' . ( $load_for_player ? 'id_player' : 'id' ) . ' IN(' . implode( ',', $query_ids ) . ')' );
+          $db_table_name = self::$db_table_name;
+          $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
+
+          if ( $load_for_player ) {
+            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id_player IN( {$query_ids_joined} )" );
+          } else {
+            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id IN( {$query_ids_joined} )" );
+          }
 
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
@@ -313,7 +311,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single player meta data record
-          $meta_data = $wpdb->get_results( 'SELECT * FROM ' . self::$db_table_name . ' WHERE id = ' . intval($id) );
+          $db_table_name = self::$db_table_name;
+          $meta_data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ) );
           
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
@@ -485,7 +484,7 @@ CREATE TABLE " . self::$db_table_name . " (
     $sql .= implode(', ', $data_keys);
 
     if ($is_update) {
-      $sql .= ' WHERE id = ' . $this->id;
+      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
     }
 
     $wpdb->query( $wpdb->prepare( $sql, $data_values ));

@@ -1010,7 +1010,15 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
     $user_meta = array();
   }
   if( !isset($user_meta[ $args['user_id'] ]) ) {
-    $user_meta[ $args['user_id'] ] = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->usermeta WHERE user_id = %d AND ( meta_key LIKE 'fv_wp_flowplayer_position_%' OR meta_key LIKE 'fv_wp_flowplayer_top_position_%' OR meta_key LIKE 'fv_wp_flowplayer_saw_%' ) ORDER BY umeta_id DESC ", $args['user_id'] ) );
+    $user_meta[ $args['user_id'] ] = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT meta_key, meta_value FROM $wpdb->usermeta WHERE user_id = %d AND ( meta_key LIKE %s OR meta_key LIKE %s OR meta_key LIKE %s ) ORDER BY umeta_id DESC",
+        $args['user_id'],
+        $wpdb->esc_like( 'fv_wp_flowplayer_position_' ) . '%',
+        $wpdb->esc_like( 'fv_wp_flowplayer_top_position_' ) . '%',
+        $wpdb->esc_like( 'fv_wp_flowplayer_saw_' ) . '%'
+      )
+    );
   }
 
   if( $user_meta[ $args['user_id'] ] ) {
@@ -1069,6 +1077,7 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
   // Remove items which do not belong to a player and published post
   if( count($output) ) {
     $post_type_where = $args['post_type'] != 'any' ? 'post_type = %s AND ': '';
+    $video_ids = implode( ',', array_map( 'intval', array_keys( $output ) ) );
 
     $videos2players2posts = $wpdb->get_results( $wpdb->prepare( "
       SELECT pl.id AS player_id, v.id AS video_id, pm.meta_value AS post_id FROM
@@ -1083,7 +1092,7 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
         pm.meta_key = 'post_id' AND
         p.post_status = 'publish' AND
         $post_type_where
-        v.id IN (".implode( ',', array_map( 'intval', array_keys( $output ) ) ).")", $args['post_type'] ) );
+        v.id IN ( {$video_ids} )", $args['post_type'] ) );
 
     foreach( $output AS $video_id => $details ) {
       $found = false;

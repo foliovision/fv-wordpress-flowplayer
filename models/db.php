@@ -261,8 +261,7 @@ class FV_Player_Db {
       $query = 'SELECT Count(*) AS Total FROM ' . $wpdb->prefix .'fv_player_players';
 
       if( $cannot_edit_other_posts ) {
-
-        $query .= ' WHERE author = ' . $author_id;
+        $query .= ' WHERE author = ' . intval( $author_id );
       }
 
       $total = $wpdb->get_row( $query );
@@ -453,7 +452,8 @@ class FV_Player_Db {
 
             // Load enough to allow get_permalink() to work with the data
             global $wpdb;
-            $embeds = $wpdb->get_results( "SELECT ID, post_name, post_title, post_status, post_type, post_date FROM {$wpdb->posts} WHERE ID IN (" . implode( ',', $post_ids ) . ") AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
+            $post_ids = implode( ',', array_map( 'intval', $post_ids ) );
+            $embeds = $wpdb->get_results( "SELECT ID, post_name, post_title, post_status, post_type, post_date FROM {$wpdb->posts} WHERE ID IN ( {$post_ids} ) AND post_status != 'inherit' ORDER BY post_date_gmt DESC", OBJECT_K );
 
             foreach( $embeds AS $post_id => $post_data ) {
 
@@ -1451,6 +1451,8 @@ class FV_Player_Db {
    * @return void|int
    */
   public function query_players( $args ) {
+    global $wpdb;
+
     $args = wp_parse_args( $args, array(
       'author_id' => false,
       'ids' => false, // should not be used together with count
@@ -1547,7 +1549,7 @@ class FV_Player_Db {
 
     $limit = '';
     if( $args['offset'] !== false && $args['per_page'] !== false ) {
-      $limit = ' LIMIT '.intval($args['offset']).', '.intval($args['per_page']);
+      $limit = $wpdb->prepare( ' LIMIT %d, %d', $args['offset'], $args['per_page'] );
     }
 
     $meta_counts_select = '';
@@ -1569,8 +1571,6 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
 ';
     }
 
-    global $wpdb;
-
     $post_type_join = '';
     $tax_join = '';
     if( $args['post_type'] ) {
@@ -1584,7 +1584,7 @@ LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_vide
       } else {
         $post_type_join = 'JOIN `'.FV_Player_Db_Player_Meta::get_db_table_name().'` AS pm ON p.id = pm.id_player JOIN `'.$wpdb->posts.'` AS posts ON posts.ID = pm.meta_value ';
 
-        $where .= ' AND pm.meta_key = "post_id" AND posts.post_type = "' . esc_sql($args['post_type'] ) . '"';
+        $where .= $wpdb->prepare( ' AND pm.meta_key = "post_id" AND posts.post_type = %s', $args['post_type'] );
       }
 
       // Is there any known taxonomy in $args ?
@@ -2256,7 +2256,7 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
         $search_terms_encoded[] = rawurlencode($term);
       }
 
-      $search_terms = $search_terms_encoded;
+      $search_terms = array_unique( $search_terms_encoded );
 
       unset($search_terms_encoded);
 
@@ -2270,19 +2270,20 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
           // If there is an $exclusion_prefix, terms prefixed with it should be excluded.
           $exclude = $exclusion_prefix && ( substr( $term, 0, 1 ) === $exclusion_prefix );
 
-          if ( $exclude ) {
-            $like_op  = 'NOT LIKE';
-            $andor_op = ' AND ';
-            $term     = substr( $term, 1 );
-          } else {
-            $like_op  = 'LIKE';
-            $andor_op = ' OR ';
+          if( ! $first ) {
+            if ( $exclude ) {
+              $searchlike .= ' AND ';
+            } else {
+              $searchlike .= ' OR ';
+            }
           }
 
-          if( $first ) $andor_op = '';
-
-          $like_term = '%' . $wpdb->esc_like( $term ) . '%';
-          $searchlike .= $wpdb->prepare( "{$andor_op}(v.{$field_name} $like_op %s)", $like_term);
+          if ( $exclude ) {
+            $term = substr( $term, 1 );
+            $searchlike .= $wpdb->prepare( "(v.{$field_name} NOT LIKE %s)", '%' . $wpdb->esc_like( substr( $term, 1 ) ) . '%' );
+          } else {
+            $searchlike .= $wpdb->prepare( "(v.{$field_name} LIKE %s)", '%' . $wpdb->esc_like( $term ) . '%' );
+          }
 
           $first = false;
         }

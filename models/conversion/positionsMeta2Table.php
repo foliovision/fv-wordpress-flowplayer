@@ -49,10 +49,13 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     global $wpdb;
 
     // select umeta_id to prevent using filesort
-    $ids = $wpdb->get_results( "SELECT umeta_id FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%' ORDER BY umeta_id ASC LIMIT {$offset},{$limit}" );
+    $ids = $wpdb->get_col( $wpdb->prepare( "SELECT umeta_id FROM `$wpdb->usermeta` WHERE meta_key LIKE %s ORDER BY umeta_id ASC LIMIT %d, %d", $wpdb->esc_like( 'fv_wp_flowplayer_' ). '%', $offset, $limit ) );
 
     // select all meta data fields by ids
-    $meta_data = $wpdb->get_results( "SELECT * FROM `$wpdb->usermeta` WHERE umeta_id IN (". implode(',', wp_list_pluck($ids, 'umeta_id') ) .") ORDER BY umeta_id ASC" );
+    $umeta_ids = implode(',', array_map( 'intval', $ids ) );
+
+    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+    $meta_data = $wpdb->get_results( "SELECT * FROM `$wpdb->usermeta` WHERE umeta_id IN ( {$umeta_ids} ) ORDER BY umeta_id ASC" );
 
     return $meta_data;
   }
@@ -286,7 +289,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
   function video_exists( $video_id ) {
     global $wpdb;
 
-    $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id = {$video_id}" );
+    $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id = %d", $video_id ) );
 
     return $row;
   }
@@ -307,15 +310,15 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     if( $type == 'position' ) {
 
       if( $video_exists ) { // db video
-        $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND video_id = {$id}" );
+        $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d AND video_id = %d", $user_id, $id ) );
       } else { // legacy video
-        $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = {$user_id} AND legacy_video_id = {$id}" );
+        $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_user_video_positions` WHERE user_id = %d AND legacy_video_id = %d", $user_id, $id ) );
       }
 
     }
 
     if( $type == 'playlist' ) {
-      $row = $wpdb->get_row( "SELECT * FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = {$user_id} AND player_id = {$id}" );
+      $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_user_playlist_positions` WHERE user_id = %d AND player_id = %d", $user_id, $id ) );
     }
 
     return $row;
@@ -404,10 +407,10 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     update_option( 'fvwpflowplayer', $options );
 
     // delete all meta
-    $wpdb->query( "DELETE FROM `$wpdb->usermeta` WHERE meta_key LIKE 'fv_wp_flowplayer_%'" );
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s", $wpdb->esc_like( 'fv_wp_flowplayer_') . '%' ) );
 
     // optimize table
-    $wpdb->query( "OPTIMIZE TABLE `$wpdb->usermeta`" );
+    $wpdb->query( "OPTIMIZE TABLE {$wpdb->usermeta}" );
 
   }
 

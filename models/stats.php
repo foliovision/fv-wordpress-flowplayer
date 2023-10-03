@@ -568,7 +568,7 @@ class FV_Player_Stats {
     $interval = self::get_interval_from_range( $range );
     $datasets = false;
 
-    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND s.id_player IN( '%d' ) GROUP BY date, id_video", $player_id ), ARRAY_A );
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT date, id_video, src, title, player_name, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_players` AS p ON s.id_player = p.id JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND s.id_player IN( %d ) GROUP BY date, id_video", $player_id ), ARRAY_A );
 
     if( !empty($results) ) {
       $ids_arr = array();
@@ -963,7 +963,7 @@ class FV_Player_Stats {
       global $wpdb;
       $val = $wpdb->get_var(
         $wpdb->prepare(
-          "SELECT sum( " . $field . " ) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
+          "SELECT sum(*) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
           $user_id,
           date_i18n( 'Y-m-d' )
         )

@@ -75,14 +75,8 @@ class flowplayer_frontend extends flowplayer
     $ret = array();
     $ids_string = esc_sql( $ids_string );
 
-    $results = $wpdb->get_results( '
-          SELECT
-            id
-          FROM
-            ' . FV_Player_Db_Player::get_db_table_name() . '
-          WHERE
-            (videos = "' . $ids_string . '" OR videos LIKE "%,' . $ids_string . '" OR videos LIKE "' . $ids_string . ',%")'
-    );
+    $table = FV_Player_Db_Player::get_db_table_name();
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM {$table} WHERE (videos = %s OR videos LIKE %s OR videos %s", $ids_string, '%' . $wpdb->esc_like( $ids_string ), '%' . $wpdb->esc_like( $ids_string ) ) );
 
     foreach ( $results as $row ) {
       $ret[] = new FV_Player_Db_Player( $row->id );

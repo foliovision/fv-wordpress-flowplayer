@@ -599,7 +599,7 @@ class FV_Player_Email_Subscription {
     $list_id = intval($_GET['fv-email-export-screen']);
 
     global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . $list_id . '" LIMIT 10');
+    $results = $wpdb->get_results( $wpdb->prepare( 'SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM {$wpdb->prefix}fv_player_emails WHERE id_list = %d LIMIT 10', $list_id ) );
 
     ?>
     <style>

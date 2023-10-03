@@ -165,7 +165,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
     global $wpdb, $fv_fp;
 
     if( is_numeric($pending_job) ) {
-      $pending_job = $wpdb->get_row( $wpdb->prepare( "SELECT id, progress, result, output FROM " . $this->table_name . " WHERE id = %d", $pending_job ) );
+      $pending_job = $wpdb->get_row( $wpdb->prepare( "SELECT id, progress, result, output FROM {$this->table_name} WHERE id = %d", $pending_job ) );
     }
 
     if( !$pending_job ) {
@@ -268,7 +268,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   function job_submit( $id ) {
     global $fv_fp, $wpdb;
 
-    $target_name = $wpdb->get_var( $wpdb->prepare( "SELECT target FROM " . $this->table_name ." WHERE id = %d", $id ) );
+    $target_name = $wpdb->get_var( $wpdb->prepare( "SELECT target FROM {$this->table_name} WHERE id = %d", $id ) );
 
     $body = array(
       'title' => $target_name,
@@ -450,7 +450,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
       if ( strcmp( $status, 'processing' ) == 0 ) {
         // check if we have this job in the DB and if not, add it there
-        if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " . $this->table_name . " WHERE job_id = %s", $job_id ) ) ) {
+        if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM {$this->table_name} WHERE job_id = %s", $job_id ) ) ) {
           // get info about this job first, so we can set up DB data correctly
           require_once( dirname( __FILE__ ) . '/class.fv-player-bunny_stream-api.php' );
           $api = new FV_Player_Bunny_Stream_API();
@@ -494,7 +494,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       }
 
       $row = $wpdb->get_row(
-        $wpdb->prepare( "SELECT `job_id`, `author` , `target`, `result` FROM " . $this->table_name . " WHERE job_id = %s", $job_id )
+        $wpdb->prepare( "SELECT `job_id`, `author` , `target`, `result` FROM {$this->table_name} WHERE job_id = %s", $job_id )
       );
 
       $this->send_email( $job_id, $row->author, $status, $row->target, $row->result );

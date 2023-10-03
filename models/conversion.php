@@ -38,7 +38,12 @@ class FV_Player_Conversion {
     $sType = sanitize_title($type);
 
     global $wpdb;
-    $aPosts = $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE '%".$sType."%' ORDER BY post_date DESC" );
+    $aPosts = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT * FROM {$wpdb->posts} WHERE post_status != 'inherit' AND post_content LIKE %s ORDER BY post_date DESC",
+        '%' . $wpdb->esc_like( $sType ) . '%'
+      )
+    );
 
     $tMax = ini_get('max_execution_time') ? ini_get('max_execution_time') : 30;
     $tStart = microtime(true);

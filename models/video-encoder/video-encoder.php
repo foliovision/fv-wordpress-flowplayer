@@ -292,7 +292,7 @@ abstract class FV_Player_Video_Encoder {
       wp_send_json( array('error' => 'Bad nonce') );
     }
 
-    if ( $wpdb->query( $wpdb->prepare("DELETE FROM " . $this->table_name . " WHERE id = %d  ", $id) ) ) {
+    if ( $wpdb->query( $wpdb->prepare("DELETE FROM {$this->table_name} WHERE id = %d  ", $id) ) ) {
       wp_send_json( array('success' => 'Job deleted successfully') );
     } else {
       wp_send_json( array('error' => 'Error deleting row') );
@@ -358,7 +358,7 @@ abstract class FV_Player_Video_Encoder {
     // if the same target name already exists and we've not asked to rename it automatically,
     // return an error
     if ( empty( $_POST['rename_if_exists'] ) && empty( $_POST['ignore_duplicates'] ) ) {
-      if ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " . $this->table_name . " WHERE target = %s AND status != 'error' AND type = %s", $target, $this->encoder_id ) ) ) {
+      if ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM {$this->table_name} WHERE target = %s AND status != 'error' AND type = %s", $target, $this->encoder_id ) ) ) {
         $error = 'Target stream already exists, please try with different target name.';
         if ( defined( 'DOING_AJAX' ) ) {
           wp_send_json( array( 'error' => $error ) );
@@ -369,7 +369,7 @@ abstract class FV_Player_Video_Encoder {
     } else if ( empty( $_POST['ignore_duplicates'] ) ) {
       $original_target = $target;
       $rename_suffix_counter = 1;
-      while ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM " .  $this->table_name . " WHERE target = %s AND status != 'error' AND type = %s", $target, $this->encoder_id ) ) ) {
+      while ( $wpdb->get_var( $wpdb->prepare( "SELECT count(id) FROM {$this->table_name} WHERE target = %s AND status != 'error' AND type = %s", $target, $this->encoder_id ) ) ) {
         $rename_suffix_counter++;
         $target = $original_target . '_' . $rename_suffix_counter;
       }
@@ -479,11 +479,16 @@ abstract class FV_Player_Video_Encoder {
     global $wpdb;
 
     $ids = array();
-    if( $wpdb->get_var("SHOW TABLES LIKE '".$this->table_name."'") != $this->table_name ) {
+    if( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->table_name ) ) != $this->table_name ) {
       return $ids;
     }
-    
-    $pending_jobs = $wpdb->get_results( "SELECT * FROM ".  $this->table_name . " WHERE type = '{$this->encoder_id}' AND status = 'processing'" . ( $all ? '' : ' AND date_checked < DATE_SUB( UTC_TIMESTAMP(), INTERVAL 30 SECOND )' ) );
+
+    if ( $all ) {
+      $pending_jobs = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE type = %s AND status = 'processing'", $this->encoder_id ) );
+
+    } else {
+      $pending_jobs = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE type = %s AND status = 'processing' AND date_checked < DATE_SUB( UTC_TIMESTAMP(), INTERVAL 30 SECOND )", $this->encoder_id ) );
+    }
 
     foreach( $pending_jobs AS $pending_job ) {
       $ids[] = $pending_job->id;
