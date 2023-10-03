@@ -200,6 +200,12 @@ class MailChimp
             'timeout' => $timeout,
         );
 
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_init
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_exec 
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_error
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_getinfo
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_close
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
@@ -346,8 +352,11 @@ class MailChimp
      */
     private function attachRequestPayload(&$ch, $data)
     {
+        // phpcs:disable WordPress.WP.AlternativeFunctions.json_encode_json_encode   
         $encoded = json_encode($data);
         $this->last_request['body'] = $encoded;
+
+        // phpcs:disable WordPress.WP.AlternativeFunctions.curl_curl_setopt
         curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
     }
 
