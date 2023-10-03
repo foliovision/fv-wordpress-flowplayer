@@ -34,14 +34,9 @@ class FV_Player_System_Info {
   
   public function settings_box () {
     global $wpdb, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $FV_Player_Pro, $FV_Player_VAST, $FV_Player_PayPerView, $FV_Player_Video_Intelligence;
-    
-    if ( get_bloginfo( 'version' ) < '3.4' ) {
-      $theme_data = get_theme_data( get_stylesheet_directory() . '/style.css' );
-      $theme      = $theme_data['Name'] . ' ' . $theme_data['Version'];
-    } else {
-      $theme_data = wp_get_theme();
-      $theme      = $theme_data->Name . ' ' . $theme_data->Version;
-    }
+
+    $theme_data = wp_get_theme();
+    $theme      = $theme_data->Name . ' ' . $theme_data->Version;
 
     // Try to identifty the hosting provider
     $host = false;
