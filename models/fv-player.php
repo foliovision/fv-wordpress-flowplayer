@@ -589,14 +589,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     if( empty($conf) ) { // new install
       // hide some of the notices
-      $conf['nag_fv_player_7'] = true;
-      $conf['notice_7_5'] = true;
-      $conf['notice_new_lightbox'] = true;
-      $conf['notice_db'] = true;
+      $conf['nag_fv_player_8'] = true;
+      $conf['notice_user_video_positions_conversion'] = true;
       $conf['notice_xml_sitemap_iframes'] = true;
-
       $conf['video_position_save_enable'] = true;
-
       $conf['js-optimize'] = true;
     }
 
