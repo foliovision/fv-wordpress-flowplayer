@@ -176,7 +176,7 @@ abstract class FV_Player_Media_Browser {
         if( !empty($object['Size']) ) {
           $item['type'] = 'file';
           $item['size'] = $object['Size'];
-          $item['modified'] = date($date_format, strtotime($object['LastModified']));
+          $item['modified'] = gmdate($date_format, strtotime($object['LastModified']));
 
           if( isset($object['LastModified']) ) {
             $item['LastModified'] = $object['LastModified'];

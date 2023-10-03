@@ -102,7 +102,7 @@ abstract class FV_Player_Conversion_Base {
         }
 
         // store current time as finished time
-        $options['conversion'][$this->slug] = array( 'date' => date('Y-m-d H:i:s'), 'did_cleanup' => false );
+        $options['conversion'][$this->slug] = array( 'date' => gmdate('Y-m-d H:i:s'), 'did_cleanup' => false );
         update_option( 'fvwpflowplayer', $options );
       }
 
