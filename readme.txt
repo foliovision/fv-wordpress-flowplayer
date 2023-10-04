@@ -359,9 +359,13 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.41.7212 - 2023/10/04 =
+
+* YouTube - fixing playback glitches on Android and iOS, tested with iOS 12.5.7 to 17.0
+
 = 7.5.40.7212 - 2023/09/29 =
 
-* YouTube - fix videos not starging properly on Android
+* YouTube - fix videos not starting properly on Android
 * Bugfix - stale pending video encoding jobs removing video URLs when using Gutenberg block
 
 = 7.5.39.7212 - 2023/08/23 =
