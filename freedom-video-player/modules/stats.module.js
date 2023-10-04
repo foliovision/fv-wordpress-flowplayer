@@ -11,7 +11,7 @@
     var last_tracked = -1, // store video index to check if video was tracked already
       last_time = 0,
       is_first_progress;
-    
+
     if( !api.conf.fv_stats || !api.conf.fv_stats.enabled && ( !root.data('fv_stats') || root.data('fv_stats') == 'no' ) ) return;
 
     try {
@@ -86,6 +86,17 @@
       last_time = time;
     });
 
+    api.on('cva', function(e,api) {
+      $.post( api.conf.fv_stats.url, {
+        'blog_id' : api.conf.fv_stats.blog_id,
+        'video_id' : api.video.id ? api.video.id : 0,
+        'player_id': data.player_id,
+        'post_id' : data.post_id,
+        'user_id' : api.conf.fv_stats.user_id,
+        'tag' : 'cva'
+      } );
+    });
+
     function get_index() {
       return api.video.index ? api.video.index : 0;
     }
@@ -93,8 +104,10 @@
   });
 
   $(window).on('beforeunload pagehide', function () {
+    var sendBeaconSupported = ("sendBeacon" in navigator);
+
     // only fire a single AJAX call if we're closing / reloading the browser
-    if (!flowplayer.conf.stats_sent) {
+    if (!flowplayer.conf.stats_sent && sendBeaconSupported) {
       flowplayer.conf.stats_sent = true;
 
       if ( !watched_has_data ) {
