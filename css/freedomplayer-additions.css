@@ -947,6 +947,7 @@ iframe#youtube.fp-engine {
 a.fp-youtube-title {
   font-family: Roboto, Arial, Helvetica, sans-serif;
   font-size: 18px;
+  line-height: 26px;
   color: rgb(238, 238, 238) !important;
   text-overflow: ellipsis;
   overflow: hidden;
