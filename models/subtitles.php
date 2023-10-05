@@ -1,7 +1,11 @@
 <?php
 
 class FV_Player_Subtitles {
-  
+
+  public $aRtlSubtitles = array(
+    'ar', 'arc', 'arz', 'ckb', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'sd', 'uz_af', 'yi'
+  );
+
   public function __construct() {
 
     if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +20,7 @@ class FV_Player_Subtitles {
 
     $aSubtitles = $fv_fp->get_subtitles($index);
     if( count($aSubtitles) == 0 ) return $aItem;
-        
+
     $aLangs = flowplayer::get_languages();
     $countSubtitles = 0;
     $aOutput = array();
@@ -27,46 +31,50 @@ class FV_Player_Subtitles {
       if( $key == 'jw' ) $key = 'jv';
       if( $key == 'mo' ) $key = 'ro';
       if( $key == 'sh' ) $key = 'sr';
-      
+
       $objSubtitle = new stdClass;
       if( $key == 'subtitles' ) {
         $aLang = explode('-', get_bloginfo('language'));
         if( !empty($aLang[0]) ) $objSubtitle->srclang = $aLang[0];
         $sCode = $aLang[0];
-        
+
         $sCaption = '';
         if( !empty($sCode) && $sCode == 'en' ) {
           $sCaption = 'English';
-        
-        } elseif( !empty($sCode) ) {
+
+        } else if( !empty($sCode) ) {
           $translations = get_site_transient( 'available_translations' );
           $sLangCode = str_replace( '-', '_', get_bloginfo('language') );
           if( $translations && isset($translations[$sLangCode]) && !empty($translations[$sLangCode]['native_name']) ) {
             $sCaption = $translations[$sLangCode]['native_name'];
           }
-          
+
         }
-        
+
         if( $sCaption ) {
           $objSubtitle->label = $sCaption;
         }
-        
+
       } else {
         $objSubtitle->srclang = $key;
         $objSubtitle->label = $aLangs[strtoupper($key)];
       }
-      
+
+      if( in_array( strtolower($key), $this->aRtlSubtitles) ) {
+        $objSubtitle->rtl = true;
+      }
 
       $objSubtitle->src = $subtitles;
       // default subtitle
       if( $countSubtitles == 0 && $fv_fp->_get_option('subtitleOn') ) {
         $objSubtitle->fv_default = true;
       }
+
       $aOutput[] = $objSubtitle;
-      
+
       $countSubtitles++;
     }
-    
+
     if( count($aSubtitles) ) {
       $aItem['subtitles'] = $aOutput;
     }
