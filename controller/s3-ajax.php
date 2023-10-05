@@ -54,6 +54,9 @@ require_once( ABSPATH . WPINC . '/meta.php' );
 require_once( ABSPATH . WPINC . '/kses.php' );
 require_once( ABSPATH . WPINC . '/rest-api.php' );
 
+// wp_parse_url()
+require_once( ABSPATH . WPINC . '/http.php' );
+
 if(!empty($_POST['action'])) {
   $action = sanitize_text_field($_POST['action']);
 } else {
