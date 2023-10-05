@@ -119,7 +119,6 @@ if (
   include_once(dirname( __FILE__ ). '/models/conversion/shortcode2DB.class.php');
   include_once(dirname( __FILE__ ). '/models/conversion/positionsMeta2Table.php');
   include_once(dirname( __FILE__ ) . '/models/conversion.php');
-  include_once( dirname( __FILE__ ) .'/models/splash-download.php');
 
   include_once( dirname( __FILE__ ) . '/view/fv-player.php' );
 
@@ -134,6 +133,8 @@ include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );
 
 include_once(dirname( __FILE__ ). '/models/migration-wizard.class.php');
 include_once(dirname( __FILE__ ). '/models/migration-wizard.php');
+
+include_once( dirname( __FILE__ ) .'/models/splash-download.php');
 
 include_once(dirname( __FILE__ ) . '/models/stats.php');
 include_once(dirname( __FILE__ ) . '/models/stats-export.php');
