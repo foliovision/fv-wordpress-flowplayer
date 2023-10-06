@@ -2246,8 +2246,6 @@ jQuery(function() {
           $fv_player_custom_meta_box.trigger('fv_flowplayer_shortcode_insert');
         }
 
-        debugger;
-
         // Update the Gutenberg fields
         if( get_current_player_object().videos && get_current_player_object().videos[0] && fv_player_editor.clientId ) {
           var src = get_current_player_object().videos[0].src,
