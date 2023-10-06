@@ -894,7 +894,7 @@ class FV_Player_Stats {
     foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
         foreach( $results as $row) {
-          if( ( isset($row['id_video']) && $row['id_video'] == $id ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) ) {
+          if( ( ( $type == 'video' || $type == 'player' ) && ( isset($row['id_' . $type ]) && $row['id_' . $type ] == $id ) ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) ) {
             if( !isset($datasets[$id]) ) {
               $datasets[$id] = array();
             }
