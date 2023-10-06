@@ -42,6 +42,15 @@ function fv_player_stats_page() {
 
 
 
+add_action( 'fv_player_pro_video_ads_panel', 'fv_player_video_ad_stats_page' );
+
+function fv_player_video_ad_stats_page() {
+  include dirname( __FILE__ ) . '/../view/video-ad-stats.php';
+}
+
+
+
+
 add_filter('plugin_action_links', 'fv_wp_flowplayer_plugin_action_links', 10, 2);
 
 function fv_wp_flowplayer_plugin_action_links($links, $file) {
