@@ -2,6 +2,12 @@
 
 class FV_Player_Subtitles {
 
+  /**
+   * List of RTL languages
+   * @see https://meta.wikimedia.org/wiki/Template:List_of_language_names_ordered_by_code
+   *
+   * @var array
+   */
   public $aRtlSubtitles = array(
     'ar', 'arc', 'arz', 'ckb', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ku', 'ps', 'sd', 'uz_af', 'yi'
   );
