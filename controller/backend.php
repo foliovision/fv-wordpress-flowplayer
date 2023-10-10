@@ -196,6 +196,14 @@ function fv_wp_flowplayer_check_template() {
       $errors[] = "It appears your Flowplayer JavaScript library is loading before jQuery. Your videos probably won't work. Please make sure your jQuery library is loading using the standard Wordpress function - wp_enqueue_scripts(), or move it above wp_head() in your header.php template.";
     }
 
+    // check if Permissions-Policy header is set and has autoplay=() in it
+    $headers = wp_remote_retrieve_headers( $response );
+    if( isset($headers['permissions-policy']) && strpos( $headers['permissions-policy'], 'autoplay=()' ) !== false ) {
+      $errors[] = __('You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually.', 'fv-wordpress-flowplayer');
+    } else if ( isset($headers['permissions-policy'] ) ) {
+      $ok[] = __('You are using Permissions-Policy HTTP header to adjust the autoplay permissions:' . $headers['permissions-policy'], 'fv-wordpress-flowplayer');
+    }
+
     $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
   }
   echo '<FVFLOWPLAYER>'.wp_json_encode($output).'</FVFLOWPLAYER>';
@@ -1066,7 +1074,7 @@ function fv_player_edit_posts_cell() {
  * Get taxonomies registered for the post type. The core WordPress function
  * to do this does not return taxonomy if it's enabled for multiple
  * post types. So we do it properly here.
- * 
+ *
  * @param  string $post_type Post type to check
  * @return array             Taxonomy slugs
  */
