@@ -202,6 +202,8 @@ function fv_wp_flowplayer_check_template() {
       $errors[] = __('You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually.', 'fv-wordpress-flowplayer');
     } else if ( isset($headers['permissions-policy'] ) ) {
       $ok[] = __('You are using Permissions-Policy HTTP header to adjust the autoplay permissions:' . $headers['permissions-policy'], 'fv-wordpress-flowplayer');
+    } else {
+      $ok[] = __('You are not using Permissions-Policy HTTP header to adjust the autoplay permissions.', 'fv-wordpress-flowplayer');
     }
 
     $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
