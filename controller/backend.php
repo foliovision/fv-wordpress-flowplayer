@@ -199,9 +199,9 @@ function fv_wp_flowplayer_check_template() {
     // check if Permissions-Policy header is set and has autoplay=() in it
     $headers = wp_remote_retrieve_headers( $response );
     if( isset($headers['permissions-policy']) && strpos( $headers['permissions-policy'], 'autoplay=()' ) !== false ) {
-      $errors[] = __('You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually.', 'fv-wordpress-flowplayer');
+      $errors[] = __('You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>' . $headers['permissions-policy'] . '</code>', 'fv-wordpress-flowplayer');
     } else if ( isset($headers['permissions-policy'] ) ) {
-      $ok[] = __('You are using Permissions-Policy HTTP header to adjust the autoplay permissions:' . $headers['permissions-policy'], 'fv-wordpress-flowplayer');
+      $ok[] = __('You are using Permissions-Policy HTTP header to adjust the autoplay permissions: <code>' . $headers['permissions-policy'] . '</code>', 'fv-wordpress-flowplayer');
     } else {
       $ok[] = __('You are not using Permissions-Policy HTTP header to adjust the autoplay permissions.', 'fv-wordpress-flowplayer');
     }
