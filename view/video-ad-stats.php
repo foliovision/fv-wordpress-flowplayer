@@ -11,7 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
   $date_range = isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week';
 
-  $fv_video_ad_stats_data = $FV_Player_Stats->get_top_video_ad_clicks( $date_range );
+  $fv_video_ad_stats_click = $FV_Player_Stats->get_top_video_ad_data( $date_range, 'click' );
+  $fv_video_ad_stats_play = $FV_Player_Stats->get_top_video_ad_data( $date_range, 'play' );
+  $fv_video_ad_stats_seconds = $FV_Player_Stats->get_top_video_ad_data( $date_range, 'seconds' );
 
   // select2
   wp_enqueue_script( 'fv-select2-js', flowplayer::get_plugin_url().'/js/select2/select2.full.min.js' , array('jquery'), $fv_wp_flowplayer_ver );
@@ -170,7 +172,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   }
   </script>
 
-<?php if( isset($fv_video_ad_stats_data) && !empty($fv_video_ad_stats_data) ): ?>
+<?php if( isset($fv_video_ad_stats_click) && !empty($fv_video_ad_stats_click) ): ?>
 
 <div>
   <h2>Top Video Ad Clicks By Player</h2>
@@ -185,7 +187,7 @@ jQuery( document ).ready(function() {
   new Chart(
     document.getElementById('chart-to-video-ad-click').getContext('2d'),
     fv_player_stats_chartjs_args(
-      <?php echo wp_json_encode( $fv_video_ad_stats_data ); ?>,
+      <?php echo wp_json_encode( $fv_video_ad_stats_click ); ?>,
       'click',
       {
         legend_containerID: 'chart-to-video-ad-click-legend'
@@ -194,6 +196,61 @@ jQuery( document ).ready(function() {
   );
 });
 </script>
+<?php else: ?>
+  <p>No data available.</p>
+<?php endif; ?>
+
+
+<?php if( isset($fv_video_ad_stats_play) && !empty($fv_video_ad_stats_play) ): ?>
+  <div>
+    <h2>Top Video Ad Plays By Player</h2>
+    <div id="chart-to-video-ad-play-legend" class="fv-player-chartjs-html-legend"></div>
+    <canvas id="chart-to-video-ad-play" style="max-height: 36vh"></canvas>
+  </div>
+
+  <script>
+  jQuery( document ).ready(function() {
+    used_colors = [];
+
+    new Chart(
+      document.getElementById('chart-to-video-ad-play').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo wp_json_encode( $fv_video_ad_stats_play ); ?>,
+        'play',
+        {
+          legend_containerID: 'chart-to-video-ad-play-legend'
+        }
+      )
+    );
+  });
+  </script>
+<?php else: ?>
+  <p>No data available.</p>
+<?php endif; ?>
+
+<?php if( isset($fv_video_ad_stats_seconds) && !empty($fv_video_ad_stats_seconds) ): ?>
+  <div>
+    <h2>Top Video Ad Seconds Played By Player</h2>
+    <div id="chart-to-video-ad-seconds-legend" class="fv-player-chartjs-html-legend"></div>
+    <canvas id="chart-to-video-ad-seconds" style="max-height: 36vh"></canvas>
+  </div>
+
+  <script>
+  jQuery( document ).ready(function() {
+    used_colors = [];
+
+    new Chart(
+      document.getElementById('chart-to-video-ad-seconds').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo wp_json_encode( $fv_video_ad_stats_seconds ); ?>,
+        'seconds',
+        {
+          legend_containerID: 'chart-to-video-ad-seconds-legend'
+        }
+      )
+    );
+  });
+  </script>
 <?php else: ?>
   <p>No data available.</p>
 <?php endif; ?>

@@ -575,7 +575,7 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_top_video_ad_clicks( $range ) {
+  public function get_top_video_ad_data( $range, $metric ) {
     global $wpdb;
 
     // dynamic interval based on range
@@ -586,7 +586,6 @@ class FV_Player_Stats {
     $top_ids_arr = array();
 
     $type = 'player';
-    $metric = 'click';
 
     $top_ids_results = $this->top_ten_video_ad_clicks( $interval );
 
@@ -597,8 +596,7 @@ class FV_Player_Stats {
       return false;
     }
 
-    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM(click) AS click FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_player IN( $top_ids ) GROUP BY id_player, date", ARRAY_A );
-
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM($metric) AS click FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_player IN( $top_ids ) GROUP BY id_player, date", ARRAY_A );
 
     if( !empty($results) ) {
       $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, $type, $metric );
