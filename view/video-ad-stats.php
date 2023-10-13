@@ -58,7 +58,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <h1>FV Player Video Ad Stats</h1>
 
+<div>
+  <form id="fv_player_stats_filter" method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
+    <input type="hidden" name="page" value="<?php echo $current_page ?>" />
+    <select id="fv_player_stats_select" name="stats_range">
+      <?php
+        $dates = $FV_Player_Stats->get_valid_dates($user_id);
+
+        foreach( $dates as $key => $value ) {
+          echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
+        }
+      ?>
+    </select>
+  </form>
+</div>
 <script>
+
+  jQuery(document).ready(function() {
+    jQuery(document).on('change', '#fv_player_stats_select, #fv_player_stats_users_select', function() {
+      jQuery('#fv_player_stats_filter').submit();
+    });
+
+    if( jQuery('#fv_player_stats_select').length > 0 ) {
+      setTimeout(function() {
+        jQuery('#fv_player_stats_select').select2({
+          minimumResultsForSearch: -1 // hide the search
+        });
+      },0);
+    }
+  });
 
   function fv_player_stats_chartjs_args( data, data_selector, args ) {
 
