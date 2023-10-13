@@ -399,12 +399,12 @@ class FV_Player_Stats {
     return $results;
   }
 
-  public function get_video_ad_player_ids( $interval ) {
+  public function get_video_ad_video_ids( $interval ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
 
-    $results = $wpdb->get_col( "SELECT id_player FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON m.id_video = s.id_video WHERE m.meta_key = 'is_video_ad' AND $interval $excluded_posts GROUP BY id_player");
+    $results = $wpdb->get_col( "SELECT s.id_video as id_video FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON m.id_video = s.id_video WHERE m.meta_key = 'is_video_ad' AND $interval $excluded_posts GROUP BY id_video");
 
     return $results;
   }
@@ -585,9 +585,10 @@ class FV_Player_Stats {
     $top_ids = array();
     $top_ids_arr = array();
 
-    $type = 'player';
+    // we track ads based on video
+    $type = 'video';
 
-    $top_ids_results = $this->get_video_ad_player_ids( $interval );
+    $top_ids_results = $this->get_video_ad_video_ids( $interval );
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
@@ -596,7 +597,7 @@ class FV_Player_Stats {
       return false;
     }
 
-    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM($metric) AS {$metric} FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_player IN( $top_ids ) GROUP BY id_player, date", ARRAY_A );
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM($metric) AS {$metric} FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
 
     if( !empty($results) ) {
       $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, $type, $metric );
