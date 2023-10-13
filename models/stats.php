@@ -596,7 +596,7 @@ class FV_Player_Stats {
       return false;
     }
 
-    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM($metric) AS click FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_player IN( $top_ids ) GROUP BY id_player, date", ARRAY_A );
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM($metric) AS {$metric} FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_player IN( $top_ids ) GROUP BY id_player, date", ARRAY_A );
 
     if( !empty($results) ) {
       $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, $type, $metric );
@@ -911,7 +911,7 @@ class FV_Player_Stats {
                 if( isset($datasets[$id][$date]['seconds']) ) {
                   $datasets[$id][$date]['seconds'] += $row['seconds'];
                 } else {
-                  $datasets[$id][$date]['seconds'] = $row['seconds'];
+                  $datasets[$id][$date]['seconds'] = (int) $row['seconds'];
                 }
               }
 
