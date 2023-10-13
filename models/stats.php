@@ -399,12 +399,12 @@ class FV_Player_Stats {
     return $results;
   }
 
-  public function top_ten_video_ad_clicks( $interval ) {
+  public function get_video_ad_player_ids( $interval ) {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
 
-    $results = $wpdb->get_col( "SELECT id_player FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY id_player ORDER BY sum(click) DESC LIMIT 10");
+    $results = $wpdb->get_col( "SELECT id_player FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON m.id_video = s.id_video WHERE m.meta_key = 'is_video_ad' AND $interval $excluded_posts GROUP BY id_player");
 
     return $results;
   }
@@ -587,7 +587,7 @@ class FV_Player_Stats {
 
     $type = 'player';
 
-    $top_ids_results = $this->top_ten_video_ad_clicks( $interval );
+    $top_ids_results = $this->get_video_ad_player_ids( $interval );
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
