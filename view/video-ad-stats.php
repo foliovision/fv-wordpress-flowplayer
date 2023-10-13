@@ -203,7 +203,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php if( isset($fv_video_ad_stats_click) && !empty($fv_video_ad_stats_click) ): ?>
 
 <div>
-  <h2>Top Video Ad Clicks By Player</h2>
+  <h2>Top Video Ads By Clicks</h2>
   <div id="chart-to-video-ad-click-legend" class="fv-player-chartjs-html-legend"></div>
   <canvas id="chart-to-video-ad-click" style="max-height: 36vh"></canvas>
 </div>
@@ -218,7 +218,8 @@ jQuery( document ).ready(function() {
       <?php echo wp_json_encode( $fv_video_ad_stats_click ); ?>,
       'click',
       {
-        legend_containerID: 'chart-to-video-ad-click-legend'
+        legend_containerID: 'chart-to-video-ad-click-legend',
+        scales_y_title: "Clicks"
       }
     )
   );
@@ -231,7 +232,7 @@ jQuery( document ).ready(function() {
 
 <?php if( isset($fv_video_ad_stats_play) && !empty($fv_video_ad_stats_play) ): ?>
   <div>
-    <h2>Top Video Ad Plays By Player</h2>
+    <h2>Top Video Ads By Plays</h2>
     <div id="chart-to-video-ad-play-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-to-video-ad-play" style="max-height: 36vh"></canvas>
   </div>
@@ -246,7 +247,8 @@ jQuery( document ).ready(function() {
         <?php echo wp_json_encode( $fv_video_ad_stats_play ); ?>,
         'play',
         {
-          legend_containerID: 'chart-to-video-ad-play-legend'
+          legend_containerID: 'chart-to-video-ad-play-legend',
+          scales_y_title: "Plays"
         }
       )
     );
@@ -258,7 +260,7 @@ jQuery( document ).ready(function() {
 
 <?php if( isset($fv_video_ad_stats_seconds) && !empty($fv_video_ad_stats_seconds) ): ?>
   <div>
-    <h2>Top Video Ad Seconds Played By Player</h2>
+    <h2>Top Video Ads By Watch time</h2>
     <div id="chart-to-video-ad-seconds-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-to-video-ad-seconds" style="max-height: 36vh"></canvas>
   </div>
@@ -273,7 +275,8 @@ jQuery( document ).ready(function() {
         <?php echo wp_json_encode( $fv_video_ad_stats_seconds ); ?>,
         'seconds',
         {
-          legend_containerID: 'chart-to-video-ad-seconds-legend'
+          legend_containerID: 'chart-to-video-ad-seconds-legend',
+          scales_y_title: "Minutes"
         }
       )
     );
