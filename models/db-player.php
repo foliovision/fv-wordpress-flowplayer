@@ -557,20 +557,38 @@ CREATE TABLE " . self::$db_table_name . " (
         $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_players` SET toggle_overlay = 'true' WHERE ad != ''");
       }
 
-      foreach ( array(
-        'ad'                => 'overlay',
-        'ad_height'         => 'overlay_height',
-        'ad_skip'           => 'overlay_skip',
-        'ad_width'          => 'overlay_width',
-        'toggle_ad_custom'  => 'toggle_overlay',
-      ) as $from => $to ) {
-        // Is there such column?
-        if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
-          if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, $from ) ) ) {
+      // ad => overlay
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay` = `ad` WHERE `overlay` = '' AND `ad` != ''" );
+        }
+      }
 
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
-          }
+      // ad_height => overlay_height
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay_height' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad_height' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay_height` = `ad_height` WHERE `overlay_height` = '' AND `ad_height` != ''" );
+        }
+      }
+
+      // ad_skip => overlay_skip
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay_skip' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad_skip' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay_skip` = `ad_skip` WHERE `overlay_skip` = '' AND `ad_skip` != ''" );
+        }
+      }
+
+      // ad_width => overlay_width
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay_width' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad_width' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay_width` = `ad_width` WHERE `overlay_width` = '' AND `ad_width` != ''" );
+        }
+      }
+
+      // toggle_ad_custom => toggle_overlay
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'toggle_overlay' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'toggle_ad_custom' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `toggle_overlay` = `toggle_ad_custom` WHERE `toggle_overlay` = '' AND `toggle_ad_custom` != ''" );
         }
       }
 
