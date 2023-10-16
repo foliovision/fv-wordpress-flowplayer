@@ -443,11 +443,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
-        $is_video_id = ($property == 'id_video');
-
-        if (!$is_video_id) {
-          $data_values[ $property ] = $value;
-        }
+        $data_values[ $property ] = $value;
       }
     }
 
