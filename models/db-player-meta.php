@@ -464,31 +464,21 @@ CREATE TABLE " . self::$db_table_name . " (
   public function save() {
     global $wpdb;
 
-    // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
-        $is_player_id = ($property == 'id_player');
-        $data_keys[] = $property . ' = '.($is_player_id ? (int) $value : '%s');
-
-        if (!$is_player_id) {
-          $data_values[] = $value;
-        }
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(', ', $data_keys);
-
     if ($is_update) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
-    }
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ) );
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values );
+    }
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;
