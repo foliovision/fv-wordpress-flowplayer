@@ -10,9 +10,6 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     parent::__construct( array(
       'title' => 'FV Player PositionsMeta2Table Conversion',
       'slug' => 'positions_meta2table',
-      'matchers' => array(
-
-      ),
       'help' => __("This converts position values from usermeta to fv_player_user_video_positions table", 'fv-wordpress-flowplayer')
     ) );
 
