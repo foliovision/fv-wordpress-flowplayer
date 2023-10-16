@@ -1017,10 +1017,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
+    // fill gmdate(s)
     $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
     if (!$is_update && empty($this->date_created) ) {
@@ -1052,9 +1051,6 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        $numeric_value = in_array( $property, $this->numeric_properties );
-        $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
-
         /**
          * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
          */
@@ -1064,20 +1060,31 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        if (!$numeric_value) {
-          $data_values[] = $value;
+        if ( in_array( $property, array( 'author', 'changed_by' ) ) ) {
+          $format[ $property ] = '%d';
+
+          if ( ! $value ) {
+            $value = 0;
+          }
+
+        } else {
+          $format[ $property ] = '%s';
+
+          if ( ! $value ) {
+            $value = '';
+          }
         }
+
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(',', $data_keys);
-
     if ($is_update) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
-    }
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ), $format );
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values, $format );
+    }
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;
