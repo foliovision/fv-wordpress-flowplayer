@@ -840,6 +840,11 @@ CREATE TABLE " . self::$db_table_name . " (
     // Save new video early so that we can attach video meta to the new video ID
     if ( ! $is_update ) {
       $this->save_do( $is_update );
+
+      // Bail if we encounter an error
+      if ( $wpdb->last_error ) {
+        return false;
+      }
     }
 
     $video_url = $this->getSrc();
