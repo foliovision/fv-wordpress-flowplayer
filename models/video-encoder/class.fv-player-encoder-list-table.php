@@ -295,6 +295,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     }
     
     if( $args['exclude'] ) {
+      $args['exclude'] = array_map( 'intval', $args['exclude'] );
       $aWhere[] = 'id NOT IN ('.implode(',',$args['exclude']).')';
     }
 
@@ -302,21 +303,27 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     if( $args['status'] == 'complete' ) $aWhere[] = "status = 'complete'";
     if( $args['status'] == 'error' ) $aWhere[] = "status = 'error'";
 
+    global $wpdb;
+
     if( $args['s'] ) {
-      $search = sanitize_text_field($args['s']);
-      $aWhere[] = "source LIKE '%".$search."%'";
+      $aWhere[] = $wpdb->prepare( "source LIKE %s", '%' . $wpdb->esc_like( $args['s'] ) . '%' );
     }
 
     $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
 
-    $order = esc_sql($args['order']);
-    $order_by = esc_sql($args['orderby']);
+    $order = in_array( $args['order'], array( 'asc', 'desc' ) ) ? $args['order'] : 'desc';
+    $order_by = in_array( $args['orderby'], array( 'id', 'date_descted', 'source', 'target', 'status', 'author' ) ) ? $args['orderby'] : 'date_created';
 
     $per_page = intval($this->args['per_page']);
     $offset = ( $args['paged'] - 1 ) * $per_page;
 
-    global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM {$this->table_name} $where ORDER BY $order_by $order LIMIT $offset, $per_page" );
+    $results = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT * FROM `{$wpdb->prefix}fv_player_encoding_jobs` $where ORDER BY $order_by $order LIMIT %d, %d",
+        $offset,
+        $per_page
+      )
+    );
 
     // get embeded players using id from job
     $playlist_embed = $wpdb->get_results( "SELECT j.id, m.id_video, p.id AS player_id FROM `{$wpdb->prefix}fv_player_encoding_jobs` AS j
