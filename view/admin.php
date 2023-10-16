@@ -2151,10 +2151,6 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
   global $fv_fp;
   do_action('fv_player_settings_pre');
 
-  if( isset($_GET['fv_flowplayer_checker'] ) ) {
-    do_action('fv_flowplayer_checker_event');
-  }
-
   $aCheck = false;
   if( flowplayer::is_licensed() ) {
     $aCheck = get_transient( 'fv_flowplayer_license' );
