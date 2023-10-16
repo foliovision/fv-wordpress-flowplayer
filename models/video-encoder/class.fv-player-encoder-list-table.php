@@ -252,20 +252,14 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   private function get_result_counts() {
     global $wpdb;
 
-    $aWhere = array();
     if( !empty($_GET['s']) ) {
-      $aWhere[] = $wpdb->prepare(
-        "source LIKE %s",
-        '%' . $wpdb->esc_like( $_GET['s'] ) . '%'
-      );
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->table_name} WHERE type = %s AND source LIKE %s", $this->encoder_id, '%' . $wpdb->esc_like( $_GET['s'] ) . '%' ) );
+
+    } else {
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->table_name} WHERE type = %s", $this->encoder_id ) );
     }
-
-    $where = count($aWhere) ? " AND ".implode( " AND ", $aWhere ) : "";
-
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->table_name} WHERE type = %s {$where}", $this->encoder_id ) );
   }
-  
+
   public function get_columns() {
     return array(
       'id'               => __( 'ID' ),
