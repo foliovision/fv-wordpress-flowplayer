@@ -825,7 +825,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       unset($aNewOptions['js-optimize']);
     }
 
-    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions, $_POST );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->_get_conf();
 
@@ -861,7 +861,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $aNewOptions[$key[0]][$key[1]] = $value;
     }
 
-    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
+    // Do not use $_POST in this case as we did not verify any nonce
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions, array() );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->_get_conf();
   }
