@@ -1204,8 +1204,6 @@ CREATE TABLE " . self::$db_table_name . " (
     /*
      * Prepare SQL
      */
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
@@ -1215,8 +1213,6 @@ CREATE TABLE " . self::$db_table_name . " (
           $value = $value ? true : false;
         }
 
-        $data_keys[] = $property . ' = %s';
-
         /**
          * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
          */
@@ -1224,18 +1220,39 @@ CREATE TABLE " . self::$db_table_name . " (
           $value = wp_strip_all_tags( $value );
         }
 
-        $data_values[] = $value;
+        if ( in_array( $property, array( 'height', 'live', 'splash_attachment_id', 'width' ) ) ) {
+          $format[ $property ] = '%d';
+
+          if ( ! $value ) {
+            $value = 0;
+          }
+
+        } else if ( in_array( $property, array( 'duration' ) ) ) {
+          $format[ $property ] = '%f';
+
+          if ( ! $value ) {
+            $value = 0;
+          }
+
+        } else {
+          $format[ $property ] = '%s';
+
+          if ( ! $value ) {
+            $value = '';
+          }
+        }
+
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(',', $data_keys);
+    if ($is_update) {
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ), $format );
 
-    if ( $is_update ) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values, $format );
     }
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;
