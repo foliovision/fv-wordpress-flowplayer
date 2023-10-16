@@ -17,7 +17,7 @@ class FV_Xml_Video_Sitemap {
       add_filter( 'query_vars', array($this, 'custom_query_vars') ); // we need to use custom query vars as otherwise Yoast SEO could stop the sitemap from working as it could be detected by $wp_query->is_date
 
       add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ) ); // stop trailing slashes on sitemap URLs
-      add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save') ); // whitelist symbols
+      add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save'), 10, 3 ); // whitelist symbols
       add_action( 'fv_flowplayer_admin_seo_after', array( $this, 'options' ) );
     }
     
@@ -505,9 +505,9 @@ class FV_Xml_Video_Sitemap {
   		return $redirect;
   	}
     
-    function settings_save( $settings ) {
-      if( !empty($_POST['video_sitemap_meta']) ) {
-        $settings['video_sitemap_meta'] = trim( preg_replace( '~[^A-Za-z0-9.:\-_\/,]~', '', $_POST['video_sitemap_meta']) );
+    function settings_save( $settings, $old_settings, $post ) {
+      if( !empty($post['video_sitemap_meta']) ) {
+        $settings['video_sitemap_meta'] = trim( preg_replace( '~[^A-Za-z0-9.:\-_\/,]~', '', $post['video_sitemap_meta']) );
       }
       return $settings;
     }
