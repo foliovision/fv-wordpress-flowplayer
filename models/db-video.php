@@ -409,16 +409,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
-          $select = '*';
+          $query_ids_joined = implode(',', array_map( 'intval', $query_ids ) );
 
-          $where = ' WHERE id IN('. implode(',', array_map( 'intval', $query_ids ) ).') ';
-
-          $order = '';
-
-          $limit = '';
-
-          // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-          $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
+          $video_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id IN( {$query_ids_joined} )" );
 
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;
@@ -615,12 +608,13 @@ CREATE TABLE " . self::$db_table_name . " (
     _deprecated_function( __FUNCTION__, '7.5.22', 'FV_Player_Db::query_videos' );
 
     global $wpdb;
-    $db_table_name = self::$db_table_name;
 
     if ( $like ) {
       $row = $wpdb->get_row(
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src LIKE %s ORDER BY id DESC", '%' . $wpdb->esc_like( $this->src ) . '%' )
+        $wpdb->prepare(
+          "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s ORDER BY id DESC",
+          '%' . $wpdb->esc_like( $this->src ) . '%'
+        )
       );
 
     } else {
