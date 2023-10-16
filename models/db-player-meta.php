@@ -180,8 +180,14 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // first, check if we're not trying to search for a meta item from the database
     if (is_array($options) && count($options) && !empty($options['meta_find_player'])) {
-      $db_table_name = self::$db_table_name;
-      $db_data = $wpdb->get_row( $wpdb->prepare( "SELECT id_player FROM {$db_table_name} WHERE meta_key = %s AND meta_value = %s", $options['meta_find_player']['key'], $options['meta_find_player']['value'] ), ARRAY_A );
+      $db_data = $wpdb->get_row(
+        $wpdb->prepare(
+          "SELECT id_player FROM `{$wpdb->prefix}fv_player_playermeta` WHERE meta_key = %s AND meta_value = %s",
+          $options['meta_find_player']['key'],
+          $options['meta_find_player']['value']
+        ),
+        ARRAY_A
+      );
 
       unset($options['meta_find_player']);
 
@@ -249,13 +255,12 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (count($query_ids)) {
           // load multiple player metas via their IDs but a single query and return their values
-          $db_table_name = self::$db_table_name;
           $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
 
           if ( $load_for_player ) {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id_player IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id_player IN( {$query_ids_joined} )" );
           } else {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id IN( {$query_ids_joined} )" );
           }
 
           // run through all of the meta data and

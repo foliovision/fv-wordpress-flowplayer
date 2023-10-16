@@ -257,7 +257,7 @@ class FV_Player_Stats {
             }
           }
 
-          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM `{$wpdb->prepefix}fv_player_stats` WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
 
           if( $existing ) {
             $wpdb->update(

@@ -2297,13 +2297,11 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     $where = implode(' '.esc_sql($args['and_or']).' ', $where);
 
-    $video_table = FV_Player_Db_Video::get_db_table_name();
-    $player_table = FV_Player_Db_Player::get_db_table_name();
-
-    $query = "SELECT v.* FROM `{$video_table}` AS v JOIN `{$player_table}` AS p ON FIND_IN_SET(v.id, p.videos) WHERE $where ORDER BY v.id DESC";
-
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $video_data = $wpdb->get_results($query);
+    $video_data = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT v.* FROM `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_players` AS p ON FIND_IN_SET(v.id, p.videos) WHERE {$where} ORDER BY v.id DESC"
+      )
+    );
 
     if (!$video_data) {
       return false;

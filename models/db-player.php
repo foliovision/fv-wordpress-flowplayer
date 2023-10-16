@@ -550,11 +550,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if( $fv_fp->_get_option('player_model_db_updated') != '7.9.3' ) {
       // enable toggle end action
-      $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
+      $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_players` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
       // enable toggle ad custom
       if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = 'ad'", $table ) ) ) {
-        $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+        $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_players` SET toggle_overlay = 'true' WHERE ad != ''");
       }
 
       foreach ( array(
@@ -679,9 +679,8 @@ CREATE TABLE " . self::$db_table_name . " (
       $all_cached = false;
 
       if ($DB_Cache && !$DB_Cache->isPlayerCached($id)) {
-        // load a single video
-        $db_table_name = self::$db_table_name;
-        $player_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ), ARRAY_A );
+        // load a single player
+        $player_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fv_player_players WHERE id = %d", $id ), ARRAY_A );
 
       } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
         $all_cached = true;
@@ -1205,8 +1204,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
         // only delete videos which are used for this particular player and no other player
-        $db_table_name = self::$db_table_name;
-        if( $wpdb->get_var( $wpdb->prepare( "select count(*) from {$db_table_name} where FIND_IN_SET( %d, videos )", $video->getId() ) ) > 1 ) {
+        if( $wpdb->get_var( $wpdb->prepare( "select count(*) from `{$wpdb->prefix}fv_player_players` where FIND_IN_SET( %d, videos )", $video->getId() ) ) > 1 ) {
           continue; 
         }
 

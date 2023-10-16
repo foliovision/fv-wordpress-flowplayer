@@ -230,11 +230,10 @@ CREATE TABLE " . self::$db_table_name . " (
           // load multiple video metas via their IDs but a single query and return their values
           $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
 
-          $db_table_name = self::$db_table_name;
           if ( $load_for_video ) {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id_video IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videometa` WHERE id_video IN( {$query_ids_joined} )" );
           } else {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videometa` WHERE id IN( {$query_ids_joined} )" );
           }
 
           // run through all of the meta data and
@@ -290,8 +289,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single video meta data record
-          $db_table_name = self::$db_table_name;
-          $meta_data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM {$db_table_name} WHERE id = %d', $id ) );
+          $meta_data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM `{$wpdb->prefix}fv_player_videometa` WHERE id = %d', $id ) );
 
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
