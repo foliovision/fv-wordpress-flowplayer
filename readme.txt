@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5... - 2023/../.. =
+
+* AWS SDK update - PHP 7.4 is now required for the DigitalOcean Spaces/AWS S3 browser and uploader
+
 = 7.5.41.7212 - 2023/10/04 =
 
 * YouTube - fixing playback glitches on Android and iOS, tested with iOS 12.5.7 to 17.0
