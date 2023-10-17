@@ -163,6 +163,10 @@ function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $m
   echo "Registering $handle for $src?ver=$ver\n";
 }
 
+function wp_parse_url( $url, $component = - 1 ) {
+  return parse_url( $url, $component );
+}
+
 function wp_register_script( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
   echo "Registering $handle for $src?ver=$ver\n";
 }
