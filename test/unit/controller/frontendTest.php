@@ -132,6 +132,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [script_dash_js] => fv-wordpress-flowplayer/freedom-video-player/dash.mediaplayer.min.js?ver=1.2.3.4
     [script_dash_js_engine] => fv-wordpress-flowplayer/freedom-video-player/fv-player-dashjs.min.js?ver=1.2.3.4
     [chromecast] => 
+    [youtube_browser_chrome] => standard
     [hlsjs] => Array
         (
             [startLevel] => -1
