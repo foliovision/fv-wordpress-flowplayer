@@ -620,7 +620,7 @@ class FV_Player_Stats {
         $ids_arr[] = $row['id_video'];
       }
 
-      $datasets = $this->process_graph_data( $results, $ids_arr, $range, 'player' );
+      $datasets = $this->process_graph_data( $results, $ids_arr, $range, 'video' );
     }
 
     return $datasets;
