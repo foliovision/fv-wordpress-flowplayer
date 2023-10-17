@@ -108,8 +108,8 @@ if (
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
-
-  if( version_compare(phpversion(),'7.3.5') != -1 ) {
+ 
+  if( version_compare(phpversion(),'7.4') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
 
