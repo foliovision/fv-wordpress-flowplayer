@@ -25,7 +25,7 @@ define('PHPUnitTestMode', true);
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array(
-	  'fv-wordpress-flowplayer/flowplayer.php',
+	  'fv-wordpress-flowplayer/fv-player.php',
   )
 );
 

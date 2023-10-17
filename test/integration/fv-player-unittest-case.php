@@ -108,7 +108,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     //include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
 
     // include the flowplayer loader
-    include "../../../fv-wordpress-flowplayer/flowplayer.php";
+    include "../../../fv-wordpress-flowplayer/fv-player.php";
 
     // include the PRO plugin class, so it can intercept data saving
     // and update the ads structure as needed for saving
