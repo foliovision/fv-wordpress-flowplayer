@@ -208,8 +208,19 @@ class FV_Player_Checker {
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
-            $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
+
+            $request = wp_remote_get(
+              $remotefilename_encoded,
+              array(
+                'headers' => array(
+                  'Referer' => home_url(),
+                ),
+                'timeout' => 15
+              )
+            );
+
             $response = wp_remote_retrieve_body( $request );
+
             $playlist = false;
             $duration = 0;
             $segments = false;
@@ -258,7 +269,7 @@ class FV_Player_Checker {
                 if( $secured_url = $fv_fp->get_video_src( $item_url, array( 'dynamic' => true ) ) ) {
                   $item_url = $secured_url;
                 }
-                $request = wp_remote_get($item_url);
+                $request = wp_remote_get( $item_url, array( 'headers' => array( 'Referer' => home_url() ) ) );
                 $playlist_item = wp_remote_retrieve_body( $request );
 
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
@@ -520,9 +531,10 @@ class FV_Player_Checker {
     curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $iTimeout );
     curl_setopt( $ch, CURLOPT_TIMEOUT, $iTimeout );
     curl_setopt( $ch, CURLOPT_USERAGENT, 'FV Flowplayer video checker/'.$fv_wp_flowplayer_ver);
-    
+    curl_setopt( $ch, CURLOPT_REFERER, home_url() );
+
     $data = curl_exec($ch);
-      
+
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $header = substr($data, 0, $header_size);
     $body = substr($data, $header_size);
