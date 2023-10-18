@@ -75,6 +75,15 @@ if ( ! defined( 'ABSPATH' ) ) {
   height: 30px;
   line-height: 28px;
 }
+
+#fv_player_stats_users_select {
+  max-width: 500px;
+  width: 100%;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+  max-height: 80vh !important;
+}
 </style>
 
 <div class="wrap">
