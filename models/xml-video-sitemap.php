@@ -421,7 +421,7 @@ class FV_Xml_Video_Sitemap {
       $videos = $wpdb->get_results(
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE {$date_query} post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND (post_content LIKE %s OR post_content %s)",
+          "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE {$date_query} post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND (post_content LIKE %s OR post_content LIKE %s)",
           '%' . $wpdb->esc_like( '[flowplayer ' ) . '%',
           '%' . $wpdb->esc_like( '[fvplayer ' ) . '%'
         )
