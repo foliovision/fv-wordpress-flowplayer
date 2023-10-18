@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : false;
 
   $user_id = isset( $_GET['user_id'] ) ? intval($_GET['user_id']) : false;
+  $player_id = isset( $_GET['player_id'] ) ? intval($_GET['player_id']) : false;
   $user_name = false;
 
   $date_range = isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week';
@@ -74,6 +75,15 @@ if ( ! defined( 'ABSPATH' ) ) {
   height: 30px;
   line-height: 28px;
 }
+
+#fv_player_stats_users_select {
+  max-width: 500px;
+  width: 100%;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+  max-height: 80vh !important;
+}
 </style>
 
 <div class="wrap">
@@ -84,6 +94,9 @@ if ( ! defined( 'ABSPATH' ) ) {
       <input type="hidden" name="page" value="<?php echo $current_page ?>" />
       <?php if( $user_id ): ?>
         <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
+      <?php endif; ?>
+      <?php if( $player_id ): ?>
+        <input type="hidden" name="player_id" value="<?php echo $player_id ?>" />
       <?php endif; ?>
       <select id="fv_player_stats_select" name="stats_range">
         <?php

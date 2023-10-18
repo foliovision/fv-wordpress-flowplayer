@@ -37,6 +37,10 @@ Class FvPlayerTrackerWorker {
       die( "Error: missing arguments!" );
     }
 
+    if( $_REQUEST['tag'] == 'click' ) {
+      $a = 1;
+    }
+
     $blog_id = intval($_REQUEST['blog_id']);
     $tag = preg_replace( '~[^a-z]~', '', substr( $_REQUEST['tag'], 0, 16 ) );
     $this->tag = $tag;
@@ -167,6 +171,26 @@ Class FvPlayerTrackerWorker {
               'user_id'   => $this->user_id,
               'guest_user_id' => $this->guest_user_id,
               'play'      => 1
+            );
+          }
+        } else if ( 'click' === $this->tag ) {
+          $found = false;
+          foreach( $data as $index => $item ) {
+            if( $item['video_id'] == $this->video_id && $item['post_id'] == $this->post_id && $item['player_id'] == $this->player_id && $item['user_id'] == $this->user_id && $item['guest_user_id'] == $this->guest_user_id ) {
+              $data[$index]['click'] += 1;
+              $found = true;
+              break;
+            }
+          }
+
+          if( !$found ) {
+            $data[] = array(
+              'video_id'  => $this->video_id,
+              'post_id'   => $this->post_id,
+              'player_id' => $this->player_id,
+              'user_id'   => $this->user_id,
+              'guest_user_id' => $this->guest_user_id,
+              'click'      => 1
             );
           }
         }
