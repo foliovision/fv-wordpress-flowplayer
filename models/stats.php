@@ -57,7 +57,7 @@ class FV_Player_Stats {
   }
 
   function get_stat_columns() {
-    return array( 'play', 'seconds' );
+    return array( 'play', 'seconds', 'click' );
   }
 
   public static function get_table_name() {
@@ -396,6 +396,16 @@ class FV_Player_Stats {
     return $results;
   }
 
+  public function get_video_ad_video_ids( $interval ) {
+    global $wpdb;
+
+    $excluded_posts = $this->get_posts_to_exclude();
+
+    $results = $wpdb->get_col( "SELECT s.id_video as id_video FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON m.id_video = s.id_video WHERE m.meta_key = 'is_video_ad' AND $interval $excluded_posts GROUP BY id_video");
+
+    return $results;
+  }
+
   public function check_watch_time_in_interval( $interval, $user_check ) {
     global $wpdb;
 
@@ -562,6 +572,37 @@ class FV_Player_Stats {
     return $datasets;
   }
 
+  public function get_top_video_ad_data( $range, $metric ) {
+    global $wpdb;
+
+    // dynamic interval based on range
+    $interval = self::get_interval_from_range( $range );
+
+    $datasets = false;
+    $top_ids = array();
+    $top_ids_arr = array();
+
+    // we track ads based on video
+    $type = 'video';
+
+    $top_ids_results = $this->get_video_ad_video_ids( $interval );
+
+    if( !empty($top_ids_results) ) {
+      $top_ids_arr = array_values( $top_ids_results );
+      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+    } else {
+      return false;
+    }
+
+    $results = $wpdb->get_results( "SELECT date, id_player, id_video, title, src, SUM($metric) AS {$metric} FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND id_video IN( $top_ids ) GROUP BY id_video, date", ARRAY_A );
+
+    if( !empty($results) ) {
+      $datasets = $this->process_graph_data( $results, $top_ids_arr, $range, $type, $metric );
+    }
+
+    return $datasets;
+  }
+
   public function get_player_stats( $player_id, $range) {
     global $wpdb;
 
@@ -576,7 +617,7 @@ class FV_Player_Stats {
         $ids_arr[] = $row['id_video'];
       }
 
-      $datasets = $this->process_graph_data( $results, $ids_arr, $range, 'player' );
+      $datasets = $this->process_graph_data( $results, $ids_arr, $range, 'video' );
     }
 
     return $datasets;
@@ -849,11 +890,12 @@ class FV_Player_Stats {
     foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
         foreach( $results as $row) {
-          if( ( isset($row['id_video']) && $row['id_video'] == $id ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) ) {
+          if( ( ( $type == 'video' || $type == 'player' ) && ( isset($row['id_' . $type ]) && $row['id_' . $type ] == $id ) ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) || ( isset($row['id_post']) && $row['id_video'] == $id ) ) {
             if( !isset($datasets[$id]) ) {
               $datasets[$id] = array();
             }
 
+            // aggregate data by date
             if( strcmp( $date, $row['date'] ) == 0 ) { // date row exists
               if( $metric === 'play' && isset($row['play']) ) {
                 if( isset($datasets[$id][$date]['play']) ) {
@@ -867,15 +909,25 @@ class FV_Player_Stats {
                 if( isset($datasets[$id][$date]['seconds']) ) {
                   $datasets[$id][$date]['seconds'] += $row['seconds'];
                 } else {
-                  $datasets[$id][$date]['seconds'] = $row['seconds'];
+                  $datasets[$id][$date]['seconds'] = (int) $row['seconds'];
+                }
+              }
+
+              if( $metric === 'click' && isset($row['click']) ) {
+                if( isset($datasets[$id][$date]['click']) ) {
+                  $datasets[$id][$date]['click'] += $row['click'];
+                } else {
+                  $datasets[$id][$date]['click'] = $row['click'];
                 }
               }
 
             } else { // date row dont exists, add 0 plays/seconds - dont overwrite if value already set
               if( $metric === 'play' && !isset( $datasets[$id][$date]['play']) ) $datasets[$id][$date]['play'] = 0;
               if( $metric === 'seconds' && !isset( $datasets[$id][$date]['seconds']) ) $datasets[$id][$date]['seconds'] = 0;
+              if( $metric === 'click' && !isset( $datasets[$id][$date]['click']) ) $datasets[$id][$date]['click'] = 0;
             }
 
+            // add labels
             if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
                 $datasets[$id]['name'] = $this->get_video_name( $row['src'], $row['title'] );
