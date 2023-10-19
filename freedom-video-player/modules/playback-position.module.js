@@ -420,7 +420,7 @@ if (!Date.now) {
           // store ab loop positions as object
           if( typeof abLoopPositions[video_id] == 'undefined' ) {
             abLoopPositions[video_id] = {
-              positions: [0,0],
+              positions: [0,5],
               active: false
             }
           }
@@ -434,7 +434,7 @@ if (!Date.now) {
 
           // check if we have a noUiSlider instance and AB loop is active
           if ( typeof api.fv_noUiSlider != "undefined" && $root.find('.fv-player-ab.is-active').length ) {
-            abLoopPositions[video_id].positions =  api.fv_noUiSlider.get();
+            abLoopPositions[video_id].positions = api.fv_noUiSlider.get();
           }
 
           // initialize top position variable with the already stored top position
@@ -654,6 +654,7 @@ if (!Date.now) {
         playlist = is_playlist ? api.conf.playlist : [ api.conf.clip ],
         playlist_external = jQuery('[rel='+jQuery(root).attr('id')+']');
 
+      // restore values from temp cookie for each video
       for( var i in playlist ) {
         if (!playlist.hasOwnProperty(i)) continue;
 
@@ -677,6 +678,7 @@ if (!Date.now) {
           } else {
             api.conf.clip.sources[0].position = position;
           }
+
         }
 
         // Accept the new top position if there is none or if then new one is bigger
@@ -708,10 +710,17 @@ if (!Date.now) {
             api.conf.clip.sources[0].ab_end = ab_loop['positions'][1];
             api.conf.clip.sources[0].ab_active = ab_loop['active'];
           }
+
+          abLoopPositions[video_id] = {
+            positions: [0,5],
+            active: false
+          };
+
+          // return postions & active state
+          abLoopPositions[video_id].positions = [ ab_loop['positions'][0], ab_loop['positions'][1] ];
+          abLoopPositions[video_id].active = ab_loop['active'];
         }
-
       }
-
     }
 
     // store saw after finish
