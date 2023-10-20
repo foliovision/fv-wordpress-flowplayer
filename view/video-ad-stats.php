@@ -188,11 +188,6 @@ if ( ! defined( 'ABSPATH' ) ) {
         for ( var date in top_results[id_video] ) {
           if( date != 'name' ) {
             var value = parseInt(top_results[id_video][date][metric]);
-
-            if( metric == 'seconds' ) {
-              if( value > 0 ) value = Math.ceil(value / 60); // convert to minutes
-            }
-
             data.push(value);
           }
         }
@@ -283,7 +278,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             'seconds',
             {
               legend_containerID: 'chart-to-video-ad-seconds-legend',
-              scales_y_title: "Minutes"
+              scales_y_title: "Seconds"
             }
           )
         );
