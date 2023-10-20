@@ -337,7 +337,7 @@ class FV_Player_Checker {
           $fv_flowplayer_meta['is_live'] = $is_live;
           $fv_flowplayer_meta['is_audio'] = $is_audio;
           $fv_flowplayer_meta['is_encrypted'] = $is_encrypted;
-          $fv_flowplayer_meta['etag'] = isset($res['headers']['etag']) ? $res['headers']['etag'] : false;  //  todo: check!
+          $fv_flowplayer_meta['etag'] = ! is_wp_error( $res ) && isset($res['headers']['etag']) ? $res['headers']['etag'] : false;  //  todo: check!
           $fv_flowplayer_meta['date'] = time();
           $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
   
