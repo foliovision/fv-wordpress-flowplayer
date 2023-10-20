@@ -2255,7 +2255,7 @@ jQuery(function() {
             hlskey = get_playlist_video_meta_value( 'hls_hlskey', 0 );
 
 
-          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews });
+          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews, hlskey: hlskey, player_id: current_player_db_id } );
         }
 
       } else if( current_player_db_id > 0 ) {
@@ -3277,7 +3277,7 @@ jQuery(function() {
             insert_shortcode( shortcode_insert );
 
             if( fv_player_editor.clientId ) {
-              wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { shortcodeContent: shortcode_insert });
+              wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { shortcodeContent: shortcode_insert, player_id: current_player_db_id });
             }
 
             jQuery(".fv-wordpress-flowplayer-button").fv_player_box.close();

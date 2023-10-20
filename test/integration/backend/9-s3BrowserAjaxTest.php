@@ -13,10 +13,10 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     global $fv_fp;
 
     $_POST = array (
-      'amazon_bucket' => array(FV_PLAYER_AMAZON_BUCKET),
-      'amazon_region' => array(FV_PLAYER_AMAZON_REGION),
-      'amazon_key' => array(FV_PLAYER_AMAZON_ACCESS_KEY),
-      'amazon_secret' => array(FV_PLAYER_AMAZON_SECRET),
+      'amazon_bucket' => FV_PLAYER_AMAZON_BUCKET,
+      'amazon_region' => FV_PLAYER_AMAZON_REGION,
+      'amazon_key' => FV_PLAYER_AMAZON_ACCESS_KEY,
+      'amazon_secret' => FV_PLAYER_AMAZON_SECRET,
       's3_browser' => 1,
       'fv-wp-flowplayer-submit' => 'Save All Changes'
     );

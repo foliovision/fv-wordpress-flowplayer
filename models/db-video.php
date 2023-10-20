@@ -320,20 +320,20 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if( $fv_fp->_get_option('video_model_db_updated') != '7.9.3' ) {
       if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = 'caption'", $table ) ) ) {
-        $res = $wpdb->query( "UPDATE `{$table}` SET title = caption WHERE title = '' AND caption != ''" );
+        $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_videos` SET title = caption WHERE title = '' AND caption != ''" );
       }
 
       if( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $meta_table ) ) == $meta_table ) {
       // update duration
-      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
+      $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON v.id = m.id_video SET duration = CAST( m.meta_value AS DECIMAL(7,2) ) WHERE meta_key = 'duration' AND meta_value > 0");
 
       // update live
-      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
+      $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON v.id = m.id_video SET live = 1 WHERE meta_key = 'live' AND (meta_value = 1 OR meta_value = 'true')");
 
       // update last_check
-      $wpdb->query("UPDATE `{$table}` AS v JOIN `{$meta_table}` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
+      $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON v.id = m.id_video SET last_check = FROM_UNIXTIME(meta_value, '%Y-%m-%d %H:%i:%s') WHERE meta_key = 'last_video_meta_check' AND meta_value > 0 AND (meta_value IS NOT NULL OR meta_value != '')");
 
-      $wpdb->query("UPDATE `{$table}` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
+      $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_videos` SET toggle_advanced_settings = 'true' WHERE src1 != '' OR src2 != '' OR mobile != '' OR rtmp != '' OR rtmp_path != ''");
       }
 
       $fv_fp->_set_option('video_model_db_updated', '7.9.3');
@@ -409,16 +409,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
-          $select = '*';
+          $query_ids_joined = implode(',', array_map( 'intval', $query_ids ) );
 
-          $where = ' WHERE id IN('. implode(',', array_map( 'intval', $query_ids ) ).') ';
-
-          $order = '';
-
-          $limit = '';
-
-          // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-          $video_data = $wpdb->get_results('SELECT '.$select.' FROM '.self::$db_table_name.$where.$order.$limit);
+          $video_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id IN( {$query_ids_joined} )" );
 
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;
@@ -428,8 +421,7 @@ CREATE TABLE " . self::$db_table_name . " (
         }
       } else {
         if (!isset($cache[$id])) {
-          $db_table_name = self::$db_table_name;
-          $video_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ) );
+          $video_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id = %d", $id ) );
 
         } else {
           $all_cached = true;
@@ -616,18 +608,18 @@ CREATE TABLE " . self::$db_table_name . " (
     _deprecated_function( __FUNCTION__, '7.5.22', 'FV_Player_Db::query_videos' );
 
     global $wpdb;
-    $db_table_name = self::$db_table_name;
 
     if ( $like ) {
       $row = $wpdb->get_row(
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src LIKE %s ORDER BY id DESC", '%' . $wpdb->esc_like( $this->src ) . '%' )
+        $wpdb->prepare(
+          "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE src LIKE %s ORDER BY id DESC",
+          '%' . $wpdb->esc_like( $this->src ) . '%'
+        )
       );
 
     } else {
       $row = $wpdb->get_row(
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $wpdb->prepare( "SELECT " . ($fields ? esc_sql($fields) : '*') . " FROM {$db_table_name} WHERE src = %s ORDER BY id DESC", $this->src )
+        $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE src = %s ORDER BY id DESC", $this->src )
       );
     }
 
@@ -840,6 +832,11 @@ CREATE TABLE " . self::$db_table_name . " (
     // Save new video early so that we can attach video meta to the new video ID
     if ( ! $is_update ) {
       $this->save_do( $is_update );
+
+      // Bail if we encounter an error
+      if ( $wpdb->last_error ) {
+        return false;
+      }
     }
 
     $video_url = $this->getSrc();
@@ -1199,8 +1196,6 @@ CREATE TABLE " . self::$db_table_name . " (
     /*
      * Prepare SQL
      */
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
@@ -1210,8 +1205,6 @@ CREATE TABLE " . self::$db_table_name . " (
           $value = $value ? true : false;
         }
 
-        $data_keys[] = $property . ' = %s';
-
         /**
          * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
          */
@@ -1219,18 +1212,39 @@ CREATE TABLE " . self::$db_table_name . " (
           $value = wp_strip_all_tags( $value );
         }
 
-        $data_values[] = $value;
+        if ( in_array( $property, array( 'height', 'live', 'splash_attachment_id', 'width' ) ) ) {
+          $format[ $property ] = '%d';
+
+          if ( ! $value ) {
+            $value = 0;
+          }
+
+        } else if ( in_array( $property, array( 'duration' ) ) ) {
+          $format[ $property ] = '%f';
+
+          if ( ! $value ) {
+            $value = 0;
+          }
+
+        } else {
+          $format[ $property ] = '%s';
+
+          if ( ! $value ) {
+            $value = '';
+          }
+        }
+
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(',', $data_keys);
+    if ($is_update) {
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ), $format );
 
-    if ( $is_update ) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values, $format );
     }
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;

@@ -258,17 +258,13 @@ class FV_Player_Db {
         $total = 0;
       }
     } else {
-      $query = 'SELECT Count(*) AS Total FROM ' . $wpdb->prefix .'fv_player_players';
-
       if( $cannot_edit_other_posts ) {
-        $query .= ' WHERE author = ' . intval( $author_id );
+        $total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_players` WHERE author = %d", $author_id ) );
+
+      } else {
+        $total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_players`" ) );
       }
 
-      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-      $total = $wpdb->get_row( $query );
-      if ( $total ) {
-        $total = $total->Total;
-      }
     }
 
     if ($total) {
@@ -1610,8 +1606,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       $group_order = ' GROUP BY p.id'.$order.$limit;
     }
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $player_data = $wpdb->get_results('SELECT ' . $select . $meta_counts_select . ' FROM `' . FV_Player_Db_Player::get_db_table_name() . '` AS p ' . $meta_counts_join . $post_type_join . $tax_join . $where . $group_order );
+    $player_data = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} {$meta_counts_select} FROM `{$wpdb->prefix}fv_player_players` AS p {$meta_counts_join} {$post_type_join} {$tax_join} {$where} {$group_order}" ) );
 
     if($args['count']) {
       return intval($player_data[0]->row_count);
@@ -2297,13 +2292,11 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     $where = implode(' '.esc_sql($args['and_or']).' ', $where);
 
-    $video_table = FV_Player_Db_Video::get_db_table_name();
-    $player_table = FV_Player_Db_Player::get_db_table_name();
-
-    $query = "SELECT v.* FROM `{$video_table}` AS v JOIN `{$player_table}` AS p ON FIND_IN_SET(v.id, p.videos) WHERE $where ORDER BY v.id DESC";
-
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $video_data = $wpdb->get_results($query);
+    $video_data = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT v.* FROM `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_players` AS p ON FIND_IN_SET(v.id, p.videos) WHERE {$where} ORDER BY v.id DESC"
+      )
+    );
 
     if (!$video_data) {
       return false;

@@ -75,7 +75,13 @@ abstract class FV_Player_Media_Browser {
 
   function include_aws_sdk() {
     if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
-      require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
+      if ( file_exists( dirname( __FILE__ ) . "/../vendor/autoload.php" ) ) {
+        require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
+
+      } else {
+        wp_send_json( array( 'err' => 'AWS SDK not found. please make sure you run <code>composer install --no-dev</code> in FV Player plugin folder or install plugin from WordPress.org.' ) );
+        die();
+      }
     }
   }
 

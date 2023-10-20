@@ -89,16 +89,8 @@ HTML;
 HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
 
+    remove_action( 'wp_footer', 'the_block_template_skip_link' );
 
-    // Avoid more CSS files which WordPress started to include as the block themes become the new default
-    add_action(
-      'wp_footer',
-      function() {
-        // inline style with "Core styles: block-supports"
-        wp_dequeue_style( 'core-block-supports' );
-      }
-    );
-    
     ob_start();
     do_action('wp_footer');
     $footer = $this->fix_newlines( ob_get_clean() );
@@ -140,9 +132,9 @@ HTML;
 
 </div>
 <div class='fv-playlist-slider-wrapper'>	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="fv_flowplayer_4c69d2ca536828df7eee9add037ca7ba_lightbox_starter" id="wpfp_4c69d2ca536828df7eee9add037ca7ba_playlist" style="width: 750px">
-		<a href='#'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video1.jpg' /></div><h4><span>Video 1</span></h4></a>
-		<a href='#'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video2.jpg' /></div><h4><span>Video 2</span></h4></a>
-		<a href='#'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video3.jpg' /></div><h4><span>Video 3</span></h4></a>
+		<a href='#'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video1.jpg' loading='lazy' /></div><h4><span>Video 1</span></h4></a>
+		<a href='#'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video2.jpg' loading='lazy' /></div><h4><span>Video 2</span></h4></a>
+		<a href='#'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video3.jpg' loading='lazy' /></div><h4><span>Video 3</span></h4></a>
 	</div>
 </div>
 
@@ -154,9 +146,9 @@ HTML;
 
 </div>
 <div class='fv-playlist-slider-wrapper'>	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_4c69d2ca536828df7eee9add037ca7ba" id="wpfp_4c69d2ca536828df7eee9add037ca7ba_playlist" style="width: 750px">
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video1.mp4","type":"video\/mp4"}],"fv_title":"Video 1","splash":"https:\/\/cdn.site.com\/video1.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video1.jpg' /></div><h4><span>Video 1</span></h4></a>
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video2.mp4","type":"video\/mp4"}],"fv_title":"Video 2","splash":"https:\/\/cdn.site.com\/video2.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video2.jpg' /></div><h4><span>Video 2</span></h4></a>
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video3.mp4","type":"video\/mp4"}],"fv_title":"Video 3","splash":"https:\/\/cdn.site.com\/video3.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video3.jpg' /></div><h4><span>Video 3</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video1.mp4","type":"video\/mp4"}],"fv_title":"Video 1","splash":"https:\/\/cdn.site.com\/video1.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video1.jpg' loading='lazy' /></div><h4><span>Video 1</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video2.mp4","type":"video\/mp4"}],"fv_title":"Video 2","splash":"https:\/\/cdn.site.com\/video2.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video2.jpg' loading='lazy' /></div><h4><span>Video 2</span></h4></a>
+		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video3.mp4","type":"video\/mp4"}],"fv_title":"Video 3","splash":"https:\/\/cdn.site.com\/video3.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video3.jpg' loading='lazy' /></div><h4><span>Video 3</span></h4></a>
 	</div>
 </div>
 </div>
@@ -177,6 +169,7 @@ HTML;
 HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
     
+    remove_action( 'wp_footer', 'the_block_template_skip_link' );
     
     ob_start();
     do_action('wp_footer');

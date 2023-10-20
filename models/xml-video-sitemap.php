@@ -17,7 +17,7 @@ class FV_Xml_Video_Sitemap {
       add_filter( 'query_vars', array($this, 'custom_query_vars') ); // we need to use custom query vars as otherwise Yoast SEO could stop the sitemap from working as it could be detected by $wp_query->is_date
 
       add_filter( 'redirect_canonical', array( $this, 'redirect_canonical' ) ); // stop trailing slashes on sitemap URLs
-      add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save') ); // whitelist symbols
+      add_filter( 'fv_flowplayer_settings_save', array($this, 'settings_save'), 10, 3 ); // whitelist symbols
       add_action( 'fv_flowplayer_admin_seo_after', array( $this, 'options' ) );
     }
     
@@ -292,14 +292,37 @@ class FV_Xml_Video_Sitemap {
     
     function get_video_years() {
       global $wpdb;
-      
+
+      $post_types_in = array();
+      foreach ( $this->get_post_types() as $post_type ) {
+        $post_types_in[] = $wpdb->prepare( '%s', $post_type );
+      }
+      $post_types_in = implode( ',', $post_types_in );
+
       // grouped by year and month, each row is year, month, count
-      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-      $years_and_months = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
+      $years_and_months = $wpdb->get_results(
+        $wpdb->prepare(
+          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+          "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND (post_content LIKE %s OR post_content LIKE %s) GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;",
+          '%' . $wpdb->esc_like( '[flowplayer ' ) . '%',
+          '%' . $wpdb->esc_like( '[fvplayer ' ) . '%'
+        )
+      );
       
       if( $this->get_meta_keys() ) { // if we have some postmeta values to process
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $years_and_months_meta = $wpdb->get_results( "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts  FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN('post') AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').") GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;" );
+
+        $meta_keys_in = array();
+        foreach ( $this->get_meta_keys() as $meta_key ) {
+          $meta_keys_in[] = $wpdb->prepare( '%s', $meta_key );
+        }
+        $meta_keys_in = implode( ',', $meta_keys_in );
+
+        $years_and_months_meta = $wpdb->get_results(
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN ('post') AND post_status = 'publish' AND meta_key IN ( {$meta_keys_in} ) GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date;"
+          )
+        );
         
         if( $years_and_months_meta ) { // we have to marge these year, month, count rows into one array
           $years = array(); // multidimensional array year => month => count
@@ -388,13 +411,38 @@ class FV_Xml_Video_Sitemap {
       } else if( get_query_var('year') ) {
         $date_query = " year(post_date) = ".$year." AND ";
       }
-      
-      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-      $videos = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %')" );
+
+      $post_types_in = array();
+      foreach ( $this->get_post_types() as $post_type ) {
+        $post_types_in[] = $wpdb->prepare( '%s', $post_type );
+      }
+      $post_types_in = implode( ',', $post_types_in );
+
+      $videos = $wpdb->get_results(
+        $wpdb->prepare(
+          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+          "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts WHERE {$date_query} post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND (post_content LIKE %s OR post_content %s)",
+          '%' . $wpdb->esc_like( '[flowplayer ' ) . '%',
+          '%' . $wpdb->esc_like( '[fvplayer ' ) . '%'
+        )
+      );
       
       if( $this->get_meta_keys() ) {
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-        $videos_meta = $wpdb->get_results( "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE $date_query post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').")" );
+
+        $meta_keys_in = array();
+        foreach ( $this->get_meta_keys() as $meta_key ) {
+          $meta_keys_in[] = $wpdb->prepare( '%s', $meta_key );
+        }
+        $meta_keys_in = implode( ',', $meta_keys_in );
+
+        $videos_meta = $wpdb->get_results(
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT ID, post_content, post_title, post_excerpt, post_date, post_name, post_status, post_parent, post_type, guid FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE {$date_query} post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND meta_key IN ( {$meta_keys_in} )",
+
+          )
+        );
+
         $videos = array_merge($videos,$videos_meta);
       }
       
@@ -462,15 +510,41 @@ class FV_Xml_Video_Sitemap {
       if( strlen($objYear->month) == 1 ) $filename .= '0';
       $filename .= $objYear->month;
     }
+
+    $date_query = !empty($objYear->month) ? $wpdb->prepare( " AND month(post_date) = %d" , $objYear->month ) : false;    
+
+    $post_types_in = array();
+    foreach ( $this->get_post_types() as $post_type ) {
+      $post_types_in[] = $wpdb->prepare( '%s', $post_type );
+    }
+    $post_types_in = implode( ',', $post_types_in );    
     
-    $date_query = !empty($objYear->month) ? " AND month(post_date) = ".intval($objYear->month) : false;    
-    
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $last_modified = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND (post_content LIKE '%[flowplayer %' OR post_content LIKE '%[fvplayer %') AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
+    $last_modified = $wpdb->get_var(
+      $wpdb->prepare(
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        "SELECT post_modified_gmt FROM $wpdb->posts WHERE post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND (post_content LIKE %s OR post_content LIKE %s) AND year(post_date) = %d {$date_query} ORDER BY post_modified_gmt DESC LIMIT 1",
+        '%' . $wpdb->esc_like( '[flowplayer ' ) . '%',
+        '%' . $wpdb->esc_like( '[fvplayer ' ) . '%',
+        $objYear->year
+      )
+    );
+
     if( $this->get_meta_keys() ) {
-      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-      $last_modified_meta = $wpdb->get_var( "SELECT post_modified_gmt FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN(\"".implode('", "', $this->get_post_types())."\") AND post_status  = 'publish' AND meta_key IN (".$this->get_meta_keys('sql').") AND year(post_date) = ".intval($objYear->year)." $date_query ORDER BY post_modified_gmt DESC LIMIT 1" );
-      
+
+      $meta_keys_in = array();
+      foreach ( $this->get_meta_keys() as $meta_key ) {
+        $meta_keys_in[] = $wpdb->prepare( '%s', $meta_key );
+      }
+      $meta_keys_in = implode( ',', $meta_keys_in );
+
+      $last_modified_meta = $wpdb->get_var(
+        $wpdb->prepare(
+          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+          "SELECT post_modified_gmt FROM $wpdb->posts AS p JOIN $wpdb->postmeta AS m ON p.ID = m.post_id WHERE post_type IN ( {$post_types_in} ) AND post_status  = 'publish' AND meta_key IN ( {$meta_keys_in} ) AND year(post_date) = %d {$date_query} ORDER BY post_modified_gmt DESC LIMIT 1",
+          $objYear->year
+        )
+      );
+
       if( strtotime($last_modified_meta) > strtotime($last_modified) ) $last_modified = $last_modified_meta;
     }
     ?>
@@ -505,9 +579,9 @@ class FV_Xml_Video_Sitemap {
   		return $redirect;
   	}
     
-    function settings_save( $settings ) {
-      if( !empty($_POST['video_sitemap_meta']) ) {
-        $settings['video_sitemap_meta'] = trim( preg_replace( '~[^A-Za-z0-9.:\-_\/,]~', '', $_POST['video_sitemap_meta']) );
+    function settings_save( $settings, $old_settings, $post ) {
+      if( !empty($post['video_sitemap_meta']) ) {
+        $settings['video_sitemap_meta'] = trim( preg_replace( '~[^A-Za-z0-9.:\-_\/,]~', '', $post['video_sitemap_meta']) );
       }
       return $settings;
     }

@@ -9,7 +9,6 @@ abstract class FV_Player_Conversion_Base {
    */
   public $set_live = false;
 
-  protected $matchers = array();
   protected $title = 'Conversion';
   protected $slug = 'conversion-slug';
   protected $screen;
@@ -34,7 +33,6 @@ abstract class FV_Player_Conversion_Base {
     $this->title = $args['title'];
     $this->help = $args['help'];
     $this->slug = $args['slug'];
-    $this->matchers = $args['matchers'];
     $this->screen = 'fv_player_conversion_' . $this->slug;
 
     add_action( 'admin_menu', array( $this, 'admin_page' ) );

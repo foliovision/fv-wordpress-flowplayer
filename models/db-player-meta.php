@@ -180,8 +180,14 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // first, check if we're not trying to search for a meta item from the database
     if (is_array($options) && count($options) && !empty($options['meta_find_player'])) {
-      $db_table_name = self::$db_table_name;
-      $db_data = $wpdb->get_row( $wpdb->prepare( "SELECT id_player FROM {$db_table_name} WHERE meta_key = %s AND meta_value = %s", $options['meta_find_player']['key'], $options['meta_find_player']['value'] ), ARRAY_A );
+      $db_data = $wpdb->get_row(
+        $wpdb->prepare(
+          "SELECT id_player FROM `{$wpdb->prefix}fv_player_playermeta` WHERE meta_key = %s AND meta_value = %s",
+          $options['meta_find_player']['key'],
+          $options['meta_find_player']['value']
+        ),
+        ARRAY_A
+      );
 
       unset($options['meta_find_player']);
 
@@ -249,13 +255,12 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (count($query_ids)) {
           // load multiple player metas via their IDs but a single query and return their values
-          $db_table_name = self::$db_table_name;
           $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
 
           if ( $load_for_player ) {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id_player IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id_player IN( {$query_ids_joined} )" );
           } else {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id IN( {$query_ids_joined} )" );
           }
 
           // run through all of the meta data and
@@ -464,31 +469,21 @@ CREATE TABLE " . self::$db_table_name . " (
   public function save() {
     global $wpdb;
 
-    // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
-        $is_player_id = ($property == 'id_player');
-        $data_keys[] = $property . ' = '.($is_player_id ? (int) $value : '%s');
-
-        if (!$is_player_id) {
-          $data_values[] = $value;
-        }
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(', ', $data_keys);
-
     if ($is_update) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
-    }
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ) );
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values );
+    }
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;

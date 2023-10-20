@@ -148,7 +148,7 @@ class FV_Player_Stats {
     <table class="form-table2">
       <?php
         $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
-        $fv_fp->_get_checkbox(__('Track Guest Users', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Tracks also guest users using cookies.'), '');
+        $fv_fp->_get_checkbox(__('Track Guest User IDs', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Uses cookies to remember non-logged in users returning to website. Leave disabled to only get summary stats for all non-logged in users.'), '');
       ?>
       <tr>
         <td colspan="4">
@@ -257,7 +257,7 @@ class FV_Player_Stats {
             }
           }
 
-          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}fv_player_stats` WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
 
           if( $existing ) {
             $wpdb->update(
@@ -341,16 +341,13 @@ class FV_Player_Stats {
     global $wpdb;
 
     $excluded_posts = $this->get_posts_to_exclude();
-    $guest_where = '';
 
     if( $user_type == 'user' ) {
-      $user_id = 'user_id';
-    } else {
-      $user_id = 'guest_user_id';
-      $guest_where = 'AND guest_user_id > 0';
-    }
+      $results = $wpdb->get_col( "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts GROUP BY user_id ORDER BY sum(play) DESC LIMIT 10");
 
-    $results = $wpdb->get_col( "SELECT $user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts $guest_where GROUP BY $user_id ORDER BY sum(play) DESC LIMIT 10");
+    } else {
+      $results = $wpdb->get_col( "SELECT guest_user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE $interval $excluded_posts AND guest_user_id > 0 GROUP BY guest_user_id ORDER BY sum(play) DESC LIMIT 10");
+    }
 
     return $results;
   }
@@ -1113,38 +1110,44 @@ $FV_Player_Stats = new FV_Player_Stats();
 
 function fv_player_stats_top( $args = array() ) {
   $args = wp_parse_args( $args, array(
-    'post_type' => false,
     'taxonomy' => false,
     'term' => false ) );
 
   extract($args);
 
-  $join = $where = "";
-  if( $taxonomy && $term ) {
-    $join = "
-    INNER JOIN {$wpdb->prefix}term_relationships AS tr ON (pm.meta_value = tr.object_id)
-    INNER JOIN {$wpdb->prefix}term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-    INNER JOIN {$wpdb->prefix}terms AS t ON (t.term_id = tt.term_id)";
-
-    $where = "
-    AND tt.taxonomy = '".esc_sql($taxonomy)."'
-    AND t.name = '".esc_sql($term)."' ";
-  }
-
   global $wpdb;
-  $sql = "
-SELECT p.id, vm.id_video, vm.meta_value AS stats_play, pm.meta_value AS post_id
-FROM {$wpdb->prefix}fv_player_videometa AS vm
-  JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) > 0
-  JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON p.id = pm.id_player
-  $join
-WHERE vm.meta_key = 'stats_play'
-  AND pm.meta_key = 'post_id'
-  $where
-  ORDER BY CAST(vm.meta_value AS unsigned) DESC;";
 
-  // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-  $raw = $wpdb->get_results($sql);
+  if( $taxonomy && $term ) {
+    $raw = $wpdb->get_results(
+      $wpdb->prepare("
+      SELECT p.id, vm.id_video, vm.meta_value AS stats_play, pm.meta_value AS post_id
+      FROM {$wpdb->prefix}fv_player_videometa AS vm
+        JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) > 0
+        JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON p.id = pm.id_player
+        INNER JOIN {$wpdb->prefix}term_relationships AS tr ON (pm.meta_value = tr.object_id)
+        INNER JOIN {$wpdb->prefix}term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+        INNER JOIN {$wpdb->prefix}terms AS t ON (t.term_id = tt.term_id)
+      WHERE vm.meta_key = 'stats_play'
+        AND pm.meta_key = 'post_id'
+        AND tt.taxonomy = %s
+        AND t.name = %s
+        ORDER BY CAST(vm.meta_value AS unsigned) DESC",
+        $taxonomy,
+        $term
+      )
+    );
+
+  } else {
+    $raw = $wpdb->get_results( "
+      SELECT p.id, vm.id_video, vm.meta_value AS stats_play, pm.meta_value AS post_id
+      FROM {$wpdb->prefix}fv_player_videometa AS vm
+        JOIN {$wpdb->prefix}fv_player_players AS p ON FIND_IN_SET(vm.id_video, p.videos) > 0
+        JOIN {$wpdb->prefix}fv_player_playermeta AS pm ON p.id = pm.id_player
+      WHERE vm.meta_key = 'stats_play'
+        AND pm.meta_key = 'post_id'
+        ORDER BY CAST(vm.meta_value AS unsigned) DESC"
+    );
+  }
 
   // sice there might be multiple players for a single post_id we count these together
   $top = array();

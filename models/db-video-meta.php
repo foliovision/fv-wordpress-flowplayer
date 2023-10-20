@@ -230,11 +230,10 @@ CREATE TABLE " . self::$db_table_name . " (
           // load multiple video metas via their IDs but a single query and return their values
           $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
 
-          $db_table_name = self::$db_table_name;
           if ( $load_for_video ) {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id_video IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videometa` WHERE id_video IN( {$query_ids_joined} )" );
           } else {
-            $meta_data = $wpdb->get_results( "SELECT * FROM {$db_table_name} WHERE id IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videometa` WHERE id IN( {$query_ids_joined} )" );
           }
 
           // run through all of the meta data and
@@ -290,8 +289,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single video meta data record
-          $db_table_name = self::$db_table_name;
-          $meta_data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM {$db_table_name} WHERE id = %d', $id ) );
+          $meta_data = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM `{$wpdb->prefix}fv_player_videometa` WHERE id = %d', $id ) );
 
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
@@ -441,29 +439,20 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance') {
-        $is_video_id = ($property == 'id_video');
-        $data_keys[] = $property . ' = '.($is_video_id ? (int) $value : '%s');
-
-        if (!$is_video_id) {
-          $data_values[] = $value;
-        }
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(', ', $data_keys);
-
     if ($is_update) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
-    }
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ) );
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values );
+    }
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;

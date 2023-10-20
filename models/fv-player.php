@@ -825,7 +825,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       unset($aNewOptions['js-optimize']);
     }
 
-    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions, $_POST );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->_get_conf();
 
@@ -848,7 +848,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   public function _set_option($key, $value) {
-    $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
+    $aOldOptions = get_option( 'fvwpflowplayer', array() );
+
     if( ! is_array($key) ) {
       $aNewOptions = array_merge($aOldOptions,array($key => $value));
     } else {
@@ -861,8 +862,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $aNewOptions[$key[0]][$key[1]] = $value;
     }
 
-    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
+
     $this->_get_conf();
   }
 
@@ -1004,7 +1005,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $sHTML .= "<div class='fvp-playlist-thumb-img no-image'>";
       }
 
-      if( $tDuration && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
+      if( !empty($tDuration) && intval($tDuration) && ( !empty($this->aCurArgs['saveposition']) || $this->_get_option('video_position_save_enable') ) && is_user_logged_in() ) {
         $tDuration = flowplayer::hms_to_seconds( $tDuration );
         $tPosition = !empty($aItem['position']) ? $aItem['position'] : 0;
         if( $tPosition > 0 && !empty($aPlayer['fv_start']) ) {
@@ -1860,40 +1861,66 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       // Restore the directory separators
       $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
 
-      $sXAMZDate = gmdate('Ymd\THis\Z');
-      $sDate = gmdate('Ymd');
-      $sCredentialScope = $sDate."/".$fv_fp->_get_option( array('amazon_region', $amazon_key ) )."/s3/aws4_request";
-      $sSignedHeaders = "host";
-      $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key', $amazon_key ) ).'/'.$sCredentialScope);
+      $iAWSVersion = $fv_fp->_get_option( array( 'amazon_region', $amazon_key ) ) ? 4 : 2;
 
-      //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
-      $sCanonicalRequest = "GET\n";
-      $sCanonicalRequest .= $url_components['path']."\n";
-      $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
-      $sCanonicalRequest .= "host:".$url_components['host']."\n";
-      $sCanonicalRequest .= "\n$sSignedHeaders\n";
-      $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
+      if( $iAWSVersion == 4 ) {
+        $sXAMZDate = gmdate('Ymd\THis\Z');
+        $sDate = gmdate('Ymd');
+        $sCredentialScope = $sDate."/".$fv_fp->_get_option( array('amazon_region', $amazon_key ) )."/s3/aws4_request"; //  todo: variable
+        $sSignedHeaders = "host";
+        $sXAMZCredential = urlencode( $fv_fp->_get_option( array('amazon_key', $amazon_key ) ).'/'.$sCredentialScope);
 
-      //  2. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
-      $sStringToSign = "AWS4-HMAC-SHA256\n";
-      $sStringToSign .= "$sXAMZDate\n";
-      $sStringToSign .= "$sCredentialScope\n";
-      $sStringToSign .= hash('sha256',$sCanonicalRequest);
+        //  1. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
+        $sCanonicalRequest = "GET\n";
+        $sCanonicalRequest .= $url_components['path']."\n";
+        $sCanonicalRequest .= "X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=$sXAMZCredential&X-Amz-Date=$sXAMZDate&X-Amz-Expires=$time&X-Amz-SignedHeaders=$sSignedHeaders\n";
+        $sCanonicalRequest .= "host:".$url_components['host']."\n";
+        $sCanonicalRequest .= "\n$sSignedHeaders\n";
+        $sCanonicalRequest .= "UNSIGNED-PAYLOAD";
 
-      //  3. http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
-      $sSignature = hash_hmac('sha256', $sDate, "AWS4".$fv_fp->_get_option( array('amazon_secret', $amazon_key) ), true );
-      $sSignature = hash_hmac('sha256', $fv_fp->_get_option( array('amazon_region', $amazon_key) ), $sSignature, true );
-      $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
-      $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
-      $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
+        //  2. http://docs.aws.amazon.com/general/latest/gr/sigv4-create-string-to-sign.html
+        $sStringToSign = "AWS4-HMAC-SHA256\n";
+        $sStringToSign .= "$sXAMZDate\n";
+        $sStringToSign .= "$sCredentialScope\n";
+        $sStringToSign .= hash('sha256',$sCanonicalRequest);
 
-      //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html
-      $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";
-      $resource .= "&X-Amz-Credential=$sXAMZCredential";
-      $resource .= "&X-Amz-Date=$sXAMZDate";
-      $resource .= "&X-Amz-Expires=$time";
-      $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
-      $resource .= "&X-Amz-Signature=".$sSignature;
+        //  3. http://docs.aws.amazon.com/general/latest/gr/sigv4-calculate-signature.html
+        $sSignature = hash_hmac('sha256', $sDate, "AWS4".$fv_fp->_get_option( array('amazon_secret', $amazon_key) ), true );
+        $sSignature = hash_hmac('sha256', $fv_fp->_get_option( array('amazon_region', $amazon_key) ), $sSignature, true );  //  todo: variable
+        $sSignature = hash_hmac('sha256', 's3', $sSignature, true );
+        $sSignature = hash_hmac('sha256', 'aws4_request', $sSignature, true );
+        $sSignature = hash_hmac('sha256', $sStringToSign, $sSignature );
+
+        //  4. http://docs.aws.amazon.com/general/latest/gr/sigv4-add-signature-to-request.html
+        $resource .= "?X-Amz-Algorithm=AWS4-HMAC-SHA256";
+        $resource .= "&X-Amz-Credential=$sXAMZCredential";
+        $resource .= "&X-Amz-Date=$sXAMZDate";
+        $resource .= "&X-Amz-Expires=$time";
+        $resource .= "&X-Amz-SignedHeaders=$sSignedHeaders";
+        $resource .= "&X-Amz-Signature=".$sSignature;
+
+      } else {
+        $expires = time() + $time;
+
+        if( strpos( $url_components['path'], $fv_fp->_get_option( array('amazon_bucket', $amazon_key) ) ) === false ) {
+          $url_components['path'] = '/'.$fv_fp->_get_option( array('amazon_bucket', $amazon_key) ).$url_components['path'];
+        }
+
+        do {
+          $expires++;
+          $stringToSign = "GET\n\n\n$expires\n{$url_components['path']}";
+
+          $signature = utf8_encode($stringToSign);
+
+          $signature = hash_hmac('sha1', $signature, $fv_fp->_get_option( array('amazon_secret', $amazon_key ) ), true);
+          $signature = base64_encode($signature);
+
+          $signature = urlencode($signature);
+        } while( stripos($signature,'%2B') !== false );
+
+        $resource .= '?AWSAccessKeyId='.$fv_fp->_get_option( array('amazon_key', $amazon_key) ).'&Expires='.$expires.'&Signature='.$signature;
+
+      }
 
       $media = $resource;
 
@@ -2009,12 +2036,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $url_parts_encoded = wp_parse_url( $sURL );
       if( !empty($url_parts['path']) ) {
           $url_parts['path'] = join('/', array_map( 'rawurlencode', array_map('urldecode', explode('/', $url_parts_encoded['path']) ) ) );
+          $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       }
       if( !empty($url_parts['query']) ) {
           $url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );
       }
 
-      $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       return fv_http_build_url($sURL, $url_parts);
     /*} else {
       return $sURL;
@@ -2880,13 +2907,8 @@ function fv_wp_flowplayer_save_post( $post_id ) {
         $video_secured = array( 'media' => $fv_fp->get_video_src( $video, array( 'dynamic' => true ) ) );
         if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
           $iDone++;
-          if( isset($_GET['fv_flowplayer_checker'] ) ) {
-            echo "<p>Post $post_id video '$video' ok!</p>\n";
-          }
+
         } else {
-          if( isset($_GET['fv_flowplayer_checker'] ) ) {
-            echo "<p>Post $post_id video '$video' not done, adding into queue!</p>\n";
-          }
           FV_Player_Checker::queue_add($post_id);
         }
       } else {
@@ -2898,8 +2920,5 @@ function fv_wp_flowplayer_save_post( $post_id ) {
 
   if( !$videos || $iDone == count($videos) ) {
     FV_Player_Checker::queue_remove($post_id);
-    if( isset($_GET['fv_flowplayer_checker'] ) ) {
-      echo "<p>Post $post_id done, removing from queue!</p>\n";
-    }
   }
 }

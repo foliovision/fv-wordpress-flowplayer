@@ -550,27 +550,45 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if( $fv_fp->_get_option('player_model_db_updated') != '7.9.3' ) {
       // enable toggle end action
-      $wpdb->query("UPDATE `{$table}` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
+      $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_players` SET toggle_end_action = 'true' WHERE end_actions != '' AND end_action_value != ''");
 
       // enable toggle ad custom
       if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = 'ad'", $table ) ) ) {
-        $wpdb->query("UPDATE `{$table}` SET toggle_overlay = 'true' WHERE ad != ''");
+        $wpdb->query("UPDATE `{$wpdb->prefix}fv_player_players` SET toggle_overlay = 'true' WHERE ad != ''");
       }
 
-      foreach ( array(
-        'ad'                => 'overlay',
-        'ad_height'         => 'overlay_height',
-        'ad_skip'           => 'overlay_skip',
-        'ad_width'          => 'overlay_width',
-        'toggle_ad_custom'  => 'toggle_overlay',
-      ) as $from => $to ) {
-        // Is there such column?
-        if ( !FV_Player_Db::has_table_column( self::$db_table_name , $to ) ) {
-          if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, $from ) ) ) {
+      // ad => overlay
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay` = `ad` WHERE `overlay` = '' AND `ad` != ''" );
+        }
+      }
 
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-            $wpdb->query( "UPDATE `" . self::$db_table_name . "` SET `" . $to . "` = `" . $from . "` WHERE `" . $to . "` = '' AND `" . $from . "` != ''" );
-          }
+      // ad_height => overlay_height
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay_height' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad_height' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay_height` = `ad_height` WHERE `overlay_height` = '' AND `ad_height` != ''" );
+        }
+      }
+
+      // ad_skip => overlay_skip
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay_skip' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad_skip' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay_skip` = `ad_skip` WHERE `overlay_skip` = '' AND `ad_skip` != ''" );
+        }
+      }
+
+      // ad_width => overlay_width
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'overlay_width' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'ad_width' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `overlay_width` = `ad_width` WHERE `overlay_width` = '' AND `ad_width` != ''" );
+        }
+      }
+
+      // toggle_ad_custom => toggle_overlay
+      if ( !FV_Player_Db::has_table_column( self::$db_table_name , 'toggle_overlay' ) ) {
+        if ( $wpdb->get_results( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = %s", $table, 'toggle_ad_custom' ) ) ) {
+          $wpdb->query( "UPDATE `{$wpdb->prefix}fv_player_players` SET `toggle_overlay` = `toggle_ad_custom` WHERE `toggle_overlay` = '' AND `toggle_ad_custom` != ''" );
         }
       }
 
@@ -679,9 +697,8 @@ CREATE TABLE " . self::$db_table_name . " (
       $all_cached = false;
 
       if ($DB_Cache && !$DB_Cache->isPlayerCached($id)) {
-        // load a single video
-        $db_table_name = self::$db_table_name;
-        $player_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ), ARRAY_A );
+        // load a single player
+        $player_data = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}fv_player_players WHERE id = %d", $id ), ARRAY_A );
 
       } else if ($DB_Cache && $DB_Cache->isPlayerCached($id)) {
         $all_cached = true;
@@ -1017,10 +1034,9 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // prepare SQL
     $is_update   = ($this->id ? true : false);
-    $sql         = ($is_update ? 'UPDATE' : 'INSERT INTO').' '.self::$db_table_name.' SET ';
-    $data_keys   = array();
     $data_values = array();
 
+    // fill gmdate(s)
     $this->date_modified = date_format( date_create(), "Y-m-d H:i:s" );
 
     if (!$is_update && empty($this->date_created) ) {
@@ -1052,9 +1068,6 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        $numeric_value = in_array( $property, $this->numeric_properties );
-        $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
-
         /**
          * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
          */
@@ -1064,20 +1077,31 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        if (!$numeric_value) {
-          $data_values[] = $value;
+        if ( in_array( $property, array( 'author', 'changed_by' ) ) ) {
+          $format[ $property ] = '%d';
+
+          if ( ! $value ) {
+            $value = 0;
+          }
+
+        } else {
+          $format[ $property ] = '%s';
+
+          if ( ! $value ) {
+            $value = '';
+          }
         }
+
+        $data_values[ $property ] = $value;
       }
     }
 
-    $sql .= implode(',', $data_keys);
-
     if ($is_update) {
-      $sql .= $wpdb->prepare( ' WHERE id = %d', $this->id );
-    }
+      $wpdb->update( self::$db_table_name, $data_values, array( 'id' => $this->id ), $format );
 
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $wpdb->query( $wpdb->prepare( $sql, $data_values ));
+    } else {
+      $wpdb->insert( self::$db_table_name, $data_values, $format );
+    }
 
     if (!$is_update) {
       $this->id = $wpdb->insert_id;
@@ -1198,8 +1222,7 @@ CREATE TABLE " . self::$db_table_name . " (
     if ($videos && count($videos)) {
       foreach ($videos as $video) {
         // only delete videos which are used for this particular player and no other player
-        $db_table_name = self::$db_table_name;
-        if( $wpdb->get_var( $wpdb->prepare( "select count(*) from {$db_table_name} where FIND_IN_SET( %d, videos )", $video->getId() ) ) > 1 ) {
+        if( $wpdb->get_var( $wpdb->prepare( "select count(*) from `{$wpdb->prefix}fv_player_players` where FIND_IN_SET( %d, videos )", $video->getId() ) ) > 1 ) {
           continue; 
         }
 

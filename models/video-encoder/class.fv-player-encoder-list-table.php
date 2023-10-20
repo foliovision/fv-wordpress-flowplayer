@@ -160,8 +160,14 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         $value = $job->date_created > 0 ? "<abbr title='$job->date_created'>".gmdate('Y/m/d',strtotime($job->date_created))."</abbr>" : false;
         break;
       case 'source':
-        $nice_src = preg_replace( '~\?.+$~', '', $job->$column_name );
-        $value = "<a href='".esc_attr($job->$column_name)."' target='_blank'>".$nice_src."</a>";
+
+        // The video source URL might have the URL signature on it, so we need to strip it off to make it easy to read
+        $source_no_query_string = preg_replace( '~\?.+$~', '', $job->$column_name );
+
+        // The video source URL might require the URL signature to allow opening, so we add that here
+        $source_signed = apply_filters( 'fv_flowplayer_video_src', $source_no_query_string, array( 'dynamic' => true ) );
+
+        $value = "<a href='" . esc_attr( $source_signed ) . "' target='_blank'>" . $source_no_query_string . "</a>";
         break;
       case 'status':
         $error = !empty($job->error) ? "<p><b>".$job->error."</b></p>" : "";
@@ -252,20 +258,14 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   private function get_result_counts() {
     global $wpdb;
 
-    $aWhere = array();
     if( !empty($_GET['s']) ) {
-      $aWhere[] = $wpdb->prepare(
-        "source LIKE %s",
-        '%' . $wpdb->esc_like( $_GET['s'] ) . '%'
-      );
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s AND source LIKE %s", $this->encoder_id, '%' . $wpdb->esc_like( $_GET['s'] ) . '%' ) );
+
+    } else {
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s", $this->encoder_id ) );
     }
-
-    $where = count($aWhere) ? " AND ".implode( " AND ", $aWhere ) : "";
-
-    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$this->table_name} WHERE type = %s {$where}", $this->encoder_id ) );
   }
-  
+
   public function get_columns() {
     return array(
       'id'               => __( 'ID' ),
@@ -301,6 +301,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     }
     
     if( $args['exclude'] ) {
+      $args['exclude'] = array_map( 'intval', $args['exclude'] );
       $aWhere[] = 'id NOT IN ('.implode(',',$args['exclude']).')';
     }
 
@@ -308,24 +309,30 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     if( $args['status'] == 'complete' ) $aWhere[] = "status = 'complete'";
     if( $args['status'] == 'error' ) $aWhere[] = "status = 'error'";
 
+    global $wpdb;
+
     if( $args['s'] ) {
-      $search = sanitize_text_field($args['s']);
-      $aWhere[] = "source LIKE '%".$search."%'";
+      $aWhere[] = $wpdb->prepare( "source LIKE %s", '%' . $wpdb->esc_like( $args['s'] ) . '%' );
     }
 
     $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
 
-    $order = esc_sql($args['order']);
-    $order_by = esc_sql($args['orderby']);
+    $order = in_array( $args['order'], array( 'asc', 'desc' ) ) ? $args['order'] : 'desc';
+    $order_by = in_array( $args['orderby'], array( 'id', 'date_descted', 'source', 'target', 'status', 'author' ) ) ? $args['orderby'] : 'date_created';
 
     $per_page = intval($this->args['per_page']);
     $offset = ( $args['paged'] - 1 ) * $per_page;
 
-    global $wpdb;
-    $results = $wpdb->get_results( "SELECT * FROM {$this->table_name} $where ORDER BY $order_by $order LIMIT $offset, $per_page" );
+    $results = $wpdb->get_results(
+      $wpdb->prepare(
+        "SELECT * FROM `{$wpdb->prefix}fv_player_encoding_jobs` $where ORDER BY $order_by $order LIMIT %d, %d",
+        $offset,
+        $per_page
+      )
+    );
 
     // get embeded players using id from job
-    $playlist_embed = $wpdb->get_results( "SELECT j.id, m.id_video, p.id AS player_id FROM {$this->table_name} AS j
+    $playlist_embed = $wpdb->get_results( "SELECT j.id, m.id_video, p.id AS player_id FROM `{$wpdb->prefix}fv_player_encoding_jobs` AS j
       JOIN `{$wpdb->prefix}fv_player_videometa` AS m ON j.id = m.meta_value
       JOIN `{$wpdb->prefix}fv_player_players` AS p ON find_in_set(p.videos,m.id_video) > 0
       WHERE m.meta_key = 'encoding_job_id'" );

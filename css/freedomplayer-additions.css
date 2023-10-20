@@ -911,6 +911,9 @@ iframe#youtube.fp-engine {
 .flowplayer.is-youtube-nl.fixed-controls.fp-full .fp-engine, #fv_player_boxLoadedContent .flowplayer.is-youtube-nl.fixed-controls.fp-full .fp-engine {
   top: calc( -50% - 1.4em) !important;
 }
+.flowplayer.is-youtube-nl.fixed-controls.fp-full.has-abloop .fp-engine, #fv_player_boxLoadedContent .flowplayer.is-youtube-nl.fixed-controls.fp-full.has-abloop .fp-engine {
+  top: calc( -50% - 2.6em) !important;
+}
 .flowplayer.is-youtube-nl .fp-player {
   overflow: hidden;
 }
@@ -920,10 +923,16 @@ iframe#youtube.fp-engine {
 .flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full .fp-player {
   height: calc( 100% + 2.8em);
 }
-.flowplayer.is-ready.is-youtube-nl.fixed-controls:not(.is-fullscreen) .fp-ui {
+.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full.has-abloop .fp-player {
+  height: calc( 100% + 4.4em);
+}
+.flowplayer.is-ready.is-youtube-nl.fixed-controls:not(.is-fullscreen):not(.has-abloop) .fp-ui {
   height: calc( 100% - 2.4em);
 }
-.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen) .fp-ui {
+.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-ui {
+  height: calc( 100% - 2.8em);
+}
+.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-ui {
   height: calc( 100% - 2.8em);
 }
 .flowplayer.is-youtube-nl .fp-pause {
@@ -981,6 +990,9 @@ a.fp-youtube-title {
 }
 .flowplayer.fixed-controls .fp-youtube-logo {
   bottom: 6px;
+}
+.flowplayer.fixed-controls.has-abloop .fp-youtube-logo {
+  bottom: calc( 5.6em + 6px );
 }
 
 /* Duration */

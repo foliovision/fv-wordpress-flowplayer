@@ -745,7 +745,6 @@ if( typeof(flowplayer) != "undefined" ) {
                   youtube.addEventListener('onStateChange',onStateChange);
                   youtube.addEventListener('onError',onError);
                   youtube.addEventListener('onApiChange',onApiChange);
-
                   if( !flowplayer.support.dataload && !flowplayer.support.inlineVideo  ) { //  exp: for old iOS
                     youtube.cueVideoById( video_id, 0, 'default' );
 

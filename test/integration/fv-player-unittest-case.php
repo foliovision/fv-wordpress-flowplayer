@@ -53,7 +53,10 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     
     //  tabbed playlist test
     $html = preg_replace( '~tabs-\d+~', 'tabs-1', $html);
-    
+
+    //  player ID on wrapping DIV
+    $html = preg_replace( '~data-player-id="\d+"~', 'data-player-id="{number}"', $html);
+
     // splash end
     $html = preg_replace( '~wpfp_[a-z0-9]+_custom_background~', 'wpfp_XYZ_custom_background', $html);
     
@@ -82,6 +85,18 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
      */
     $html = preg_replace( "~(<link rel='stylesheet'.*)  ~", '$1 ', $html );
 
+    // WordPress 6.4 seems to add decoding="async" to <img /> tags
+    $html = preg_replace( '~<img decoding="async"~', '<img', $html );
+
+    // WordPress 6.4 seems to use " instead of ' in script tags arguments, so we use regex to avoid that as it breaks our tests
+    $html = preg_replace(
+      '~<script type="text/javascript" (data-fv-player-loader-)?src="([^"]+)" id="([^"]+)"></script>~',
+      "<script type='text/javascript' $1src='$2' id='$3'></script>",
+      $html
+    );
+
+    $html = preg_replace( '~<script type="text/javascript" id="([^"]+)">~', "<script type='text/javascript' id='$1'>", $html );
+
     return $html;
   }
 
@@ -93,7 +108,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     //include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
 
     // include the flowplayer loader
-    include "../../../fv-wordpress-flowplayer/flowplayer.php";
+    include "../../../fv-wordpress-flowplayer/fv-player.php";
 
     // include the PRO plugin class, so it can intercept data saving
     // and update the ads structure as needed for saving
