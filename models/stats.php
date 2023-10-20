@@ -148,7 +148,7 @@ class FV_Player_Stats {
     <table class="form-table2">
       <?php
         $fv_fp->_get_checkbox(__('Enable', 'fv-wordpress-flowplayer'), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
-        $fv_fp->_get_checkbox(__('Track Guest Users', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Tracks also guest users using cookies.'), '');
+        $fv_fp->_get_checkbox(__('Track Guest User IDs', 'fv-wordpress-flowplayer'), 'video_stats_enable_guest', __('Uses cookies to remember non-logged in users returning to website. Leave disabled to only get summary stats for all non-logged in users.'), '');
       ?>
       <tr>
         <td colspan="4">

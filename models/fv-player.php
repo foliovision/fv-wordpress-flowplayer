@@ -848,7 +848,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   public function _set_option($key, $value) {
-    $aOldOptions = is_array(get_option('fvwpflowplayer')) ? get_option('fvwpflowplayer') : array();
+    $aOldOptions = get_option( 'fvwpflowplayer', array() );
+
     if( ! is_array($key) ) {
       $aNewOptions = array_merge($aOldOptions,array($key => $value));
     } else {
@@ -861,9 +862,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $aNewOptions[$key[0]][$key[1]] = $value;
     }
 
-    // Do not use $_POST in this case as we did not verify any nonce
-    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions, array() );
     update_option( 'fvwpflowplayer', $aNewOptions );
+
     $this->_get_conf();
   }
 
@@ -2036,12 +2036,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $url_parts_encoded = wp_parse_url( $sURL );
       if( !empty($url_parts['path']) ) {
           $url_parts['path'] = join('/', array_map( 'rawurlencode', array_map('urldecode', explode('/', $url_parts_encoded['path']) ) ) );
+          $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       }
       if( !empty($url_parts['query']) ) {
           $url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );
       }
 
-      $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       return fv_http_build_url($sURL, $url_parts);
     /*} else {
       return $sURL;
