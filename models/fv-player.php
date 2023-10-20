@@ -2036,12 +2036,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $url_parts_encoded = wp_parse_url( $sURL );
       if( !empty($url_parts['path']) ) {
           $url_parts['path'] = join('/', array_map( 'rawurlencode', array_map('urldecode', explode('/', $url_parts_encoded['path']) ) ) );
+          $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       }
       if( !empty($url_parts['query']) ) {
           $url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );
       }
 
-      $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
       return fv_http_build_url($sURL, $url_parts);
     /*} else {
       return $sURL;
