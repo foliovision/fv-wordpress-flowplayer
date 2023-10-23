@@ -792,11 +792,16 @@ jQuery(function() {
       $el_editor.on('change', '.components-text-control__input', function() {
         var input = jQuery(this),
           parent = input.parents('.fv-player-editor-children-wrap'),
-          name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' );
+          name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' ),
+          wrap = input.parents( '.fv-player-editor-field-wrap-' + name );
 
         // Reveal the input if it has value even if it's not enabled in Post Interface options
         if ( input.val() ) {
-          input.closest( '.fv_player_interface_hide' ).show();
+          // Only if it's not field with shortening
+          if ( input.prev( '.fv_player_editor_url_shortened' ).length === 0 ) {
+            input.closest( '.fv_player_interface_hide' ).show();
+          }
+          wrap.show();
         }
 
         if( parent.length == 1 ) {
