@@ -262,7 +262,7 @@ class FV_Player_Db {
         $total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_players` WHERE author = %d", $author_id ) );
 
       } else {
-        $total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_players`" ) );
+        $total = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_players` WHERE %d = %d", 1, 1 ) );
       }
 
     }
