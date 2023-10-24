@@ -260,3 +260,4 @@ You can optionally edit your theme's JS to prevent the shrinking.
 = 8.0 - 2023-09-19 =
 
 * Initial release of FV Player 8
+* Subtitles - fix for RTL languages when the line contains latin word - thanks to Olivier Legendre
