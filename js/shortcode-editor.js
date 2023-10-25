@@ -33,6 +33,8 @@ jQuery(function() {
     deleted_video_meta = [],
     deleted_player_meta = [],
 
+    prevent_reload_for_current_save = false,
+
     // stores the button which was clicked to open the editor
     editor_button_clicked = 0,
 
@@ -1261,6 +1263,12 @@ jQuery(function() {
           return;
         }
 
+        if( e && $(e.target).data('no-reload') ) {
+          prevent_reload_for_current_save = true;
+        } else {
+          prevent_reload_for_current_save = false;
+        }
+
         var
           ajax_data = build_ajax_data(true),
           db_data_loading = true;
@@ -1471,11 +1479,10 @@ jQuery(function() {
                   overlay_close_waiting_for_save = false;
                   $.fn.fv_player_box.close();
 
-                } else if ( typeof( response.html ) != "undefined" ) {
-
+                } else if ( typeof( response.html ) != "undefined" && !prevent_reload_for_current_save ) {
                   if( response.html ) {
                     // auto-refresh preview
-                    el_preview_target.html( response.html )
+                    el_preview_target.html( response.html );
 
                     $doc.trigger('fvp-preview-complete');
 
@@ -1483,6 +1490,8 @@ jQuery(function() {
                     reset_preview();
                   }
                 }
+
+                prevent_reload_for_current_save = false;
 
                 // if we're creating a new player, hide the Save / Insert button and
                 // add all the data and inputs to page that we need for an existing player
