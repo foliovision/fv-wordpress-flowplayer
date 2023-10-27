@@ -53,6 +53,7 @@ require_once( ABSPATH . WPINC . '/class-wp-user-meta-session-tokens.php' );
 require_once( ABSPATH . WPINC . '/meta.php' );
 require_once( ABSPATH . WPINC . '/kses.php' );
 require_once( ABSPATH . WPINC . '/rest-api.php' );
+require_once( ABSPATH . WPINC . '/blocks.php' );
 
 // wp_parse_url()
 require_once( ABSPATH . WPINC . '/http.php' );
