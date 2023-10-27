@@ -919,6 +919,20 @@ JS;
   function get_ad_code() {
     $overlay_contents = false;
 
+    // Map old shortcode arguments to new
+    foreach(
+      array(
+        'ad'        => 'overlay',
+        'ad_width'  => 'overlay_width',
+        'ad_height' => 'overlay_height',
+        'ad_skip'   => 'overlay_skip',
+      ) as $old => $new
+    ) {
+      if (isset( $this->aCurArgs[ $old ] ) && !empty( $this->aCurArgs[ $old ] ) ) {
+        $this->aCurArgs[ $new ] = $this->aCurArgs[ $old ];
+      }
+    }
+
     if(
       ( trim($this->_get_option('overlay')) || ( isset($this->aCurArgs['overlay']) && !empty($this->aCurArgs['overlay']) ) )
       && !strlen($this->aCurArgs['overlay_skip'])
