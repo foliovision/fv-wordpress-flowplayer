@@ -539,6 +539,34 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
     $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]</figure>' , $html);
     return $html;
   }
+
+  /**
+   * Fix excerpts if video links are converted to FV Player.
+   * 
+   * If FV Player is inserted using shortcode, then it's removed by core WordPress
+   * strip_shortcodes() before the excerpt is created in wp_trim_excerpt().
+   * 
+   * However if we use the "Handle WordPress audio/video" setting
+   * integrations[]'wp_core_video'] the video is just a link and it does not get stripped.
+   * 
+   * That way FV Player puts in the HTML code which is then removed, while keeping its text
+   * content and this shows as excerpt:
+   * 
+   * "Please enable JavaScriptplay-sharp-fill 01:53 LinkEmbedCopy and paste this HTML code into your webpage to embed."
+   */
+  add_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
+
+  function fv_player_fix_wp_trim_words( $text, $num_words, $more, $original_text ) {
+    // Remove strip_tags() remains of the player markup with Video Link and Embedding enabled, which are optional
+    $text = preg_replace( '~Please enable JavaScriptplay-sharp-fill.*?(?:Link)(?:EmbedCopy and paste this HTML code into your webpage to embed.)~', '', $text );
+
+    // ...or with just the video duration
+    $text = preg_replace( '~Please enable JavaScriptplay-sharp-fill.*?[0-9][0-9]:[0-9][0-9]~', '', $text );
+
+    // ... or just the "Please enable JavaScript" part with nothing else after it
+    $text = str_replace( '~Please enable JavaScriptplay-sharp-fill~', '', $text );
+    return $text;
+  }
 }
 
 
