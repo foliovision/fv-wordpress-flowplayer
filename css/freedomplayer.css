@@ -114,8 +114,6 @@
 .freedomplayer.is-loading .fp-waiting, .freedomplayer.is-seeking .fp-waiting {
   display: block !important;
   opacity: 1 !important; }
-  .freedomplayer.is-loading .fp-waiting svg, .freedomplayer.is-loading .fp-waiting p, .freedomplayer.is-seeking .fp-waiting svg, .freedomplayer.is-seeking .fp-waiting p {
-    opacity: 1; }
 
 .freedomplayer.is-loading .fp-play, .freedomplayer.is-loading .fp-pause, .freedomplayer.is-seeking .fp-play, .freedomplayer.is-seeking .fp-pause {
   display: none !important; }
@@ -175,7 +173,7 @@
 .freedomplayer.is-live.is-dvr.is-live-position .fp-duration {
   color: #00abcd; }
 
-.freedomplayer.is-mouseout:not(.is-splash):not(.is-seeking):not(.fixed-controls) .fp-timeline {
+.freedomplayer.is-mouseout:not(.is-splash):not(.is-seeking):not(.fixed-controls):not(.is-mobile-seeking) .fp-timeline {
   pointer-events: none; }
 
 .freedomplayer.is-tiny:not(.is-fullscreen) {
@@ -303,16 +301,16 @@
     display: block;
     opacity: 1; }
 
-.freedomplayer.fp-edgy .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-edgy .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-edgy .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-edgy .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-edgy .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-edgy .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-edgy .fp-waiting svg.fp-play-rounded-fill, .freedomplayer.fp-edgy .fp-waiting svg.fp-pause-rounded-fill, .freedomplayer.fp-edgy .fp-waiting svg.fp-play-rounded-outline, .freedomplayer.fp-edgy .fp-waiting svg.fp-pause-rounded-outline {
+.freedomplayer.fp-edgy .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-edgy .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-edgy .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-edgy .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-edgy .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-edgy .fp-pause svg.fp-pause-rounded-outline {
   display: none !important; }
 
-.freedomplayer.fp-edgy .fp-play svg.fp-play-sharp-fill, .freedomplayer.fp-edgy .fp-play svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-play-sharp-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy .fp-waiting svg.fp-play-sharp-fill, .freedomplayer.fp-edgy .fp-waiting svg.fp-pause-sharp-fill {
+.freedomplayer.fp-edgy .fp-play svg.fp-play-sharp-fill, .freedomplayer.fp-edgy .fp-play svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-play-sharp-fill, .freedomplayer.fp-edgy .fp-pause svg.fp-pause-sharp-fill {
   display: block; }
 
-.freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-waiting svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-waiting svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-waiting svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-waiting svg.fp-pause-sharp-fill {
+.freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-play-sharp-fill, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-pause-sharp-fill, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-pause-sharp-fill {
   display: none; }
 
-.freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-waiting svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-waiting svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-waiting svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-waiting svg.fp-pause-sharp-outline {
+.freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-play svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-play svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-play-sharp-outline, .freedomplayer.fp-edgy.fp-outlined .fp-pause svg.fp-pause-sharp-outline, .freedomplayer.fp-edgy.fp-minimal .fp-pause svg.fp-pause-sharp-outline {
   display: block; }
 
 .freedomplayer.fp-edgy, .freedomplayer.fp-edgy .fp-menu, .freedomplayer.fp-edgy .fp-captions p, .freedomplayer.fp-edgy .fp-textarea, .freedomplayer.fp-edgy .fp-bar, .freedomplayer.fp-edgy .fp-bar-slider, .freedomplayer.fp-edgy .fp-bar > *, .freedomplayer.fp-edgy .fp-bar-slider > *, .freedomplayer.fp-edgy .fp-timestamp {
@@ -429,10 +427,6 @@
     top: 0; }
   .freedomplayer .fp-waiting {
     display: none; }
-    .freedomplayer .fp-waiting p {
-      opacity: 0;
-      color: #ccc;
-      font-weight: bold; }
   .freedomplayer .fp-ui .fp-preload {
     margin: auto; }
   .freedomplayer.is-splash .fp-preload, .freedomplayer.is-poster .fp-preload {
@@ -457,10 +451,14 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-paused:not(.is-mouseout.is-touch) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui {
+  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-paused:not(.is-mouseout.is-touch) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui {
     background-image: none; }
-    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-paused:not(.is-mouseout.is-touch) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-video-rewind):not(.is-video-forward) .fp-ui > * {
+    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-paused:not(.is-mouseout.is-touch) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui > * {
       opacity: 1; }
+    .freedomplayer.fp-ui-shown .fp-ui .fp-controls > *, .freedomplayer.is-paused:not(.was-played) .fp-ui .fp-controls > *, .freedomplayer.is-paused:not(.is-mouseout.is-touch) .fp-ui .fp-controls > *, .freedomplayer.is-splash .fp-ui .fp-controls > *, .freedomplayer.is-mouseover .fp-ui .fp-controls > *, .freedomplayer.is-loading .fp-ui .fp-controls > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui .fp-controls > * {
+      opacity: 1; }
+  .freedomplayer.is-mobile-seeking .fp-timeline, .freedomplayer.is-mobile-seeking .fp-forward, .freedomplayer.is-mobile-seeking .fp-rewind {
+    opacity: 1; }
   .freedomplayer .fp-header {
     top: 0;
     text-align: left;
@@ -547,9 +545,9 @@
       opacity: 1 !important;
       -webkit-transform: scale(1);
               transform: scale(1); }
-  .freedomplayer .fp-play .fp-playbtn, .freedomplayer .fp-pause .fp-playbtn, .freedomplayer .fp-waiting .fp-playbtn, .freedomplayer .fp-forward .fp-playbtn, .freedomplayer .fp-rewind .fp-playbtn {
+  .freedomplayer .fp-play .fp-playbtn, .freedomplayer .fp-pause .fp-playbtn, .freedomplayer .fp-forward .fp-playbtn, .freedomplayer .fp-rewind .fp-playbtn {
     display: none; }
-  .freedomplayer .fp-play svg, .freedomplayer .fp-pause svg, .freedomplayer .fp-waiting svg, .freedomplayer .fp-forward svg, .freedomplayer .fp-rewind svg {
+  .freedomplayer .fp-play svg, .freedomplayer .fp-pause svg, .freedomplayer .fp-forward svg, .freedomplayer .fp-rewind svg {
     position: absolute;
     left: 0;
     right: 0;
@@ -565,13 +563,15 @@
     -webkit-transition: all .2s;
     transition: all .2s;
     display: none; }
-    .freedomplayer .fp-play svg.fp-play-rounded-fill, .freedomplayer .fp-play svg.fp-pause-rounded-fill, .freedomplayer .fp-pause svg.fp-play-rounded-fill, .freedomplayer .fp-pause svg.fp-pause-rounded-fill, .freedomplayer .fp-waiting svg.fp-play-rounded-fill, .freedomplayer .fp-waiting svg.fp-pause-rounded-fill, .freedomplayer .fp-forward svg.fp-play-rounded-fill, .freedomplayer .fp-forward svg.fp-pause-rounded-fill, .freedomplayer .fp-rewind svg.fp-play-rounded-fill, .freedomplayer .fp-rewind svg.fp-pause-rounded-fill {
+    .freedomplayer .fp-play svg.fp-play-rounded-fill, .freedomplayer .fp-play svg.fp-pause-rounded-fill, .freedomplayer .fp-pause svg.fp-play-rounded-fill, .freedomplayer .fp-pause svg.fp-pause-rounded-fill, .freedomplayer .fp-forward svg.fp-play-rounded-fill, .freedomplayer .fp-forward svg.fp-pause-rounded-fill, .freedomplayer .fp-rewind svg.fp-play-rounded-fill, .freedomplayer .fp-rewind svg.fp-pause-rounded-fill {
       display: block; }
-  .freedomplayer .fp-play.fp-visible svg, .freedomplayer .fp-pause.fp-visible svg, .freedomplayer .fp-waiting.fp-visible svg, .freedomplayer .fp-forward.fp-visible svg, .freedomplayer .fp-rewind.fp-visible svg {
+    .freedomplayer .fp-play svg path, .freedomplayer .fp-pause svg path, .freedomplayer .fp-forward svg path, .freedomplayer .fp-rewind svg path {
+      pointer-events: none; }
+  .freedomplayer .fp-play.fp-visible svg, .freedomplayer .fp-pause.fp-visible svg, .freedomplayer .fp-forward.fp-visible svg, .freedomplayer .fp-rewind.fp-visible svg {
     -webkit-transform: scale(1.5);
             transform: scale(1.5);
     opacity: 1; }
-  .freedomplayer .fp-play.fp-visible-change, .freedomplayer .fp-pause.fp-visible-change, .freedomplayer .fp-waiting.fp-visible-change, .freedomplayer .fp-forward.fp-visible-change, .freedomplayer .fp-rewind.fp-visible-change {
+  .freedomplayer .fp-play.fp-visible-change, .freedomplayer .fp-pause.fp-visible-change, .freedomplayer .fp-forward.fp-visible-change, .freedomplayer .fp-rewind.fp-visible-change {
     opacity: 1; }
   .freedomplayer .fp-remaining {
     display: none; }
@@ -602,16 +602,16 @@
       opacity: 1; }
   .freedomplayer.is-mouseover.is-disabled .fp-forward, .freedomplayer.is-mouseover.is-disabled .fp-rewind, .freedomplayer.is-mouseover.is-cva .fp-forward, .freedomplayer.is-mouseover.is-cva .fp-rewind {
     display: none; }
-  .freedomplayer.is-video-rewind.is-ready .fp-rewind {
+  .freedomplayer.is-mobile-seeking.is-ready .fp-rewind {
     display: block;
     opacity: 1; }
-    .freedomplayer.is-video-rewind.is-ready .fp-rewind svg {
+    .freedomplayer.is-mobile-seeking.is-ready .fp-rewind svg {
       display: block;
       opacity: 1; }
-  .freedomplayer.is-video-forward.is-ready .fp-forward {
+  .freedomplayer.is-mobile-seeking.is-ready .fp-forward {
     display: block;
     opacity: 1; }
-    .freedomplayer.is-video-forward.is-ready .fp-forward svg {
+    .freedomplayer.is-mobile-seeking.is-ready .fp-forward svg {
       display: block;
       opacity: 1; }
   .freedomplayer .fp-controls {
@@ -627,9 +627,11 @@
     bottom: 0;
     z-index: 2;
     padding-left: 0.3em;
-    padding-right: 0.3em; }
+    padding-right: 0.3em;
+    opacity: 1; }
     .freedomplayer .fp-controls > * {
-      margin: 0 .6em; }
+      margin: 0 .6em;
+      opacity: 0; }
     .freedomplayer .fp-controls strong {
       margin: 0;
       padding: .4em .6em; }
@@ -902,9 +904,9 @@
       white-space: nowrap; }
   .freedomplayer .fp-subtitle-menu {
     width: auto; }
-  .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-outlined .fp-waiting svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-waiting svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-waiting svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-waiting svg.fp-pause-rounded-fill {
+  .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-fill, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-fill, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-fill, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-fill {
     display: none; }
-  .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-outlined .fp-waiting svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-waiting svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-waiting svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-waiting svg.fp-pause-rounded-outline {
+  .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-outline {
     display: block; }
   .freedomplayer.fp-outlined .fp-airplay:before, .freedomplayer.fp-minimal .fp-airplay:before {
     content: "\e201"; }
@@ -974,8 +976,8 @@
             transform: scale(1); } }
 
 .fp-preload {
-  -webkit-transition: opacity .3s .1s;
-  transition: opacity .3s .1s;
+  -webkit-transition: opacity 1s .3s;
+  transition: opacity 1s .3s;
   position: static;
   top: 0;
   bottom: 0;
@@ -986,7 +988,7 @@
   display: block;
   height: 0; }
 
-.fp-waiting .fp-preload {
+.is-loading .fp-waiting .fp-preload, .is-seeking .fp-waiting .fp-preload {
   position: absolute;
   display: block;
   height: 2em;
