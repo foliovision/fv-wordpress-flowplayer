@@ -525,18 +525,18 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   add_filter( 'embed_oembed_html', 'fv_player_handle_youtube_links' );
 
   function fv_player_handle_vimeo_links( $html ) {
-    $html = preg_replace( '~<iframe[^>]*?vimeo\.com/video/(\d+)[^>]*?(\?h=[a-z0-9]+)?[^>]*?></iframe>~', '[fvplayer src="http://vimeo.com/$1$2"]', $html );
+    $html = preg_replace( '~<iframe[^>]*?vimeo\.com/video/(\d+)[^>]*?(\?h=[a-z0-9]+)?[^>]*?></iframe>~', '[fvplayer src="http://vimeo.com/$1$2" checker="no"]', $html );
     return $html;
   }
 
   function fv_player_handle_youtube_links( $html ) {
-    $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]', $html );
+    $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1" checker="no"]', $html );
     return $html;
   }
 
   add_filter( 'the_content', 'fv_player_handle_video_tags' );
   function fv_player_handle_video_tags( $html ) {
-    $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]</figure>' , $html);
+    $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1" checker="no"]</figure>' , $html);
     return $html;
   }
 
