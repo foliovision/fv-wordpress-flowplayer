@@ -558,13 +558,13 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
 
   function fv_player_fix_wp_trim_words( $text, $num_words, $more, $original_text ) {
     // Remove strip_tags() remains of the player markup with Video Link and Embedding enabled, which are optional
-    $text = preg_replace( '~Please enable JavaScriptplay-sharp-fill.*?(?:Link)(?:EmbedCopy and paste this HTML code into your webpage to embed.)~', '', $text );
+    $text = preg_replace( '~Please enable JavaScriptplay-(rounded|sharp)-(fill|outline).*?(?:Link)(?:EmbedCopy and paste this HTML code into your webpage to embed.)~', '', $text );
 
     // ...or with just the video duration
-    $text = preg_replace( '~Please enable JavaScriptplay-sharp-fill.*?[0-9][0-9]:[0-9][0-9]~', '', $text );
+    $text = preg_replace( '~Please enable JavaScriptplay-(rounded|sharp)-(fill|outline).*?[0-9][0-9]:[0-9][0-9]~', '', $text );
 
     // ... or just the "Please enable JavaScript" part with nothing else after it
-    $text = str_replace( '~Please enable JavaScriptplay-sharp-fill~', '', $text );
+    $text = preg_replace( '~Please enable JavaScriptplay-(rounded|sharp)-(fill|outline)~', '', $text );
     return $text;
   }
 }
