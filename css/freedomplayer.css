@@ -482,6 +482,9 @@
   .freedomplayer:not(.is-touch) .fp-header {
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.25)), to(transparent));
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent); }
+  .freedomplayer:not(.is-touch).fp-slim.is-mouseover-bottom .fp-ui {
+    background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.25)), color-stop(15%, transparent));
+    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 15%); }
   .freedomplayer .fp-help {
     display: none; }
   .freedomplayer .fp-message {
