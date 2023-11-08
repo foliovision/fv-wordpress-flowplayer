@@ -525,18 +525,20 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   add_filter( 'embed_oembed_html', 'fv_player_handle_youtube_links' );
 
   function fv_player_handle_vimeo_links( $html ) {
-    $html = preg_replace( '~<iframe[^>]*?vimeo\.com/video/(\d+)[^>]*?(\?h=[a-z0-9]+)?[^>]*?></iframe>~', '[fvplayer src="http://vimeo.com/$1$2" checker="no"]', $html );
+    // Since the player HTML code ends with just </div> we add a HTML comment to be able to detect where it ends in fv_player_fix_wp_trim_words()
+    $html = preg_replace( '~<iframe[^>]*?vimeo\.com/video/(\d+)[^>]*?(\?h=[a-z0-9]+)?[^>]*?></iframe>~', '[fvplayer src="http://vimeo.com/$1$2"]<!-- link converted by FV Player  -->', $html );
     return $html;
   }
 
   function fv_player_handle_youtube_links( $html ) {
-    $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1" checker="no"]', $html );
+    // Since the player HTML code ends with just </div> we add a HTML comment to be able to detect where it ends in fv_player_fix_wp_trim_words()
+    $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]<!-- link converted by FV Player  -->', $html );
     return $html;
   }
 
   add_filter( 'the_content', 'fv_player_handle_video_tags' );
   function fv_player_handle_video_tags( $html ) {
-    $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1" checker="no"]</figure>' , $html);
+    $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]<!-- link converted by FV Player  --></figure>' , $html);
     return $html;
   }
 
@@ -557,14 +559,18 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   add_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
 
   function fv_player_fix_wp_trim_words( $text, $num_words, $more, $original_text ) {
-    // Remove strip_tags() remains of the player markup with Video Link and Embedding enabled, which are optional
-    $text = preg_replace( '~Please enable JavaScriptplay-(rounded|sharp)-(fill|outline).*?(?:Link)(?:EmbedCopy and paste this HTML code into your webpage to embed.)~', '', $text );
 
-    // ...or with just the video duration
-    $text = preg_replace( '~Please enable JavaScriptplay-(rounded|sharp)-(fill|outline).*?[0-9][0-9]:[0-9][0-9]~', '', $text );
+    if ( stripos( $original_text, '<!-- link converted by FV Player  -->' ) !== false ) {
+      remove_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
 
-    // ... or just the "Please enable JavaScript" part with nothing else after it
-    $text = preg_replace( '~Please enable JavaScriptplay-(rounded|sharp)-(fill|outline)~', '', $text );
+      // Since the player HTML code ends with just </div> we look for the HTML comment to be able to detect where it ends.
+      $original_text = preg_replace( '~<div id="wpfp[\s\S]*?<!-- link converted by FV Player  -->~', '', $original_text );
+
+      $text = wp_trim_words( $original_text, $num_words, $more );
+
+      add_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
+    }
+
     return $text;
   }
 }
