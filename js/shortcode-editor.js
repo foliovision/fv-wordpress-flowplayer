@@ -4844,6 +4844,10 @@ jQuery(function() {
         return shortcode_remains;
       },
 
+      get_tab( index, tab ) {
+        return get_tab( index, tab );
+      },
+
       insertUpdateOrDeletePlayerMeta,
 
       insertUpdateOrDeleteVideoMeta,
