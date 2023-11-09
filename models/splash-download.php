@@ -18,12 +18,17 @@ class FV_Player_Splash_Download {
    *
    * @param array $video_data
    * @param int|false $post_id
-   * @param FV_Player_Db_Video $videoObj
+   * @param FV_Player_Db_Video $videoObj Used to avoid downloading the splash if the video
+   *                                     already has a splash set.
    *
    * @return array
    */
-  function splash_data($video_data, $post_id, $videoObj) {
-    if( is_array($video_data) && !empty($video_data['thumbnail']) && !$videoObj->getSplash() ) {
+  function splash_data($video_data, $post_id, $videoObj = false ) {
+    if ( $videoObj && method_exists( $videoObj, 'getSplash' ) && $videoObj->getSplash() ) {
+      return $video_data;
+    }
+
+    if( is_array($video_data) && !empty($video_data['thumbnail']) ) {
       $splash_data = $this->download_splash( $video_data['thumbnail'], isset($video_data['name']) ? $video_data['name'] : false );
 
       if( !empty( $splash_data ) ) {
