@@ -126,8 +126,10 @@ class flowplayer_frontend extends flowplayer
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
 
-    // restore list styling from the shortcode, if provided,
-    // as it needs to override the DB value
+    /**
+     * Restore certain shortcode arguments if provided as they should override the DB value,
+     * or any value provided via fv_flowplayer_args_pre filter.
+     */
     foreach(
       array(
         'height',
@@ -136,7 +138,11 @@ class flowplayer_frontend extends flowplayer
         'width',
       ) as $key
     ) {
-      if ( isset($args[ $key ]) ) {
+      if (
+        ! empty( $args[ $key ] ) ||
+        // Some of the shortcode arguments should be applied even if they are empty
+        isset( $args[ $key ] ) && in_array( $key, array( 'lightbox' ) )
+      ) {
         $this->aCurArgs[ $key ] = $args[ $key ];
       }
     }
