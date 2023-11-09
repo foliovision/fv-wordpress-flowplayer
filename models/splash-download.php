@@ -24,6 +24,12 @@ class FV_Player_Splash_Download {
    * @return array
    */
   function splash_data($video_data, $post_id, $videoObj = false ) {
+    // Do not download if it's not a player video stored in database
+    if ( !$videoObj ) {
+      return $video_data;
+    }
+
+    // Do not download if video already has splash set
     if ( $videoObj && method_exists( $videoObj, 'getSplash' ) && $videoObj->getSplash() ) {
       return $video_data;
     }
