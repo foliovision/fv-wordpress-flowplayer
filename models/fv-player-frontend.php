@@ -40,6 +40,8 @@ class flowplayer_frontend extends flowplayer
 
   var $currentVideoObject = null;
 
+  var $splash_count = 0;
+
   private $fRatio = null;
 
   /**
@@ -794,6 +796,15 @@ class flowplayer_frontend extends flowplayer
               $image .= ' style="position:absolute;top:0;width:100%"';
             }
             $image .= ' />';
+          }
+
+          /**
+           * Lazy load images excerpt the first image as it might be above the fold.
+           * This way we avoid the "Largest Contentful Paint image was lazily loaded" warning
+           * in Google PageSpeed Insights.
+           */
+          if ( ++$this->splash_count > 1 ) {
+            $image = str_replace( '<img ', '<img loading="lazy" ', $image );
           }
 
           $this->ret['html'] .= "\t".$image."\n";
