@@ -2892,6 +2892,10 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   }
 
   $saved_post = get_post($post_id);
+  if ( ! $saved_post ) {
+    return;
+  }
+  
   $videos = FV_Player_Checker::get_videos($saved_post->ID);
 
   $iDone = 0;
