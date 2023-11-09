@@ -96,6 +96,9 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     );
 
     $html = preg_replace( '~<script type="text/javascript" id="([^"]+)">~', "<script type='text/javascript' id='$1'>", $html );
+    
+    // We lazy load splash images except the first one, but it's hard to keep track of that in-between the tests
+    $html = str_replace( '<img loading="lazy" ', '<img ', $html );
 
     return $html;
   }
