@@ -1394,6 +1394,7 @@ jQuery(function() {
                 */
                 // TODO: Populate chapters, error, is_live, is_audio, encryption key
                 var video_tab = get_tab( k, 'video-files' ),
+                  subtitles_tab = get_tab( k, 'subtitles' ),
                   splash_field = get_field( 'splash', video_tab ),
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                   title_field = get_field( 'title', video_tab ),
@@ -1420,8 +1421,14 @@ jQuery(function() {
                 Object.keys( window.fv_player_editor_fields ).forEach( function( field_name ) {
                   if ( 'video_meta' == window.fv_player_editor_fields[ field_name].store ) {
                     let field_value = get_playlist_video_meta_value( field_name, k );
-                    if( field_value && !get_field( field_name, video_tab ).val() ) {
-                      get_field( field_name, video_tab ).val( field_value );
+                    if( field_value ) {
+                      if ( !get_field( field_name, video_tab ).val() ) {
+                        get_field( field_name, video_tab ).val( field_value );
+                      }
+
+                      if ( !get_field( field_name, subtitles_tab ).val() ) {
+                        get_field( field_name, subtitles_tab ).val( field_value );
+                      }
                     }
                   }
                 } );

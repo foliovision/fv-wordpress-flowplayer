@@ -912,7 +912,8 @@ CREATE TABLE " . self::$db_table_name . " (
             'is_audio' => false,
             'width' => false,
             'height' => false,
-            'aspect_ratio' => false
+            'aspect_ratio' => false,
+            'chapters'     => false,
           )
         );
 
@@ -1000,6 +1001,10 @@ CREATE TABLE " . self::$db_table_name . " (
 
         } else {
           $this->deleteMetaValue( 'author_url' );
+        }
+
+        if( !empty($video_data['chapters']) && ! $this->getMetaValue( 'chapters', true ) ) {
+          $this->updateMetaValue( 'chapters', $video_data['chapters'] );
         }
 
         if( !empty($video_data['is_audio']) ) {
