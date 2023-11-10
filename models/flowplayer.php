@@ -1087,6 +1087,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( isset($aCaption) && count($aCaption) > 0 ) {
         foreach( $aCaption AS $key => $item ) {
           $aCaption[$key] = str_replace('<!--amp-->','&',$item);
+          $aCaption[$key] = str_replace('<!--semicolon-->',';',$item);
         }
       } 
                  
