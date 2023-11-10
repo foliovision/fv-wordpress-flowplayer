@@ -1522,7 +1522,7 @@ jQuery(function() {
 
           },
           error: function( jqXHR, textStatus, errorThrown) {
-            add_notice( 'error', '<p>Error saving changes: ' + errorThrown + jqXHR.responseText + '</p>' );
+            add_notice( 'error', '<p>Error saving changes: ' + errorThrown + ': ' + jqXHR.responseText + '</p>' );
 
             el_spinner.hide();
 
