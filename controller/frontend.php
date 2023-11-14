@@ -349,8 +349,6 @@ function flowplayer_prepare_scripts() {
     $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
     $sLogo = $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
 
-    $aConf = array( 'fv_fullscreen' => true );
-
     // Load base Freedom Video Player library
     $path = '/freedom-video-player/freedomplayer.min.js';
     if( file_exists(dirname(__FILE__).'/../freedom-video-player/freedomplayer.js') ) {

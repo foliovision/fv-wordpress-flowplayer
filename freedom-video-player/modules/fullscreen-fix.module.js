@@ -6,12 +6,6 @@ flowplayer(function(player, root) {
     return;
   }
 
-  player.one("ready", function (e,api,video) {
-    if( jQuery(root).find('.fp-fullscreen').length == 0 ) {
-      jQuery(root).find('.fp-header').append('<a class="fp-fullscreen fp-icon"></a>');
-    }
-  });
-
   //  copy of original Flowplayer variable declarations
   var FS_ENTER = "fullscreen",
     FS_EXIT = "fullscreen-exit",

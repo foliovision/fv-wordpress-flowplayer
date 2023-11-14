@@ -275,7 +275,7 @@ function fv_flowplayer_admin_default_options() {
 
             <?php $fv_fp->_get_checkbox(__('Force HD Streaming', 'fv-wordpress-flowplayer'), 'hd_streaming', __('Use HD quality for HLS/MPEG-DASH even on slow connections.', 'fv-wordpress-flowplayer'), __( 'User can still switch to lower quality by hand. Doesn\'t work on iPhones.', 'fv-wordpress-flowplayer') ); ?>
 
-            <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player top bar.', 'fv-wordpress-flowplayer') ); ?>
+            <?php $fv_fp->_get_checkbox(__('Fullscreen Button', 'fv-wordpress-flowplayer'), 'allowfullscreen', __('Adds fullscreen button to player control bar.', 'fv-wordpress-flowplayer') ); ?>
 
             <tr>
               <td><label for="googleanalytics"><?php _e('Google Analytics ID', 'fv-wordpress-flowplayer'); ?>:</label></td>
@@ -1273,7 +1273,7 @@ function fv_flowplayer_admin_skin() {
 
   $aPreview = array(
     'hasBorder' => '.flowplayer{border:%val%px solid !important;}',
-    'bottom-fs' => '',
+    'header-fs' => '',
     'borderColor' => '.flowplayer{border-color:#%val% !important;}',
     'marginBottom' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
                 .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
@@ -1376,8 +1376,8 @@ function fv_flowplayer_admin_skin() {
 
       array(
         'type' => 'checkbox',
-        'key'  => array('skin-custom', 'bottom-fs'),
-        'name' => __( 'Controlbar Fullscreen', 'fv-wordpress-flowplayer' ),
+        'key'  => array('skin-custom', 'header-fs'),
+        'name' => __( 'Fullscreen button in header', 'fv-wordpress-flowplayer' ),
         'data'    => array( 'fv-preview' => '' )
       ),
 

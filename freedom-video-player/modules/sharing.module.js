@@ -56,10 +56,6 @@ flowplayer( function(api,root) {
     root.addClass('no-brand');
   });
 
-  api.one('ready', function() {
-    root.find('.fp-fullscreen').clone().appendTo( root.find('.fp-controls') );
-  });
-
   api.on("ready", function (e, api, video) {
     setTimeout( function () {
       if( !root.hasClass('is-youtube-standard') && !root.hasClass('is-youtube-reduced') ) jQuery('.fvp-share-bar',root).show();

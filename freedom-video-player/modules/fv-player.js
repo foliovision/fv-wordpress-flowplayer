@@ -12,7 +12,6 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   } catch(e) {}
 
   flowplayer.conf = fv_flowplayer_conf;
-  flowplayer.conf.fullscreen = false; // replaced by fv_fullscreen
   flowplayer.conf.chromecast = false; // we have our own Chromecast code to use instead
   flowplayer.conf.embed = false;
   flowplayer.conf.share = false;

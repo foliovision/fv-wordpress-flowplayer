@@ -106,7 +106,6 @@ Registering fv-player-dash for fv-wordpress-flowplayer/freedom-video-player/fv-p
 Registering fv-player-youtube for fv-wordpress-flowplayer/freedom-video-player/fv-player-youtube.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
-    [fv_fullscreen] => 1
     [speeds] => Array
         (
             [0] => 0.25

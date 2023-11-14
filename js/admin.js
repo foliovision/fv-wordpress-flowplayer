@@ -132,11 +132,11 @@
           if ($this.val() === 'left')
             style += preview;
 
-        } else if ($this.attr('name').endsWith('bottom-fs]')) {
+        } else if ($this.attr('name').endsWith('header-fs]')) {
           if ($this.prop('checked') || $this.attr('type') == 'hidden' && $this.val() ) {
-            jQuery('.flowplayer').addClass('bottom-fs');
+            jQuery('.flowplayer').addClass('header-fs');
           } else {
-            jQuery('.flowplayer').removeClass('bottom-fs');
+            jQuery('.flowplayer').removeClass('header-fs');
           }
 
         } else if($this.attr('type') == 'checkbox' ) {

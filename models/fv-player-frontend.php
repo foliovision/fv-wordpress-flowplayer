@@ -536,8 +536,8 @@ class flowplayer_frontend extends flowplayer
         }
         $attributes['class'] .= ' '.$timeline_class.' '.$this->_get_option(array($skin, 'design-icons'));
 
-        if( $this->_get_option(array($skin, 'bottom-fs')) ) {
-          $attributes['class'] .= ' bottom-fs';
+        if( $this->_get_option(array($skin, 'header-fs')) ) {
+          $attributes['class'] .= ' header-fs';
         }
 
         if( !empty($this->aCurArgs['playlist']) ) {
