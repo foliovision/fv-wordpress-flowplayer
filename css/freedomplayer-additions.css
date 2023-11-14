@@ -100,7 +100,8 @@
     content: ''; position: absolute; top:-8px; bottom:-8px; left: 0; right: 0 }
 .flowplayer.is-fullscreen .fp-timeline:before { height: 2em }
 
-.flowplayer.fixed-controls.is-splash .fp-ui .fp-controls, .flowplayer.fixed-controls.is-poster .fp-ui .fp-controls { display: flex; }
+.flowplayer.fixed-controls .fp-ui .fp-controls { display: flex; opacity: 1}
+.flowplayer.fixed-controls .fp-ui .fp-controls > * { opacity: 1}
 .flowplayer.fixed-controls.is-splash .fp-timestamp, .flowplayer.fixed-controls.is-poster .fp-timestamp { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-elapsed, .flowplayer.fixed-controls.is-poster .fp-elapsed { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-duration, .flowplayer.fixed-controls.is-poster .fp-duration { display: none; }
