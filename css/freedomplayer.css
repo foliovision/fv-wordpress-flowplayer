@@ -10,10 +10,24 @@
     font-size: 1.7em; }
 
 .fp-airplay:before {
-  content: "\e001"; }
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='whitesmoke' viewBox='0 0 512 512' xmlns:xlink='http://www.w3.org/1999/xlink'><path d='M116.364 477.091h279.272L256 337.455z'/><path d='M465.455 34.909H46.545C20.945 34.909 0 55.855 0 81.455v279.273c0 25.6 20.945 46.545 46.545 46.545h93.091v-46.545H46.545V81.455h418.909v279.273h-93.091v46.545h93.091c25.6 0 46.545-20.945 46.545-46.545V81.455c.001-25.6-20.944-46.546-46.544-46.546z'/></svg>");
+  content: "";
+  display: block;
+  height: 18px;
+  width: 18px; }
+
+.fp-fullscreen {
+  -webkit-box-ordinal-group: 101;
+      -ms-flex-order: 100;
+          order: 100; }
 
 .fp-fullscreen:before {
-  content: "\e002"; }
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 40 30' fill='none' stroke-width='4' stroke='whitesmoke' xmlns:xlink='http://www.w3.org/1999/xlink'><path d='M1 9V1h12' /><path d='M1 9V1h12' transform='matrix(1 0 0 -1 0 26)' /><path d='M1 9V1h12' transform='matrix(-1 0 0 1 36 0)' /><path d='M1 9V1h12' transform='rotate(180 18 13)' /></svg>");
+  background-repeat: no-repeat;
+  content: "";
+  display: block;
+  height: 17px;
+  width: 22px; }
 
 .fp-checked:before {
   content: "\e003"; }
@@ -22,8 +36,16 @@
   content: "\e004";
   color: #fff; }
 
+.fp-controls a.fp-chromecast {
+  margin: 0 0.5em; }
+
 .fp-chromecast:before {
-  content: "\e005"; }
+  background-image: url('data:image/svg+xml,<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" viewBox="0 0 610 498" enable-background="new 0 0 610 498" xml:space="preserve"><path fill="whitesmoke" stroke="none" d="M362.468658,499.000000 C362.000000,481.014618 362.000000,463.029236 362.000000,444.478088 C426.454376,444.478088 490.839264,444.478088 555.546936,444.478088 C555.546936,314.689728 555.546936,185.467468 555.546936,55.971180 C389.161621,55.971180 222.921631,55.971180 56.216602,55.971180 C56.216602,83.556679 56.216602,110.972839 56.216602,138.956024 C37.817509,138.956024 19.876974,138.956024 1.468219,138.978012 C1.000000,93.028755 1.000000,47.057518 1.000000,1.000000 C188.020889,1.000000 375.041779,1.000000 562.840088,1.276947 C579.411682,1.702596 595.205811,1.851298 611.000000,2.000000 C611.000000,25.687561 611.000000,49.375122 610.707886,73.829483 C610.277954,76.073273 610.019836,77.550232 610.019592,79.027229 C610.000854,192.287598 609.998047,305.547943 610.043884,418.808289 C610.044556,420.539001 610.667419,422.269440 611.000000,424.000000 C611.000000,431.687592 611.000000,439.375153 610.708557,447.829956 C610.278076,465.398102 610.139038,482.199036 610.000000,499.000000 C527.645752,499.000000 445.291534,499.000000 362.468658,499.000000 z"/><path fill="whitesmoke" stroke="none" d="M1.000000,195.333328 C43.942726,194.704895 84.974335,203.570526 124.208008,220.875732 C162.288620,237.672318 195.535202,261.364014 223.860764,291.822113 C253.442276,323.630768 275.259583,360.100128 289.366241,401.280975 C300.133209,432.712494 305.062775,465.020966 305.940430,498.544769 C287.979095,499.000000 269.958221,499.000000 251.395172,498.554016 C250.322769,479.145599 248.461136,460.372009 244.071671,441.845398 C234.988159,403.506805 217.553757,369.327911 192.393982,339.234528 C168.840332,311.062195 140.283691,289.163544 106.918755,273.460052 C73.312492,257.643005 38.105106,249.699081 1.000000,250.000000 C1.000000,249.555557 1.000000,249.111099 1.293289,248.036621 C1.698883,231.168457 1.820570,214.930344 1.884113,198.692032 C1.886315,198.129181 1.307830,197.564056 1.000000,197.000000 C1.000000,196.555557 1.000000,196.111099 1.000000,195.333328 z"/><path fill="whitesmoke" stroke="none" d="M2.010912,306.101532 C31.978085,305.789581 60.339500,312.630646 86.998497,326.075378 C136.399887,350.989624 169.352280,390.188477 186.225922,442.745239 C190.942627,457.436462 193.890137,472.630188 194.146042,488.205933 C194.200516,491.521667 194.641495,494.831024 194.952209,498.571655 C176.979111,499.000000 158.958206,499.000000 140.407745,498.562988 C138.689621,488.242249 138.282593,478.187622 136.166122,468.506744 C129.790848,439.345825 114.979012,414.878906 92.518822,395.291656 C66.367455,372.485352 35.902981,360.695892 1.000000,361.000000 C1.000000,360.555542 1.000000,360.111115 1.297047,359.039673 C1.727231,356.604584 1.971830,354.796722 1.976017,352.988373 C2.012203,337.359467 2.005109,321.730499 2.010912,306.101532 z"/><path fill="whitesmoke" stroke="none" d="M2.006539,417.065979 C31.356777,417.270508 53.821186,430.311981 70.241669,454.146698 C79.309593,467.309052 83.358688,482.223297 83.990738,498.558807 C56.979103,499.000000 29.958210,499.000000 2.471966,498.531342 C2.006591,471.063782 2.006565,444.064880 2.006539,417.065979 z"/><path fill="whitesmoke" stroke="none" d="M611.000000,423.531342 C610.667419,422.269440 610.044556,420.539001 610.043884,418.808289 C609.998047,305.547943 610.000854,192.287598 610.019592,79.027229 C610.019836,77.550232 610.277954,76.073273 610.707886,74.298141 C611.000000,190.354233 611.000000,306.708466 611.000000,423.531342 z"/><path fill="whitesmoke" stroke="none" d="M1.760126,416.969849 C2.006565,444.064880 2.006591,471.063782 2.003310,498.531342 C1.666669,497.675507 1.045524,496.351624 1.042563,495.026398 C0.985156,469.330139 1.000000,443.633698 1.000000,417.468658 C1.171238,416.957886 1.342475,416.915771 1.760126,416.969849 z"/><path fill="whitesmoke" stroke="none" d="M1.765200,306.006287 C2.005109,321.730499 2.012203,337.359467 1.976017,352.988373 C1.971830,354.796722 1.727231,356.604584 1.297047,358.706329 C1.000000,341.645782 1.000000,324.291534 1.000000,306.468658 C1.173163,305.970367 1.346326,305.940704 1.765200,306.006287 z"/><path fill="whitesmoke" stroke="none" d="M1.000000,197.468658 C1.307830,197.564056 1.886315,198.129181 1.884113,198.692032 C1.820570,214.930344 1.698883,231.168457 1.293289,247.703293 C1.000000,231.312439 1.000000,214.624878 1.000000,197.468658 z"/></svg>');
+  background-repeat: no-repeat;
+  content: "";
+  display: block;
+  height: 16px;
+  width: 20px; }
 
 .fp-email:before {
   content: "\e006"; }
@@ -97,16 +119,7 @@
   .freedomplayer.is-fullscreen .fp-player {
     background-color: #333; }
   .freedomplayer.is-fullscreen .fp-fullscreen:before {
-    content: "\e00f"; }
-
-.freedomplayer.is-fullscreen.fp-outlined .fp-fullscreen:before, .freedomplayer.is-fullscreen.fp-minimal .fp-fullscreen:before {
-  content: "\e30f"; }
-
-.freedomplayer.is-fullscreen.fp-edgy .fp-fullscreen:before {
-  content: "\e10f"; }
-
-.freedomplayer.is-fullscreen.fp-edgy.fp-outlined .fp-fullscreen:before, .freedomplayer.is-fullscreen.fp-edgy.fp-minimal .fp-fullscreen:before {
-  content: "\e30f"; }
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -2 40 30' fill='none' stroke-width='3' stroke='whitesmoke' xmlns:xlink='http://www.w3.org/1999/xlink'><path d='M1 9V1h12' transform='translate(22 17)' /><path d='M1 9V1h12' transform='matrix(-1 0 0 1 13 17)' /><path d='M1 9V1h12' transform='rotate(180 6.5 4.5)' /><path d='M1 9V1h12' transform='matrix(1 0 0 -1 22 9)' /></svg>"); }
 
 .freedomplayer.is-fullscreen.is-mouseout.is-playing .fp-ui {
   cursor: none; }
@@ -316,17 +329,8 @@
 .freedomplayer.fp-edgy, .freedomplayer.fp-edgy .fp-menu, .freedomplayer.fp-edgy .fp-captions p, .freedomplayer.fp-edgy .fp-textarea, .freedomplayer.fp-edgy .fp-bar, .freedomplayer.fp-edgy .fp-bar-slider, .freedomplayer.fp-edgy .fp-bar > *, .freedomplayer.fp-edgy .fp-bar-slider > *, .freedomplayer.fp-edgy .fp-timestamp {
   border-radius: 0; }
 
-.freedomplayer.fp-edgy .fp-airplay:before {
-  content: "\e101"; }
-
-.freedomplayer.fp-edgy .fp-fullscreen:before {
-  content: "\e102"; }
-
 .freedomplayer.fp-edgy .fp-checked:before {
   content: "\e103"; }
-
-.freedomplayer.fp-edgy .fp-chromecast:before {
-  content: "\e105"; }
 
 .freedomplayer.fp-edgy .fp-email:before {
   content: "\e106"; }
@@ -349,17 +353,8 @@
 .freedomplayer.fp-edgy .fp-nextbtn:before {
   content: "\e112"; }
 
-.freedomplayer.fp-edgy.fp-outlined .fp-airplay:before, .freedomplayer.fp-edgy.fp-minimal .fp-airplay:before {
-  content: "\e301"; }
-
-.freedomplayer.fp-edgy.fp-outlined .fp-fullscreen:before, .freedomplayer.fp-edgy.fp-minimal .fp-fullscreen:before {
-  content: "\e302"; }
-
 .freedomplayer.fp-edgy.fp-outlined .fp-checked:before, .freedomplayer.fp-edgy.fp-minimal .fp-checked:before {
   content: "\e303"; }
-
-.freedomplayer.fp-edgy.fp-outlined .fp-chromecast:before, .freedomplayer.fp-edgy.fp-minimal .fp-chromecast:before {
-  content: "\e305"; }
 
 .freedomplayer.fp-edgy.fp-outlined .fp-email:before, .freedomplayer.fp-edgy.fp-minimal .fp-email:before {
   content: "\e306"; }
@@ -451,15 +446,13 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui, .freedomplayer.is-paused:not(.was-played) .fp-ui, .freedomplayer.is-splash .fp-ui, .freedomplayer.is-mouseover .fp-ui, .freedomplayer.is-loading .fp-ui, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui {
-    background-image: none; }
-    .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui > * {
-      opacity: 1; }
-    .freedomplayer.fp-ui-shown .fp-ui .fp-controls > *, .freedomplayer.is-paused:not(.was-played) .fp-ui .fp-controls > *, .freedomplayer.is-splash .fp-ui .fp-controls > *, .freedomplayer.is-mouseover .fp-ui .fp-controls > *, .freedomplayer.is-loading .fp-ui .fp-controls > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui .fp-controls > * {
-      opacity: 1; }
-  .freedomplayer:not(.is-touch):not(.is-mouseover-top) .fp-header {
+  .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui > * {
+    opacity: 1; }
+  .freedomplayer.fp-ui-shown .fp-ui .fp-controls > *, .freedomplayer.is-paused:not(.was-played) .fp-ui .fp-controls > *, .freedomplayer.is-splash .fp-ui .fp-controls > *, .freedomplayer.is-mouseover .fp-ui .fp-controls > *, .freedomplayer.is-loading .fp-ui .fp-controls > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui .fp-controls > * {
+    opacity: 1; }
+  .freedomplayer:not(.is-touch):not(.is-mouseover-top).was-played .fp-header {
     opacity: 0; }
-  .freedomplayer:not(.is-touch):not(.is-mouseover-bottom) .fp-controls {
+  .freedomplayer:not(.is-touch):not(.is-mouseover-bottom).was-played .fp-controls {
     opacity: 0; }
   .freedomplayer.is-mobile-seeking .fp-timeline, .freedomplayer.is-mobile-seeking .fp-forward, .freedomplayer.is-mobile-seeking .fp-rewind {
     opacity: 1; }
@@ -475,14 +468,13 @@
         color: #ec6c4c; }
     .freedomplayer .fp-header .fp-fullscreen, .freedomplayer .fp-header .fp-unload, .freedomplayer .fp-header .fp-airplay, .freedomplayer .fp-header .fp-chromecast {
       float: right; }
-    .freedomplayer .fp-header .fp-unload {
+    .freedomplayer .fp-header .fp-fullscreen, .freedomplayer .fp-header .fp-unload {
       display: none; }
+  .freedomplayer .fp-unload {
+    display: none; }
   .freedomplayer.is-mouseover.is-touch .fp-ui {
     background: rgba(0, 0, 0, 0.6); }
-  .freedomplayer:not(.is-touch) .fp-header {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.25)), to(transparent));
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent); }
-  .freedomplayer:not(.is-touch).fp-slim.is-mouseover-bottom .fp-ui {
+  .freedomplayer:not(.is-touch).fp-slim.is-mouseover-bottom .fp-ui, .freedomplayer:not(.is-touch).fp-slim:not(.was-played) .fp-ui {
     background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.25)), color-stop(15%, transparent));
     background-image: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent 15%); }
   .freedomplayer .fp-help {
@@ -920,14 +912,8 @@
     display: none; }
   .freedomplayer.fp-outlined .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-play svg.fp-pause-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-play-rounded-outline, .freedomplayer.fp-outlined .fp-pause svg.fp-pause-rounded-outline, .freedomplayer.fp-minimal .fp-pause svg.fp-pause-rounded-outline {
     display: block; }
-  .freedomplayer.fp-outlined .fp-airplay:before, .freedomplayer.fp-minimal .fp-airplay:before {
-    content: "\e201"; }
-  .freedomplayer.fp-outlined .fp-fullscreen:before, .freedomplayer.fp-minimal .fp-fullscreen:before {
-    content: "\e202"; }
   .freedomplayer.fp-outlined .fp-checked:before, .freedomplayer.fp-minimal .fp-checked:before {
     content: "\e203"; }
-  .freedomplayer.fp-outlined .fp-chromecast:before, .freedomplayer.fp-minimal .fp-chromecast:before {
-    content: "\e205"; }
   .freedomplayer.fp-outlined .fp-email:before, .freedomplayer.fp-minimal .fp-email:before {
     content: "\e206"; }
   .freedomplayer.fp-outlined .fp-playbtn:before, .freedomplayer.fp-minimal .fp-playbtn:before {
