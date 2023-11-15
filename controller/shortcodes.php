@@ -336,18 +336,18 @@ function fv_player_time( $args = array() ) {
 }
 
 
-function fv_player_handle_vimeo_links( $html ) {
-  $html = preg_replace( '~<iframe[^>]*?vimeo\.com/video/(\d+)[^>]*?(\?h=[a-z0-9]+)?[^>]*?></iframe>~', '[fvplayer src="http://vimeo.com/$1$2"]', $html );
+function fv_player_handle_vimeo_links( $html, $closing = '<!-- link converted by FV Player  -->' ) {
+  $html = preg_replace( '~<iframe[^>]*?vimeo\.com/video/(\d+)[^>]*?(\?h=[a-z0-9]+)?[^>]*?></iframe>~', '[fvplayer src="http://vimeo.com/$1$2"]' . $closing, $html );
   return $html;
 }
 
-function fv_player_handle_youtube_links( $html ) {
-  $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]', $html );
+function fv_player_handle_youtube_links( $html, $closing = '<!-- link converted by FV Player  -->' ) {
+  $html = preg_replace( '~<iframe[^>]*?youtube(?:-nocookie)?\.com/(?:embed|v)/(.*?)[\'"&#\?][^>]*?></iframe>~', '[fvplayer src="http://youtube.com/watch?v=$1"]' . $closing, $html );
   return $html;
 }
 
-function fv_player_handle_video_tags( $html ) {
-  $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]</figure>' , $html);
+function fv_player_handle_video_tags( $html, $closing = '<!-- link converted by FV Player  -->' ) {
+  $html = preg_replace( '~<figure class="wp-block-video"><video[^>]*?src\s*=\s*"(.+?)"[^>]*?></video></figure>~', '<figure class="wp-block-video">[fvplayer src="$1"]' . $closing . '</figure>' , $html);
   return $html;
 }
 
@@ -532,6 +532,38 @@ if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) &
   add_filter( 'embed_oembed_html', 'fv_player_handle_vimeo_links' );
   add_filter( 'embed_oembed_html', 'fv_player_handle_youtube_links' );
   add_filter( 'the_content', 'fv_player_handle_video_tags' );
+
+  /**
+   * Fix excerpts if video links are converted to FV Player.
+   * 
+   * If FV Player is inserted using shortcode, then it's removed by core WordPress
+   * strip_shortcodes() before the excerpt is created in wp_trim_excerpt().
+   * 
+   * However if we use the "Handle WordPress audio/video" setting
+   * integrations[]'wp_core_video'] the video is just a link and it does not get stripped.
+   * 
+   * That way FV Player puts in the HTML code which is then removed, while keeping its text
+   * content and this shows as excerpt:
+   * 
+   * "Please enable JavaScriptplay-sharp-fill 01:53 LinkEmbedCopy and paste this HTML code into your webpage to embed."
+   */
+  add_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
+
+  function fv_player_fix_wp_trim_words( $text, $num_words, $more, $original_text ) {
+
+    if ( stripos( $original_text, '<!-- link converted by FV Player  -->' ) !== false ) {
+      remove_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
+
+      // Since the player HTML code ends with just </div> we look for the HTML comment to be able to detect where it ends.
+      $original_text = preg_replace( '~<div id="wpfp[\s\S]*?<!-- link converted by FV Player  -->~', '', $original_text );
+
+      $text = wp_trim_words( $original_text, $num_words, $more );
+
+      add_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
+    }
+
+    return $text;
+  }
 }
 
 
