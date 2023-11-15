@@ -82,15 +82,16 @@ abstract class FV_Player_CDN {
         $aDomains = explode(',',$sDomains);
         foreach( $aDomains AS $sDomain ) {
           if( stripos($url,$sDomain) !== false ) {
-            $bFound = true;
 
-
-            global $fv_fp, $post;
-            if( !empty($fv_fp) && method_exists($fv_fp,'current_video') && $fv_fp->current_video() ) {
-              $ttl = intval( $fv_fp->current_video()->getMetaValue('duration',true ) );
-            } else if( !empty($post) && !empty($post->ID) ) {
-              if( $sDuration = flowplayer::get_duration( $post->ID, $url, true ) ) {
-                $ttl = intval($sDuration);
+            // Use video duration as the TTL if not provided
+            if ( ! $ttl ) {
+              global $fv_fp, $post;
+              if( !empty($fv_fp) && method_exists($fv_fp,'current_video') && $fv_fp->current_video() ) {
+                $ttl = intval( $fv_fp->current_video()->getMetaValue('duration',true ) );
+              } else if( !empty($post) && !empty($post->ID) ) {
+                if( $sDuration = flowplayer::get_duration( $post->ID, $url, true ) ) {
+                  $ttl = intval($sDuration);
+                }
               }
             }
             
@@ -105,7 +106,8 @@ abstract class FV_Player_CDN {
   
   
   function get_signed_url_long( $url ) {
-    return $this->get_signed_url($url, array( 'dynamic' => true ), 172800);
+    // 1 week is the maximum of AWS S3 signed URLs: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html#PresignedUrl-Expiration
+    return $this->get_signed_url( $url, array( 'dynamic' => true ), WEEK_IN_SECONDS );
   }
   
   
