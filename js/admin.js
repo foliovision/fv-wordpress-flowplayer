@@ -132,13 +132,6 @@
           if ($this.val() === 'left')
             style += preview;
 
-        } else if ($this.attr('name').endsWith('header-fs]')) {
-          if ($this.prop('checked') || $this.attr('type') == 'hidden' && $this.val() ) {
-            jQuery('.flowplayer').addClass('header-fs');
-          } else {
-            jQuery('.flowplayer').removeClass('header-fs');
-          }
-
         } else if($this.attr('type') == 'checkbox' ) {
           if ($this.prop('checked')) {
             newStyle = preview.replace(/%val%/g, '1');

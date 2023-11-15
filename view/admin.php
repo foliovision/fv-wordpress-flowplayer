@@ -1273,7 +1273,6 @@ function fv_flowplayer_admin_skin() {
 
   $aPreview = array(
     'hasBorder' => '.flowplayer{border:%val%px solid !important;}',
-    'header-fs' => '',
     'borderColor' => '.flowplayer{border-color:#%val% !important;}',
     'marginBottom' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
                 .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
@@ -1372,13 +1371,6 @@ function fv_flowplayer_admin_skin() {
         'key'  => array('skin-custom', 'hasBorder'),
         'name' => __( 'Border', 'fv-wordpress-flowplayer' ),
         'data'    => array( 'fv-preview' => $aPreview['hasBorder'] )
-      ),
-
-      array(
-        'type' => 'checkbox',
-        'key'  => array('skin-custom', 'header-fs'),
-        'name' => __( 'Fullscreen button in header', 'fv-wordpress-flowplayer' ),
-        'data'    => array( 'fv-preview' => '' )
       ),
 
       array(

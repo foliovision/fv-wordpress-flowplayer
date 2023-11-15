@@ -186,9 +186,6 @@
 .flowplayer:not(.is-touch.is-fullscreen) .fp-header .fp-icon { padding: .5em .5em 0 0;line-height: 1 }
 
 .flowplayer.is-fullscreen{ font-size: 16px; max-height:100% !important; }
-.flowplayer.header-fs .fp-header .fp-fullscreen {display:block}
-.flowplayer.header-fs .fp-controls .fp-fullscreen {display:none}
-.flowplayer.is-audio.header-fs .fp-header .fp-fullscreen {display: none}
 
 /* Mailchimp integration */
 .flowplayer .fv_player_popup p{margin:0 12px 6px;line-height:1.35}

@@ -76,7 +76,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public $aDefaultSkins = array(
       'skin-slim' => array(
           'hasBorder' => false,
-          'header-fs' => false,
           'borderColor' => false,
           'bufferColor' => false,
           'canvas' => '#000000',
@@ -90,7 +89,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         ),
       'skin-youtuby' => array(
           'hasBorder' => false,
-          'header-fs' => false,
           'borderColor' => false,
           'bufferColor' => false,
           'canvas' => '#000000',
