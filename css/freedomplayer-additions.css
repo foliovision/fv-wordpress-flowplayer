@@ -69,11 +69,7 @@
   padding-top: .4em;
 }
 
-.flowplayer.fake-fullscreen .fp-fullscreen:before { content: "\e002"; }
-.flowplayer.fake-fullscreen.fp-edgy .fp-fullscreen:before { content: "\e102"; }
-.flowplayer.fake-fullscreen.fp-outlined .fp-fullscreen:before { content: "\e202"; }
-.flowplayer.fake-fullscreen.fp-minimal .fp-fullscreen:before { content: "\e202"; }
-.flowplayer.is-closeable.is-fullscreen:not(.fake-fullscreen) .fp-header .fp-unload {display: none}
+.flowplayer.is-closeable.is-fullscreen .fp-header .fp-unload {display: none}
 
 .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header {filter: alpha(opacity=1); opacity: 1; }
 .flowplayer.forced-fullscreen.is-loading .fp-ui, .flowplayer.forced-fullscreen.is-loading .fp-ui .fp-header { display: block; }

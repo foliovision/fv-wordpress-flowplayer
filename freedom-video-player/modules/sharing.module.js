@@ -90,26 +90,20 @@ flowplayer( function(api,root) {
   });
 
   var id = root.attr('id'),
-    alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen,
-    events_enter = 'fakefullscreen',
-    events_exit = 'fakefullscreen-exit';
+    alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen;
 
-  if( !flowplayer.support.fullscreen ) {
-    events_enter += ' fullscreen';
-    events_exit += ' fullscreen-exit';
-  }
-
-  api.bind( events_enter, function(e,api) {
+  api.bind( 'fullscreen', function(e,api) {
     jQuery('#wpadminbar, .nc_wrapper').hide();
-    if( alternative || e.type == 'fakefullscreen' ) {
+    if( alternative ) {
       if( api.video.type == 'video/youtube' ) return;
       root.before('<span data-fv-placeholder="'+id+'"></span>');
       root.appendTo('body');
     }
   });
-  api.bind( events_exit, function(e,api,video) {
+
+  api.bind( 'fullscreen-exit', function(e,api,video) {
     jQuery('#wpadminbar, .nc_wrapper').show();
-    if( alternative || e.type == 'fakefullscreen-exit' ) {
+    if( alternative ) {
       jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);
     }
   });
