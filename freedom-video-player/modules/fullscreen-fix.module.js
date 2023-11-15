@@ -57,7 +57,23 @@ flowplayer(function(player, root) {
       scrollX = win.scrollX;
     }
 
-    if (FS_SUPPORT) {
+    /**
+     * If we are entering fullscreen on Safari or iPad and a fullscreen element is already 
+     * present, we just do the CSS fullscreen.
+     * We allow this so that you can put <body> to fullscreen before the FV Player starts 
+     * loading. You need to do that if FV Player HTML load with Ajax. Ajax request cannot 
+     * initiate fullscreen in Safari.
+     */
+    if ( flowplayer.support.browser.safari && flowplayer.support.fullscreen && flag && document.fullscreenElement ) {
+      FS_SUPPORT = false;
+
+      // Exit the fullscreen should discard the CSS fullscreen of player too
+      document.addEventListener("fullscreenchange", function(e) {
+        flowplayer( '.is-playing, .is-ready, .is-loading' ).trigger( FS_EXIT );
+      });
+    }
+
+    if (FS_SUPPORT ) {
 
        if (flag) {
           ['requestFullScreen', 'webkitRequestFullScreen', 'mozRequestFullScreen', 'msRequestFullscreen'].forEach(function(fName) {
@@ -100,7 +116,13 @@ flowplayer(function(player, root) {
       common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
       common.removeClass(root, 'fp-minimal');
 
-      if (!FS_SUPPORT) {
+      /**
+       * If fullscreen is not supported we have add all the extra CSS which helps us to make 
+       * the player fullscreen.
+       * 
+       * Also do this if you support fullscreen but some other element is in fullscreen.
+       */
+      if (!FS_SUPPORT || document.fullscreenElement) {
         common.css(root, 'position', 'fixed');
 
         sanitize_parent_elements(true);
@@ -112,18 +134,25 @@ flowplayer(function(player, root) {
       var oldOpacity;
       common.toggleClass(root, 'fp-minimal', common.hasClass(root, 'fp-minimal-fullscreen'));
       common.removeClass(root, 'fp-minimal-fullscreen');
-      if (!FS_SUPPORT && player.engine === "html5") {
+
+      /**
+       * If we support fullscreen but some other element is in fullscreen, we have to make 
+       * sure to remove all the extra CSS which helped us to make the player fullscreen
+       */
+      var fs_support = FS_SUPPORT && jQuery(root).find('.fp-player')[0] == document.fullscreenElement;
+
+      if ( !fs_support && player.engine === "html5") {
         oldOpacity = root.css('opacity') || '';
         common.css(root, 'opacity', 0);
       }
-      if (!FS_SUPPORT) {
+      if (!fs_support ) {
         common.css(root, 'position', '');
 
         sanitize_parent_elements(false);
       }
 
       common.removeClass(root, 'is-fullscreen');
-      if (!FS_SUPPORT && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
+      if (!fs_support && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
       player.isFullscreen = false;
 
       if( player.engine.engineName != 'fvyoutube' ){ // youtube scroll ignore
