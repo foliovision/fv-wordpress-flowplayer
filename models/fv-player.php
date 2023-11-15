@@ -1102,6 +1102,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if( isset($aCaption) && count($aCaption) > 0 ) {
         foreach( $aCaption AS $key => $item ) {
           $aCaption[$key] = str_replace('<!--amp-->','&',$item);
+          $aCaption[$key] = str_replace('<!--semicolon-->',';',$item);
         }
       }
 
@@ -2568,8 +2569,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   public static function json_encode( $input ) {
-    if( version_compare(phpversion(), '5.3.0', '>') ) {
-      return wp_json_encode( $input, JSON_HEX_APOS );
+    if( version_compare(phpversion(), '5.3.0', '>') ) {        
+      return wp_json_encode( $input, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
     } else {
       return str_replace( "'", '\u0027', wp_json_encode( $input ) );
     }

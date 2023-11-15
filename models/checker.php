@@ -220,7 +220,16 @@ class FV_Player_Checker {
             $is_audio = -1; // We do not know if it's audio only yet
 
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
-            $request = wp_remote_get($remotefilename_encoded, array( 'timeout' => 15 ));
+            $request = wp_remote_get(
+              $remotefilename_encoded,
+              array(
+                'headers' => array(
+                  'Referer' => home_url(),
+                ),
+                'timeout' => 15
+              )
+            );
+
             $response_code = wp_remote_retrieve_response_code( $request );
             if( $response_code == 404 ) {
               return array( 'error' => 'Video not found' );
@@ -233,6 +242,7 @@ class FV_Player_Checker {
             }
 
             $response = wp_remote_retrieve_body( $request );
+
             $playlist = false;
             $duration = 0;
             $segments = false;
@@ -296,7 +306,7 @@ class FV_Player_Checker {
                   $item_url = $secured_url;
                 }
 
-                $request = wp_remote_get($item_url);
+                $request = wp_remote_get( $item_url, array( 'headers' => array( 'Referer' => home_url() ) ) );
 
                 if( is_wp_error($request) ) {
                   return array( 'error' => $request->get_error_message() );
