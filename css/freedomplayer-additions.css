@@ -58,9 +58,6 @@
 .flowplayer.fixed-controls.has-abloop, .entry-content .flowplayer.fixed-controls.has-abloop { margin-bottom: 5.2em; }
 .flowplayer.has-abloop .fp-timestamp { bottom: 2em }
 
-.flowplayer.fp-slim.fp-full .fp-timeline {
-    height: 3px; }
-
 .flowplayer.is-tiny.fp-full .fp-timeline {
   bottom: 3.2em;
 }
