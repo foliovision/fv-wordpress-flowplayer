@@ -7,16 +7,22 @@ if ( ! defined( 'ABSPATH' ) ) {
   global $FV_Player_Stats;
   global $fv_wp_flowplayer_ver;
 
+  // This is filtering player stats by user ID, player ID and settings stats range
+  // core WordPress wp-admin -> Posts does not use nonce for filters either
+  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
   $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : false;
 
+  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
   $user_id = isset( $_GET['user_id'] ) ? intval($_GET['user_id']) : false;
-  $player_id = isset( $_GET['player_id'] ) ? intval($_GET['player_id']) : false;
-  $user_name = false;
 
+  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+  $player_id = isset( $_GET['player_id'] ) ? intval($_GET['player_id']) : false;
+
+  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
   $date_range = isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week';
 
-  if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
-    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), $date_range );
+  if( $player_id ) { // specific player stats
+    $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( $player_id, $date_range );
   } else { // aggregated top stats
 
     if( ( strcmp($current_page, 'fv_player_stats') === 0 ) || ( strcmp($current_page, 'fv_player_stats_users') === 0 && is_int($user_id) ) ) { // aggegated top stats for videos, posts and watch time, show for both but for fv_player_stats_users only if user_id is set
@@ -29,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       if($user_id) $fv_player_interval_valid = $FV_Player_Stats->get_valid_interval($user_id);
     }
 
-    if( !isset($_GET['user_id']) && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
+    if( ! $user_id && strcmp($current_page, 'fv_player_stats_users') === 0 ) { // aggregated top 10 stats for all users, only show on fv_player_stats_users when no user is selected
       $fv_user_play_stats_data = $FV_Player_Stats->get_top_user_stats( 'play', $date_range);
 
       $fv_user_watch_time_stats_data = $FV_Player_Stats->get_top_user_stats( 'seconds', $date_range);
@@ -104,7 +110,7 @@ if ( ! defined( 'ABSPATH' ) ) {
           $dates = $FV_Player_Stats->get_valid_dates($user_id);
 
           foreach( $dates as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
+            echo '<option value="'.$key.'" '.( $date_range == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
           }
         ?>
       </select>
@@ -119,7 +125,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
                 $plays = number_format_i18n( $plays, 0 );
 
-                echo '<option value="'.$value['ID'].'" '.( isset($_REQUEST['user_id']) && $_REQUEST['user_id'] == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['display_name'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
+                echo '<option value="'.$value['ID'].'" '.( $user_id == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['display_name'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
               }
             }
           ?>
@@ -409,7 +415,7 @@ jQuery( document ).ready(function() {
 
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
+    <h2>Plays For Player <?php echo $player_id; ?></h2>
     <div id="chart-single-player-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
   </div>
@@ -429,7 +435,7 @@ jQuery( document ).ready(function() {
   </script>
 <?php elseif ( isset($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>No Plays For Player <?php echo intval($_GET['player_id']); ?></h2>
+    <h2>No Plays For Player <?php echo $player_id; ?></h2>
   </div>
 <?php endif; ?>
 </div>
