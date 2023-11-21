@@ -283,7 +283,7 @@ abstract class FV_Player_Video_Encoder {
   function ajax_fv_player_delete_job() {
     global $wpdb;
 
-    $id = $_POST['id_row'];
+    $id = absint( $_POST['id_row'] );
 
     if (
         defined('DOING_AJAX') &&

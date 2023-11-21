@@ -1051,7 +1051,7 @@ function fv_player_edit_posts_cell() {
 
     // Existing player, load by id
     } else if ( ! empty( $_POST['playerID'] ) ) {
-      $player_id = $_POST['playerID'];
+      $player_id = absint( $_POST['playerID'] );
     }
 
     if ( $player_id ) {

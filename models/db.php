@@ -1724,8 +1724,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    */
   public function export_player_data($unused = null, $output_result = true, $id = false ) {
 
-    if( !$id && isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID'] ) {
-      $id  = $_POST['playerID'];
+    if ( !$id ) {
+      $id = !empty( $_POST['playerID'] ) ? absint( $_POST['playerID'] ) : false;
     }
 
     if( defined('DOING_AJAX') && DOING_AJAX &&
