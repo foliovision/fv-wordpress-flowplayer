@@ -854,11 +854,6 @@ class FV_Player_Db {
 
         //$this->player_atts_cache[ $real_id ] = $atts;
 
-      } else {
-        // when ID is not numeric, it's most probably a preview that we need to build
-        $preview = $this->db_store_player_data( json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
-        $atts = array_merge( $atts, $FV_Player_Db->generateFullPlaylistCode( array(),$preview ));
-        $fv_fp->currentPlayerObject = $preview['player'];
       }
 
       if( count($preserve) > 0 ) {
