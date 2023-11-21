@@ -20,13 +20,9 @@ class FV_Player_Email_Subscription {
 
     add_action( 'wp_ajax_fv_player_email_subscription_save', array($this, 'save_settings') );
 
-    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer') {
-      add_action('admin_init', array( $this, 'csv_export' ) );
-    }
+    add_action('admin_init', array( $this, 'csv_export' ) );
 
-    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer') {
-      add_action( 'admin_notices', array($this,'admin_export_screen') );
-    }
+    add_action( 'admin_notices', array($this,'admin_export_screen') );
 
     add_filter( 'fv_flowplayer_attributes', array( $this, 'popup_preview' ), 10, 3 );
 
@@ -64,7 +60,7 @@ class FV_Player_Email_Subscription {
 
   public function fv_flowplayer_settings_save($param1,$param2){
 
-    if(isset($_POST['email_lists'])){
+    if ( isset( $_POST['email_lists'] ) && wp_verify_nonce( $_POST['fv_player_email_lists'], 'fv_player_email_lists' ) ) {
       $aOptions = array();
       unset($aOptions['#fv_popup_dummy_key#']);
 
@@ -206,9 +202,9 @@ class FV_Player_Email_Subscription {
                   </td>
                 <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ); ?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
                   <br />
-                  <a class='fv-player-list-export' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key); ?>' target="_blank" ><?php _e('View list', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php _e('View list', 'fv-wordpress-flowplayer'); ?></a>
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
@@ -239,6 +235,7 @@ class FV_Player_Email_Subscription {
       </tr>
       <tr>
         <td>
+          <?php wp_nonce_field( 'fv_player_email_lists', 'fv_player_email_lists' ); ?>
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
           <input type="button" value="<?php _e('Add More Lists', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-email_lists-add" />
         </td>
@@ -294,7 +291,7 @@ class FV_Player_Email_Subscription {
             var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.flowplayer::get_plugin_url().'/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
             shortcode = shortcode.replace(/#key#/,key);
 
-            var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview-".get_current_user_id() ); ?>&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
+            var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview" ); ?>&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
             fv_player_open_preview_window(url);
           },
           error: function() {
@@ -371,7 +368,7 @@ class FV_Player_Email_Subscription {
     $aLists = get_option('fv_player_mailchimp_lists', array());
     $sTimeout = !$aLists || count($aLists) == 0 ? 60 : 3600;
 
-    if( get_option('fv_player_mailchimp_time', 0 ) + $sTimeout > time() && !isset($_GET['fv_refresh_mailchimp']) ) return array('error' => false, 'result' => $aLists);
+    if( get_option('fv_player_mailchimp_time', 0 ) + $sTimeout > time() ) return array('error' => false, 'result' => $aLists);
 
     if( !class_exists('\DrewM\MailChimp\MailChimp') ) {
       require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
@@ -559,96 +556,99 @@ class FV_Player_Email_Subscription {
   }
 
   function csv_export() {
-    if( !current_user_can('manage_options') ) return;
+    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( $_GET['nonce'], 'fv-email-export' ) ) {
+      $list_id = intval($_GET['fv-email-export']);
+      $aLists = get_option('fv_player_email_lists');
+      $list = $aLists[$list_id];
+      $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . gmdate('Y-m-d') . '.csv';
 
-    $list_id = intval($_GET['fv-email-export']);
-    $aLists = get_option('fv_player_email_lists');
-    $list = $aLists[$list_id];
-    $filename = 'export-lists-' . (empty($list->title) ? $list_id : $list->title) . '-' . gmdate('Y-m-d') . '.csv';
+      header("Content-type: text/csv");
+      header("Content-Disposition: attachment; filename=$filename");
+      header("Pragma: no-cache");
+      header("Expires: 0");
 
-    header("Content-type: text/csv");
-    header("Content-Disposition: attachment; filename=$filename");
-    header("Pragma: no-cache");
-    header("Expires: 0");
+      global $wpdb;
+      $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . intval($list_id) . '"');
 
-    global $wpdb;
-    $results = $wpdb->get_results('SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM `' . $wpdb->prefix . 'fv_player_emails` WHERE `id_list` = "' . intval($list_id) . '"');
+      echo 'email,first_name,last_name,date,integration,status,error'."\n";
+      if( $results ) {
+        foreach ($results as $row){
+          if(!empty($row->integration)){
+            $row->integration .= ': '.$row->integration_nice;
+          }
+          unset($row->integration_nice);
 
-    echo 'email,first_name,last_name,date,integration,status,error'."\n";
-    if( $results ) {
-      foreach ($results as $row){
-        if(!empty($row->integration)){
-          $row->integration .= ': '.$row->integration_nice;
+          if(!empty($row->error)){
+            $tmp = unserialize($row->error);
+            $row->error =  $tmp['title'];
+          }
+
+
+          echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
         }
-        unset($row->integration_nice);
-
-        if(!empty($row->error)){
-          $tmp = unserialize($row->error);
-          $row->error =  $tmp['title'];
-        }
-
-
-        echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
       }
+      die;
     }
-    die;
   }
 
 
   public function admin_export_screen(){
-    $list_id = intval($_GET['fv-email-export-screen']);
+    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( $_GET['nonce'], 'fv-email-show' ) ) {
 
-    global $wpdb;
-    $results = $wpdb->get_results( $wpdb->prepare( 'SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM {$wpdb->prefix}fv_player_emails WHERE id_list = %d LIMIT 10', $list_id ) );
+      $list_id = intval($_GET['fv-email-export-screen']);
 
-    ?>
-    <style>
-      #adminmenumain { display: none }
-      #wpcontent { margin-left: 0 }
-    </style>
+      global $wpdb;
+      $results = $wpdb->get_results( $wpdb->prepare( "SELECT `email`, `first_name`, `last_name`, `date`, `integration`, `integration_nice`, `status`, `error` FROM {$wpdb->prefix}fv_player_emails WHERE id_list = %d LIMIT 10", $list_id ) );
 
-    <table class="wp-list-table widefat fixed striped posts">
-      <thead>
-      <tr>
-        <th scope="col" class="manage-column">E-mail</th>
-        <th scope="col" class="manage-column">First Name</th>
-        <th scope="col" class="manage-column">Last Name</th>
-        <th scope="col" class="manage-column">Date</th>
-        <th scope="col" class="manage-column">Integration</th>
-        <th scope="col" class="manage-column">Status</th>
-        <th scope="col" class="manage-column">Error</th>
-      </tr>
-      </thead>
-      <tbody>
-    <?php
-    foreach ($results as $row){
-      echo '<tr>';
-      foreach ($row as $key => $item) {
-        if($key === 'integration' && !empty($item)){
-          $item .= ': ' . $row->integration_nice;
-        }elseif($key === 'integration_nice'){
-          continue;
-        }elseif($key === 'error'){
-          $item = '';
-          if( !empty($item) ) {
-            $tmp = unserialize($item);
-            $item = $tmp['title'];
+      ?>
+      <style>
+        #adminmenumain { display: none }
+        #wpcontent { margin-left: 0 }
+      </style>
+
+      <table class="wp-list-table widefat fixed striped posts">
+        <thead>
+        <tr>
+          <th scope="col" class="manage-column">E-mail</th>
+          <th scope="col" class="manage-column">First Name</th>
+          <th scope="col" class="manage-column">Last Name</th>
+          <th scope="col" class="manage-column">Date</th>
+          <th scope="col" class="manage-column">Integration</th>
+          <th scope="col" class="manage-column">Status</th>
+          <th scope="col" class="manage-column">Error</th>
+        </tr>
+        </thead>
+        <tbody>
+      <?php
+      foreach ($results as $row){
+        echo '<tr>';
+        foreach ($row as $key => $item) {
+          if($key === 'integration' && !empty($item)){
+            $item .= ': ' . $row->integration_nice;
+          }elseif($key === 'integration_nice'){
+            continue;
+          }elseif($key === 'error'){
+            $item = '';
+            if( !empty($item) ) {
+              $tmp = unserialize($item);
+              $item = $tmp['title'];
+            }
           }
+          echo '<td>' . wp_strip_all_tags($item) . '</td>';
         }
-        echo '<td>' . wp_strip_all_tags($item) . '</td>';
+        echo '</tr>';
       }
-      echo '</tr>';
+      ?>
+        </tbody>
+      </table>
+      <p>
+        <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+      </p>
+
+    <?php
+
+      die();
     }
-    ?>
-      </tbody>
-    </table>
-    <p>
-      <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
-    </p>
-
-  <?php
-
-    die();
   }
 
 
