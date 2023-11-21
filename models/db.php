@@ -241,7 +241,10 @@ class FV_Player_Db {
     $author_id = get_current_user_id();
 
     // make total the number of players cached, if we've used search
-    if (isset($_GET['s']) && $_GET['s']) {
+
+    // Core WordPress does not use nonce for searches in wp-admin -> Posts either
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ( isset($_GET['s']) && $_GET['s'] ) {
       if( $this->player_ids_when_searching ) {
         $db_options = array(
           'select_fields'       => 'player_name, date_created, videos, author, status',
@@ -1716,6 +1719,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
   public function export_player_data($unused = null, $output_result = true, $id = false ) {
 
     if ( !$id ) {
+      // The player ID is part of the nonce below, so we need to get it from the POST data
+      // phpcs:ignore WordPress.Security.NonceVerification.Missing
       $id = !empty( $_POST['playerID'] ) ? absint( $_POST['playerID'] ) : false;
     }
 
