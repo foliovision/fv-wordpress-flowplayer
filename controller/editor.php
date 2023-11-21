@@ -31,14 +31,14 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
   $fv_player_editor_conf = array(
     'admin_url' => admin_url('admin.php?page=fv_player'),
     'home_url' => home_url('/'),
-    'db_import_nonce' => wp_create_nonce( "fv-player-db-import-".get_current_user_id() ),
-    'db_load_nonce' => wp_create_nonce( "fv-player-db-load-".get_current_user_id() ),
+    'db_import_nonce' => wp_create_nonce( "fv-player-db-import" ),
+    'db_load_nonce' => wp_create_nonce( "fv-player-db-load" ),
     'edit_nonce' => wp_create_nonce( "fv-player-edit" ),
-    'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce-".get_current_user_id() ),
-    'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce-".get_current_user_id() ),
-    'preview_nonce' => wp_create_nonce( "fv-player-preview-".get_current_user_id() ),
+    'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce" ),
+    'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce" ),
+    'preview_nonce' => wp_create_nonce( "fv-player-preview" ),
     'search_nonce' => wp_create_nonce( "fv-player-editor-search-nonce" ),
-    'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen-".get_current_user_id()),
+    'splashscreen_nonce' => wp_create_nonce( "fv-player-splashscreen" ),
     'shortcode_args_to_preserve' => array(
       'ab',
       'ad',
@@ -477,7 +477,7 @@ function fv_player_splashcreen_action() {
     return urldecode($title);
   }
 
-  if( check_ajax_referer( "fv-player-splashscreen-".get_current_user_id(), "security" , false ) == 1 ) {
+  if( check_ajax_referer( "fv-player-splashscreen", "security" , false ) == 1 ) {
     $title = $_POST['title'];
     $img = $_POST['img'];
     $limit = 128 - 5; // .jpeg

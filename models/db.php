@@ -1331,14 +1331,7 @@ class FV_Player_Db {
   public function open_player_for_editing() {
     global $fv_fp;
 
-    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-
-      if( defined('DOING_AJAX') && DOING_AJAX &&
-        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-load-".get_current_user_id() ) )
-      ) {
-        wp_send_json( array( 'error' => 'Security check failed.' ) );
-        die();
-      }
+    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( $_POST['nonce'],"fv-player-db-load" ) ) {
 
       // load player and its videos from DB
       if (!$this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ))) {
@@ -1434,9 +1427,12 @@ class FV_Player_Db {
       } else {
         echo wp_json_encode($out, true);
       }
-    }
+      die();
 
-    wp_die();
+    } else {
+      wp_send_json( array( 'error' => 'Security check failed.' ) );
+      die();
+    }
   }
 
   /**
@@ -1822,7 +1818,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @param bool $output_result If true, the import result will be returned instead of outputted.
    *                            Used when cloning a player.
    * @param array|null $alternative_data If set, this is an alternative source of data to import.
-   *                                     Used when cloning a player. This also skips the nonce check!
+   *                                     Used when cloning a player.
    *
    * @return string Returns the actual player ID, if $output_result is false.
    *
@@ -1831,13 +1827,14 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
   public function import_player_data($unused = null, $output_result = true, $alternative_data = null) {
     global $FV_Player_Db;
 
-    if (($alternative_data !== null && $data = $alternative_data) || (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true))) {
-      if( defined('DOING_AJAX') && DOING_AJAX && !$alternative_data &&
-        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-import-".get_current_user_id() ) )
-      ) {
-        die('Security check failed');
+    if ( $alternative_data !== null ) {
+      $data = $alternative_data;
+
+    } else if( isset( $_POST['data'] ) && wp_verify_nonce( $_POST['nonce'],"fv-player-db-import" ) ) {
+      $data = json_decode( stripslashes( $_POST['data'] ), true );
       }
 
+    if ( $data ) {
       try {
         // first, create the player
         $player_keys = $data;
@@ -1981,12 +1978,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
   public function remove_player() {
-    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && intval($_POST['playerID']) == $_POST['playerID']) {
-      if( defined('DOING_AJAX') && DOING_AJAX &&
-        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) )
-      ) {
-        die('Security check failed');
-      }
+    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) ) {
 
       // first, load the player
       $player = new FV_Player_Db_Player($_POST['playerID'], array(), $this);
@@ -2024,7 +2016,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
   public function clone_player() {
-    if (isset($_POST['playerID']) && is_numeric($_POST['playerID'])) {
+    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( $_POST['nonce'], 'fv-player-db-export-' . $_POST['playerID'] ) ) {
       $cannot_edit_other_posts = !current_user_can('edit_others_posts');
       $author_id = get_current_user_id();
 
