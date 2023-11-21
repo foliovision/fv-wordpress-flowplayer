@@ -20,6 +20,11 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
   }
 
   function display() {
+    // We are not processing form data without nonce verification.
+    // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Bunny_Stream_Wizard_API_Key::process() where this method is called.
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    $bunnycdn_api = ! empty( $_POST['bunnycdn_api'] ) ? $_POST['bunnycdn_api'] : false;
+
     ?>
       <tr>
           <td colspan="2">
@@ -29,14 +34,14 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
       </tr>
       <tr>
       <td colspan="2">
-        <input type="hidden" name="bunnycdn_api" value="<?php echo esc_attr($_POST['bunnycdn_api']); ?>" />
+        <input type="hidden" name="bunnycdn_api" value="<?php echo esc_attr( $bunnycdn_api ); ?>" />
         <select name="fv_bunny_stream_wizard_lib" id="fv_bunny_stream_wizard_lib">
           <option value="-1" disabled selected hidden>Pick a Library...</option>
-          <option value="-2">- Create a new Stream Library -</option>
+          <option value="create-new-bunny-stream-library">- Create a new Stream Library -</option>
         <?php
         // retrieve a list of existing Stream Libraries
-        if ( !empty($_POST['bunnycdn_api']) ) {
-          $api = new FV_Player_Bunny_Stream_API( $_POST['bunnycdn_api'] );
+        if ( !empty( $bunnycdn_api ) ) {
+          $api = new FV_Player_Bunny_Stream_API( $bunnycdn_api );
           $libs = $api->api_call( 'https://api.bunny.net/videolibrary?page=1&perPage=1000' );
           if ( $libs->Items && count( $libs->Items ) ) {
             foreach ( $libs->Items as $lib ) {
@@ -54,7 +59,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
             var self = this;
 
             // show the library rows, hide the select dropdown
-            if ( this.value == '-2' ) {
+            if ( this.value == 'create-new-bunny-stream-library' ) {
               $( '.bunny_stream_wizard_hidden' ).css( 'display', 'block' );
               $( self ).hide();
 
@@ -90,29 +95,34 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
   function process() {
     global $fv_fp;
 
-    // library not picked neither created
-    if ( !empty( $_POST['fv_bunny_stream_wizard_lib'] ) && $_POST['fv_bunny_stream_wizard_lib'] == '-1' ) {
+    // We are not processing form data without nonce verification.
+    // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Wizard_Step_Base_Class::process()
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    $bunnycdn_api = ! empty( $_POST['bunnycdn_api'] ) ? $_POST['bunnycdn_api'] : false;
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    $lib = ! empty( $_POST['fv_bunny_stream_wizard_lib'] ) ? $_POST['fv_bunny_stream_wizard_lib'] : false;
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    $name = ! empty( $_POST['bunny_stream_wizard']['name'] ) ? $_POST['bunny_stream_wizard']['name'] : false;
+
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
+    if ( $lib && $lib == '-1' ) {
       return array('error' => 'No action selected. Please pick a library or create a new one.' );
     }
 
     // data missing
     if (
-      empty( $_POST['fv_bunny_stream_wizard_lib'] )
-      ||
-      (
-        $_POST['fv_bunny_stream_wizard_lib'] == '-2' &&
-        ( empty( $_POST['bunny_stream_wizard'] ) || empty( $_POST['bunny_stream_wizard']['name'] ) )
-      )
+      ! $lib ||
+      $lib == 'create-new-bunny-stream-library' && ! $name
     ) {
       return array('error' => 'Some required wizard data are missing. Please make sure you provided all information for this page.' );
     }
 
     // create new API instance
-    $api = new FV_Player_Bunny_Stream_API( $_POST['bunnycdn_api'] );
+    $api = new FV_Player_Bunny_Stream_API( $bunnycdn_api );
 
-    if ( $_POST['fv_bunny_stream_wizard_lib'] == '-2' ) {
+    if ( $lib == 'create-new-bunny-stream-library' ) {
       // create the stream library
-      $lib = $api->api_call( 'https://api.bunny.net/videolibrary', array( 'Id' => 1, 'Name' => trim( $_POST['bunny_stream_wizard']['name'] ) ), 'POST' );
+      $lib = $api->api_call( 'https://api.bunny.net/videolibrary', array( 'Id' => 1, 'Name' => trim( $name ) ), 'POST' );
 
       if ( is_wp_error($lib) ) {
         return array('error' => $lib->get_error_message() );
@@ -126,7 +136,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
       }
     } else {
       // get existing library data
-      $lib = $api->api_call( 'https://api.bunny.net/videolibrary/' . $_POST['fv_bunny_stream_wizard_lib'] );
+      $lib = $api->api_call( 'https://api.bunny.net/videolibrary/' . $lib );
 
       if ( is_wp_error($lib) ) {
         return array('error' => $lib->get_error_message() );

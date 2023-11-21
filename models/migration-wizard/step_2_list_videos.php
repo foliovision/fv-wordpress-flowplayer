@@ -71,7 +71,13 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base_Cla
   }
 
   function process() {
+
+    // We are not processing form data without nonce verification.
+    // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Wizard_Step_Base_Class::process()
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
     $search_string = $_POST['search_string'];
+
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
     $replace_string = $_POST['video_src_replace']['replace_string'];
     
     $test_replace = new FV_Player_Wizard_Step_3_Test_Replace($search_string, $replace_string);

@@ -64,16 +64,23 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
   function process() {
     global $wpdb;
 
+    // We are not processing form data without nonce verification.
+    // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Wizard_Step_Base_Class::process()
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
     $search_string = $_POST['search_string'];
+
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
     $replace_string= $_POST['replace_string'];
-    
-        
+
     $step_finish = new FV_Player_Wizard_Step_Finish();
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing
     if( !empty($_POST['confirmation']) ) {
       
       $affected_fields = array();
       foreach( array( 'src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) {
+        // We use a hard-coded array for the $field values, so there won't be anything dangerous in the query.
+        // phpcs: ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         $affected_fields[$field] = $wpdb->query( $wpdb->prepare(
           "UPDATE `{$wpdb->prefix}fv_player_videos` SET {$field} = REPLACE( {$field}, %s, %s ) WHERE {$field} LIKE %s",
           $search_string,
