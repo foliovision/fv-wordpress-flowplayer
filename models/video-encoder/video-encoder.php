@@ -285,10 +285,7 @@ abstract class FV_Player_Video_Encoder {
 
     $id = absint( $_POST['id_row'] );
 
-    if (
-        defined('DOING_AJAX') &&
-        ( !isset( $_POST['nonce'] ) || !wp_verify_nonce( $_POST['nonce'], 'fv-player-encoder-delete-job-' . $id ) )
-    ) {
+    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv-player-encoder-delete-job-' . $id ) ) {
       wp_send_json( array('error' => 'Bad nonce') );
     }
 
