@@ -481,7 +481,7 @@ class FV_Player_Email_Subscription {
 
     global $wpdb;
     $table_name = $wpdb->prefix . 'fv_player_emails';
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") !== $table_name) {
+    if( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) != $table_name ) {
       $sql = "CREATE TABLE `$table_name` (
         `id` INT(11) NOT NULL AUTO_INCREMENT,
         `email` TEXT NULL,

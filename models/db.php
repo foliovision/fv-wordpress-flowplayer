@@ -2173,7 +2173,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
      */
     $table_name = FV_Player_Db_Player_Meta::init_db_name();
 
-    if( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+    if( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) == $table_name ) {
+
       $remove = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE meta_key = 'post_id' AND meta_value = %s ", $post_id ) );
       if( $remove ) {
         foreach( $remove AS $removal ) {
