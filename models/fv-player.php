@@ -874,13 +874,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $salt;
   }
 
-  /**
-   * @return boolean Returns TRUE if we're asking for a preview from the back-end editor, FALSE otherwise.
-   */
-  public static function is_preview() {
-    return !empty($_POST['fv_player_preview_json']);
-  }
-
   public function get_video_checker_media($mediaData , $src1 = false, $src2 = false, $rtmp = false) {
     global $FV_Player_Pro;
     $media = $mediaData['sources'];
@@ -2769,8 +2762,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         die();
       }
 
-      $dataInPost = ($_GET['fv_player_preview'] === 'POST');
-      $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
+      $shortcode = base64_decode($_GET['fv_player_preview']);
       $shortcode = apply_filters('fv_player_preview_data', $shortcode);
 
       $matches = null;
@@ -2778,22 +2770,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $height ='';
 
       // width from regular shortcdode data
-      if (!$dataInPost && preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)) {
+      if ( preg_match('/width="([0-9.,]*)"/', $shortcode, $matches)) {
         $width = 'width:'.$matches[1].'px;';
       }
 
       // width from DB shortcdode data
-      if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_width'])) {
+      if ( !empty($shortcode['fv_wp_flowplayer_field_width'])) {
         $width = 'width:'.$shortcode['fv_wp_flowplayer_field_width'].'px;';
       }
 
       // height from regular shortcdode data
-      if(!$dataInPost && preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)) {
+      if( preg_match('/height="([0-9.,]*)"/', $shortcode, $matches)) {
         $height = 'min-height:'.$matches[1].'px;';
       }
 
       // height from DB shortcdode data
-      if ($dataInPost && !empty($shortcode['fv_wp_flowplayer_field_height'])) {
+      if ( !empty($shortcode['fv_wp_flowplayer_field_height'])) {
         $height = 'min-height:'.$shortcode['fv_wp_flowplayer_field_height'].'px;';
       }
 
@@ -2803,37 +2795,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <?php
       // regular shortcode data with source
       global $fv_fp;
-      if (!$dataInPost && preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
+      if ( preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
         $aAtts = shortcode_parse_atts($shortcode);
         if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
           _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
         }
         echo do_shortcode($shortcode);
-      } else if ($dataInPost) {
-        // DB-based shortcode data
-        if (
-          !empty($shortcode['fv_wp_flowplayer_field_playlist']) &&
-          $shortcode['fv_wp_flowplayer_field_playlist'] == 'vertical' ||
-          $fv_fp->_get_option('liststyle') == 'vertical'
-        ) {
-          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
-        }
-
-        // note: we need to put "src" into the code or it won't get parsed at all
-        //       and at the same time, it displays the correct SRC in the preview
-        if( count($shortcode['videos']) > 0 ) {
-          $tmp = array_reverse($shortcode['videos']);
-          $item = array_pop($tmp);
-          $src = $item['fv_wp_flowplayer_field_src'];
-
-          // we generate previews either from SRC or RTMP - if SRC is empty, try RTMP
-          if (!$src) {
-            $src = $item['fv_wp_flowplayer_field_rtmp_path'];
-          }
-        } else {
-          $src = 'none';
-        }
-        echo do_shortcode('[fvplayer src="'.$src.'" id="POST"]');
       } else { ?>
         <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">No video.</h1>
         <?php

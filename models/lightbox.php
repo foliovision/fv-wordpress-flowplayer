@@ -196,10 +196,6 @@ class FV_Player_lightbox {
   }
 
   function lightbox_html($html) {
-    // disable lightbox HTML for previews
-    if (flowplayer::is_preview()) {
-      return $html;
-    }
 
     $aArgs = func_get_args();
 

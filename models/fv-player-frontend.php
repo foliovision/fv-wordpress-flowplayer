@@ -159,14 +159,6 @@ class flowplayer_frontend extends flowplayer
       if( !$player->getToggleOverlay() ) {
         $this->aCurArgs['overlay'] = false;
       }
-
-      if (isset($_GET['fv_player_preview']) && $_GET['fv_player_preview'] == 'POST' && isset($_POST['fv_player_preview_json'])) {
-        foreach ($player->getAllDataValues() as $key => $value) {
-          if (empty($this->aCurArgs[$key]) && !empty($value)) {
-            $this->aCurArgs[$key] = $value;
-          }
-        }
-      }
     }
 
     // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
