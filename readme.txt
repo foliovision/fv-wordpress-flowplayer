@@ -261,3 +261,15 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 * Initial release of FV Player 8
 * Subtitles - fix for RTL languages when the line contains latin word - thanks to Olivier Legendre
+
+== External Services ==
+
+FV Player uses the following external services:
+
+* foliovision.com - only if you enter the license key, used to install FV Player Pro extension
+* AWS - if you setup Amazon S3 with FV Player
+* DigitalOcean Spaces - if you setup DigitalOcean Spaces with FV Player
+* dashboard-api.vidint.net - if you use the vi (Video Intelligence) Video Ads
+* googleapis.com - if you setup YouTube API key to be able to obtain video splash screens, video titles and duration information when inserting videos from YouTube
+* video.bunnycdn.com - only if you setup Bunny Stream
+* video-checker.foliovision.com - when you install the plugin you are prompted if you allow access to your video files to check for video encoding issues. This can also be disabled using the "Disable Admin Video Checker" setting later.
