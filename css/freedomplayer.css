@@ -25,6 +25,7 @@
     width: 22px; }
     .fp-fullscreen svg.fp-fullscreen-exit {
       display: none;
+      fill: none;
       stroke-width: 3; }
 
 .fp-checked:before {
@@ -574,7 +575,7 @@
   .freedomplayer .fp-remaining {
     display: none; }
   .freedomplayer .fp-rewind, .freedomplayer .fp-forward {
-    width: 20%;
+    width: 15%;
     position: absolute;
     left: 0;
     height: 54%;
