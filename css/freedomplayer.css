@@ -453,8 +453,12 @@
     opacity: 0; }
   .freedomplayer:not(.is-touch):not(.is-mouseover-bottom):not(.fixed-controls).was-played .fp-controls {
     opacity: 0; }
+  .freedomplayer.is-mobile-seeking .fp-controls {
+    opacity: 1;
+    visibility: hidden; }
   .freedomplayer.is-mobile-seeking .fp-timeline, .freedomplayer.is-mobile-seeking .fp-forward, .freedomplayer.is-mobile-seeking .fp-rewind {
-    opacity: 1; }
+    opacity: 1;
+    visibility: visible; }
   .freedomplayer .fp-header {
     top: 0;
     text-align: left;
@@ -621,8 +625,7 @@
     bottom: 0;
     z-index: 2;
     padding-left: 0.3em;
-    padding-right: 0.3em;
-    opacity: 1; }
+    padding-right: 0.3em; }
     .freedomplayer .fp-controls > * {
       margin: 0 .6em;
       opacity: 0; }
