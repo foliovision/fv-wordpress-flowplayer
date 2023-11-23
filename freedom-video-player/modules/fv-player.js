@@ -225,11 +225,7 @@ function fv_player_preload() {
         }
       });
     }
-    
-    if( !flowplayer.support.volume && !flowplayer.support.autoplay ) { // iPhone iOS 11 doesn't support setting of volume, but the button it important to allow unmuting of autoplay videos
-      root.find('.fp-volume').hide();
-    }
-    
+
     // Hide volume if set to 0 in the player and controlbar is disabled
     if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
       root.find('.fp-volume').remove();
