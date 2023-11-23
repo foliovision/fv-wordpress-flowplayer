@@ -46,6 +46,22 @@ flowplayer(function(api, root) {
     } else {
       el.removeClass('is-fv-narrow');
     }
+
+    // check if there are too many items in .fp-controls and they don't fit
+    var controls = root.find('.fp-controls'),
+      controls_width = controls.parent().width(),
+      // here are the items that we can hide
+      constols_to_sacrifice = controls.find('.fp-duration, .fp-playbtn'),
+      controls_items_width = 0;
+
+    constols_to_sacrifice.removeClass( 'wont-fit' );
+    root.find('.fp-controls').children(':visible:not(.fp-timeline)').each( function() {
+      controls_items_width += jQuery(this).outerWidth(true);
+    } );
+
+    if ( controls_items_width > controls_width ) {
+      constols_to_sacrifice.addClass( 'wont-fit' );
+    }
   }
 
   check_size();

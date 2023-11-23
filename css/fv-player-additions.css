@@ -1005,6 +1005,10 @@ a.fp-youtube-title {
 	margin: 0;
 }
 
+.fp-controls .wont-fit {
+  display: none !important;
+}
+
 /* Minimal playlist styling to avoid FOUC as playlists.css loads in footer! */
 .fp-playlist { display: none }
 
