@@ -96,7 +96,7 @@ final class FV_Player_Controller extends TestCase {
     $output = ob_get_clean();
     
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
-Registering fv_flowplayer for fv-wordpress-flowplayer/css/freedomplayer.min.css?ver=1.2.3.4
+Registering fv_flowplayer for fv-wordpress-flowplayer/css/fv-player.min.css?ver=1.2.3.4
 Registering fv_freedomplayer_playlists for fv-wordpress-flowplayer/css/playlists.css?ver=1.2.3.4
 Registering flowplayer for fv-wordpress-flowplayer/freedom-video-player/freedomplayer.min.js?ver=1.2.3.4 footer? 1
 Registering fv-player for fv-wordpress-flowplayer/freedom-video-player/fv-player.min.js?ver=1.2.3.4 footer? 1

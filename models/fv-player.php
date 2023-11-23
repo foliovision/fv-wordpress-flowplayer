@@ -1573,14 +1573,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     global $fv_wp_flowplayer_ver;
     $this->bCSSInline = true;
-    $sURL = FV_FP_RELATIVE_PATH.'/css/freedomplayer.min.css';
+    $sURL = FV_FP_RELATIVE_PATH.'/css/fv-player.min.css';
     $sVer = $fv_wp_flowplayer_ver;
     if( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
-      $sVer = filemtime( dirname(__FILE__).'/../css/freedomplayer.css' );
-      $sVerAdditions = filemtime( dirname(__FILE__).'/../css/freedomplayer-additions.css' );
+      $sVer = filemtime( dirname(__FILE__).'/../css/skin.css' );
+      $sVerAdditions = filemtime( dirname(__FILE__).'/../css/fv-player-additions.css' );
 
-      $sURL = FV_FP_RELATIVE_PATH.'/css/freedomplayer.css';
-      $sURLAdditions = FV_FP_RELATIVE_PATH.'/css/freedomplayer-additions.css';
+      $sURL = FV_FP_RELATIVE_PATH.'/css/skin.css';
+      $sURLAdditions = FV_FP_RELATIVE_PATH.'/css/fv-player-additions.css';
     }
 
     if( !( $this->_get_option('css_disable') || defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) && $this->_get_option($this->css_option()) ) {
@@ -1698,7 +1698,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $this->css_generate(true);
 
     $sCSS = "\n\n/*CSS writeout performed on FV Player Settings save  on ".gmdate('r')."*/\n".ob_get_clean();
-    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/freedomplayer.min.css' ) ) {
+    if( !$sCSSCurrent = $wp_filesystem->get_contents( dirname(__FILE__).'/../css/fv-player.min.css' ) ) {
       return false;
     }
 

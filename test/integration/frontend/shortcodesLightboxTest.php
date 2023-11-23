@@ -111,8 +111,8 @@ HTML;
     $this->assertTrue( stripos( $footer,$this->fix_newlines($sample) ) !== false );  //  is the lightboxed players in the footer?
 
     //  are the required scripts in the footer?
-    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/freedomplayer.css' ) !== false );
-    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/freedomplayer-additions.css' ) !== false );
+    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/skin.css' ) !== false );
+    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/fv-player-additions.css' ) !== false );
     $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/fancybox.css' ) !== false );
     $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/js/fancybox.js' ) !== false );
     

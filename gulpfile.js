@@ -25,7 +25,7 @@ const bugReport = 'https://foliovision.com/support';
 // files to check
 // const cssFrotend = ['./css/flowplayer.css', './css/fancybox.css', './css/lightbox.css', './css/colorbox.css'];
 // const cssAdmin = ['./css/admin.css', './css/s3-browser.css', './css/s3-uploader.css'];
-const freedomPlayerCSS = ['./css/freedomplayer.css', './css/freedomplayer-additions.css'];
+const freedomPlayerCSS = ['./css/skin.css', './css/fv-player-additions.css'];
 const modulesJs = ['./freedom-video-player/modules/fv-player.js', './freedom-video-player/modules/*.module.js'];
 const youtubeJS = './freedom-video-player/fv-player-youtube.dev.js';
 const dashJS = './freedom-video-player/fv-player-dashjs.dev.js';
@@ -60,7 +60,7 @@ function jsFilessMinify() {
 
 function cssFreedomPlayer() {
   return src(freedomPlayerCSS)
-    .pipe(concat('freedomplayer.min.css'))
+    .pipe(concat('fv-player.min.css'))
     .pipe(autoprefixer())
     .pipe(cleanCSS())
     .pipe(dest('./css/'));
