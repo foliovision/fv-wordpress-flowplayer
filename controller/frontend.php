@@ -758,7 +758,8 @@ function fv_player_js_loader_mark_scripts( $tag, $handle ) {
     (
       stripos($handle,'flowplayer-') === 0 || // process Flowplayer HLS.js and Dash.js, but not the base FV Player library, that one must be present instantly
       stripos($handle,'fv-player') === 0 ||
-      stripos($handle,'fv_player') === 0
+      stripos($handle,'fv_player') === 0 ||
+      stripos($handle,'fv_vast') === 0
     
     // script handle must not be one of
     ) && !in_array( $handle, array(

@@ -171,6 +171,7 @@ jQuery(document).ready( function() {
     if( loading_count < 1000 && (
       window.fv_video_intelligence_conf && !window.FV_Player_IMA ||
       window.fv_vast_conf && !window.FV_Player_IMA ||
+      window.fv_vast_conf && !window.google && !window.google.ima ||
       window.fv_player_pro && !window.FV_Flowplayer_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
       window.fv_player_user_playlists && !window.fv_player_user_playlists.is_loaded ||
       // if using FV Player JS Loader wait until all scripts have finished loading
