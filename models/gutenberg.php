@@ -60,12 +60,8 @@ function fv_player_gutenberg() {
         'forceUpdate' => array(
           'type' => 'string',
           'default' => '0',
-        ),
-        'cover' => array(
-          'type' => 'string',
-          'default' => '',
-        ),
-      )
+        )
+      ),
     ));
   }
 }

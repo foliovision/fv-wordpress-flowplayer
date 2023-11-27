@@ -24,10 +24,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     align: true,
   },
   attributes: {
-    cover: {
-      type: 'string',
-      default: ''
-    },
     src: {
       type: 'string',
       default: ''
@@ -64,11 +60,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     forceUpdate: {
       type: 'string',
       default: '0',
-    }
-  },
-  example: {
-    attributes: {
-      cover: 'https://cdn.foliovision.com/images/graphics/led-monitor-small.optim.jpg',
     }
   },
   edit: ({ isSelected ,attributes, setAttributes, context, clientId}) => {
@@ -209,11 +200,6 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       .catch((error) => {
         console.error('Error:', error);
       });
-    }
-
-    // show preview for block
-    if ( attributes.cover ) {
-      return <img src={ attributes.cover } />;
     }
 
     // show initial state when no player
