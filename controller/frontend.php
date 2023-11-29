@@ -539,6 +539,7 @@ function flowplayer_prepare_scripts() {
     }
 
     $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
+    $aLocalize['video_position_save_nonce'] = wp_create_nonce( 'fv_player_video_position_save' );
 
     wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
 

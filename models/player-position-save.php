@@ -436,6 +436,12 @@ class FV_Player_Position_Save {
   }
 
   public function video_position_save() {
+
+    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv_player_video_position_save' ) ) {
+      wp_send_json_error();
+      exit;
+    }
+
     // TODO: XSS filter for POST values?
     // check if videoTimes is not a JSON-encoded value, which will happen
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
