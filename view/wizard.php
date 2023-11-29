@@ -91,14 +91,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     
     ?>
       <tr<?php echo $id.$class; ?>>
-        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php echo strip_tags( $label ); ?></label></th>
+        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php echo wp_strip_all_tags( $label ); ?></label></th>
         <td class="field">
           <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>">
             <?php foreach( $dropdown AS $option ) : ?>
               <?php if( is_array($option) ) : ?>
-                <option value="<?php echo $option[0]; ?>"><?php echo strip_tags( $option[1] ); ?></option>
+                <option value="<?php echo $option[0]; ?>"><?php echo wp_strip_all_tags( $option[1] ); ?></option>
               <?php else : ?>
-                <option><?php echo strip_tags( $option ); ?></option>
+                <option><?php echo wp_strip_all_tags( $option ); ?></option>
               <?php endif; ?>
             <?php endforeach; ?>
           </select>
@@ -116,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     }
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
-    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>"><?php echo strip_tags( $label ); ?></a>
+    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>"><?php echo wp_strip_all_tags( $label ); ?></a>
   </div>
     <?php
   }
@@ -134,7 +134,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
-    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php echo strip_tags( $label ); ?></label>
+    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php echo wp_strip_all_tags( $label ); ?></label>
   </div>
     <?php
   }
