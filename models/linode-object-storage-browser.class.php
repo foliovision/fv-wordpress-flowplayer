@@ -96,13 +96,13 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
 
     // sorting by date, descending
     // TODO: Make this an interface option? How to handle it for paged listings, like on Vimeo?
-    function date_compare($a, $b) {
+    function FV_Player_Linode_Object_Storage_Browser_date_compare($a, $b) {
       $t1 = strtotime($a['LastModified']);
       $t2 = strtotime($b['LastModified']);
       return $t1 - $t2;
     }
 
-    usort($output['items'], 'date_compare');
+    usort($output['items'], 'FV_Player_Linode_Object_Storage_Browser_date_compare');
 
     $output['items'] = array_reverse($output['items']);
 

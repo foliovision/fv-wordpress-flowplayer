@@ -457,7 +457,7 @@ function fv_player_splashcreen_action() {
   global $wpdb; //access to the database
   $jsonReturn = '';
 
-  function getTitleFromUrl($url) {
+  function fv_player_splashcreen_getTitleFromUrl($url) {
     $arr = explode('/', $url);
     $title = end($arr);
 
@@ -485,7 +485,7 @@ function fv_player_splashcreen_action() {
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
 
-    $title = getTitleFromUrl($title);
+    $title = fv_player_splashcreen_getTitleFromUrl($title);
     $title = sanitize_title($title);
 
     if( function_exists('mb_strinwidth') ) {

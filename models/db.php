@@ -52,10 +52,6 @@ class FV_Player_Db {
   }
 
   public function init_tables() {
-    if( !defined('SAVEQUERIES') ) {
-      define( 'SAVEQUERIES', true );
-    }
-
     global $wpdb;
     $wpdb->queries = array();
 
