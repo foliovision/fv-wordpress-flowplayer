@@ -770,7 +770,7 @@
               transform: scaleY(0.75); }
   .freedomplayer.fp-slim .fp-timeline {
     height: .2em; }
-  .freedomplayer.fp-slim:not(.fp-full) .fp-controls:hover .fp-timeline:before, .freedomplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
+  .freedomplayer.fp-slim:not(.fp-full) .fp-controls:hover .fp-timeline:before, .freedomplayer.fp-slim:not(.fp-full).is-mobile-seeking .fp-timeline:before, .freedomplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
     content: '';
     position: absolute;
     top: -1.2em;
