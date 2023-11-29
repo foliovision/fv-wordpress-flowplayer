@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 // TODO: These should only be loaded on the wizard screen
 require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-base.php' );
 require_once( dirname(__FILE__).'/../includes/class.fv-player-wizard-step-base.php' );

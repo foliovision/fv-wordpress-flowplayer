@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 if( class_exists('WP_Widget') ) :
 
 class FV_Player_Widget extends WP_Widget {

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 if( !class_exists('FV_Player_Linode_Object_Storage_Browser') && class_exists('FV_Player_Media_Browser') ) :
 
 class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {

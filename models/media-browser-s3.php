@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
   function init() {

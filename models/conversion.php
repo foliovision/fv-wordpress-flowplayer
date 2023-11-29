@@ -1,13 +1,12 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Conversion {
 
   public function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_action( 'admin_notices', array( $this, 'convert__start') );
     add_action( 'fv_player_conversion_buttons', array( $this, 'conversion_button') );
   }

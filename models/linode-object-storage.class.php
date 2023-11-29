@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 if( !class_exists('FV_Player_Linode_Object_Storage') ) :
 
 class FV_Player_Linode_Object_Storage extends FV_Player_CDN {

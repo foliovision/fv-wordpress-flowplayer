@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 if( !class_exists('FV_Player_Bunny_Stream_Browser') && class_exists('FV_Player_Media_Browser') ) :
 
 require_once( dirname(__FILE__).'/class.fv-player-bunny_stream-api.php' );

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Position_Save {
 
   /**
@@ -10,11 +14,6 @@ class FV_Player_Position_Save {
   private static $cache = array();
 
   public function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_action( 'fv_player_update',  array( $this, 'plugin_update_database' ), 9 );
     add_action( 'wp_ajax_fv_wp_flowplayer_video_position_save', array($this, 'video_position_save' ) );
     add_filter( 'fv_player_item', array( $this, 'set_last_positions' ), 10, 3 );

@@ -1,15 +1,15 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Stats {
 
   var $used = false;
   var $cache_directory = false;
 
   public function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     global $fv_fp;
     $this->cache_directory = WP_CONTENT_DIR."/fv-player-tracking";
 

@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Bunny_Stream_Wizard extends FV_Player_Wizard_Base_Class {
 
   static $instance = null;

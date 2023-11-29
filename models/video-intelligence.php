@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_video_intelligence_Installer {
 
   var $notice = false;
@@ -8,11 +12,6 @@ class FV_Player_video_intelligence_Installer {
   private $setting_toggle_nonce;
 
   function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_action( 'admin_menu', array( $this, 'start' ), 8 ) ;
     add_action( 'admin_init', array( $this, 'settings_register' ) ) ;
     add_action( 'admin_notices', array( $this, 'show_notice' ) );

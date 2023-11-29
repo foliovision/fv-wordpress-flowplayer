@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 if( !class_exists('FV_Player_DigitalOcean_Spaces') ) :
 
 class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {

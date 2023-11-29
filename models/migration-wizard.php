@@ -1,14 +1,14 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 if( !class_exists('FV_Player_Migration') ) :
 
 class FV_Player_Migration {
 
   function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_action('admin_menu', array( $this, 'admin_page' ) );
   }
 

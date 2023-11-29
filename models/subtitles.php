@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Subtitles {
 
   /**
@@ -13,11 +17,6 @@ class FV_Player_Subtitles {
   );
 
   public function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_filter('fv_player_item', array($this, 'add_subtitles'), 10, 3 );
   }
 

@@ -1,13 +1,12 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Xml_Video_Sitemap {
     
     public function __construct() {
-
-      if ( ! defined( 'ABSPATH' ) ) {
-        exit;
-      }
-
       // Add our custom rewrite rules
       add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), 999 );
       add_action('do_feed_video-sitemap', array($this, 'fv_generate_video_sitemap'), 10, 1);

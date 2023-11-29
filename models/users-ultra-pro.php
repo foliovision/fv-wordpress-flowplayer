@@ -1,13 +1,12 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_UUP {  
   
   public function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_action( 'init', array( $this, 'init') );
   }
   

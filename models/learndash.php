@@ -1,13 +1,12 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Learndash_LMS {
 
   function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     add_filter( 'plugins_loaded', array( $this, 'plugin_load' ) );
   }
 

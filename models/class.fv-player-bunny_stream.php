@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 require_once( dirname(__FILE__).'/class.fv-player-bunny_stream-wizard.php' );
 
 class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {

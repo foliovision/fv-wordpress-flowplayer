@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_YouTube {
 
   static $instance = null;
@@ -17,10 +21,6 @@ class FV_Player_YouTube {
   }
 
   function __construct() {
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
 
     if( !is_admin() ) {
       // Load splash via API if not provided
