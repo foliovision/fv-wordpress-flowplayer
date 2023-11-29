@@ -2023,21 +2023,31 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   public static function get_encoded_url( $sURL ) {
-    //if( !preg_match('~%[0-9A-F]{2}~',$sURL) ) {
-      $url_parts = wp_parse_url( $sURL );
-      $url_parts_encoded = wp_parse_url( $sURL );
-      if( !empty($url_parts['path']) ) {
-          $url_parts['path'] = join('/', array_map( 'rawurlencode', array_map('urldecode', explode('/', $url_parts_encoded['path']) ) ) );
-          $url_parts['path'] = str_replace( '%2B', '+', $url_parts['path'] );
-      }
-      if( !empty($url_parts['query']) ) {
-          $url_parts['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );
-      }
 
-      return fv_http_build_url($sURL, $url_parts);
-    /*} else {
-      return $sURL;
-    }*/
+    $parsed_url = wp_parse_url( $sURL );
+    $url_parts_encoded = wp_parse_url( $sURL );
+
+    if( !empty($parsed_url['path']) ) {
+      $parsed_url['path'] = join('/', array_map( 'rawurlencode', array_map('urldecode', explode('/', $url_parts_encoded['path']) ) ) );
+      $parsed_url['path'] = str_replace( '%2B', '+', $parsed_url['path'] );
+    }
+
+    if( !empty($parsed_url['query']) ) {
+      $parsed_url['query'] = str_replace( '&amp;', '&', $url_parts_encoded['query'] );
+    }
+
+    // https://www.php.net/manual/en/function.parse-url.php#106731
+    $scheme   = isset( $parsed_url['scheme'] ) ? $parsed_url['scheme'] . '://' : '';
+    $host     = isset( $parsed_url['host'] ) ? $parsed_url['host'] : '';
+    $port     = isset( $parsed_url['port'] ) ? ':' . $parsed_url['port'] : '';
+    $user     = isset( $parsed_url['user'] ) ? $parsed_url['user'] : '';
+    $pass     = isset( $parsed_url['pass'] ) ? ':' . $parsed_url['pass']  : '';
+    $pass     = ( $user || $pass ) ? "$pass@" : '';
+    $path     = isset( $parsed_url['path'] ) ? $parsed_url['path'] : '';
+    $query    = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
+    $fragment = isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '';
+  
+    return "$scheme$user$pass$host$port$path$query$fragment";
   }
 
 

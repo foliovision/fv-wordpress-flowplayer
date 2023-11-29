@@ -37,7 +37,7 @@ global $fv_wp_flowplayer_ver;
 
 $fv_wp_flowplayer_ver = '8.0.beta.22.106';
 $fv_wp_flowplayer_core_ver = '8.0.beta.22.106.1';
-include_once( dirname( __FILE__ ) . '/includes/extra-functions.php' );
+
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
 }
