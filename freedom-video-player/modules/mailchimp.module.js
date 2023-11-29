@@ -11,7 +11,10 @@
       $('.mailchimp-response',root).remove();
       $('input[type=submit]',root).attr('disabled','disabled').addClass('fv-form-loading');
 
-      var data = {action:"fv_wp_flowplayer_email_signup"};
+      var data = {
+        action: "fv_wp_flowplayer_email_signup",
+        nonce: fv_player.email_signup_nonce
+      };
       $('[name]',this).each(function(){
         data[this.name] = $(this).val();
       });

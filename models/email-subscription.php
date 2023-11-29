@@ -416,8 +416,18 @@ class FV_Player_Email_Subscription {
     return array('error' => false, 'result' => $aLists);
   }
 
-  private function  mailchimp_signup($list_id, $data){
-    global $fv_fp;
+  private function  mailchimp_signup($list_id){
+
+    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv_player_email_signup' ) ) {
+      wp_json_encode(
+        array(
+          'status' => 'ERROR',
+          'text' => __( 'Nonce verification error.', 'fv-player' ),
+        )
+      );
+      exit;
+    }
+
     if( !class_exists('\DrewM\MailChimp\MailChimp') ) {
       require_once dirname(__FILE__) . '/../includes/mailchimp-api/src/MailChimp.php';
     }
@@ -425,15 +435,15 @@ class FV_Player_Email_Subscription {
 
     $merge_fields = array();
 
-    if(isset($data['first_name'])){
-      $merge_fields['FNAME'] = $data['first_name'];
+    if(isset( $_POST['first_name'] )){
+      $merge_fields['FNAME'] = $_POST['first_name'];
     }
 
-    if(isset($data['last_name'])){
-      $merge_fields['LNAME'] = $data['last_name'];
+    if(isset( $_POST['last_name'] )){
+      $merge_fields['LNAME'] = $_POST['last_name'];
     }
 
-    $result_data = fv_player_mailchimp_post($list_id, $data['email'], $merge_fields);
+    $result_data = fv_player_mailchimp_post($list_id, $_POST['email'], $merge_fields);
 
     $result = array(
       'status' => 'OK',
@@ -473,9 +483,19 @@ class FV_Player_Email_Subscription {
   }
 
   public function email_signup() {
-    $data = $_POST;
-    $list_id = isset($data['list']) ? $data['list'] : 0;
-    unset($data['list']);
+
+    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv_player_email_signup' ) ) {
+      wp_json_encode(
+        array(
+          'status' => 'ERROR',
+          'text' => __( 'Nonce verification error.', 'fv-player' ),
+        )
+      );
+      exit;
+    }
+
+    $list_id = isset( $_POST['list'] ) ? $_POST['list'] : 0;
+
     $aLists = get_option('fv_player_email_lists');
 
     $list = isset($aLists[$list_id]) ? $aLists[$list_id] : array();
@@ -510,24 +530,24 @@ class FV_Player_Email_Subscription {
     if(!empty($list['integration'])){
       $aLists = get_option('fv_player_mailchimp_lists', array());
       $integration_nice = $aLists[str_replace('mailchimp-','',$list['integration'])]['name'];
-      $result = $this->mailchimp_signup(str_replace('mailchimp-','',$list['integration']),$data);
+      $result = $this->mailchimp_signup(str_replace('mailchimp-','',$list['integration']));
     }
-    if(empty($data['email']) || filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)===false){
+    if(empty( $_POST['email'] ) || filter_var(trim( $_POST['email'] ), FILTER_VALIDATE_EMAIL)===false){
       $result['status'] = 'ERROR';
       $result['text'] = __( 'Malformed Email Address.', 'fv-player' );
       die(wp_json_encode($result));
     };
 
-    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", wp_strip_all_tags($data['email']), intval($list_id) ) );
+    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", wp_strip_all_tags( $_POST['email'] ), intval($list_id) ) );
 
     if(intval($count) === 0){
       $wpdb->insert($table_name, array(
-        'email' => wp_strip_all_tags($data['email']),
-        'data' => serialize($data),
+        'email' => wp_strip_all_tags( $_POST['email'] ),
+        'data' => '',
         'id_list'=> intval($list_id),
         'date' => gmdate("Y-m-d H:i:s"),
-        'first_name' => isset($data['first_name']) ? wp_strip_all_tags($data['first_name']) : '',
-        'last_name' => isset($data['last_name']) ? wp_strip_all_tags($data['last_name']) : '',
+        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( $_POST['first_name'] ) : '',
+        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( $_POST['last_name'] ) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -542,12 +562,12 @@ class FV_Player_Email_Subscription {
 
     }else{
       $wpdb->insert($table_name, array(
-        'email' => wp_strip_all_tags($data['email']),
-        'data' => serialize($data),
+        'email' => wp_strip_all_tags( $_POST['email'] ),
+        'data' => '',
         'id_list' => intval($list_id),
         'date' => gmdate("Y-m-d H:i:s"),
-        'first_name' => isset($data['first_name']) ? wp_strip_all_tags($data['first_name']) : '',
-        'last_name' => isset($data['last_name']) ? wp_strip_all_tags($data['last_name']) : '',
+        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( $_POST['first_name'] ) : '',
+        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( $_POST['last_name'] ) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
