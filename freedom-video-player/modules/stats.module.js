@@ -36,7 +36,8 @@
           'player_id': data.player_id,
           'post_id' : data.post_id,
           'user_id' : api.conf.fv_stats.user_id,
-          'tag' : 'play'
+          'tag' : 'play',
+          '_wpnonce' : api.conf.fv_stats.nonce,
         } );
       });
 

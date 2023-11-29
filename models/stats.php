@@ -126,10 +126,25 @@ class FV_Player_Stats {
   function option( $conf ) {
     global $fv_fp, $blog_id;
     if( $this->used || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('video_stats_enable') ) { // we want to enable the tracking if it's used, if FV Player JS is enabled globally or if the tracking is enabled globally
+
+      // TODO: Will the nonce last for more than 24 hours?
+      add_filter(
+        'nonce_life',
+        function( $seconds, $action ) {
+          if ( 'fv_player_track' === $action ) {
+            $seconds = 7 * DAY_IN_SECONDS;
+          }
+          return $seconds;
+        },
+        PHP_INT_MAX,
+        2
+      );
+
       $conf['fv_stats'] = array(
                                 'url' => flowplayer::get_plugin_url().'/controller/track.php',
                                 'blog_id' => $blog_id,
-                                'user_id' => get_current_user_id()
+                                'user_id' => get_current_user_id(),
+                                'nonce'   => wp_create_nonce( 'fv_player_track' ),
                                );
       if( $fv_fp->_get_option('video_stats_enable') ) $conf['fv_stats']['enabled'] = true;
 
