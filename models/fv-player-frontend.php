@@ -885,12 +885,12 @@ class flowplayer_frontend extends flowplayer
       $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
 
       // These script need to run right away to ensure nothing moves during the page loading
-      $this->ret['html'] .= <<< JS
+      $script = "
 <script>
 ( function() {
-  var player = document.getElementById( 'wpfp_{$this->hash}'),
+  var player = document.getElementById( 'wpfp_%hash%'),
     el = player.parentNode,
-    playlist = document.getElementById( 'wpfp_{$this->hash}_playlist'),
+    playlist = document.getElementById( 'wpfp_%hash%_playlist'),
     property = playlist.classList.contains( 'fp-playlist-only-captions' ) ? 'height' : 'max-height',
     height = player.offsetHeight || parseInt(player.style['max-height']);
 
@@ -904,9 +904,9 @@ class flowplayer_frontend extends flowplayer
     playlist.style['height'] = 'auto';
   }
 } )();
-</script>
-JS;
+</script>";
 
+      $this->ret['html'] .= str_replace( '%hash%', $this->hash , $script );
     }
 
     $this->ret['html'] = apply_filters( 'fv_flowplayer_html', $this->ret['html'], $this );
@@ -1482,26 +1482,37 @@ JS;
 
   function get_video_checker_html() {
     global $fv_wp_flowplayer_ver;
-    $sSpinURL = site_url('wp-includes/images/wpspin.gif');
 
-    $sHTML = <<< HTML
-<div title="Only you and other admins can see this warning." class="fv-player-video-checker fv-wp-flowplayer-ok" id="wpfp_notice_{$this->hash}" style="display: none">
+    $template = '
+<div title="Only you and other admins can see this warning." class="fv-player-video-checker fv-wp-flowplayer-ok" id="wpfp_notice_%hash%" style="display: none">
   <div class="fv-player-video-checker-head">Video Checker <span></span></div>
   <small>Admin: <span class="video-checker-result">Checking the video file...</span></small>
-  <div style="display: none;" class="fv-player-video-checker-details" id="fv_wp_fp_notice_{$this->hash}">
+  <div style="display: none;" class="fv-player-video-checker-details" id="fv_wp_fp_notice_%hash%">
     <div class="mail-content-notice">
     </div>
-    <div class="support-{$this->hash}">
-      <textarea style="width: 98%; height: 150px" onclick="if( this.value == 'Enter your comment' ) this.value = ''" class="wpfp_message_field" id="wpfp_support_{$this->hash}">Enter your comment</textarea>
-      <p><a class="techinfo" href="#" onclick="jQuery('.more-{$this->hash}').toggle(); return false">Technical info</a> <img style="display: none; " src="{$sSpinURL}" id="wpfp_spin_{$this->hash}" /> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail('{$this->hash}', this); return false" /></p></div>
-    <div class="more-{$this->hash} mail-content-details" style="display: none; ">
-      <p>Plugin version: {$fv_wp_flowplayer_ver}</p>
+    <div class="support-%hash%">
+      <textarea style="width: 98%; height: 150px" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" class="wpfp_message_field" id="wpfp_support_%hash%">Enter your comment</textarea>
+      <p><a class="techinfo" href="#" onclick="jQuery(\'.more-%hash%\').toggle(); return false">Technical info</a> <img style="display: none; " src="%spinner%" id="wpfp_spin_%hash%" /> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail(\'%hash%\', this); return false" /></p></div>
+    <div class="more-%hash% mail-content-details" style="display: none; ">
+      <p>Plugin version: %ver%</p>
       <div class="fv-wp-flowplayer-notice-parsed level-0"></div></div>
   </div>
 </div>
-HTML;
+';
 
-    return $sHTML;
+    return str_replace(
+      array(
+        '%hash%',
+        '%spinner%',
+        '%ver%'
+      ),
+      array(
+        $this->hash,
+        site_url( 'wp-includes/images/wpspin.gif' ),
+        $fv_wp_flowplayer_ver
+      ),
+      $template
+    );
   }
 
 

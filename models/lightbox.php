@@ -356,7 +356,7 @@ class FV_Player_lightbox {
 
     if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox')  ) {
 
-      $script = <<< SCRIPT
+      $script = "
 ( function() {
   let fv_player_fancybox_loaded = false;
   const triggers = document.querySelectorAll( '[data-fancybox], .fp-playlist-external[rel$=_lightbox_starter] a' );
@@ -386,7 +386,7 @@ class FV_Player_lightbox {
     });
   }
 })();
-SCRIPT;
+";
 
       if( !defined('SCRIPT_DEBUG') || !SCRIPT_DEBUG ) {
         // remove /* comments */
