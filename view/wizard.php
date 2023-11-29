@@ -87,18 +87,18 @@ if ( ! defined( 'ABSPATH' ) ) {
       $class = ' class="'.$class.'"';
     }
     
-    $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
+    $playlist_label = $playlist_label ? ' data-playlist-label="' . esc_attr( $playlist_label ) . '"  data-single-label="' . esc_attr( $label ) . '"' : '';
     
     ?>
       <tr<?php echo $id.$class; ?>>
-        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php _e( $label, 'fv_flowplayer'); ?></label></th>
+        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo $name; ?>" class="alignright" <?php echo $playlist_label; ?>><?php echo strip_tags( $label ); ?></label></th>
         <td class="field">
           <select id="fv_wp_flowplayer_field_<?php echo $name; ?>" name="fv_wp_flowplayer_field_<?php echo $name; ?>">
             <?php foreach( $dropdown AS $option ) : ?>
               <?php if( is_array($option) ) : ?>
-                <option value="<?php echo $option[0]; ?>"><?php _e( $option[1], 'fv_flowplayer' ); ?></option>
+                <option value="<?php echo $option[0]; ?>"><?php echo strip_tags( $option[1] ); ?></option>
               <?php else : ?>
-                <option><?php _e( $option, 'fv_flowplayer' ); ?></option>
+                <option><?php echo strip_tags( $option ); ?></option>
               <?php endif; ?>
             <?php endforeach; ?>
           </select>
@@ -116,7 +116,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     }
     ?>
   <div <?php echo $id; ?> class="components-base-control__field">
-    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo $name; ?>"><?php _e( $label, 'fv_flowplayer'); ?></a>
+    <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>"><?php echo strip_tags( $label ); ?></a>
   </div>
     <?php
   }
@@ -134,7 +134,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
-    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php _e( $label, 'fv_flowplayer'); ?></label>
+    <label for="inspector-toggle-control-0" class="components-toggle-control__label"><?php echo strip_tags( $label ); ?></label>
   </div>
     <?php
   }
@@ -366,7 +366,8 @@ if ( ! defined( 'ABSPATH' ) ) {
       $class .= ' hide-if-singular';
     }
 
-    $playlist_label = $playlist_label ? ' data-playlist-label="' . __( $playlist_label, 'fv_flowplayer') . '"  data-single-label="' . __( $label, 'fv_flowplayer') . '"' : '';
+    // TODO: Not needed?
+    $playlist_label = $playlist_label ? ' data-playlist-label="' . esc_attr( $playlist_label ) . '"  data-single-label="' . esc_attr( $label ) . '"' : '';
 
     if( !$is_child ) {
       $class .= ' components-base-control';
@@ -942,7 +943,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         }
         if(count($aLists)){
           fv_player_shortcode_row( array(
-              'label' => 'E-mail list',
+              'label' => __( 'E-mail list', 'fv-player' ),
               'name' => 'email_list',
               'class' => 'fv_player_actions_end-toggle',
               'dropdown' =>$aLists,

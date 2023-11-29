@@ -312,7 +312,7 @@ function fv_player_admin_pointer_boxes() {
       'pointerClass' => 'fv_flowplayer_license_expired',
       'pointerWidth' => 340,
       'heading' => __( 'FV Player License Expired', 'fv-player' ),
-      'content' => __( $pnotices ),
+      'content' => $pnotices,
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __( 'Hide this notice', 'fv-player' ),
       'button2' => __( 'I\'ll check this later', 'fv-player' )

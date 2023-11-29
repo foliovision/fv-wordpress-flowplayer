@@ -1242,7 +1242,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $aPlayer = array( 'sources' => $aItem );
           if( $rtmp_server ) $aPlayer['rtmp'] = array( 'url' => $rtmp_server );
 
-          $sItemCaption = ( isset($aCaption[$iKey]) ) ? __($aCaption[$iKey]) : false;
+          $sItemCaption = ( isset($aCaption[$iKey]) ) ? $aCaption[$iKey] : false;
 
           $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, $index, $aArgs );
 

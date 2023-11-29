@@ -199,9 +199,15 @@ function fv_wp_flowplayer_check_template() {
     // check if Permissions-Policy header is set and has autoplay=() in it
     $headers = wp_remote_retrieve_headers( $response );
     if( isset($headers['permissions-policy']) && strpos( $headers['permissions-policy'], 'autoplay=()' ) !== false ) {
-      $errors[] = __( 'You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>' . $headers['permissions-policy'] . '</code>', 'fv-player' );
+      $errors[] = sprintf(
+        __( 'You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>%s</code>', 'fv-player' ),
+        esc_html( $headers['permissions-policy'] )
+      );
     } else if ( isset($headers['permissions-policy'] ) ) {
-      $ok[] = __( 'You are using Permissions-Policy HTTP header to adjust the autoplay permissions: <code>' . $headers['permissions-policy'] . '</code>', 'fv-player' );
+      $ok[] = sprintf(
+        __( 'You are using Permissions-Policy HTTP header to adjust the autoplay permissions: <code>%s</code>', 'fv-player' ),
+        esc_html( $headers['permissions-policy'] )
+      );
     } else {
       $ok[] = __( 'You are not using Permissions-Policy HTTP header to adjust the autoplay permissions.', 'fv-player' );
     }
@@ -696,7 +702,9 @@ function fv_wp_flowplayer_admin_notice() {
   $conversion = false; //(bool)get_option('fvwpflowplayer_conversion');
   if ($conversion) {
     echo '<div class="updated" id="fvwpflowplayer_conversion_notice"><p>';
-    printf(__('FV Player has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>'), get_admin_url() . 'options-general.php?page=fvplayer');
+    printf(
+      __( 'FV Player has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>', 'fv-player' ),
+      get_admin_url() . 'options-general.php?page=fvplayer');
     echo "</p></div>";
   }
 

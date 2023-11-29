@@ -2207,7 +2207,7 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
     <div id="fv_flowplayer_admin_tabs">
       <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
         <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#postbox-container-<?php echo $val['hash'];?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php _e( $val['name'], 'fv-player' );?></a>
+        <a href="#postbox-container-<?php echo esc_attr( $val['hash'] ); ?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php echo strip_tags( $val['name'] );?></a>
         <?php endforeach;?>
         <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
         <style>
