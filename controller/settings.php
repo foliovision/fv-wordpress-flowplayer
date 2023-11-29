@@ -244,10 +244,10 @@ function fv_player_admin_pointer_boxes() {
     $fv_fp->pointer_boxes['fv_flowplayer_video_positions_conversion'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_video_positions_conversion',
-      'heading' => __('FV Player Video Position Conversion', 'fv-wordpress-flowplayer'),
+      'heading' => __( 'FV Player Video Position Conversion', 'fv-player' ),
       'content' => __("<p>In this new version of FV Player the user video positions are stored in separate table. This avoids slowing down the user database (wp_usermeta).</p><p>Please run the tool to migrate the video positions to the new table.</p>"),
       'position' => array( 'edge' => 'top', 'align' => 'left' ),
-      'button1' => __('Migrate', 'fv-wordpress-flowplayer'),
+      'button1' => __( 'Migrate', 'fv-player' ),
       'function1' => 'location.href = "' . admin_url('admin.php?page=fv_player_conversion_positions_meta2table') . '"',
     );
   }
@@ -259,11 +259,11 @@ function fv_player_admin_pointer_boxes() {
     $fv_fp->pointer_boxes['fv_flowplayer_video_checker_service'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_video_checker_service',
-      'heading' => __('FV Player Video Checker', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>FV Player includes a <a href='https://foliovision.com/player/basic-setup/how-to-use-video-checker' target='_blank'>free video checker</a> which will check your videos for any encoding errors and helps ensure smooth playback of all your videos. To work its magic, our video checker must contact our server.</p><p>Would you like to enable the video encoding checker?</p>", 'fv-wordpress-flowplayer'),
+      'heading' => __( 'FV Player Video Checker', 'fv-player' ),
+      'content' => __( "<p>FV Player includes a <a href='https://foliovision.com/player/basic-setup/how-to-use-video-checker' target='_blank'>free video checker</a> which will check your videos for any encoding errors and helps ensure smooth playback of all your videos. To work its magic, our video checker must contact our server.</p><p>Would you like to enable the video encoding checker?</p>", 'fv-player' ),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Allow', 'fv-wordpress-flowplayer'),
-      'button2' => __('Disable the video checker', 'fv-wordpress-flowplayer')
+      'button1' => __( 'Allow', 'fv-player' ),
+      'button2' => __( 'Disable the video checker', 'fv-player' )
     );
   }
 
@@ -271,11 +271,11 @@ function fv_player_admin_pointer_boxes() {
     $fv_fp->pointer_boxes['fv_flowplayer_notice_xml_sitemap_iframes'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_notice_xml_sitemap_iframes',
-      'heading' => __('FV Player Video Sitemap coverage', 'fv-wordpress-flowplayer'),
-      'content' => __("<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>", 'fv-wordpress-flowplayer').'<script>jQuery(".fv_flowplayer_notice_xml_sitemap_iframes .button2").click()</script>',
+      'heading' => __( 'FV Player Video Sitemap coverage', 'fv-player' ),
+      'content' => __( "<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>", 'fv-player' ).'<script>jQuery(".fv_flowplayer_notice_xml_sitemap_iframes .button2").click()</script>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
-      'button2' => __('Go to setting', 'fv-wordpress-flowplayer'),
+      'button1' => __( 'Thanks for letting me know!', 'fv-player' ),
+      'button2' => __( 'Go to setting', 'fv-player' ),
       'function2' => 'location.href = "'.admin_url('options-general.php?page=fvplayer').'#fv_flowplayer_seo"',
     );
   }
@@ -284,7 +284,7 @@ function fv_player_admin_pointer_boxes() {
     $fv_fp->pointer_boxes['fv_flowplayer_fv_player_8'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_fv_player_8',
-      'heading' => __('FV Player 8', 'fv-wordpress-flowplayer'),
+      'heading' => __( 'FV Player 8', 'fv-player' ),
       'content' => '<p>Welcome to the brand new FV Player 8! Improvements include:</p>'.
         '<ul style="list-style: circle; padding-left: 3em;">
 <li>New mobile controls</li>
@@ -299,7 +299,7 @@ function fv_player_admin_pointer_boxes() {
 </ul>'.
         '<p>More information in our <a href="https://foliovision.com/2018/09/fv-player-7" target="_blank">blog announcement</a>.</p>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Thanks for letting me know!', 'fv-wordpress-flowplayer'),
+      'button1' => __( 'Thanks for letting me know!', 'fv-player' ),
     );
   }
 
@@ -311,11 +311,11 @@ function fv_player_admin_pointer_boxes() {
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_license_expired',
       'pointerWidth' => 340,
-      'heading' => __('FV Player License Expired', 'fv-wordpress-flowplayer'),
+      'heading' => __( 'FV Player License Expired', 'fv-player' ),
       'content' => __( $pnotices ),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __('Hide this notice', 'fv-wordpress-flowplayer'),
-      'button2' => __('I\'ll check this later', 'fv-wordpress-flowplayer')
+      'button1' => __( 'Hide this notice', 'fv-player' ),
+      'button2' => __( 'I\'ll check this later', 'fv-player' )
     );
   }
 }
@@ -455,38 +455,38 @@ function flowplayer_admin_footer_wp_js_restore() {
 
 
 
-function fv_player_get_aws_regions($translation_domain = 'fv-wordpress-flowplayer') {
+function fv_player_get_aws_regions() {
 
   return array(
-    'af-south-1'     => __('Africa (Cape Town)', $translation_domain),
-    'ap-east-1'      => __('Asia Pacific (Hong Kong)', $translation_domain),
-    'ap-south-1'     => __('Asia Pacific (Mumbai)', $translation_domain),
-    'ap-northeast-3' => __('Asia Pacific (Osaka-Local)', $translation_domain),
-    'ap-northeast-2' => __('Asia Pacific (Seoul)', $translation_domain),
-    'ap-southeast-1' => __('Asia Pacific (Singapore)', $translation_domain),
-    'ap-southeast-2' => __('Asia Pacific (Sydney)', $translation_domain),
-    'ap-northeast-1' => __('Asia Pacific (Tokyo)', $translation_domain),
+    'af-south-1'     => __('Africa (Cape Town)', 'fv-player' ),
+    'ap-east-1'      => __('Asia Pacific (Hong Kong)', 'fv-player' ),
+    'ap-south-1'     => __('Asia Pacific (Mumbai)', 'fv-player' ),
+    'ap-northeast-3' => __('Asia Pacific (Osaka-Local)', 'fv-player' ),
+    'ap-northeast-2' => __('Asia Pacific (Seoul)', 'fv-player' ),
+    'ap-southeast-1' => __('Asia Pacific (Singapore)', 'fv-player' ),
+    'ap-southeast-2' => __('Asia Pacific (Sydney)', 'fv-player' ),
+    'ap-northeast-1' => __('Asia Pacific (Tokyo)', 'fv-player' ),
 
-    'ca-central-1'   => __('Canada (Central)', $translation_domain),
+    'ca-central-1'   => __('Canada (Central)', 'fv-player' ),
 
-    'cn-north-1'     => __('China (Beijing)', $translation_domain),
-    'cn-northwest-1' => __('China (Ningxia)', $translation_domain),
+    'cn-north-1'     => __('China (Beijing)', 'fv-player' ),
+    'cn-northwest-1' => __('China (Ningxia)', 'fv-player' ),
 
-    'eu-central-1'   => __('Europe (Frankfurt)', $translation_domain),
-    'eu-west-1'      => __('Europe (Ireland)', $translation_domain),
-    'eu-west-2'      => __('Europe (London)', $translation_domain),
-    'eu-south-1'     => __('Europe (Milan)', $translation_domain),
-    'eu-west-3'      => __('Europe (Paris)', $translation_domain),
-    'eu-north-1'     => __('Europe (Stockholm)', $translation_domain),
+    'eu-central-1'   => __('Europe (Frankfurt)', 'fv-player' ),
+    'eu-west-1'      => __('Europe (Ireland)', 'fv-player' ),
+    'eu-west-2'      => __('Europe (London)', 'fv-player' ),
+    'eu-south-1'     => __('Europe (Milan)', 'fv-player' ),
+    'eu-west-3'      => __('Europe (Paris)', 'fv-player' ),
+    'eu-north-1'     => __('Europe (Stockholm)', 'fv-player' ),
 
-    'me-south-1'     => __('Middle East (Bahrain)', $translation_domain),
+    'me-south-1'     => __('Middle East (Bahrain)', 'fv-player' ),
 
-    'sa-east-1'      => __('South America (S&atilde;o Paulo)', $translation_domain),
+    'sa-east-1'      => __('South America (S&atilde;o Paulo)', 'fv-player' ),
 
-    'us-west-1'      => __('US West (N. California)', $translation_domain),
-    'us-east-1'      => __('US East (N. Virginia)', $translation_domain),
-    'us-east-2'      => __('US East (Ohio)', $translation_domain),
-    'us-west-2'      => __('US West (Oregon)', $translation_domain)
+    'us-west-1'      => __('US West (N. California)', 'fv-player' ),
+    'us-east-1'      => __('US East (N. Virginia)', 'fv-player' ),
+    'us-east-2'      => __('US East (Ohio)', 'fv-player' ),
+    'us-west-2'      => __('US West (Oregon)', 'fv-player' )
 
   );
 }

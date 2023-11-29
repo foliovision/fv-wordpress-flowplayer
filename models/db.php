@@ -432,7 +432,7 @@ class FV_Player_Db {
           $result_row->subtitles_count = $player->getCount('subtitles');
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
-          $result_row->status = __($player->getStatus(), 'fv-wordpress-flowplayer');
+          $result_row->status = __( $player->getStatus(), 'fv-player' );
           $result_row->video_objects = $videos;
 
           $result_row->player_name = $player->getPlayerName();

@@ -38,14 +38,14 @@ class FV_Player_video_intelligence_Installer {
                 <td class="first"></td>
                 <td>
                   <p>We found an existing video intelligence token. Click below to install FV Player video intelligence plugin.</p>
-                    <input type="submit" name="fv_player_vi_install" value="<?php _e('Install', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
-                    <input type="submit" name="fv_player_vi_reset" value="<?php _e('Reset', 'fv-wordpress-flowplayer'); ?>" class="button">
+                    <input type="submit" name="fv_player_vi_install" value="<?php _e( 'Install', 'fv-player' ); ?>" class="button-primary">
+                    <input type="submit" name="fv_player_vi_reset" value="<?php _e( 'Reset', 'fv-player' ); ?>" class="button">
                 </td>
               </tr>
             <?php endif; ?>
             <?php if( !$jwt || empty($data->exp) || $data->exp < time() ) : ?>
               <tr>
-                <td class="first"><label for="vi_login"><?php _e('Login', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                <td class="first"><label for="vi_login"><?php _e( 'Login', 'fv-player' ); ?>:</label></td>
                 <td>
                   <p class="description">
                     <input type="text" name="vi_login" id="vi_login" class="medium" />
@@ -53,7 +53,7 @@ class FV_Player_video_intelligence_Installer {
                 </td>
               </tr>
               <tr>
-                <td><label for="vi_pass"><?php _e('Password', 'fv-wordpress-flowplayer'); ?>:</label></td>
+                <td><label for="vi_pass"><?php _e( 'Password', 'fv-player' ); ?>:</label></td>
                 <td>
                   <p class="description">
                     <input type="password" name="vi_pass" id="vi_pass" class="medium" />
@@ -64,7 +64,7 @@ class FV_Player_video_intelligence_Installer {
                 <td>
                 </td>
                 <td>
-                  <input type="submit" name="fv_player_vi_install" value="<?php _e('Sign in', 'fv-wordpress-flowplayer'); ?>" class="button-primary">
+                  <input type="submit" name="fv_player_vi_install" value="<?php _e( 'Sign in', 'fv-player' ); ?>" class="button-primary">
                 </td>
               </tr>
               <tr>
@@ -135,7 +135,7 @@ class FV_Player_video_intelligence_Installer {
   
   function settings_hide() { 
     ?>
-    <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e('Hide the vi Ads tab', 'fv-wordpress-flowplayer'); ?></label>
+    <input id="fv-player-vi-remove" type="checkbox"> <label for="fv-player-vi-remove"><?php _e( 'Hide the vi Ads tab', 'fv-player' ); ?></label>
     <script>
     jQuery( function($) {
       $('#fv-player-vi-remove').on('click', function() {
@@ -160,13 +160,13 @@ class FV_Player_video_intelligence_Installer {
   function settings_register() {
     if( !class_exists('FV_Player_Video_Intelligence') ) {
       $this->setting_toggle_nonce = wp_create_nonce('fv_player_vi_setting_toggle');
-      add_meta_box( 'fv_flowplayer_video_intelligence', __('video intelligence', 'fv-wordpress-flowplayer'), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
-      add_meta_box( 'fv_flowplayer_video_intelligence_account', __('Account', 'fv-wordpress-flowplayer'), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
-      add_meta_box( 'fv_flowplayer_video_intelligence_hide', __('Hide vi Ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence', __( 'video intelligence', 'fv-player' ), array( $this, 'screen_ad' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_account', __( 'Account', 'fv-player' ), array( $this, 'screen_account' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
+      add_meta_box( 'fv_flowplayer_video_intelligence_hide', __( 'Hide vi Ads', 'fv-player' ), array( $this, 'settings_hide' ), 'fv_flowplayer_settings_video_intelligence', 'normal' );
       if( class_exists('FV_Player_Pro') ) {
-        add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
+        add_meta_box( 'fv_flowplayer_video_intelligence_revival', __( 'Free video intelligence ads', 'fv-player' ), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_video_ads', 'normal', 'low' );
       } else {
-        add_meta_box( 'fv_flowplayer_video_intelligence_revival', __('Free video intelligence ads', 'fv-wordpress-flowplayer'), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_actions', 'normal', 'low' );
+        add_meta_box( 'fv_flowplayer_video_intelligence_revival', __( 'Free video intelligence ads', 'fv-player' ), array( $this, 'settings_revival' ), 'fv_flowplayer_settings_actions', 'normal', 'low' );
       }
     }
   }
@@ -183,7 +183,7 @@ class FV_Player_video_intelligence_Installer {
   
   function settings_revival() {
     ?>
-    <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e('Show the vi Ads tab again', 'fv-wordpress-flowplayer'); ?></label></a>
+    <input id="fv-player-vi-give-back" type="checkbox"> <label for="fv-player-vi-give-back"><?php _e( 'Show the vi Ads tab again', 'fv-player' ); ?></label></a>
     <script>
     jQuery( function($) {
       $('#fv-player-vi-give-back').on('click', function() {

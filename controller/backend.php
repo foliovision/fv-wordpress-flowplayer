@@ -150,7 +150,7 @@ function fv_wp_flowplayer_check_template() {
       }
     }
 
-    $ok[] = __('We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-wordpress-flowplayer');
+    $ok[] = __( 'We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working.', 'fv-player' );
 
     $response['body'] = preg_replace( '$<!--[\s\S]+?-->$', '', $response['body'] );	//	handle HTML comments
 
@@ -165,7 +165,7 @@ function fv_wp_flowplayer_check_template() {
         if( $check == - 1 ) {
           $errors[] = "Flowplayer script <code>$flowplayer_script</code> is old version and won't play. You need to get rid of this script.";
         } else if( $check == 1 ) {
-          $ok[] = __('FV Player script found: ', 'fv-wordpress-flowplayer') . "<code>$flowplayer_script</code>!";
+          $ok[] = __( 'FV Player script found: ', 'fv-player' ) . "<code>$flowplayer_script</code>!";
           $fv_flowplayer_pos = strpos( $response['body'], $flowplayer_script );
         } else if( $check == 0 ) {
           $errors[] = "<p>It appears there are <strong>stripping the query string versions</strong> as <code>$flowplayer_script</code> appears without the plugin version number.</p><p>Some site speed analysis tools recommend doing so, but it means you loose control over what version of plugin files is cached (in users' browsers and on CDN). That way users hang on to the old plugin files and might experience visual or functional issues with FV Player (and any other plugin).</p><p>You can read all the details in our article: <a href='https://foliovision.com/2017/06/wordpress-cdn-best-practices' target='_blank'>How to use WordPress with CDN<a>.</p>";
@@ -180,7 +180,7 @@ function fv_wp_flowplayer_check_template() {
     preg_match_all( '!<script[^>]*?src=[\'"]([^\'"]*?/jquery[0-9.-]*?(?:\.min)?\.js[^\'"]*?)[\'"][^>]*?>\s*?</script>!', $response['body'], $jquery_scripts );
     if( count($jquery_scripts[1]) > 0 ) {
       foreach( $jquery_scripts[1] AS $jkey => $jquery_script ) {
-        $ok[] = __('jQuery library found: ', 'fv-wordpress-flowplayer') . "<code>$jquery_script</code>!";
+        $ok[] = __( 'jQuery library found: ', 'fv-player' ) . "<code>$jquery_script</code>!";
         $jquery_pos = strpos( $response['body'], $jquery_script );
       }
 
@@ -199,11 +199,11 @@ function fv_wp_flowplayer_check_template() {
     // check if Permissions-Policy header is set and has autoplay=() in it
     $headers = wp_remote_retrieve_headers( $response );
     if( isset($headers['permissions-policy']) && strpos( $headers['permissions-policy'], 'autoplay=()' ) !== false ) {
-      $errors[] = __('You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>' . $headers['permissions-policy'] . '</code>', 'fv-wordpress-flowplayer');
+      $errors[] = __( 'You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>' . $headers['permissions-policy'] . '</code>', 'fv-player' );
     } else if ( isset($headers['permissions-policy'] ) ) {
-      $ok[] = __('You are using Permissions-Policy HTTP header to adjust the autoplay permissions: <code>' . $headers['permissions-policy'] . '</code>', 'fv-wordpress-flowplayer');
+      $ok[] = __( 'You are using Permissions-Policy HTTP header to adjust the autoplay permissions: <code>' . $headers['permissions-policy'] . '</code>', 'fv-player' );
     } else {
-      $ok[] = __('You are not using Permissions-Policy HTTP header to adjust the autoplay permissions.', 'fv-wordpress-flowplayer');
+      $ok[] = __( 'You are not using Permissions-Policy HTTP header to adjust the autoplay permissions.', 'fv-player' );
     }
 
     $output = array( 'errors' => $errors, 'ok' => $ok/*, 'html' => $response['body'] */);
@@ -386,7 +386,7 @@ add_action('wp_ajax_fv_wp_flowplayer_check_license', 'fv_wp_flowplayer_check_lic
 
 function fv_wp_flowplayer_check_license() {
   if( fv_wp_flowplayer_admin_key_update() ) {
-    $output = array( 'errors' => false, 'ok' => array(__('License key acquired successfully. <a href="">Reload</a>', 'fv-wordpress-flowplayer')) );
+    $output = array( 'errors' => false, 'ok' => array(__( 'License key acquired successfully. <a href="">Reload</a>', 'fv-player' )) );
     fv_wp_flowplayer_install_extension();
   } else {
     $message = get_option('fv_wordpress_flowplayer_deferred_notices');
@@ -636,7 +636,7 @@ add_action('admin_notices', 'fv_wordpress_flowplayer_expired_license_update_noti
 
 function fv_wordpress_flowplayer_expired_license_update_notice() {
   if( get_current_screen()->base === 'update-core' && get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<div class="notice notice-error is-dismissible"><p>'.__('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-wordpress-flowplayer').'</p></div>';
+    echo '<div class="notice notice-error is-dismissible"><p>'.__( 'To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player' ).'</p></div>';
   }
 }
 
@@ -644,7 +644,7 @@ add_action( 'after_plugin_row_fv-player/fv-player.php', 'fv_wordpress_flowplayer
 
 function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
   if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>'. __('To update FV Player please either renew your license or disable FV Player Pro.','fv-wordpress-flowplayer').'</p></div></td></tr>';
+    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>'. __('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player').'</p></div></td></tr>';
   }
 }
 
@@ -929,7 +929,7 @@ function fv_player_pro_version_check() {
   if( !empty($FV_Player_Pro) && !fv_player_extension_version_is_min($version,'pro') ) :
   ?>
   <div class="error">
-      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+      <p><?php printf( __(  'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-player' ), $version ); ?></p>
   </div>
   <?php
   endif;
@@ -945,7 +945,7 @@ function fv_player_pay_per_view_version_check() {
   if( !empty($FV_Player_PayPerView) && !fv_player_extension_version_is_min($version,'ppv') ) :
   ?>
   <div class="error">
-      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pay Per View version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+      <p><?php printf( __(  'FV Player: Please upgrade to FV Player Pay Per View version %s or above!', 'fv-player' ), $version ); ?></p>
   </div>
   <?php
   endif;
@@ -961,7 +961,7 @@ function fv_player_pay_per_view_woocommerce_version_check() {
   if( !empty($FV_Player_PayPerView_WooCommerce) && !fv_player_extension_version_is_min($version,'ppv-woocommerce') ) :
   ?>
   <div class="error">
-      <p><?php printf( __( 'FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!', 'fv-wordpress-flowplayer' ), $version ); ?></p>
+      <p><?php printf( __(  'FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!', 'fv-player' ), $version ); ?></p>
   </div>
   <?php
   endif;

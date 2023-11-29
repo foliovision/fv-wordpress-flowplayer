@@ -590,15 +590,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
-          <p><?php _e('Add your video', 'fv-wordpress-flowplayer'); ?></p>
+          <p><?php _e( 'Add your video', 'fv-player' ); ?></p>
           <div class="components-base-control__field">
             <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
             <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
           </div>
-          <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
+          <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e( 'This does not look like a video link.', 'fv-player' ); ?></div>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
-          <a class="button" href="" target="_blank"><?php _e('Playlist too long, click here for preview', 'fv-wordpress-flowplayer'); ?></a>
+          <a class="button" href="" target="_blank"><?php _e( 'Playlist too long, click here for preview', 'fv-player' ); ?></a>
         </div>
         <div id="fv-player-shortcode-editor-preview-target"></div>
       </div>
@@ -608,12 +608,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div class="fv-player-tabs-header">
         <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
         <h2 class="nav-tab-wrapper hide-if-no-js">
-          <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php _e('Playlist', 'fv-wordpress-flowplayer'); ?></a>
-          <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php _e('Video', 'fv-wordpress-flowplayer'); ?></a>
-          <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e('Subtitles', 'fv-wordpress-flowplayer'); ?></a>
-          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e('Options', 'fv-wordpress-flowplayer'); ?></a>
-          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e('Actions', 'fv-wordpress-flowplayer'); ?></a>
-          <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php _e('Embeds', 'fv-wordpress-flowplayer'); ?></a>
+          <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php _e( 'Playlist', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php _e( 'Video', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e( 'Subtitles', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e( 'Options', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e( 'Actions', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php _e( 'Embeds', 'fv-player' ); ?></a>
           <?php do_action('fv_player_shortcode_editor_tab'); ?>
         </h2>
       </div>
@@ -641,8 +641,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <div class="components-base-control__field">
               <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" data-playlist-hero="true" />
               <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;" data-playlist-hero="true">Choose from <?php echo get_bloginfo(); ?>'s library</button>
-              <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e('This does not look like a video link.', 'fv-wordpress-flowplayer'); ?></div>
-              <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php _e('Please post a link to the new video or choose one.', 'fv-wordpress-flowplayer'); ?></div>
+              <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e( 'This does not look like a video link.', 'fv-player' ); ?></div>
+              <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php _e( 'Please post a link to the new video or choose one.', 'fv-player' ); ?></div>
             </div>
           </div>
           <a class="playlist_add" data-html="+" data-alt-html="&#10140;">+</a>
@@ -689,27 +689,27 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <?php
           $player_options = apply_filters('fv_player_editor_player_options', array(
             'general' => array(
-              'label' => __('Appearance', 'fv-wordpress-flowplayer'),
+              'label' => __( 'Appearance', 'fv-player' ),
               'items' => array(
                 array(
-                  'label' => __('Autoplay', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Autoplay', 'fv-player' ),
                   'name' => 'autoplay',
-                  'description' => __('Video will autoplay when the page loads.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Video will autoplay when the page loads.', 'fv-player' ),
                   'default' => $fv_fp->_get_option('autoplay'),
                   'children' => array(
                     array(
-                      'label' => __('Muted Autoplay', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Muted Autoplay', 'fv-player' ),
                       'name' => 'autoplay_muted'
                     ), // TODO: Save properly  
                   )
                 ),
                 /*array(
-                  'label' => __('Player Alignment', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Player Alignment', 'fv-player' ),
                   'name' => 'align',
-                  'description' => __('Allows the article text to wrap around the player.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Allows the article text to wrap around the player.', 'fv-player' ),
                   'children' => array(
                     array(
-                      'label' => __('Position', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Position', 'fv-player' ),
                       'name' => 'align',
                       'options' => array(
                         'Left',
@@ -719,20 +719,20 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'type' => 'select'
                     ),
                     array(
-                      'label' => __('Width', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Width', 'fv-player' ),
                       'name' => 'lightbox_width',
                       'type' => 'number'
                     )
                   )
                 ),*/
                 array(
-                  'label' => __('Playlist Auto Advance', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Playlist Auto Advance', 'fv-player' ),
                   'name' => 'playlist_advance',
                   'default' => !$fv_fp->_get_option('playlist_advance'),
                   'scope' => 'playlist'
                 ),
                 array(
-                  'label'        => __('Playlist Style', 'fv-wordpress-flowplayer'),
+                  'label'        => __( 'Playlist Style', 'fv-player' ),
                   'name'         => 'playlist',
                   'dependencies' => array( 'lightbox' => false ),
                   'options'      => array(
@@ -750,52 +750,52 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'type'         => 'select',
                 ),
                 array(
-                  'label' => __('Sticky video', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Sticky video', 'fv-player' ),
                   'name' => 'sticky',
-                  'description' => __('Watch the playing video when scrolling down the page.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Watch the playing video when scrolling down the page.', 'fv-player' ),
                   'default' => $fv_fp->_get_option('sticky'),
                   'dependencies' => array( 'lightbox' => false )
                 )
               )
             ),
             'controls' => array(
-              'label' => __('Controls', 'fv-wordpress-flowplayer'),
+              'label' => __( 'Controls', 'fv-player' ),
               'items' => array(
                 array(
-                  'label' => __('Controlbar', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Controlbar', 'fv-player' ),
                   'name' => 'controlbar',
-                  'description' => __('Without the controlbar seeking in video is impossible.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Without the controlbar seeking in video is impossible.', 'fv-player' ),
                   'default' => true,
                   'sticky' => true
                 ),
                 array(
-                  'label'        => __('LMS | Teaching', 'fv-wordpress-flowplayer'),
+                  'label'        => __( 'LMS | Teaching', 'fv-player' ),
                   'name'         => 'lms_teaching',
-                  'description'  => __('Seeking forward not allowed if user did not see the full video.', 'fv-wordpress-flowplayer'),
+                  'description'  => __( 'Seeking forward not allowed if user did not see the full video.', 'fv-player' ),
                   'dependencies' => array( 'controlbar' => true )
                 ),
                 array(
-                  'label' => __('Speed Buttons', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Speed Buttons', 'fv-player' ),
                   'name' => 'speed',
-                  'description' => __('Allows user to speed up or slow down the video.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Allows user to speed up or slow down the video.', 'fv-player' ),
                   'default' => $fv_fp->_get_option('ui_speed'),
                   'dependencies' => array( 'controlbar' => true )
                 )
               )
             ),
             'header' => array(
-              'label' => __('Sharing', 'fv-wordpress-flowplayer'),
+              'label' => __( 'Sharing', 'fv-player' ),
               'items' => array(
                 array(
-                  'label' => __('Embedding', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Embedding', 'fv-player' ),
                   'name' => 'embed',
-                  'description' => __('Allows users to embed your player on their websites.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Allows users to embed your player on their websites.', 'fv-player' ),
                   'default' => !$fv_fp->_get_option('disableembedding')
                 ),
                 array(
-                  'label' => __('Sharing Buttons', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Sharing Buttons', 'fv-player' ),
                   'name' => 'share',
-                  'description' => __('Provides a quick way of sharing your article on Facebook, Twitter or via Email.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Provides a quick way of sharing your article on Facebook, Twitter or via Email.', 'fv-player' ),
                   'default' => !$fv_fp->_get_option('disablesharing')
                 ), // TODO: Custom URL setting
               )
@@ -827,12 +827,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             'actions' => array(
               'items' => array(
                 array(
-                  'label' => __('End of Video Action', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'End of Video Action', 'fv-player' ),
                   'name' => 'toggle_end_action',
-                  'description' => __('What should happen at the end of the video.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'What should happen at the end of the video.', 'fv-player' ),
                   'children' => array(
                     array(
-                      'label' => __('Pick the action', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Pick the action', 'fv-player' ),
                       'name' => 'end_actions',
                       'options' => array(
                         array('', 'Default'),
@@ -847,18 +847,18 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                       'visible' => true
                     ),
                     array(
-                      'label' => __('Redirect', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Redirect', 'fv-player' ),
                       'name' => 'redirect',
                       'type' => 'text'
                     ),
                     array(
-                      'label' => __('Popup', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Popup', 'fv-player' ),
                       'name' => 'popup_id',
                       'type' => 'select',
                       'options' => fv_flowplayer_admin_select_popups()
                     ),
                     array(
-                      'label' => __('Email list', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Email list', 'fv-player' ),
                       'name' => 'email_list',
                       'type' => 'select',
                       'options' => fv_player_email_lists()
@@ -867,25 +867,25 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'visible' => true
                 ),
                 array(
-                  'label' => __('Show Overlay', 'fv-wordpress-flowplayer'),
+                  'label' => __( 'Show Overlay', 'fv-player' ),
                   'name' => 'toggle_overlay',
-                  'description' => __('Enter text or HTML to show on top of video while it\'s playing.', 'fv-wordpress-flowplayer'),
+                  'description' => __( 'Enter text or HTML to show on top of video while it\'s playing.', 'fv-player' ),
                   'children' => array(
                     array(
-                      'label' => __('Overlay Code', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Overlay Code', 'fv-player' ),
                       'name' => 'overlay',
-                      'description' => $overlay_show_after ? sprintf( __('Shows after %d seconds.', 'fv-wordpress-flowplayer'), $overlay_show_after ) : false,
+                      'description' => $overlay_show_after ? sprintf( __( 'Shows after %d seconds.', 'fv-player' ), $overlay_show_after ) : false,
                       'type' => 'textarea',
                       'visible' => true
                     ),
                     array(
-                      'label' => __('Width', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Width', 'fv-player' ),
                       'name' => 'overlay_width',
                       'type' => 'number',
                       'visible' => true
                     ),
                     array(
-                      'label' => __('Height', 'fv-wordpress-flowplayer'),
+                      'label' => __( 'Height', 'fv-player' ),
                       'name' => 'overlay_height',
                       'type' => 'number',
                       'visible' => true
@@ -901,9 +901,9 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
           if( $fv_fp->_get_option('overlay') ) {
             $actions['actions']['items'][] = array(
-              'label' => __('Do not show global overlay', 'fv-wordpress-flowplayer'),
+              'label' => __( 'Do not show global overlay', 'fv-player' ),
               'name' => 'overlay_skip',
-              'description' => sprintf( __('Use to disable overlay set in <a href="%s" target="_blank">Actions -> Overlays</a>', 'fv-wordpress-flowplayer'), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
+              'description' => sprintf( __( 'Use to disable overlay set in <a href="%s" target="_blank">Actions -> Overlays</a>', 'fv-player' ), admin_url('options-general.php?page=fvplayer#postbox-container-tab_actions') ),
               'visible' => true,
               'dependencies' => array( 'toggle_overlay' => false )
             );
@@ -925,7 +925,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <td>
             <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
             <div style="display: none">
-              <p><span class="dashicons dashicons-warning"></span> <?php _e('You are using the legacy popup functionality. Move the popup code', 'fv-wordpress-flowplayer'); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php _e('here', 'fv-wordpress-flowplayer'); ?></a><?php _e(', then use the drop down menu above.', 'fv-wordpress-flowplayer'); ?></p>
+              <p><span class="dashicons dashicons-warning"></span> <?php _e( 'You are using the legacy popup functionality. Move the popup code', 'fv-player' ); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php _e( 'here', 'fv-player' ); ?></a><?php _e( ', then use the drop down menu above.', 'fv-player' ); ?></p>
               <textarea id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
             </div>                      
           </td>

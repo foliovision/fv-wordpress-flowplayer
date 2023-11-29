@@ -559,7 +559,7 @@ class FV_Xml_Video_Sitemap {
     
     function options() {
       global $fv_fp;
-      $fv_fp->_get_checkbox(__('Use XML Video Sitemap', 'fv-wordpress-flowplayer'), 'video_sitemap', sprintf( __('Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-wordpress-flowplayer'), home_url('video-sitemap.xml') ), __('As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.', 'fv-wordpress-flowplayer') );
+      $fv_fp->_get_checkbox(__( 'Use XML Video Sitemap', 'fv-player' ), 'video_sitemap', sprintf( __( 'Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-player' ), home_url('video-sitemap.xml') ), __( 'As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.', 'fv-player' ) );
       
       if( $fv_fp->_get_option('disableembedding') ) : ?>
         <tr>
@@ -568,7 +568,7 @@ class FV_Xml_Video_Sitemap {
         </tr>
       <?php endif;
       
-      $fv_fp->_get_input_text( array( 'name' => __('Sitemap Post Meta', 'fv-wordpress-flowplayer'), 'key' => 'video_sitemap_meta', 'help' => __('You can enter post meta keys here, use <code>,</code> to separate multiple values.', 'fv-wordpress-flowplayer') ) );
+      $fv_fp->_get_input_text( array( 'name' => __( 'Sitemap Post Meta', 'fv-player' ), 'key' => 'video_sitemap_meta', 'help' => __( 'You can enter post meta keys here, use <code>,</code> to separate multiple values.', 'fv-player' ) ) );
     }
     
     function redirect_canonical( $redirect ) {

@@ -6,7 +6,7 @@ Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, Web
 Version: 8.0.beta.1
 Author URI: http://foliovision.com/
 Requires PHP: 5.6
-Text Domain: fv-wordpress-flowplayer
+Text Domain: fv-player
 Domain Path: /languages
 License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt

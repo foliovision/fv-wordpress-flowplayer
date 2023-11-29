@@ -895,7 +895,7 @@ $this->strPrivateAPI - also
     $result = true;
        
     if( !$plugin_path || is_wp_error(validate_plugin($plugin_basename)) ) {
-      $sTaskDone = $name.__(' extension installed successfully!', 'fv-wordpress-flowplayer');
+      $sTaskDone = $name.__( ' extension installed successfully!', 'fv-player' );
       
       echo '<div style="display: none;">';
       $objInstaller = new Plugin_Upgrader();
@@ -904,7 +904,7 @@ $this->strPrivateAPI - also
       wp_cache_flush();
       
       if ( is_wp_error( $objInstaller->skin->result ) ) {
-        update_option( $option, $name.__(' extension install failed - ', 'fv-wordpress-flowplayer') . $objInstaller->skin->result->get_error_message() );
+        update_option( $option, $name.__( ' extension install failed - ', 'fv-player' ) . $objInstaller->skin->result->get_error_message() );
         $result = false;
       } else {    
         if ( $objInstaller->plugin_info() ) {
@@ -913,13 +913,13 @@ $this->strPrivateAPI - also
         
         $activate = activate_plugin( $plugin_basename );
         if ( is_wp_error( $activate ) ) {
-          update_option( $option, $name.__(' extension install failed - ', 'fv-wordpress-flowplayer') . $activate->get_error_message());
+          update_option( $option, $name.__( ' extension install failed - ', 'fv-player' ) . $activate->get_error_message());
           $result = false;
         }
       }
       
     } else if( $plugin_path ) {
-      $sTaskDone = $name.__(' extension upgraded successfully!', 'fv-wordpress-flowplayer');
+      $sTaskDone = $name.__( ' extension upgraded successfully!', 'fv-player' );
 
       echo '<div style="display: none;">';
       $objInstaller = new Plugin_Upgrader();

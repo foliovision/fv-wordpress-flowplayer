@@ -58,8 +58,8 @@ class FV_Player_Email_Subscription {
   }
 
   public function admin__add_meta_boxes() {
-    add_meta_box('fv_flowplayer_email_lists', __('Email Popups', 'fv-wordpress-flowplayer'), array($this, 'settings_box_lists'), 'fv_flowplayer_settings_actions', 'normal');
-    add_meta_box('fv_flowplayer_email_integration', __('Email Integration', 'fv-wordpress-flowplayer'), array($this, 'settings_box_integration'), 'fv_flowplayer_settings_actions', 'normal');
+    add_meta_box('fv_flowplayer_email_lists', __( 'Email Popups', 'fv-player' ), array($this, 'settings_box_lists'), 'fv_flowplayer_settings_actions', 'normal');
+    add_meta_box('fv_flowplayer_email_integration', __( 'Email Integration', 'fv-player' ), array($this, 'settings_box_integration'), 'fv_flowplayer_settings_actions', 'normal');
   }
 
   public function fv_flowplayer_settings_save($param1,$param2){
@@ -99,11 +99,11 @@ class FV_Player_Email_Subscription {
   public function settings_box_integration () {
     global $fv_fp;
     ?>
-    <p><?php _e('Enter your service API key and then assign it to a list which you create above.', 'fv-wordpress-flowplayer'); ?></p>
+    <p><?php _e( 'Enter your service API key and then assign it to a list which you create above.', 'fv-player' ); ?></p>
     <?php if( version_compare(phpversion(),'5.3.0') >= 0 ) : ?>
       <table class="form-table2" style="margin: 5px; ">
         <tr>
-          <td style="width: 250px"><label for="mailchimp_api"><?php _e('Mailchimp API key', 'fv-wordpress-flowplayer'); ?>:</label></td>
+          <td style="width: 250px"><label for="mailchimp_api"><?php _e( 'Mailchimp API key', 'fv-player' ); ?>:</label></td>
           <td>
             <p class="description">
               <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php echo esc_attr($fv_fp->_get_option('mailchimp_api')); ?>" />
@@ -113,12 +113,12 @@ class FV_Player_Email_Subscription {
         <tr>
           <td></td>
           <td>
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e( 'Save', 'fv-player' ); ?></a>
           </td>
         </tr>
       </table>
     <?php else : ?>
-      <p><?php _e('Please upgrade to PHP 5.3 or above to use the Mailchimp integration.', 'fv-wordpress-flowplayer'); ?></p>
+      <p><?php _e( 'Please upgrade to PHP 5.3 or above to use the Mailchimp integration.', 'fv-player' ); ?></p>
     <?php endif;
   }
 
@@ -134,7 +134,7 @@ class FV_Player_Email_Subscription {
     }
     $aMailchimpLists = $this->get_mailchimp_lists();
     ?>
-    <p><?php _e('Lists defined here can be used for subscription box for each video or for Default Popup above.', 'fv-wordpress-flowplayer'); ?></p>
+    <p><?php _e( 'Lists defined here can be used for subscription box for each video or for Default Popup above.', 'fv-player' ); ?></p>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td>
@@ -142,13 +142,13 @@ class FV_Player_Email_Subscription {
             <thead>
             <tr>
               <td>ID</td>
-              <td style="width: 40%"><?php _e('Properties', 'fv-wordpress-flowplayer'); ?></td>
+              <td style="width: 40%"><?php _e( 'Properties', 'fv-player' ); ?></td>
               <?php if( !empty($aMailchimpLists['result']) ) : ?>
-                <td><?php _e('Target List', 'fv-wordpress-flowplayer'); ?></td>
+                <td><?php _e( 'Target List', 'fv-player' ); ?></td>
               <?php endif; ?>
-              <td><?php _e('Export', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('Options', 'fv-wordpress-flowplayer'); ?></td>
-              <td><?php _e('Status', 'fv-wordpress-flowplayer'); ?></td>
+              <td><?php _e( 'Export', 'fv-player' ); ?></td>
+              <td><?php _e( 'Options', 'fv-player' ); ?></td>
+              <td><?php _e( 'Status', 'fv-player' ); ?></td>
               <td></td>
             </tr>
             </thead>
@@ -206,9 +206,9 @@ class FV_Player_Email_Subscription {
                   </td>
                 <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php _e( 'Download CSV', 'fv-player' ); ?></a>
                   <br />
-                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php _e('View list', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php _e( 'View list', 'fv-player' ); ?></a>
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
@@ -224,7 +224,7 @@ class FV_Player_Email_Subscription {
                   <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' title="disable" name='email_lists[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
                   <label for='ListAdDisabled-<?php echo $key; ?>'>Disable</label>
                   <br />
-                  <a class='fv-player-list-remove' href=''><?php _e('Remove', 'fv-wordpress-flowplayer'); ?></a>
+                  <a class='fv-player-list-remove' href=''><?php _e( 'Remove', 'fv-player' ); ?></a>
                 </td>
                 <td>
                   <input type="button" style="visibility: hidden" class="fv_player_email_list_save button" value="Save & Preview" />
@@ -241,7 +241,7 @@ class FV_Player_Email_Subscription {
         <td>
           <?php wp_nonce_field( 'fv_player_email_lists', 'fv_player_email_lists' ); ?>
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
-          <input type="button" value="<?php _e('Add More Lists', 'fv-wordpress-flowplayer'); ?>" class="button" id="fv-player-email_lists-add" />
+          <input type="button" value="<?php _e( 'Add More Lists', 'fv-player' ); ?>" class="button" id="fv-player-email_lists-add" />
         </td>
       </tr>
     </table>
@@ -292,7 +292,7 @@ class FV_Player_Email_Subscription {
 
             row.replaceWith( jQuery('#'+row.attr('id'),response) );
 
-            var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.flowplayer::get_plugin_url().'/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video",'fv-wordpress-flowplayer').'"]'; ?>';
+            var shortcode = '<?php echo '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="'.flowplayer::get_plugin_url().'/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="'.__("This is how the popup will appear at the end of a video", 'fv-player').'"]'; ?>';
             shortcode = shortcode.replace(/#key#/,key);
 
             var url = '<?php echo home_url(); ?>?fv_player_embed=<?php echo wp_create_nonce( "fv-player-preview" ); ?>&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
@@ -348,8 +348,8 @@ class FV_Player_Email_Subscription {
     if( !empty($list['description']) ) $popup .= '<p>'.$list['description'].'</p>';
     $popup .= '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
       . '<input type="hidden" name="list" value="' . $id . '" />'
-      . '<input type="email" placeholder="' . __('Email Address', 'fv-wordpress-flowplayer') . '" name="email"/>'
-      . $popupItems . '<input type="submit" value="' . __('Subscribe', 'fv-wordpress-flowplayer') . '"/></form>';
+      . '<input type="email" placeholder="' . __( 'Email Address', 'fv-player' ) . '" name="email"/>'
+      . $popupItems . '<input type="submit" value="' . __( 'Subscribe', 'fv-player' ) . '"/></form>';
     return $popup;
   }
 
@@ -437,7 +437,7 @@ class FV_Player_Email_Subscription {
 
     $result = array(
       'status' => 'OK',
-      'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'),
+      'text' => __( 'Thank You for subscribing.', 'fv-player' ),
       'error_log' => false,
     );
 
@@ -446,13 +446,13 @@ class FV_Player_Email_Subscription {
       if ($result_data['title'] === 'Member Exists') {
         $result = array(
           'status' => 'ERROR',
-          'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
+          'text' => __( 'Email Address already subscribed.', 'fv-player' ),
           'error_log' => $result_data,
         );
       } elseif ($result_data['title'] === 'Invalid Resource') {
         $result = array(
           'status' => 'ERROR',
-          'text' => __('Email Address not valid', 'fv-wordpress-flowplayer'),
+          'text' => __( 'Email Address not valid', 'fv-player' ),
           'error_log' => $result_data
         );
       } else {
@@ -503,7 +503,7 @@ class FV_Player_Email_Subscription {
 
     $result = array(
       'status' => 'OK',
-      'text' => __('Thank You for subscribing.', 'fv-wordpress-flowplayer'));
+      'text' => __( 'Thank You for subscribing.', 'fv-player' ));
 
     $integration_nice = '';
 
@@ -514,7 +514,7 @@ class FV_Player_Email_Subscription {
     }
     if(empty($data['email']) || filter_var(trim($data['email']), FILTER_VALIDATE_EMAIL)===false){
       $result['status'] = 'ERROR';
-      $result['text'] = __('Malformed Email Address.', 'fv-wordpress-flowplayer');
+      $result['text'] = __( 'Malformed Email Address.', 'fv-player' );
       die(wp_json_encode($result));
     };
 
@@ -537,7 +537,7 @@ class FV_Player_Email_Subscription {
     }elseif($result['status'] === 'OK'){
       $result = array(
         'status' => 'ERROR',
-        'text' => __('Email Address already subscribed.', 'fv-wordpress-flowplayer'),
+        'text' => __( 'Email Address already subscribed.', 'fv-player' ),
       );
 
     }else{
@@ -646,7 +646,7 @@ class FV_Player_Email_Subscription {
         </tbody>
       </table>
       <p>
-        <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php _e('Download CSV', 'fv-wordpress-flowplayer'); ?></a>
+        <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php _e( 'Download CSV', 'fv-player' ); ?></a>
       </p>
 
     <?php

@@ -10,15 +10,15 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     parent::__construct( array(
       'title' => 'FV Player PositionsMeta2Table Conversion',
       'slug' => 'positions_meta2table',
-      'help' => __("This converts position values from usermeta to fv_player_user_video_positions table", 'fv-wordpress-flowplayer')
+      'help' => __( "This converts position values from usermeta to fv_player_user_video_positions table", 'fv-player' )
     ) );
 
     $this->conversion_limit = 2500;
     $this->make_chages_button = false; // disable make changes button
 
-    $this->start_warning_text = __('This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-wordpress-flowplayer');
+    $this->start_warning_text = __( 'This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-player' );
 
-    $this->conversion_done_details = __('The conversion has finished. The usermeta table will be purged of the FV Player video position data in 4 weeks.', 'fv-wordpress-flowplayer');
+    $this->conversion_done_details = __( 'The conversion has finished. The usermeta table will be purged of the FV Player video position data in 4 weeks.', 'fv-player' );
 
     $this->screen_fields = array(
       'User ID',

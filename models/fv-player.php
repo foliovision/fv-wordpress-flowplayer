@@ -661,7 +661,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['volume'] ) ) $conf['volume'] = '0.7';
     if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = '';
-    if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __('Check out the amazing video here', 'fv-wordpress-flowplayer');
+    if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __( 'Check out the amazing video here', 'fv-player' );
 
 
     if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';
@@ -2808,7 +2808,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if ( preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
         $aAtts = shortcode_parse_atts($shortcode);
         if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
-          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.','fv-wordpress-flowplayer');
+          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.', 'fv-player');
         }
         echo do_shortcode($shortcode);
       } else { ?>

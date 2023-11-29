@@ -844,7 +844,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
     // add "Draft" at the end of player, if in draft status
     if ( $this->getStatus() == 'draft' ) {
-      $player_name .= ' (' . __('Draft', 'fv-wordpress-flowplayer') . ')';
+      $player_name .= ' (' . __( 'Draft', 'fv-player' ) . ')';
     }
 
     return $player_name;

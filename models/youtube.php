@@ -327,16 +327,16 @@ class FV_Player_YouTube {
 
             foreach( array(
               'standard' => array(
-                'label' => __('Standard', 'fv-wordpress-flowplayer'),
-                'description' => __('All of the YouTube embedded player interface will show, including related videos on pause.', 'fv-wordpress-flowplayer')
+                'label' => __( 'Standard', 'fv-player' ),
+                'description' => __( 'All of the YouTube embedded player interface will show, including related videos on pause.', 'fv-player' )
               ),
               'reduced' => array(
-                'label' => __('Reduced', 'fv-wordpress-flowplayer'),
-                'description' => __('Show only the video title and the YouTube logo.', 'fv-wordpress-flowplayer')
+                'label' => __( 'Reduced', 'fv-player' ),
+                'description' => __( 'Show only the video title and the YouTube logo.', 'fv-player' )
               ),
               'none' => array(
-                'label' => __('None', 'fv-wordpress-flowplayer'),
-                'description' => __('Remove everything.', 'fv-wordpress-flowplayer')
+                'label' => __( 'None', 'fv-player' ),
+                'description' => __( 'Remove everything.', 'fv-player' )
               )
             ) AS $key => $field ) {
               $id = 'youtube_browser_chrome_'.esc_attr($key);
@@ -391,7 +391,7 @@ class FV_Player_YouTube {
       <?php if( !function_exists('FV_PLayer_Pro')): ?>
         <tr>
           <td colspan="4">
-            <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e('Save', 'fv-wordpress-flowplayer'); ?></a>
+            <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e( 'Save', 'fv-player' ); ?></a>
           </td>
         </tr>
       <?php endif; ?>

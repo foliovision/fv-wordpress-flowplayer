@@ -17,7 +17,7 @@ class FV_Player_System_Info {
   }
 
   public function admin__add_meta_boxes() {
-    add_meta_box('fv_flowplayer_system_information', __('System Info', 'fv-wordpress-flowplayer'), array($this, 'settings_box'), 'fv_flowplayer_settings_tools', 'normal');
+    add_meta_box('fv_flowplayer_system_information', __( 'System Info', 'fv-player' ), array($this, 'settings_box'), 'fv_flowplayer_settings_tools', 'normal');
   }
   
   public function export() {
@@ -223,7 +223,7 @@ foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos',
 
 ### End System Info ###
 </textarea>
-<a class="button" href="<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php _e('Export', 'fv-wordpress-flowplayer'); ?></a>
+<a class="button" href="<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php _e( 'Export', 'fv-player' ); ?></a>
     <?php
   }
 

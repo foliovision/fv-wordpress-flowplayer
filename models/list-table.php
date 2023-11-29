@@ -64,20 +64,20 @@ class FV_Player_List_Table extends WP_List_Table {
   public static function get_columns_worker() {
     $cols = array(
       //'cb'             => '<input type="checkbox" />',
-      'id'               => __( 'Player', 'fv-wordpress-flowplayer' ),
-      'player_name'      => __( 'Player Name', 'fv-wordpress-flowplayer' ),
-      'date_created'     => __( 'Date', 'fv-wordpress-flowplayer' ),
-      'author'         => __( 'Author', 'fv-wordpress-flowplayer' ),
-      'thumbs'           => __( 'Videos', 'fv-wordpress-flowplayer' ),
-      'subtitles_count'  => __( 'Subtitles', 'fv-wordpress-flowplayer' ),
-      'chapters_count'   => __( 'Chapters', 'fv-wordpress-flowplayer' ),
-      'transcript_count' => __( 'Transcript', 'fv-wordpress-flowplayer' ),
-      'embeds'           => __( 'Embedded on', 'fv-wordpress-flowplayer' )
+      'id'               => __(  'Player', 'fv-player' ),
+      'player_name'      => __(  'Player Name', 'fv-player' ),
+      'date_created'     => __(  'Date', 'fv-player' ),
+      'author'         => __(  'Author', 'fv-player' ),
+      'thumbs'           => __(  'Videos', 'fv-player' ),
+      'subtitles_count'  => __(  'Subtitles', 'fv-player' ),
+      'chapters_count'   => __(  'Chapters', 'fv-player' ),
+      'transcript_count' => __(  'Transcript', 'fv-player' ),
+      'embeds'           => __(  'Embedded on', 'fv-player' )
     );
 
     global $fv_fp;
     if( $fv_fp->_get_option('video_stats_enable') ) {
-      $cols['stats_play'] = __( 'Plays', 'fv-wordpress-flowplayer' );
+      $cols['stats_play'] = __(  'Plays', 'fv-player' );
     }
 
     return $cols;

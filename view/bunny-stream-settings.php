@@ -47,7 +47,7 @@ td.bunny_stream_api_access_key .show-info {
       'class' => 'regular-text code'
     ) );
 
-    $fv_fp->_get_checkbox(__('Enable Token Authentication', 'fv-wordpress-flowplayer'), array('bunny_stream', 'video_token'), __('Improves video download protection.', 'fv-wordpress-flowplayer'));
+    $fv_fp->_get_checkbox(__( 'Enable Token Authentication', 'fv-player' ), array('bunny_stream', 'video_token'), __( 'Improves video download protection.', 'fv-player' ));
 
     $fv_fp->_get_input_text( array(
       'key' => array( 'bunny_stream', 'security_token' ),

@@ -73,7 +73,7 @@ class FV_Player_List_Table_View {
       return;
    
     $args = array(
-      'label' => __('Players per page', 'fv-wordpress-flowplayer'),
+      'label' => __( 'Players per page', 'fv-player' ),
       'default' => 25,
       'option' => 'fv_player_per_page'
     );

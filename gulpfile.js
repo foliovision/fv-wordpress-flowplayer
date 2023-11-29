@@ -17,9 +17,9 @@ const projectZipFile = 'fv-player.zip';
 
 // translation
 const team = 'foliovision'
-const textDomain = 'fv-wordpress-flowplayer';
+const textDomain = 'fv-player';
 const package = 'fv-wordpress-flowplayer';
-const translationFile = 'fv-wordpress-flowplayer.pot';
+const translationFile = 'fv-player.pot';
 const bugReport = 'https://foliovision.com/support';
 
 // files to check
