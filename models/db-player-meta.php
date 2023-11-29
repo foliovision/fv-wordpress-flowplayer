@@ -316,8 +316,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (!$is_cached) {
           // load a single player meta data record
-          $db_table_name = self::$db_table_name;
-          $meta_data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$db_table_name} WHERE id = %d", $id ) );
+          $meta_data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id = %d", $id ) );
           
           // run through all of the meta data and
           // fill the ones that were not found with blank arrays
