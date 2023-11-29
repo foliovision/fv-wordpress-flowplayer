@@ -37,7 +37,7 @@ class FV_Player_System_Info {
   }
   
   public function settings_box () {
-    global $wpdb, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $FV_Player_Pro, $FV_Player_VAST, $FV_Player_PayPerView, $FV_Player_Video_Intelligence;
+    global $wpdb, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $FV_Player_Pro, $FV_Player_VAST, $FV_Player_PayPerView;
 
     $theme_data = wp_get_theme();
     $theme      = $theme_data->Name . ' ' . $theme_data->Version;
@@ -76,9 +76,6 @@ FV Player VAST license:   <?php $license = get_transient('fv-player-vast_license
 <?php if( isset($FV_Player_PayPerView) ) : ?>
 FV Player PPV version:    <?php if( isset($FV_Player_PayPerView->version) ) echo $FV_Player_PayPerView->version."\n"; ?>
 FV Player PPV license:    <?php $license = get_transient('fv-player-pay-per-view_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pay-per-view_license'))." GMT)\n"; ?>
-<?php endif; ?>
-<?php if( isset($FV_Player_Video_Intelligence) ) : ?>
-FV Player vi version:     <?php if( isset($FV_Player_Video_Intelligence->version) ) echo $FV_Player_Video_Intelligence->version."\n"; echo "\n"; ?>
 <?php endif; ?>
 
 WordPress Version:        <?php echo get_bloginfo( 'version' ) . "\n"; ?>
@@ -181,11 +178,6 @@ if( isset($conf['pro']) ) {
     if( stripos($k,'secure_token') !== false ) $conf['pro'][$k] = '(redacted)';
   }
   
-}
-
-if( isset($conf['addon-video-intelligence']) && !empty($conf['addon-video-intelligence']['jwt']) ) {
-  if( !empty($conf['addon-video-intelligence']['jwt']) ) $conf['addon-video-intelligence']['jwt'] = '(redacted)';
-  if( !empty($conf['addon-video-intelligence']['publisherId']) ) $conf['addon-video-intelligence']['publisherId'] = '(redacted)';
 }
 
 function fv_player_system_info_hide_private_info(&$item, $key) {

@@ -64,7 +64,7 @@ include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 
 include_once(dirname( __FILE__ ) . '/models/email-subscription.php');
-include_once(dirname( __FILE__ ) . '/models/video-intelligence.php');
+
 include_once(dirname( __FILE__ ) . '/models/player-position-save.php');
 
 include_once(dirname( __FILE__ ) . '/models/db-player.php');

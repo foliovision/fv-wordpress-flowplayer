@@ -173,7 +173,6 @@ jQuery(document).ready( function() {
   var loading = setInterval( function() {
     loading_count++;
     if( loading_count < 1000 && (
-      window.fv_video_intelligence_conf && !window.FV_Player_IMA ||
       window.fv_vast_conf && !window.FV_Player_IMA ||
       window.fv_player_pro && !window.FV_Player_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
       window.fv_player_user_playlists && !window.fv_player_user_playlists.is_loaded ||

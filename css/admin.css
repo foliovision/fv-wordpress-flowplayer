@@ -159,8 +159,6 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 .fv-player-editor-player-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; opacity:.7}
 .fv-player-editor-player-loading .spinner { position: absolute; left: 0; right: 0; margin: auto; top: 0; bottom: 0 }
 
-/* otherwise "Drag boxes here" appears when you hide a meta box initially and then you show it with JS */
-.metabox-holder #postbox-container-tab_video_intelligence  .empty-container::after { content: none }
 /* Disable WordPress 5.5 button to change box order */
 #wpfp_options .handle-order-higher, #wpfp_options .handle-order-lower { display: none }
 /* Disable box dragging */
