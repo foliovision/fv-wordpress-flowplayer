@@ -882,8 +882,7 @@ add_filter( 'pre_get_rocket_option_remove_unused_css_safelist', 'fv_player_wp_ro
 
 function fv_player_wp_rocket_used_css( $safelist ) {
   // Without this our additions would show on WP Rocket settings page
-  global $pagenow;
-  if ( 'options-general.php' === $pagenow && 'wprocket' === $_GET['page'] ) {
+  if ( did_action( 'admin_head-settings_page_wprocket' ) ) {
     return $safelist;
   }
 
