@@ -344,9 +344,6 @@ function flowplayer_prepare_scripts() {
 
     if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
 
-    $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
-
-    $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
     $sLogo = $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
 
     // Load base Freedom Video Player library
@@ -391,7 +388,6 @@ function flowplayer_prepare_scripts() {
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
 
-    if( $sCommercialKey ) $aConf['key'] = base64_encode($sCommercialKey);
     if( apply_filters( 'fv_flowplayer_safety_resize', true) ) {
       $aConf['safety_resize'] = true;
     }
