@@ -111,7 +111,16 @@ function fv_wp_flowplayer_check_template() {
 	$ok = array();
 	$errors = array();
 
-  $response = wp_remote_get( home_url().'?fv_wp_flowplayer_check_template=yes' );
+  /**
+   * The HTTP request below will have no login cookies, so lets make sure the nonce is created for non-logged in user.
+   */
+  wp_set_current_user( 0 );
+  unset( $_COOKIE[ LOGGED_IN_COOKIE ] );
+
+  $response = wp_remote_get(
+    add_query_arg( 'fv_wp_flowplayer_check_template', wp_create_nonce( 'fv_wp_flowplayer_check_template' ), home_url() )
+  );
+
   if( is_wp_error( $response ) ) {
     $error_message = $response->get_error_message();
     $output = array( 'errors' => $error_message);
