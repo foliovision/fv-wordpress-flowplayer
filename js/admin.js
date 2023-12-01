@@ -142,11 +142,11 @@
 
         } else {
           var value = $this.val().replace(/^#/,''),
-            opacity = $this.minicolors('opacity');
+            opacity = $this.minicolors('opacity'),
+            color = hexToRgb(value);
 
-          if( opacity ) {
-            value = hexToRgb(value);
-            value = 'rgba('+value[0]+','+value[1]+','+value[2]+','+opacity+')';
+          if( opacity && color ) {
+            value = 'rgba('+color[0]+','+color[1]+','+color[2]+','+opacity+')';
           }
           newStyle = preview.replace(/%val%/g, value);
           style += sanitizeCSS(newStyle);
