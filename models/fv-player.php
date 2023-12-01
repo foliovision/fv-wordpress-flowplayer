@@ -728,7 +728,136 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
 
-  public function _set_conf( $aNewOptions ) {
+  public function _set_conf( $aNewOptions = false ) {
+
+    if ( ! $aNewOptions & ! empty( $_POST['fv_flowplayer_settings_ajax_nonce'] ) && wp_verify_nonce( $_POST['fv_flowplayer_settings_ajax_nonce'], 'fv_flowplayer_settings_ajax_nonce' ) ) {
+      $aNewOptions = array();
+      foreach( 
+        apply_filters(
+          'fv_player_settings',
+          array(
+            'allowfullscreen',
+            'amazon_bucket',
+            'amazon_expire',
+            'amazon_expire_force',
+            'amazon_key',
+            'amazon_region',
+            'amazon_secret',
+            '_is_secret_amazon_secret', // make sure the flag for obfuscated fields is carried over
+            'autoplay_preload',
+            'bunny_stream',
+            'chromecast',
+            'closedpostboxesnonce',
+            'cloudflare_stream', // FV Player Cloudflare Stream extension
+            'coconut', // FV Player Coconut extension
+            'coconut_video_variants', // FV Player Coconut extension
+            'css_disable',
+            'css_writeout',
+            'customCSS',
+            'digitalocean_spaces',
+            'disable_convert_db_save',
+            'disable_localstorage',
+            'disable_video_hash_links',
+            'disable_videochecker',
+            'disableembedding',
+            'disablesharing',
+            'email_lists',
+            'engine',
+            'fv-player-pro-release', // FV Player Pro extension
+            'fv_player_admin_pro_quality_alive', // FV Player Pro extension
+            'googleanalytics',
+            'hd_streaming',
+            'height',
+            'integrations',
+            'interface',
+            'js-everywhere',
+            'js-optimize',
+            'jw_player', // FV Player JW Player extension
+            'key',
+            'lightbox_force',
+            'lightbox_images',
+            'lightbox_improve_galleries',
+            'linode_object_storage',
+            'liststyle',
+            'logo',
+            'logoPosition',
+            'mailchimp_api',
+            'mailchimp_label',
+            'mailchimp_list',
+            'matomo_domain',
+            'matomo_site_id',
+            'meta-box-order-nonce',
+            'mobile_alternative_fullscreen',
+            'mobile_force_fullscreen',
+            'mobile_native_fullscreen',
+            'multiple_playback',
+            'overlay',
+            'overlayLinksColor',
+            'overlayTextColor',
+            'overlay_css',
+            'overlay_height',
+            'overlay_show_after',
+            'overlay_width',
+            'parse_commas',
+            'parse_comments',
+            'play_icon',
+            'player-position',
+            'playlist-design',
+            'playlistBgColor',
+            'playlistFontColor',
+            'playlistFontColor-proxy',
+            'playlistSelectedColor',
+            'playlist_advance',
+            'popupbox',
+            'popups_default',
+            'postthumbnail',
+            'pro', // FV Player Pro extension
+            'profile_videos_enable_bio',
+            'remove_all_data',
+            'rtmp',
+            's3_browser',
+            'sharing_email_text',
+            'show_controlbar',
+            'skin',
+            'skin-custom',
+            'skin-slim',
+            'skin-youtuby',
+            'splash',
+            'sticky_place',
+            'sticky_video',
+            'sticky_width',
+            'sticky_width_mobile',
+            'subtitleBgColor',
+            'subtitleFontFace',
+            'subtitleOn',
+            'subtitleSize',
+            'ui_no_picture_button',
+            'ui_repeat_button',
+            'ui_rewind_button',
+            'ui_speed',
+            'ui_speed_increment',
+            'user_playlist', // FV Player Bookmarks extension
+            'version',
+            'video_position_save_enable',
+            'video_sitemap',
+            'video_sitemap_meta',
+            'video_stats_enable',
+            'video_stats_enable_guest',
+            'viloud', // FV Player Viloud extension
+            'volume',
+            'width',
+            'wistia_use_fv_player',
+            'youtube_browser_chrome',
+          )
+        ) as $key ) {
+          if ( isset( $_POST[ $key ] ) ) {
+            $aNewOptions[ $key ] = $_POST[ $key ];
+          }
+      }
+    }
+
+    $aNewOptions = fv_player_handle_secrets( $aNewOptions, $this->conf);
+
     $is_ajax = isset($aNewOptions['fv-wp-flowplayer-submit-ajax']);
 
     if( $is_ajax ) {
