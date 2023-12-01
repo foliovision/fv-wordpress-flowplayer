@@ -181,15 +181,19 @@
     $('input.color, input.color-opacity').each(color_inputs);
 
     $('form#wpfp_options').on('submit', function(e) {
+      $( document ).trigger( 'fv-wordpress-flowplayer-save' );
+    });
+
+    $( document ).on( 'fv-wordpress-flowplayer-save', function() {
       $('input.color-opacity').each( function() {
         var input = $(this),
-          opacity = input.minicolors('opacity');
+          opacity = input.minicolors('opacity'),
+          color = hexToRgb( input.val() );
 
-        if( opacity ) {
-          var color = hexToRgb( input.val() );
+        if( opacity && color ) {
           input.val( 'rgba('+color[0]+','+color[1]+','+color[2]+','+opacity+')' );
         }
-      })
+      });
     });
   });
 
