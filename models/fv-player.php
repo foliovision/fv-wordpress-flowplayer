@@ -154,12 +154,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_filter( 'fv_player_custom_css', array( $this, 'popup_css' ), 10 );
     add_filter( 'fv_player_custom_css', array( $this, 'custom_css' ), 11 );
 
-    if( !empty($_GET['fv_player_preview']) ) {
-      add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
-    } else {
-      add_action( 'wp_head', array( $this, 'template_embed_buffer' ), PHP_INT_MAX);
-      add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
-    }
+    add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
+
+    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), PHP_INT_MAX);
+    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
 
     add_action( 'do_rocket_lazyload', array( $this, 'preview_no_lazy_load' ) );
 
@@ -2641,7 +2639,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       ob_start();
 
       global $fvseo;
-      if( isset($_REQUEST['fv_player_preview']) ) {
+      if( isset( $_REQUEST['fv_player_preview_nonce'] ) && wp_verify_nonce( $_REQUEST['fv_player_preview_nonce'], 'fv_player_preview' ) && isset($_REQUEST['fv_player_preview']) ) {
         global $fvseo;
         if( isset($fvseo) ) remove_action('wp_footer', array($fvseo, 'script_footer_content'), 999999 );
 
@@ -2715,7 +2713,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   function preview_no_lazy_load( $value ) {
-    if( isset($_REQUEST['fv_player_preview']) ) {
+    if( isset( $_REQUEST['fv_player_preview_nonce'] ) && wp_verify_nonce( $_REQUEST['fv_player_preview_nonce'], 'fv_player_preview' ) && isset($_REQUEST['fv_player_preview']) ) {
       return false;
     }
     return $value;
@@ -2727,6 +2725,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   function template_preview() {
+    if( !empty($_GET['fv_player_preview']) && wp_verify_nonce( $_GET['fv_player_preview_nonce'], 'fv_player_preview' ) ) {
     // Generate preview html
     show_admin_bar(false);
     ?>
@@ -2742,22 +2741,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <body class="fv-player-preview">
     <?php
 
-    $embed_id = get_query_var('fv_player_embed');
-
-    if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
-      if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview" ) ){
-        ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
-        <div style="background:white;">
-          <div id="wrapper" style="background:white; overflow:hidden">
-            <h1 style="margin: auto;text-align: center; padding: 60px; color: darkgray;">Please log in.</h1>
-          </div>
-        </div>
-        <?php
-        die();
-      }
-
-      $shortcode = base64_decode($_GET['fv_player_preview']);
-      $shortcode = apply_filters('fv_player_preview_data', $shortcode);
+      if( isset( $_REQUEST['fv_player_preview_nonce'] ) && wp_verify_nonce( $_REQUEST['fv_player_preview_nonce'], 'fv_player_preview' ) && isset($_REQUEST['fv_player_preview']) ) :
+        $shortcode = base64_decode( $_REQUEST['fv_player_preview'] );
+        $shortcode = apply_filters( 'fv_player_preview_data', $shortcode );
 
       $matches = null;
       $width ='';
@@ -2835,7 +2821,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     exit;
   }
-
+  }
 }
 
 function fv_wp_flowplayer_save_post( $post_id ) {
