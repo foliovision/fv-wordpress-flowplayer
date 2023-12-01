@@ -575,13 +575,16 @@
   .freedomplayer .fp-remaining {
     display: none; }
   .freedomplayer .fp-rewind, .freedomplayer .fp-forward {
-    width: 9%;
+    width: 9vw;
     position: absolute;
     left: 0;
     height: 54%;
     top: 50%;
     -webkit-transform: translateY(-50%);
             transform: translateY(-50%); }
+    @media screen and (orientation: portrait) {
+      .freedomplayer .fp-rewind, .freedomplayer .fp-forward {
+        width: 14vw; } }
     .freedomplayer .fp-rewind svg, .freedomplayer .fp-forward svg {
       max-width: 14vw;
       width: 2em;
@@ -595,8 +598,10 @@
     right: 0; }
     .freedomplayer .fp-forward svg {
       margin-left: 0; }
-  .freedomplayer .fp-rewind svg {
-    margin-right: 0; }
+  .freedomplayer .fp-rewind {
+    left: 0; }
+    .freedomplayer .fp-rewind svg {
+      margin-right: 0; }
   .freedomplayer.is-mouseover.is-ready .fp-forward, .freedomplayer.is-mouseover.is-ready .fp-rewind {
     display: block; }
     .freedomplayer.is-mouseover.is-ready .fp-forward svg, .freedomplayer.is-mouseover.is-ready .fp-rewind svg {
