@@ -1259,3 +1259,28 @@ function fvplayer_editor( $args ) {
   <?php
   return ob_get_clean();
 }
+
+/**
+ * The nonce normally only work up to 24 hours, but it might just be 12 hours.
+ * 
+ * We set the nonce life to 7 days to make sure caching plugins don't break the video tracking etc.
+ * 
+ * So far we were able to use 42 hours old nonce without any issues. We are still testing.
+ */
+add_filter( 'nonce_life', 'fv_player_frontend_nonce_life', PHP_INT_MAX, 2 );
+
+function fv_player_frontend_nonce_life( $seconds, $action ) {
+  if (
+    in_array(
+      $action,
+      array(
+        'fv_player_email_signup',
+        'fv_player_track',
+        'fv_player_video_position_save',
+      )
+    )
+  ) {
+    $seconds = 7 * DAY_IN_SECONDS;
+  }
+  return $seconds;
+}

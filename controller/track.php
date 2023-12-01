@@ -283,19 +283,6 @@ Class FvPlayerTrackerWorker {
    */
   function track() {
 
-    // TODO: Will the nonce last for more than 24 hours?
-    add_filter(
-      'nonce_life',
-      function( $seconds, $action ) {
-        if ( 'fv_player_track' === $action ) {
-          $seconds = 7 * DAY_IN_SECONDS;
-        }
-        return $seconds;
-      },
-      PHP_INT_MAX,
-      2
-    );
-
     if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv_player_track' ) ) {
       die( "Error: invalid nonce!" );
     }
