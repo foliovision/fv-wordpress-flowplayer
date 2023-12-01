@@ -594,7 +594,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $conf['js-optimize'] = true;
     }
 
-    if( !isset( $conf['autoplay'] ) ) $conf['autoplay'] = 'false';
     if( !isset( $conf['googleanalytics'] ) ) $conf['googleanalytics'] = 'false';
     if( !isset( $conf['chromecast'] ) ) $conf['chromecast'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
@@ -609,20 +608,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
     if( !isset( $conf['postthumbnail'] ) ) $conf['postthumbnail'] = 'false';
 
-    //default colors
-    if( !isset( $conf['tgt'] ) ) $conf['tgt'] = 'backgroundcolor';
-    if( !isset( $conf['backgroundColor'] ) ) $conf['backgroundColor'] = '#333333';
-    if( !isset( $conf['canvas'] ) ) $conf['canvas'] = '#000000';
-    if( !isset( $conf['sliderColor'] ) ) $conf['sliderColor'] = '#ffffff';
-    /*if( !isset( $conf['buttonColor'] ) ) $conf['buttonColor'] = '#ffffff';
-    if( !isset( $conf['buttonOverColor'] ) ) $conf['buttonOverColor'] = '#ffffff';*/
-    if( !isset( $conf['durationColor'] ) ) $conf['durationColor'] = '#eeeeee';
-    if( !isset( $conf['timeColor'] ) ) $conf['timeColor'] = '#eeeeee';
-    if( !isset( $conf['progressColor'] ) ) $conf['progressColor'] = '#bb0000';
-    if( !isset( $conf['bufferColor'] ) ) $conf['bufferColor'] = '#eeeeee';
-    if( !isset( $conf['timelineColor'] ) ) $conf['timelineColor'] = '#666666';
-    if( !isset( $conf['borderColor'] ) ) $conf['borderColor'] = '#666666';
-    if( !isset( $conf['hasBorder'] ) ) $conf['hasBorder'] = 'false';
     if( !isset( $conf['overlayTextColor'] ) ) $conf['overlayTextColor'] = '#888';
     if( !isset( $conf['overlayLinksColor'] ) ) $conf['overlayLinksColor'] = '#ff3333';
     if( !isset( $conf['subtitleBgColor'] ) ) $conf['subtitleBgColor'] = 'rgba(0,0,0,0.5)';
@@ -640,7 +625,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['width'] ) ) $conf['width'] = '640';
     if( !isset( $conf['height'] ) ) $conf['height'] = '360';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
-    if( !isset( $conf['font-face'] ) ) $conf['font-face'] = 'Tahoma, Geneva, sans-serif';
     if( !isset( $conf['overlay'] ) ) $conf['overlay'] = '';
     if( !isset( $conf['overlay_width'] ) ) $conf['overlay_width'] = '';
     if( !isset( $conf['overlay_height'] ) ) $conf['overlay_height'] = '';

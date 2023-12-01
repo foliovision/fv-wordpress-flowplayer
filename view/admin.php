@@ -363,7 +363,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
             </tr>
 
-            <?php $fv_fp->_get_checkbox(__( 'Popup Box', 'fv-player' ), 'popupbox', __( 'Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-player' ) ); ?>
+            <?php //$fv_fp->_get_checkbox(__( 'Popup Box', 'fv-player' ), 'popupbox', __( 'Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-player' ) ); ?>
 
             <?php $fv_fp->_get_checkbox(__( 'Repeat Button', 'fv-player' ), 'ui_repeat_button', __( 'Adds a button to set playlist/track repeat and shuffle.', 'fv-player' ) ); ?>
 
