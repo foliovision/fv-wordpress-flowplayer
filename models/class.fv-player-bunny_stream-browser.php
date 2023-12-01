@@ -72,8 +72,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
   function get_formatted_assets_data() {
     global $fv_fp, $wpdb;
 
-    $table = FV_Player_Bunny_Stream()->get_table_name();
-    $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM {$table}" );
+    $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM `{$wpdb->prefix}fv_player_encoding_jobs`" );
     $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
     $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );

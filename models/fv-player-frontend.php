@@ -75,10 +75,8 @@ class flowplayer_frontend extends flowplayer
   function get_players_by_video_ids( $ids_string ) {
     global $wpdb;
     $ret = array();
-    $ids_string = esc_sql( $ids_string );
 
-    $table = FV_Player_Db_Player::get_db_table_name();
-    $results = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM {$table} WHERE (videos = %s OR videos LIKE %s OR videos %s", $ids_string, '%' . $wpdb->esc_like( $ids_string ), '%' . $wpdb->esc_like( $ids_string ) ) );
+    $results = $wpdb->get_results( $wpdb->prepare( "SELECT id FROM `{$wpdb->prefix}fv_player_players` WHERE (videos = %s OR videos LIKE %s OR videos %s", $ids_string, '%' . $wpdb->esc_like( $ids_string ), '%' . $wpdb->esc_like( $ids_string ) ) );
 
     foreach ( $results as $row ) {
       $ret[] = new FV_Player_Db_Player( $row->id );
