@@ -314,7 +314,7 @@ Class FvPlayerTrackerWorker {
 
     if( ! $this->incrementCacheCounter() ) {
       // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
-      file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
+      file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export( $this,true )."\n", FILE_APPEND ); // todo: remove
     }
 
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
