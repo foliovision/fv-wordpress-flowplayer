@@ -784,12 +784,7 @@ class flowplayer_frontend extends flowplayer
           if( is_numeric($splash_img) ) {
             $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
           } else {
-            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'"';
-            // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
-            if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
-              $image .= ' style="position:absolute;top:0;width:100%"';
-            }
-            $image .= ' />';
+            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
           }
 
           /**
@@ -799,6 +794,12 @@ class flowplayer_frontend extends flowplayer
            */
           if ( ++$this->splash_count > 1 ) {
             $image = str_replace( '<img ', '<img loading="lazy" ', $image );
+
+          // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS for first image
+          } else {
+            if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
+              $image = str_replace( '<img ', '<img style="position:absolute;top:0;width:100%" ', $image );
+            }
           }
 
           $this->ret['html'] .= "\t".$image."\n";
