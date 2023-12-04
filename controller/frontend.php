@@ -1265,7 +1265,9 @@ function fvplayer_editor( $args ) {
  * 
  * We set the nonce life to 7 days to make sure caching plugins don't break the video tracking etc.
  * 
- * So far we were able to use 42 hours old nonce without any issues. We are still testing.
+ * So far we were able to use 42 hours old nonce without any issues. When the nonce was 4 days and 19 hours old
+ * it would already fail. So my guess is that this way we can be sure that the nonce is valid for 3.5 days,
+ * but it might be up to 7 days.
  */
 add_filter( 'nonce_life', 'fv_player_frontend_nonce_life', PHP_INT_MAX, 2 );
 
