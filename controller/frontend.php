@@ -434,9 +434,9 @@ function flowplayer_prepare_scripts() {
     }
 
     if( $fv_fp->should_force_load_js() || $fv_fp->load_hlsjs ) {
-      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/freedom-video-player/hls.min.js', array('flowplayer'), '1.4.10', true );
+      wp_enqueue_script( 'flowplayer-hlsjs', flowplayer::get_plugin_url().'/freedom-video-player/hls.min.js', array('flowplayer'), '1.4.12', true );
     }
-    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/freedom-video-player/hls.min.js?ver=1.4.10';
+    $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/freedom-video-player/hls.min.js?ver=1.4.12';
 
     $dashjs_version = '3.2.2-mod';
 
