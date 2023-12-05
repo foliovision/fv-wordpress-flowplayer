@@ -249,7 +249,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <label for="fv_wp_flowplayer_field_src" class="alignright"><?php _e('Video', 'fv_flowplayer'); ?></label>
                 </th>
                 <td colspan="2" class="field">
-                  <input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" />
+                  <input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src" name="fv_wp_flowplayer_field_src" value="" dir="ltr" />
                   <?php if ($allow_uploads == "true") { ?>      
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
@@ -264,7 +264,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
               <tr style="display: none;" class="fv_wp_flowplayer_field_src1_wrapper">
                 <th scope="row" class="label" style="width: 19%"></th>
-                <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src1" name="fv_wp_flowplayer_field_src1" value="" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
+                <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src1" name="fv_wp_flowplayer_field_src1" value="" dir="ltr" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
                   <?php if ($allow_uploads == "true") { ?> 
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
@@ -274,7 +274,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
               <tr style="display: none;" class="fv_wp_flowplayer_field_src2_wrapper">
                 <th scope="row" class="label" style="width: 19%"></th>
-                <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src2" name="fv_wp_flowplayer_field_src2" value="" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
+                <td colspan="2" class="field"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_src2" name="fv_wp_flowplayer_field_src2" value="" dir="ltr" placeholder="<?php _e('Another format', 'fv-wordpress-flowplayer'); ?>" />
                   <?php if ($allow_uploads == "true") { ?>  
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uplads video ?>
@@ -309,7 +309,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
               <tr class="first-item-only<?php if( !isset($fv_flowplayer_conf["interface"]["mobile"]) || $fv_flowplayer_conf["interface"]["mobile"] !== 'true' ) echo ' fv_player_interface_hide'; ?>">
                 <th scope="row" class="label"><label for="fv_wp_flowplayer_field_mobile" class="alignright"><?php _e('Mobile video', 'fv_flowplayer'); ?></label></th>
-                <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" placeholder="<?php _e('Put low-bandwidth video here or leave blank', 'fv_flowplayer'); ?>" />
+                <td class="field" colspan="2"><input type="text" class="text<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_mobile" name="fv_wp_flowplayer_field_mobile" value="" dir="ltr" placeholder="<?php _e('Put low-bandwidth video here or leave blank', 'fv_flowplayer'); ?>" />
                   <?php if ($allow_uploads == 'true') { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Video', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uploads splash image ?></td>
@@ -317,7 +317,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
               <tr>
                 <th scope="row" class="label"><label for="fv_wp_flowplayer_field_splash" class="alignright"><?php _e('Splash Image', 'fv_flowplayer'); ?></label></th>
-                <td class="field" colspan="2"><input type="text" class="text fv_wp_flowplayer_field_splash<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_splash" name="fv_wp_flowplayer_field_splash" value=""/>
+                <td class="field" colspan="2"><input type="text" class="text fv_wp_flowplayer_field_splash<?php echo $upload_field_class; ?>" id="fv_wp_flowplayer_field_splash" name="fv_wp_flowplayer_field_splash" value="" dir="ltr" />
                   <?php if ($allow_uploads == 'true') { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Image', 'fv_flowplayer'); ?></a>
                   <?php }; //allow uploads splash image ?></td>
@@ -388,7 +388,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                     }
                     ?>
                   </select>                
-                  <input type="text" class="text<?php echo $upload_field_class; ?> fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value=""/>
+                  <input type="text" class="text<?php echo $upload_field_class; ?> fv_wp_flowplayer_field_subtitles" name="fv_wp_flowplayer_field_subtitles" value="" dir="ltr" />
                   <?php if ($allow_uploads == 'true') { ?>
                     <a class="button add_media" href="#"><span class="wp-media-buttons-icon"></span> <?php _e('Add Subtitles', 'fv_flowplayer'); ?></a>
                     <a class="fv-fp-subtitle-remove" href="#" style="display: none">X</a>
@@ -510,7 +510,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
               <td>
-                <textarea id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
+                <textarea id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%" dir="ltr" ></textarea>
               </td>
             </tr> 
             <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
