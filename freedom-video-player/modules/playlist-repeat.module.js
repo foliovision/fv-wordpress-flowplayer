@@ -175,7 +175,7 @@ flowplayer( function(api,root) {
       }
     }
     
-    if( root.data('button-rewind') ) {
+    if( root.data('button-rewind') && ! freedomplayer.support.touch ) {
       if( root.find('.fv-fp-rewind').length == 0 ) {
         var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="21px" height="21px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
         
