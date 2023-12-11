@@ -2241,7 +2241,7 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 
   </form>
 
-  <div id="fv-player-popup-container"></div>
+  <div id="fv-player-settings-save-notice"></div>
 
 </div>
 <script type="text/javascript" >

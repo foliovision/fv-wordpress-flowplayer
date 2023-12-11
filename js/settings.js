@@ -1,6 +1,6 @@
 jQuery(function() {
   var is_saving = false,
-    spinner = jQuery('<div class="fv-player-shortcode-editor-small-spinner" style="float: right;">&nbsp;</div>'),
+    spinner = jQuery('<div class="fv-player-shortcode-editor-small-spinner" style="float: right; margin-top: 20px; margin-right: 10px">&nbsp;</div>'),
     postbox_data_changed = [];
 
   function closeWarning(e) {
@@ -8,12 +8,15 @@ jQuery(function() {
     return true; //Gecko + Webkit, Safari, Chrome etc.
   }
 
-  function show_popup(message, bgColor) {
-    var popup = jQuery('<div>').text(message).css('background-color', bgColor);
-    jQuery('#fv-player-popup-container').empty().append(popup).fadeIn();
+  function show_popup(message, error) {
+    var popup = jQuery('#fv-player-settings-save-notice'),
+      content = jQuery('<p>').html(message);
+
+    popup.toggleClass( 'is-error', !!error );
+    popup.empty().append(content).fadeIn();
 
     setTimeout(function() {
-      jQuery('#fv-player-popup-container').fadeOut();
+      jQuery('#fv-player-settings-save-notice').fadeOut();
     }, 3000);
   }
 
@@ -80,10 +83,10 @@ jQuery(function() {
 
         // replace old postbox with new one
         if(reload) $postbox.replaceWith($new);
-        show_popup('Settings saved for: ' + postbox_name.toLowerCase(), 'green');
+        show_popup('Settings saved for <strong>' + postbox_name + '</strong>' );
       },
       error: function(data) {
-        show_popup('Error saving settings for: ' + postbox_name.toLowerCase() , 'red');
+        show_popup('Error saving settings for <strong>' + postbox_name + '</strong>', true );
         console.error(data);
       },
       complete: function() {

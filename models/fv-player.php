@@ -1600,7 +1600,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       echo "<link rel='stylesheet' id='fv_freedomplayer_playlists-css'  href='".esc_attr( FV_FP_RELATIVE_PATH.'/css/playlists.css' )."?ver=".filemtime( dirname(__FILE__).'/../css/playlists.css' )."' type='text/css' media='all' />\n";
 
-      echo "<link rel='stylesheet' id='fv_freedomplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=".$fv_wp_flowplayer_ver."' type='text/css' media='all' />\n";
+      echo "<link rel='stylesheet' id='fv_freedomplayer_admin'  href='".FV_FP_RELATIVE_PATH."/css/admin.css?ver=" . filemtime( dirname(__FILE__).'/../css/admin.css' ) . "' type='text/css' media='all' />\n";
 
       if( $this->bCSSInline ) {
         $this->css_generate(false);
@@ -1620,7 +1620,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       if(is_user_logged_in()){
-        wp_enqueue_style( 'fv_freedomplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), $fv_wp_flowplayer_ver );
+        wp_enqueue_style( 'fv_freedomplayer_admin', FV_FP_RELATIVE_PATH.'/css/admin.css', array(), filemtime( dirname(__FILE__).'/../css/admin.css' ) );
       }
 
       if( $this->bCSSInline ) {
