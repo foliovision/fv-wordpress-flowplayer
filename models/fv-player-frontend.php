@@ -194,8 +194,17 @@ class flowplayer_frontend extends flowplayer
      */
     $width = $this->_get_option('width');
     $height = $this->_get_option('height');
-    if (isset($this->aCurArgs['width'])&&!empty($this->aCurArgs['width'])) $width = trim($this->aCurArgs['width']);
-    if (isset($this->aCurArgs['height'])&&!empty($this->aCurArgs['height'])) $height = trim($this->aCurArgs['height']);
+
+    // Only use player width if alignment is specified
+    if ( ! empty( $this->aCurArgs['align'] ) ) {
+      if ( ! empty( $this->aCurArgs['width'] ) ) {
+        $width = trim( $this->aCurArgs['width'] );
+      }
+
+      if ( ! empty( $this->aCurArgs['height'] ) ) {
+        $height = trim( $this->aCurArgs['height'] );
+      }
+    }
 
     $src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
     $src2 = ( isset($this->aCurArgs['src2']) && !empty($this->aCurArgs['src2']) ) ? trim($this->aCurArgs['src2']) : false;
@@ -626,12 +635,23 @@ class flowplayer_frontend extends flowplayer
           }
         }
 
+        // Calculate player aspect ratio
         if( !$bIsAudio ) {
-          if( stripos($width,'%') === false && intval($width) > 0 && stripos($height,'%') === false && intval($height) > 0 ) {
-            $ratio = round( intval($height) / intval($width), 4);
+
+          // Use video dimensions if provided
+          $ratio_width = ! empty( $this->aCurArgs['width'] ) ? intval( $this->aCurArgs['width'] ) : $width;
+          $ratio_height = ! empty( $this->aCurArgs['height'] ) ? intval( $this->aCurArgs['height'] ) : $height;
+
+          // Do not calculate ratio if % values are provided
+          if(
+            stripos( $ratio_width, '%' ) === false && intval( $ratio_width ) > 0 &&
+            stripos( $ratio_height, '%' ) === false && intval( $ratio_height ) > 0
+          ) {
+            $ratio = round( intval( $ratio_height ) / intval( $ratio_width ), 4);
           } else {
             $ratio = 9/16;
           }
+
           $this->fRatio = $ratio;
 
           $attributes['data-ratio'] = str_replace(',','.',$ratio);
