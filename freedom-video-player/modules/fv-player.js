@@ -350,7 +350,6 @@ function fv_player_preload() {
     });
 
     api.bind('ready', function(e,api,video) {
-      //console.log('playlist mark',video.index);
       setTimeout( function() {
         if( video.index > -1 ) {
           if( playlist_external.length > 0 ) {
@@ -363,11 +362,11 @@ function fv_player_preload() {
 
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
-      // Show splash img if audio
+      // Only remove splash img if video, audio file will show the splash during playback
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
 
         // Ensure the splash is only removed once the video really really starts playing when using autoplay
-        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash ) {
+        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash || 'application/x-mpegurl' == api.video.type ) {
           api.one('progress', function() {
             splash_img.remove();
             splash_text.remove();
