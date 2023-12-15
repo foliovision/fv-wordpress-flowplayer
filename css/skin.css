@@ -19,13 +19,13 @@
       -ms-flex-order: 100;
           order: 100; }
   .fp-fullscreen svg {
+    fill: none;
     vertical-align: text-top;
     stroke: whitesmoke;
     stroke-width: 4;
     width: 22px; }
     .fp-fullscreen svg.fp-fullscreen-exit {
       display: none;
-      fill: none;
       stroke-width: 3; }
 
 .fp-checked:before {
