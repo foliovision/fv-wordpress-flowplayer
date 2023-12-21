@@ -264,11 +264,12 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == External Services ==
 
-FV Player uses the following external services:
+FV Player uses the following external services all of which are optional:
 
-* foliovision.com - only if you enter the license key, used to install FV Player Pro extension
+* FV Player Pro license checks via foliovision.com - only used if you click the button to install FV Player Pro extension
 * AWS - if you setup Amazon S3 with FV Player
 * DigitalOcean Spaces - if you setup DigitalOcean Spaces with FV Player
-* googleapis.com - if you setup YouTube API key to be able to obtain video splash screens, video titles and duration information when inserting videos from YouTube
-* video.bunnycdn.com - only if you setup Bunny Stream
-* video-checker.foliovision.com - when you install the plugin you are prompted if you allow access to your video files to check for video encoding issues. This can also be disabled using the "Disable Admin Video Checker" setting later.
+* Google API via googleapis.com and gdata.youtube.com - if you setup YouTube API key to be able to obtain video splash screens, video titles and duration information when inserting videos from YouTube
+* Bunny Stream API via video.bunnycdn.com - only if you setup Bunny Stream
+* FV Video Checker on video-checker.foliovision.com - when you install the plugin you are prompted if you allow access to your video files to check for video encoding issues. This can also be disabled using the "Disable Admin Video Checker" setting later.
+* Wistia embed codes if you use post Wistia videos
