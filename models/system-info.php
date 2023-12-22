@@ -63,7 +63,6 @@ Plugin URL:               <?php echo flowplayer::get_plugin_url() . "\n"; ?>
 
 FV Player version:        <?php echo $fv_wp_flowplayer_ver . "\n"; ?>
 FV Player core version:   <?php echo $fv_wp_flowplayer_core_ver . "\n"; ?>
-FV Player license:        <?php $license = get_transient('fv_flowplayer_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv_flowplayer_license'))." GMT)\n"; ?>
 
 <?php if( isset($FV_Player_Pro) ) : ?>
 FV Player Pro version:    <?php if( isset($FV_Player_Pro->version) ) echo $FV_Player_Pro->version."\n"; ?>

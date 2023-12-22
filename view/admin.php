@@ -997,7 +997,7 @@ function fv_flowplayer_admin_pro() {
   global $fv_fp;
 
   if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
+    $aCheck = get_transient( 'fv-player-pro_license' );
   }
 
   if( isset($aCheck->valid) && $aCheck->valid ) : ?>
@@ -2142,19 +2142,12 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
   <?php
   global $fv_fp;
   do_action('fv_player_settings_pre');
-
-  $aCheck = false;
-  if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
-    $aInstalled = get_option('fv_flowplayer_extension_install');
-  }
-
   ?>
 
   <form id="wpfp_options" method="post" action="">
 
     <p id="fv_flowplayer_admin_buttons">
-      <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>
+      <?php if( preg_match( '!^\$\d+!', $fv_fp->_get_option('key') ) ) : ?>
         <?php
         $fv_player_pro_path = FV_Wordpress_Flowplayer_Plugin_Private::get_plugin_path('fv-player-pro');
         if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
@@ -2164,15 +2157,13 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
         <?php else : ?>
           <input type="submit" class="button fv-license-yellow" value="<?php _e( 'Install Pro extension', 'fv-player' ); ?>" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?>
         <?php endif; ?>
-      <?php elseif( !preg_match( '!^\$\d+!', $fv_fp->_get_option('key') ) ) : ?>
+      <?php else : ?>
         <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="<?php _e( 'Apply Pro upgrade', 'fv-player' ); ?>" />
       <?php endif; ?>
+
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php _e( 'Check template', 'fv-player' ); ?>" />
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php _e( 'Check videos', 'fv-player' ); ?>" />
-      <input type="text" name="key" id="key" placeholder="<?php _e( 'Commercial License Key', 'fv-player' ); ?>" value="<?php echo esc_attr( $fv_fp->_get_option('key') ); ?>" />
-      <?php if( isset($aCheck->expired) && $aCheck->expired ) : ?>
-        <a href="#" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false"><span class="dashicons dashicons-update-alt"></span><?php _e( 'Check license', 'fv-player' ); ?></a>
-      <?php endif; ?>
+
       <?php if( !$fv_fp->_get_option('key') ) : ?>
         <a title="<?php _e( 'Click here for license info', 'fv-player' ); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
       <?php endif; ?>

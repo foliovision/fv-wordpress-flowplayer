@@ -274,22 +274,6 @@ function fv_player_admin_pointer_boxes() {
       'button1' => __( 'Thanks for letting me know!', 'fv-player' ),
     );
   }
-
-  if(
-    (stripos( $_SERVER['REQUEST_URI'], '/plugins.php') !== false ||fv_player_is_admin_screen() )
-    && $pnotices = get_option('fv_wordpress_flowplayer_persistent_notices')
-  ) {
-    $fv_fp->pointer_boxes['fv_flowplayer_license_expired'] = array(
-      'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_flowplayer_license_expired',
-      'pointerWidth' => 340,
-      'heading' => __( 'FV Player License Expired', 'fv-player' ),
-      'content' => $pnotices,
-      'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1' => __( 'Hide this notice', 'fv-player' ),
-      'button2' => __( 'I\'ll check this later', 'fv-player' )
-    );
-  }
 }
 
 
@@ -321,12 +305,6 @@ function fv_wp_flowplayer_pointers_ajax() {
       $conf['notice_user_video_positions_conversion'] = $_POST['value'];
       update_option( 'fvwpflowplayer', $conf );
     }
-    die();
-  }
-
-  if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_license_expired' && isset($_POST['value']) && $_POST['value'] === 'true' ) {
-    check_ajax_referer('fv_flowplayer_license_expired');
-    delete_option("fv_wordpress_flowplayer_persistent_notices");
     die();
   }
 
