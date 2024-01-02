@@ -84,7 +84,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
   
     add_filter( 'https_ssl_verify', '__return_false' );
     return $params;
-  }
+  }  
   
   function is_min_wp( $version ) {
     return version_compare( $GLOBALS['wp_version'], $version. 'alpha', '>=' );
@@ -170,7 +170,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
     if( $aCheck ) {
       set_transient( $strTransient, $aCheck, 60*60*24 );
     } else {
-      set_transient( $strTransient, json_decode(json_encode( array('error' => 'Error checking license') ), FALSE), 60*10 );
+      set_transient( $strTransient, json_decode( wp_json_encode( array('error' => 'Error checking license') ), FALSE ), 60*10 );
     }
   }
  
@@ -347,8 +347,8 @@ $this->strPrivateAPI - also
 
     $cookie[$_POST['key']] = !empty($_POST['value']) ? $_POST['value'] : true;
 
-    $secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
-    setcookie( $this->class_name.'_store_answer', json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
+    $secure = ( 'https' === wp_parse_url( home_url(), PHP_URL_SCHEME ) );
+    setcookie( $this->class_name.'_store_answer', wp_json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
   }
 
 
@@ -435,7 +435,8 @@ $this->strPrivateAPI - also
       return $res;
     
     if(isset($args->fv_readme_file)){
-      $data = file_get_contents($args->fv_readme_file);
+      global $wp_filesystem;
+      $data = $wp_filesystem->get_contents( $args->fv_readme_file );
     } else if( $this->readme_URL ) {
       $data = $this->get_readme_url_remote( $this->readme_URL );
     } else {
@@ -586,7 +587,7 @@ $this->strPrivateAPI - also
             jQuery('#wp-pointer-0').remove();
           }
 
-          var pointer_options = <?php echo json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
+          var pointer_options = <?php echo wp_json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
             key = '<?php echo $key; ?>',
 
             setup = function () {
