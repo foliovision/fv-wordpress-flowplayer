@@ -413,7 +413,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
           $fv_fp->_set_conf( $fv_fp->conf );
 
-          do_action('fv_player_bunny_stream_settings_saved', $_POST);
+          do_action( 'fv_player_bunny_stream_settings_saved', $fv_fp->conf['bunny_stream'] );
 
           echo "<div class='updated'><p>Settings saved</p></div>";
 
