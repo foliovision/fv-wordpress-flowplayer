@@ -221,7 +221,9 @@ function fv_wp_flowplayer_admin_show_notice( id ) {
 
     root.toggleClass( 'has-video-checker', is_open );
     
+    if ( api ) {
     api.disable( is_open );
+    }
   });
 }
 
