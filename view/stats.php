@@ -97,12 +97,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
   <div>
     <form id="fv_player_stats_filter" method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
-      <input type="hidden" name="page" value="<?php echo $current_page ?>" />
+      <input type="hidden" name="page" value="<?php echo esc_attr( $current_page ); ?>" />
       <?php if( $user_id ): ?>
-        <input type="hidden" name="user_id" value="<?php echo $user_id ?>" />
+        <input type="hidden" name="user_id" value="<?php echo intval( $user_id ); ?>" />
       <?php endif; ?>
       <?php if( $player_id ): ?>
-        <input type="hidden" name="player_id" value="<?php echo $player_id ?>" />
+        <input type="hidden" name="player_id" value="<?php echo intval( $player_id ); ?>" />
       <?php endif; ?>
       <select id="fv_player_stats_select" name="stats_range">
         <?php
@@ -415,7 +415,7 @@ jQuery( document ).ready(function() {
 
 <?php if( isset($fv_single_player_stats_data) && !empty($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>Plays For Player <?php echo $player_id; ?></h2>
+    <h2>Plays For Player <?php echo intval( $player_id ); ?></h2>
     <div id="chart-single-player-legend" class="fv-player-chartjs-html-legend"></div>
     <canvas id="chart-single-player" style="max-height: 36vh"></canvas>
   </div>
@@ -435,7 +435,7 @@ jQuery( document ).ready(function() {
   </script>
 <?php elseif ( isset($fv_single_player_stats_data) ): ?>
   <div>
-    <h2>No Plays For Player <?php echo $player_id; ?></h2>
+    <h2>No Plays For Player <?php echo intval( $player_id ); ?></h2>
   </div>
 <?php endif; ?>
 </div>

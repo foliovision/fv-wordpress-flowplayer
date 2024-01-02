@@ -139,7 +139,7 @@ class FV_Player_List_Table_View {
                     if ( $term ) :
                       $term = get_term( $term['term_id'], $tax->name );
                       ?>
-                        <p class="subsubsub" style="position: absolute; margin-top: 43px;"><?php echo $tax->labels->singular_name; ?>: <strong><?php echo $term->name; ?></strong></p>
+                        <p class="subsubsub" style="position: absolute; margin-top: 43px;"><?php echo esc_html( $tax->labels->singular_name ); ?>: <strong><?php echo esc_html( $term->name ); ?></strong></p>
                       <?php
                     endif;
                   endif;

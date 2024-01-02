@@ -31,7 +31,7 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
   <td colspan="2">
     <h2>Step 3: Replace Preview</h2>
     
-    <p>Test replacing <b><?php echo $this->search_string ?></b> with <b><?php echo $this->replace_string ?></b></p>
+    <p>Test replacing <b><?php echo esc_html( $this->search_string ); ?></b> with <b><?php echo esc_html( $this->replace_string ); ?></b></p>
 
     <?php
     if( $this->search_string ) {
@@ -54,8 +54,8 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
   <tr>
     <td colspan="2">
       <input type="checkbox" required name="confirmation" /> I have checked the above, created database backup and want the links to be replaced.
-      <input type="hidden" name="search_string" value="<?php echo $this->search_string ?>" >
-      <input type="hidden" name="replace_string" value="<?php echo $this->replace_string ?>" >
+      <input type="hidden" name="search_string" value="<?php echo esc_attr( $this->search_string ); ?>" >
+      <input type="hidden" name="replace_string" value="<?php echo esc_attr( $this->replace_string ); ?>" >
     </td>
   </tr>
     <?php

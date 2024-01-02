@@ -57,7 +57,7 @@ class FV_Player_Wizard_Step_2_List_Videos extends FV_Player_Wizard_Step_Base_Cla
       <tr>
         <td colspan="2">
           <input type="hidden" name="search_string" value="<?php echo esc_attr($this->search_string) ?>" >
-          <p>Enter the string which should replace <code><?php echo $this->search_string; ?></code>:</p>
+          <p>Enter the string which should replace <code><?php echo esc_html( $this->search_string ); ?></code>:</p>
         </td>
       </tr>
       <?php

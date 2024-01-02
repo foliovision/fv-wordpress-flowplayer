@@ -182,23 +182,23 @@ class FV_Player_Email_Subscription {
               }
 
               ?>
-              <tr class='data' id="fv-player-list-item-<?php echo $key; ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
+              <tr class='data' id="fv-player-list-item-<?php echo esc_attr( $key ); ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo $key ; ?></td>
                 <td>
                   <table>
                     <tr>
                       <td style="width:16%"><label>Header</label></td>
-                      <td><input type='text' name='email_lists[<?php echo $key; ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' /></td>
+                      <td><input type='text' name='email_lists[<?php echo esc_attr( $key ); ?>][title]' value='<?php echo isset($aList['title']) ? esc_attr($aList['title']) : ''; ?>' /></td>
                     </tr>
                     <tr>
                       <td><label>Message</label></td>
-                      <td><input type='text' name='email_lists[<?php echo $key; ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' /></td>
+                      <td><input type='text' name='email_lists[<?php echo esc_attr( $key ); ?>][description]' value='<?php echo isset($aList['description']) ? esc_attr($aList['description']) : ''; ?>' /></td>
                     </tr>
                   </table>
                 </td>
                 <?php if( !empty($aMailchimpLists['result']) ) : ?>
                   <td>
-                    <select name="email_lists[<?php echo $key; ?>][integration]" title="E-mail list">
+                    <select name="email_lists[<?php echo esc_attr( $key ); ?>][integration]" title="E-mail list">
                       <option value=""><?php echo $mailchimp_no_option; ?></option>
                       <?php echo $mailchimpOptions ;?>
                     </select>
@@ -211,18 +211,18 @@ class FV_Player_Email_Subscription {
                   <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php _e( 'View list', 'fv-player' ); ?></a>
                 </td>
                 <td>
-                    <input type='hidden' name='email_lists[<?php echo $key; ?>][first_name]' value='0' />
-                    <input id='list-first-name-<?php echo $key; ?>' title="first name" type='checkbox' name='email_lists[<?php echo $key; ?>][first_name]' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
-                    <label for='list-first-name-<?php echo $key; ?>'>First Name</label>
+                    <input type='hidden' name='email_lists[<?php echo esc_attr( $key ); ?>][first_name]' value='0' />
+                    <input id='list-first-name-<?php echo esc_attr( $key ); ?>' title="first name" type='checkbox' name='email_lists[<?php echo esc_attr( $key ); ?>][first_name]' value='1' <?php echo (isset($aList['first_name']) && $aList['first_name'] ? 'checked="checked"' : ''); ?> />
+                    <label for='list-first-name-<?php echo esc_attr( $key ); ?>'>First Name</label>
                     <br />
-                    <input type='hidden' name='email_lists[<?php echo $key; ?>][last_name]' value='0' />
-                    <input id='list-last-name-<?php echo $key; ?>' title="last name" type='checkbox' name='email_lists[<?php echo $key; ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
-                    <label for='list-last-name-<?php echo $key; ?>'>Last Name</label>
+                    <input type='hidden' name='email_lists[<?php echo esc_attr( $key ); ?>][last_name]' value='0' />
+                    <input id='list-last-name-<?php echo esc_attr( $key ); ?>' title="last name" type='checkbox' name='email_lists[<?php echo esc_attr( $key ); ?>][last_name]' value='1' <?php echo (isset($aList['last_name']) && $aList['last_name'] ? 'checked="checked"' : ''); ?> />
+                    <label for='list-last-name-<?php echo esc_attr( $key ); ?>'>Last Name</label>
                 </td>
                 <td>
-                  <input type='hidden' name='email_lists[<?php echo $key; ?>][disabled]' value='0' />
-                  <input id='ListAdDisabled-<?php echo $key; ?>' type='checkbox' title="disable" name='email_lists[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
-                  <label for='ListAdDisabled-<?php echo $key; ?>'>Disable</label>
+                  <input type='hidden' name='email_lists[<?php echo esc_attr( $key ); ?>][disabled]' value='0' />
+                  <input id='ListAdDisabled-<?php echo esc_attr( $key ); ?>' type='checkbox' title="disable" name='email_lists[<?php echo esc_attr( $key ); ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
+                  <label for='ListAdDisabled-<?php echo esc_attr( $key ); ?>'>Disable</label>
                   <br />
                   <a class='fv-player-list-remove' href=''><?php _e( 'Remove', 'fv-player' ); ?></a>
                 </td>

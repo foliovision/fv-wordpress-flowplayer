@@ -98,7 +98,7 @@ function fv_wp_flowplayer_activate_extension() {
     die();
   }
 
-  echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => 'Success!', 'plugin' => $_POST['plugin'] ) )."</FVFLOWPLAYER>";
+  echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => 'Success!', 'plugin' => esc_html( $_POST['plugin'] ) ) )."</FVFLOWPLAYER>";
   die();
 }
 

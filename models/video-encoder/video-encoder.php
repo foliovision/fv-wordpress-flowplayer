@@ -746,7 +746,7 @@ abstract class FV_Player_Video_Encoder {
 
     ?>
     <div class="wrap">
-      <h1 class="wp-heading-inline">FV Player <?php echo $this->encoder_name; ?> Video Encoding Jobs</h1>
+      <h1 class="wp-heading-inline">FV Player <?php echo esc_html( $this->encoder_name ); ?> Video Encoding Jobs</h1>
       <h2 class="nav-tab-wrapper">
         <a href="<?php echo add_query_arg( 'page', $this->encoder_wp_url_slug, admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('jobs') ) echo ' nav-tab-active'; ?>">Jobs</a>
         <a href="<?php echo add_query_arg( array('page' => $this->encoder_wp_url_slug ,'panel' => 'settings'), admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('settings') ) echo ' nav-tab-active'; ?>">Settings</a>

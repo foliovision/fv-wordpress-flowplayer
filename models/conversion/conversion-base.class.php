@@ -148,7 +148,7 @@ abstract class FV_Player_Conversion_Base {
         }
       </style>
       <div class="wrap">
-        <h1><?php echo $this->title; ?></h1>
+        <h1><?php echo esc_html( $this->title ); ?></h1>
 
         <?php echo wpautop($this->help); ?>
         <p>
@@ -194,13 +194,13 @@ abstract class FV_Player_Conversion_Base {
       <script type="text/javascript" charset="utf-8">
         jQuery(function() {
           jQuery('#wrapper').Progressor( {
-            action:   '<?php echo $this->screen ?>',
+            action:   '<?php echo esc_attr( $this->screen ); ?>',
             start:    jQuery('input[name=convert]'),
             cancel:   '<?php echo 'Cancel'; ?>',
             url:      '<?php echo admin_url('admin-ajax.php') ?>',
             nonce:    '<?php echo wp_create_nonce($this->screen)?>',
             finished: '<?php echo 'Finished'; ?>',
-            limit:    '<?php echo $this->conversion_limit; ?>'
+            limit:    '<?php echo intval( $this->conversion_limit ); ?>'
           });
         });
       </script>

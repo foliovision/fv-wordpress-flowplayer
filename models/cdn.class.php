@@ -161,16 +161,16 @@ abstract class FV_Player_CDN {
     ?>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td style="vertical-align:top"><label for="<?php echo $this->key; ?>[domain]"><?php _e( 'Domain', 'fv-player' ); ?>:</label></td>
+        <td style="vertical-align:top"><label for="<?php echo esc_attr( $this->key ); ?>[domain]"><?php _e( 'Domain', 'fv-player' ); ?>:</label></td>
         <td>
-          <input type="text" size="40" name="<?php echo $this->key; ?>[domain]" id="<?php echo $this->key; ?>[keycdn_domain]" value="<?php if( isset($fv_fp->conf[$this->key][$this->key.'_domain']) && strlen(trim($fv_fp->conf[$this->key]['domain'])) ) echo trim($fv_fp->conf[$this->key]['domain']); ?>" />
+          <input type="text" size="40" name="<?php echo esc_attr( $this->key ); ?>[domain]" id="<?php echo esc_attr( $this->key ); ?>[keycdn_domain]" value="<?php if( isset($fv_fp->conf[$this->key][$this->key.'_domain']) && strlen(trim($fv_fp->conf[$this->key]['domain'])) ) echo esc_attr( trim($fv_fp->conf[$this->key]['domain']) ); ?>" />
           <p class="description"><?php _e( 'You can enter multiple domains separated by <code>,</code>.', 'fv-player' ); ?></p>
         </td>
       </tr>
       <tr>
-        <td><label for="<?php echo $this->key; ?>[secure_token]"><?php _e( 'Secure Token', 'fv-player' ); ?>:</label></td>
+        <td><label for="<?php echo esc_attr( $this->key ); ?>[secure_token]"><?php _e( 'Secure Token', 'fv-player' ); ?>:</label></td>
         <td>
-          <input type="text" size="40" name="<?php echo $this->key; ?>[secure_token]" id="<?php echo $this->key; ?>[secure_token]" value="<?php if( isset($fv_fp->conf[$this->key][$this->key.'_secure_token']) && strlen(trim($fv_fp->conf[$this->key]['secure_token'])) ) echo trim($fv_fp->conf[$this->key]['secure_token']); ?>" />
+          <input type="text" size="40" name="<?php echo esc_attr( $this->key ); ?>[secure_token]" id="<?php echo esc_attr( $this->key ); ?>[secure_token]" value="<?php if( isset($fv_fp->conf[$this->key][$this->key.'_secure_token']) && strlen(trim($fv_fp->conf[$this->key]['secure_token'])) ) echo esc_attr( trim($fv_fp->conf[$this->key]['secure_token']) ); ?>" />
         </td>
       </tr>
       <tr>

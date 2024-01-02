@@ -530,7 +530,7 @@ $this->strPrivateAPI - also
     ?>
 <script type="text/javascript">
 //<![CDATA[
-  function <?php echo $this->class_name; ?>_store_answer(key, input, nonce) {
+  function <?php echo esc_attr( $this->class_name ); ?>_store_answer(key, input, nonce) {
     jQuery.post(ajaxurl, { action : 'fv_foliopress_ajax_pointers', key : key, value : input, _ajax_nonce : nonce }, function () {
       jQuery('#wp-pointer-0').remove(); // there must only be a single pointer at once. Or perhaps it removes them all, but the ones which were not dismissed by Ajax by storing the option will turn up again?
     });
@@ -578,7 +578,7 @@ $this->strPrivateAPI - also
         //<![CDATA[
         (function ($) {
           store_cookie_js = function(value , key) {
-            var cookie_name = '<?php echo $this->class_name.'_store_answer'; ?>';
+            var cookie_name = '<?php echo esc_attr( $this->class_name ) . '_store_answer'; ?>';
             var pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
             pointer_cookies[key] = value;
             Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', expires: 365 } )
@@ -586,14 +586,14 @@ $this->strPrivateAPI - also
           }
 
           var pointer_options = <?php echo wp_json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
-            key = '<?php echo $key; ?>',
+            key = '<?php echo esc_attr( $key ); ?>',
 
             setup = function () {
-              $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
-              var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
-              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true' , key); }));
+              $('<?php echo esc_attr( $id ); ?>').pointer(pointer_options).pointer('open');
+              var buttons = $('.<?php echo esc_attr( $key ); ?> .wp-pointer-buttons').html('');
+              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo esc_js( $function1 ); ?>; store_cookie_js('true' , key); }));
               <?php if ( $button2 ) { ?>
-                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false', key); }));
+                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo esc_js( $function2 ); ?>; store_cookie_js('false', key); }));
               <?php } ?>
             };
 
@@ -813,7 +813,7 @@ $this->strPrivateAPI - also
     if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
       $form = ob_get_clean();
       include( ABSPATH . 'wp-admin/admin-header.php' );
-      echo $this->pro_install_talk( $form, $target_url );
+      echo wp_kses_post( $this->pro_install_talk( $form, $target_url ) );
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
     }
@@ -823,7 +823,7 @@ $this->strPrivateAPI - also
       request_filesystem_credentials( $url, $method, true, false, false );
       $form = ob_get_clean();
       include( ABSPATH . 'wp-admin/admin-header.php' );
-      echo $this->pro_install_talk( $form, $target_url );
+      echo wp_kses_post( $this->pro_install_talk( $form, $target_url ) );
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
     }

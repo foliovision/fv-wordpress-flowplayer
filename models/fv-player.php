@@ -212,11 +212,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
       ?>
       <tr>
-          <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
+          <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?>:</label></td>
           <td>
               <p class="description">
-                  <input type="hidden" name="<?php echo $key; ?>" value="false"/>
-                  <input type="checkbox" name="<?php echo $key; ?>" id="<?php echo $key; ?>" value="true"<?php
+                  <input type="hidden" name="<?php echo esc_attr( $key ); ?>" value="false"/>
+                  <input type="checkbox" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" value="true"<?php
                     if ( $checked ) { echo ' checked="checked"'; }
                     if ( $disabled ) { echo ' disabled'; }
 
@@ -240,7 +240,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     // Disabled inputs are not sent in POST so if it's checked we retain the value using hidden input
     if ( $disabled && $checked ) {
       ?>
-        <input type="hidden" name="<?php echo $key; ?>" value="true"/>
+        <input type="hidden" name="<?php echo esc_attr( $key ); ?>" value="true"/>
       <?php
     }
   }
@@ -287,7 +287,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if ($style == 'rows') {
       ?>
         <tr>
-            <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?>:</label></td>
+            <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?>:</label></td>
             <td>
                 <fieldset>
                     <p>
@@ -295,18 +295,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                       foreach ( $values as $index => $input_value ) {
                         ?>
 
-                          &nbsp;<input type="radio" name="<?php echo $key; ?>"
-                                       id="<?php echo $key . '-' . $input_value; ?>" value="<?php echo $index; ?>"<?php
+                          &nbsp;<input type="radio" name="<?php echo esc_attr( $key ); ?>"
+                                       id="<?php echo esc_attr( $key . '-' . $input_value ); ?>" value="<?php echo esc_html( $index ); ?>"<?php
                         if ( ( $selected == $index ) ) {
                           echo ' checked="checked"';
                         }
 
                         if ( isset( $options ) && isset( $options['data'] ) && is_array( $options['data'] ) ) {
                           foreach ( $options['data'] as $data_item => $data_value ) {
-                            echo ' data-' . $data_item . '="' . $data_value . '"';
+                            echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
                           }
                         }
-                        ?> /> <label for="<?php echo $key . '-' . $input_value; ?>"><?php echo $input_value ?></label><br/>
+                        ?> /> <label for="<?php echo esc_attr( $key . '-' . $input_value ); ?>"><?php echo esc_html( $input_value ); ?></label><br/>
 
                         <?php
                       }
@@ -334,9 +334,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
               <td style="white-space: nowrap">
                   <fieldset>
                       <p>
-                        &nbsp;<input type="radio" name="<?php echo $key; ?>"
-                                     id="<?php echo $key . '-' . $input_value; ?>"
-                                     value="<?php echo $index; ?>"<?php
+                        &nbsp;<input type="radio" name="<?php echo esc_attr( $key ); ?>"
+                                     id="<?php echo esc_attr( $key . '-' . $input_value ); ?>"
+                                     value="<?php echo esc_attr( $index ); ?>"<?php
                       if ( ( $selected == $index ) ) {
                         echo ' checked="checked"';
                       }
@@ -346,7 +346,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                           echo ' data-' . $data_item . '="' . $data_value . '"';
                         }
                       }
-                      ?> /> <label for="<?php echo $key . '-' . $input_value; ?>"><?php echo $input_value ?></label><br/>
+                      ?> /> <label for="<?php echo esc_attr( $key . '-' . $input_value ); ?>"><?php echo esc_html( $input_value ); ?></label><br/>
                       </p>
                   </fieldset>
                 <?php if ( $help ) {
@@ -433,7 +433,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo $key; ?>"><?php echo $name; ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <input <?php echo $class_name; ?> <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
@@ -447,9 +447,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           <?php } ?>
 
           <?php if ( $secret ): ?>
-            <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
+            <input name="<?php echo esc_attr($secret_key); ?>" value="<?php echo ! empty( $censored_val ) ? '1' : '0'; ?>" type="hidden" />
             <?php if(!empty($censored_val)): ?>
-              <code class="secret-preview"><?php echo $censored_val; ?></code>
+              <code class="secret-preview"><?php echo esc_html( $censored_val ); ?></code>
               <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key); ?>" >Change</a>
             <?php endif; ?>
           <?php endif; ?>
@@ -478,7 +478,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $key = $key[0] . '[' . $key[1] . ']';
     }
     ?>
-      <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
+      <input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-'.$data_item.'="'.$data_value.'"';
@@ -548,9 +548,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $key = esc_attr($key);
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo $key ?>"><?php echo $name ?></label></td>
+        <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?></label></td>
         <td>
-          <select <?php echo $class_name; ?>id="<?php echo $key ?>" name="<?php echo $key ?>"<?php
+          <select <?php echo $class_name; ?>id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>"<?php
             if (!isset($options) || !isset($options['data']) || !isset($options['data']['fv-preview'])) { echo ' data-fv-preview=""'; }
 
             if (isset($options) && isset($options['data']) && is_array($options['data'])) {
@@ -560,7 +560,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             }
           ?>>
             <?php foreach( $aOptions AS $k => $v ) : ?>
-              <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && strcmp($selected ,$k) == 0 ) || (strcmp($option,$k) == 0) ) echo ' selected="selected"'; ?>><?php echo $v; ?></option>
+              <option value="<?php echo esc_attr($k); ?>"<?php if( (isset($selected) && strcmp($selected ,$k) == 0 ) || (strcmp($option,$k) == 0) ) echo ' selected="selected"'; ?>><?php echo esc_html( $v ); ?></option>
             <?php endforeach; ?>
           </select>
 
