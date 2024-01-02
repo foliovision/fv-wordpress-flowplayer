@@ -253,13 +253,19 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
       status: status_text,
       comment: comment_text,
       notice: jQuery('#wpfp_notice_'+hash+' .mail-content-notice').html(),
-      details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html()
+      details: jQuery('#wpfp_notice_'+hash+' .mail-content-details').html(),
+      nonce: fv_player.nonce
     },
     function( response ) {
       jQuery('#wpfp_spin_'+hash).hide();
       jQuery('#fv_wp_fp_notice_'+hash).find('input').hide();
       jQuery(button).removeAttr("disabled");
+
+      if ( response.success ) {
       jQuery(button).after(' Message sent');
+      } else {
+        alert( 'Nonce verification failed, please reload the page and try again.' );
+      }
     }
   );
 }

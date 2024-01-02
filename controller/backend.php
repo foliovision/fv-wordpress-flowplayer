@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
 
 function fv_wp_flowplayer_support_mail() {
-  if( isset( $_POST['notice'] ) ) {
+  if( isset( $_POST['notice'] ) && ! empty( $_POST['nonce'] && wp_verify_nonce( $_POST['nonce'], 'fv_player_frontend'  ) ) ) {
 
   	$current_user = wp_get_current_user();
     $content = "<h1>Admin: ".$_POST['status']."</h1>\n";
@@ -52,7 +52,10 @@ function fv_wp_flowplayer_support_mail() {
   	//add_action('phpmailer_init', 'fv_wp_flowplayer_support_mail_phpmailer_init' );
   	wp_mail( 'fvplayer@foliovision.com', 'FV Player Quick Support Submission', $content );
 
-  	die('1');
+  	wp_send_json_success();
+
+  } else {
+    wp_send_json_error();
   }
 }
 
