@@ -89,12 +89,12 @@ class FV_Player_SEO {
     if( stripos($splash,'://') === false ) {
       $splash = home_url($splash);
     }
-    
+
     $schema_tags = '<meta itemprop="name" content="'.esc_attr($title).'" />
         <meta itemprop="description" content="'.esc_attr($description).'" />
         <meta itemprop="thumbnailUrl" content="'.esc_attr($splash).'" />
         <meta itemprop="contentURL" content="'.esc_attr($url).'" />
-        <meta itemprop="uploadDate" content="'.esc_attr(get_the_modified_date('Y-m-d')).'" />';
+        <meta itemprop="uploadDate" content="'.esc_attr(get_the_modified_date('c')).'" />';
 
     if( $duration ) {
       $duration = self::time_to_iso8601_duration($duration);
