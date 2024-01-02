@@ -14,8 +14,13 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     global $fv_fp;
 
     if ( $fv_fp->_get_option( array('bunny_stream','api_key') ) && ( is_admin() || get_current_screen()->base == 'fv_player_bunny_stream' ) ) {
-      wp_enqueue_script( 'fv-player-bunny_stream-browser', plugins_url( 'js/bunny_stream-browser.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), FV_Player_Bunny_Stream()->get_version(), true );
+      wp_enqueue_script( 'fv-player-bunny_stream-browser', plugins_url( 'js/bunny_stream-browser.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), filemtime( dirname(__FILE__).'/../js/bunny_stream-browser.js' ), true );
+      wp_localize_script( 'fv-player-bunny_stream-browser', 'fv_player_bunny_stream_settings', array(
+        'nonce' => wp_create_nonce( $this->ajax_action_name )
+      ));
+
       do_action( 'fv_player_media_browser_enqueue_base_uploader_css' );
+
       wp_enqueue_script( 'fv-player-bunny_stream-upload', plugins_url( 'js/bunny_stream-upload.js', dirname(__FILE__) ), array( 'flowplayer-browser-base' ), filemtime( dirname(__FILE__).'/../js/bunny_stream-upload.js' ), true );
       wp_localize_script( 'fv-player-bunny_stream-upload', 'fv_player_bunny_stream_upload_settings', array(
         'upload_button_text' => __('Upload to Bunny Stream', 'fv-player-bunny_stream'),
@@ -70,6 +75,16 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], $this->ajax_action_name ) ) {
+      return array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder',
+        'err' => 'Invalid nonce'
+      );
+    }
+
     global $fv_fp, $wpdb;
 
     $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM `{$wpdb->prefix}fv_player_encoding_jobs`" );
