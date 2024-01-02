@@ -197,9 +197,9 @@
 function fv_wp_flowplayer_admin_show_notice( id ) {
   jQuery('.fv-player-video-checker').each( function() {
     var is_open = jQuery(this).hasClass('is-open'),
-      root = jQuery(this).parents('.flowplayer'),
-      api = root.data('flowplayer');
-      
+      root = jQuery(this).parents('.freedomplayer'),
+      api = root.data('freedomplayer');
+
     if( jQuery(this).attr('id') == 'wpfp_notice_'+id ) {
       if( is_open ) {
         is_open = false;
@@ -222,7 +222,7 @@ function fv_wp_flowplayer_admin_show_notice( id ) {
     root.toggleClass( 'has-video-checker', is_open );
     
     if ( api ) {
-    api.disable( is_open );
+      api.disable( is_open );
     }
   });
 }
@@ -264,7 +264,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
       jQuery(button).removeAttr("disabled");
 
       if ( response.success ) {
-      jQuery(button).after(' Message sent');
+        jQuery(button).after(' Message sent');
       } else {
         alert( 'Nonce verification failed, please reload the page and try again.' );
       }
