@@ -55,9 +55,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_action( 'set_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
         add_filter( 'transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_enable' ) );
         add_action( 'deleted_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
-        
-        //add_action('admin_init', array($this, 'welcome_screen_do_activation_redirect'));
-        //add_action('admin_menu', array($this, 'welcome_screen_pages'));
+
         //add_action('admin_head', array($this, 'welcome_screen_remove_menus'));
   }
   
@@ -891,54 +889,6 @@ $this->strPrivateAPI - also
     update_option( $this->strPluginSlug.'_extension_install', $aInstalled );
 
     return $bResult;
-  }
-
-
-   /*
-   * WELCOME SCREEN
-   */
-
-  public function welcome_screen_do_activation_redirect() {    
-    if ( str_replace( array('.beta','.release'), '', $this->version ) === str_replace( array('.beta','.release'), '', get_option($this->strPluginSlug . '-prev-ver') ) || isset($_GET['page']) && $_GET['page'] === $this->strPluginSlug . '-welcome') {
-      return;
-    }
-    
-    if (is_network_admin() || isset($_GET['activate-multi']) || isset($_GET['action']) && $_GET['action'] == 'activate-plugin' ) {
-      return;
-    }
-    wp_safe_redirect(add_query_arg(array('page' => $this->strPluginSlug . '-welcome'), admin_url('index.php')));
-  }
-
-  public function welcome_screen_pages() {
-    add_dashboard_page(
-            'Welcome To Welcome Screen', 'Welcome To Welcome Screen', 'read', $this->strPluginSlug . '-welcome', array($this, 'welcome_screen_content')
-    );
-  }
-
-  public function welcome_screen_content() {
-
-    $prev_ver = str_replace( array('.beta','.release'), '', get_option($this->strPluginSlug . '-prev-ver') );
-    update_option($this->strPluginSlug . '-prev-ver', $this->version);
-    $args = (object) array(
-                'slug' => $this->strPluginSlug,
-                'fv_readme_file' => dirname(__FILE__) . '/readme.txt',
-                'fv_prev_ver' => $prev_ver
-    );
-    $changelog = $this->changelog_filter(false, false, $args);
-    if ($changelog) {
-      $changelog = $changelog->sections['changelog'];
-    }
-    $version = $this->version;
-
-    if (file_exists(dirname(__FILE__) . '/welcome.php')) {
-      include(dirname(__FILE__) . '/welcome.php');
-    } else {
-      //TODO:DEFAULT BEHAVIOR
-    }
-  }
-
-  public function welcome_screen_remove_menus() {
-    remove_submenu_page('index.php', $this->strPluginSlug . '-welcome');
   }
 
 }
