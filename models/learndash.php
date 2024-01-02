@@ -141,6 +141,13 @@ class FV_Player_Learndash_LMS {
   
   // https://developers.learndash.com/hook/learndash_settings_fields/
   function save_field( $post_id ) {
+    
+    if (
+      ! isset( $_POST['learndash-lesson-access-settings']['nonce'] ) ||
+      ! wp_verify_nonce( $_POST['learndash-lesson-access-settings']['nonce'], 'learndash-lesson-access-settings' )
+    ) {
+      return;
+    }
 
     // Is it saving LearnDash lesson or a topic?
     $post_key = false;
