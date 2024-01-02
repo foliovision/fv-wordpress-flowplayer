@@ -55,7 +55,7 @@ class FV_Player_Bunny_Stream_API {
           'AccessKey' => $this->access_key
         ),
         'body' => wp_json_encode( $args ),
-        'timeout' => 10
+        'timeout' => 25
       ) );
 
     } else {
@@ -65,7 +65,7 @@ class FV_Player_Bunny_Stream_API {
           'Content-Type' => 'application/json',
           'AccessKey' => $this->access_key
         ),
-        'timeout' => 10
+        'timeout' => 25
       ) );
 
     }
