@@ -2179,14 +2179,14 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
     <?php else : ?>
       <div id="fv_flowplayer_ad">
         <div class="text-part">
-          <h2>FV <strong>Player</strong></h2>
-          <span class="red-text"><?php _e( 'with your own branding', 'fv-player' ); ?></span>
+          <h2>FV <strong>Player</strong> Pro</h2>
+          <span class="red-text"><?php _e( 'Host your videos anywhere', 'fv-player' ); ?></span>
             <ul>
-            <li><?php _e( 'Put up your own logo', 'fv-player' ); ?></li>
-            <li><?php _e( 'Or remove the logo completely', 'fv-player' ); ?></li>
-            <li><?php _e( 'The best video plugin for Wordpress', 'fv-player' ); ?></li>
+            <li><?php _e( 'Pick your favorite CDN', 'fv-player' ); ?></li>
+            <li><?php _e( 'Encrypt your videos to avoid downloading', 'fv-player' ); ?></li>
+            <li><?php _e( 'Interactive transcript, AB loop&hellip;', 'fv-player' ); ?></li>
             </ul>
-              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e( 'Easter sale!', 'fv-player' ); ?></strong><br /><?php _e( 'All Licenses 20% Off', 'fv-player' ); ?></a></p>
+              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e( 'Christmas sale!', 'fv-player' ); ?></strong><br /><?php _e( 'All Licenses 20% Off', 'fv-player' ); ?></a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
