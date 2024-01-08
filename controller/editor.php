@@ -22,7 +22,7 @@ function fv_player_shortcode_editor_scripts_enqueue() {
   wp_register_script('fvwpflowplayer-domwindow', flowplayer::get_plugin_url().'/js/jquery.colorbox-min.js',array('jquery'), $fv_wp_flowplayer_ver  );
   wp_enqueue_script('fvwpflowplayer-domwindow');
 
-  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), defined('SCRIPT_DEBUG') ? filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ) : $fv_wp_flowplayer_ver );
+  wp_register_script('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ) );
   wp_register_script('fvwpflowplayer-editor-screenshots', flowplayer::get_plugin_url().'/js/editor-screenshots.js',array('jquery','fvwpflowplayer-shortcode-editor','flowplayer'), $fv_wp_flowplayer_ver );
 
   wp_localize_script( 'fvwpflowplayer-shortcode-editor', 'fv_player_editor_conf', array(
