@@ -64,14 +64,6 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
     !flowplayer.support.iOS && flowplayer.support.browser.safari && parseInt(flowplayer.support.browser.version) >= 8
   ) {
     flowplayer.conf.hlsjs.safari = true;
-
-    /**
-     * Some streams fail to start on a single click, seems like we could trap it using the 
-     * hlsBufferFlushing event or hlsFragParsingInitSegment if it occurs multiple times.
-     */
-    if ( flowplayer.support.browser.safari && parseFloat( flowplayer.support.browser.version ) >= 16.5 ) {
-      flowplayer.conf.hlsjs.safari = false;
-    }
   }
   
   flowplayer.support.fvmobile = !!( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android );
@@ -174,7 +166,7 @@ jQuery(document).ready( function() {
     loading_count++;
     if( loading_count < 1000 && (
       window.fv_vast_conf && !window.FV_Player_IMA ||
-      window.fv_player_pro && !window.FV_Player_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
+      window.fv_player_pro && !window.FV_Flowplayer_Pro && !window.FV_Player_Pro && document.getElementById('fv_player_pro') != fv_player_pro ||
       window.fv_player_user_playlists && !window.fv_player_user_playlists.is_loaded ||
       // if using FV Player JS Loader wait until all scripts have finished loading
       window.FV_Player_JS_Loader_scripts_total && window.FV_Player_JS_Loader_scripts_loaded < window.FV_Player_JS_Loader_scripts_total
@@ -358,7 +350,6 @@ function fv_player_preload() {
     });
 
     api.bind('ready', function(e,api,video) {
-      //console.log('playlist mark',video.index);
       setTimeout( function() {
         if( video.index > -1 ) {
           if( playlist_external.length > 0 ) {
@@ -371,11 +362,11 @@ function fv_player_preload() {
 
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
-      // Show splash img if audio
+      // Only remove splash img if video, audio file will show the splash during playback
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
 
         // Ensure the splash is only removed once the video really really starts playing when using autoplay
-        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash ) {
+        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash || 'application/x-mpegurl' == api.video.type ) {
           api.one('progress', function() {
             splash_img.remove();
             splash_text.remove();

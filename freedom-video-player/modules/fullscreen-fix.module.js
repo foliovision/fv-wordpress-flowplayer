@@ -69,7 +69,7 @@ flowplayer(function(player, root) {
 
       // Exit the fullscreen should discard the CSS fullscreen of player too
       document.addEventListener("fullscreenchange", function(e) {
-        flowplayer( '.is-playing, .is-ready, .is-loading' ).trigger( FS_EXIT );
+        flowplayer( '.is-fullscreen' ).trigger( FS_EXIT );
       });
     }
 

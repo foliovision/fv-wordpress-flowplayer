@@ -83,10 +83,10 @@ Class FvPlayerTrackerWorker {
       die( "Error: missing arguments!" );
     }
 
-    // TODO: Will the nonce last for more than 24 hours?
+    // $action has one been added in WordPress 6.1 unfortunately
     add_filter(
       'nonce_life',
-      function( $seconds, $action ) {
+      function( $seconds, $action = false ) {
         if ( 'fv_player_track' === $action ) {
           $seconds = 7 * DAY_IN_SECONDS;
         }
