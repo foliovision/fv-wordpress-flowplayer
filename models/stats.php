@@ -778,8 +778,8 @@ class FV_Player_Stats {
 
       $date_range = "date BETWEEN '$last_year_start' AND '$last_year_end'";
     } else if( is_numeric($range)) { // specific year like 2021
-      $year_start = $range . '-01-01';
-      $year_end = $range . '-12-31';
+      $year_start = intval( $range ) . '-01-01';
+      $year_end = intval( $range ) . '-12-31';
 
       $date_range = "date BETWEEN '$year_start' AND '$year_end'";
     }
@@ -828,8 +828,8 @@ class FV_Player_Stats {
       $end_day = gmdate('Y-12-31', strtotime('-1 year'));
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( is_numeric($range) ) { // get dates for specific year like 2021
-      $start_day = $range . '-01-01';
-      $end_day = $range . '-12-31';
+      $start_day = intval( $range ) . '-01-01';
+      $end_day = intval( $range ) . '-12-31';
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     }
 
