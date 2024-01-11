@@ -1273,7 +1273,13 @@ function fvplayer_editor( $args ) {
  */
 add_filter( 'nonce_life', 'fv_player_frontend_nonce_life', PHP_INT_MAX, 2 );
 
-function fv_player_frontend_nonce_life( $seconds, $action ) {
+/**
+ * @param int $seconds
+ * @param string|false $action This has one been added in WordPress 6.1 unfortunately
+ * 
+ * @return int Longer nonce TTL if it's used by FV Player
+ */
+function fv_player_frontend_nonce_life( $seconds, $action = false ) {
   if (
     in_array(
       $action,
