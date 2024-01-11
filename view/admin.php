@@ -1244,7 +1244,13 @@ function fv_flowplayer_admin_skin() {
       'vast' => 'skip'
       ) );
     $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
+
+    // Video checker uses <noscript> and style="display: none" so we need to keep that
+    add_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
+    add_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
     echo wp_kses_post( $fv_fp->admin_preview_player[0] );
+    remove_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
+    remove_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
     ?>
     <?php _e( 'Hint: play the video to see live preview of the color settings', 'fv-player' ) ?>
   </div>
@@ -1509,6 +1515,17 @@ function fv_flowplayer_admin_skin() {
   do_action('fv_player_extensions_admin_load_assets');
 }
 
+function fv_flowplayer_admin_skin_safe_styles( $styles ) {
+  $styles[] = 'display';
+  return $styles;
+}
+
+function fv_flowplayer_admin_skin_safe_tags( $tags, $context ) {
+  if ( 'post' === $context ) {
+      $tags['noscript'] = array();
+  }
+  return $tags;
+}
 
 function fv_flowplayer_admin_skin_playlist() {
 	global $fv_fp;
