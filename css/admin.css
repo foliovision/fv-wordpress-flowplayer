@@ -194,14 +194,20 @@ Brizy editor support
   pointer-events: all;
 }
 
-/*
-Popup
-*/
-#fv-player-popup-container {
-  position: fixed; z-index: 99;
-  top: 60px; right: 5px;
-  width: 200px;
-  border: 1px solid #000;
+#fv-player-settings-save-notice {
+  position: fixed;
+  z-index: 99;
+  top: 60px;
+  right: 5px;
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  border-left-width: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  margin: 5px 15px 2px;
+  padding: 1px 12px;
+  border-left-color: #00a32a;
   display: none;
-  font-size: 16px;
+}
+#fv-player-settings-save-notice.is-error {
+  border-left-color: #d63638;
 }

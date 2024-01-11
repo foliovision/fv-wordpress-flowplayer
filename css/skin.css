@@ -19,13 +19,13 @@
       -ms-flex-order: 100;
           order: 100; }
   .fp-fullscreen svg {
+    fill: none;
     vertical-align: text-top;
     stroke: whitesmoke;
     stroke-width: 4;
     width: 22px; }
     .fp-fullscreen svg.fp-fullscreen-exit {
       display: none;
-      fill: none;
       stroke-width: 3; }
 
 .fp-checked:before {
@@ -186,9 +186,6 @@
 .freedomplayer.is-live.is-dvr.is-live-position .fp-duration {
   color: #00abcd; }
 
-.freedomplayer.is-mouseout:not(.is-splash):not(.is-seeking):not(.fixed-controls):not(.is-mobile-seeking) .fp-timeline {
-  pointer-events: none; }
-
 .freedomplayer.is-tiny:not(.is-fullscreen) {
   font-size: .7em; }
 
@@ -197,6 +194,9 @@
 
 .freedomplayer.is-captions-rtl .fp-captions {
   direction: rtl; }
+
+.freedomplayer.is-touch:not(.is-audio):not(.is-popup-showing) .fp-controls .fp-playbtn {
+  display: none; }
 
 .freedomplayer.no-buffer .fp-ui .fp-controls .fp-timeline .fp-buffer {
   display: none; }
@@ -575,13 +575,16 @@
   .freedomplayer .fp-remaining {
     display: none; }
   .freedomplayer .fp-rewind, .freedomplayer .fp-forward {
-    width: 9%;
+    width: 18vw;
     position: absolute;
     left: 0;
     height: 54%;
     top: 50%;
     -webkit-transform: translateY(-50%);
             transform: translateY(-50%); }
+    @media screen and (orientation: portrait) {
+      .freedomplayer .fp-rewind, .freedomplayer .fp-forward {
+        width: 14vw; } }
     .freedomplayer .fp-rewind svg, .freedomplayer .fp-forward svg {
       max-width: 14vw;
       width: 2em;
@@ -592,11 +595,27 @@
                 transform: scale(0.9); }
   .freedomplayer .fp-forward {
     left: auto;
+    padding-left: 9vw;
     right: 0; }
+    @media screen and (orientation: portrait) {
+      .freedomplayer .fp-forward {
+        padding-left: auto; } }
     .freedomplayer .fp-forward svg {
-      margin-left: 0; }
-  .freedomplayer .fp-rewind svg {
-    margin-right: 0; }
+      margin-left: 9vw; }
+      @media screen and (orientation: portrait) {
+        .freedomplayer .fp-forward svg {
+          margin-left: 0; } }
+  .freedomplayer .fp-rewind {
+    left: 0;
+    padding-right: 9vw; }
+    @media screen and (orientation: portrait) {
+      .freedomplayer .fp-rewind {
+        padding-right: auto; } }
+    .freedomplayer .fp-rewind svg {
+      margin-right: 9vw; }
+      @media screen and (orientation: portrait) {
+        .freedomplayer .fp-rewind svg {
+          margin-right: 0; } }
   .freedomplayer.is-mouseover.is-ready .fp-forward, .freedomplayer.is-mouseover.is-ready .fp-rewind {
     display: block; }
     .freedomplayer.is-mouseover.is-ready .fp-forward svg, .freedomplayer.is-mouseover.is-ready .fp-rewind svg {
@@ -668,12 +687,6 @@
     .freedomplayer .fp-bar.no-animation > *, .freedomplayer .no-animation.fp-bar-slider > * {
       -webkit-transition: none;
       transition: none; }
-  .freedomplayer .fp-bar-vertical {
-    cursor: row-resize;
-    width: .9em; }
-    .freedomplayer .fp-bar-vertical > * {
-      bottom: 0;
-      width: 100%; }
   .freedomplayer .fp-timeline {
     -webkit-transition: height .2s;
     transition: height .2s; }
