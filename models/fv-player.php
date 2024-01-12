@@ -163,6 +163,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     add_filter( 'fv_flowplayer_video_src', array( $this, 'add_fake_extension' ) );
     add_filter('fv_player_item', array($this, 'get_video_checker_media') );
+
+    add_filter( 'searchwp_pre_set_post', array( $this, 'searchwp_pre_post_content' ) );
+    add_filter( 'searchwp_set_post', array( $this, 'searchwp_post_content' ) );
   }
 
 
@@ -2845,6 +2848,40 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     return $value;
+  }
+
+  function searchwp_pre_post_content( $post ) {
+    $post->post_content = preg_replace( '~(\[fvplayer(.*?)\])~', '<!--FV Player Search WP Start-->[fvplayer embed="false" $1]<!--FV Player Search WP End-->', $post->post_content );
+    return $post;
+  }
+
+  function searchwp_post_content( $post ) {
+    $post->post_content = preg_replace_callback( '~<!--FV Player Search WP Start-->[\s\S]*?<!--FV Player Search WP End-->~', array( $this, 'searchwp_post_content_callback' ), $post->post_content );
+    return $post;
+  }
+
+  function searchwp_post_content_callback( $match ) {
+    $html = $match[0];
+
+    $html = preg_replace( '~<noscript.*?</noscript>~', '', $html );
+    $html = preg_replace( '~<script.*?</script>~', '', $html );
+    $html = preg_replace( '~<svg.*?</svg>~', '', $html );
+
+    $allowed_html = array(
+      // Allowing the 'data-item' attribute for 'a' tags
+      'a' => array(
+          'data-item' => true,
+      ),
+      // Allow 'data-item' for 'div' tags
+      'div' => array(
+          'data-item' => true,
+      ),
+      // ... Add other tags as needed
+    );
+
+    $html = wp_kses( $html, $allowed_html );
+
+    return $html;
   }
 
   // Also used by FV Player extensions
