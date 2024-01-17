@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '8.0.beta.25';
+$fv_wp_flowplayer_ver = '8.0.beta.25.2';
 $fv_wp_flowplayer_core_ver = '8.0.beta.22.106.1';
 
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -58,8 +58,6 @@ include_once(dirname( __FILE__ ) . '/models/custom-videos.php');
 include_once(dirname( __FILE__ ) . '/models/seo.php');
 
 include_once(dirname( __FILE__ ) . '/models/subtitles.php');
-
-include_once(dirname( __FILE__ ) . '/models/users-ultra-pro.php');
 
 include_once(dirname( __FILE__ ) . '/models/widget.php');
 

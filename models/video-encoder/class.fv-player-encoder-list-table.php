@@ -279,7 +279,15 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   }
 
   private function get_data($id = false, $args = false ) {
-    if( !$args ) $args = $_GET;
+    if( !$args ) {
+      $args = array();
+      if ( ! empty( $_GET['exclude'] ) ) $args['exclude'] = $_GET['exclude'];
+      if ( ! empty( $_GET['order'] ) ) $args['order'] = $_GET['order'];
+      if ( ! empty( $_GET['orderby'] ) ) $args['orderby'] = $_GET['orderby'];
+      if ( ! empty( $_GET['paged'] ) ) $args['paged'] = $_GET['paged'];
+      if ( ! empty( $_GET['status'] ) ) $args['status'] = $_GET['status'];
+      if ( ! empty( $_GET['s'] ) ) $args['s'] = $_GET['s'];
+    }
     
     $args = wp_parse_args( $args, array(
       'exclude' => false,

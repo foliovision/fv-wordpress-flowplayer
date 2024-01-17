@@ -65,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
   <div>
     <form id="fv_player_stats_filter" method="get" action="<?php echo admin_url( 'admin.php' ); ?>" >
-      <input type="hidden" name="page" value="<?php echo $current_page ?>" />
+      <input type="hidden" name="page" value="<?php echo esc_attr( $current_page ); ?>" />
       <select id="fv_player_stats_select" name="stats_range">
         <?php
           $dates = $FV_Player_Stats->get_valid_dates($user_id);

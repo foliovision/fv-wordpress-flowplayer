@@ -221,6 +221,7 @@ if (!Date.now) {
 
           var fd = new FormData();
           fd.append('action', 'fv_wp_flowplayer_video_position_save');
+          fd.append('nonce', fv_player.video_position_save_nonce);
           fd.append('videoTimes', encodeURIComponent(JSON.stringify(postDataPositions)));
           fd.append('playlistItems', encodeURIComponent(JSON.stringify(postDataPlaylists)));
           navigator.sendBeacon(fv_player.ajaxurl, fd);
@@ -236,6 +237,7 @@ if (!Date.now) {
             complete: callback,
             data: {
               action: 'fv_wp_flowplayer_video_position_save',
+              nonce: fv_player.video_position_save_nonce,
               videoTimes: postDataPositions,
               playlistItems: postDataPlaylists
             }

@@ -10,7 +10,53 @@ if( file_exists('../../../../wp-load.php') ) {
   require('../../../../wp-load.php');
 }
 
+//require_once( ABSPATH . WPINC . '/pluggable.php' );
+
+/**
+ * Including what's necessary for nonce verification
+ */
+require_once( ABSPATH . WPINC . '/capabilities.php' );
+require_once( ABSPATH . WPINC . '/class-wp-roles.php' );
+require_once( ABSPATH . WPINC . '/class-wp-role.php' );
+require_once( ABSPATH . WPINC . '/class-wp-user.php' );
+require_once( ABSPATH . WPINC . '/user.php' );
+
+// Translation and localization.
+require_once( ABSPATH . WPINC . '/pomo/mo.php' );
+require_once( ABSPATH . WPINC . '/l10n.php' );
+
+if ( file_exists( ABSPATH . WPINC . '/class-wp-textdomain-registry.php' ) ) {
+  require_once( ABSPATH . WPINC . '/class-wp-textdomain-registry.php' );
+}
+
+require_once( ABSPATH . WPINC . '/class-wp-locale.php' );
+require_once( ABSPATH . WPINC . '/class-wp-locale-switcher.php' );
+
+if ( class_exists( 'WP_Textdomain_Registry' ) ) {
+  global $wp_textdomain_registry;
+  if ( ! $wp_textdomain_registry instanceof WP_Textdomain_Registry ) {
+    $wp_textdomain_registry = new WP_Textdomain_Registry();
+  }
+}
+
 require_once( ABSPATH . WPINC . '/pluggable.php' );
+require_once( ABSPATH . WPINC . '/functions.php' );
+require_once( ABSPATH . WPINC . '/formatting.php' );
+require_once( ABSPATH . WPINC . '/link-template.php' );
+require_once( ABSPATH . WPINC . '/shortcodes.php' );
+require_once( ABSPATH . WPINC . '/general-template.php' );
+require_once( ABSPATH . WPINC . '/class-wp-session-tokens.php' );
+require_once( ABSPATH . WPINC . '/class-wp-user-meta-session-tokens.php' );
+require_once( ABSPATH . WPINC . '/meta.php' );
+require_once( ABSPATH . WPINC . '/kses.php' );
+require_once( ABSPATH . WPINC . '/rest-api.php' );
+require_once( ABSPATH . WPINC . '/blocks.php' );
+
+// Without this plugins_url() won't work
+wp_plugin_directory_constants();
+
+// Without this the user login status won't work
+wp_cookie_constants();
 
 Class FvPlayerTrackerWorker {
 
@@ -35,6 +81,23 @@ Class FvPlayerTrackerWorker {
       !isset( $_REQUEST['video_id'] ) && !isset( $_REQUEST['watched'] )
     ){
       die( "Error: missing arguments!" );
+    }
+
+    // $action has one been added in WordPress 6.1 unfortunately
+    add_filter(
+      'nonce_life',
+      function( $seconds, $action = false ) {
+        if ( 'fv_player_track' === $action ) {
+          $seconds = 7 * DAY_IN_SECONDS;
+        }
+        return $seconds;
+      },
+      PHP_INT_MAX,
+      2
+    );
+
+    if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv_player_track' ) ) {
+      die( "Error: invalid nonce!" );
     }
 
     if( $_REQUEST['tag'] == 'click' ) {
@@ -219,6 +282,11 @@ Class FvPlayerTrackerWorker {
    * @return void
    */
   function track() {
+
+    if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv_player_track' ) ) {
+      die( "Error: invalid nonce!" );
+    }
+
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
     $this->file = fopen( $this->cache_path."/".$this->cache_filename, 'r+');
 
@@ -246,7 +314,7 @@ Class FvPlayerTrackerWorker {
 
     if( ! $this->incrementCacheCounter() ) {
       // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
-      file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export($_REQUEST,true)."\n", FILE_APPEND ); // todo: remove
+      file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export( $this,true )."\n", FILE_APPEND ); // todo: remove
     }
 
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose

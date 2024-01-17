@@ -46,7 +46,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
           if ( $libs->Items && count( $libs->Items ) ) {
             foreach ( $libs->Items as $lib ) {
               ?>
-                <option value="<?php echo $lib->Id; ?>"><?php echo $lib->Name; ?></option>
+                <option value="<?php echo esc_attr( $lib->Id ); ?>"><?php echo esc_html( $lib->Name ); ?></option>
               <?php
             }
           }

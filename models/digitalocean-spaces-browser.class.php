@@ -13,7 +13,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
       global $fv_wp_flowplayer_ver;
       wp_enqueue_script( 'fv-player-dos-browser', flowplayer::get_plugin_url().'/js/digitalocean-spaces-browser.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
       wp_localize_script( 'fv-player-dos-browser', 'fv_player_dos_browser', array(
-          'nonce' => wp_create_nonce( 'fv_player_dos_browser' ),
+          'nonce' => wp_create_nonce( $this->ajax_action_name ),
         )
       );
     }
@@ -56,7 +56,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_player_dos_browser' ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], $this->ajax_action_name ) ) {
       return array(
         'items' => array(),
         'name' => '/',

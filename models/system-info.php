@@ -61,35 +61,34 @@ SITE_URL:                 <?php echo site_url() . "\n"; ?>
 HOME_URL:                 <?php echo home_url() . "\n"; ?>
 Plugin URL:               <?php echo flowplayer::get_plugin_url() . "\n"; ?>
 
-FV Player version:        <?php echo $fv_wp_flowplayer_ver . "\n"; ?>
-FV Player core version:   <?php echo $fv_wp_flowplayer_core_ver . "\n"; ?>
-FV Player license:        <?php $license = get_transient('fv_flowplayer_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv_flowplayer_license'))." GMT)\n"; ?>
+FV Player version:        <?php echo esc_attr( $fv_wp_flowplayer_ver ) . "\n"; ?>
+FV Player core version:   <?php echo esc_attr( $fv_wp_flowplayer_core_ver ) . "\n"; ?>
 
 <?php if( isset($FV_Player_Pro) ) : ?>
-FV Player Pro version:    <?php if( isset($FV_Player_Pro->version) ) echo $FV_Player_Pro->version."\n"; ?>
+FV Player Pro version:    <?php if( isset($FV_Player_Pro->version) ) echo esc_attr( $FV_Player_Pro->version ) . "\n"; ?>
 FV Player Pro license:    <?php $license = get_transient('fv-player-pro_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pro_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_VAST) ) : ?>
-FV Player VAST version:   <?php if( isset($FV_Player_VAST->version) ) echo $FV_Player_VAST->version."\n"; ?>
+FV Player VAST version:   <?php if( isset($FV_Player_VAST->version) ) echo esc_attr( $FV_Player_VAST->version ) . "\n"; ?>
 FV Player VAST license:   <?php $license = get_transient('fv-player-vast_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-vast_license'))." GMT)\n"; ?>
 <?php endif; ?>
 <?php if( isset($FV_Player_PayPerView) ) : ?>
-FV Player PPV version:    <?php if( isset($FV_Player_PayPerView->version) ) echo $FV_Player_PayPerView->version."\n"; ?>
+FV Player PPV version:    <?php if( isset($FV_Player_PayPerView->version) ) echo esc_attr( $FV_Player_PayPerView->version ) . "\n"; ?>
 FV Player PPV license:    <?php $license = get_transient('fv-player-pay-per-view_license'); if( $license && isset($license->valid) && $license->valid ) echo "Valid (next check ".gmdate("Y-m-d H:i:s",get_option('_transient_timeout_fv-player-pay-per-view_license'))." GMT)\n"; ?>
 <?php endif; ?>
 
 WordPress Version:        <?php echo get_bloginfo( 'version' ) . "\n"; ?>
 Permalink Structure:      <?php echo get_option( 'permalink_structure' ) . "\n"; ?>
-Active Theme:             <?php echo $theme . "\n"; ?>
+Active Theme:             <?php echo esc_attr( $theme ) . "\n"; ?>
 <?php if( $host ) : ?>
-Host:                     <?php echo $host . "\n"; ?>
+Host:                     <?php echo esc_attr( $host ) . "\n"; ?>
 <?php endif; ?>
 
 Browser:                  <?php echo isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'none'; ?>
 
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
-Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
+MySQL Version:            <?php echo esc_attr( $wpdb->db_version() ) . "\n"; ?>
+Web Server Info:          <?php echo esc_attr( $_SERVER['SERVER_SOFTWARE'] ) . "\n"; ?>
 
 WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT."\n"; ?>
 PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
@@ -120,7 +119,7 @@ foreach ( $plugins as $plugin_path => $plugin ) {
 if ( ! in_array( $plugin_path, $active_plugins ) )
 continue;
 
-echo $plugin['Name'] . ': ' . $plugin['Version'] ."\n";
+echo esc_attr( $plugin['Name'] ) . ': ' . esc_attr( $plugin['Version'] ) ."\n";
 }
 
 if ( is_multisite() ) :
@@ -141,7 +140,7 @@ continue;
 
 $plugin = get_plugin_data( $plugin_path );
 
-echo $plugin['Name'] . ' :' . $plugin['Version'] ."\n";
+echo esc_attr( $plugin['Name'] ) . ' :' . esc_attr( $plugin['Version'] ) ."\n";
 }
 
 endif;
@@ -206,9 +205,9 @@ foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos',
     }
   }
   if( $found ) {
-    echo $found."\n\n";
+    echo esc_attr( $found ) ."\n\n";
   } else {
-    echo $table." not found!\n";
+    echo esc_attr( $table ) ." not found!\n";
   }
 }
 ?>

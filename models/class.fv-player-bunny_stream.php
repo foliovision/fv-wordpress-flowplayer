@@ -272,6 +272,13 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
   function job_submit( $id ) {
     global $fv_fp, $wpdb;
 
+    if(
+        defined('DOING_AJAX') &&
+        ( !isset( $_POST['nonce'] ) || !wp_verify_nonce( $_POST['nonce'], 'fv_player_bunny_stream' ) )
+    ) {
+      wp_send_json( array('error' => 'Bad nonce, please reload the page and try again.' ) );
+    }
+
     $target_name = $wpdb->get_var( $wpdb->prepare( "SELECT target FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE id = %d", $id ) );
 
     $body = array(
@@ -413,7 +420,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
           $fv_fp->_set_conf( $fv_fp->conf );
 
-          do_action('fv_player_bunny_stream_settings_saved', $_POST);
+          do_action( 'fv_player_bunny_stream_settings_saved', $fv_fp->conf['bunny_stream'] );
 
           echo "<div class='updated'><p>Settings saved</p></div>";
 

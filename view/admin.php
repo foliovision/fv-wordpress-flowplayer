@@ -47,7 +47,7 @@ function fv_flowplayer_admin_overlay() {
 						<tr>
 							<td colspan="2">
 								<label for="overlay"><?php _e( 'Default Overlay Code', 'fv-player' ); ?>:</label><br />
-								<textarea id="overlay" name="overlay" class="large-text code" rows="<?php echo $lines; ?>"><?php echo esc_textarea($fv_fp->_get_option('overlay')); ?></textarea>
+								<textarea id="overlay" name="overlay" class="large-text code" rows="<?php echo intval( $lines ); ?>"><?php echo esc_textarea($fv_fp->_get_option('overlay')); ?></textarea>
 							</td>
 						</tr>
 						<tr>
@@ -151,7 +151,7 @@ function fv_flowplayer_admin_amazon_options() {
 			$count = 0;
 			foreach( $fv_fp->_get_option('amazon_bucket') AS $key => $item ) :
 				$count++;
-				$amazon_tr_class = ($count==1) ? ' class="amazon-s3-first"' : ' class="amazon-s3-'.$count.'"';
+				$amazon_tr_class = ($count==1) ? ' class="amazon-s3-first"' : ' class="amazon-s3-' . intval( $count ) . '"';
             $sRegion = $fv_fp->_get_option( array( 'amazon_region', $key ) );
 ?>
         <tr<?php echo $amazon_tr_class; ?>>
@@ -166,7 +166,7 @@ function fv_flowplayer_admin_amazon_options() {
 
                 foreach (fv_player_get_aws_regions() as $aws_region_id => $aws_region_name) {
                   ?>
-                  <option value="<?php echo $aws_region_id; ?>"<?php if( $sRegion == $aws_region_id ) echo " selected"; ?>><?php echo $aws_region_name .' ('. $aws_region_id.')'; ?></option>
+                  <option value="<?php echo esc_attr( $aws_region_id ); ?>"<?php if( $sRegion == $aws_region_id ) echo " selected"; ?>><?php echo esc_html( $aws_region_name .' ('. $aws_region_id.')' ); ?></option>
                   <?php
                 }
 
@@ -197,7 +197,7 @@ function fv_flowplayer_admin_amazon_options() {
           <?php if( $secret ): ?>
             <input name="<?php echo esc_attr($secret_key); ?>" value="<?php if(empty($censored_val)) {echo '0';} else {echo '1';} ?>" type="hidden" />
             <?php if(!empty($censored_val)): ?>
-              <code class="secret-preview"><?php echo $censored_val; ?></code>
+              <code class="secret-preview"><?php echo esc_attr( $censored_val ); ?></code>
               <a href="#" data-is-empty="0" data-setting-change="<?php echo esc_attr($secret_key.'-index-'.$key); ?>" >Change</a>
             <?php endif; ?>
           <?php endif; ?>
@@ -240,8 +240,8 @@ function fv_flowplayer_admin_default_options() {
               <td><label for="width"><?php _e( 'Default Video Size', 'fv-player' ); ?>:</label></td>
               <td>
                 <p class="description">
-                  <label for="width"><?php _e( 'Width', 'fv-player' ); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo $fv_fp->_get_option('width'); ?>" />
-                  <label for="height"><?php _e( 'Height', 'fv-player' ); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo $fv_fp->_get_option('height'); ?>" />
+                  <label for="width"><?php _e( 'Width', 'fv-player' ); ?>:</label>&nbsp;<input type="text" class="small" name="width" id="width" value="<?php echo esc_attr( $fv_fp->_get_option('width') ); ?>" />
+                  <label for="height"><?php _e( 'Height', 'fv-player' ); ?>:</label>&nbsp;<input type="text" class="small" name="height" id="height" value="<?php echo esc_attr( $fv_fp->_get_option('height') ); ?>" />
                   <?php _e( 'Enter values in pixels or 100%.', 'fv-player' ); ?>
                 </p>
               </td>
@@ -353,7 +353,7 @@ function fv_flowplayer_admin_default_options() {
                       ) as $style => $name
                     ) {
                       ?>
-                      <option value="<?php echo $style; ?>"<?php if( $value === $style ) echo ' selected="selected"'; ?>><?php echo $name; ?></option>
+                      <option value="<?php echo esc_attr( $style ); ?>"<?php if( $value === $style ) echo ' selected="selected"'; ?>><?php echo esc_html( $name ); ?></option>
                       <?php
                     }
                     ?>
@@ -363,7 +363,7 @@ function fv_flowplayer_admin_default_options() {
               </td>
             </tr>
 
-            <?php $fv_fp->_get_checkbox(__( 'Popup Box', 'fv-player' ), 'popupbox', __( 'Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-player' ) ); ?>
+            <?php //$fv_fp->_get_checkbox(__( 'Popup Box', 'fv-player' ), 'popupbox', __( 'Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-player' ) ); ?>
 
             <?php $fv_fp->_get_checkbox(__( 'Repeat Button', 'fv-player' ), 'ui_repeat_button', __( 'Adds a button to set playlist/track repeat and shuffle.', 'fv-player' ) ); ?>
 
@@ -373,7 +373,7 @@ function fv_flowplayer_admin_default_options() {
               <td><label for="sharing_text"><?php _e( 'Sharing Text', 'fv-player' ); ?>:</label></td>
               <td>
                 <p class="description">
-                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php echo $fv_fp->_get_option('sharing_email_text'); ?>" placeholder="<?php _e( 'Check out the amazing video here', 'fv-player' ); ?>" />
+                  <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php echo esc_attr( $fv_fp->_get_option('sharing_email_text') ); ?>" placeholder="<?php _e( 'Check out the amazing video here', 'fv-player' ); ?>" />
                 </p>
               </td>
             </tr>
@@ -826,7 +826,7 @@ function fv_flowplayer_admin_select_popups($aArgs){
   $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
   $aArgs = wp_parse_args( $aArgs, array( 'id'=>$sId, 'cva_id'=>'', 'show_default' => false ) );
   ?>
-  <select id="<?php echo $aArgs['id']; ?>" name="<?php echo $aArgs['id']; ?>">
+  <select id="<?php echo esc_attr( $aArgs['id'] ); ?>" name="<?php echo esc_attr( $aArgs['id'] ); ?>">
     <?php if( $aArgs['show_default'] ) : ?>
       <option>Use site default</option>
     <?php endif; ?>
@@ -835,10 +835,10 @@ function fv_flowplayer_admin_select_popups($aArgs){
     <?php
     if( isset($aPopupData) && is_array($aPopupData) && count($aPopupData) > 0 ) {
       foreach( $aPopupData AS $key => $aPopupAd ) {
-        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo $key; ?>"><?php
-        echo $key;
-        if( !empty($aPopupAd['title']) ) echo ' - '.$aPopupAd['title'];
-        if( !empty($aPopupAd['name']) ) echo ' - '.$aPopupAd['name'];
+        ?><option <?php if( $aArgs['item_id'] == $key ) echo 'selected'; ?> value="<?php echo esc_attr( $key ); ?>"><?php
+        echo esc_html( $key );
+        if( !empty($aPopupAd['title']) ) echo ' - ' . esc_html( $aPopupAd['title'] );
+        if( !empty($aPopupAd['name']) ) echo ' - ' . esc_html( $aPopupAd['name'] );
         if( !empty($aPopupAd['disabled']) && $aPopupAd['disabled'] == 1 ) echo ' (currently disabled)';
         ?></option><?php
       }
@@ -895,30 +895,30 @@ function fv_flowplayer_admin_popups(){
 
             foreach ($aPopupData AS $key => $aPopup) {
               ?>
-              <tr class='data' id="fv-player-popup-item-<?php echo $key; ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
-                <td class='id'><?php echo $key ; ?></td>
+              <tr class='data' id="fv-player-popup-item-<?php echo esc_html( $key ); ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
+                <td class='id'><?php echo esc_html( $key ); ?></td>
                     <td>
                       <table class='fv-player-popup-formats'>
                         <tr>
                         	<td><label><?php _e( 'Name', 'fv-player' ); ?>:</label></td>
-                        	<td><input type='text' maxlength="40" name='popups[<?php echo $key; ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
+                        	<td><input type='text' maxlength="40" name='popups[<?php echo esc_attr( $key ); ?>][name]' value='<?php echo ( !empty($aPopup['name']) ? esc_attr($aPopup['name']) : '' ); ?>' placeholder='' /></td>
                       	</tr>
                         <tr>
                         	<td><label>HTML:</label></td>
-                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
+                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo esc_attr( $key ); ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                       	</tr>
                         <tr>
                         	<td><label><?php _e( 'Custom<br />CSS', 'fv-player' ); ?>:</label></td>
-                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo $key; ?>][css]'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '.wpfp_custom_popup .fv_player_popup-' . $key . ' { }' ); ?></textarea></td>
+                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo esc_attr( $key ); ?>][css]'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '.wpfp_custom_popup .fv_player_popup-' . $key . ' { }' ); ?></textarea></td>
                       	</tr>
                       </table>
                     </td>
                     <td>
-                      <input type='hidden' name='popups[<?php echo $key; ?>][disabled]' value='0' />
-                      <input id='PopupAdPause-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][pause]' value='1' <?php echo (isset($aPopup['pause']) && $aPopup['pause'] ? 'checked="checked"' : ''); ?> />
-                      <label for='PopupAdPause-<?php echo $key; ?>'><?php _e( 'Show on pause', 'fv-player' ); ?></label><br />
-                      <input id='PopupAdDisabled-<?php echo $key; ?>' type='checkbox' name='popups[<?php echo $key; ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> />
-                      <label for='PopupAdDisabled-<?php echo $key; ?>'><?php _e( 'Disable', 'fv-player' ); ?></label><br />
+                      <input type='hidden' name='popups[<?php echo esc_attr( $key ); ?>][disabled]' value='0' />
+                      <input id='PopupAdPause-<?php echo esc_html( $key ); ?>' type='checkbox' name='popups[<?php echo esc_attr( $key ); ?>][pause]' value='1' <?php echo (isset($aPopup['pause']) && $aPopup['pause'] ? 'checked="checked"' : ''); ?> />
+                      <label for='PopupAdPause-<?php echo esc_html( $key ); ?>'><?php _e( 'Show on pause', 'fv-player' ); ?></label><br />
+                      <input id='PopupAdDisabled-<?php echo esc_html( $key ); ?>' type='checkbox' name='popups[<?php echo esc_attr( $key ); ?>][disabled]' value='1' <?php echo (isset($aPopup['disabled']) && $aPopup['disabled'] ? 'checked="checked"' : ''); ?> />
+                      <label for='PopupAdDisabled-<?php echo esc_html( $key ); ?>'><?php _e( 'Disable', 'fv-player' ); ?></label><br />
                       <a class='fv-player-popup-remove' href=''><?php _e( 'Remove', 'fv-player' ); ?></a></td>
                   </tr>
               <?php
@@ -997,7 +997,7 @@ function fv_flowplayer_admin_pro() {
   global $fv_fp;
 
   if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
+    $aCheck = get_transient( 'fv-player-pro_license' );
   }
 
   if( isset($aCheck->valid) && $aCheck->valid ) : ?>
@@ -1190,7 +1190,7 @@ function fv_flowplayer_admin_skin_get_table($options) {
 
     $selected_skin = $fv_fp->_get_option( 'skin' );
 ?>
-    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo $options['skin_name']; ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
+    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo esc_html( $options['skin_name'] ); ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
       $options = apply_filters( 'fv_player_skin_settings', $options );
 
@@ -1244,7 +1244,13 @@ function fv_flowplayer_admin_skin() {
       'vast' => 'skip'
       ) );
     $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
-    echo $fv_fp->admin_preview_player[0];
+
+    // Video checker uses <noscript> and style="display: none" so we need to keep that
+    add_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
+    add_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
+    echo wp_kses_post( $fv_fp->admin_preview_player[0] );
+    remove_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
+    remove_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
     ?>
     <?php _e( 'Hint: play the video to see live preview of the color settings', 'fv-player' ) ?>
   </div>
@@ -1509,6 +1515,17 @@ function fv_flowplayer_admin_skin() {
   do_action('fv_player_extensions_admin_load_assets');
 }
 
+function fv_flowplayer_admin_skin_safe_styles( $styles ) {
+  $styles[] = 'display';
+  return $styles;
+}
+
+function fv_flowplayer_admin_skin_safe_tags( $tags, $context ) {
+  if ( 'post' === $context ) {
+      $tags['noscript'] = array();
+  }
+  return $tags;
+}
 
 function fv_flowplayer_admin_skin_playlist() {
 	global $fv_fp;
@@ -1548,7 +1565,7 @@ function fv_flowplayer_admin_skin_playlist() {
       <td><label for="playlistFontColor-proxy"><?php _e( 'Font Color', 'fv-player' ); ?></label></td>
         <?php $bShowPlaylistFontColor = ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !== '#' ); ?>
       <td>
-        <input class="color" id="playlistFontColor-proxy" name="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor?'':'style="display:none;"'; ?> type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" data-fv-preview=".fp-playlist-external a h4 span { color:#%val% !important; }, .fp-playlist-external > a { color:#%val% !important; }, #dashboard-widgets .flowplayer-wrapper .fp-playlist-external h4{color: #%val% !important;}" />
+        <input class="color" id="playlistFontColor-proxy" name="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?> type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" data-fv-preview=".fp-playlist-external a h4 span { color:#%val% !important; }, .fp-playlist-external > a { color:#%val% !important; }, #dashboard-widgets .flowplayer-wrapper .fp-playlist-external h4{color: #%val% !important;}" />
         <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" />
         <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php _e( 'Use custom color', 'fv-player' ); ?><?php _e( '', 'fv-player' ); ?></a>
         <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php _e( 'Inherit from theme', 'fv-player' ); ?><?php _e( '', 'fv-player' ); ?></a>
@@ -1629,7 +1646,7 @@ function fv_flowplayer_admin_skin_subtitles() {
     </tr>
   </table>
   <div id="fp-preview-wrapper">
-    <div class="flowplayer skin-<?php echo $fv_fp->_get_option('skin'); ?>" id="preview">
+    <div class="flowplayer skin-<?php echo esc_html( $fv_fp->_get_option('skin') ); ?>" id="preview">
       <div class="fp-captions fp-shown">
         <p><?php _e( 'The quick brown fox jumps over the lazy dog.', 'fv-player' ); ?></p>
         <p><?php _e( 'Second line.', 'fv-player' ); ?></p>
@@ -2019,8 +2036,8 @@ function fv_flowplayer_admin_embedded_on() {
 
   if( $players_with_no_posts > 0 ) :
     ?>
-    <p>It appears there are <?php echo $players_with_no_posts; ?> players which do not belong to any post.</p>
-    <a href="<?php echo $url ?>" class="button">Fix</a>
+    <p>It appears there are <?php echo intval( $players_with_no_posts ); ?> players which do not belong to any post.</p>
+    <a href="<?php echo esc_url( $url ); ?>" class="button">Fix</a>
 
   <?php else : ?>
     <p>All of your FV Players seem to have a post associated.</p>
@@ -2032,7 +2049,7 @@ function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
   $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>
-    <p>Are you having issues with version <?php echo $fv_wp_flowplayer_ver; ?>?</p>
+    <p>Are you having issues with version <?php echo esc_attr( $fv_wp_flowplayer_ver ); ?>?</p>
     <p>You can go back to the previous 7.5 version - without changes to Chromecast, WordPress audio/video handling, MPEG-DASH and YouTube:</p>
     </div>
 <div class="usage-section">
@@ -2142,37 +2159,28 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
   <?php
   global $fv_fp;
   do_action('fv_player_settings_pre');
-
-  $aCheck = false;
-  if( flowplayer::is_licensed() ) {
-    $aCheck = get_transient( 'fv_flowplayer_license' );
-    $aInstalled = get_option('fv_flowplayer_extension_install');
-  }
-
   ?>
 
   <form id="wpfp_options" method="post" action="">
 
     <p id="fv_flowplayer_admin_buttons">
-      <?php if( $aCheck && isset($aCheck->valid) && $aCheck->valid ) : ?>
+      <?php if( preg_match( '!^\$\d+!', $fv_fp->_get_option('key') ) ) : ?>
         <?php
         $fv_player_pro_path = FV_Wordpress_Flowplayer_Plugin_Private::get_plugin_path('fv-player-pro');
         if( is_plugin_inactive($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
-          <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo $fv_player_pro_path; ?>" value="<?php _e( 'Enable the Pro extension', 'fv-player' ); ?>" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+          <input type="button" class='button fv-license-yellow fv_wp_flowplayer_activate_extension' data-plugin="<?php echo esc_attr( $fv_player_pro_path ); ?>" value="<?php _e( 'Enable the Pro extension', 'fv-player' ); ?>" /> <img style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
         <?php elseif( is_plugin_active($fv_player_pro_path) && !is_wp_error(validate_plugin($fv_player_pro_path)) ) : ?>
           <input type="button" class="button fv-license-active" onclick="window.location.href += '&fv_player_pro_installed=yes#fv_player_pro'" value="<?php _e( 'Pro pack installed', 'fv-player' ); ?>" />
         <?php else : ?>
           <input type="submit" class="button fv-license-yellow" value="<?php _e( 'Install Pro extension', 'fv-player' ); ?>" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?>
         <?php endif; ?>
-      <?php elseif( !preg_match( '!^\$\d+!', $fv_fp->_get_option('key') ) ) : ?>
+      <?php else : ?>
         <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="<?php _e( 'Apply Pro upgrade', 'fv-player' ); ?>" />
       <?php endif; ?>
+
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php _e( 'Check template', 'fv-player' ); ?>" />
       <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php _e( 'Check videos', 'fv-player' ); ?>" />
-      <input type="text" name="key" id="key" placeholder="<?php _e( 'Commercial License Key', 'fv-player' ); ?>" value="<?php echo esc_attr( $fv_fp->_get_option('key') ); ?>" />
-      <?php if( isset($aCheck->expired) && $aCheck->expired ) : ?>
-        <a href="#" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false"><span class="dashicons dashicons-update-alt"></span><?php _e( 'Check license', 'fv-player' ); ?></a>
-      <?php endif; ?>
+
       <?php if( !$fv_fp->_get_option('key') ) : ?>
         <a title="<?php _e( 'Click here for license info', 'fv-player' ); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
       <?php endif; ?>
@@ -2188,14 +2196,14 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
     <?php else : ?>
       <div id="fv_flowplayer_ad">
         <div class="text-part">
-          <h2>FV <strong>Player</strong></h2>
-          <span class="red-text"><?php _e( 'with your own branding', 'fv-player' ); ?></span>
+          <h2>FV <strong>Player</strong> Pro</h2>
+          <span class="red-text"><?php _e( 'Host your videos anywhere', 'fv-player' ); ?></span>
             <ul>
-            <li><?php _e( 'Put up your own logo', 'fv-player' ); ?></li>
-            <li><?php _e( 'Or remove the logo completely', 'fv-player' ); ?></li>
-            <li><?php _e( 'The best video plugin for Wordpress', 'fv-player' ); ?></li>
+            <li><?php _e( 'Pick your favorite CDN', 'fv-player' ); ?></li>
+            <li><?php _e( 'Encrypt your videos to avoid downloading', 'fv-player' ); ?></li>
+            <li><?php _e( 'Interactive transcript, AB loop&hellip;', 'fv-player' ); ?></li>
             </ul>
-              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e( 'Easter sale!', 'fv-player' ); ?></strong><br /><?php _e( 'All Licenses 20% Off', 'fv-player' ); ?></a></p>
+              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e( 'Christmas sale!', 'fv-player' ); ?></strong><br /><?php _e( 'All Licenses 20% Off', 'fv-player' ); ?></a></p>
           </div>
           <div class="graphic-part">
             <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
@@ -2207,7 +2215,7 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
     <div id="fv_flowplayer_admin_tabs">
       <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
         <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-        <a href="#postbox-container-<?php echo esc_attr( $val['hash'] ); ?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php echo strip_tags( $val['name'] );?></a>
+        <a href="#postbox-container-<?php echo esc_attr( $val['hash'] ); ?>" class="nav-tab<?php if( $key == 0 ) : ?> nav-tab-active<?php endif; ?>" style="outline: 0px;"><?php echo wp_strip_all_tags( $val['name'] );?></a>
         <?php endforeach;?>
         <div id="fv_player_js_warning" style=" margin: 8px 40px; display: inline-block; color: darkgrey;" >There Is a Problem with JavaScript.</div>
         <style>
@@ -2224,7 +2232,7 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 
     <div id="dashboard-widgets" class="metabox-holder fv-metabox-holder columns-1">
       <?php foreach($fv_player_aSettingsTabs as $key => $val):?>
-      <div id='postbox-container-<?php echo $val['hash']; ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>
+      <div id='postbox-container-<?php echo esc_attr( $val['hash'] ); ?>' class='postbox-container'<?php if( $key > 0 ) : ?> style=""<?php endif; ?>>
         <?php do_meta_boxes($val['id'], 'normal', false ); ?>
       </div>
       <?php endforeach;?>

@@ -36,7 +36,8 @@
           'player_id': data.player_id,
           'post_id' : data.post_id,
           'user_id' : api.conf.fv_stats.user_id,
-          'tag' : 'play'
+          'tag' : 'play',
+          '_wpnonce' : api.conf.fv_stats.nonce,
         } );
       });
 
@@ -93,7 +94,8 @@
         'player_id': data.player_id,
         'post_id' : data.post_id,
         'user_id' : api.conf.fv_stats.user_id,
-        'tag' : 'click'
+        'tag' : 'click',
+        '_wpnonce' : api.conf.fv_stats.nonce,
       } );
     });
 
@@ -122,6 +124,7 @@
       fd.append( 'tag', 'seconds' );
       fd.append( 'blog_id', conf.fv_stats.blog_id );
       fd.append( 'user_id', conf.fv_stats.user_id );
+      fd.append( '_wpnonce', conf.fv_stats.nonce );
       // TODO: Can we use pure JSON?
       fd.append( 'watched', encodeURIComponent(JSON.stringify(watched)) );
 

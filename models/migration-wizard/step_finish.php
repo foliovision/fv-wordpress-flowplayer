@@ -28,7 +28,7 @@ class FV_Player_Wizard_Step_Finish extends FV_Player_Wizard_Step_Base_Class {
     ?>
 <tr>
   <td colspan="2">
-    <?php echo $this->message; ?>
+    <?php echo wp_kses_post( $this->message ); ?>
   </td>
 </tr>
     <?php

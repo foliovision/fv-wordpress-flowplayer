@@ -50,6 +50,8 @@ jQuery(function() {
 
     is_saving = true;
 
+    jQuery( document ).trigger( 'fv-wordpress-flowplayer-save' );
+
     var $this = jQuery(this),
       $postbox = $this.closest('.postbox'),
       serialized = jQuery($postbox).find(':input').serializeArray(),

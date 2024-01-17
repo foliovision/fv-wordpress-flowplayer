@@ -126,10 +126,12 @@ class FV_Player_Stats {
   function option( $conf ) {
     global $fv_fp, $blog_id;
     if( $this->used || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('video_stats_enable') ) { // we want to enable the tracking if it's used, if FV Player JS is enabled globally or if the tracking is enabled globally
+
       $conf['fv_stats'] = array(
                                 'url' => flowplayer::get_plugin_url().'/controller/track.php',
                                 'blog_id' => $blog_id,
-                                'user_id' => get_current_user_id()
+                                'user_id' => get_current_user_id(),
+                                'nonce'   => wp_create_nonce( 'fv_player_track' ),
                                );
       if( $fv_fp->_get_option('video_stats_enable') ) $conf['fv_stats']['enabled'] = true;
 
@@ -776,8 +778,8 @@ class FV_Player_Stats {
 
       $date_range = "date BETWEEN '$last_year_start' AND '$last_year_end'";
     } else if( is_numeric($range)) { // specific year like 2021
-      $year_start = $range . '-01-01';
-      $year_end = $range . '-12-31';
+      $year_start = intval( $range ) . '-01-01';
+      $year_end = intval( $range ) . '-12-31';
 
       $date_range = "date BETWEEN '$year_start' AND '$year_end'";
     }
@@ -826,8 +828,8 @@ class FV_Player_Stats {
       $end_day = gmdate('Y-12-31', strtotime('-1 year'));
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( is_numeric($range) ) { // get dates for specific year like 2021
-      $start_day = $range . '-01-01';
-      $end_day = $range . '-12-31';
+      $start_day = intval( $range ) . '-01-01';
+      $end_day = intval( $range ) . '-12-31';
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     }
 

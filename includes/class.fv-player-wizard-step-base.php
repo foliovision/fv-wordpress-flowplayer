@@ -54,9 +54,9 @@ abstract class FV_Player_Wizard_Step_Base_Class {
     if( $buttons ) :
       foreach( $buttons AS $name => $button ) : ?>
         <?php if( !empty($button['href']) ) : ?>
-          <a href="<?php echo esc_attr($button['href']); ?>" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>"><?php echo $button['value']; ?></a>
+          <a href="<?php echo esc_attr($button['href']); ?>" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>"><?php echo esc_html( $button['value'] ); ?></a>
         <?php else : ?>
-          <input type="button" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>" data-fv-player-wizard-<?php echo $name; ?> value="<?php echo $button['value']; ?>" />
+          <input type="button" class="button<?php if( !empty($button['primary']) ) echo ' button-primary'; ?>" data-fv-player-wizard-<?php echo esc_attr( $name ); ?> value="<?php echo esc_attr( $button['value'] ); ?>" />
         <?php endif; ?>
       <?php endforeach; ?>
       <img data-fv-player-wizard-indicator width="16" height="16" src="<?php echo site_url('wp-includes/images/wpspin-2x.gif'); ?>" style="display: none" />

@@ -1,34 +1,5 @@
 <?php
 
-/**
- * Foliopress base class
- */
- 
- /*
- Usage:
-  
-  * Autoupdates, put this into the main plugin Class which extends this class
-  
-  In the plugin object:
-  var $strPluginSlug = 'fv-sharing';
-  var $strPrivateAPI = 'http://foliovision.com/plugins/';
-  
-  And if this file is not in the same directory as the main plugn file:
-  $this->strPluginPath = basename(dirname(__FILE__)).'/'.basename(__FILE__);
-  
-  In the plugin constructor:
-  parent::auto_updates();  
-  
-  * Update notices
-  
-  In the plugin constructor:
-    $this->readme_URL = 'http://plugins.trac.wordpress.org/browser/{plugin-slug}/trunk/readme.txt?format=txt';    
-    add_action( 'in_plugin_update_message-{plugin-dir}/{plugin-file}.php', array( &$this, 'plugin_update_message' ) );
- */
-
-/**
- * Class FVFB_Foliopress_Plugin_Private
- */
 class FV_Wordpress_Flowplayer_Plugin_Private
 {
   
@@ -75,7 +46,6 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax_cookie' ), 0 );
         // TODO: What about the actual processing of the Ajax? Does it have to be in the plugin for real?
         add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax' ), 999 );
-        add_action( 'wp_ajax_check_domain_license', array( $this, 'check_domain_license' ) );
 
         add_filter( 'plugins_api_result', array( $this, 'changelog_filter' ), 5, 3 );
         
@@ -85,27 +55,8 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_action( 'set_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
         add_filter( 'transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_enable' ) );
         add_action( 'deleted_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
-        
-        //add_action('admin_init', array($this, 'welcome_screen_do_activation_redirect'));
-        //add_action('admin_menu', array($this, 'welcome_screen_pages'));
+
         //add_action('admin_head', array($this, 'welcome_screen_remove_menus'));
-  }
-  
-  function auto_updates(){
-    if( is_admin() ){
-
-      // define $this->strPrivateAPI in main plugin class if the plugin is public
-      if( !isset($this->strPrivateAPI) || empty($this->strPrivateAPI) ) {
-        $this->strPrivateAPI = $this->getUpgradeUrl();
-      }
-
-      if( $this->strPrivateAPI !== FALSE ){
-        add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'CheckPluginUpdate' ) );
-        add_filter( 'plugins_api', array( $this, 'PluginAPICall' ), 10, 3 );
-        add_action( 'update_option__transient_update_plugins',  array( $this, 'CheckPluginUpdateOld' ) );
-        add_filter( 'http_request_args', array( $this, 'http_request_args' ), 10, 2 );
-      }
-    }
   }
   
   function object_cache_disable($value=null){
@@ -131,106 +82,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
   
     add_filter( 'https_ssl_verify', '__return_false' );
     return $params;
-  }
-  
-  function http_request($method, $url, $data = '', $auth = '', $check_status = true) {
-      $status = 0;
-      $method = strtoupper($method);
-      
-      if (function_exists('curl_init')) {
-          $ch = curl_init();
-          
-          curl_setopt($ch, CURLOPT_URL, $url);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.0.3705; .NET CLR 1.1.4322; Media Center PC 4.0)');
-          @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-          curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
-          curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-          curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-          curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-          
-          switch ($method) {
-              case 'POST':
-                  curl_setopt($ch, CURLOPT_POST, true);
-                  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-                  break;
-              
-              case 'PURGE':
-                  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PURGE');
-                  break;
-          }
-          
-          if ($auth) {
-              curl_setopt($ch, CURLOPT_USERPWD, $auth);
-          }
-          
-          $contents = curl_exec($ch);
-          
-          $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-          
-          curl_close($ch);
-      } else {
-          $parse_url = @parse_url($url);
-          
-          if ($parse_url && isset($parse_url['host'])) {
-              $host = $parse_url['host'];
-              $port = (isset($parse_url['port']) ? (int) $parse_url['port'] : 80);
-              $path = (!empty($parse_url['path']) ? $parse_url['path'] : '/');
-              $query = (isset($parse_url['query']) ? $parse_url['query'] : '');
-              $request_uri = $path . ($query != '' ? '?' . $query : '');
-              
-              $request_headers_array = array(
-                  sprintf('%s %s HTTP/1.1', $method, $request_uri), 
-                  sprintf('Host: %s', $host), 
-                  sprintf('User-Agent: %s', W3TC_POWERED_BY), 
-                  'Connection: close'
-              );
-              
-              if (!empty($data)) {
-                  $request_headers_array[] = sprintf('Content-Length: %d', strlen($data));
-              }
-              
-              if (!empty($auth)) {
-                  $request_headers_array[] = sprintf('Authorization: Basic %s', base64_encode($auth));
-              }
-              
-              $request_headers = implode("\r\n", $request_headers_array);
-              $request = $request_headers . "\r\n\r\n" . $data;
-              $errno = null;
-              $errstr = null;
-              
-              $fp = @fsockopen($host, $port, $errno, $errstr, 10);
-              
-              if (!$fp) {
-                  return false;
-              }
-              
-              $response = '';
-              @fputs($fp, $request);
-              
-              while (!@feof($fp)) {
-                  $response .= @fgets($fp, 4096);
-              }
-              
-              @fclose($fp);
-              
-              list($response_headers, $contents) = explode("\r\n\r\n", $response, 2);
-              
-              $matches = null;
-              
-              if (preg_match('~^HTTP/1.[01] (\d+)~', $response_headers, $matches)) {
-                  $status = (int) $matches[1];
-              }
-          }
-      }
-      
-      if (!$check_status || $status == 200) {
-          return $contents;
-      }
-      
-      return false;
-  }
-  
+  }  
   
   function is_min_wp( $version ) {
     return version_compare( $GLOBALS['wp_version'], $version. 'alpha', '>=' );
@@ -316,7 +168,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
     if( $aCheck ) {
       set_transient( $strTransient, $aCheck, 60*60*24 );
     } else {
-      set_transient( $strTransient, json_decode(json_encode( array('error' => 'Error checking license') ), FALSE), 60*10 );
+      set_transient( $strTransient, json_decode( wp_json_encode( array('error' => 'Error checking license') ), FALSE ), 60*10 );
     }
   }
  
@@ -493,8 +345,8 @@ $this->strPrivateAPI - also
 
     $cookie[$_POST['key']] = !empty($_POST['value']) ? $_POST['value'] : true;
 
-    $secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
-    setcookie( $this->class_name.'_store_answer', json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
+    $secure = ( 'https' === wp_parse_url( home_url(), PHP_URL_SCHEME ) );
+    setcookie( $this->class_name.'_store_answer', wp_json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );
   }
 
 
@@ -581,7 +433,8 @@ $this->strPrivateAPI - also
       return $res;
     
     if(isset($args->fv_readme_file)){
-      $data = file_get_contents($args->fv_readme_file);
+      global $wp_filesystem;
+      $data = $wp_filesystem->get_contents( $args->fv_readme_file );
     } else if( $this->readme_URL ) {
       $data = $this->get_readme_url_remote( $this->readme_URL );
     } else {
@@ -677,7 +530,7 @@ $this->strPrivateAPI - also
     ?>
 <script type="text/javascript">
 //<![CDATA[
-  function <?php echo $this->class_name; ?>_store_answer(key, input, nonce) {
+  function <?php echo esc_attr( $this->class_name ); ?>_store_answer(key, input, nonce) {
     jQuery.post(ajaxurl, { action : 'fv_foliopress_ajax_pointers', key : key, value : input, _ajax_nonce : nonce }, function () {
       jQuery('#wp-pointer-0').remove(); // there must only be a single pointer at once. Or perhaps it removes them all, but the ones which were not dismissed by Ajax by storing the option will turn up again?
     });
@@ -725,22 +578,22 @@ $this->strPrivateAPI - also
         //<![CDATA[
         (function ($) {
           store_cookie_js = function(value , key) {
-            var cookie_name = '<?php echo $this->class_name.'_store_answer'; ?>';
+            var cookie_name = '<?php echo esc_attr( $this->class_name ) . '_store_answer'; ?>';
             var pointer_cookies = JSON.parse( Cookies.get(cookie_name) );
             pointer_cookies[key] = value;
             Cookies.set(cookie_name, JSON.stringify(pointer_cookies) , { secure: location.protocol == 'https:', expires: 365 } )
             jQuery('#wp-pointer-0').remove();
           }
 
-          var pointer_options = <?php echo json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
-            key = '<?php echo $key; ?>',
+          var pointer_options = <?php echo wp_json_encode( array( 'pointerClass' => $key, 'content'  => $html, 'position' => $position ) ); ?>,
+            key = '<?php echo esc_attr( $key ); ?>',
 
             setup = function () {
-              $('<?php echo $id; ?>').pointer(pointer_options).pointer('open');
-              var buttons = $('.<?php echo $key; ?> .wp-pointer-buttons').html('');
-              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo $function1; ?>; store_cookie_js('true' , key); }));
+              $('<?php echo esc_attr( $id ); ?>').pointer(pointer_options).pointer('open');
+              var buttons = $('.<?php echo esc_attr( $key ); ?> .wp-pointer-buttons').html('');
+              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo esc_js( $function1 ); ?>; store_cookie_js('true' , key); }));
               <?php if ( $button2 ) { ?>
-                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo $function2; ?>; store_cookie_js('false', key); }));
+                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo esc_js( $function2 ); ?>; store_cookie_js('false', key); }));
               <?php } ?>
             };
 
@@ -753,28 +606,6 @@ $this->strPrivateAPI - also
       </script>
       <?php
     }
-  }
-
-
-  function check_domain_license() {
-    if( $_POST['slug'] != $this->strPluginSlug ) {
-      return;
-    }
-
-    if( stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) {
-      $license_key = $this->domain_key_update();
-      if( $license_key ) {
-        $message  = !empty( $this->domain_license_success ) ? $this->domain_license_success : 'License key acquired successfully. <a href="">Reload</a>';
-        $output   = array( 'errors' => false, 'ok' => array( $message ), 'license_key' => $license_key );
-        //fv_wp_flowplayer_install_extension();
-      } else {
-        $message  = !empty( $this->domain_license_error ) ? $this->domain_license_error : 'There is no license key purchased for this domain. Please visit <a target="_blank" href="https://foliovision.com">Foliovision</a>.';
-        $output   = array( 'errors' => array($message), 'ok' => false );
-      }
-      echo '<FVFLOWPLAYER>'.json_encode($output).'</FVFLOWPLAYER>';
-      die();
-    }
-    die('-1');
   }
 
   function change_transient_expiration( $transient_name, $time ){
@@ -982,7 +813,7 @@ $this->strPrivateAPI - also
     if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
       $form = ob_get_clean();
       include( ABSPATH . 'wp-admin/admin-header.php' );
-      echo $this->pro_install_talk( $form, $target_url );
+      echo wp_kses_post( $this->pro_install_talk( $form, $target_url ) );
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
     }
@@ -992,7 +823,7 @@ $this->strPrivateAPI - also
       request_filesystem_credentials( $url, $method, true, false, false );
       $form = ob_get_clean();
       include( ABSPATH . 'wp-admin/admin-header.php' );
-      echo $this->pro_install_talk( $form, $target_url );
+      echo wp_kses_post( $this->pro_install_talk( $form, $target_url ) );
       include( ABSPATH . 'wp-admin/admin-footer.php' );
       die;
     }
@@ -1058,54 +889,6 @@ $this->strPrivateAPI - also
     update_option( $this->strPluginSlug.'_extension_install', $aInstalled );
 
     return $bResult;
-  }
-
-
-   /*
-   * WELCOME SCREEN
-   */
-
-  public function welcome_screen_do_activation_redirect() {    
-    if ( str_replace( array('.beta','.release'), '', $this->version ) === str_replace( array('.beta','.release'), '', get_option($this->strPluginSlug . '-prev-ver') ) || isset($_GET['page']) && $_GET['page'] === $this->strPluginSlug . '-welcome') {
-      return;
-    }
-    
-    if (is_network_admin() || isset($_GET['activate-multi']) || isset($_GET['action']) && $_GET['action'] == 'activate-plugin' ) {
-      return;
-    }
-    wp_safe_redirect(add_query_arg(array('page' => $this->strPluginSlug . '-welcome'), admin_url('index.php')));
-  }
-
-  public function welcome_screen_pages() {
-    add_dashboard_page(
-            'Welcome To Welcome Screen', 'Welcome To Welcome Screen', 'read', $this->strPluginSlug . '-welcome', array($this, 'welcome_screen_content')
-    );
-  }
-
-  public function welcome_screen_content() {
-
-    $prev_ver = str_replace( array('.beta','.release'), '', get_option($this->strPluginSlug . '-prev-ver') );
-    update_option($this->strPluginSlug . '-prev-ver', $this->version);
-    $args = (object) array(
-                'slug' => $this->strPluginSlug,
-                'fv_readme_file' => dirname(__FILE__) . '/readme.txt',
-                'fv_prev_ver' => $prev_ver
-    );
-    $changelog = $this->changelog_filter(false, false, $args);
-    if ($changelog) {
-      $changelog = $changelog->sections['changelog'];
-    }
-    $version = $this->version;
-
-    if (file_exists(dirname(__FILE__) . '/welcome.php')) {
-      include(dirname(__FILE__) . '/welcome.php');
-    } else {
-      //TODO:DEFAULT BEHAVIOR
-    }
-  }
-
-  public function welcome_screen_remove_menus() {
-    remove_submenu_page('index.php', $this->strPluginSlug . '-welcome');
   }
 
 }

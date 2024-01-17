@@ -116,6 +116,16 @@ abstract class FV_Player_Media_Browser {
   }
 
   function get_output() {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], $this->ajax_action_name ) ) {
+      return array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder',
+        'err' => 'Invalid nonce'
+      );
+    }
+
     $output = array(
       'name' => 'Home',
       'type' => 'folder',
@@ -127,6 +137,16 @@ abstract class FV_Player_Media_Browser {
   }
 
   function get_metadata( $s3Client, $bucket ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], $this->ajax_action_name ) ) {
+      return array(
+        'items' => array(),
+        'name' => '/',
+        'path' => '/',
+        'type' => 'folder',
+        'err' => 'Invalid nonce'
+      );
+    }
+
     $args = array(
       'Bucket' => $bucket,
       'Delimiter' => '/',

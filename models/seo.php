@@ -58,13 +58,15 @@ class FV_Player_SEO {
   }
 
   function get_markup( $args ) {
+    global $fv_fp;
 
     $args = wp_parse_args( $args, array(
       'title' => false,
       'description' => false,
       'splash' => false,
       'url' => false,
-      'duration' => false
+      'duration' => false,
+      'plays' => false
     ) );
 
     extract($args);
@@ -100,9 +102,25 @@ class FV_Player_SEO {
         <meta itemprop="contentURL" content="'.esc_attr($url).'" />
         <meta itemprop="uploadDate" content="'.esc_attr(get_the_modified_date('c')).'" />';
 
+
+    global $fv_fp;
+    if( $fv_fp->current_video() ) {
+      if ( ! $duration ) {
+        $duration = $fv_fp->current_video()->getDuration();
+      }
+      $plays = $fv_fp->current_video()->getMetaValue( 'stats_play', true );
+    }
+
     if( $duration ) {
       $duration = self::time_to_iso8601_duration($duration);
       $schema_tags .= "\n".'        <meta itemprop="duration" content="'.esc_attr($duration).'" />';
+    }
+
+    if( $plays ) {
+      $schema_tags .= '<div itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
+        <meta itemprop="interactionType" content="https://schema.org/WatchAction">
+        <meta itemprop="userInteractionCount" content="' . intval( $plays ) . '">
+      </div>';
     }
 
     return $schema_tags;
@@ -155,17 +173,7 @@ class FV_Player_SEO {
         }
       }
     }  
-    
-    if( count($dynamic_domains) ) {
-      $is_dynamic = false;
-      foreach( $dynamic_domains AS $domain ) {
-        if( stripos($args['src'],$domain) !== false ) {
-          $this->can_seo = false;
-          return $args;
-        }
-      }
-    }
-    
+
     $this->can_seo = true;
     return $args;
   }
@@ -182,10 +190,6 @@ class FV_Player_SEO {
 
     if( !empty($fv_fp->aCurArgs['caption']) ) {
       $args['title'] = $fv_fp->aCurArgs['caption'];
-    }
-
-    if( $fv_fp->current_video() ) {
-      $args['duration'] = $fv_fp->current_video()->getDuration();
     }
 
     $html .= "\n".$this->get_markup( $args )."\n";

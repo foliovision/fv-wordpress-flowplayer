@@ -331,9 +331,9 @@ function flowplayer_prepare_scripts() {
   }
 
   if(
-     isset($GLOBALS['fv_fp_scripts']) ||
-     $fv_fp->should_force_load_js() ||
-     isset($_GET['fv_wp_flowplayer_check_template'])
+    isset($GLOBALS['fv_fp_scripts']) ||
+    $fv_fp->should_force_load_js() ||
+     isset( $_GET['fv_wp_flowplayer_check_template'] ) && wp_verify_nonce( $_GET['fv_wp_flowplayer_check_template'], 'fv_wp_flowplayer_check_template' )
   ){
 
     $aDependencies = array('jquery');
@@ -344,9 +344,6 @@ function flowplayer_prepare_scripts() {
 
     if( !$fv_fp->bCSSLoaded ) $fv_fp->css_enqueue(true);
 
-    $sPluginUrl = preg_replace( '~^.*://~', '//', FV_FP_RELATIVE_PATH );
-
-    $sCommercialKey = $fv_fp->_get_option('key') ? $fv_fp->_get_option('key') : '';
     $sLogo = $fv_fp->_get_option('logo') ? $fv_fp->_get_option('logo') : '';
 
     // Load base Freedom Video Player library
@@ -391,7 +388,6 @@ function flowplayer_prepare_scripts() {
 
     $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
 
-    if( $sCommercialKey ) $aConf['key'] = base64_encode($sCommercialKey);
     if( apply_filters( 'fv_flowplayer_safety_resize', true) ) {
       $aConf['safety_resize'] = true;
     }
@@ -526,7 +522,13 @@ function flowplayer_prepare_scripts() {
     if( is_admin() ) $aConf['wpadmin'] = true;
 
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
-    $aLocalize = array();
+
+    $aLocalize = array(
+      'ajaxurl'                   => site_url() . '/wp-admin/admin-ajax.php',
+      'nonce'                     => wp_create_nonce( 'fv_player_frontend' ),
+      'email_signup_nonce'        => wp_create_nonce( 'fv_player_email_signup' ),
+      'video_position_save_nonce' => wp_create_nonce( 'fv_player_video_position_save' ),
+    );
 
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
@@ -537,8 +539,6 @@ function flowplayer_prepare_scripts() {
     if( current_user_can('edit_posts') ) {
       $aLocalize['user_edit'] = true;
     }
-
-    $aLocalize['ajaxurl'] = site_url().'/wp-admin/admin-ajax.php';
 
     wp_localize_script( 'flowplayer', 'fv_player', $aLocalize );
 
@@ -880,8 +880,7 @@ add_filter( 'pre_get_rocket_option_remove_unused_css_safelist', 'fv_player_wp_ro
 
 function fv_player_wp_rocket_used_css( $safelist ) {
   // Without this our additions would show on WP Rocket settings page
-  global $pagenow;
-  if ( 'options-general.php' === $pagenow && 'wprocket' === $_GET['page'] ) {
+  if ( did_action( 'admin_head-settings_page_wprocket' ) ) {
     return $safelist;
   }
 
@@ -1261,4 +1260,37 @@ function fvplayer_editor( $args ) {
   </style>
   <?php
   return ob_get_clean();
+}
+
+/**
+ * The nonce normally only work up to 24 hours, but it might just be 12 hours.
+ * 
+ * We set the nonce life to 7 days to make sure caching plugins don't break the video tracking etc.
+ * 
+ * So far we were able to use 42 hours old nonce without any issues. When the nonce was 4 days and 19 hours old
+ * it would already fail. So my guess is that this way we can be sure that the nonce is valid for 3.5 days,
+ * but it might be up to 7 days.
+ */
+add_filter( 'nonce_life', 'fv_player_frontend_nonce_life', PHP_INT_MAX, 2 );
+
+/**
+ * @param int $seconds
+ * @param string|false $action This has one been added in WordPress 6.1 unfortunately
+ * 
+ * @return int Longer nonce TTL if it's used by FV Player
+ */
+function fv_player_frontend_nonce_life( $seconds, $action = false ) {
+  if (
+    in_array(
+      $action,
+      array(
+        'fv_player_email_signup',
+        'fv_player_track',
+        'fv_player_video_position_save',
+      )
+    )
+  ) {
+    $seconds = 7 * DAY_IN_SECONDS;
+  }
+  return $seconds;
 }
