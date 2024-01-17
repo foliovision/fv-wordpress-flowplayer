@@ -53,7 +53,7 @@ abstract class FV_Player_Wizard_Base_Class {
   }
 
   function ajax() {
-    if( !wp_verify_nonce( $_POST['nonce'], $this->get_id() ) ) {
+    if( !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), $this->get_id() ) ) {
       wp_send_json( array( 'error' => 'Invalid nonce' ) );
     }
 

@@ -1025,7 +1025,7 @@ class FV_Player_Db {
         exit;
       }
 
-      if( !wp_verify_nonce( $json_post['nonce'], "fv-player-edit" ) ) {
+      if( !wp_verify_nonce( sanitize_key( $json_post['nonce'] ), "fv-player-edit" ) ) {
         wp_send_json( array(
           'error' => 'Error saving: Nonce error, please ensure you are logged in and try again.',
           'fatal_error' => true
@@ -1325,7 +1325,7 @@ class FV_Player_Db {
   public function open_player_for_editing() {
     global $fv_fp;
 
-    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( $_POST['nonce'],"fv-player-db-load" ) ) {
+    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-load" ) ) {
 
       // load player and its videos from DB
       if (!$this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ))) {
@@ -1721,7 +1721,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     }
 
     if( defined('DOING_AJAX') && DOING_AJAX &&
-      ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-export-".$id ) )
+      ( empty($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-export-".$id ) )
     ) {
       die('Security check failed');
     }
@@ -1826,7 +1826,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     if ( $alternative_data !== null ) {
       $data = $alternative_data;
 
-    } else if( isset( $_POST['data'] ) && wp_verify_nonce( $_POST['nonce'],"fv-player-db-import" ) ) {
+    } else if( isset( $_POST['data'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-import" ) ) {
       $data = json_decode( stripslashes( $_POST['data'] ), true );
       }
 
@@ -1974,7 +1974,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
   public function remove_player() {
-    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && wp_verify_nonce( $_POST['nonce'],"fv-player-db-remove-".$_POST['playerID'] ) ) {
+    if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-remove-".$_POST['playerID'] ) ) {
 
       // first, load the player
       $player = new FV_Player_Db_Player($_POST['playerID'], array(), $this);
@@ -2012,7 +2012,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
   public function clone_player() {
-    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( $_POST['nonce'], 'fv-player-db-export-' . $_POST['playerID'] ) ) {
+    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv-player-db-export-' . $_POST['playerID'] ) ) {
       $cannot_edit_other_posts = !current_user_can('edit_others_posts');
       $author_id = get_current_user_id();
 
@@ -2047,7 +2047,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * into a dropdown in the front-end.
    */
   public function retrieve_all_players_for_dropdown() {
-    if( !wp_verify_nonce( $_POST['nonce'], 'fv-player-editor-search-nonce' ) ) {
+    if( !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv-player-editor-search-nonce' ) ) {
       wp_send_json_error( 'Nonce verification failed! Please reload the page.' );
     }
 

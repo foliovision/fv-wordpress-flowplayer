@@ -437,7 +437,7 @@ class FV_Player_Position_Save {
 
   public function video_position_save() {
 
-    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv_player_video_position_save' ) ) {
+    if ( ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_player_video_position_save' ) ) {
       wp_send_json_error();
       exit;
     }

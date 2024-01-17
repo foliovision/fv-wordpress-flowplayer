@@ -56,7 +56,7 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
   }
 
   function get_formatted_assets_data() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], $this->ajax_action_name ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), $this->ajax_action_name ) ) {
       return array(
         'items' => array(),
         'name' => '/',

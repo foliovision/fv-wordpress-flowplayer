@@ -274,7 +274,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     if(
         defined('DOING_AJAX') &&
-        ( !isset( $_POST['nonce'] ) || !wp_verify_nonce( $_POST['nonce'], 'fv_player_bunny_stream' ) )
+        ( !isset( $_POST['nonce'] ) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_player_bunny_stream' ) )
     ) {
       wp_send_json( array('error' => 'Bad nonce, please reload the page and try again.' ) );
     }
@@ -393,7 +393,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     if( isset($_POST['fv_player_bunny_stream_settings_nonce']) && !empty($_POST['bunny_stream']) ) {
 
-      if( wp_verify_nonce( $_POST['fv_player_bunny_stream_settings_nonce'],'fv_player_bunny_stream_settings_nonce') ) {
+      if( wp_verify_nonce( sanitize_key( $_POST['fv_player_bunny_stream_settings_nonce'] ),'fv_player_bunny_stream_settings_nonce') ) {
         global $fv_fp;
         if( method_exists($fv_fp,'_set_conf') ) {
           if( empty($fv_fp->conf['bunny_stream']) ) {

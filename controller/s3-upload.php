@@ -66,7 +66,7 @@ class FV_Player_S3_Upload {
   }
 
   function create_multiupload() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_create_multiupload' ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_flowplayer_create_multiupload' ) ) {
       wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
     }
 
@@ -156,7 +156,7 @@ class FV_Player_S3_Upload {
   }
 
   function multiupload_send_part() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_multiupload_send_part' ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_flowplayer_multiupload_send_part' ) ) {
       wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
     }
 
@@ -180,7 +180,7 @@ class FV_Player_S3_Upload {
   }
 
   function multiupload_complete() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_multiupload_complete' ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_flowplayer_multiupload_complete' ) ) {
       wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
     }
 
@@ -253,7 +253,7 @@ class FV_Player_S3_Upload {
   }
 
   function multiupload_abort() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], 'fv_flowplayer_multiupload_abort' ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_flowplayer_multiupload_abort' ) ) {
       wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
     }
 

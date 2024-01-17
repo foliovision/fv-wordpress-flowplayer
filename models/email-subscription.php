@@ -64,7 +64,7 @@ class FV_Player_Email_Subscription {
 
   public function fv_flowplayer_settings_save($param1,$param2){
 
-    if ( isset( $_POST['email_lists'] ) && wp_verify_nonce( $_POST['fv_player_email_lists_nonce'], 'fv_player_email_lists' ) ) {
+    if ( isset( $_POST['email_lists'] ) && wp_verify_nonce( sanitize_key( $_POST['fv_player_email_lists_nonce'] ), 'fv_player_email_lists' ) ) {
       $aOptions = array();
       unset($aOptions['#fv_popup_dummy_key#']);
 
@@ -431,7 +431,7 @@ class FV_Player_Email_Subscription {
 
   private function  mailchimp_signup($list_id){
 
-    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv_player_email_signup' ) ) {
+    if ( ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_player_email_signup' ) ) {
       wp_json_encode(
         array(
           'status' => 'ERROR',
@@ -497,7 +497,7 @@ class FV_Player_Email_Subscription {
 
   public function email_signup() {
 
-    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv_player_email_signup' ) ) {
+    if ( ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_player_email_signup' ) ) {
       wp_json_encode(
         array(
           'status' => 'ERROR',
@@ -593,7 +593,7 @@ class FV_Player_Email_Subscription {
   }
 
   function csv_export() {
-    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( $_GET['nonce'], 'fv-email-export' ) ) {
+    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-email-export' ) ) {
       $list_id = intval($_GET['fv-email-export']);
       $aLists = get_option('fv_player_email_lists');
       $list = $aLists[$list_id];
@@ -630,7 +630,7 @@ class FV_Player_Email_Subscription {
 
 
   public function admin_export_screen(){
-    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( $_GET['nonce'], 'fv-email-show' ) ) {
+    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-email-show' ) ) {
 
       $list_id = intval($_GET['fv-email-export-screen']);
 

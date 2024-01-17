@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action('wp_ajax_fv_wp_flowplayer_support_mail', 'fv_wp_flowplayer_support_mail');
 
 function fv_wp_flowplayer_support_mail() {
-  if( isset( $_POST['notice'] ) && ! empty( $_POST['nonce'] && wp_verify_nonce( $_POST['nonce'], 'fv_player_frontend'  ) ) ) {
+  if( isset( $_POST['notice'] ) && ! empty( $_POST['nonce'] && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_player_frontend'  ) ) ) {
 
   	$current_user = wp_get_current_user();
     $content = "<h1>Admin: " . esc_html( $_POST['status'] ) . "</h1>\n";
@@ -470,7 +470,7 @@ function fv_player_admin_update() {
     delete_option('fv_flowplayer_extension_install');
   }
 
-  if( isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( $_POST['fv_player_pro_switch'], 'fv_player_pro_switch') ) {
+  if( isset($_POST['fv-player-pro-release']) && isset($_POST['fv_player_pro_switch']) && wp_verify_nonce( sanitize_key( $_POST['fv_player_pro_switch'] ), 'fv_player_pro_switch') ) {
     $fv_fp->css_writeout();
   }
 }
@@ -529,7 +529,7 @@ function fv_player_lchecks() {
   $aInstalled = get_option('fv_flowplayer_extension_install');
   if( isset($aCheck->valid) && $aCheck->valid){
 
-    if( !isset($aInstalled['fv_player_pro']) || ( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( $_REQUEST['nonce_fv_player_pro_install'], 'fv_player_pro_install') ) ) {
+    if( !isset($aInstalled['fv_player_pro']) || ( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( sanitize_key( $_REQUEST['nonce_fv_player_pro_install'] ), 'fv_player_pro_install') ) ) {
       fv_wp_flowplayer_install_extension('fv_player_pro');
     }
     delete_option('fv_wordpress_flowplayer_persistent_notices');
@@ -738,7 +738,7 @@ add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10,
 add_action( 'admin_notices', 'fv_player_embedded_on_fix' );
 
 function fv_player_embedded_on_fix() {
-  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-embedded-on-fix' ) ) {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-embedded-on-fix' ) ) {
 
     global $wpdb;
     $players_with_no_posts = $wpdb->get_col( "SELECT p.id FROM {$wpdb->prefix}fv_player_players AS p LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
@@ -796,7 +796,7 @@ function fv_player_embedded_on_fix() {
 add_action( 'admin_notices', 'fv_player_rollback' );
 
 function fv_player_rollback() {
-  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-rollback' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( $_REQUEST['_wpnonce'], 'fv-player-rollback' ) ) {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-rollback' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-rollback' ) ) {
 
     ob_start(); // first check if we can perform the update automatically!
     $creds = request_filesystem_credentials( admin_url(), '', false, false, array() );
@@ -966,7 +966,7 @@ function fv_player_submitbox_misc_actions( $attachment ) {
 add_action('wp_ajax_fv_player_table_new_row', 'fv_player_table_new_row');
 
 function fv_player_table_new_row() {
-  if( isset($_POST['playerID']) && isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-table_new_row_nonce" ) ) {
+  if( isset($_POST['playerID']) && isset($_POST['nonce']) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), "fv-player-table_new_row_nonce" ) ) {
     $table = new FV_Player_List_Table( array(
         'player_id' => intval($_POST['playerID']),
         'per_page' => 25,
@@ -990,7 +990,7 @@ function fv_player_table_new_row() {
 add_action('wp_ajax_fv_player_edit_posts_cell', 'fv_player_edit_posts_cell');
 
 function fv_player_edit_posts_cell() {
-  if( isset($_POST['nonce']) && wp_verify_nonce( $_POST['nonce'], "fv-player-edit_posts_cell_nonce" ) ) {
+  if( isset($_POST['nonce']) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), "fv-player-edit_posts_cell_nonce" ) ) {
 
     $player_id = false;
 

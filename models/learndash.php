@@ -144,7 +144,7 @@ class FV_Player_Learndash_LMS {
     
     if (
       ! isset( $_POST['learndash-lesson-access-settings']['nonce'] ) ||
-      ! wp_verify_nonce( $_POST['learndash-lesson-access-settings']['nonce'], 'learndash-lesson-access-settings' )
+      ! wp_verify_nonce( sanitize_key( $_POST['learndash-lesson-access-settings']['nonce'] ), 'learndash-lesson-access-settings' )
     ) {
       return;
     }
