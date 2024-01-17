@@ -296,9 +296,6 @@ add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files
 
 function fv_wp_flowplayer_check_files() {
   global $wpdb;
-  if( !defined('VIDEO_DIR') ) {
-    define('VIDEO_DIR', '/videos/');
-  }
 
   $bNotDone = false;
   $tStart = microtime(true);
@@ -329,8 +326,6 @@ function fv_wp_flowplayer_check_files() {
                 $src = 'http:'.$src;
               } else if( strpos( $src, '/' ) === 0 ) {
                 $src = home_url().$src;
-              } else if( !preg_match( '!^\S+://!', $src ) )  {
-                $src = home_url().VIDEO_DIR.$src;
               }
 
               $server = preg_replace( '!(.*?//.*?)/.+!', '$1', $src );

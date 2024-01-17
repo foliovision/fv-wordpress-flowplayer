@@ -118,19 +118,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       parent::__construct();
     }
 
-    if( !defined('VIDEO_DIR') ) {
-      define('VIDEO_DIR', '/videos/');
-    }
-
     // define needed constants
     if (!defined('FV_FP_RELATIVE_PATH')) {
       define('FV_FP_RELATIVE_PATH', flowplayer::get_plugin_url() );
-
-      $aURL = wp_parse_url( home_url() );
-      $vid = isset($_SERVER['SERVER_NAME']) ? 'http://'.$_SERVER['SERVER_NAME'] : $aURL['scheme'].'://'.$aURL['host'];
-      if (dirname($_SERVER['PHP_SELF']) != '/')
-        $vid .= dirname($_SERVER['PHP_SELF']);
-      define('VIDEO_PATH', $vid.VIDEO_DIR);
     }
 
     //add_filter( 'fv_flowplayer_caption', array( $this, 'get_duration_playlist' ), 10, 3 );
@@ -2568,6 +2558,21 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
 
+  function get_server_url() {
+    $url = is_ssl() ? 'https://' : 'http://';
+
+    $url .= sanitize_url( $_SERVER['SERVER_NAME'] );
+
+    if ( ! empty( $_SERVER['SERVER_PORT'] ) && intval( $_SERVER['SERVER_PORT'] ) != 80 && intval( $_SERVER['SERVER_PORT'] ) != 443 ) {
+      $url .= ':' . intval( $_SERVER['SERVER_PORT'] );
+    }
+
+    $url .= '/';
+
+    return $url;
+  }
+
+
   public static function get_video_key( $sURL ) {
     $sURL = str_replace( '?v=', '-v=', $sURL );
     $sURL = preg_replace( '~\?.*$~', '', $sURL );
@@ -2620,27 +2625,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return null;
     }
     if( strpos($media,'http://') !== 0 && strpos($media,'https://') !== 0 && strpos($media,'//') !== 0 ) {
-      $http = is_ssl() ? 'https://' : 'http://';
-      $server = $_SERVER['SERVER_NAME'];
-      if( !empty($_SERVER['SERVER_PORT']) && intval($_SERVER['SERVER_PORT']) != 80 ) {
-        $server .= ':'.$_SERVER['SERVER_PORT'];
+      if ( $media[0] === '/' ) {
+        $media = substr($media, 1);
       }
-      // strip the first / from $media
-      if($media[0]=='/') $media = substr($media, 1);
-      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media))){  //if the site does not live in the document root
-        $media = $http.$server.dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$media;
-      }
-      else if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$media)){ // if the videos folder is in the root
-        $media = $http.$server.VIDEO_DIR.$media;//VIDEO_PATH.$media;
-      }
-      else{ // if the videos are not in the videos directory but they are adressed relatively
-        $media_path = str_replace('//','/',$server.'/'.$media);
-        $media = $http.$media_path;
-      }
+
+      $media = $this->get_server_url() . $media;
     }
 
     $media = apply_filters( 'fv_flowplayer_media', $media, $this );
-
     return $media;
   }
 

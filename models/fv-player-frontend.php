@@ -1259,22 +1259,11 @@ class flowplayer_frontend extends flowplayer
       $splash_img = $this->aCurArgs['splash'];
 
       if( !is_numeric($splash_img) && strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
-        $http = is_ssl() ? 'https://' : 'http://';
+        if ( $splash_img[0] === '/' ) {
+          $splash_img = substr($splash_img, 1);
+        }
 
-        //$splash_img = VIDEO_PATH.trim($this->aCurArgs['splash']);
-        if($splash_img[0]=='/') $splash_img = substr($splash_img, 1);
-          if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img))){  //if the site does not live in the document root
-            $splash_img = $http.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$splash_img;
-          }
-          else
-          if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$splash_img)){ // if the videos folder is in the root
-            $splash_img = $http.$_SERVER['SERVER_NAME'].VIDEO_DIR.$splash_img;//VIDEO_PATH.$media;
-          }
-          else {
-            //if the videos are not in the videos directory but they are adressed relatively
-            $splash_img_path = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$splash_img);
-            $splash_img = $http.$splash_img_path;
-          }
+        $splash_img = $this->get_server_url() . $splash_img;
       }
       else {
         $splash_img = trim($this->aCurArgs['splash']);
@@ -1290,20 +1279,11 @@ class flowplayer_frontend extends flowplayer
 
   function get_subtitles_url($protocol, $subtitles) {
     if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-      //$splash_img = VIDEO_PATH.trim($args['splash']);
-      if($subtitles[0]=='/') $subtitles = substr($subtitles, 1);
-      if((dirname($_SERVER['PHP_SELF'])!='/')&&(file_exists($_SERVER['DOCUMENT_ROOT'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles))){  //if the site does not live in the document root
-        $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).VIDEO_DIR.$subtitles;
+      if ( $subtitles[0] === '/' ) {
+        $subtitles = substr($subtitles, 1);
       }
-      else
-        if(file_exists($_SERVER['DOCUMENT_ROOT'].VIDEO_DIR.$subtitles)){ // if the videos folder is in the root
-          $subtitles = $protocol.'://'.$_SERVER['SERVER_NAME'].VIDEO_DIR.$subtitles;//VIDEO_PATH.$media;
-        }
-        else {
-          //if the videos are not in the videos directory but they are adressed relatively
-          $subtitles = str_replace('//','/',$_SERVER['SERVER_NAME'].'/'.$subtitles);
-          $subtitles = $protocol.'://'.$subtitles;
-        }
+
+      $subtitles = $this->get_server_url() . $subtitles;
     }
     else {
       $subtitles = trim($subtitles);
