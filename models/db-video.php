@@ -847,6 +847,16 @@ CREATE TABLE " . self::$db_table_name . " (
     $last_video_meta_check = $this->getLastCheck();
     $last_video_meta_check_src = $this->getMetaValue( 'last_video_meta_check_src', true );
 
+    // Look if the last_video_meta_check_src is just about to save
+    if ( ! $last_video_meta_check_src && ! empty( $meta_data ) ) {
+      foreach( $meta_data AS $meta ) {
+        if ( 'last_video_meta_check_src' === $meta['meta_key'] ) {
+          $last_video_meta_check_src = $meta['meta_value'];
+          break;
+        }
+      }
+    }
+
     // Check video duration, or even splash image and title if it was not checked previously
     // TODO: What if the video source has changed?
     if(
@@ -1043,7 +1053,9 @@ CREATE TABLE " . self::$db_table_name . " (
         $meta_data = array();
       }
 
-      $this->updateMetaValue( 'last_video_meta_check_src', $video_url );
+      if ( $last_video_meta_check_src !== $video_url ) {
+        $this->updateMetaValue( 'last_video_meta_check_src', $video_url );
+      }
 
     }
 

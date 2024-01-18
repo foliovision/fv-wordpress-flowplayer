@@ -1910,16 +1910,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
             }
 
             $video_object = new FV_Player_Db_Video(null, $video_data, $FV_Player_Db);
-            $id_video = $video_object->save();
-
-            // add all meta data for this video
-            if (isset($video_data['meta'])) {
-              foreach ($video_data['meta'] as $video_meta_data) {
-                $video_meta_object = new FV_Player_Db_Video_Meta(null, $video_meta_data, $FV_Player_Db);
-                $video_meta_object->link2db($id_video, true);
-                $video_meta_object->save();
-              }
-            }
+            $id_video = $video_object->save( $video_data['meta'] );
 
             $player_video_ids[] = $id_video;
           }
