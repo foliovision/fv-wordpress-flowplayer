@@ -145,6 +145,9 @@ Localizing flowplayer with fv_flowplayer_conf = Array
 Localizing flowplayer with fv_player = Array
 (
     [ajaxurl] => https://site.com/wp//wp-admin/admin-ajax.php
+    [nonce] => nonce
+    [email_signup_nonce] => nonce
+    [video_position_save_nonce] => nonce
 )
 
 Localizing flowplayer with fv_flowplayer_translations = Array

@@ -398,7 +398,7 @@ class FV_Player_lightbox {
       // Load inline JS only, but will this work with WordPress 5.7?
       wp_register_script( 'fv_player_lightbox', '', array( 'jquery') );
       wp_enqueue_script( 'fv_player_lightbox' );
-      wp_add_inline_script( 'fv_player_lightbox', $script );
+      wp_add_inline_script( 'fv_player_lightbox', trim( $script ) );
 
     } else {
 
