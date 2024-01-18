@@ -922,7 +922,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       unset($aNewOptions['js-optimize']);
     }
 
-    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions, $_POST );
+    $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
     update_option( 'fvwpflowplayer', $aNewOptions );
     $this->_get_conf();
 
