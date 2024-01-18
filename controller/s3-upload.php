@@ -114,6 +114,7 @@ class FV_Player_S3_Upload {
         $rename_suffix_counter++;
       }
 
+      // TODO: Is this needed anywhere? If so do it properly!
       $_POST['fileInfo']['name'] = $filename_final;
 
       // make sure we have correct CORS on the DOS bucket

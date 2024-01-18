@@ -121,7 +121,7 @@ class FV_Player_List_Table_View {
               // Show the current taxonomy filtering, if any
               // This is filtering players by post type, core WordPress wp-admin -> Posts does not use nonce for filters either
               // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-              $desired_post_type = ! empty( $_GET['post_type'] ) ? $_GET['post_type'] : false;
+              $desired_post_type = ! empty( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : false;
 
               if ( $desired_post_type ) {
                 $post_type_taxonomies = get_taxonomies( array(
@@ -132,7 +132,7 @@ class FV_Player_List_Table_View {
 
                 foreach ( $post_type_taxonomies AS $tax ) {
                   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-                  $desired_tax = ! empty( $_GET[ $tax->name ] ) ? $_GET[ $tax->name ] : false;
+                  $desired_tax = ! empty( $_GET[ $tax->name ] ) ? sanitize_key( $_GET[ $tax->name ] ) : false;
 
                   if ( $desired_tax ) :
                     $term = term_exists( $desired_tax, $tax->name );

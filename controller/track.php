@@ -100,12 +100,12 @@ Class FvPlayerTrackerWorker {
       die( "Error: invalid nonce!" );
     }
 
-    if( $_REQUEST['tag'] == 'click' ) {
+    if( sanitize_key( $_REQUEST['tag'] ) == 'click' ) {
       $a = 1;
     }
 
     $blog_id = intval($_REQUEST['blog_id']);
-    $tag = preg_replace( '~[^a-z]~', '', substr( $_REQUEST['tag'], 0, 16 ) );
+    $tag = preg_replace( '~[^a-z]~', '', substr( sanitize_key( $_REQUEST['tag'] ), 0, 16 ) );
     $this->tag = $tag;
 
     $this->wp_content = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
@@ -116,7 +116,7 @@ Class FvPlayerTrackerWorker {
     $this->player_id = !empty($_REQUEST['player_id']) ? intval($_REQUEST['player_id']) : false;
     $this->post_id = !empty($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : false;
     $this->user_id = intval($_REQUEST['user_id']);
-    $this->watched = !empty($_REQUEST['watched']) ? $_REQUEST['watched'] : false;
+    $this->watched = !empty($_REQUEST['watched']) ? sanitize_text_field( $_REQUEST['watched'] ) : false;
 
     // TODO: Verify some kind of signature here
 
@@ -293,7 +293,7 @@ Class FvPlayerTrackerWorker {
     $options = get_option('fvwpflowplayer');
     $guest_user_id = 0;
 
-    if( $_REQUEST['user_id'] == 0 && !empty($options['video_stats_enable_guest']) ) { // guest user
+    if( absint( $_REQUEST['user_id'] ) == 0 && !empty($options['video_stats_enable_guest']) ) { // guest user
 
       if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
         $guest_user_id = intval( $_COOKIE['fv_player_stats_guest_user_id'] );

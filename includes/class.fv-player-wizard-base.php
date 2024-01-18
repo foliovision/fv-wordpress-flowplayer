@@ -57,7 +57,7 @@ abstract class FV_Player_Wizard_Base_Class {
       wp_send_json( array( 'error' => 'Invalid nonce' ) );
     }
 
-    $class_name = (string)$this->get_step($_POST['step_name']);
+    $class_name = (string)$this->get_step( sanitize_key( $_POST['step_name'] ) );
     $step = new $class_name;
 
     $result = call_user_func( array($step,'process') );
@@ -223,7 +223,7 @@ abstract class FV_Player_Wizard_Base_Class {
   }
 
   function styles() {
-    if( !empty($_GET['page']) && strcmp($this->page,$_GET['page']) == 0 ) {
+    if( !empty($_GET['page']) && strcmp( $this->page, sanitize_key( $_GET['page'] ) ) == 0 ) {
       wp_enqueue_style( 'fv_player_wizard_base', plugins_url('fv-player-wizard-base.css', __FILE__), array(), $this->version );
     }
   }

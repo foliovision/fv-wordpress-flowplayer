@@ -47,7 +47,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
 
     $output = array();
 
-    $name = wp_strip_all_tags($_POST['folder_name']); // new collection to create
+    $name = wp_strip_all_tags( sanitize_text_field( $_POST['folder_name'] ) ); // new collection to create
     $name = stripslashes($name);
 
     $api = new FV_Player_Bunny_Stream_API();
@@ -91,9 +91,9 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
     $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
-    $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
+    $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && intval( $_POST['page'] ) == absint( $_POST['page'] ) ? absint( $_POST['page'] ) : 1 );
     if( !empty($_POST['search']) ) {
-      $query_string['search'] = $_POST['search'];
+      $query_string['search'] = sanitize_text_field( $_POST['search'] );
     }
 
     // prepare base folder
@@ -104,8 +104,8 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $body['items'] = array();
 
     if( isset($_POST['path']) ) {
-      $_POST['path'] = wp_strip_all_tags( stripslashes($_POST['path']) );
-      $path = str_replace('Home/', '', $_POST['path']); // remove Home/
+      $_POST['path'] = wp_strip_all_tags( sanitize_text_field( $_POST['path'] ) );
+      $path = str_replace('Home/', '', sanitize_text_field( $_POST['path'] ) ); // remove Home/
       $path = rtrim($path, '/'); // remove ending /
     } else {
       $path = false;
@@ -116,7 +116,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     // query default videos or concrete collection library
     if( $path ) {
       $query_string['collection'] = $api->get_collection_guid_by_name($path);
-      $body['path'] = $_POST['path'];
+      $body['path'] = sanitize_text_field( $_POST['path'] );
     } else { // no colledction_id load collections
       $result_collection = $api->get_all_collections( $query_string['search'] ? $query_string['search'] : false );
 

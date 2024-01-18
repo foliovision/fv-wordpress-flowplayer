@@ -26,7 +26,7 @@ function fv_player_admin_page() {
 
 
 function fv_player_is_admin_screen() {
-  if( (isset($_GET['page']) && $_GET['page'] == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
+  if( (isset($_GET['page']) && sanitize_key( $_GET['page'] ) == 'fvplayer') || apply_filters('fv_player_is_admin_screen', false) ) {
     return true;
   }
   return false;
@@ -283,11 +283,11 @@ add_action( 'wp_ajax_fv_foliopress_ajax_pointers', 'fv_wp_flowplayer_pointers_aj
 
 function fv_wp_flowplayer_pointers_ajax() {
 
-  if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_video_checker_service' && isset($_POST['value']) ) {
+  if( isset($_POST['key']) && sanitize_key( $_POST['key'] ) == 'fv_flowplayer_video_checker_service' && isset($_POST['value']) ) {
     check_ajax_referer('fv_flowplayer_video_checker_service');
     $conf = get_option( 'fvwpflowplayer' );
     if( $conf ) {
-      if( $_POST['value'] == 'true' ) {
+      if( sanitize_key( $_POST['value'] ) == 'true' ) {
         $conf['disable_videochecker'] = 'false';
         $conf['video_checker_agreement'] = 'true';
       } else {
@@ -298,11 +298,11 @@ function fv_wp_flowplayer_pointers_ajax() {
     die();
   }
 
-  if( isset($_POST['key']) && $_POST['key'] == 'fv_flowplayer_video_positions_conversion' && isset($_POST['value']) ) {
+  if( isset($_POST['key']) && sanitize_key( $_POST['key'] ) == 'fv_flowplayer_video_positions_conversion' && isset($_POST['value']) ) {
     check_ajax_referer('fv_flowplayer_video_positions_conversion');
     $conf = get_option( 'fvwpflowplayer' );
     if( $conf ) {
-      $conf['notice_user_video_positions_conversion'] = $_POST['value'];
+      $conf['notice_user_video_positions_conversion'] = sanitize_text_field( $_POST['value'] );
       update_option( 'fvwpflowplayer', $conf );
     }
     die();
@@ -314,10 +314,10 @@ function fv_wp_flowplayer_pointers_ajax() {
   );
 
   if( isset($_POST['key']) && isset($_POST['value']) && in_array($_POST['key'], array_keys($notices) ) ) {
-    check_ajax_referer($_POST['key']);
+    check_ajax_referer( sanitize_key( $_POST['key'] ) );
     $conf = get_option( 'fvwpflowplayer' );
     if( $conf ) {
-      $conf[$notices[$_POST['key']]] = 'true';
+      $conf[ $notices[ sanitize_key( $_POST['key'] ) ] ] = 'true';
       update_option( 'fvwpflowplayer', $conf );
     }
     die();

@@ -240,7 +240,7 @@ class FV_Player_Db {
 
     // Core WordPress does not use nonce for searches in wp-admin -> Posts either
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    if ( isset($_GET['s']) && $_GET['s'] ) {
+    if ( !empty( $_GET['s'] ) ) {
       if( $this->player_ids_when_searching ) {
         $db_options = array(
           'select_fields'       => 'player_name, date_created, videos, author, status',
@@ -1046,7 +1046,7 @@ class FV_Player_Db {
         }
       }
 
-    } else if( !empty( $_REQUEST['action'] ) && 'fv_player_db_save' === $_REQUEST['action'] ) {
+    } else if( !empty( $_REQUEST['action'] ) && 'fv_player_db_save' === sanitize_key( $_REQUEST['action'] ) ) {
       wp_send_json( array(
         'error' => 'Error saving: JSON POST data missing!',
         'fatal_error' => true
@@ -1328,7 +1328,7 @@ class FV_Player_Db {
     if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-load" ) ) {
 
       // load player and its videos from DB
-      if (!$this->getPlayerAttsFromDb(array( 'id' => $_POST['playerID'] ))) {
+      if ( !$this->getPlayerAttsFromDb( array( 'id' => absint( $_POST['playerID'] ) ) ) ) {
         header("HTTP/1.0 404 Not Found");
         die();
       }
@@ -1408,7 +1408,7 @@ class FV_Player_Db {
         }
       }
 
-      $out = $this->db_load_player_data( $_POST['playerID'], $_POST['current_video_to_edit'] );
+      $out = $this->db_load_player_data( absint( $_POST['playerID'] ), absint( $_POST['current_video_to_edit'] ) );
 
       if( empty($out['videos']) ) {
         wp_send_json( array( 'error' => "Failed to load videos for this player." ) );
@@ -1827,8 +1827,10 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       $data = $alternative_data;
 
     } else if( isset( $_POST['data'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-import" ) ) {
+
+      // TODO: How to better sanitize this?
       $data = json_decode( stripslashes( $_POST['data'] ), true );
-      }
+    }
 
     if ( $data ) {
       try {
@@ -1968,7 +1970,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     if (isset($_POST['playerID']) && is_numeric($_POST['playerID']) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ),"fv-player-db-remove-".$_POST['playerID'] ) ) {
 
       // first, load the player
-      $player = new FV_Player_Db_Player($_POST['playerID'], array(), $this);
+      $player = new FV_Player_Db_Player( absint( $_POST['playerID'] ), array(), $this);
       if ($player && $player->getIsValid()) {
         $cannot_edit_other_posts = !current_user_can('edit_others_posts');
         $author_id = get_current_user_id();
@@ -2003,7 +2005,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @throws Exception Thrown if one of the underlying DB classes throws an exception.
    */
   public function clone_player() {
-    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv-player-db-export-' . $_POST['playerID'] ) ) {
+    if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv-player-db-export-' . absint( $_POST['playerID'] ) ) ) {
       $cannot_edit_other_posts = !current_user_can('edit_others_posts');
       $author_id = get_current_user_id();
 
@@ -2042,7 +2044,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       wp_send_json_error( 'Nonce verification failed! Please reload the page.' );
     }
 
-    $search = !empty( $_POST['search'] ) ? $_POST['search'] : false;
+    $search = !empty( $_POST['search'] ) ? sanitize_text_field( $_POST['search'] ) : false;
 
     $players = $this->getListPageData( array(
       'order' => 'desc',

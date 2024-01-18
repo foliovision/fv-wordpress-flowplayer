@@ -129,7 +129,7 @@ abstract class FV_Player_Media_Browser {
     $output = array(
       'name' => 'Home',
       'type' => 'folder',
-      'path' => !empty($_POST['path']) ? $_POST['path'] : 'Home/',
+      'path' => !empty($_POST['path']) ? sanitize_text_field( $_POST['path'] ) : 'Home/',
       'items' => array()
     );
 
@@ -152,7 +152,7 @@ abstract class FV_Player_Media_Browser {
       'Delimiter' => '/',
     );
 
-    $request_path = !empty($_POST['path']) ? str_replace( 'Home/', '', stripslashes($_POST['path']) ) : false;
+    $request_path = !empty($_POST['path']) ? str_replace( 'Home/', '', sanitize_text_field( $_POST['path'] ) ) : false;
 
     if( $request_path ) {
       $args['Prefix'] = $request_path;

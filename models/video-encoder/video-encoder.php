@@ -214,7 +214,7 @@ abstract class FV_Player_Video_Encoder {
    * @return array Returns augmented arguments array for the category picker with the option for "checked_ontop" set to FALSE.
    */
   function category_picker_args( $args ) {
-    if( !empty($_POST['action']) && strcmp($_POST['action'],'add-fv_player_encoding_category') == 0 ) {
+    if( !empty($_POST['action']) && strcmp( sanitize_key( $_POST['action'] ), 'add-fv_player_encoding_category') == 0 ) {
       $args['checked_ontop'] = false;
     }
     return $args;
@@ -316,22 +316,22 @@ abstract class FV_Player_Video_Encoder {
       wp_send_json( array('error' => 'Bad nonce') );
     }
 
-    $source = trim( $_POST['source'] );
-    $target = trim( $_POST['target'] );
+    $source = sanitize_text_field( $_POST['source'] );
+    $target = sanitize_text_field( $_POST['target'] );
 
     // if the extending Encoder supports encryption, add it here
     if ( isset($_POST['encryption']) ) {
-      $encryption = $_POST['encryption'];
+      $encryption = sanitize_text_field( $_POST['encryption'] );
     }
 
     // if the extending Encoder supports a trailer, add it here
     if ( isset( $_POST['trailer'] ) ) {
-      $trailer = $_POST['trailer'];
+      $trailer = sanitize_text_field( $_POST['trailer'] );
     }
 
     // if we get a proper category link, we prepend its Name (and parent Names) to the target
     if ( !empty($_POST['category_id']) ) {
-      if ( $folder = $this->util__category_id_to_folder( $_POST['category_id'] ) ) {
+      if ( $folder = $this->util__category_id_to_folder( absint( $_POST['category_id'] ) ) ) {
         $target = $folder.'/'.$target;
       }
     }
@@ -770,7 +770,7 @@ abstract class FV_Player_Video_Encoder {
    * @return bool Returns true if the tab we're looking for is active, false otherwise.
    */
   function tools_panel_is( $kind = false ) {
-    $panel = !empty( $_GET['panel'] ) ? $_GET['panel'] : 'jobs';
+    $panel = !empty( $_GET['panel'] ) ? sanitize_key( $_GET['panel'] ) : 'jobs';
     return strcmp( $panel, $kind ) == 0;
   }
 

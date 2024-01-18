@@ -58,7 +58,7 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
     $domains = array();
 
     if (isset($_POST['bucket']) && isset($buckets[$_POST['bucket']])) {
-      $array_id = $_POST['bucket'];
+      $array_id = absint( $_POST['bucket'] );
     } else {
       $array_id = 0;
     }

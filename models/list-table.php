@@ -45,9 +45,9 @@ class FV_Player_List_Table extends WP_List_Table {
   
   public function advanced_filters() {
     if ( ! empty( $_REQUEST['orderby'] ) )
-      echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+      echo '<input type="hidden" name="orderby" value="' . esc_attr( sanitize_text_field( $_REQUEST['orderby'] ) ) . '" />';
     if ( ! empty( $_REQUEST['order'] ) )
-      echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+      echo '<input type="hidden" name="order" value="' . esc_attr( sanitize_text_field( $_REQUEST['order'] ) ) . '" />';
     ?>
     <p class="search-box">
       <label class="screen-reader-text" for="fv_player_search">Search players:</label>
@@ -209,12 +209,12 @@ class FV_Player_List_Table extends WP_List_Table {
   }
     
   public function get_views() {
-    $current = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'all';
+    $current = isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'all';
 
     
     if ( ! empty( $_GET['post_type'] ) ) {
       // Remove the taxonomy arg from the URL 
-      $post_type_taxonomies = fv_player_get_post_type_taxonomies( $_GET['post_type'] );
+      $post_type_taxonomies = fv_player_get_post_type_taxonomies( sanitize_key( $_GET['post_type'] ) );
 
       foreach ( $post_type_taxonomies AS $tax ) {
         if ( ! empty( $_GET[ $tax ] ) ) {
@@ -308,7 +308,7 @@ class FV_Player_List_Table extends WP_List_Table {
     }
 
     if ( ! empty( $_GET['post_type'] ) ) {
-      $post_type = $_GET['post_type'];
+      $post_type = sanitize_key( $_GET['post_type'] );
       if ( ! empty( $this->post_types[ $post_type ] ) ) {
         $this->total_items = $this->post_types[ $post_type ]->player_count;
       }
@@ -320,8 +320,8 @@ class FV_Player_List_Table extends WP_List_Table {
     $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
     $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
     $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
-    $search = !empty($_GET['s']) ? trim($_GET['s']) : null;
-    $post_type = !empty($_GET['post_type']) ? trim($_GET['post_type']) : null;
+    $search = !empty($_GET['s']) ? trim( sanitize_text_field( $_GET['s'] )) : null;
+    $post_type = !empty($_GET['post_type']) ? trim( sanitize_key( $_GET['post_type'] ) ) : null;
 
     if(!empty($this->args['player_id'])) $single_id = $this->args['player_id'];
 
@@ -344,7 +344,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
       foreach ( $post_type_taxonomies AS $tax ) {
         if ( !empty( $_GET[ $tax ] ) ) {
-          $args[ 'tax_'.$tax ] = $_GET[ $tax ];
+          $args[ 'tax_'.$tax ] = sanitize_key( $_GET[ $tax ] );
         }
       }
     }

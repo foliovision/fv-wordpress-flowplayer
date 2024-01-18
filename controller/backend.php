@@ -92,7 +92,7 @@ function fv_wp_flowplayer_activate_extension() {
     die();
   }
 
-  $activate = activate_plugin( $_POST['plugin'] );
+  $activate = activate_plugin( sanitize_text_field( $_POST['plugin'] ) );
   if ( is_wp_error( $activate ) ) {
     echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => $activate->get_error_message(), 'error' => $activate->get_error_message() ) )."</FVFLOWPLAYER>";
     die();
@@ -733,7 +733,7 @@ add_filter('heartbeat_received', array($FV_Player_Db, 'check_db_edit_lock'), 10,
 add_action( 'admin_notices', 'fv_player_embedded_on_fix' );
 
 function fv_player_embedded_on_fix() {
-  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-embedded-on-fix' ) ) {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && sanitize_text_field( $_GET['action'] ) == 'fv-player-embedded-on-fix' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-embedded-on-fix' ) ) {
 
     global $wpdb;
     $players_with_no_posts = $wpdb->get_col( "SELECT p.id FROM {$wpdb->prefix}fv_player_players AS p LEFT JOIN {$wpdb->prefix}fv_player_playermeta AS m ON p.id = m.id_player AND m.meta_key = 'post_id' OR m.id IS NULL WHERE m.id IS NULL" );
@@ -791,7 +791,7 @@ function fv_player_embedded_on_fix() {
 add_action( 'admin_notices', 'fv_player_rollback' );
 
 function fv_player_rollback() {
-  if( current_user_can('install_plugins') && isset($_GET['action']) && $_GET['action'] == 'fv-player-rollback' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-rollback' ) ) {
+  if( current_user_can('install_plugins') && isset($_GET['action']) && sanitize_text_field( $_GET['action'] ) == 'fv-player-rollback' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-rollback' ) ) {
 
     ob_start(); // first check if we can perform the update automatically!
     $creds = request_filesystem_credentials( admin_url(), '', false, false, array() );
@@ -817,7 +817,7 @@ function fv_player_rollback() {
     $plugin_transient 	= get_site_transient( 'update_plugins' );
     $plugin_folder    	= plugin_basename( dirname( $plugin_slug ) );
     $plugin_file      	= basename( $plugin_slug );
-    $version            = isset($_GET['version']) ? $_GET['version'] : '6.6.6';
+    $version            = isset($_GET['version']) ? sanitize_text_field( $_GET['version'] ) : '6.6.6';
     $url 				        = 'https://downloads.wordpress.org/plugin/fv-player.'.$version.'.zip';
     $temp_array 		= array(
       'slug'        => $plugin_folder,
@@ -991,7 +991,7 @@ function fv_player_edit_posts_cell() {
 
     // New player, load from post meta field to ensure it saved
     if ( ! empty( $_POST['post_id'] ) && ! empty( $_POST['meta_key'] ) ) {
-      $shortcode = get_post_meta( $_POST['post_id'], $_POST['meta_key'], true );
+      $shortcode = get_post_meta( absint( $_POST['post_id'] ), sanitize_key( $_POST['meta_key'] ), true );
       $shortcode_atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
 
       if( ! empty($shortcode_atts['id']) ) {

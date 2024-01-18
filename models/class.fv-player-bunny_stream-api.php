@@ -18,7 +18,7 @@ class FV_Player_Bunny_Stream_API {
     global $fv_fp;
 
     $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
-    $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && (int) $_POST['page'] == $_POST['page'] ? $_POST['page'] : 1 );
+    $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && intval( $_POST['page'] ) == absint( $_POST['page'] ) ? absint( $_POST['page'] ) : 1 );
 
     if( $search ) $query_string['search'] = $search;
 

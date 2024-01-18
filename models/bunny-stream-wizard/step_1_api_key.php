@@ -39,7 +39,7 @@ class FV_Player_Bunny_Stream_Wizard_API_Key extends FV_Player_Wizard_Step_Base_C
     // We are not processing form data without nonce verification.
     // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Wizard_Step_Base_Class::process()
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $api_key = trim( $_POST[ $this->key ] );
+    $api_key = trim( sanitize_text_field( $_POST[ $this->key ] ) );
 
     $api = new FV_Player_Bunny_Stream_API( $api_key );
 

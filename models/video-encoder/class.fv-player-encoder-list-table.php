@@ -91,9 +91,9 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
 		</style>
     <?php
     if ( ! empty( $_REQUEST['orderby'] ) )
-      echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+      echo '<input type="hidden" name="orderby" value="' . esc_attr( sanitize_key( $_REQUEST['orderby'] ) ) . '" />';
     if ( ! empty( $_REQUEST['order'] ) )
-      echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
+      echo '<input type="hidden" name="order" value="' . esc_attr( sanitize_key( $_REQUEST['order'] ) ) . '" />';
 
     ?>
     <p class="search-box">
@@ -259,7 +259,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     global $wpdb;
 
     if( !empty($_GET['s']) ) {
-      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s AND source LIKE %s", $this->encoder_id, '%' . $wpdb->esc_like( $_GET['s'] ) . '%' ) );
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s AND source LIKE %s", $this->encoder_id, '%' . $wpdb->esc_like( sanitize_text_field( $_GET['s'] ) ) . '%' ) );
 
     } else {
       $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s", $this->encoder_id ) );
@@ -281,12 +281,12 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   private function get_data($id = false, $args = false ) {
     if( !$args ) {
       $args = array();
-      if ( ! empty( $_GET['exclude'] ) ) $args['exclude'] = $_GET['exclude'];
-      if ( ! empty( $_GET['order'] ) ) $args['order'] = $_GET['order'];
-      if ( ! empty( $_GET['orderby'] ) ) $args['orderby'] = $_GET['orderby'];
-      if ( ! empty( $_GET['paged'] ) ) $args['paged'] = $_GET['paged'];
-      if ( ! empty( $_GET['status'] ) ) $args['status'] = $_GET['status'];
-      if ( ! empty( $_GET['s'] ) ) $args['s'] = $_GET['s'];
+      if ( ! empty( $_GET['exclude'] ) ) $args['exclude'] = sanitize_text_field( $_GET['exclude'] );
+      if ( ! empty( $_GET['order'] ) ) $args['order'] = sanitize_key( $_GET['order'] );
+      if ( ! empty( $_GET['orderby'] ) ) $args['orderby'] = sanitize_key( $_GET['orderby'] );
+      if ( ! empty( $_GET['paged'] ) ) $args['paged'] = absint( $_GET['paged'] );
+      if ( ! empty( $_GET['status'] ) ) $args['status'] = sanitize_key( $_GET['status'] );
+      if ( ! empty( $_GET['s'] ) ) $args['s'] = sanitize_text_field( $_GET['s'] );
     }
     
     $args = wp_parse_args( $args, array(

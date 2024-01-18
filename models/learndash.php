@@ -170,14 +170,14 @@ class FV_Player_Learndash_LMS {
     if ( isset( $_POST[$post_key]['lesson_use_fvplayer_video'] ) ) {
       $lesson_use_fvplayer_video = true;
       
-      $my_settings_value = esc_attr( $_POST[$post_key]['lesson_use_fvplayer_video'] );
+      $my_settings_value = sanitize_key( $_POST[$post_key]['lesson_use_fvplayer_video'] );
       update_post_meta( $post_id, 'lesson_use_fvplayer_video', $my_settings_value );
 
     } else {
       delete_post_meta( $post_id, 'lesson_use_fvplayer_video' );
     }
 
-    if( !empty($_POST[$post_key]['lesson_video_enabled']) && $_POST[$post_key]['lesson_video_enabled'] == 'on' ) {
+    if( !empty($_POST[$post_key]['lesson_video_enabled']) && sanitize_key( $_POST[$post_key]['lesson_video_enabled'] ) == 'on' ) {
     
       // Adjusting the Video URL field based on "Use FV Player"
       foreach( array(

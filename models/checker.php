@@ -127,7 +127,7 @@ class FV_Player_Checker {
         }
       }
 
-      $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( $_POST['hash'] ) ) : false;
+      $random = (isset($_POST['hash'])) ? trim( wp_strip_all_tags( sanitize_text_field( $_POST['hash'] ) ) ) : false;
       if( isset($media) ) {
         $remotefilename = $media;
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);

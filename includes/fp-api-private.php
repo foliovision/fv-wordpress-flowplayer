@@ -332,7 +332,7 @@ $this->strPrivateAPI - also
   function pointers_ajax() {
     if( $this->pointer_boxes ) {  
       foreach( $this->pointer_boxes AS $sKey => $aPopup ) {
-        if( $_POST['key'] == $sKey ) {
+        if( sanitize_key( $_POST['key'] ) == $sKey ) {
           check_ajax_referer($sKey);
         }
       }
@@ -343,7 +343,7 @@ $this->strPrivateAPI - also
   function pointers_ajax_cookie() {
     $cookie = $this->pointers_get_cookie();
 
-    $cookie[$_POST['key']] = !empty($_POST['value']) ? $_POST['value'] : true;
+    $cookie[ sanitize_key( $_POST['key'] ) ] = !empty($_POST['value']) ? sanitize_text_field( $_POST['value'] ) : true;
 
     $secure = ( 'https' === wp_parse_url( home_url(), PHP_URL_SCHEME ) );
     setcookie( $this->class_name.'_store_answer', wp_json_encode($cookie), time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, $secure );

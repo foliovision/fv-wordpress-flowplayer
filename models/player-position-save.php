@@ -446,6 +446,7 @@ class FV_Player_Position_Save {
     // check if videoTimes is not a JSON-encoded value, which will happen
     // when the request came from a navigation.sendBeacon() call instead of the usual AJAX call
     if( isset( $_POST['videoTimes'] ) ) {
+      // TODO: How to sanitize JSON?
       $decoded_times = json_decode(urldecode($_POST['videoTimes']), true);
 
       if ($decoded_times !== false) {
@@ -454,6 +455,7 @@ class FV_Player_Position_Save {
     }
 
     if( isset( $_POST['playlistItems'] ) ) {
+      // TODO: How to sanitize JSON?
       $decoded_playlists = json_decode(urldecode($_POST['playlistItems']), true);
 
       if ($decoded_playlists !== false) {
@@ -465,9 +467,9 @@ class FV_Player_Position_Save {
 
     if ( is_user_logged_in() ) {
       $uid = get_current_user_id();
-      if (isset($_POST['videoTimes']) && ($times = $_POST['videoTimes']) && count($times)) {
-        foreach ($times as $record) {
-          $name = $this->get_extensionless_file_name($record['name']);
+      if ( ! empty( $_POST['videoTimes'] ) ) {
+        foreach ( $_POST['videoTimes'] as $record) {
+          $name = $this->get_extensionless_file_name( sanitize_text_field( $record['name'] ) );
           if( intval($record['position']) == 0 ) {
             $this->delete_video_postion($uid, $name, 'last_position');
           } else {
@@ -502,7 +504,7 @@ class FV_Player_Position_Save {
           }
 
           // Did the user saw the full video?
-          if( !empty($record['saw']) && $record['saw'] == true ) {
+          if( !empty($record['saw']) && sanitize_key( $record['saw'] ) == true ) {
             $this->set_video_position($uid, $name, 'finished', 1);
             $this->delete_video_postion($uid, $name, 'top_position');
           }
@@ -511,6 +513,8 @@ class FV_Player_Position_Save {
         // What are the videos which user saw in full length?
         if( !empty($_POST['sawVideo']) && is_array($_POST['sawVideo']) ) {
           foreach ($_POST['sawVideo'] as $record) {
+
+            // TODO: How does this target a specific video?
             $this->set_video_position($uid, $name, 'finished', 1);
             $this->delete_video_postion($uid, $name, 'top_position');
           }
@@ -519,9 +523,9 @@ class FV_Player_Position_Save {
         $success = true;
       }
 
-      if (isset($_POST['playlistItems']) && ($playlistItems = $_POST['playlistItems']) && count($playlistItems)) {
-        foreach ($playlistItems as $playeritem) {
-          $this->set_player_position($uid, $playeritem['player'], $playeritem['item']);
+      if ( ! empty( $_POST['playlistItems'] ) ) {
+        foreach( $_POST['playlistItems'] as $playeritem ) {
+          $this->set_player_position( absint( $uid ), absint( $playeritem['player'] ), absint( $playeritem['item'] ) );
         }
 
         $success = true;

@@ -4414,6 +4414,7 @@ jQuery(function() {
           });
 
         } else {
+          // TODO: Fix, it won't show!
           fv_player_editor.overlay_notice( button, response, 'error' );
 
         }

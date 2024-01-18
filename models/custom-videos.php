@@ -573,8 +573,8 @@ class FV_Player_Custom_Videos_Master {
         continue;
       }
 
-      if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'user' ) {
-        delete_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta );
+      if( sanitize_key( $_POST['fv-player-custom-videos-entity-type'][$meta] ) == 'user' ) {
+        delete_user_meta( absint( $_POST['fv-player-custom-videos-entity-id'][$meta] ), $meta );
 
         foreach( $videos AS $video ) {
           if( strlen($video) == 0 ) continue;
@@ -582,7 +582,7 @@ class FV_Player_Custom_Videos_Master {
           // strip html tags to prevent XSS
           $video = sanitize_text_field( $video );
 
-          add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $video );
+          add_user_meta( absint( $_POST['fv-player-custom-videos-entity-id'][$meta] ), $meta, $video );
         }
       }
     }
@@ -600,7 +600,7 @@ class FV_Player_Custom_Videos_Master {
         continue;
       }
 
-      if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'post' && $_POST['fv-player-custom-videos-entity-id'][$meta] == $post_id ) {
+      if( sanitize_key( $_POST['fv-player-custom-videos-entity-type'][$meta] ) == 'post' && absint( $_POST['fv-player-custom-videos-entity-id'][$meta] ) == $post_id ) {
         delete_post_meta( $post_id, $meta );
 
         if( is_array($value) && count($value) > 0 ) {

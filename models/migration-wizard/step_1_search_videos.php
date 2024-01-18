@@ -32,7 +32,7 @@ class FV_Player_Wizard_Step_1_Search_Videos extends FV_Player_Wizard_Step_Base_C
   }
 
   function process() {
-    $search_string = $_POST['video_src_search']['search_string'];
+    $search_string = sanitize_text_field( $_POST['video_src_search']['search_string'] );
     
     $list_videos = new FV_Player_Wizard_Step_2_List_Videos($search_string);
 

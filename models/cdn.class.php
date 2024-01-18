@@ -29,7 +29,7 @@ abstract class FV_Player_CDN {
    * Used by FV Player Pro
    */
   function ajax() {
-    if( isset($_POST['action']) && $_POST['action'] == 'fv_fp_get_video_url' ) {
+    if( isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'fv_fp_get_video_url' ) {
       $bFound = false;
       foreach( $this->aDomains AS $i => $sDomains ) {
         $aDomains = explode(',',$sDomains);
@@ -48,6 +48,7 @@ abstract class FV_Player_CDN {
 
       if( $bFound ) {
         echo '<FVFLOWPLAYER>';
+        // TODO: Sanitize
         echo wp_json_encode($_POST['sources']);
         echo '</FVFLOWPLAYER>';
         die();

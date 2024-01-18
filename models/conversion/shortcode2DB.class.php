@@ -60,7 +60,7 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
       'Error'
     );
 
-    if( isset($_GET['fv-conversion-export']) && !empty($_GET['page']) && $_GET['page'] === $this->screen ) {
+    if( isset($_GET['fv-conversion-export']) && !empty($_GET['page']) && sanitize_key( $_GET['page'] ) === $this->screen ) {
       add_action('admin_init', array( $this, 'csv_export' ) );
     }
   }

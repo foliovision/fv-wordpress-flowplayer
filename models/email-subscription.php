@@ -70,11 +70,11 @@ class FV_Player_Email_Subscription {
 
       foreach( $_POST['email_lists'] AS $key => $value ) {
         $key = intval($key);
-        $aOptions[$key]['first_name'] = stripslashes($value['first_name']);
-        $aOptions[$key]['last_name'] = stripslashes($value['last_name']);
-        $aOptions[$key]['integration'] = isset($value['integration']) ? stripslashes($value['integration']) : false;
-        $aOptions[$key]['title'] = stripslashes($value['title']);
-        $aOptions[$key]['description'] = stripslashes($value['description']);
+        $aOptions[$key]['first_name'] = sanitize_text_field( $value['first_name'] );
+        $aOptions[$key]['last_name'] = sanitize_text_field( $value['last_name'] );
+        $aOptions[$key]['integration'] = isset($value['integration']) ? sanitize_text_field( $value['integration'] ) : false;
+        $aOptions[$key]['title'] = sanitize_text_field( $value['title'] );
+        $aOptions[$key]['description'] = sanitize_text_field( $value['description'] );
 
       }
       update_option('fv_player_email_lists',$aOptions);
@@ -449,14 +449,14 @@ class FV_Player_Email_Subscription {
     $merge_fields = array();
 
     if(isset( $_POST['first_name'] )){
-      $merge_fields['FNAME'] = $_POST['first_name'];
+      $merge_fields['FNAME'] = sanitize_text_field( $_POST['first_name'] );
     }
 
     if(isset( $_POST['last_name'] )){
-      $merge_fields['LNAME'] = $_POST['last_name'];
+      $merge_fields['LNAME'] = sanitize_text_field( $_POST['last_name'] );
     }
 
-    $result_data = fv_player_mailchimp_post($list_id, $_POST['email'], $merge_fields);
+    $result_data = fv_player_mailchimp_post($list_id, sanitize_text_field( $_POST['email'] ), $merge_fields);
 
     $result = array(
       'status' => 'OK',
@@ -507,7 +507,7 @@ class FV_Player_Email_Subscription {
       exit;
     }
 
-    $list_id = isset( $_POST['list'] ) ? $_POST['list'] : 0;
+    $list_id = isset( $_POST['list'] ) ? absint( $_POST['list'] ) : 0;
 
     $aLists = get_option('fv_player_email_lists');
 
@@ -545,22 +545,22 @@ class FV_Player_Email_Subscription {
       $integration_nice = $aLists[str_replace('mailchimp-','',$list['integration'])]['name'];
       $result = $this->mailchimp_signup(str_replace('mailchimp-','',$list['integration']));
     }
-    if(empty( $_POST['email'] ) || filter_var(trim( $_POST['email'] ), FILTER_VALIDATE_EMAIL)===false){
+    if(empty( $_POST['email'] ) || filter_var(trim( sanitize_text_field( $_POST['email'] ) ), FILTER_VALIDATE_EMAIL)===false){
       $result['status'] = 'ERROR';
       $result['text'] = __( 'Malformed Email Address.', 'fv-player' );
       die(wp_json_encode($result));
     };
 
-    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", wp_strip_all_tags( $_POST['email'] ), intval($list_id) ) );
+    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", sanitize_email( $_POST['email'] ), intval($list_id) ) );
 
     if(intval($count) === 0){
       $wpdb->insert($table_name, array(
-        'email' => wp_strip_all_tags( $_POST['email'] ),
+        'email' => sanitize_email( $_POST['email'] ),
         'data' => '',
         'id_list'=> intval($list_id),
         'date' => gmdate("Y-m-d H:i:s"),
-        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( $_POST['first_name'] ) : '',
-        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( $_POST['last_name'] ) : '',
+        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['first_name'] ) ) : '',
+        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['last_name'] ) ) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -575,12 +575,12 @@ class FV_Player_Email_Subscription {
 
     }else{
       $wpdb->insert($table_name, array(
-        'email' => wp_strip_all_tags( $_POST['email'] ),
+        'email' => sanitize_email( $_POST['email'] ),
         'data' => '',
         'id_list' => intval($list_id),
         'date' => gmdate("Y-m-d H:i:s"),
-        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( $_POST['first_name'] ) : '',
-        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( $_POST['last_name'] ) : '',
+        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['first_name'] ) ) : '',
+        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['last_name'] ) ) : '',
         'integration' => $list['integration'],
         'integration_nice' => $integration_nice,
         'status' => $result['status'],
@@ -593,7 +593,7 @@ class FV_Player_Email_Subscription {
   }
 
   function csv_export() {
-    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-email-export' ) ) {
+    if( isset($_GET['fv-email-export']) && !empty($_GET['page']) && sanitize_key( $_GET['page'] ) === 'fvplayer' && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-email-export' ) ) {
       $list_id = intval($_GET['fv-email-export']);
       $aLists = get_option('fv_player_email_lists');
       $list = $aLists[$list_id];
@@ -630,7 +630,7 @@ class FV_Player_Email_Subscription {
 
 
   public function admin_export_screen(){
-    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && $_GET['page'] === 'fvplayer' && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-email-show' ) ) {
+    if( isset($_GET['fv-email-export-screen']) && !empty($_GET['page']) && sanitize_key( $_GET['page'] ) === 'fvplayer' && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-email-show' ) ) {
 
       $list_id = intval($_GET['fv-email-export-screen']);
 
@@ -700,10 +700,9 @@ class FV_Player_Email_Subscription {
       die();
     }
 
-    $aLists[$key] = $_POST['email_lists'][$key];
-    foreach ($aLists as $index => $values) {
+    foreach ( $_POST['email_lists'] as $index => $values) {
       foreach ($values as $key => $value) {
-        $aLists[$index][$key] = stripslashes($value);
+        $aLists[$index][$key] = sanitize_text_field( $value );
       }
     }
     update_option('fv_player_email_lists',$aLists);

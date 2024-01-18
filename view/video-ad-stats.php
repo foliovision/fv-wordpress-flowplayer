@@ -71,7 +71,7 @@ if ( ! defined( 'ABSPATH' ) ) {
           $dates = $FV_Player_Stats->get_valid_dates($user_id);
 
           foreach( $dates as $key => $value ) {
-            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && $_REQUEST['stats_range'] == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
+            echo '<option value="'.$key.'" '.( isset($_REQUEST['stats_range']) && sanitize_key( $_REQUEST['stats_range'] ) == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
           }
         ?>
       </select>

@@ -854,8 +854,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           )
         ) as $key ) {
           if ( isset( $_POST[ $key ] ) ) {
+            // TODO: Check for FV Player Pro
             if ( is_array( $_POST[ $key ] ) ) {
-              foreach(  $_POST[ $key ] AS $post_key => $post_value ) {
+              foreach( $_POST[ $key ] AS $post_key => $post_value ) {
                 $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = sanitize_text_field( $post_value );  
               }
             } else {
@@ -1659,7 +1660,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       is_admin() && // do not load in wp-admin
       !did_action('admin_footer') && // if the footer was not yet shown
       !did_action('elementor/editor/wp_head') && // and if Elementor head was not yet loaded
-      ( !isset($_GET['page']) || $_GET['page'] != 'fvplayer' ) && // and unless it's the FV Player player
+      ( !isset($_GET['page']) || sanitize_key( $_GET['page'] ) != 'fvplayer' ) && // and unless it's the FV Player player
       !empty($_GET['legacy-widget-preview[idBase]']) // and unless it's the legacy widget preview of Gutenberg-powered WordPress 5.8 widgets
     ) {
       return;
@@ -2669,8 +2670,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   public static function is_optimizepress() {
-    if( ( isset($_GET['page']) && $_GET['page'] == 'optimizepress-page-builder' ) ||
-        ( isset($_POST['action']) && $_POST['action'] == 'optimizepress-live-editor-parse' )
+    if( ( isset($_GET['page']) && sanitize_key( $_GET['page'] ) == 'optimizepress-page-builder' ) ||
+        ( isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'optimizepress-live-editor-parse' )
       ) {
       return true;
     }
@@ -2679,7 +2680,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   public static function is_themify() {
-    if( isset($_POST['action']) && $_POST['action'] == 'tfb_load_module_partial' ) {
+    if( isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'tfb_load_module_partial' ) {
       return true;
     }
     return false;
@@ -2919,7 +2920,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <?php
 
       if( isset( $_REQUEST['fv_player_preview_nonce'] ) && wp_verify_nonce( sanitize_key( $_REQUEST['fv_player_preview_nonce'] ), 'fv_player_preview' ) && isset($_REQUEST['fv_player_preview']) ) :
-        $shortcode = base64_decode( $_REQUEST['fv_player_preview'] );
+        $shortcode = base64_decode( sanitize_text_field( $_REQUEST['fv_player_preview'] ) );
         $shortcode = apply_filters( 'fv_player_preview_data', $shortcode );
 
       $matches = null;

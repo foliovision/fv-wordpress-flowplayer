@@ -23,7 +23,7 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
     // We are not processing form data without nonce verification.
     // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Bunny_Stream_Wizard_API_Key::process() where this method is called.
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $bunnycdn_api = ! empty( $_POST['bunnycdn_api'] ) ? $_POST['bunnycdn_api'] : false;
+    $bunnycdn_api = ! empty( $_POST['bunnycdn_api'] ) ? sanitize_text_field( $_POST['bunnycdn_api'] ) : false;
 
     ?>
       <tr>
@@ -98,11 +98,11 @@ class FV_Player_Bunny_Stream_Wizard_Stream_Libs extends FV_Player_Wizard_Step_Ba
     // We are not processing form data without nonce verification.
     // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Wizard_Step_Base_Class::process()
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $bunnycdn_api = ! empty( $_POST['bunnycdn_api'] ) ? $_POST['bunnycdn_api'] : false;
+    $bunnycdn_api = ! empty( $_POST['bunnycdn_api'] ) ? sanitize_text_field( $_POST['bunnycdn_api'] ) : false;
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $lib = ! empty( $_POST['fv_bunny_stream_wizard_lib'] ) ? $_POST['fv_bunny_stream_wizard_lib'] : false;
+    $lib = ! empty( $_POST['fv_bunny_stream_wizard_lib'] ) ? sanitize_text_field( $_POST['fv_bunny_stream_wizard_lib'] ) : false;
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $name = ! empty( $_POST['bunny_stream_wizard']['name'] ) ? $_POST['bunny_stream_wizard']['name'] : false;
+    $name = ! empty( $_POST['bunny_stream_wizard']['name'] ) ? sanitize_text_field( $_POST['bunny_stream_wizard']['name'] ) : false;
 
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
     if ( $lib && $lib == '-1' ) {

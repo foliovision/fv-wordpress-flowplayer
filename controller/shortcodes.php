@@ -523,7 +523,7 @@ function fv_flowplayer_shortcode_playlist( $output ) {
 }
 
 global $fv_fp;
-if( ( empty($_POST['action']) || $_POST['action'] != 'parse-media-shortcode' ) && ( empty($_GET['action']) || $_GET['action'] != 'edit' ) && !empty($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) {
+if( ( empty($_POST['action']) || sanitize_key( $_POST['action'] ) != 'parse-media-shortcode' ) && ( empty($_GET['action']) || sanitize_key( $_GET['action'] ) != 'edit' ) && !empty($fv_fp->conf['integrations']['wp_core_video']) && $fv_fp->conf['integrations']['wp_core_video'] == 'true' ) {
   add_filter( 'wp_video_shortcode_override', 'fv_flowplayer_shortcode_video', 10, 4 );
   add_filter( 'wp_audio_shortcode_override', 'fv_flowplayer_shortcode_video', 10, 4 );
   add_filter( 'post_playlist', 'fv_flowplayer_shortcode_playlist', 10, 2 );

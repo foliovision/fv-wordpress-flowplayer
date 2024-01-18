@@ -67,10 +67,10 @@ class FV_Player_Wizard_Step_3_Test_Replace extends FV_Player_Wizard_Step_Base_Cl
     // We are not processing form data without nonce verification.
     // The nonce is verified in FV_Player_Wizard_Base_Class::ajax() which calls FV_Player_Wizard_Step_Base_Class::process()
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $search_string = $_POST['search_string'];
+    $search_string = sanitize_text_field( $_POST['search_string'] );
 
     // phpcs:ignore WordPress.Security.NonceVerification.Missing
-    $replace_string= $_POST['replace_string'];
+    $replace_string= sanitize_text_field( $_POST['replace_string'] );
 
     $step_finish = new FV_Player_Wizard_Step_Finish();
 

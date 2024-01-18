@@ -213,7 +213,7 @@ abstract class FV_Player_Conversion_Base {
    * @return boolean
    */
   function is_live() {
-    return (!empty($_POST['make-changes']) && $_POST['make-changes'] == 'true') || $this->set_live ;
+    return (!empty($_POST['make-changes']) && sanitize_key( $_POST['make-changes'] ) == 'true') || $this->set_live ;
   }
 
 }

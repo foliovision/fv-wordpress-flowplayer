@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'admin_enqueue_scripts', 'fv_player_shortcode_editor_scripts' );
 
 function fv_player_shortcode_editor_scripts( $page ) {
-  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && $page !== 'fv-player_page_fv_player_video_ads' && ( empty($_GET['page']) || ($_GET['page'] != 'fvplayer' && $_GET['page'] != 'fv_player') ) ) {
+  if( $page !== 'post.php' && $page !== 'post-new.php' && $page !== 'site-editor.php' && $page !== 'fv-player_page_fv_player_video_ads' && ( empty($_GET['page']) || sanitize_key( $_GET['page'] ) != 'fvplayer' && sanitize_key( $_GET['page'] ) != 'fv_player' ) ) {
     return;
   }
 
@@ -115,7 +115,7 @@ add_action('media_buttons', 'flowplayer_add_media_button', 10);
 function flowplayer_add_media_button() {
   if( stripos( $_SERVER['REQUEST_URI'], 'post.php' ) !== FALSE ||
      stripos( $_SERVER['REQUEST_URI'], 'post-new.php' ) !== FALSE ||
-     isset($_POST['action']) && $_POST['action'] == 'vc_edit_form'
+     isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'vc_edit_form'
      ) {
     global $post;
     $plugins = get_option('active_plugins');
@@ -481,8 +481,8 @@ function fv_player_splashcreen_action() {
   }
 
   if( check_ajax_referer( "fv-player-splashscreen", "security" , false ) == 1 ) {
-    $title = $_POST['title'];
-    $img = $_POST['img'];
+    $title = sanitize_text_field( ['title'] );
+    $img = sanitize_text_field( $_POST['img'] );
     $limit = 128 - 5; // .jpeg
 
     $img = str_replace('data:image/jpeg;base64,', '', $img);
@@ -916,7 +916,7 @@ add_filter( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9, 3 );
 function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
   global $wp, $wp_embed, $fv_fp, $FV_Player_Shortcode2Database_Conversion;
 
-  $is_classic_editor_save = !empty($_POST['action']) && $_POST['action'] === 'editpost' && !empty($_POST['post_ID']) && $_POST['post_ID'] == $post_id;
+  $is_classic_editor_save = !empty($_POST['action']) && sanitize_key( $_POST['action'] ) === 'editpost' && !empty($_POST['post_ID']) && absint( $_POST['post_ID'] ) == $post_id;
   $is_gutenberg_post_save = !empty($wp->query_vars['rest_route']) && $wp->query_vars['rest_route'] == '/wp/v2/posts/'.$post_id;
 
   if( !$is_classic_editor_save && !$is_gutenberg_post_save ) {
