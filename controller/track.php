@@ -296,7 +296,7 @@ Class FvPlayerTrackerWorker {
     if( $_REQUEST['user_id'] == 0 && !empty($options['video_stats_enable_guest']) ) { // guest user
 
       if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
-        $guest_user_id = (int) $_COOKIE['fv_player_stats_guest_user_id'];
+        $guest_user_id = intval( $_COOKIE['fv_player_stats_guest_user_id'] );
       } else { // create new guest user id
         $last_guest_id = get_option( 'fv_player_stats_last_guest_user_id', 0 );
         $last_guest_id = $last_guest_id + 1;

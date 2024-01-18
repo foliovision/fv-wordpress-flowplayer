@@ -376,7 +376,7 @@ $this->strPrivateAPI - also
 
     $cookie = false;
     if( !empty($_COOKIE[$cookie_name]) ) {
-      $cookie = $_COOKIE[$cookie_name];
+      $cookie = sanitize_text_field( $_COOKIE[$cookie_name] );
     }
 
     $cookie = (array) json_decode( stripslashes($cookie) );
