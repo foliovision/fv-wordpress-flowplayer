@@ -223,6 +223,10 @@ function esc_attr($value) {
   return $value;
 }
 
+function wp_create_nonce() {
+  return 'nonce';
+}
+
 // mocks for the WPDB WordPress database manipulation class
 class wpdb {
 
