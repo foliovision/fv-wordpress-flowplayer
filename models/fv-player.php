@@ -35,10 +35,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
    */
   const FV_FP_RELATIVE_PATH = '';
   /**
-   * Where videos should be stored
-   */
-  const VIDEO_PATH = '';
-  /**
    * Where the config file should be
    */
   private $conf_path = '';
