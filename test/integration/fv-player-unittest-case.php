@@ -27,6 +27,7 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
     
     $html = preg_replace( '~convert_jwplayer=[a-z0-9]+~', 'convert_jwplayer=XYZ', $html);
     $html = preg_replace( '~_wpnonce=[a-z0-9]+~', '_wpnonce=XYZ', $html);
+    $html = preg_replace( '~nonce":"[a-z0-9]+"~', 'nonce":"XYZ"', $html);
     
     // XML Video Sitemap
     $html = preg_replace( '~http://example.org/\?p=\d{1,}~', 'http://example.org/?p=1234', $html);
