@@ -140,8 +140,12 @@ class FV_Player_S3_Upload {
       $res = $this->s3( "createMultipartUpload", array(
         'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
         'Key' => $filename_final,
-        'ContentType' => $_REQUEST['fileInfo']['type'],
-        'Metadata' => $_REQUEST['fileInfo']
+        'ContentType' => sanitize_text_field( $_REQUEST['fileInfo']['type'] ),
+        'Metadata' => array(
+          'name' => sanitize_text_field( $_REQUEST['fileInfo']['name'] ),
+          'type' => sanitize_text_field( $_REQUEST['fileInfo']['type'] ),
+          'size' => intval( $_REQUEST['fileInfo']['size'] ),
+        )
       ));
 
       wp_send_json( array(
@@ -163,11 +167,11 @@ class FV_Player_S3_Upload {
     global $FV_Player_DigitalOcean_Spaces;
 
     $command = $this->s3( "getCommand", "UploadPart", array(
-      'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-      'Key' => $_REQUEST['sendBackData']['key'],
-      'UploadId' => $_REQUEST['sendBackData']['uploadId'],
-      'PartNumber' => $_REQUEST['partNumber'],
-      'ContentLength' => $_REQUEST['contentLength']
+      'Bucket'        => $FV_Player_DigitalOcean_Spaces->get_space(),
+      'Key'           => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
+      'UploadId'      => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] ),
+      'PartNumber'    => intval( $_REQUEST['partNumber'] ),
+      'ContentLength' => intval( $_REQUEST['contentLength'] ),
     ));
 
     // Give it at least 24 hours for large uploads
@@ -196,9 +200,9 @@ class FV_Player_S3_Upload {
 
       try {
         $partsModel = $this->s3("listParts",[
-          'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-          'Key' => $_REQUEST['sendBackData']['key'],
-          'UploadId' => $_REQUEST['sendBackData']['uploadId'],
+          'Bucket'   => $FV_Player_DigitalOcean_Spaces->get_space(),
+          'Key'      => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
+          'UploadId' => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] ),
         ]);
 
       } catch ( Exception $e ) {
@@ -218,9 +222,9 @@ class FV_Player_S3_Upload {
 
       try {
         $ret = $this->s3( "completeMultipartUpload" , array(
-          'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-          'Key' => $_REQUEST['sendBackData']['key'],
-          'UploadId' => $_REQUEST['sendBackData']['uploadId'],
+          'Bucket'   => $FV_Player_DigitalOcean_Spaces->get_space(),
+          'Key'      => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
+          'UploadId' => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] ),
           'MultipartUpload' => array(
             "Parts" => $parts
           ),
@@ -262,9 +266,9 @@ class FV_Player_S3_Upload {
     // if initial pre-upload request fails, we'll have no sendBackData to abort
     if ( !empty( $_REQUEST['sendBackData'] ) ) {
       $this->s3("abortMultipartUpload",[
-        'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
-        'Key' => $_REQUEST['sendBackData']['key'],
-        'UploadId' => $_REQUEST['sendBackData']['uploadId']
+        'Bucket'   => $FV_Player_DigitalOcean_Spaces->get_space(),
+        'Key'      => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
+        'UploadId' => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] )
       ]);
     }
 
