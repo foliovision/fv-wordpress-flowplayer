@@ -962,7 +962,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
           // Remove the legacy value stored in video meta
           $this->deleteMetaValue( 'duration' );
-        } else if ( ! isset( $this->duration ) ) {
+        } else if ( empty( $this->duration ) ) {
           $this->duration = 0;
         }
 
