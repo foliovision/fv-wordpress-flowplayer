@@ -70,6 +70,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public $bCSSLoaded = false;
 
   public $aDefaultSkins = array(
+      'skin-custom' => array(
+          'hasBorder' => false,
+          'borderColor' => false,
+          'bufferColor' => '#eeeeee',
+          'durationColor' => '#eeeeee',
+          'progressColor' => '#bb0000',
+          'timeColor' => '#eeeeee',
+          'canvas' => '#000000',
+          'backgroundColor' => '#333333',
+          'font-face' =>'Tahoma, Geneva, sans-serif',
+          'player-position' => '',
+          'design-timeline' => 'fp-full',
+          'design-icons' => ' '
+      ),
       'skin-slim' => array(
           'hasBorder' => false,
           'borderColor' => false,
@@ -653,7 +667,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
-      $conf['skin-custom'] = array();
+      $conf['skin-custom'] = $this->aDefaultSkins['skin-custom'];
 
       // iterate over old keys and bring them in to the new, but skin marginBottom as it's in em units now
       $old_skinless_settings_array = array(
@@ -840,13 +854,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           )
         ) as $key ) {
           if ( isset( $_POST[ $key ] ) ) {
-            $aNewOptions[ $key ] = $_POST[ $key ];
+            if ( is_array( $_POST[ $key ] ) ) {
+              foreach(  $_POST[ $key ] AS $post_key => $post_value ) {
+                $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = sanitize_text_field( $post_value );  
+              }
+            } else {
+              $aNewOptions[ $key ] = sanitize_text_field( $_POST[ $key ] );
+            }
           }
       }
     }
 
     $aNewOptions = fv_player_handle_secrets( $aNewOptions, $this->conf);
-
+  
     $is_ajax = isset($aNewOptions['fv-wp-flowplayer-submit-ajax']);
 
     if( $is_ajax ) {
@@ -860,6 +880,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     //  make sure the preset Skin properties are not over-written
     foreach( $this->aDefaultSkins AS $skin => $aSettings ) {
+      if ( 'skin-custom' === $skin ) {
+        continue;
+      }
+
       foreach( $aSettings AS $k => $v ) {
         unset($aNewOptions[$skin][$k]);
       }
