@@ -470,7 +470,7 @@ class FV_Player_Stats {
     // regular users
     if( !empty($top_ids_results_user) ) {
       $top_ids_arr_user = array_values( $top_ids_results_user );
-      $top_ids_user = implode( ',', array_values( $top_ids_arr_user ) );
+      $top_ids_user = implode( ',', array_map( 'intval', array_values( $top_ids_arr_user ) ) );
 
       if( $metric == 'play' ) {
         $results_user = $wpdb->get_results( "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND user_id IN( $top_ids_user ) GROUP BY user_id, date", ARRAY_A );
@@ -482,7 +482,7 @@ class FV_Player_Stats {
     // guest users
     if( $guest_stats && !empty($top_ids_results_guest) ) {
       $top_ids_arr_guest = array_values( $top_ids_results_guest );
-      $top_ids_guest = implode( ',', array_values( $top_ids_arr_guest ) );
+      $top_ids_guest = implode( ',', array_map( 'intval', array_values( $top_ids_arr_guest ) ) );
 
       if( $metric == 'play' ) {
         $results_guest = $wpdb->get_results( "SELECT date, guest_user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE $interval AND guest_user_id IN( $top_ids_guest ) GROUP BY guest_user_id, date", ARRAY_A );
@@ -525,7 +525,7 @@ class FV_Player_Stats {
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
-      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+      $top_ids = implode( ',', array_map( 'intval', array_values( $top_ids_arr ) ) );
     } else {
       return false;
     }
@@ -555,7 +555,7 @@ class FV_Player_Stats {
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
-      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+      $top_ids = implode( ',', array_map( 'intval', array_values( $top_ids_arr ) ) );
     } else {
       return false;
     }
@@ -591,7 +591,7 @@ class FV_Player_Stats {
 
     if( !empty($top_ids_results) ) {
       $top_ids_arr = array_values( $top_ids_results );
-      $top_ids = implode( ',', array_values( $top_ids_arr ) );
+      $top_ids = implode( ',', array_map( 'intval', array_values( $top_ids_arr ) ) );
     } else {
       return false;
     }
