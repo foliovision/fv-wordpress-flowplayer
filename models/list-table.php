@@ -317,11 +317,11 @@ class FV_Player_List_Table extends WP_List_Table {
 
   public function get_data() {
     $current = !empty($_GET['paged']) ? intval($_GET['paged']) : 1;
-    $order = !empty($_GET['order']) ? esc_sql($_GET['order']) : 'desc';
-    $order_by = !empty($_GET['orderby']) ? esc_sql($_GET['orderby']) : 'date_created';
-    $single_id = !empty($_GET['id']) ? esc_sql($_GET['id']) : null;
-    $search = !empty($_GET['s']) ? trim( sanitize_text_field( $_GET['s'] )) : null;
-    $post_type = !empty($_GET['post_type']) ? trim( sanitize_key( $_GET['post_type'] ) ) : null;
+    $order = !empty($_GET['order']) ? sanitize_key($_GET['order']) : 'desc';
+    $order_by = !empty($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : 'date_created';
+    $single_id = !empty($_GET['id']) ? absint($_GET['id']) : null;
+    $search = !empty($_GET['s']) ? sanitize_text_field( $_GET['s'] ) : null;
+    $post_type = !empty($_GET['post_type']) ? sanitize_key( $_GET['post_type'] ) : null;
 
     if(!empty($this->args['player_id'])) $single_id = $this->args['player_id'];
 
