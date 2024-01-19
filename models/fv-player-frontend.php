@@ -816,7 +816,7 @@ class flowplayer_frontend extends flowplayer
           // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS for first image
           } else {
             if( !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ) {
-              $image = str_replace( '<img ', '<img style="position:absolute;top:0;width:100%" ', $image );
+              $image = str_replace( '<img ', '<img style="position:absolute;top:0;left:0;width:100%" ', $image );
             }
           }
 
