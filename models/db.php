@@ -1408,7 +1408,8 @@ class FV_Player_Db {
         }
       }
 
-      $out = $this->db_load_player_data( absint( $_POST['playerID'] ), absint( $_POST['current_video_to_edit'] ) );
+      // intval() below is important as -1 means no particular video is being edited
+      $out = $this->db_load_player_data( absint( $_POST['playerID'] ), intval( $_POST['current_video_to_edit'] ) );
 
       if( empty($out['videos']) ) {
         wp_send_json( array( 'error' => "Failed to load videos for this player." ) );
