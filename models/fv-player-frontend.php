@@ -833,7 +833,9 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().$preload.'</div>'."\n";
 
         } else if( !$bIsAudio ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().$preload.'</div>'."\n";
+          $fp_ui_style = !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ? ' style="position:absolute"' : '';
+
+          $this->ret['html'] .= "\t".'<div class="fp-ui"' . $fp_ui_style . '><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().$preload.'</div>'."\n";
         }
 
         $this->ret['html'] .= $this->get_buttons();
