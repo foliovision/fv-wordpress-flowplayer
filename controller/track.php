@@ -96,7 +96,7 @@ Class FvPlayerTrackerWorker {
       2
     );
 
-    if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv_player_track' ) ) {
+    if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'fv_player_track' ) ) {
       die( "Error: invalid nonce!" );
     }
 
@@ -283,7 +283,7 @@ Class FvPlayerTrackerWorker {
    */
   function track() {
 
-    if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv_player_track' ) ) {
+    if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'fv_player_track' ) ) {
       die( "Error: invalid nonce!" );
     }
 

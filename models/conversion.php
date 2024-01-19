@@ -25,7 +25,7 @@ class FV_Player_Conversion {
   }
 
   function convert__start() {
-    if( current_user_can('manage_options') && isset($_GET['convert_jwplayer']) && wp_verify_nonce( sanitize_key( $_GET['convert_jwplayer'] ),'convert_jwplayer') ) {
+    if( current_user_can('manage_options') && isset($_GET['convert_jwplayer']) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['convert_jwplayer'] ) ),'convert_jwplayer') ) {
       $this->convert__process('jwplayer');
     }
   }

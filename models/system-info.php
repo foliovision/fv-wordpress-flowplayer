@@ -21,7 +21,7 @@ class FV_Player_System_Info {
   }
   
   public function export() {
-    if( current_user_can('install_plugins') && isset($_GET['action']) && sanitize_key( $_GET['action'] ) == 'fv-player-system-info' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_key( $_REQUEST['_wpnonce'] ), 'fv-player-system-info' ) ) {
+    if( current_user_can('install_plugins') && isset($_GET['action']) && sanitize_key( $_GET['action'] ) == 'fv-player-system-info' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'fv-player-system-info' ) ) {
       ob_start();
       $this->settings_box();
       $html = ob_get_clean();

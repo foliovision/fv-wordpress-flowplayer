@@ -116,7 +116,7 @@ abstract class FV_Player_Media_Browser {
   }
 
   function get_output() {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), $this->ajax_action_name ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), $this->ajax_action_name ) ) {
       return array(
         'items' => array(),
         'name' => '/',
@@ -137,7 +137,7 @@ abstract class FV_Player_Media_Browser {
   }
 
   function get_metadata( $s3Client, $bucket ) {
-    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), $this->ajax_action_name ) ) {
+    if( !isset($_POST['nonce']) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), $this->ajax_action_name ) ) {
       return array(
         'items' => array(),
         'name' => '/',

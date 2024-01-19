@@ -1069,7 +1069,7 @@ class FV_Player_Stats {
   }
 
   function user_stats_search() {
-    if( isset($_GET['nonce'] ) && wp_verify_nonce( sanitize_key( $_GET['nonce'] ), 'fv-player-stats-users-search' ) && isset($_GET['q']) && isset($_GET['date_range']) ) {
+    if( isset($_GET['nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nonce'] ) ), 'fv-player-stats-users-search' ) && isset($_GET['q']) && isset($_GET['date_range']) ) {
       $search = sanitize_text_field( $_GET['q'] );
       $date_range = sanitize_text_field( $_GET['date_range'] );
 

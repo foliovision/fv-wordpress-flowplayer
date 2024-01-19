@@ -569,7 +569,7 @@ class FV_Player_Custom_Videos_Master {
     foreach( $_POST['fv_player_videos'] AS $meta => $videos ) {
       $meta = sanitize_text_field( $meta );
 
-      if( !wp_verify_nonce( sanitize_key( $_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ),'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
+      if( !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ) ),'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
         continue;
       }
 
@@ -596,7 +596,7 @@ class FV_Player_Custom_Videos_Master {
     foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
       $meta = sanitize_text_field( $meta );
 
-      if( !wp_verify_nonce( sanitize_key( $_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ),'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
+      if( !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ) ),'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
         continue;
       }
 

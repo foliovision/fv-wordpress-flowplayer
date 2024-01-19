@@ -333,7 +333,7 @@ function flowplayer_prepare_scripts() {
   if(
     isset($GLOBALS['fv_fp_scripts']) ||
     $fv_fp->should_force_load_js() ||
-     isset( $_GET['fv_wp_flowplayer_check_template'] ) && wp_verify_nonce( sanitize_key( $_GET['fv_wp_flowplayer_check_template'] ), 'fv_wp_flowplayer_check_template' )
+     isset( $_GET['fv_wp_flowplayer_check_template'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['fv_wp_flowplayer_check_template'] ) ), 'fv_wp_flowplayer_check_template' )
   ){
 
     $aDependencies = array('jquery');

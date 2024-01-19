@@ -285,7 +285,7 @@ abstract class FV_Player_Video_Encoder {
 
     $id = absint( $_POST['id_row'] );
 
-    if ( ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv-player-encoder-delete-job-' . $id ) ) {
+    if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv-player-encoder-delete-job-' . $id ) ) {
       wp_send_json( array('error' => 'Bad nonce') );
     }
 
@@ -311,7 +311,7 @@ abstract class FV_Player_Video_Encoder {
     // TODO: update JS to generate correct nonce ID (it was coconut_expert_nonce before)
     if(
         defined('DOING_AJAX') &&
-        ( !isset( $_POST['nonce'] ) || !wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'fv_player_' . $this->encoder_id ) )
+        ( !isset( $_POST['nonce'] ) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_' . $this->encoder_id ) )
     ) {
       wp_send_json( array('error' => 'Bad nonce') );
     }

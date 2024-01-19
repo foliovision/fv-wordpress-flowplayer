@@ -152,7 +152,7 @@ function fv_player_settings_save() {
         unset($_POST['action']);
       }
 
-     if(! wp_verify_nonce( sanitize_key( $_POST['fv_flowplayer_settings_ajax_nonce'] ), 'fv_flowplayer_settings_ajax_nonce' ) ) {
+     if(! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv_flowplayer_settings_ajax_nonce'] ) ), 'fv_flowplayer_settings_ajax_nonce' ) ) {
         wp_die('Security check failed');
      }
     } else {
