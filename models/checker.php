@@ -113,7 +113,7 @@ class FV_Player_Checker {
       extract( $meta, EXTR_SKIP );
     }
 
-    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( $_SERVER['HTTP_REFERER'], home_url() ) === 0 ) { 
+    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( sanitize_url( $_SERVER['HTTP_REFERER'] ), home_url() ) === 0 ) { 
       $URLs = json_decode( stripslashes( trim( wp_strip_all_tags( $_POST['media'] ) ) ) );
     }
 

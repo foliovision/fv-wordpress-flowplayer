@@ -113,8 +113,8 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
 add_action('media_buttons', 'flowplayer_add_media_button', 10);
 
 function flowplayer_add_media_button() {
-  if( stripos( $_SERVER['REQUEST_URI'], 'post.php' ) !== FALSE ||
-     stripos( $_SERVER['REQUEST_URI'], 'post-new.php' ) !== FALSE ||
+  if( stripos( sanitize_url( $_SERVER['REQUEST_URI'] ), 'post.php' ) !== FALSE ||
+     stripos( sanitize_url( $_SERVER['REQUEST_URI'] ), 'post-new.php' ) !== FALSE ||
      isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'vc_edit_form'
      ) {
     global $post;
