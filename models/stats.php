@@ -426,7 +426,7 @@ class FV_Player_Stats {
     if( $exclude_posts_query_args ) {
       $exclude_posts_query = new WP_Query( $exclude_posts_query_args );
       if( !empty($exclude_posts_query->posts) ) {
-        $excluded_posts = implode( ', ', wp_list_pluck( $exclude_posts_query->posts, 'ID' ) );
+        $excluded_posts = implode( ', ', array_map( 'absint', wp_list_pluck( $exclude_posts_query->posts, 'ID' ) ) );
         $excluded_posts = ' AND id_post NOT IN ( '.$excluded_posts.' )';
       }
     }
