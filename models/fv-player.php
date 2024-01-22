@@ -734,6 +734,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   public function _set_conf( $aNewOptions = false ) {
 
     if ( ! $aNewOptions & ! empty( $_POST['fv_flowplayer_settings_ajax_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv_flowplayer_settings_ajax_nonce'] ) ), 'fv_flowplayer_settings_ajax_nonce' ) ) {
+      $html_fields = apply_filters(
+        'fv_player_settings_html',
+        array(
+          'pro' => array(
+            'download_template',
+          )
+        )
+      );
+
+      $multiline_fields = apply_filters(
+        'fv_player_settings_multiline',
+        array(
+          'customCSS',
+          'overlay_css',
+          'Dpro' => array(
+            'cf_pk',
+            'quality'
+          )
+        )
+      );
+
       $aNewOptions = array();
       foreach( 
         apply_filters(
@@ -854,13 +875,40 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           )
         ) as $key ) {
           if ( isset( $_POST[ $key ] ) ) {
-            // TODO: Check for FV Player Pro
+
             if ( is_array( $_POST[ $key ] ) ) {
               foreach( $_POST[ $key ] AS $post_key => $post_value ) {
-                $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = sanitize_text_field( $post_value );  
+
+                if ( is_array( $post_value ) ) {
+                  foreach( $post_value AS $post_key_2 => $post_value_2 ) {
+                    if ( ! is_array( $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] ) ) {
+                      $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = array();
+                    }
+                    $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ][ sanitize_text_field( $post_key_2 ) ] = sanitize_text_field( $post_value_2 );
+                  }
+
+                } else {
+
+                  if ( is_array( $html_fields[ $key ] ) && in_array( $post_key, $html_fields[ $key ] ) ) {
+                    add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
+                    $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = wp_kses( $post_value, 'post' );
+                    remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
+
+                  } else if ( is_array( $multiline_fields[ $key ] ) && in_array( $post_key, $multiline_fields[ $key ] ) ) {
+                    $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = sanitize_textarea_field( $post_value );
+
+                  } else {
+                    $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = sanitize_text_field( $post_value );
+                  }
+                }
+
               }
             } else {
-              $aNewOptions[ $key ] = sanitize_text_field( $_POST[ $key ] );
+              if ( in_array( $key, $multiline_fields ) ) {
+                $aNewOptions[ $key ] = sanitize_textarea_field( $_POST[ $key ] );
+              } else {
+                $aNewOptions[ $key ] = sanitize_text_field( $_POST[ $key ] );
+              }
             }
           }
       }
@@ -948,7 +996,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $aNewOptions = apply_filters( 'fv_flowplayer_settings_save', $aNewOptions, $aOldOptions );
+
     update_option( 'fvwpflowplayer', $aNewOptions );
+
     $this->_get_conf();
 
     $this->css_writeout();

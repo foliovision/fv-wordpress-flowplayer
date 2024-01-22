@@ -1562,6 +1562,7 @@ class flowplayer_frontend extends flowplayer
 
     if( !empty($tags['a']) && is_array($tags['a']) ) {
       $tags['a']['data-item'] = true;
+      $tags['a']['download'] = true;
       $tags['a']['itemprop'] = true;
       $tags['a']['itemscope'] = true;
       $tags['a']['itemtype'] = true;
