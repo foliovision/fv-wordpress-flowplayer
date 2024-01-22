@@ -24,26 +24,11 @@ class FV_Player_List_Table_View {
   function settings_link() {
     add_submenu_page(  'fv_player', 'Settings Link', 'Settings', 'manage_options', 'fvplayer', 'fv_player_admin_page' );
   }
-
-  function settings_link_fix_start() {
-    ob_start();
-  }
-
-  function settings_link_fix_end() {
-    $html = ob_get_clean();
-    $html = str_replace( 'admin.php?page=fvplayer', 'options-general.php?page=fvplayer', $html );
-    echo $html;
-  }
   
   function load_options() {
     add_action( 'admin_menu', array($this, 'admin_menu') );
 
-    // this adds a admin.php?page=fvplayer link to the menu
     add_action( 'admin_menu', array($this, 'settings_link'), 12 );
-    // so we use output buffer to trap the menu output
-    add_action( 'admin_head', array($this, 'settings_link_fix_start'), PHP_INT_MAX );
-    // and then fix the link
-    add_action( 'adminmenu', array($this, 'settings_link_fix_end') );
 
     add_action( 'admin_head', array($this, 'admin_menu_styling') );
     add_action( 'admin_head-toplevel_page_fv_player', array($this, 'styling') );
