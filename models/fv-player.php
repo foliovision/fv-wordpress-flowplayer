@@ -2582,7 +2582,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   function get_server_url() {
     $url = is_ssl() ? 'https://' : 'http://';
 
-    $url .= sanitize_url( $_SERVER['SERVER_NAME'] );
+    $url .= sanitize_text_field( $_SERVER['SERVER_NAME'] );
+
+    $url = sanitize_url( $url );
 
     if ( ! empty( $_SERVER['SERVER_PORT'] ) && intval( $_SERVER['SERVER_PORT'] ) != 80 && intval( $_SERVER['SERVER_PORT'] ) != 443 ) {
       $url .= ':' . intval( $_SERVER['SERVER_PORT'] );
