@@ -57,7 +57,7 @@ abstract class FV_Player_Wizard_Base_Class {
       wp_send_json( array( 'error' => 'Invalid nonce' ) );
     }
 
-    $class_name = (string)$this->get_step( sanitize_key( $_POST['step_name'] ) );
+    $class_name = (string)$this->get_step( sanitize_text_field( $_POST['step_name'] ) );
     $step = new $class_name;
 
     $result = call_user_func( array($step,'process') );
