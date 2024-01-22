@@ -409,9 +409,14 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // load multiple videos via their IDs but a single query and return their values
         if (count($query_ids)) {
-          $query_ids_joined = implode(',', array_map( 'intval', $query_ids ) );
+          $placeholders = implode( ', ', array_fill( 0, count( $query_ids ), '%d' ) );
 
-          $video_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id IN( {$query_ids_joined} )" );
+          $video_data = $wpdb->get_results(
+             $wpdb->prepare(
+              "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id IN( $placeholders )",
+              $query_ids
+            )
+          );
 
           if( !$video_data && count($id) != count($query_ids) ) { // if no video data has returned, but we have the rest of videos cached already
             $all_cached = true;
