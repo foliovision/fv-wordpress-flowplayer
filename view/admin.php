@@ -2184,9 +2184,9 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
       <?php if( !$fv_fp->_get_option('key') ) : ?>
         <a title="<?php esc_attr_e( 'Click here for license info', 'fv-player' ); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
       <?php endif; ?>
-      <img class="fv_wp_flowplayer_check_license-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
-      <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
-      <img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo site_url(); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+      <img class="fv_wp_flowplayer_check_license-spin" style="display: none; " src="<?php echo esc_attr( site_url() ); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+      <img class="fv_wp_flowplayer_check_template-spin" style="display: none; " src="<?php echo esc_attr( site_url() ); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
+      <img class="fv_wp_flowplayer_check_files-spin" style="display: none; " src="<?php echo esc_attr( site_url() ); ?>/wp-includes/images/wpspin.gif" width="16" height="16" />
       <?php do_action('fv_flowplayer_admin_buttons_after'); ?>
     </p>
     <div id="fv_flowplayer_admin_notices">
@@ -2270,7 +2270,7 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 
   function fv_flowplayer_ajax_check( type ) {
     jQuery('.'+type+'-spin').show();
-    var ajaxurl = '<?php echo site_url() ?>/wp-admin/admin-ajax.php';
+    var ajaxurl = '<?php echo esc_attr( site_url() ); ?>/wp-admin/admin-ajax.php';
     jQuery.post( ajaxurl, { action: type }, function( response ) {
       response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
       response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );

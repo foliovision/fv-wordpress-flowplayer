@@ -926,7 +926,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <td>
             <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
             <div style="display: none">
-              <p><span class="dashicons dashicons-warning"></span> <?php esc_html_e( 'You are using the legacy popup functionality. Move the popup code', 'fv-player' ); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php esc_html_e( 'here', 'fv-player' ); ?></a><?php esc_html_e( ', then use the drop down menu above.', 'fv-player' ); ?></p>
+              <p><span class="dashicons dashicons-warning"></span> <?php esc_html_e( 'You are using the legacy popup functionality. Move the popup code', 'fv-player' ); ?> <a href="<?php echo esc_attr( site_url() ); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php esc_html_e( 'here', 'fv-player' ); ?></a><?php esc_html_e( ', then use the drop down menu above.', 'fv-player' ); ?></p>
               <textarea id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
             </div>                      
           </td>
