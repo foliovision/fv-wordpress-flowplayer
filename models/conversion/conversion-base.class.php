@@ -160,7 +160,7 @@ abstract class FV_Player_Conversion_Base {
 
           <input class="button-primary" type="submit" name="convert" value="Start" />
 
-          <img id="loading" width="16" height="16" src="<?php echo site_url('wp-includes/images/wpspin-2x.gif'); ?>" style="display: none" />
+          <img id="loading" width="16" height="16" src="<?php echo esc_attr( site_url('wp-includes/images/wpspin-2x.gif') ); ?>" style="display: none" />
         </p>
 
         <p>
