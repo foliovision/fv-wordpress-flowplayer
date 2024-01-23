@@ -594,27 +594,28 @@ function fvplayer_watched( $args = array() ) {
 
   $args['full_details'] = true;
 
-  $video_ids = fv_player_get_user_watched_video_ids( $args );
-  if( count($video_ids) == 0 ) {
+  $videos = fv_player_get_user_watched_video_ids( $args );
+  if( count($videos) == 0 ) {
     return "<p>No watched videos.</p>";
   }
 
-  $actual_video_ids = array_filter( array_keys($video_ids), 'is_numeric' );
+  $video_ids = array_filter( array_keys($videos), 'is_numeric' );
 
-  $video_ids_sql = implode( ',', array_map( 'intval', $actual_video_ids ) );
+  $video_ids = array_map( 'absint', $video_ids );
+  $placeholder = implode( ', ', array_fill( 0, count( $video_ids ), '%d' ) );
 
   global $wpdb;
-  $videos2durations = $wpdb->get_results( $wpdb->prepare( "
-    SELECT v.id AS video_id, vm.meta_value AS duration FROM
-      {$wpdb->prefix}fv_player_videos AS v
-    JOIN {$wpdb->prefix}fv_player_videometa AS vm
-      ON v.id = vm.id_video
-    WHERE
-      v.id IN ({$video_ids_sql}) AND
-      vm.meta_key = 'duration'" ) );
+  $videos2durations = $wpdb->get_results(
+    $wpdb->prepare(
+      // $placeholders is a string of %d created above 
+      // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+      "SELECT v.id AS video_id, vm.meta_value AS duration FROM {$wpdb->prefix}fv_player_videos AS v JOIN {$wpdb->prefix}fv_player_videometa AS vm ON v.id = vm.id_video WHERE v.id IN ({$placeholder}) AND vm.meta_key = 'duration'",
+      $video_ids
+    )
+  );
 
   $html = "<ul>\n";
-  foreach( $video_ids AS $video_id => $data ) {
+  foreach( $videos AS $video_id => $data ) {
 
     global $FV_Player_Db;
     $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
