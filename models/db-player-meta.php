@@ -260,6 +260,8 @@ CREATE TABLE " . self::$db_table_name . " (
           if ( $load_for_player ) {
             $meta_data = $wpdb->get_results(
               $wpdb->prepare(
+                // $placeholders is a string of %d created above
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
                 "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id_player IN( $placeholders )",
                 $query_ids
               )
@@ -268,6 +270,8 @@ CREATE TABLE " . self::$db_table_name . " (
           } else {
             $meta_data = $wpdb->get_results(
               $wpdb->prepare(
+                // $placeholders is a string of %d created above
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
                 "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id IN( $placeholders )",
                 $query_ids
               )

@@ -413,6 +413,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
           $video_data = $wpdb->get_results(
              $wpdb->prepare(
+              // $placeholders is a string of %d created above
+              // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
               "SELECT * FROM `{$wpdb->prefix}fv_player_videos` WHERE id IN( $placeholders )",
               $query_ids
             )
