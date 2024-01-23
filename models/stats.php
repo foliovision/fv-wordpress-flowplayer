@@ -146,7 +146,7 @@ class FV_Player_Stats {
   function options_html() {
     global $fv_fp;
     ?>
-    <p><?php _e( 'Track user activity on your site. You can see the stats in the FV Player menu.', 'fv-player' ); ?></p>
+    <p><?php esc_html_e( 'Track user activity on your site. You can see the stats in the FV Player menu.', 'fv-player' ); ?></p>
     <table class="form-table2">
       <?php
         $fv_fp->_get_checkbox(__( 'Enable', 'fv-player' ), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
@@ -154,7 +154,7 @@ class FV_Player_Stats {
       ?>
       <tr>
         <td colspan="4">
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e( 'Save', 'fv-player' ); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
           <a class="button fv-help-link" href="https://foliovision.com/player/analytics/user-stats" target="_blank">Help</a>
         </td>
       </tr>

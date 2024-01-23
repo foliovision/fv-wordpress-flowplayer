@@ -303,7 +303,7 @@ class FV_Player_Custom_Videos_Master {
     ?>
     </fieldset>
     
-    <h2 class="entry-title"><?php _e(  'Videos', 'fv-player' ); ?></h2>
+    <h2 class="entry-title"><?php esc_attr_e(  'Videos', 'fv-player' ); ?></h2>
 
     <fieldset class="bbp-form">
       
@@ -333,7 +333,7 @@ class FV_Player_Custom_Videos_Master {
     $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('ID'), 'type' => 'user' ));
     if( $objVideos->have_videos() ) : ?>
       <div id="bbp-user-profile" class="bbp-user-profile">
-        <h2 class="entry-title"><?php _e( 'Videos', 'bbpress' ); ?></h2>
+        <h2 class="entry-title"><?php esc_attr_e( 'Videos', 'bbpress' ); ?></h2>
         <div class="bbp-user-section">
     
           <?php echo $objVideos->get_html(); ?>
@@ -658,13 +658,13 @@ class FV_Player_Custom_Videos_Master {
         $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
         ?>
         <tr class="user-videos">
-          <th><?php _e(  'Videos', 'fv-player' ); ?></th>
+          <th><?php esc_attr_e(  'Videos', 'fv-player' ); ?></th>
           <td>
             <?php
             
             echo $objUploader->get_form( array( 'wrapper' => 'div' ) );
             ?>
-            <p class="description"><?php _e(  'You can put your Vimeo or YouTube links here.', 'fv-player' ); ?> <abbr title="<?php _e(  'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-player' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
+            <p class="description"><?php esc_attr_e(  'You can put your Vimeo or YouTube links here.', 'fv-player' ); ?> <abbr title="<?php esc_attr_e(  'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-player' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
           </td>
         </tr>
         <?php
@@ -683,7 +683,7 @@ class FV_Player_Custom_Videos_Master {
     $user = new FV_Player_Custom_Videos(array( 'id' => get_current_user_id(), 'type' => 'user' ));
     ?>
         <p class="edd-profile-videos-label">
-          <span for="edd_email"><?php _e(  'Profile Videos', 'fv-player' ); ?></span>
+          <span for="edd_email"><?php esc_attr_e(  'Profile Videos', 'fv-player' ); ?></span>
             <?php echo $user->get_form(array('no_form' => true));?>
         </p>
     <?php

@@ -221,7 +221,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       <?php if( $language ): ?>
         <div class="field-with-language">
           <select class="<?php echo esc_attr( $field_id ); ?>_lang" name="<?php echo esc_attr( $field_id ); ?>_lang">
-            <option value=""><?php _e('Pick language', 'fv_flowplayer'); ?></option>
+            <option value=""><?php esc_html_e('Pick language', 'fv_flowplayer'); ?></option>
             <?php
             $aLanguages = flowplayer::get_languages();
             $aCurrent = explode('-', get_bloginfo('language'));
@@ -248,7 +248,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       <?php endif; ?>
       
       <?php if( $browser ) : ?>
-        <a class="components-button is-secondary add_media" href="#" data-target="<?php echo esc_attr( $field_id ); ?>"><?php _e('Add from media library', 'fv_flowplayer'); ?></a>
+        <a class="components-button is-secondary add_media" href="#" data-target="<?php echo esc_attr( $field_id ); ?>"><?php esc_html_e('Add from media library', 'fv_flowplayer'); ?></a>
       <?php endif; ?>
 
       <?php if( $language ) : ?>
@@ -257,7 +257,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 
     <?php if( $language ) : ?>
-      <a class="components-button is-secondary add_language" href="#" data-field_name="<?php echo esc_attr( $name ); ?>"><?php _e('Add Another Language', 'fv_flowplayer'); ?></a>
+      <a class="components-button is-secondary add_language" href="#" data-field_name="<?php echo esc_attr( $name ); ?>"><?php esc_html_e('Add Another Language', 'fv_flowplayer'); ?></a>
     <?php endif; ?>
 
   </div>
@@ -591,15 +591,15 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
-          <p><?php _e( 'Add your video', 'fv-player' ); ?></p>
+          <p><?php esc_html_e( 'Add your video', 'fv-player' ); ?></p>
           <div class="components-base-control__field">
             <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
             <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
           </div>
-          <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e( 'This does not look like a video link.', 'fv-player' ); ?></div>
+          <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php esc_html_e( 'This does not look like a video link.', 'fv-player' ); ?></div>
         </div>
         <div id="fv-player-shortcode-editor-preview-new-tab" class="fv-player-shortcode-editor-helper">
-          <a class="button" href="" target="_blank"><?php _e( 'Playlist too long, click here for preview', 'fv-player' ); ?></a>
+          <a class="button" href="" target="_blank"><?php esc_html_e( 'Playlist too long, click here for preview', 'fv-player' ); ?></a>
         </div>
         <div id="fv-player-shortcode-editor-preview-target"></div>
       </div>
@@ -609,12 +609,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <div class="fv-player-tabs-header">
         <h2 class="fv-player-playlist-item-title nav-tab nav-tab-active"></h2>
         <h2 class="nav-tab-wrapper hide-if-no-js">
-          <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php _e( 'Playlist', 'fv-player' ); ?></a>
-          <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php _e( 'Video', 'fv-player' ); ?></a>
-          <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php _e( 'Subtitles', 'fv-player' ); ?></a>
-          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php _e( 'Options', 'fv-player' ); ?></a>
-          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php _e( 'Actions', 'fv-player' ); ?></a>
-          <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php _e( 'Embeds', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php esc_html_e( 'Playlist', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php esc_html_e( 'Video', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php esc_html_e( 'Subtitles', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php esc_html_e( 'Options', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php esc_html_e( 'Actions', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php esc_html_e( 'Embeds', 'fv-player' ); ?></a>
           <?php do_action('fv_player_shortcode_editor_tab'); ?>
         </h2>
       </div>
@@ -642,8 +642,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             <div class="components-base-control__field">
               <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" data-playlist-hero="true" />
               <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;" data-playlist-hero="true">Choose from <?php echo get_bloginfo(); ?>'s library</button>
-              <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php _e( 'This does not look like a video link.', 'fv-player' ); ?></div>
-              <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php _e( 'Please post a link to the new video or choose one.', 'fv-player' ); ?></div>
+              <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php esc_html_e( 'This does not look like a video link.', 'fv-player' ); ?></div>
+              <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php esc_html_e( 'Please post a link to the new video or choose one.', 'fv-player' ); ?></div>
             </div>
           </div>
           <a class="playlist_add" data-html="+" data-alt-html="&#10140;">+</a>
@@ -917,16 +917,16 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 
           <!--
           <tr class="fv_player_actions_end-toggle">
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php _e('Redirect to', 'fv_flowplayer'); ?></label></th>
+          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php esc_html_e('Redirect to', 'fv_flowplayer'); ?></label></th>
           <td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
         </tr>
 
         <tr class="fv_player_actions_end-toggle">
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php _e('End popup', 'fv_flowplayer'); ?></label></th>
+          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php esc_html_e('End popup', 'fv_flowplayer'); ?></label></th>
           <td>
             <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
             <div style="display: none">
-              <p><span class="dashicons dashicons-warning"></span> <?php _e( 'You are using the legacy popup functionality. Move the popup code', 'fv-player' ); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php _e( 'here', 'fv-player' ); ?></a><?php _e( ', then use the drop down menu above.', 'fv-player' ); ?></p>
+              <p><span class="dashicons dashicons-warning"></span> <?php esc_html_e( 'You are using the legacy popup functionality. Move the popup code', 'fv-player' ); ?> <a href="<?php echo site_url(); ?>/wp-admin/options-general.php?page=fvplayer#tab_popups" target="_blank"><?php esc_html_e( 'here', 'fv-player' ); ?></a><?php esc_html_e( ', then use the drop down menu above.', 'fv-player' ); ?></p>
               <textarea id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
             </div>                      
           </td>
@@ -951,17 +951,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         }
         ?>
         <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
+          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php esc_html_e('Ad code', 'fv_flowplayer'); ?></label></th>
           <td>
             <textarea id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
           </td>
         </tr> 
         <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Ad Size', 'fv_flowplayer'); ?></label></th>
+          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php esc_html_e('Ad Size', 'fv_flowplayer'); ?></label></th>
           <td class="field<?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' fv_player_interface_hide'; ?>">
-            <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>
-            <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%; margin-right: 25px;" value="" placeholder="<?php _e('Height', 'fv_flowplayer'); ?>"/>
-            <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php _e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
+            <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php esc_attr_e('Width', 'fv_flowplayer'); ?>"/>
+            <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%; margin-right: 25px;" value="" placeholder="<?php esc_attr_e('Height', 'fv_flowplayer'); ?>"/>
+            <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php esc_html_e('Skip global ad in this video', 'fv_flowplayer'); ?>  					
           </td>
         </tr>
         -->
@@ -983,7 +983,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <p>This page shows you where else this player is used.</p>
           <table width="100%">
             <tr>
-              <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embedded_on" class="alignright"><?php _e('Embedded on', 'fv_flowplayer'); ?></label></th>
+              <th scope="row" class="label"><label for="fv_wp_flowplayer_field_embedded_on" class="alignright"><?php esc_html_e('Embedded on', 'fv_flowplayer'); ?></label></th>
               <td></td>
             </tr>
           </table>
@@ -992,14 +992,14 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
         <?php do_action('fv_player_shortcode_editor_tab_content'); ?>
 
         <div id="fv-player-editor-modal-bottom">
-          <a class="button-primary fv_player_field_insert-button"><?php _e('Insert', 'fv_flowplayer'); ?></a>
-          <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php _e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php _e('Back to playlist', 'fv_flowplayer'); ?>"><?php _e('Add another video into playlist', 'fv_flowplayer'); ?></a>
+          <a class="button-primary fv_player_field_insert-button"><?php esc_html_e('Insert', 'fv_flowplayer'); ?></a>
+          <a class="playlist_edit button hide-if-playlist-active" href="#" data-create="<?php esc_attr_e('Add another video into playlist', 'fv_flowplayer'); ?>" data-edit="<?php esc_attr_e('Back to playlist', 'fv_flowplayer'); ?>"><?php esc_html_e('Add another video into playlist', 'fv_flowplayer'); ?></a>
 
           <?php
           if( function_exists('get_current_screen') && current_user_can('edit_posts') ) :
             $screen = get_current_screen();
             if ( $screen->parent_base != 'fv_player' ) : ?>
-              <a class="copy_player button" href="#"><?php _e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
+              <a class="copy_player button" href="#"><?php esc_html_e( 'Pick existing player', 'fv_flowplayer' ); ?></a>
             <?php endif;
           endif; ?>
         

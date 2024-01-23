@@ -87,8 +87,8 @@ class FV_Player_Facebook_Share {
         <p class="description">
           <input type="hidden" name="integrations[facebook_sharing]" value="false" />
           <input type="checkbox" name="integrations[facebook_sharing]" id="facebook_sharing" value="true" <?php if (isset($fv_fp->conf['integrations']['facebook_sharing']) && $fv_fp->conf['integrations']['facebook_sharing'] == 'true') echo 'checked="checked"'; ?> />
-          <?php _e( 'When sharing your post to Facebook the first MP4 video will be shared directly rather than the post excerpt.', 'fv-player' ); ?>
-          <span class="more"><?php _e( '<strong>Requirements</strong>: video has to be on https:// and splash screen has to be present. Videos with download protection are automatically excluded.', 'fv-player' ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+          <?php esc_html_e( 'When sharing your post to Facebook the first MP4 video will be shared directly rather than the post excerpt.', 'fv-player' ); ?>
+          <span class="more"><?php esc_html_e( '<strong>Requirements</strong>: video has to be on https:// and splash screen has to be present. Videos with download protection are automatically excluded.', 'fv-player' ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
     </tr>
