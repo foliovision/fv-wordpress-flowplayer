@@ -361,8 +361,8 @@ class FV_Player_Email_Subscription {
     if( !empty($list['description']) ) $popup .= '<p>'.$list['description'].'</p>';
     $popup .= '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
       . '<input type="hidden" name="list" value="' . $id . '" />'
-      . '<input type="email" placeholder="' . __( 'Email Address', 'fv-player' ) . '" name="email"/>'
-      . $popupItems . '<input type="submit" value="' . __( 'Subscribe', 'fv-player' ) . '"/></form>';
+      . '<input type="email" placeholder="' . esc_attr__( 'Email Address', 'fv-player' ) . '" name="email"/>'
+      . $popupItems . '<input type="submit" value="' . esc_attr__( 'Subscribe', 'fv-player' ) . '"/></form>';
     return $popup;
   }
 
