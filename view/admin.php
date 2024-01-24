@@ -905,7 +905,7 @@ function fv_flowplayer_admin_popups(){
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo esc_attr( $key ); ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
                       	</tr>
                         <tr>
-                        	<td><label><?php esc_html_e( 'Custom<br />CSS', 'fv-player' ); ?>:</label></td>
+                        	<td><label><?php echo wp_kses( __( 'Custom<br />CSS', 'fv-player' ), array( 'br' => array() ) ); ?>:</label></td>
                         	<td><textarea class="large-text code" type='text' name='popups[<?php echo esc_attr( $key ); ?>][css]'><?php echo ( !empty($aPopup['css']) ? esc_textarea($aPopup['css']) : '.wpfp_custom_popup .fv_player_popup-' . $key . ' { }' ); ?></textarea></td>
                       	</tr>
                       </table>
@@ -2058,7 +2058,7 @@ function fv_flowplayer_admin_uninstall() {
   global $fv_fp;
 
   ?>
-    <p><?php esc_html_e( 'Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-player' ) ?></p>
+    <p><?php echo wp_kses( __( 'Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-player' ), array( 'code' => array() ) ); ?></p>
     <table class="form-table2">
       <?php   $fv_fp->_get_checkbox(__( 'Remove all data', 'fv-player' ), 'remove_all_data' , __( 'This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-player' )); ?>
       <tr>

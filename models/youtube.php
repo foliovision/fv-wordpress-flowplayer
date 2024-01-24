@@ -314,7 +314,7 @@ class FV_Player_YouTube {
       <tr>
         <td colspan="2">
           <p class="description">
-            <?php esc_html_e('We use the Chromeless API so general <a href="#fv_flowplayer_skin">FV Player settings</a> apply here.', 'fv-player-pro'); ?>
+            <?php echo wp_kses( __( 'We use the Chromeless API so general <a href="#fv_flowplayer_skin">FV Player settings</a> apply here.', 'fv-player-pro' ), array( 'a' => array( 'href' => array() ) ) ); ?>
           </p>
         </td>
       </tr>
