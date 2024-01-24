@@ -123,9 +123,10 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
         $cloudfronts = get_transient('fv_player_s3_browser_cf');
         if( !$cloudfronts ) {
           $cfClient = Aws\CloudFront\CloudFrontClient::factory( array(
-          'credentials' => $credentials,
-          'region' => 'us-east-1',
-          'version' => 'latest'
+          'credentials'                 => $credentials,
+          'region'                      => 'us-east-1',
+          'version'                     => 'latest',
+          'use_aws_shared_config_files' => false
           ) );
 
           $cloudfronts = $cfClient->listDistributions();
@@ -162,9 +163,10 @@ class FV_Player_Media_Browser_S3 extends FV_Player_Media_Browser {
 
       // instantiate the S3 client with AWS credentials
       $s3Client = Aws\S3\S3Client::factory( array(
-        'credentials' => $credentials,
-        'region'      => $region,
-        'version'     => 'latest'
+        'credentials'                 => $credentials,
+        'region'                      => $region,
+        'version'                     => 'latest',
+        'use_aws_shared_config_files' => false
       ) );
 
       try {

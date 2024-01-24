@@ -48,10 +48,11 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     $credentials = new Aws\Credentials\Credentials( $key, $secret );
 
     return Aws\S3\S3Client::factory( array(
-      'credentials' => $credentials,
-      'region'      => $region,
-      'version'     => 'latest',
-      'endpoint' => $endpoint
+      'credentials'                 => $credentials,
+      'region'                      => $region,
+      'version'                     => 'latest',
+      'endpoint'                    => $endpoint,
+      'use_aws_shared_config_files' => false
     ) );
   }
 
