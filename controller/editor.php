@@ -113,22 +113,12 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
 add_action('media_buttons', 'flowplayer_add_media_button', 10);
 
 function flowplayer_add_media_button() {
-  if( stripos( sanitize_url( $_SERVER['REQUEST_URI'] ), 'post.php' ) !== FALSE ||
-     stripos( sanitize_url( $_SERVER['REQUEST_URI'] ), 'post-new.php' ) !== FALSE ||
-     isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'vc_edit_form'
-     ) {
-    global $post;
-    $plugins = get_option('active_plugins');
-    $found = false;
-    foreach ( $plugins AS $plugin ) {
-      if( stripos($plugin,'foliopress-wysiwyg') !== FALSE )
-        $found = true;
-    }
-    $button_tip = 'Insert a video';
-    $wizard_url = 'media-upload.php?post_id='.$post->ID.'&type=fv-wp-flowplayer';
-    $icon = '<span> </span>';
-
-    echo '<a title="' . __( 'Add FV Player', 'fv-player' ) . '" title="' . $button_tip . '" href="#" class="button fv-wordpress-flowplayer-button" >'.$icon.' Player</a>';
+  if(
+    stripos( sanitize_url( $_SERVER['REQUEST_URI'] ), 'post.php' ) !== FALSE ||
+    stripos( sanitize_url( $_SERVER['REQUEST_URI'] ), 'post-new.php' ) !== FALSE ||
+    isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'vc_edit_form'
+  ) {
+    echo '<a title="' . esc_attr__( 'Add FV Player', 'fv-player' ) . '" title="Insert a video" href="#" class="button fv-wordpress-flowplayer-button"><span></span> Player</a>';
   }
 }
 
@@ -381,7 +371,7 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
   if( is_wp_error( $response ) ) {
     $error = new WP_Error(
       'thumbnail_retrieval',
-      sprintf( __( 'Error retrieving a thumbnail from the URL <a href="%1$s">%1$s</a> using <code>wp_remote_get()</code><br />If opening that URL in your web browser returns anything else than an error page, the problem may be related to your web server and might be something your host administrator can solve.', 'video-thumbnails' ), $image_url ) . '<br>' . __( 'Error Details:', 'video-thumbnails' ) . ' ' . $response->get_error_message()
+      sprintf( __( 'Error retrieving a thumbnail from the URL <a href="%1$s">%1$s</a> using <code>wp_remote_get()</code><br />If opening that URL in your web browser returns anything else than an error page, the problem may be related to your web server and might be something your host administrator can solve.', 'video-thumbnails' ), $image_url ) . '<br>' . esc_html__( 'Error Details:', 'video-thumbnails' ) . ' ' . $response->get_error_message()
     );
   } else {
     $image_contents = $response['body'];

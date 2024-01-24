@@ -99,11 +99,11 @@ class FV_Player_Email_Subscription {
   public function settings_box_integration () {
     global $fv_fp;
     ?>
-    <p><?php _e( 'Enter your service API key and then assign it to a list which you create above.', 'fv-player' ); ?></p>
+    <p><?php esc_html_e( 'Enter your service API key and then assign it to a list which you create above.', 'fv-player' ); ?></p>
     <?php if( version_compare(phpversion(),'5.3.0') >= 0 ) : ?>
       <table class="form-table2" style="margin: 5px; ">
         <tr>
-          <td style="width: 250px"><label for="mailchimp_api"><?php _e( 'Mailchimp API key', 'fv-player' ); ?>:</label></td>
+          <td style="width: 250px"><label for="mailchimp_api"><?php esc_html_e( 'Mailchimp API key', 'fv-player' ); ?>:</label></td>
           <td>
             <p class="description">
               <input type="text" name="mailchimp_api" id="mailchimp_api" value="<?php echo esc_attr($fv_fp->_get_option('mailchimp_api')); ?>" />
@@ -113,12 +113,12 @@ class FV_Player_Email_Subscription {
         <tr>
           <td></td>
           <td>
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php _e( 'Save', 'fv-player' ); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
           </td>
         </tr>
       </table>
     <?php else : ?>
-      <p><?php _e( 'Please upgrade to PHP 5.3 or above to use the Mailchimp integration.', 'fv-player' ); ?></p>
+      <p><?php esc_html_e( 'Please upgrade to PHP 5.3 or above to use the Mailchimp integration.', 'fv-player' ); ?></p>
     <?php endif;
   }
 
@@ -134,7 +134,7 @@ class FV_Player_Email_Subscription {
     }
     $aMailchimpLists = $this->get_mailchimp_lists();
     ?>
-    <p><?php _e( 'Lists defined here can be used for subscription box for each video or for Default Popup above.', 'fv-player' ); ?></p>
+    <p><?php esc_html_e( 'Lists defined here can be used for subscription box for each video or for Default Popup above.', 'fv-player' ); ?></p>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
         <td>
@@ -142,13 +142,13 @@ class FV_Player_Email_Subscription {
             <thead>
             <tr>
               <td>ID</td>
-              <td style="width: 40%"><?php _e( 'Properties', 'fv-player' ); ?></td>
+              <td style="width: 40%"><?php esc_html_e( 'Properties', 'fv-player' ); ?></td>
               <?php if( !empty($aMailchimpLists['result']) ) : ?>
-                <td><?php _e( 'Target List', 'fv-player' ); ?></td>
+                <td><?php esc_html_e( 'Target List', 'fv-player' ); ?></td>
               <?php endif; ?>
-              <td><?php _e( 'Export', 'fv-player' ); ?></td>
-              <td><?php _e( 'Options', 'fv-player' ); ?></td>
-              <td><?php _e( 'Status', 'fv-player' ); ?></td>
+              <td><?php esc_html_e( 'Export', 'fv-player' ); ?></td>
+              <td><?php esc_html_e( 'Options', 'fv-player' ); ?></td>
+              <td><?php esc_html_e( 'Status', 'fv-player' ); ?></td>
               <td></td>
             </tr>
             </thead>
@@ -206,9 +206,9 @@ class FV_Player_Email_Subscription {
                   </td>
                 <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php _e( 'Download CSV', 'fv-player' ); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php esc_html_e( 'Download CSV', 'fv-player' ); ?></a>
                   <br />
-                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php _e( 'View list', 'fv-player' ); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php esc_html_e( 'View list', 'fv-player' ); ?></a>
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[<?php echo esc_attr( $key ); ?>][first_name]' value='0' />
@@ -224,7 +224,7 @@ class FV_Player_Email_Subscription {
                   <input id='ListAdDisabled-<?php echo esc_attr( $key ); ?>' type='checkbox' title="disable" name='email_lists[<?php echo esc_attr( $key ); ?>][disabled]' value='1' <?php echo (isset($aList['disabled']) && $aList['disabled'] ? 'checked="checked"' : ''); ?> />
                   <label for='ListAdDisabled-<?php echo esc_attr( $key ); ?>'>Disable</label>
                   <br />
-                  <a class='fv-player-list-remove' href=''><?php _e( 'Remove', 'fv-player' ); ?></a>
+                  <a class='fv-player-list-remove' href=''><?php esc_html_e( 'Remove', 'fv-player' ); ?></a>
                 </td>
                 <td>
                   <input type="button" style="visibility: hidden" class="fv_player_email_list_save button" value="Save & Preview" />
@@ -241,7 +241,7 @@ class FV_Player_Email_Subscription {
         <td>
           <?php wp_nonce_field( 'fv_player_email_lists', 'fv_player_email_lists_nonce' ); ?>
           <input type="submit" name="fv-wp-flowplayer-submit" class="button-primary" value="Save All Changes">
-          <input type="button" value="<?php _e( 'Add More Lists', 'fv-player' ); ?>" class="button" id="fv-player-email_lists-add" />
+          <input type="button" value="<?php esc_html_e( 'Add More Lists', 'fv-player' ); ?>" class="button" id="fv-player-email_lists-add" />
         </td>
       </tr>
     </table>
@@ -361,8 +361,8 @@ class FV_Player_Email_Subscription {
     if( !empty($list['description']) ) $popup .= '<p>'.$list['description'].'</p>';
     $popup .= '<form class="mailchimp-form  mailchimp-form-' . $count . '">'
       . '<input type="hidden" name="list" value="' . $id . '" />'
-      . '<input type="email" placeholder="' . __( 'Email Address', 'fv-player' ) . '" name="email"/>'
-      . $popupItems . '<input type="submit" value="' . __( 'Subscribe', 'fv-player' ) . '"/></form>';
+      . '<input type="email" placeholder="' . esc_attr__( 'Email Address', 'fv-player' ) . '" name="email"/>'
+      . $popupItems . '<input type="submit" value="' . esc_attr__( 'Subscribe', 'fv-player' ) . '"/></form>';
     return $popup;
   }
 
@@ -679,7 +679,7 @@ class FV_Player_Email_Subscription {
         </tbody>
       </table>
       <p>
-        <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php _e( 'Download CSV', 'fv-player' ); ?></a>
+        <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php esc_attr_e( 'Download CSV', 'fv-player' ); ?></a>
       </p>
 
     <?php

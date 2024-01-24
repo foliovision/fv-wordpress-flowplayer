@@ -33,9 +33,12 @@ class FV_Player_Stats_Export {
           JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID
           JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id
           JOIN `{$wpdb->prefix}fv_player_players` AS pl ON FIND_IN_SET( v.id, pl.videos )
-          WHERE u.ID = %d AND $interval
+          WHERE u.ID = %d AND date BETWEEN %s AND %s
           ORDER BY s.id DESC",
-        $user_id),
+          $user_id,
+          $interval[0],
+          $interval[1]
+        ),
         ARRAY_A
       );
 

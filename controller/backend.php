@@ -595,7 +595,7 @@ add_action('admin_notices', 'fv_wordpress_flowplayer_expired_license_update_noti
 
 function fv_wordpress_flowplayer_expired_license_update_notice() {
   if( get_current_screen()->base === 'update-core' && get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<div class="notice notice-error is-dismissible"><p>'.__( 'To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player' ).'</p></div>';
+    echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player' ) . '</p></div>';
   }
 }
 
@@ -603,7 +603,7 @@ add_action( 'after_plugin_row_fv-player/fv-player.php', 'fv_wordpress_flowplayer
 
 function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
   if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>'. __('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player').'</p></div></td></tr>';
+    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>' . esc_html__('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player') . '</p></div></td></tr>';
   }
 }
 
@@ -653,10 +653,10 @@ function fv_wp_flowplayer_admin_notice() {
   }
 
   $conversion = false; //(bool)get_option('fvwpflowplayer_conversion');
-  if ($conversion) {
+  if ($conversion ) {
     echo '<div class="updated" id="fvwpflowplayer_conversion_notice"><p>';
     printf(
-      __( 'FV Player has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>', 'fv-player' ),
+      wp_kses( __( 'FV Player has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>', 'fv-player' ), array( 'a' => array( 'href' => array() ) ) ),
       get_admin_url() . 'options-general.php?page=fvplayer');
     echo "</p></div>";
   }
@@ -878,7 +878,7 @@ function fv_player_pro_version_check() {
   if( !empty($FV_Player_Pro) && !fv_player_extension_version_is_min($version,'pro') ) :
   ?>
   <div class="error">
-      <p><?php printf( __(  'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-player' ), $version ); ?></p>
+      <p><?php printf( esc_html__(  'FV Player: Please upgrade to FV Player Pro version %s or above!', 'fv-player' ), $version ); ?></p>
   </div>
   <?php
   endif;
@@ -894,7 +894,7 @@ function fv_player_pay_per_view_version_check() {
   if( !empty($FV_Player_PayPerView) && !fv_player_extension_version_is_min($version,'ppv') ) :
   ?>
   <div class="error">
-      <p><?php printf( __(  'FV Player: Please upgrade to FV Player Pay Per View version %s or above!', 'fv-player' ), $version ); ?></p>
+      <p><?php printf( esc_html__(  'FV Player: Please upgrade to FV Player Pay Per View version %s or above!', 'fv-player' ), $version ); ?></p>
   </div>
   <?php
   endif;
@@ -910,7 +910,7 @@ function fv_player_pay_per_view_woocommerce_version_check() {
   if( !empty($FV_Player_PayPerView_WooCommerce) && !fv_player_extension_version_is_min($version,'ppv-woocommerce') ) :
   ?>
   <div class="error">
-      <p><?php printf( __(  'FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!', 'fv-player' ), $version ); ?></p>
+      <p><?php printf( esc_html__(  'FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!', 'fv-player' ), $version ); ?></p>
   </div>
   <?php
   endif;

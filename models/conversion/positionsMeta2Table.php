@@ -327,7 +327,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
         <td><label>Convert position meta values stored in usermeta to new table :</label></td>
         <td>
           <p class="description">
-            <input type="button" class="button" value="<?php _e('Convert positions', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
+            <input type="button" class="button" value="<?php esc_attr_e('Convert positions', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="location.href='<?php echo admin_url('admin.php?page=' . $this->screen ) ?>'; "/>
           </p>
         </td>
       </tr>

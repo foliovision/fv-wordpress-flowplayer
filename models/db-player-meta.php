@@ -255,12 +255,27 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if (count($query_ids)) {
           // load multiple player metas via their IDs but a single query and return their values
-          $query_ids_joined = implode( ',', array_map( 'intval', $query_ids ) );
+          $placeholders = implode( ', ', array_fill( 0, count( $query_ids ), '%d' ) );
 
           if ( $load_for_player ) {
-            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id_player IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results(
+              $wpdb->prepare(
+                // $placeholders is a string of %d created above
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+                "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id_player IN( $placeholders )",
+                $query_ids
+              )
+            );
+
           } else {
-            $meta_data = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id IN( {$query_ids_joined} )" );
+            $meta_data = $wpdb->get_results(
+              $wpdb->prepare(
+                // $placeholders is a string of %d created above
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+                "SELECT * FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id IN( $placeholders )",
+                $query_ids
+              )
+            );
           }
 
           // run through all of the meta data and

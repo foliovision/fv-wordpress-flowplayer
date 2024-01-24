@@ -593,22 +593,22 @@ class FV_Player_lightbox {
     global $fv_fp;
     ?>
     <tr>
-      <td style="width: 250px"><label for="lightbox_images"><?php _e( 'Use video lightbox for images as well', 'fv-player' ); ?>:</label></td>
+      <td style="width: 250px"><label for="lightbox_images"><?php esc_html_e( 'Use video lightbox for images as well', 'fv-player' ); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_images" />
           <input type="checkbox" value="true" name="lightbox_images" id="lightbox_images" <?php if ($fv_fp->_get_option('lightbox_images')) echo 'checked="checked"'; ?> />
-          <?php _e( 'Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-player' ); ?> <span class="more"><?php _e('Also works with WordPress <code>[gallery]</code> galleries - these are automatically switched to link to image URLs rather than the attachment pages.'); ?></span> <a href="#" class="show-more">(&hellip;)</a>
+          <?php echo wp_kses( __( 'Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this.', 'fv-player' ), array( 'strong' => array() ) ); ?> <span class="more"><?php echo wp_kses( __('Also works with WordPress <code>[gallery]</code> galleries - these are automatically switched to link to image URLs rather than the attachment pages.'), array( 'code' => array() ) ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
         </p>
       </td>
     </tr>
     <tr id="lightbox-wp-galleries">
-      <td style="width: 250px"><label for="lightbox_improve_galleries"><?php _e( 'Use video lightbox for WP Galleries', 'fv-player' ); ?>:</label></td>
+      <td style="width: 250px"><label for="lightbox_improve_galleries"><?php esc_html_e( 'Use video lightbox for WP Galleries', 'fv-player' ); ?>:</label></td>
       <td>
         <p class="description">
           <input type="hidden" value="false" name="lightbox_improve_galleries" />
           <input type="checkbox" value="true" name="lightbox_improve_galleries" id="lightbox_improve_galleries" <?php if ($fv_fp->_get_option('lightbox_improve_galleries')) echo 'checked="checked"'; ?> />
-          <?php _e( 'Your gallery items will link to image files directly to allow this.', 'fv-player' ); ?>
+          <?php esc_html_e( 'Your gallery items will link to image files directly to allow this.', 'fv-player' ); ?>
         </p>
       </td>
     </tr>

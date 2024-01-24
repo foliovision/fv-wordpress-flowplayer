@@ -88,7 +88,7 @@ class FV_Player_Linode_Object_Storage extends FV_Player_CDN {
       ?>
       <tr>
         <td colspan="4">
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e( 'Save', 'fv-player' ); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
         </td>
       </tr>
     </table>

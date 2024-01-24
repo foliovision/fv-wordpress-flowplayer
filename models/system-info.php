@@ -214,7 +214,7 @@ foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos',
 
 ### End System Info ###
 </textarea>
-<a class="button" href="<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php _e( 'Export', 'fv-player' ); ?></a>
+<a class="button" href="<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php esc_html_e( 'Export', 'fv-player' ); ?></a>
     <?php
   }
 

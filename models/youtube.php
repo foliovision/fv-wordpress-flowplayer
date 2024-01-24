@@ -314,7 +314,7 @@ class FV_Player_YouTube {
       <tr>
         <td colspan="2">
           <p class="description">
-            <?php _e('We use the Chromeless API so general <a href="#fv_flowplayer_skin">FV Player settings</a> apply here.', 'fv-player-pro'); ?>
+            <?php esc_html_e('We use the Chromeless API so general <a href="#fv_flowplayer_skin">FV Player settings</a> apply here.', 'fv-player-pro'); ?>
           </p>
         </td>
       </tr>
@@ -383,7 +383,7 @@ class FV_Player_YouTube {
           <td style="width: 250px"></td>
           <td>
             <p class="description">
-              <?php _e('Last Error', 'fv-player-pro'); ?>: <?php echo $sError; ?>
+              <?php esc_html_e('Last Error', 'fv-player-pro'); ?>: <?php echo $sError; ?>
             </p>
           </td>
         </tr>
@@ -391,7 +391,7 @@ class FV_Player_YouTube {
       <?php if( !function_exists('FV_PLayer_Pro')): ?>
         <tr>
           <td colspan="4">
-            <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php _e( 'Save', 'fv-player' ); ?></a>
+            <a class="fv-wordpress-flowplayer-save button button-primary" href="#" style="margin-top: 2ex;"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
           </td>
         </tr>
       <?php endif; ?>
