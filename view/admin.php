@@ -407,9 +407,6 @@ function fv_flowplayer_admin_default_options() {
 
             <?php do_action('fv_flowplayer_admin_default_options_after'); ?>
           </table>
-          <small class="alignright">
-          	<?php echo wp_kses( __( 'Missing settings? Check <a class="fv-settings-anchor" href="#fv_flowplayer_integrations">Integrations/Compatbility</a> box below.', 'fv-player' ), array( 'a' => array( 'href' => array() ) ) ); ?>
-          </small>
           <table class="form-table2">
             <tr>
               <td colspan="4">
