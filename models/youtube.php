@@ -312,14 +312,7 @@ class FV_Player_YouTube {
     </style>
     <table class="form-table2" style="margin: 5px; ">
       <tr>
-        <td colspan="2">
-          <p class="description">
-            <?php echo wp_kses( __( 'We use the Chromeless API so general <a href="#fv_flowplayer_skin">FV Player settings</a> apply here.', 'fv-player-pro' ), array( 'a' => array( 'href' => array() ) ) ); ?>
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td class="first"></td>
+        <td class="first"><label>YouTube UI:</label></td>
         <td>
           <?php
             $radio_butons = array();
