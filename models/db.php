@@ -1597,7 +1597,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       $group_order = ' GROUP BY p.id'.$order.$limit;
     }
 
-    $player_data = $wpdb->get_results( $wpdb->prepare( "SELECT {$select} {$meta_counts_select} FROM `{$wpdb->prefix}fv_player_players` AS p {$meta_counts_join} {$post_type_join} {$tax_join} {$where} {$group_order}" ) );
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+    $player_data = $wpdb->get_results( "SELECT {$select} {$meta_counts_select} FROM `{$wpdb->prefix}fv_player_players` AS p {$meta_counts_join} {$post_type_join} {$tax_join} {$where} {$group_order}" );
 
     if($args['count']) {
       return intval($player_data[0]->row_count);
