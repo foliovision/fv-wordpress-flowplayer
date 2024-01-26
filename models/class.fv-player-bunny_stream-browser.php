@@ -144,12 +144,13 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       $result = array( 'error' => $result );
     }
 
-    $result->time = time();
     $video_data_more_pages_exist = ( $result->totalItems > ( $result->currentPage * $result->itemsPerPage ) );
 
     // prepare result for browser
     // ... $result will be a return-value array instead of an object if there was an error
     if ( !is_array( $result ) ) {
+      $result->time = time();
+
       $date_format = get_option( 'date_format' );
       $cdn_hostname = 'https://' . $fv_fp->_get_option( array('bunny_stream','cdn_hostname') ) . '/';
 
