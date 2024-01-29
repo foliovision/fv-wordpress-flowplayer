@@ -491,22 +491,24 @@ CREATE TABLE " . self::$db_table_name . " (
           $cached_video = $cache[$id];
         }
 
-        foreach ($cached_video->getAllDataValues() as $key => $value) {
-          /**
-           * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
-           */
-          if ( is_string( $value ) ) {
-            $value = stripslashes( $value );
+        if ( $cached_video ) {
+          foreach ($cached_video->getAllDataValues() as $key => $value) {
+            /**
+             * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_advanced_settings":null
+             */
+            if ( is_string( $value ) ) {
+              $value = stripslashes( $value );
+            }
+
+            $this->$key = $value;
           }
 
-          $this->$key = $value;
+          // add meta data
+          $this->meta_data = $cached_video->getMetaData();
+
+          // make this class a valid video
+          $this->is_valid = true;
         }
-
-        // add meta data
-        $this->meta_data = $cached_video->getMetaData();
-
-        // make this class a valid video
-        $this->is_valid = true;
       }
     } else {
       throw new Exception('No options nor a valid ID was provided for DB video instance.');
