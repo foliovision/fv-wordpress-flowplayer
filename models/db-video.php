@@ -387,8 +387,10 @@ CREATE TABLE " . self::$db_table_name . " (
           $cached_video = $cache[$id];
         }
 
-        foreach ($cached_video->getAllDataValues() as $key => $value) {
-          $this->$key = stripslashes($value);
+        if ( $cached_video ) {
+          foreach ($cached_video->getAllDataValues() as $key => $value) {
+            $this->$key = stripslashes($value);
+          }
         }
 
         // add meta data
