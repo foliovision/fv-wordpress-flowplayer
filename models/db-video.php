@@ -391,13 +391,13 @@ CREATE TABLE " . self::$db_table_name . " (
           foreach ($cached_video->getAllDataValues() as $key => $value) {
             $this->$key = stripslashes($value);
           }
+
+          // add meta data
+          $this->meta_data = $cached_video->getMetaData();
+
+          // make this class a valid video
+          $this->is_valid = true;
         }
-
-        // add meta data
-        $this->meta_data = $cached_video->getMetaData();
-
-        // make this class a valid video
-        $this->is_valid = true;
       }
     } else {
       throw new Exception('No options nor a valid ID was provided for DB video instance.');
