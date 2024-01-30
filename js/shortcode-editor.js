@@ -1120,7 +1120,7 @@ jQuery(function() {
         });
 
         //When a file is selected, grab the URL and set it as the text field's value
-        fv_flowplayer_uploader.on('select', function() {debugger;
+        fv_flowplayer_uploader.on('select', function() {
           var attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
           var target_element = $('.fv_flowplayer_target');
 
