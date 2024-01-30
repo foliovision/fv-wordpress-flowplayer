@@ -1057,7 +1057,7 @@ jQuery(function() {
 
         fv_flowplayer_uploader_button = jQuery(this);
 
-        var el_input = fv_flowplayer_uploader_button.closest('.components-base-control').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']');
+        var el_input = fv_flowplayer_uploader_button.closest('.components-base-control__field').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']');
 
         // Fallback to previous input, used in FV Player Block
         if ( ! el_input.length ) {
@@ -1120,7 +1120,7 @@ jQuery(function() {
         });
 
         //When a file is selected, grab the URL and set it as the text field's value
-        fv_flowplayer_uploader.on('select', function() {
+        fv_flowplayer_uploader.on('select', function() {debugger;
           var attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
           var target_element = $('.fv_flowplayer_target');
 
