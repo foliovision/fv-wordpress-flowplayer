@@ -1736,6 +1736,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $bFound = true;
           break;
         }
+
+        if ( is_singular() ) {
+          $post_meta = get_post_custom( $objPost->ID );
+          if ( is_array( $post_meta ) ) {
+            foreach ( $post_meta as $meta_values ) {
+              foreach ( $meta_values as $meta_value ) {
+                if ( stripos( $meta_value,'[fvplayer') !== false ) {
+                  $bFound = true;
+                  break 2;
+                }
+              }
+            }
+          }
+        }
       }
 
       if( !$bFound ) {
