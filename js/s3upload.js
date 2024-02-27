@@ -21,7 +21,7 @@ function S3MultiUpload(file) {
     this.chunkRetries = {};
     this.maxRetries = 4;
     this.retryBackoffTimeout = 15000; // ms
-    this.completeErrors = 0;
+    this.completeErrors = 1;
 }
 
 /**
@@ -40,8 +40,12 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
         action: 'create_multiupload',
         fileInfo: self.fileInfo,
     }).done(function(data) {
-        self.sendBackData = data;
-        self.uploadParts();
+        if( data.error ) {
+          self.onServerError('create', null, data.error, null);
+        } else {
+          self.sendBackData = data;
+          self.uploadParts();
+        }
     }).fail(function(jqXHR, textStatus, errorThrown) {
         self.onServerError('create', jqXHR, textStatus, errorThrown);
     });
@@ -195,21 +199,26 @@ S3MultiUpload.prototype.completeMultipartUpload = function() {
 
     if (this.completed) return;
 
+    self.completed = true; // prevent multiple calls to this function
+
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_complete',
         sendBackData: self.sendBackData
     }).done(function(data) {
         self.onUploadCompleted(data);
-        self.completeErrors = 0;
-        self.completed = true;
+        self.completeErrors = 1;
+
     }).fail(function(jqXHR, textStatus, errorThrown) {
         // if we had an error, retry and only show error if at least 3 completion requests fail
-        if ( this.completeErrors++ > 2 ) {
+        if ( this.completeErrors++ > 3 ) {
             self.onServerError('complete', jqXHR, textStatus, errorThrown);
-            self.completeErrors = 0;
+            self.completeErrors = 1;
             self.completed = true;
         } else {
-            setTimeout( this.completeMultipartUpload, this.completeErrors * this.retryBackoffTimeout );
+            setTimeout( function() {
+                self.completed = false;
+                self.completeMultipartUpload();
+            } , this.completeErrors * this.retryBackoffTimeout );
         }
     });
 };
