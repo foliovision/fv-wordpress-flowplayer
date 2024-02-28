@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.3
+Tested up to: 6.4
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -359,9 +359,16 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5... - 2023/../.. =
+= 7.5.43.7212 - 2024/02/28 =
 
+* Security - fix XSS in the redirection at the end of video is bad URL is posted by authenticated user
+* Security - fix XSS in the video loading code if using DigitalOcean Spaces or Linode Object Storage
 * AWS SDK update - PHP 7.4 is now required for the DigitalOcean Spaces/AWS S3 browser and uploader
+* HLS - Keep showing splash until the video really plays
+* Translations - adding Arabic, thanks to dubaiglobalnews.com
+* Bugfix - Handle WordPress audio/video setting - fix for player HTML showing in excerpts
+* Bugfix - SEO - Schema.org - better date format
+* Bugfix - Uploads - avoid duplicate job submissions for FV Player Coconut
 
 = 7.5.41.7212 - 2023/10/04 =
 
