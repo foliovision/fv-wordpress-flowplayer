@@ -639,10 +639,10 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' fp-is-embed';
         }
         if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' ) {
-          $attributes['data-fv_redirect'] = trim($this->aCurArgs['end_action_value']);
+          $attributes['data-fv_redirect'] = sanitize_url( trim($this->aCurArgs['end_action_value']) );
         } else if( !empty($this->aCurArgs['redirect']) ) {
           // compatibility fallback for classic (non-DB) shortcode
-          $attributes['data-fv_redirect'] = trim($this->aCurArgs['redirect']);
+          $attributes['data-fv_redirect'] = sanitize_url( trim($this->aCurArgs['redirect']) );
         }
 
         if( isset($this->aCurArgs['admin_warning']) ) {
