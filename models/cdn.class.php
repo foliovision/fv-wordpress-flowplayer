@@ -44,10 +44,18 @@ abstract class FV_Player_CDN {
           }
         }
       }
-      
+
       if( $bFound ) {
+        $new_sources = array();
+        foreach( $_POST['sources'] AS $aVideo ) {
+          $new_sources[] = array(
+            'src'  => sanitize_url( $aVideo['src'] ),
+            'type' => sanitize_text_field( $aVideo['type'] )
+          );
+        }
+
         echo '<FVFLOWPLAYER>';
-        echo json_encode($_POST['sources']);
+        echo json_encode( $new_sources );
         echo '</FVFLOWPLAYER>';
         die();
       }
@@ -132,7 +140,7 @@ abstract class FV_Player_CDN {
   function load_options() {
     global $fv_fp;
     if( empty($fv_fp) ) return;
-    
+
     if( !$this->aDomains ) {
       $this->aDomains = $this->get_domains();
     }
@@ -145,7 +153,7 @@ abstract class FV_Player_CDN {
       add_filter( 'fv_player_pro_video_ajaxify_args', array( $this, 'args'), 999, 2 );
       
       add_action( 'plugins_loaded', array( $this, 'ajax' ), 9 );
-      
+
       add_filter( 'fv_flowplayer_video_src', array( $this, 'get_signed_url'), 10, 2 );
       
       add_filter( 'fv_flowplayer_splash', array( $this, 'get_signed_url_long') );
