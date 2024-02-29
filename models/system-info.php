@@ -84,11 +84,11 @@ Active Theme:             <?php echo esc_attr( $theme ) . "\n"; ?>
 Host:                     <?php echo esc_attr( $host ) . "\n"; ?>
 <?php endif; ?>
 
-Browser:                  <?php echo isset($_SERVER['HTTP_USER_AGENT']) ? esc_attr( $_SERVER['HTTP_USER_AGENT'] ) : 'none'; ?>
+Browser:                  <?php echo isset($_SERVER['HTTP_USER_AGENT']) ? esc_attr( sanitize_textarea_field( $_SERVER['HTTP_USER_AGENT'] ) ) : 'none'; ?>
 
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
 MySQL Version:            <?php echo esc_attr( $wpdb->db_version() ) . "\n"; ?>
-Web Server Info:          <?php echo esc_attr( $_SERVER['SERVER_SOFTWARE'] ) . "\n"; ?>
+Web Server Info:          <?php echo esc_attr( sanitize_textarea_field( $_SERVER['SERVER_SOFTWARE'] ) ) . "\n"; ?>
 
 WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT."\n"; ?>
 PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>

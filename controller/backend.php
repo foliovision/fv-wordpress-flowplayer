@@ -31,11 +31,11 @@ function fv_wp_flowplayer_support_mail() {
   if( isset( $_POST['notice'] ) && ! empty( $_POST['nonce'] && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_frontend'  ) ) ) {
 
   	$current_user = wp_get_current_user();
-    $content = "<h1>Admin: " . esc_html( $_POST['status'] ) . "</h1>\n";
+    $content = "<h1>Admin: " . esc_html( sanitize_text_field( $_POST['status'] ) ) . "</h1>\n";
   	$content .= '<p>User: '.$current_user->display_name." (".$current_user->user_email.")</p>\n";
-  	$content .= '<p>User Agent: ' . esc_html( $_SERVER['HTTP_USER_AGENT'] ) . "</p>\n";
-  	$content .= '<p>Referer: ' . esc_url( $_SERVER['HTTP_REFERER'] ) . "</p>\n";
-  	$content .= "<p>Comment:</p>\n" . wpautop( esc_html( $_POST['comment'] ) );
+  	$content .= '<p>User Agent: ' . esc_html( sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ) ) . "</p>\n";
+  	$content .= '<p>Referer: ' . esc_url( sanitize_url( $_SERVER['HTTP_REFERER'] ) ) . "</p>\n";
+  	$content .= "<p>Comment:</p>\n" . wpautop( esc_html( sanitize_textarea_field( $_POST['comment'] ) ) );
   	$notice = str_replace( '<span class="value"', ': <span class="value"', wp_kses_post( $_POST['notice'] ) );
   	$notice .= str_replace( '<span class="value"', ': <span class="value"', wp_kses_post( $_POST['details'] ) );
 
@@ -98,7 +98,7 @@ function fv_wp_flowplayer_activate_extension() {
     die();
   }
 
-  echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => 'Success!', 'plugin' => esc_html( $_POST['plugin'] ) ) )."</FVFLOWPLAYER>";
+  echo "<FVFLOWPLAYER>".wp_json_encode( array( 'message' => 'Success!', 'plugin' => esc_html( sanitize_textarea_field( $_POST['plugin'] ) ) ) )."</FVFLOWPLAYER>";
   die();
 }
 
