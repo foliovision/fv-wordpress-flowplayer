@@ -150,7 +150,7 @@ abstract class FV_Player_Wizard_Base_Class {
 
   function register_step($class) {
     if( in_array($class,$this->get_steps()) ) {
-      echo "<div class='error'><p>Error: Step ".$class." already loaded!</p></div>";
+      echo "<div class='error'><p>Error: Step " . esc_html( $class ) . " already loaded!</p></div>";
       return;
     }
     $this->add_step($class);

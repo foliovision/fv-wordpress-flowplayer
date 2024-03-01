@@ -182,8 +182,8 @@ class FV_Player_Email_Subscription {
               }
 
               ?>
-              <tr class='data' id="fv-player-list-item-<?php echo esc_attr( $key ); ?>"<?php echo $key === '#fv_list_dummy_key#' ? 'style="display:none"' : ''; ?>>
-                <td class='id'><?php echo $key ; ?></td>
+              <tr class='data' id="fv-player-list-item-<?php echo esc_attr( $key ); ?>"<?php echo $key === '#fv_list_dummy_key#' ? ' style="display:none"' : ''; ?>>
+                <td class='id'><?php echo esc_html( $key ); ?></td>
                 <td>
                   <table>
                     <tr>
@@ -199,8 +199,8 @@ class FV_Player_Email_Subscription {
                 <?php if( !empty($aMailchimpLists['result']) ) : ?>
                   <td>
                     <select name="email_lists[<?php echo esc_attr( $key ); ?>][integration]" title="E-mail list">
-                      <option value=""><?php echo $mailchimp_no_option; ?></option>
-                      <?php echo $mailchimpOptions ;?>
+                      <option value=""><?php echo esc_html( $mailchimp_no_option ); ?></option>
+                      <?php echo wp_kses( $mailchimpOptions, array( 'option' => array( 'value' => array() ) ) );?>
                     </select>
                     <br />&nbsp;
                   </td>

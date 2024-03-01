@@ -81,9 +81,9 @@ class FV_Player_Conversion {
     echo "</ul>\n";
 
     if( $iFound == 0 ) {
-      echo "<p>No more posts with ".$type." embeds found!</p>\n";
+      echo "<p>No more posts with " . esc_html( $type )." embeds found!</p>\n";
     } else {
-      echo "<p>Updated ".$iCount." posts out of ".$iFound." posts with ".$type." embeds.</p>\n";
+      echo "<p>Updated " . intval( $iCount ) . " posts out of " . intval( $iFound ) . " posts with " . esc_html( $type ) . " embeds.</p>\n";
     }
 
     if( microtime(true) - $tStart > ($tMax - 5) ) {
@@ -102,7 +102,7 @@ class FV_Player_Conversion {
 
   function convert__jwplayer_callback_parse( $aMatch ) {
 
-    echo '<p>Replacing <code>'.$aMatch[0].'</code><p>';
+    echo '<p>Replacing <code>' . esc_html( $aMatch[0] ) . '</code><p>';
 
     $bGotSomething = false;
 
@@ -189,7 +189,7 @@ class FV_Player_Conversion {
     }
 
     $out = '[fvplayer '.implode(' ',$aShortcode).']';
-    echo '<p>With <code>'.$out.'</code><p>';
+    echo '<p>With <code>' . esc_html( $out ) . '</code><p>';
     return $out;
   }
 

@@ -2011,7 +2011,7 @@ function fv_flowplayer_admin_database() {
   global $FV_Player_Db;
   if( is_array($FV_Player_Db->getDatabaseUpgradeStatus()) ) {
     foreach( $FV_Player_Db->getDatabaseUpgradeStatus() AS $query ) {
-      echo "<p><code>".$query[0]."</code></p>";
+      echo "<p><code>" . esc_html( $query[0] ) . "</code></p>";
     }
   }
 }

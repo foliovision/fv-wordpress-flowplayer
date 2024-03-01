@@ -77,20 +77,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                           'playlist_label' => false,
                          ) );
     extract($args);
-    
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
-    
+
     $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
-    if( $class ) {
-      $class = ' class=" ' . esc_attr( $class ) . '"';
-    }
-    
+
     $playlist_label = $playlist_label ? ' data-playlist-label="' . esc_attr( $playlist_label ) . '"  data-single-label="' . esc_attr( $label ) . '"' : '';
-    
+
     ?>
-      <tr<?php echo $id.$class; ?>>
+      <tr<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; echo $class ? ' class="' . esc_attr( $class ) . '"' : ''; ?>>
         <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>" class="alignright" <?php echo $playlist_label; ?>><?php echo wp_strip_all_tags( $label ); ?></label></th>
         <td class="field">
           <select id="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>" name="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>">
@@ -110,12 +103,8 @@ if ( ! defined( 'ABSPATH' ) ) {
   // TODO: How to actually assign any action to this?
   function fv_player_editor_button( $args ) {
     extract($args);
-
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
     ?>
-  <div <?php echo $id; ?> class="components-base-control__field">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control__field">
     <a class="components-button is-secondary" id="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>"><?php echo wp_strip_all_tags( $label ); ?></a>
   </div>
     <?php
@@ -123,12 +112,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
   function fv_player_editor_checkbox( $args ) {
     extract($args);
-
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
     ?>
-  <div <?php echo $id; ?> class="components-base-control__field">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control__field">
     <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
       <input class="components-form-toggle__input<?php if( $no_data ) echo ' no-data'; ?>" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo esc_html( $name ); ?>" name="fv_wp_flowplayer_field_<?php echo esc_html( $name ); ?>" />
       <span class="components-form-toggle__track"></span>
@@ -142,13 +127,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   function fv_player_editor_numfield( $args ) {
     extract($args);
 
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
-
     $field_id = 'fv_wp_flowplayer_field_' . esc_attr( $name );
     ?>
-  <div <?php echo $id; ?> class="components-base-control">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $label ); ?></label>
     <div class="components-base-control__field">
       <input class="components-text-control__input" type="number" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" />
@@ -160,13 +141,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   function fv_player_editor_select( $args ) {
     extract($args);
 
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
-
     $field_id = 'fv_wp_flowplayer_field_' . esc_attr( $name );
     ?>
-  <div <?php echo $id; ?> class="components-base-control__field">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control__field">
     <div class="components-flex components-select-control">
       <div class="components-flex__item">
         <label for="<?php echo esc_attr( $field_id ); ?>" class="components-input-control__label"><?php echo esc_html( $label ); ?></label>
@@ -191,13 +168,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   function fv_player_editor_textarea( $args ) {
     extract($args);
 
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
-
     $field_id = 'fv_wp_flowplayer_field_' . esc_attr( $name );
     ?>
-  <div <?php echo $id; ?> class="components-base-control">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $label ); ?></label>
     <div class="components-base-control__field">
       <textarea class="components-textarea-control__input" type="text" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" rows="4"></textarea>
@@ -209,13 +182,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   function fv_player_editor_textfield( $args ) {
     extract($args);
 
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
-
     $field_id = 'fv_wp_flowplayer_field_' . esc_attr( $name );
     ?>
-  <div <?php echo $id; ?> class="components-base-control">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $label ); ?></label>
     <div class="components-base-control__field">
       <?php if( $language ): ?>
@@ -281,14 +250,10 @@ if ( ! defined( 'ABSPATH' ) ) {
   function fv_player_editor_notice_info( $args ) {
     extract($args);
 
-    if( $id ) {
-      $id = ' id="' . esc_attr( $id ) . '"';
-    }
-
     $field_class = 'fv_wp_flowplayer_field_' . esc_attr( $name );
 
     ?>
-  <div <?php echo $id; ?> class="components-base-control">
+  <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <div class="components-base-control__field">
       <div class="<?php echo esc_attr( $field_class ); ?>">
         <?php echo wp_kses_post( $content ); ?>
@@ -594,7 +559,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <p><?php esc_html_e( 'Add your video', 'fv-player' ); ?></p>
           <div class="components-base-control__field">
             <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" /> or 
-            <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
+            <button type="button" class="browser button button-hero" style="position: relative; z-index: 1;">Choose from <?php echo get_bloginfo(); ?>'s library</button>
           </div>
           <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php esc_html_e( 'This does not look like a video link.', 'fv-player' ); ?></div>
         </div>
@@ -641,7 +606,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <div id="playlist-hero" style="display: none">
             <div class="components-base-control__field">
               <input class="components-text-control__input" type="text" placeholder="Paste a link to a new video." name="hero-src" data-playlist-hero="true" />
-              <button type="button" class="browser button button-hero"style="position: relative; z-index: 1;" data-playlist-hero="true">Choose from <?php echo get_bloginfo(); ?>'s library</button>
+              <button type="button" class="browser button button-hero" style="position: relative; z-index: 1;" data-playlist-hero="true">Choose from <?php echo get_bloginfo(); ?>'s library</button>
               <div class="fv-player-editor-notice notice-url-format" style="display: none"><?php esc_html_e( 'This does not look like a video link.', 'fv-player' ); ?></div>
               <div class="fv-player-editor-notice notice-use-ui" style="display: none"><?php esc_html_e( 'Please post a link to the new video or choose one.', 'fv-player' ); ?></div>
             </div>
