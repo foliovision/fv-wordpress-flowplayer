@@ -155,8 +155,8 @@ class FV_Player_lightbox {
   }
 
   function disp__lightboxed_players() {
-    if (strlen($this->lightboxHtml)) {
-      echo $this->lightboxHtml . "<!-- lightboxed players -->\n\n";
+    if ( strlen( $this->lightboxHtml ) ) {
+      echo wp_kses_post( $this->lightboxHtml ) . "<!-- lightboxed players -->\n\n";
     }
   }
   
@@ -265,7 +265,7 @@ class FV_Player_lightbox {
         // We add the lightboxed class
         $lightbox = str_replace(array('class="freedomplayer ', "class='freedomplayer "), array('class="freedomplayer lightboxed ', "class='freedomplayer lightboxed "), $html);
         // ...and wrap it in hidden DIV
-        $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n".$lightbox."</div>\n";
+        $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n" . wp_kses_post( $lightbox ) . "</div>\n";
         
         if ( $this->is_text_lightbox($args) ) {
           if( !empty($args['playlist']) ) {
