@@ -310,7 +310,17 @@ class FV_Player_Custom_Videos_Master {
       <div>
         <?php
         $objVideos = new FV_Player_Custom_Videos(array( 'id' => bbp_get_displayed_user_field('ID'), 'type' => 'user' ));
-        echo $objVideos->get_form( array('no_form' => true) );
+
+        global $fv_fp;
+        add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 10, 2 );
+    
+        add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+        add_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+
+        echo wp_kses_post( $objVideos->get_form( array('no_form' => true) ) );
+
+        remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+        remove_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
         ?>
       </div>
   
@@ -335,9 +345,20 @@ class FV_Player_Custom_Videos_Master {
       <div id="bbp-user-profile" class="bbp-user-profile">
         <h2 class="entry-title"><?php esc_attr_e( 'Videos', 'bbpress' ); ?></h2>
         <div class="bbp-user-section">
-    
-          <?php echo $objVideos->get_html(); ?>
-    
+
+          <?php
+          global $fv_fp;
+          add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 10, 2 );
+
+          add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+          add_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+      
+          echo wp_kses_post( $objVideos->get_html() );
+
+          remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+          remove_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+          ?>
+
         </div>
       </div><!-- #bbp-author-topics-started -->
     <?php endif;
@@ -684,9 +705,18 @@ class FV_Player_Custom_Videos_Master {
           <th><?php esc_attr_e(  'Videos', 'fv-player' ); ?></th>
           <td>
             <?php
-            
-            echo $objUploader->get_form( array( 'wrapper' => 'div' ) );
+            global $fv_fp;
+            add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 10, 2 );
+
+            add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+            add_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+
+            echo wp_kses_post( $objUploader->get_form( array( 'wrapper' => 'div' ) ) );
+
+            remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+            remove_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
             ?>
+
             <p class="description"><?php esc_attr_e(  'You can put your Vimeo or YouTube links here.', 'fv-player' ); ?> <abbr title="<?php esc_attr_e(  'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-player' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
           </td>
         </tr>
@@ -707,7 +737,18 @@ class FV_Player_Custom_Videos_Master {
     ?>
         <p class="edd-profile-videos-label">
           <span for="edd_email"><?php esc_attr_e(  'Profile Videos', 'fv-player' ); ?></span>
-            <?php echo $user->get_form(array('no_form' => true));?>
+            <?php
+            global $fv_fp;
+            add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 10, 2 );
+
+            add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+            add_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+
+            echo wp_kses_post( $user->get_form(array('no_form' => true)) );
+
+            remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+            remove_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+            ?>
         </p>
     <?php
     
