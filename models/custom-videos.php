@@ -382,7 +382,17 @@ class FV_Player_Custom_Videos_Master {
   function meta_box( $aPosts, $args ) {
     global $FV_Player_Custom_Videos_form_instances;
     $objVideos = $FV_Player_Custom_Videos_form_instances[$args['id']];
-    echo $objVideos->get_form();
+
+    global $fv_fp;
+    add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 10, 2 );
+
+    add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+    add_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
+
+    echo wp_kses_post( $objVideos->get_form() );
+
+    remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses' ) );
+    remove_filter( 'safe_style_css', array( $this, 'safe_style_css' ) );
   }
 
   function post_list_column( $cols ) {
@@ -475,9 +485,22 @@ class FV_Player_Custom_Videos_Master {
             if( stripos( $column_name, 'fv-player-video-custom-field-player' ) === 0 ) {
               echo '<input type="hidden" value="'.esc_attr($shortcode).'" />';
 
-              echo '<a href="#" class="fv-player-edit" data-player_id="'.$shortcode_atts['id'].'">'.$button_text.'</a>';
+              echo '<a href="#" class="fv-player-edit" data-player_id="'.$shortcode_atts['id'].'">' . wp_kses( $button_text, array(
+                'div'  => array(
+                  'class'   => array(),
+                ),
+                'img'  => array(
+                  'alt'     => array(),
+                  'loading' => array(),
+                  'src'     => array(),
+                  'title'   => array(),
+                  'width'   => array(),
+                ),
+                'span' => array()
+              ) ) . '</a>';
+
             } else if( stripos( $column_name, 'fv-player-video-custom-field-playlist-items-count-' ) === 0 ) {
-              echo $video_count;
+              echo esc_html( $video_count );
             }
 
           } else if( stripos( $column_name, 'fv-player-video-custom-field-player' ) === 0 ) {
@@ -694,6 +717,68 @@ class FV_Player_Custom_Videos_Master {
     
     fv_wp_flowplayer_edit_form_after_editor();
     fv_player_shortcode_editor_scripts_enqueue();
+  }
+
+  // Used to permit FV Player's Custom Video Field markup
+  public function safe_style_css( $styles ) {
+    $styles[] = 'display';
+    return $styles;
+  }
+
+  // Used to permit FV Player's Custom Video Field markup
+  public function wp_kses( $tags ) {
+
+    if ( empty($tags['defs']) ) {
+      $tags['defs'] = array();
+    }
+
+    if ( empty($tags['input']) ) {
+      $tags['input'] = array();
+    }
+
+    $tags['input']['class'] = true;
+    $tags['input']['id'] = true;
+    $tags['input']['name'] = true;
+    $tags['input']['onclick'] = true;
+    $tags['input']['type'] = true;
+    $tags['input']['value'] = true;
+
+    $tags['noscript'] = array();
+
+    if ( empty($tags['path']) ) {
+      $tags['path'] = array();
+    }
+
+    $tags['path']['class'] = true;
+    $tags['path']['d'] = true;
+
+    if ( empty($tags['polygon']) ) {
+      $tags['polygon'] = array();
+    }
+
+    $tags['polygon']['class'] = true;
+    $tags['polygon']['points'] = true;
+    $tags['polygon']['filter'] = true;
+
+    if ( empty($tags['style']) ) {
+      $tags['style'] = array();
+    }
+
+    if ( empty($tags['svg']) ) {
+      $tags['svg'] = array();
+    }
+
+    $tags['svg']['class'] = true;
+    $tags['svg']['viewbox'] = true;
+    $tags['svg']['xmlns'] = true;
+
+    if ( empty($tags['textarea']) ) {
+      $tags['textarea'] = array();
+    }
+
+    $tags['textarea']['onclick'] = true;
+
+    return $tags;
   }
 
 }
