@@ -1583,7 +1583,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
         $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
-        $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fp-controls .fv-fp-prevbtn:before, ".$sel." .fp-controls .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
         $css .= $sel." svg.fvp-icon { fill: ".$sDuration." !important; }\n";
       }
@@ -1616,7 +1616,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
     }
 
-    echo $css;
+    echo esc_html( $css );
 
     //  rest is not depending of the skin settings or can use the default skin
     $skin = 'skin-'.$this->_get_option('skin');
@@ -1661,25 +1661,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }
 
-    <?php echo $this->_get_option('overlay_css'); ?>
+    <?php echo esc_html( $this->_get_option('overlay_css') ); ?>
     .wpfp_custom_ad { color: <?php echo $this->_get_option('overlayTextColor'); ?>; z-index: 20 !important; }
     .wpfp_custom_ad a { color: <?php echo $this->_get_option('overlayLinksColor'); ?> }
 
-    .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
+    .fp-playlist-external > a > span { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }
     <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
       .fp-playlist-external a h4,
       .fp-playlist-external a:hover h4,
       .fp-playlist-external a.is-active:hover h4,
       .visible-captions.fp-playlist-external a h4 span,
       .fv-playlist-design-2014.fp-playlist-external a h4,
-      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }
+      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo esc_html( $this->_get_option('playlistFontColor') ); ?>; }
     <?php endif; ?>
-    .fp-playlist-external > a.is-active > span { border-color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
-    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
-    <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }<?php endif; ?>
 
     <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
-    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo esc_html( $this->_get_option('subtitleFontFace') ); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
@@ -1691,9 +1691,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } else if( $value == 'top-right' ) {
         $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto;";
       }
-      ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      ?>.flowplayer .fp-logo { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
 
-    .flowplayer .fp-player .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
+    .flowplayer .fp-player .fp-captions p { background-color: <?php echo esc_html( $sSubtitleBgColor ); ?> }
 
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
 
