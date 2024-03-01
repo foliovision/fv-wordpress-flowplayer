@@ -83,10 +83,10 @@ class FV_Player_Custom_Videos {
   }
   
   public function get_html_part( $video, $edit = false ) {
-    global $FV_Player_Custom_Videos_Master, $post;
+    global $post;
 
     $defaults = array( 'labels' => array( 'edit' => 'Edit Video', 'remove' => 'Remove Video' ), 'multiple' => true );
-    $args = !empty($post) && !empty($FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type]) ? $FV_Player_Custom_Videos_Master->aMetaBoxes[$post->post_type][$this->meta] : $defaults;
+    $args = !empty($post) && !empty( FV_Player_Custom_Videos_Master()->aMetaBoxes[$post->post_type]) ? FV_Player_Custom_Videos_Master()->aMetaBoxes[$post->post_type][$this->meta] : $defaults;
     
     if( $video ) {
       $video = wp_kses( $video, 'post' );
@@ -810,7 +810,7 @@ class FV_Player_MetaBox {
         'edit' => 'Edit Video',
         'remove' => 'Remove Video'
       ) ) );
-    
+
     FV_Player_Custom_Videos_Master()->register_metabox($args);
   }
   
