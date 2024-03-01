@@ -89,9 +89,10 @@ class FV_Player_List_Table extends WP_List_Table {
       'author'           => array( 'author', true ),
       'player_name'      => array( 'player_name', true ),
       'date_created'     => array( 'date_created', true ),
-      'subtitles_count'  => array( 'subtitles_count', true ),
+      // TODO: Disabled due to poor performance
+      /*'subtitles_count'  => array( 'subtitles_count', true ),
       'chapters_count'   => array( 'chapters_count', true ),
-      'transcript_count' => array( 'transcript_count', true )
+      'transcript_count' => array( 'transcript_count', true )*/
     );
   }
   

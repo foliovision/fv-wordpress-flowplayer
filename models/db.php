@@ -21,7 +21,8 @@ class FV_Player_Db {
 
   private
     $edit_lock_timeout_seconds = 120,
-    $valid_order_by = array('id', 'player_name', 'date_created', 'author', 'subtitles_count', 'chapters_count', 'transcript_count'),
+    // TODO: Some of the sorting disabled due to poor performance
+    $valid_order_by = array('id', 'player_name', 'date_created', 'author', /*'subtitles_count', 'chapters_count', 'transcript_count'*/ ),
     $videos_cache = array(),
     $video_atts_cache = array(),
     $video_meta_cache = array(),
@@ -1540,25 +1541,6 @@ class FV_Player_Db {
       $limit = $wpdb->prepare( ' LIMIT %d, %d', $args['offset'], $args['per_page'] );
     }
 
-    $meta_counts_select = '';
-    $meta_counts_join = '';
-    if( is_admin() ) {
-      $meta_table = FV_Player_Db_Video_Meta::get_db_table_name();
-
-      // TODO: Fix bad count if video has multiple "subtitles" and "transcript_src"
-      $meta_counts_select = ',
-count(subtitles.id) as subtitles_count,
-count(cues.id) as cues_count,
-count(chapters.id) as chapters_count,
-count(meta_transcript.id) as transcript_count';
-      $meta_counts_join = 'JOIN `'.FV_Player_Db_Video::get_db_table_name().'` AS v on FIND_IN_SET(v.id, p.videos)
-LEFT JOIN `'.$meta_table.'` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like "subtitles%"
-LEFT JOIN `'.$meta_table.'` AS cues ON v.id = cues.id_video AND cues.meta_key like \'cues%\'
-LEFT JOIN `'.$meta_table.'` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = \'chapters\'
-LEFT JOIN `'.$meta_table.'` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key LIKE \'transcript_src%\'
-';
-    }
-
     $post_type_join = '';
     $tax_join = '';
     if( $args['post_type'] ) {
@@ -1598,11 +1580,54 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     }
 
     // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-    $player_data = $wpdb->get_results( "SELECT {$select} {$meta_counts_select} FROM `{$wpdb->prefix}fv_player_players` AS p {$meta_counts_join} {$post_type_join} {$tax_join} {$where} {$group_order}" );
+    $player_data = $wpdb->get_results( "SELECT {$select} FROM `{$wpdb->prefix}fv_player_players` AS p {$post_type_join} {$tax_join} {$where} {$group_order}" );
 
     if($args['count']) {
       return intval($player_data[0]->row_count);
     }
+
+    /**
+     * Also load count of subtitles, cues, chapters and transcripts
+     * 
+     * If we do this is the original query with JOIN it takes 10x longer
+     */
+    if( is_admin() ) {
+      $placeholders = implode( ', ', array_fill( 0, count( $player_data ), '%d' ) );
+
+      $meta_counts = $wpdb->get_results(
+        $wpdb->prepare(
+          // $placeholders is a string of %d created above
+          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+          "SELECT p.id,
+          count(subtitles.id) as subtitles_count,
+          count(cues.id) as cues_count,
+          count(chapters.id) as chapters_count,
+          count(meta_transcript.id) as transcript_count
+          FROM `{$wpdb->prefix}fv_player_players` AS p
+          JOIN `{$wpdb->prefix}fv_player_videos` AS v on FIND_IN_SET(v.id, p.videos)
+          LEFT JOIN `{$wpdb->prefix}fv_player_videometa` AS subtitles ON v.id = subtitles.id_video AND subtitles.meta_key like 'subtitles%'
+          LEFT JOIN `{$wpdb->prefix}fv_player_videometa` AS cues ON v.id = cues.id_video AND cues.meta_key like 'cues%'
+          LEFT JOIN `{$wpdb->prefix}fv_player_videometa` AS chapters ON v.id = chapters.id_video AND chapters.meta_key = 'chapters'
+          LEFT JOIN `{$wpdb->prefix}fv_player_videometa` AS meta_transcript ON v.id = meta_transcript.id_video AND meta_transcript.meta_key LIKE 'transcript_src%'
+          WHERE p.id IN( $placeholders )
+          GROUP BY p.id",
+          wp_list_pluck( $player_data, 'id' )
+        ),
+        OBJECT_K
+      );
+
+      foreach( $player_data as $k => $v ) {
+        if ( ! empty( $meta_counts[ $v->id ] ) ) {
+          $meta_count = $meta_counts[ $v->id ];
+          $player_data[ $k ]->subtitles_count = $meta_count->subtitles_count;
+          $player_data[ $k ]->cues_count = $meta_count->cues_count;
+          $player_data[ $k ]->chapters_count = $meta_count->chapters_count;
+          $player_data[ $k ]->transcript_count = $meta_count->transcript_count;
+        }
+      }
+    }
+
+    $cache = array();
 
     foreach( $player_data AS $db_record ) {
       // create a new video object and populate it with DB values
@@ -1617,7 +1642,9 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       $cache[$record_id] = $player_object;
     }
 
-    if(!empty($cache)) $this->setPlayersCache($cache);
+    if ( ! empty( $cache ) ) {
+      $this->setPlayersCache($cache);
+    }
   }
 
   /**
@@ -2276,6 +2303,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     $where = implode(' '.esc_sql($args['and_or']).' ', $where);
 
+    // TODO: Sort by subtitles_count, 'chapters_count and transcript_count should be added here
+    // TODO: Search the meta values too
     $video_data = $wpdb->get_results(
       $wpdb->prepare(
         "SELECT v.* FROM `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_players` AS p ON FIND_IN_SET(v.id, p.videos) WHERE {$where} ORDER BY v.id DESC"
