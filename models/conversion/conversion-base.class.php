@@ -155,7 +155,7 @@ abstract class FV_Player_Conversion_Base {
           <input type="hidden" name="action" value="rebuild" />
 
           <?php if( $this->make_chages_button ): // This checkbox shows the JS confirmation box when clicked to enable ?>
-            <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo $this->start_warning_text; ?>') " /> <label for="make-changes">Make changes</label>
+            <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo esc_attr( $this->start_warning_text ); ?>') " /> <label for="make-changes">Make changes</label>
           <?php endif; ?>
 
           <input class="button-primary" type="submit" name="convert" value="Start" />
@@ -174,7 +174,7 @@ abstract class FV_Player_Conversion_Base {
 
           <?php if( $this->conversion_done_details ): ?>
             <p class="conversion-done-details" style="display: none;">
-              <?php echo $this->conversion_done_details; ?>
+              <?php echo esc_html( $this->conversion_done_details ); ?>
             </p>
           <?php endif; ?>
         </div>
@@ -183,7 +183,7 @@ abstract class FV_Player_Conversion_Base {
           <thead>
             <tr>
               <?php foreach( $this->screen_fields as $field ) : ?>
-                <th><?php echo $field; ?></th>
+                <th><?php echo esc_html( $field ); ?></th>
               <?php endforeach; ?>
             </tr>
           </thead>

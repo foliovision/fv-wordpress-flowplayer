@@ -47,7 +47,7 @@ class FV_Player_S3_Upload {
     try {
       return call_user_func_array( [$s3, $command ], $args );
     } catch (AwsException $e) {
-      echo $e->getMessage(), PHP_EOL;
+      echo esc_html( $e->getMessage() ), PHP_EOL;
     }
 
     return null;

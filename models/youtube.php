@@ -376,7 +376,7 @@ class FV_Player_YouTube {
           <td style="width: 250px"></td>
           <td>
             <p class="description">
-              <?php esc_html_e('Last Error', 'fv-player-pro'); ?>: <?php echo $sError; ?>
+              <?php esc_html_e('Last Error', 'fv-player-pro'); ?>: <?php echo esc_html( $sError ); ?>
             </p>
           </td>
         </tr>

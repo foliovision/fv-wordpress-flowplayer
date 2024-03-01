@@ -68,7 +68,7 @@ class FV_Player_Conversion {
           $errors = $post_id->get_error_messages();
           echo "Error: ";
           foreach ($errors as $error) {
-            echo $error;
+            echo esc_html( $error );
           }
           echo "</li>";
         } else {

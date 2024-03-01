@@ -397,7 +397,7 @@ class FV_Xml_Video_Sitemap {
       
       $year = intval(get_query_var('fvp_sitemap_year'));
       $month = intval(get_query_var('fvp_sitemap_monthnum'));
-      echo $this->fv_generate_video_sitemap_do( $year, $month );
+      $this->fv_generate_video_sitemap_do( $year, $month );
     }
     
     function fv_generate_video_sitemap_do( $year, $month ) {
