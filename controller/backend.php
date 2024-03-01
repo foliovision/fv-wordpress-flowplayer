@@ -632,7 +632,7 @@ function flowplayer_conversion_script() {
   }
   echo '</ol>';
 
-  echo '<strong>Conversion was succesful. Total number of converted posts: ' . $counter . '</strong>';
+  echo '<strong>Conversion was succesful. Total number of converted posts: ' . intval( $counter ) . '</strong>';
 
   delete_option('fvwpflowplayer_conversion');
 
@@ -745,7 +745,7 @@ function fv_player_embedded_on_fix() {
     if ( $players_with_no_posts ) {
       foreach ( $players_with_no_posts as $player_id ) {
         echo '<p>';
-        echo 'Player #' . $player_id . '... ';
+        echo 'Player #' . intval( $player_id ) . '... ';
 
         $wild = '%';
         $find = 'fvplayer id="'.$player_id.'"';

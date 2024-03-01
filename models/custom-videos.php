@@ -506,7 +506,7 @@ class FV_Player_Custom_Videos_Master {
             if( stripos( $column_name, 'fv-player-video-custom-field-player' ) === 0 ) {
               echo '<input type="hidden" value="'.esc_attr($shortcode).'" />';
 
-              echo '<a href="#" class="fv-player-edit" data-player_id="'.$shortcode_atts['id'].'">' . wp_kses( $button_text, array(
+              echo '<a href="#" class="fv-player-edit" data-player_id="' . intval( $shortcode_atts['id'] ) . '">' . wp_kses( $button_text, array(
                 'div'  => array(
                   'class'   => array(),
                 ),
@@ -525,7 +525,7 @@ class FV_Player_Custom_Videos_Master {
             }
 
           } else if( stripos( $column_name, 'fv-player-video-custom-field-player' ) === 0 ) {
-            echo '<a href="#" class="fv-player-edit" data-post-id="'.$post_id.'" data-meta_key="'.$box['meta_key'].'">Add new player</a>';
+            echo '<a href="#" class="fv-player-edit" data-post-id="' . intval( $post_id ) . '" data-meta_key="' . esc_attr( $box['meta_key'] ) . '">Add new player</a>';
 
           }
         }

@@ -110,7 +110,7 @@ if ( ! defined( 'ABSPATH' ) ) {
           $dates = $FV_Player_Stats->get_valid_dates($user_id);
 
           foreach( $dates as $key => $value ) {
-            echo '<option value="'.$key.'" '.( $date_range == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.$value['value'].'</option>';
+            echo '<option value="' . esc_attr( $key ) . '" '.( $date_range == $key ? 'selected' : '' ) . ' ' . ( $value['disabled'] ? 'disabled' : '' ) . '>'.esc_html( $value['value'] ) . '</option>';
           }
         ?>
       </select>
@@ -125,7 +125,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $plays = !empty($value['play']) && intval($value['play']) ? $value['play'] : 0;
                 $plays = number_format_i18n( $plays, 0 );
 
-                echo '<option value="'.$value['ID'].'" '.( $user_id == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>'.$value['display_name'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )</option>';
+                echo '<option value="' . esc_attr( $value['ID'] ) . '" '.( $user_id == $value['ID'] ? 'selected' : '' ). ' ' . ( !$plays ? 'disabled' : '' ) . '>' . esc_html( $value['display_name'] . ' - ' . $value['user_email'] .' ( ' . $plays . ' plays )' ) . '</option>';
               }
             }
           ?>

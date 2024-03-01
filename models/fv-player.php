@@ -232,7 +232,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
                     if (isset($options) && isset($options['data']) && is_array($options['data'])) {
                         foreach ($options['data'] as $data_item => $data_value) {
-                            echo ' data-'.$data_item.'="'.$data_value.'"';
+                            echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
                         }
                     }
                   ?> />
@@ -489,7 +489,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.$data_value.'"';
+                echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
               }
             }
             ?> />
@@ -563,7 +563,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
             if (isset($options) && isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.$data_value.'"';
+                echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
               }
             }
           ?>>
@@ -1662,8 +1662,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .is-finished .wpfp_custom_background { display: block; }
 
     <?php echo esc_html( $this->_get_option('overlay_css') ); ?>
-    .wpfp_custom_ad { color: <?php echo $this->_get_option('overlayTextColor'); ?>; z-index: 20 !important; }
-    .wpfp_custom_ad a { color: <?php echo $this->_get_option('overlayLinksColor'); ?> }
+    .wpfp_custom_ad { color: <?php echo esc_html( $this->_get_option('overlayTextColor') ); ?>; z-index: 20 !important; }
+    .wpfp_custom_ad a { color: <?php echo esc_html( $this->_get_option('overlayLinksColor') ); ?> }
 
     .fp-playlist-external > a > span { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }
     <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
@@ -3020,7 +3020,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       ?>
       <div style="background:white;">
-        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+        <div id="wrapper" style="background:white; overflow:hidden; <?php echo esc_html( $width . $height ); ?>;">
       <?php
       // regular shortcode data with source
       global $fv_fp;

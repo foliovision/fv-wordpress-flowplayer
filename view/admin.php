@@ -532,7 +532,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
         echo '<div class="descriptions">';
         foreach( $radio_butons_descriptions AS $key => $description ) {
-          echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+          echo '<p class="description" data-describe="' . esc_attr( $key ) . '">' . esc_html( $description ) . '</p>';
         }
         echo '</div>';
 
