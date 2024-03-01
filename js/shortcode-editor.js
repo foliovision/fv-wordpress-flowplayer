@@ -1597,7 +1597,7 @@ jQuery(function() {
         shortcode     = shortcode.replace( /(width=[\'"])\d*([\'"])/, "$1320$2" );  // 320
         shortcode     = shortcode.replace( /(height=[\'"])\d*([\'"])/, "$1240$2" ); // 240
 
-        var url = fv_player_editor_conf.home_url + '?fv_player_embed='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
+        var url = fv_player_editor_conf.home_url + '?fv_player_preview_nonce='+fv_player_editor_conf.preview_nonce+'&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
         $.get(url, function(response) {
           wrapper.find('.fv-player-editor-preview').html( jQuery('#wrapper',response ) );
           $doc.trigger('fvp-preview-complete', [ shortcode, wrapper.data('key'), wrapper ] );
