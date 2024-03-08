@@ -55,7 +55,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     s3upload = new S3MultiUpload( file );
     s3upload.onServerError = function(command, jqXHR, textStatus, errorThrown) {
       fv_player_media_browser.set_upload_status(false);
-      $progressDiv.text("Upload failed with server error.");
+      $progressDiv.text( textStatus ? textStatus : "Upload failed with server error.");
       $progressBarDiv.hide();
       upload_error_callback();
       console.log( command, jqXHR, textStatus, errorThrown );
