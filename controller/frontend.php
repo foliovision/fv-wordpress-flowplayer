@@ -442,7 +442,11 @@ function flowplayer_prepare_scripts() {
     $aConf['script_hls_js'] = flowplayer::get_plugin_url().'/flowplayer/hls.min.js?ver=1.4.10';
 
     $dashjs_version = $fv_wp_flowplayer_ver.'-3.2.2-mod';
-        
+
+    if ( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
+      $dashjs_version = filemtime( dirname(__FILE__).'/../flowplayer/flowplayer.dashjs.min.js' );
+    }
+
     if( $fv_fp->should_force_load_js() || $fv_fp->load_dash ) {
       wp_enqueue_script( 'flowplayer-dash', flowplayer::get_plugin_url().'/flowplayer/flowplayer.dashjs.min.js', array('flowplayer'), $dashjs_version, true );
     }
