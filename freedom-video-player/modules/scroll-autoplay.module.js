@@ -63,9 +63,9 @@ if( typeof(flowplayer) !== 'undefined') {
             rect.top > 0 && ( rect.top + player.height() / 4 ) < window_height ||
             rect.bottom > player.height() / 4 && rect.bottom <= window_height
           ) ||
-          // If player is taller than the viewport at least 1/4 has to be visible
+          // If player is taller than the viewport at least 1/2 has to be visible
           player.height() > window_height && (
-            rect.top <= player.height() / 4 && rect.bottom > player.height() / 4
+            rect.top <= window_height / 2 && rect.bottom > window_height / 2
           )
         ) {
           // disabling for YouTube on iOS
