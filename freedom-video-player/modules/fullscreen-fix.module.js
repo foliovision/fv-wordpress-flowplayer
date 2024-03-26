@@ -19,6 +19,14 @@ flowplayer(function(player, root) {
   player.fullscreen = function(flag) {
     if (player.disabled) return;
 
+    if (flag === undefined) flag = !player.isFullscreen;
+
+    if (flag) {
+      scrollY = win.scrollY;
+      scrollX = win.scrollX;
+      console.log( 'scrollY', scrollY );
+    }
+
     var video = common.find('video.fp-engine', root)[0];
     if( flowplayer.conf.native_fullscreen && video && flowplayer.support.iOS /* TODO: Also allow Android, it's missing controls on the video unfortunately */ ) {
       // Taking from core Flowplayer /lib/ext/mobile.js
@@ -49,13 +57,6 @@ flowplayer(function(player, root) {
     }
 
     var wrapper = jQuery(root).find('.fp-player')[0];
-
-    if (flag === undefined) flag = !player.isFullscreen;
-
-    if (flag) {
-      scrollY = win.scrollY;
-      scrollX = win.scrollX;
-    }
 
     /**
      * If we are entering fullscreen on Safari or iPad and a fullscreen element is already 
