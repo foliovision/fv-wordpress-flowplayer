@@ -1075,8 +1075,8 @@
 
                 $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
                     action: 'fv_wp_flowplayer_retrieve_video_data',
-                    video_url: video_url,
-                    cookie: encodeURIComponent(document.cookie),
+                    nonce:  fv_player_editor_conf.retrieve_video_data_nonce,
+                    video_url: video_url
                   }, function (json_data) {
                   fv_player_editor.meta_data_load_finished();
                     // check if we still have this element on page

@@ -1830,6 +1830,11 @@ FROM `'.FV_Player_Db_Player::get_db_table_name().'` AS p
    * Also returns current timestamp, so we can store the last check date in DB.
    */
   public function retrieve_video_data() {
+
+    if ( ! wp_verify_nonce( $_POST['nonce'], 'fv-player-retrieve_video_data' ) ) {
+      die( 'Security check failed' );
+    }
+
     if (!isset($_POST['video_url'])) {
       exit;
     }
