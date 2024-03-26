@@ -160,7 +160,7 @@ class FV_Player_Checker {
               $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
             }
             list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
-            
+
             if( $sHTTPError ) {
               $bValidFile = false;
             }
@@ -512,6 +512,38 @@ class FV_Player_Checker {
   
   
   public static function http_request( $sURL, $args ) {
+
+    $parsed_home = wp_parse_url( home_url() );
+    $parsed_url  = wp_parse_url( $sURL );
+
+    $is_bad_request = false;
+
+    // Do not permit requests to private IPs
+    if ( ! filter_var( $parsed_url['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE ) ) {
+      $is_bad_request = true;
+    }
+
+    // Do not permit localhost checks
+    if ( 'localhost' == $parsed_url['host'] ) {
+      $is_bad_request = true;
+    }
+
+    // But permit these requests if the website runs on same localhost or same IP and the port is the same
+    if (
+      strcmp( $parsed_url['host'], $parsed_home['host'] ) === 0 &&
+      intval( $parsed_url['port'] ) === intval( $parsed_home['port'] )
+    ) {
+      $is_bad_request = false;
+    }
+
+    // Do not run the check
+    if ( $is_bad_request ) {
+      return array(
+        '',
+        'Invalid URL',
+      );
+    }
+
     global $fv_wp_flowplayer_ver;
     
     $args = wp_parse_args( $args, array( 'file' => false, 'size' => 8 * 1024 * 1024, 'quick_check' => false ) );
