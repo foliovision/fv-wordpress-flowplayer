@@ -13,19 +13,26 @@ flowplayer(function(api, root) {
     return;
   }
 
-  // Force fullscreen on mobile setting
+  /**
+   * Force fullscreen on mobile setting
+   * or if forcing fullscreen
+   * or if it's playlist type that requires fullscreen
+   */
   if( flowplayer.conf.mobile_force_fullscreen && flowplayer.support.fvmobile || !flowplayer.support.fullscreen && fsforce || playlist_with_fullscreen ) {
+    // iPhone
     if( !flowplayer.support.fullscreen ) {
       api.bind('ready', function() {
         if( api.video.vr ) return;
 
         api.fullscreen(true);
       });
+
+    // Android
+    } else {
+      root.on('click', function() {
+        if( !api.ready || api.paused ) api.fullscreen(true);
+      });
     }
-    
-    root.on('click', function() {
-      if( !api.ready || api.paused ) api.fullscreen(true);
-    });
     
     jQuery('[rel='+root.attr('id')+'] a').on('click', function(e) {
       if( !api.isFullscreen ) {
