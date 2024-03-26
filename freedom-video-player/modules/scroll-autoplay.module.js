@@ -1,6 +1,7 @@
 if( typeof(flowplayer) !== 'undefined') {
   var fv_autoplay_type = fv_flowplayer_conf.autoplay_preload,
-    fv_player_scroll_autoplay = false;
+    fv_player_scroll_autoplay = false,
+    fv_player_scroll_autoplay_last_winner = -1;
 
   freedomplayer(function(api, root) {
     fv_player_scroll_autoplay = true;
@@ -25,7 +26,10 @@ if( typeof(flowplayer) !== 'undefined') {
     var i = 0,
       window_height = (window.innerHeight || document.documentElement.clientHeight );
 
-    jQuery('.flowplayer:not(.is-disabled)').each( function(k,v) {
+    var players = jQuery('.flowplayer:not(.is-disabled)'),
+      winner = -1;
+
+    players.each( function(k,v) {
       var root = jQuery(this);
 
       // Autoplay disabled for he player
@@ -45,6 +49,10 @@ if( typeof(flowplayer) !== 'undefined') {
         return;
       }
 
+      if ( api.non_viewport_pause ) {
+        return;
+      }
+
       if( fv_autoplay_type == 'viewport' || fv_autoplay_type == 'sticky' || player_autoplay ) { // play video when on viewport or sticky or player enabled autoplay
         var rect = player[0].getBoundingClientRect(); // watch .fp-player because root can ve outside viewport when stickied
 
@@ -58,53 +66,60 @@ if( typeof(flowplayer) !== 'undefined') {
         // });
 
         if(
-          i == 0 &&
-          player.height() < window_height && (
-            rect.top > 0 && ( rect.top + player.height() / 4 ) < window_height ||
-            rect.bottom > player.height() / 4 && rect.bottom <= window_height
-          ) ||
-          // If player is taller than the viewport at least 1/2 has to be visible
-          player.height() > window_height && (
-            rect.top <= window_height / 2 && rect.bottom > window_height / 2
-          )
+          // The player is not too far down, at least 1/4 of the player is visible
+          window_height - rect.top > player.height() / 4 &&
+          // ...and the player is not too far up either, so that less than bottom 1/4 can be seen
+          rect.bottom > player.height() / 4
         ) {
           // disabling for YouTube on iOS
           if( flowplayer.support.iOS && api.conf.clip.sources[0].type == 'video/youtube' ) {
             return;
           }
 
-          if( jQuery('.freedomplayer.is-playing').length > 0 || jQuery('.freedomplayer.is-loading').length > 0 ) return; // prevent multiple autoplays & pick first video when there are multiple videos in viewport
-
-          if( !api ) {
-            console.log('Scroll autoplay: Play ' + root.attr('id'));
-            i++;
-            fv_player_load( root );
-
-            api.autoplayed = true;
-
-          } else if( api.ready && api.viewport_pause && !api.non_viewport_pause ) {
-            api.viewport_pause = false;
-            console.log('Scroll autoplay: Resume ' + root.attr('id'));
-            i++;
-            api.resume();
-
-          } else if( !api.loading && !api.playing && !api.error && !api.non_viewport_pause ) {
-            api.viewport_pause = false;
-            console.log('Scroll autoplay: Load ' + root.attr('id'));
-            i++;
-            api.load();
-
-            api.autoplayed = true;
-          }
-        } else {
-          if( api && api.playing ) {
-            console.log('Scroll autoplay: Player not in viewport, pausing ' + root.attr('id'));
-            api.viewport_pause = true;
-            api.pause();
-          }
+          winner = k;
         }
       }
     });
+
+    // Pause the previously playing video
+    if ( fv_player_scroll_autoplay_last_winner != winner ) {
+      var root = players.eq( fv_player_scroll_autoplay_last_winner ),
+        api = root.data('flowplayer');
+
+      if( api && api.playing ) {
+        console.log('Scroll autoplay: Player not in viewport, pausing ' + root.attr('id'));
+        api.pause();
+      }        
+    }
+
+    // Now play the winner
+    if ( winner > -1 && fv_player_scroll_autoplay_last_winner != winner ) {
+      var root = players.eq( winner ),
+        api = root.data('flowplayer');
+
+      if( !api ) {
+        console.log('Scroll autoplay: Play ' + root.attr('id'));
+        i++;
+        fv_player_load( root );
+
+        api.autoplayed = true;
+
+      } else if( api.ready ) {
+        console.log('Scroll autoplay: Resume ' + root.attr('id'));
+        i++;
+        api.resume();
+
+      } else if( !api.loading && !api.playing && !api.error ) {
+        console.log('Scroll autoplay: Load ' + root.attr('id'));
+        i++;
+        api.load();
+
+        api.autoplayed = true;
+      }
+
+      fv_player_scroll_autoplay_last_winner = winner;
+    }
+
     fv_player_scroll_autoplay = false;
   }, 200 );
 }
