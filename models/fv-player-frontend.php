@@ -401,6 +401,7 @@ class flowplayer_frontend extends flowplayer
     if( $player_type == 'video' ) {
 
         add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
+        add_filter( 'safe_style_css', array( $this, 'safe_style_css' ), 999, 2 );
 
         if (!empty($media)) {
           $media = $this->get_video_url($media);
@@ -1555,6 +1556,10 @@ class flowplayer_frontend extends flowplayer
     return false;
   }
 
+  public function safe_style_css( $styles ) {
+    $styles[] = 'display';
+    return $styles;
+  }
 
   // some themes use wp_filter_post_kses() on output, so we must ensure FV Player markup passes
   function wp_kses_permit( $tags, $context = false ) {
@@ -1567,6 +1572,10 @@ class flowplayer_frontend extends flowplayer
       $tags['a']['itemscope'] = true;
       $tags['a']['itemtype'] = true;
       $tags['a']['onclick'] = true;
+    }
+
+    if ( empty($tags['defs']) ) {
+      $tags['defs'] = array();
     }
 
     if( !empty($tags['div']) && is_array($tags['div']) ) {
@@ -1601,6 +1610,35 @@ class flowplayer_frontend extends flowplayer
       $tags['meta']['content'] = true;
       $tags['meta']['itemprop'] = true;
     }
+
+    $tags['noscript'] = true;
+
+    if ( empty($tags['path']) ) {
+      $tags['path'] = array();
+    }
+
+    $tags['path']['class'] = true;
+    $tags['path']['d'] = true;
+
+    if ( empty($tags['polygon']) ) {
+      $tags['polygon'] = array();
+    }
+
+    $tags['polygon']['class'] = true;
+    $tags['polygon']['points'] = true;
+    $tags['polygon']['filter'] = true;
+
+    if ( empty($tags['style']) ) {
+      $tags['style'] = array();
+    }
+
+    if ( empty($tags['svg']) ) {
+      $tags['svg'] = array();
+    }
+
+    $tags['svg']['class'] = true;
+    $tags['svg']['viewbox'] = true;
+    $tags['svg']['xmlns'] = true;
 
     return $tags;
   }

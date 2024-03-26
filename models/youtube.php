@@ -350,7 +350,7 @@ class FV_Player_YouTube {
 
             echo '<div class="descriptions">';
             foreach( $radio_butons_descriptions AS $key => $description ) {
-              echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+              echo '<p class="description" data-describe="' . esc_attr( $key ) . '">' . esc_html( $description ).'</p>';
             }
             echo '</div>';
 
@@ -376,7 +376,7 @@ class FV_Player_YouTube {
           <td style="width: 250px"></td>
           <td>
             <p class="description">
-              <?php esc_html_e('Last Error', 'fv-player-pro'); ?>: <?php echo $sError; ?>
+              <?php esc_html_e('Last Error', 'fv-player-pro'); ?>: <?php echo esc_html( $sError ); ?>
             </p>
           </td>
         </tr>

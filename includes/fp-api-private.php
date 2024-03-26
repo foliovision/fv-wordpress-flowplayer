@@ -777,7 +777,7 @@ $this->strPrivateAPI - also
 
     if( $result ) {
       update_option( $option, $sTaskDone );
-      echo "<script>location.href='".$settings_url."';</script>";
+      echo "<script>location.href='" . esc_html( sanitize_url( $settings_url ) ) . "';</script>";
     }
 
     return $result;

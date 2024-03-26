@@ -2057,7 +2057,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
         }
       }
 
-      echo $this->import_player_data(null, false, $export_data);
+      echo esc_html( $this->import_player_data(null, false, $export_data) );
       exit;
     } else {
       die('no valid player ID found, cloning unsuccessful');

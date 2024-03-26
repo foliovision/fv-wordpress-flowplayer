@@ -79,12 +79,13 @@ if ( ! defined( 'ABSPATH' ) ) {
     extract($args);
 
     $class .= !isset($fv_flowplayer_conf["interface"][$name]) || $fv_flowplayer_conf["interface"][$name] !== 'true' ? ' fv_player_interface_hide' : '';
-
-    $playlist_label = $playlist_label ? ' data-playlist-label="' . esc_attr( $playlist_label ) . '"  data-single-label="' . esc_attr( $label ) . '"' : '';
-
     ?>
       <tr<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; echo $class ? ' class="' . esc_attr( $class ) . '"' : ''; ?>>
-        <th scope="row" class="label"><label for="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>" class="alignright" <?php echo $playlist_label; ?>><?php echo wp_strip_all_tags( $label ); ?></label></th>
+        <th scope="row" class="label">
+          <label for="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>" class="alignright" <?php echo $playlist_label ? ' data-playlist-label="' . esc_attr( $playlist_label ) . '"  data-single-label="' . esc_attr( $label ) . '"' : ''; ?>>
+            <?php echo wp_strip_all_tags( $label ); ?>
+          </label>
+        </th>
         <td class="field">
           <select id="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>" name="fv_wp_flowplayer_field_<?php echo esc_attr( $name ); ?>">
             <?php foreach( $dropdown AS $option ) : ?>

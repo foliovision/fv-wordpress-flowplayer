@@ -78,7 +78,7 @@ function fv_player_block_render($attributes, $content, $block) {
       $shortcode_dimensions = 'align="left|right"';
     }
 
-    echo '<div class="'.$attributes['className'].' align'. $attributes['align'] .'">' . do_shortcode( '[fvplayer id="' . intval( $attributes['player_id'] ) . '" ' . esc_html( $shortcode_dimensions ) . ']' ) . '</div>';
+    echo '<div class="' . esc_attr( $attributes['className'] ) . ' align' . esc_attr( $attributes['align'] ) .'">' . do_shortcode( '[fvplayer id="' . intval( $attributes['player_id'] ) . '" ' . esc_html( $shortcode_dimensions ) . ']' ) . '</div>';
   } else if ( empty( $attributes['player_id']) && is_admin() ) {
     echo 'No player created yet.';
   } else if ( empty( $attributes['src']) && is_admin() ) {

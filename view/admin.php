@@ -151,14 +151,13 @@ function fv_flowplayer_admin_amazon_options() {
 			$count = 0;
 			foreach( $fv_fp->_get_option('amazon_bucket') AS $key => $item ) :
 				$count++;
-				$amazon_tr_class = ($count==1) ? ' class="amazon-s3-first"' : ' class="amazon-s3-' . intval( $count ) . '"';
             $sRegion = $fv_fp->_get_option( array( 'amazon_region', $key ) );
 ?>
-        <tr<?php echo $amazon_tr_class; ?>>
+        <tr class="amazon-s3-<?php echo intval( $count ); ?>">
             <td><label for="amazon_bucket[]"><?php esc_html_e( 'Amazon Bucket', 'fv-player' ); ?> (<abbr title="<?php esc_html_e( 'We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs.', 'fv-player' ); ?>">?</abbr>):</label></td>
             <td><input id="amazon_bucket[]" name="amazon_bucket[]" type="text" value="<?php echo esc_attr($item); ?>" /></td>
         </tr>
-        <tr<?php echo $amazon_tr_class; ?>>
+        <tr class="amazon-s3-<?php echo intval( $count ); ?>">
             <td><label for="amazon_region[]"><?php esc_html_e( 'Region', 'fv-player' ); ?></td>
             <td>
               <select id="amazon_region[]" name="amazon_region[]">
@@ -174,11 +173,11 @@ function fv_flowplayer_admin_amazon_options() {
               </select>
             </td>
         </tr>
-        <tr<?php echo $amazon_tr_class; ?>>
+        <tr class="amazon-s3-<?php echo intval( $count ); ?>">
             <td><label for="amazon_key[]"><?php esc_html_e( 'Access Key ID', 'fv-player' ); ?>:</label></td>
             <td><input id="amazon_key[]" name="amazon_key[]" type="text" value="<?php echo esc_attr( $fv_fp->_get_option( array( 'amazon_key', $key ) ) ); ?>" /></td>
         </tr>
-        <tr<?php echo $amazon_tr_class; ?>>
+        <tr class="amazon-s3-<?php echo intval( $count ); ?>">
         <?php
           $secret = !function_exists('FV_Player_Pro') ||
           ( function_exists('FV_Player_Pro') && version_compare( str_replace( '.beta','',FV_Player_Pro()->version ),'7.5.25.728', '>=') );
@@ -203,7 +202,7 @@ function fv_flowplayer_admin_amazon_options() {
           <?php endif; ?>
           </td>
         </tr>
-        <tr<?php echo $amazon_tr_class; ?>>
+        <tr class="amazon-s3-<?php echo intval( $count ); ?>">
             <td colspan="2">
                 <div class="alignright fv_fp_amazon_remove">
                     <a href="#" onclick="fv_fp_amazon_s3_remove(this); return false"><?php esc_html_e( 'remove', 'fv-player' ); ?></a>
@@ -289,7 +288,7 @@ function fv_flowplayer_admin_default_options() {
               <td><label for="logo">Logo:</label></td>
               <td>
 
-                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php  _e( 'Paste logo url or upload image to show custom logo on player.', 'fv-player' ); ?>"/>
+                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste logo url or upload image to show custom logo on player.', 'fv-player' ); ?>"/>
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Image', 'fv-player' ); ?>" alt="Select Logo" />
 
                 <?php
@@ -323,7 +322,7 @@ function fv_flowplayer_admin_default_options() {
               <td class="first"><label for="sticky_video">Play Icon:</label></td>
               <td>
                 <p class="description">
-                <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php  _e( 'The big play icon on top of the player. Recommended size is 168 pixels.', 'fv-player' ); ?>"/>
+                <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php esc_attr_e( 'The big play icon on top of the player. Recommended size is 168 pixels.', 'fv-player' ); ?>"/>
                 <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Icon', 'fv-player' ); ?>" />
                 </p>
               </td>
@@ -533,7 +532,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
 
         echo '<div class="descriptions">';
         foreach( $radio_butons_descriptions AS $key => $description ) {
-          echo '<p class="description" data-describe="'.$key.'">'.$description.'</p>';
+          echo '<p class="description" data-describe="' . esc_attr( $key ) . '">' . esc_html( $description ) . '</p>';
         }
         echo '</div>';
 
@@ -1531,7 +1530,7 @@ function fv_flowplayer_admin_skin_playlist() {
     <?php
     if( isset($fv_fp->admin_preview_player[1]) ) {
 			echo '<div class="fp-playlist-external'.str_replace( 'https://i.vimeocdn.com/video/609485450_1280.jpg', 'https://i.vimeocdn.com/video/608654918_295x166.jpg', $fv_fp->admin_preview_player[1] );
-      _e( 'Hint: you can click the thumbnails to switch videos in the above player. This preview uses the horizontal playlist style.', 'fv-player' );
+      esc_html_e( 'Hint: you can click the thumbnails to switch videos in the above player. This preview uses the horizontal playlist style.', 'fv-player' );
     }
     ?>
   </div>
@@ -1587,7 +1586,10 @@ function fv_flowplayer_admin_custom_css() {
   border: 1px solid #ddd;
   }
 </style>
- <p><?php echo sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for usefull appearance tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ); ?></p>
+ <p><?php echo wp_kses(
+  sprintf( __( 'Check our <a href="%s" target="_blank">CSS Tips and Fixes</a> guide for usefull appearance tweaks for FV Player.', 'fv-wordpres-flowplayer'), 'https://foliovision.com/player/advanced/css-tips-and-fixes' ),
+  array( 'a' => array( 'href' => array(), 'target' => array() ) )
+ ); ?></p>
  <table class="form-table2">
     <tr>
       <td colspan="2">
@@ -2300,7 +2302,7 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 
   var fv_flowplayer_amazon_s3_count = 0;
   jQuery('#amazon-s3-add').on('click', function() {
-    var new_inputs = jQuery('tr.amazon-s3-first').clone();
+    var new_inputs = jQuery('tr.amazon-s3-1').clone();
     new_inputs.find("[name='amazon_key[]']").val('');
     new_inputs.find("[name='amazon_secret[]']").val('').show();
     new_inputs.find("[name='_is_secret_amazon_secret[]']").val(0); // set val to 0 - save new

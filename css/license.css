@@ -82,7 +82,7 @@ a.red-button {
 div.clear { clear: both }
 div.column { float: left; width: 49% }
 div.green { background-color: #e0ffe0; border-color: #88AA88; }
-.amazon-s3-first .fv_fp_amazon_remove { display: none; }
+.amazon-s3-1 .fv_fp_amazon_remove { display: none; }
 .form-table2 td p { line-height: 20px; }
 .meta-box-sortables input[type=text] { width: 100%; }
 #wpfp_options .meta-box-sortables input.button-primary, #wpfp_options .meta-box-sortables input.button, #wpfp_options .meta-box-sortables a.button { margin-top: 16px }

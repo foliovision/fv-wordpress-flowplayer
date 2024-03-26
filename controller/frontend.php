@@ -884,9 +884,9 @@ function fv_player_wp_rocket_used_css( $safelist ) {
     return $safelist;
   }
 
-  $safelist[] = '/wp-content/fv-flowplayer-custom/style-*';
-  $safelist[] = '/wp-content/plugins/fv-wordpress-flowplayer*';
-  $safelist[] = '/wp-content/plugins/fv-player-*';
+  $safelist[] = '/wp-content/fv-player-custom/style-(.*)';
+  $safelist[] = '/wp-content/plugins/fv-wordpress-flowplayer(.*)';
+  $safelist[] = '/wp-content/plugins/fv-player(.*)';
   return $safelist;
 }
 

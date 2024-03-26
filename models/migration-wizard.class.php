@@ -55,10 +55,10 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       </thead>
       <?php foreach($videos as $video) : ?>
         <tr>
-          <td><?php if( isset($video->player_id) ) echo $video->player_id ?></td>
-          <td><?php echo $video->id ?></td>
+          <td><?php if( isset($video->player_id) ) echo intval( $video->player_id ) ?></td>
+          <td><?php echo intval( $video->id ) ?></td>
           <?php foreach( array('src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) : ?>
-            <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
+            <td><?php echo wp_kses( self::hilight( $video->$field, $from, $to, $color ), array( 'span' => array() ) ); ?></td>
           <?php endforeach; ?>
         </tr>
       <?php endforeach; ?>
@@ -80,8 +80,8 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
       </thead>
       <?php foreach($videos as $video) : ?>
         <tr>
-          <td><?php if( isset( $video->player_id) ) echo $video->player_id ?></td>
-          <td><?php echo $video->id ?></td>
+          <td><?php if( isset( $video->player_id) ) echo intval( $video->player_id ); ?></td>
+          <td><?php echo intval( $video->id ); ?></td>
           <?php foreach( array( 'meta_key', 'meta_value' ) AS $field ) : ?>
             <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
           <?php endforeach; ?>

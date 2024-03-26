@@ -59,8 +59,14 @@ if( typeof(flowplayer) !== 'undefined') {
 
         if(
           i == 0 &&
-          rect.top > 0 && ( rect.top + player.height() / 4 ) < window_height ||
-          rect.bottom > player.height() / 4 && rect.bottom <= window_height
+          player.height() < window_height && (
+            rect.top > 0 && ( rect.top + player.height() / 4 ) < window_height ||
+            rect.bottom > player.height() / 4 && rect.bottom <= window_height
+          ) ||
+          // If player is taller than the viewport at least 1/2 has to be visible
+          player.height() > window_height && (
+            rect.top <= window_height / 2 && rect.bottom > window_height / 2
+          )
         ) {
           // disabling for YouTube on iOS
           if( flowplayer.support.iOS && api.conf.clip.sources[0].type == 'video/youtube' ) {

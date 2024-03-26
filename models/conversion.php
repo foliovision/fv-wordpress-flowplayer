@@ -31,7 +31,7 @@ class FV_Player_Conversion {
   }
 
   function convert__process( $type = false ) {
-    echo '<p>Running the conversion process for '.$type.'. If anything fails, remember to restore your backup or revert the change of the post to the previous revision.</p>';
+    echo '<p>Running the conversion process for ' . esc_html( $type ) . '. If anything fails, remember to restore your backup or revert the change of the post to the previous revision.</p>';
     echo '<p>Scroll down to the end of the list to see the status.</p>';
 
     $sType = sanitize_title($type);
@@ -55,7 +55,7 @@ class FV_Player_Conversion {
         break;
       }
 
-      echo "<li><strong>".$objPost->post_title.'</strong> ('.$objPost->ID.') '; 
+      echo "<li><strong>" .  esc_html( $objPost->post_title ) . '</strong> (' . intval( $objPost->ID ) . ') '; 
 
       $method = 'convert__'.$sType.'_callback';
       $new_content = $this->$method($objPost->post_content);
@@ -68,7 +68,7 @@ class FV_Player_Conversion {
           $errors = $post_id->get_error_messages();
           echo "Error: ";
           foreach ($errors as $error) {
-            echo $error;
+            echo esc_html( $error );
           }
           echo "</li>";
         } else {

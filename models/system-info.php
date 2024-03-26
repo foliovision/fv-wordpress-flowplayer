@@ -30,7 +30,7 @@ class FV_Player_System_Info {
         header("Content-Disposition: attachment; filename=".sanitize_title( get_bloginfo('name').' FV Player debug info.txt' ) );
         header("Pragma: no-cache");
         header("Expires: 0");
-        echo $match[1];
+        echo esc_html( $match[1] );
         die();
       }      
     }

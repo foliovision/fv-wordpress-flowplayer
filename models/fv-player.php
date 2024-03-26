@@ -112,6 +112,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         )
     );
 
+  private $help_html = array(
+    'a'     => array( 'href' => array(), 'target' => array() ),
+    'code'  => array(),
+    'img'   => array( 'src' => array(), 'srcset' => array(), 'width' => array() ),
+    'small' => array(),
+  );
+
 
   public function __construct() {
     //load conf data into stack
@@ -181,7 +188,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           throw new Exception('Options parameter passed to the _get_checkbox() method needs to be an array!');
       }
 
-      $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+      $first_td_class = ( ! empty( $options['first_td_class'] ) ? $options['first_td_class'] : '' );
       $key            = (!empty($options['key']) ? $options['key'] : '');
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $help           = (!empty($options['help']) ? $options['help'] : '');
@@ -193,7 +200,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     } else if ($args_num >= 2) {
       // old method syntax with function parameters defined as ($name, $key, $help = false, $more = false)
-      $first_td_class = ' class="first"';
+      $first_td_class = 'first';
       $name = func_get_arg(0);
       $key = func_get_arg(1);
       $help = ($args_num >= 3 ? func_get_arg(2) : false);
@@ -215,7 +222,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
       ?>
       <tr>
-          <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?>:</label></td>
+          <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?>:</label></td>
           <td>
               <p class="description">
                   <input type="hidden" name="<?php echo esc_attr( $key ); ?>" value="false"/>
@@ -225,15 +232,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
                     if (isset($options) && isset($options['data']) && is_array($options['data'])) {
                         foreach ($options['data'] as $data_item => $data_value) {
-                            echo ' data-'.$data_item.'="'.$data_value.'"';
+                            echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
                         }
                     }
                   ?> />
                   <?php if ( $help ) {
-                      echo $help;
+                      echo wp_kses( $help, $this->help_html );
                   } ?>
                   <?php if ( $more ) { ?>
-                      <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                      <span class="more"><?php echo wp_kses( $more, $this->help_html ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
                   <?php } ?>
               </p>
           </td>
@@ -255,7 +262,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       throw new Exception('Options parameter passed to the _get_radio() method needs to be an array!');
     }
 
-    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+    $first_td_class = ( ! empty( $options['first_td_class'] ) ? $options['first_td_class'] : '' );
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
     $values         = (!empty($options['values']) ? $options['values'] : '');
@@ -290,7 +297,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if ($style == 'rows') {
       ?>
         <tr>
-            <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?>:</label></td>
+            <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?>:</label></td>
             <td>
                 <fieldset>
                     <p>
@@ -318,10 +325,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                     </p>
                 </fieldset>
               <?php if ( $help ) {
-                echo $help;
+                echo wp_kses( $help, $this->help_html );
               } ?>
               <?php if ( $more ) { ?>
-                  <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                  <span class="more"><?php echo wp_kses( $more, $this->help_html ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
               <?php } ?>
             </td>
         </tr>
@@ -346,17 +353,17 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
                       if ( isset( $options ) && isset( $options['data'] ) && is_array( $options['data'] ) ) {
                         foreach ( $options['data'] as $data_item => $data_value ) {
-                          echo ' data-' . $data_item . '="' . $data_value . '"';
+                          echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
                         }
                       }
                       ?> /> <label for="<?php echo esc_attr( $key . '-' . $input_value ); ?>"><?php echo esc_html( $input_value ); ?></label><br/>
                       </p>
                   </fieldset>
                 <?php if ( $help ) {
-                  echo $help;
+                  echo wp_kses( $help, $this->help_html );
                 } ?>
                 <?php if ( $more ) { ?>
-                    <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+                    <span class="more"><?php echo wp_kses( $more, $this->help_html ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
                 <?php } ?>
               </td>
         <?php
@@ -389,11 +396,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
     }
 
-    $first_td_class = (!empty($options['first_td_class']) ? ' class="'.esc_attr($options['first_td_class']).'"' : '');
+    $first_td_class = ! empty( $options['first_td_class'] ) ? $options['first_td_class'] : '';
     $class_name     = (!empty($options['class']) ? esc_attr($options['class']) : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
     $name           = (!empty($options['name']) ? $options['name'] : '');
-    $title          = (!empty($options['title']) ? ' title="'.esc_attr($options['title']).'" ' : '');
+    $title          = ! empty( $options['title'] ) ? $options['title'] : '';
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');
 
@@ -429,24 +436,22 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( $secret ) {
       $censored_val = $this->_get_censored_val($val);
       $val = '';
-      $class_name = ' class="code ' . $class_name . '"';
-    } else {
-      $class_name = ' class="' . $class_name . '"';
+      $class_name = 'code ' . $class_name;
     }
 
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
+        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input <?php echo $class_name; ?> <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo $title; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
+          <input class="<?php echo esc_attr( $class_name ); ?>" <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo 'title="' . esc_attr( $title ) . '" '; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.$data_value.'"';
+                echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
               }
             }
           ?> />
           <?php if ( $help ) { ?>
-            <p class="description fv-player-admin-tooltip"><span class="info"><?php echo $help; ?></span></p>
+            <p class="description fv-player-admin-tooltip"><span class="info"><?php echo wp_kses( $help, $this->help_html ); ?></span></p>
           <?php } ?>
 
           <?php if ( $secret ): ?>
@@ -484,7 +489,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <input id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>" type="hidden"  value="<?php echo (!empty($saved_value) ? $saved_value : $default); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.$data_value.'"';
+                echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
               }
             }
             ?> />
@@ -505,11 +510,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         throw new Exception('Options parameter passed to the _get_select() method needs to be an array!');
       }
 
-      $first_td_class = (!empty($options['first_td_class']) ? ' class="'.$options['first_td_class'].'"' : '');
+      $first_td_class = ! empty( $options['first_td_class'] ) ? $options['first_td_class'] : '';
       $key            = (!empty($options['key']) ? $options['key'] : '');
       $name           = (!empty($options['name']) ? $options['name'] : '');
       $aOptions       = (!empty($options['options']) ? $options['options'] : '');
-      $class_name     = (!empty($options['class']) ? ' class="'.$options['class'].'"' : '');
+      $class_name     = ! empty( $options['class'] ) ? $options['class'] : '';
       $help           = (!empty($options['help']) ? $options['help'] : '');
       $more           = (!empty($options['more']) ? $options['more'] : '');
       $default        = (isset($options['default']) ? $options['default'] : '');
@@ -551,14 +556,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $key = esc_attr($key);
     ?>
       <tr>
-        <td<?php echo $first_td_class; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?></label></td>
+        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?></label></td>
         <td>
-          <select <?php echo $class_name; ?>id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>"<?php
+          <select <?php echo $class_name ? 'class="' . esc_attr( $class_name ) . '"' : ''; ?>id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>"<?php
             if (!isset($options) || !isset($options['data']) || !isset($options['data']['fv-preview'])) { echo ' data-fv-preview=""'; }
 
             if (isset($options) && isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
-                echo ' data-'.$data_item.'="'.$data_value.'"';
+                echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
               }
             }
           ?>>
@@ -568,10 +573,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           </select>
 
           <?php if ( $help ) {
-            echo $help;
+            echo wp_kses( $help, $this->help_html );
           } ?>
           <?php if ( $more ) { ?>
-            <span class="more"><?php echo $more; ?></span> <a href="#" class="show-more">(&hellip;)</a>
+            <span class="more"><?php echo wp_kses( $more, $this->help_html ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
           <?php } ?>
         </td>
       </tr>
@@ -1578,7 +1583,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
         $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
-        $css .= $sel." .fp-controls > .fv-fp-prevbtn:before, ".$sel." .fp-controls > .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fp-controls .fv-fp-prevbtn:before, ".$sel." .fp-controls .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
         $css .= $sel." svg.fvp-icon { fill: ".$sDuration." !important; }\n";
       }
@@ -1611,7 +1616,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-dropdown li.active { background-color: ".$sProgress." !important }\n";
     }
 
-    echo $css;
+    echo esc_html( $css );
 
     //  rest is not depending of the skin settings or can use the default skin
     $skin = 'skin-'.$this->_get_option('skin');
@@ -1656,25 +1661,25 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }
 
-    <?php echo $this->_get_option('overlay_css'); ?>
-    .wpfp_custom_ad { color: <?php echo $this->_get_option('overlayTextColor'); ?>; z-index: 20 !important; }
-    .wpfp_custom_ad a { color: <?php echo $this->_get_option('overlayLinksColor'); ?> }
+    <?php echo esc_html( $this->_get_option('overlay_css') ); ?>
+    .wpfp_custom_ad { color: <?php echo esc_html( $this->_get_option('overlayTextColor') ); ?>; z-index: 20 !important; }
+    .wpfp_custom_ad a { color: <?php echo esc_html( $this->_get_option('overlayLinksColor') ); ?> }
 
-    .fp-playlist-external > a > span { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }
+    .fp-playlist-external > a > span { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }
     <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
       .fp-playlist-external a h4,
       .fp-playlist-external a:hover h4,
       .fp-playlist-external a.is-active:hover h4,
       .visible-captions.fp-playlist-external a h4 span,
       .fv-playlist-design-2014.fp-playlist-external a h4,
-      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo $this->_get_option('playlistFontColor');?>; }
+      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo esc_html( $this->_get_option('playlistFontColor') ); ?>; }
     <?php endif; ?>
-    .fp-playlist-external > a.is-active > span { border-color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
-    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo $this->_get_option('playlistSelectedColor');?>; }
-    <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo $this->_get_option('playlistBgColor');?>; }<?php endif; ?>
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }<?php endif; ?>
 
     <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
-    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo $this->_get_option('subtitleFontFace'); ?>; }<?php endif; ?>
+    <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo esc_html( $this->_get_option('subtitleFontFace') ); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       if( $value == 'bottom-left' ) {
@@ -1686,9 +1691,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } else if( $value == 'top-right' ) {
         $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto;";
       }
-      ?>.flowplayer .fp-logo { <?php echo $sCSS; ?> }<?php endif; ?>
+      ?>.flowplayer .fp-logo { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
 
-    .flowplayer .fp-player .fp-captions p { background-color: <?php echo $sSubtitleBgColor; ?> }
+    .flowplayer .fp-player .fp-captions p { background-color: <?php echo esc_html( $sSubtitleBgColor ); ?> }
 
     <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
 
@@ -3015,14 +3020,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       ?>
       <div style="background:white;">
-        <div id="wrapper" style="background:white; overflow:hidden; <?php echo $width . $height; ?>;">
+        <div id="wrapper" style="background:white; overflow:hidden; <?php echo esc_html( $width . $height ); ?>;">
       <?php
       // regular shortcode data with source
       global $fv_fp;
       if ( preg_match('/id="\d+"|src="[^"][^"]*"/i',$shortcode)) {
         $aAtts = shortcode_parse_atts($shortcode);
         if ( $aAtts && !empty($aAtts['liststyle'] ) && $aAtts['liststyle'] == 'vertical' || $fv_fp->_get_option('liststyle') == 'vertical' ) {
-          _e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.', 'fv-player');
+          esc_html_e('The preview is too narrow, vertical playlist will shift below the player as it would on mobile.', 'fv-player');
         }
         echo do_shortcode($shortcode);
       } else { ?>
