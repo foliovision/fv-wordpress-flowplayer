@@ -23,7 +23,9 @@ flowplayer(function(api, root) {
       api.bind('ready', function() {
         if( api.video.vr ) return;
 
-        api.fullscreen(true);
+        api.one( 'progress', function() {
+          api.fullscreen(true);
+        });
       });
 
     // Android
