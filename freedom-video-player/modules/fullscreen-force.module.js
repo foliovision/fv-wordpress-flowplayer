@@ -44,8 +44,17 @@ flowplayer(function(api, root) {
     
     api.on('resume', function() {
       if( api.video.vr ) return;
-      
-      if( !api.isFullscreen ) api.fullscreen();
+
+      if( !api.isFullscreen ) {
+        if( !flowplayer.support.fullscreen ) {
+          api.one( 'progress', function() {
+            api.fullscreen(true);
+          });
+
+        } else {
+          api.fullscreen();
+        }
+      }
     });
     
     api.on('finish', function() {
