@@ -420,6 +420,10 @@ function flowplayer_prepare_scripts() {
 
     if( is_user_logged_in() ) $aConf['is_logged_in'] = true;
 
+    if ( current_user_can( 'edit_posts' ) ) {
+      $aConf['is_logged_in_editor'] = true;
+    }
+
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
     $aConf['sticky_min_width'] = intval( apply_filters( 'fv_player_sticky_desktop_min_width', 1020 ) );
