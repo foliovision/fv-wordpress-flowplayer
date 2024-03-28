@@ -44,7 +44,23 @@ flowplayer(function(player, root) {
         });
       });
 
-      video.webkitEnterFullScreen();
+      try {
+        video.webkitEnterFullScreen();
+      } catch( e ) {
+        // If the fullscreen was blocked, pause the video and show the play button
+        // Then tapping the video will try fullscreen again
+        player.pause();
+
+        common.find('.fp-play', root)[0].style.opacity = 1;
+
+        jQuery( root ).on( 'touchstart', function(e) {
+          common.find('.fp-play', root)[0].style.opacity = '';
+
+          player.resume();
+          video.webkitEnterFullScreen();
+          return false;
+        });
+      }
 
       bean.one(video, 'webkitendfullscreen', function() {
         bean.off(document, 'fullscreenchange.nativefullscreen');
