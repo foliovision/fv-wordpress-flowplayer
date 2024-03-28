@@ -339,9 +339,12 @@ if( typeof(flowplayer) != "undefined" ) {
                 player.ready = false; //  we need to set this otherwise playlist advance won't trigger all the events properly
               });
               
+              // Go to next video, unless it's the last video
               setTimeout( function() {
+                if( player.video.index + 1 < player.conf.playlist.length ) {
                 player.next();
-              }, 5000 );
+                }
+              }, 1000 );
               
             });
           }
