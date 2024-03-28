@@ -344,7 +344,7 @@ if( typeof(flowplayer) != "undefined" ) {
                 if( player.video.index + 1 < player.conf.playlist.length ) {
                 player.next();
                 }
-              }, 1000 );
+              }, 5000 );
               
             });
           }
