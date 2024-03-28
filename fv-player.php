@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '8.0.beta.25.3';
+$fv_wp_flowplayer_ver = '8.0.beta.25.4';
 $fv_wp_flowplayer_core_ver = '8.0.beta.22.106.1';
 
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
