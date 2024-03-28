@@ -71,7 +71,18 @@ flowplayer( function(api,root) {
   api.bind('finish', function() {
     var url = root.data('fv_redirect');
     if( url && ( typeof(api.video.is_last) == "undefined" || api.video.is_last ) ) {
-      location.href = url;
+
+      if ( flowplayer.conf.is_logged_in_editor ) {
+        var message = fv_flowplayer_translations.redirection
+        message = message.replace( /%url%/, url );
+
+        if ( confirm( message ) ) {
+          location.href = url;
+        }
+
+      } else {
+        location.href = url;
+      }
     }
   });
   

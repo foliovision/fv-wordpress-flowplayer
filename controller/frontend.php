@@ -113,6 +113,7 @@ function fv_flowplayer_get_js_translations() {
   'audio_menu' => __('Audio', 'fv-wordpress-flowplayer'),
   'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-wordpress-flowplayer'),
   'invalid_youtube' => __('Invalid Youtube video ID.', 'fv-player-pro'),
+  'redirection' => __( "Admin note:\n\nThis player is set to redirect to a URL at the end of the video:\n\n%url%\n\nWould you like to be redirected?", 'fv-player-pro'),
   'video_loaded' => __('Video loaded, click to play.', 'fv-player-pro'),
 );
 
@@ -425,6 +426,10 @@ function flowplayer_prepare_scripts() {
     }
 
     if( is_user_logged_in() ) $aConf['is_logged_in'] = true;
+
+    if ( current_user_can( 'edit_posts' ) ) {
+      $aConf['is_logged_in_editor'] = true;
+    }
 
     $aConf['sticky_video'] = $fv_fp->_get_option('sticky_video');
     $aConf['sticky_place'] = $fv_fp->_get_option('sticky_place');
