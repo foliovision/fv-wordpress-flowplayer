@@ -359,6 +359,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.45.7212 - 2024/03/28 =
+
+* Security - Redirection - Contributor level user is able to post a FV Player video with malicious redirection URL at the end of a video. Then the Editor or Administrators reviewing Contributor's post before publication would be taken to that URL. We have added a confirmation prompt for redirection URLs for Editors and Administrators.
+* Security - prevent server port scanning by logged in users
+* Compatbility - WP Rocket - Fix for Removed Unused CSS to never remove FV Player CSS
+* Bugfix - Fix timeline not responding to clicks for Vimeo videos in rare cases
+* Bugfix - "Use native fullscreen on mobile" not working when used with "Force fullscreen on mobile" on iPhone with iOS 17
+* Bugfix - Show full error message when upload fails
+
 = 7.5.43.7212 - 2024/02/28 =
 
 * Security - fix XSS in the redirection at the end of video is bad URL is posted by authenticated user
