@@ -1228,14 +1228,14 @@ class flowplayer_frontend extends flowplayer
     if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] ) { 
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
-        $sPermalink = urlencode($aSharing[1]);
-        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] ) );
-        $sTitle = urlencode( $aSharing[0].' ');
+        $sPermalink = $aSharing[1];
+        $sMail = apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] );
+        $sTitle = $aSharing[0].' ';
         $bVideoLink = false;
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
-        $sPermalink = urlencode($aSharing[0]);
-        $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$aSharing[0] ) );
-        $sTitle = urlencode( get_bloginfo().' ');
+        $sPermalink = $aSharing[0];
+        $sMail = apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$aSharing[0] );
+        $sTitle = get_bloginfo().' ';
         $bVideoLink = false;
       }
     }
@@ -1251,18 +1251,18 @@ class flowplayer_frontend extends flowplayer
         }
       }
 
-      $sMail = rawurlencode( apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$sPermalink ) );
-      $sTitle = urlencode( html_entity_decode( is_singular() ? get_the_title().' ' : get_bloginfo() ).' ');
+      $sMail = apply_filters( 'fv_player_sharing_mail_content', $sSharingText.': '.$sPermalink );
+      $sTitle = html_entity_decode( is_singular() ? get_the_title().' ' : get_bloginfo() ).' ';
     }
 
           
     $sHTMLSharing = '<ul class="fvp-sharing">
     <li><a class="sharing-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' . urlencode($sPermalink) . '" target="_blank"></a></li>
-    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=' . $sTitle .'&url='. urlencode($sPermalink) . '" target="_blank"></a></li>
-    <li><a class="sharing-email" href="mailto:?body=' . $sMail . '" target="_blank"></a></li></ul>';
+    <li><a class="sharing-twitter" href="https://twitter.com/intent/tweet?text=' . urlencode( $sTitle ) .'&url='. urlencode($sPermalink) . '" target="_blank"></a></li>
+    <li><a class="sharing-email" href="mailto:?body=' . rawurlencode( $sMail ) . '" target="_blank"></a></li></ul>';
     
     if( isset($post) && isset($post->ID) ) {
-      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . $sPermalink . '" target="_blank">Link</a></div>' : '';
+      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . esc_attr( $sPermalink ) . '" target="_blank">Link</a></div>' : '';
     } else {
       $sHTMLVideoLink = false;
     }
