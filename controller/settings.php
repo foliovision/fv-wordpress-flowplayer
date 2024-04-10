@@ -203,7 +203,7 @@ function fv_player_handle_secrets($new, $old) {
 /*
  *  Pointer boxes
  */
-add_action('admin_footer', 'fv_player_admin_pointer_boxes');
+add_action('admin_init', 'fv_player_admin_pointer_boxes');
 
 function fv_player_admin_pointer_boxes() {
   global $fv_fp;
