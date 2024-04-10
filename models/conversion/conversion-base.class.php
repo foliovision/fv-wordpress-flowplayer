@@ -169,11 +169,11 @@ abstract class FV_Player_Conversion_Base {
 
         <div id="wrapper" style="display: none"><div id="progress"></div></div>
 
-        <div style="max-width: 30em; background: white; padding: .5em 1em; margin: 5em auto; box-shadow: 0px 0px 10px 5px rgba(0,0,0,.5)">
-          <h1 class="conversion-done" style="display: none;">Conversion done!</h1>
+        <div class="conversion-done" style="display: none;" style="max-width: 30em; background: white; padding: .5em 1em; margin: 5em auto; box-shadow: 0px 0px 10px 5px rgba(0,0,0,.5)">
+          <h1>Conversion done!</h1>
 
           <?php if( $this->conversion_done_details ): ?>
-            <p class="conversion-done-details" style="display: none;">
+            <p>
               <?php echo esc_html( $this->conversion_done_details ); ?>
             </p>
           <?php endif; ?>

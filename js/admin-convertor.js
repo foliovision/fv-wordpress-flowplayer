@@ -6,7 +6,6 @@ $.fn.Progressor = function(args) {
     function timer() {
       if (running) {
         $('.conversion-done').hide();
-        $('.conversion-done-details').hide()
 
         $.ajax({
           url: opts.url,
@@ -57,7 +56,6 @@ $.fn.Progressor = function(args) {
             } else {
               // Finished
               $('.conversion-done').show();
-              $('.conversion-done-details').show();
 
               $('#progress').css('width', '100%');
 
