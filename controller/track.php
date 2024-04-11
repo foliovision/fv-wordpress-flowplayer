@@ -116,7 +116,7 @@ Class FvPlayerTrackerWorker {
     $this->player_id = !empty($_REQUEST['player_id']) ? intval($_REQUEST['player_id']) : false;
     $this->post_id = !empty($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : false;
     $this->user_id = intval($_REQUEST['user_id']);
-    $this->watched = !empty($_REQUEST['watched']) ? sanitize_text_field( $_REQUEST['watched'] ) : false;
+    $this->watched = !empty($_REQUEST['watched']) ? sanitize_text_field( urldecode( $_REQUEST['watched'] ) ) : false;
 
     // TODO: Verify some kind of signature here
 
@@ -177,7 +177,7 @@ Class FvPlayerTrackerWorker {
         }
 
         if ( 'seconds' === $this->tag ) {
-          $this->watched = json_decode( urldecode( $this->watched), true );
+          $this->watched = json_decode( $this->watched, true );
 
           $json_error = json_last_error();
           if( $json_error !== JSON_ERROR_NONE ) {
