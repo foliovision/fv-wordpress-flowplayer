@@ -1440,13 +1440,24 @@ class FV_Player_Stats {
 
       // TODO: Preload to avoid too many SQL queries
       global $wpdb;
-      $val = $wpdb->get_var(
-        $wpdb->prepare(
-          "SELECT sum(*) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
-          $user_id,
-          date_i18n( 'Y-m-d' )
-        )
-      );
+
+      if ( 'play' === $field ) {
+        $val = $wpdb->get_var(
+          $wpdb->prepare(
+            "SELECT sum(play) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
+            $user_id,
+            date_i18n( 'Y-m-d' )
+          )
+        );
+      } else if ( 'seconds' === $field ) {
+        $val = $wpdb->get_var(
+          $wpdb->prepare(
+            "SELECT sum(seconds) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
+            $user_id,
+            date_i18n( 'Y-m-d' )
+          )
+        );
+      }
 
       if ( $val ) {
 
