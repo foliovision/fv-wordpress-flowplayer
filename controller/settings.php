@@ -203,7 +203,7 @@ function fv_player_handle_secrets($new, $old) {
 /*
  *  Pointer boxes
  */
-add_action('admin_footer', 'fv_player_admin_pointer_boxes');
+add_action('admin_init', 'fv_player_admin_pointer_boxes');
 
 function fv_player_admin_pointer_boxes() {
   global $fv_fp;
@@ -211,7 +211,8 @@ function fv_player_admin_pointer_boxes() {
 
   if(
     $fv_fp->_get_option('video_position_save_enable') &&
-    ! $fv_fp->_get_option('notice_user_video_positions_conversion')
+    ! $fv_fp->_get_option('notice_user_video_positions_conversion') &&
+    ( empty( $_GET['page'] ) || 'fv_player_conversion_positions_meta2table' != $_GET['page'] )
   ) {
     $fv_fp->pointer_boxes['fv_flowplayer_video_positions_conversion'] = array(
       'id' => '#wp-admin-bar-new-content',

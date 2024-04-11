@@ -2,7 +2,7 @@
 
 class FV_Wordpress_Flowplayer_Plugin_Private
 {
-  
+
   var $_wp_using_ext_object_cache_prev;
 
   var $class_name;
@@ -15,7 +15,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
 
   var $strPluginName;
 
-  var $strPluginPath;  
+  var $strPluginPath;
 
   var $strPluginSlug;
 
@@ -32,7 +32,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         if( empty( $this->strPluginName ) ) {
           $this->strPluginName  = $this->strPluginSlug;
         }
-        
+
         if( empty( $this->strPluginPath ) ) {
           $this->strPluginPath = basename(dirname(__FILE__)).'/plugin.php';
           if( !file_exists( WP_PLUGIN_DIR.'/'.$this->strPluginPath ) ) {
@@ -48,7 +48,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_action( 'wp_ajax_fv_foliopress_ajax_pointers', array( $this, 'pointers_ajax' ), 999 );
 
         add_filter( 'plugins_api_result', array( $this, 'changelog_filter' ), 5, 3 );
-        
+
         add_filter( 'pre_set_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
         add_filter( 'pre_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
         add_action( 'delete_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
@@ -58,59 +58,59 @@ class FV_Wordpress_Flowplayer_Plugin_Private
 
         //add_action('admin_head', array($this, 'welcome_screen_remove_menus'));
   }
-  
+
   function object_cache_disable($value=null){
     global $_wp_using_ext_object_cache;
     $this->_wp_using_ext_object_cache_prev = $_wp_using_ext_object_cache;
     $_wp_using_ext_object_cache = false;
     return $value;
   }
-  
+
   function object_cache_enable($value=null){
     global $_wp_using_ext_object_cache;
     $_wp_using_ext_object_cache = $this->_wp_using_ext_object_cache_prev;
     return $value;
-  }  
-    
+  }
+
   function http_request_args( $params ) {
     $aArgs = func_get_args();
     $url = $aArgs[1];
-  
+
     if( stripos($url,'foliovision.com') === false ) {
       return $params;
     }
-  
+
     add_filter( 'https_ssl_verify', '__return_false' );
     return $params;
-  }  
-  
+  }
+
   function is_min_wp( $version ) {
     return version_compare( $GLOBALS['wp_version'], $version. 'alpha', '>=' );
   }
-  
-  
+
+
   public static function get_plugin_path( $slug ){
     $aPluginSlugs = get_transient('plugin_slugs');
     $aPluginSlugs = is_array($aPluginSlugs) ? $aPluginSlugs : array( $slug.'/'.$slug.'.php');
     $aActivePlugins = get_option('active_plugins');
     $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
-    
+
     if( !$aPluginSlugs )
       return false;
-      
+
     foreach( $aActivePlugins as $item ){
       if( stripos($item,$slug.'.php') !== false && !is_wp_error(validate_plugin($item)) )
         return $item;
     }
-    
+
     $sPluginFolder = plugin_dir_path( dirname( dirname(__FILE__) ) );
     foreach( $aInactivePlugins as $item ){
       if( stripos($item,$slug.'.php') !== false && file_exists($sPluginFolder.$item) )
         return $item;
-    }  
-    
+    }
+
     return false;
-  }  
+  }
 
 
   private function check_license_remote( $args = array() ) {
@@ -139,31 +139,31 @@ class FV_Wordpress_Flowplayer_Plugin_Private
     $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $post );
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\s]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\s]*?~', '$1', $resp['body'] ) ) ) {
       return $data;
-    
+
     } else if( is_wp_error($resp) ) {
       $post['sslverify'] = false;
       $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $post );
-    
-      if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
+
+      if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
         return $data;
       }
-      
+
     }
-    
+
     return false;
   }
-  
+
   // set force = true to delete transient and recheck license
   function setLicenseTransient( $force = false ){
     $strTransient = $this->strPluginSlug . '_license';
-    
+
     if( $force )
       delete_transient( $strTransient );
-    
+
     //is transiet set?
     if ( false !== ( $aCheck = get_transient( $strTransient ) ) )
       return;
-    
+
     $aCheck = $this->check_license_remote( );
     if( $aCheck ) {
       set_transient( $strTransient, $aCheck, 60*60*24 );
@@ -171,7 +171,7 @@ class FV_Wordpress_Flowplayer_Plugin_Private
       set_transient( $strTransient, json_decode( wp_json_encode( array('error' => 'Error checking license') ), FALSE ), 60*10 );
     }
   }
- 
+
 
   function checkLicenseTransient(){
     $aCheck = get_transient( $this->strPluginSlug . '_license' );
@@ -186,8 +186,8 @@ class FV_Wordpress_Flowplayer_Plugin_Private
       return false;
     }
   }
-  
-  
+
+
 /// ================================================================================================
 /// Custom plugin repository
 /// ================================================================================================
@@ -204,7 +204,7 @@ $this->strPrivateAPI - also
 
       return array(
          'body' => array(
-            'action' => $action, 
+            'action' => $action,
             'request' => serialize($args),
             'api-key' => md5(get_bloginfo('url'))
          ),
@@ -216,13 +216,13 @@ $this->strPrivateAPI - also
       $plugin_path = $this->strPluginPath;
       $request_args = array( 'slug' => $this->strPluginSlug );
       if( !empty( $checked_data->checked ) && empty($this->version) ){
-        $request_args['version'] = isset($checked_data->checked[$plugin_path]) ? $checked_data->checked[$plugin_path] : '0.1';        
+        $request_args['version'] = isset($checked_data->checked[$plugin_path]) ? $checked_data->checked[$plugin_path] : '0.1';
       }
       else{
         if( !function_exists('get_plugins') ) return $checked_data;
-        
-        $cache_plugins = get_plugins();        
-        
+
+        $cache_plugins = get_plugins();
+
         if( empty($cache_plugins[$plugin_path]['Version']) ){
           return $checked_data;
         }
@@ -230,34 +230,34 @@ $this->strPrivateAPI - also
       }
 
       $request = $this->PrepareRequest( 'basic_check', $request_args );
-      
+
       $sTransient = $this->strPluginSlug.'_fp-private-updates-api-'.sanitize_title($request_args['version']);
       $response = get_transient( $sTransient );
-      
+
       if( !$response ){
         if( stripos($this->strPrivateAPI,'plugins.trac.wordpress.org') === false ) {
           $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
           if( is_wp_error($raw_response) ) {
             $request['sslverify'] = false;
             $raw_response = wp_remote_post( $this->strPrivateAPI, $request );
-          }          
+          }
         } else {
-          $raw_response = wp_remote_get( $this->strPrivateAPI );        
-        }        
-        
+          $raw_response = wp_remote_get( $this->strPrivateAPI );
+        }
+
         if( !is_wp_error( $raw_response ) && ( $raw_response['response']['code'] == 200 ) ) {
           $response = @unserialize( preg_replace( '~^/\*[\s\S]*?\*/\s+~', '', $raw_response['body'] ) );
           if( !$response ) $response = $raw_response['body'];
         }
-        
+
         set_transient( $sTransient, $response, 3600 );
       }
-      
+
       if( isset($response->version) && version_compare( $response->version, $request_args['version'] ) == 1 ){
          if( is_object( $response ) && !empty( $response ) ) // Feed the update data into WP updater
             $checked_data->response[ $plugin_path ] = $response;
       }
-      
+
       return $checked_data;
    }
 
@@ -265,9 +265,9 @@ $this->strPrivateAPI - also
       $aData = get_transient( "update_plugins" );
       $aData = $this->CheckPluginUpdate( $aData );
       set_transient( "update_plugins", $aData );
-      
+
       if( function_exists( "set_site_transient" ) ) set_site_transient( "update_plugins", $aData );
-   }   
+   }
 
    public function PluginAPICall( $def, $action, $args ){
       if( !isset($args->slug) || $args->slug != $this->strPluginSlug ) return $def;
@@ -290,8 +290,8 @@ $this->strPrivateAPI - also
 
       return $res;
    }
-   
-   
+
+
   public function plugin_update_message() {
     if( $this->readme_URL ) {
       $data = $this->get_readme_url_remote( $this->readme_URL );
@@ -327,10 +327,10 @@ $this->strPrivateAPI - also
       }
     }
   }
-      
-   
+
+
   function pointers_ajax() {
-    if( $this->pointer_boxes ) {  
+    if( $this->pointer_boxes ) {
       foreach( $this->pointer_boxes AS $sKey => $aPopup ) {
         if( sanitize_key( $_POST['key'] ) == $sKey ) {
           check_ajax_referer($sKey);
@@ -361,7 +361,7 @@ $this->strPrivateAPI - also
     wp_enqueue_script( 'wp-pointer' );
     wp_enqueue_script( 'utils' );
 
-    add_action( 'admin_print_footer_scripts', array( $this, 'pointers_init_scripts' ) );    
+    add_action( 'admin_print_footer_scripts', array( $this, 'pointers_init_scripts' ) );
   }
 
 
@@ -392,7 +392,7 @@ $this->strPrivateAPI - also
 
   private function get_readme_url_remote( $url = false ) { // todo: caching
     $output = false;
-    
+
     if( $url ) {
       $response = wp_remote_get( $url );
       if( !is_wp_error($response) ) {
@@ -401,37 +401,37 @@ $this->strPrivateAPI - also
     } else {
       if( !isset($this->strPluginSlug) || empty($this->strPluginSlug) || !isset($this->version) || empty($this->version) )
         return false;
-          
+
       $args = array(
         'body' => array( 'plugin' => $this->strPluginSlug, 'version' => $this->version, 'type' => home_url() ),
         'timeout' => 20,
         'user-agent' => $this->strPluginSlug.'-'.$this->version
       );
       $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true&readme=1', $args );
-      
+
       if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {
         $output = $resp['body'];
-      
+
       } else if( is_wp_error($resp) ) {
         $args['sslverify'] = false;
         $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
-      
-        if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {    
+
+        if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {
           $output = $resp['body'];
         }
-        
+
       }
     }
-    
+
     return $output;
   }
-  
-  
+
+
   function changelog_filter( $res, $action, $args ){
-    
+
     if( !isset( $args->slug ) || $args->slug != $this->strPluginSlug  )
       return $res;
-    
+
     if(isset($args->fv_readme_file)){
       global $wp_filesystem;
       $data = $wp_filesystem->get_contents( $args->fv_readme_file );
@@ -444,15 +444,15 @@ $this->strPrivateAPI - also
       return $res;
 
     $plugin_data = get_plugin_data($this->strPluginPath);
-    
+
     $pluginReq = preg_match( '~Requires at least:\s*([0-9.]*)~', $data, $reqMatch ) ? $reqMatch[1] : false;
     $pluginUpto = preg_match( '~Tested up to:\s*([0-9.]*)~', $data, $uptoMatch ) ? $uptoMatch[1] : false;
-    
+
     $changelogOut = '';
     if( preg_match('~==\s*Changelog\s*==(.*)~si', $data, $match) ){
       $changelogPart = preg_replace('~==.*~','',$match[1]);
       $version = preg_match('~=\s*([0-9.]+).*=~', $changelogPart, $verMatch ) ? $verMatch[1] : false;
-      
+
         $changelog = (array) preg_split('~[\r\n]+~', trim($changelogPart));
         $ul = false;
         $changelogFinish = false;
@@ -470,7 +470,7 @@ $this->strPrivateAPI - also
                     $changelogOut .= '</ul><div style="clear: left;"></div>';
                     $ul = false;
                 }
-                
+
                 $strong = $strongEnd = '';
                 if( preg_match('~^=(.*)=$~', $line ) ){
                   $strong = '<strong>';
@@ -490,16 +490,16 @@ $this->strPrivateAPI - also
                   break;
                 }
                 $changelogOut .= '<p style="margin: 5px 0;">' .$strong. htmlspecialchars($line) .$strongEnd. '</p>';
-               
+
             }
-            
+
         }
         if ($ul) {
             $changelogOut .= '</ul><div style="clear: left;"></div>';
         }
         $changelogOut .= '</div>';
     }
-    
+
     $res = (object) array(
        'name' => $plugin_data['Name'],
        'slug' => false,
@@ -508,25 +508,25 @@ $this->strPrivateAPI - also
        'requires' => $pluginReq,
        'tested' => $pluginUpto,
        'homepage' => $plugin_data['PluginURI'],
-       'sections' => 
+       'sections' =>
       array (
         'support' => 'Use support forum at <a href="https://foliovision.com/support/">foliovison.com/support</a>',
         'changelog' => $changelogOut,
       ),
        'donate_link' => NULL
     );
-      
+
     return $res;
-    
+
   }
-  
-  
+
+
   //notification boxes
    function pointers_init_scripts() {
     if( !isset($this->pointer_boxes) || !$this->pointer_boxes ) {
       return;
     }
-    
+
     ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -543,7 +543,7 @@ $this->strPrivateAPI - also
 </script>
     <?php
     $cookie = $this->pointers_get_cookie();
-    
+
     foreach( $this->pointer_boxes AS $key => $args ) {
       // Some users are experiencing issues when dismissing the notices
       // So we use cookies as a backup to not show the same notice twice
@@ -552,7 +552,7 @@ $this->strPrivateAPI - also
       }
 
       $nonce = wp_create_nonce( $key );
-      
+
       $args = wp_parse_args( $args, array(
         'button1' => false, // req
         'button2' => false,
@@ -563,9 +563,9 @@ $this->strPrivateAPI - also
         'content' => false, // req
         'position' => array( 'edge' => 'top', 'align' => 'center' ),
       ) );
-      
+
       extract($args);
-      
+
       $html = '<h3>'.$heading.'</h3>';
       if( stripos( $content, '</p>' ) !== false ) {
         $html .= $content;
@@ -591,9 +591,9 @@ $this->strPrivateAPI - also
             setup = function () {
               $('<?php echo esc_attr( $id ); ?>').pointer(pointer_options).pointer('open');
               var buttons = $('.<?php echo esc_attr( $key ); ?> .wp-pointer-buttons').html('');
-              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo esc_js( $function1 ); ?>; store_cookie_js('true' , key); }));
+              buttons.append( $('<a style="margin-left:5px" class="button-primary">' + '<?php echo addslashes($button1); ?>' + '</a>').on('click.pointer', function () { <?php echo wp_kses_post( $function1 ); ?>; store_cookie_js('true' , key); }));
               <?php if ( $button2 ) { ?>
-                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo esc_js( $function2 ); ?>; store_cookie_js('false', key); }));
+                buttons.append( $('<a class="button-secondary">' + '<?php echo addslashes($button2); ?>' + '</a>').on('click.pointer', function () { <?php echo wp_kses_post( $function2 ); ?>; store_cookie_js('false', key); }));
               <?php } ?>
             };
 
@@ -626,7 +626,7 @@ $this->strPrivateAPI - also
       if( $data->domain && $data->key && stripos( home_url(), $data->domain ) !== false ) {
         $this->license_key = $data->key;
         do_action( $this->strPluginSlug.'_admin_key_update', $this->license_key );
-        
+
         $this->change_transient_expiration( $this->strPluginSlug."_license", 1 );
         // change the expiration to license renew by: $this->setLicenseTransient( true );
 
@@ -656,34 +656,34 @@ $this->strPrivateAPI - also
     $aPluginSlugs = is_array($aPluginSlugs) ? $aPluginSlugs : array( 'fv-player-pro/fv-player-pro.php');
     $aActivePlugins = get_option('active_plugins');
     $aInactivePlugins = array_diff($aPluginSlugs,$aActivePlugins);
-    
+
     if( !$aPluginSlugs )
       return false;
     foreach( $aActivePlugins as $item ){
       if( stripos($item,$slug.'.php') !== false )
         return $item;
     }
-    
+
     foreach( $aInactivePlugins as $item ){
       if( stripos($item,$slug.'.php') !== false )
         return $item;
     }
-    
+
     return false;
   }
-  
-  
+
+
   public static function install_form_text( $html, $name ) {
     $tag = stripos($html,'</h3>') !== false ? 'h3' : 'h2';
     $html = preg_replace( '~<'.$tag.'.*?</'.$tag.'>~', '<'.$tag.'>'.$name.' auto-installation</'.$tag.'>', $html );
-    $html = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.admin_url('options-general.php?page=fvplayer').'">Skip the '.$name.' install</a>', $html );    
+    $html = preg_replace( '~(<input[^>]*?type="submit"[^>]*?>)~', '$1 <a href="'.admin_url('options-general.php?page=fvplayer').'">Skip the '.$name.' install</a>', $html );
     return $html;
-  }  
-  
-  
+  }
+
+
   public static function install_plugin( $name, $plugin_package, $plugin_basename, $download_url, $settings_url, $option, $nonce ) {  //  'FV Player Pro', 'fv-player-pro', '/wp-admin/options-general.php?page=fvplayer', download URL (perhaps from the license), settings URL (use admin_url(...), should also contain some GET which will make it install the extension if present) and option where result message should be stored and a nonce which should be passed
     global $hook_suffix;
-    
+
     $plugin_path = self::get_plugin_path( str_replace( '_', '-', $plugin_package ) );
     if( !defined('PHPUnitTestMode') && $plugin_path ) {
       $result = activate_plugin( $plugin_path, $settings_url );
@@ -722,57 +722,57 @@ $this->strPrivateAPI - also
     }
 
     require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-    
+
     $result = true;
-       
+
     if( !$plugin_path || is_wp_error(validate_plugin($plugin_basename)) ) {
       $sTaskDone = $name.__( ' extension installed successfully!', 'fv-player' );
-      
+
       echo '<div style="display: none;">';
       $objInstaller = new Plugin_Upgrader();
       $objInstaller->install( $download_url );
       echo '</div>';
       wp_cache_flush();
-      
+
       if ( is_wp_error( $objInstaller->skin->result ) ) {
         update_option( $option, $name.__( ' extension install failed - ', 'fv-player' ) . $objInstaller->skin->result->get_error_message() );
         $result = false;
-      } else {    
+      } else {
         if ( $objInstaller->plugin_info() ) {
           $plugin_basename = $objInstaller->plugin_info();
         }
-        
+
         $activate = activate_plugin( $plugin_basename );
         if ( is_wp_error( $activate ) ) {
           update_option( $option, $name.__( ' extension install failed - ', 'fv-player' ) . $activate->get_error_message());
           $result = false;
         }
       }
-      
+
     } else if( $plugin_path ) {
       $sTaskDone = $name.__( ' extension upgraded successfully!', 'fv-player' );
 
       echo '<div style="display: none;">';
       $objInstaller = new Plugin_Upgrader();
-      $objInstaller->upgrade( $plugin_path );    
+      $objInstaller->upgrade( $plugin_path );
       echo '</div></div>';  //  explanation: extra closing tag just to be safe (in case of "The plugin is at the latest version.")
       wp_cache_flush();
-      
+
       if ( is_wp_error( $objInstaller->skin->result ) ) {
         update_option( $option, $name.' extension upgrade failed - '.$objInstaller->skin->result->get_error_message() );
         $result = false;
-      } else {    
+      } else {
         if ( $objInstaller->plugin_info() ) {
           $plugin_basename = $objInstaller->plugin_info();
         }
-        
+
         $activate = activate_plugin( $plugin_basename );
         if ( is_wp_error( $activate ) ) {
           update_option( $option, $name.' Pro extension upgrade failed - '.$activate->get_error_message() );
           $result = false;
         }
-      }    
-      
+      }
+
     }
 
     if( $result ) {
@@ -782,7 +782,7 @@ $this->strPrivateAPI - also
 
     return $result;
   }
-    
+
 
   function install_pro_version( $plugin_package = false, $target_url = false ) {
 
@@ -808,7 +808,7 @@ $this->strPrivateAPI - also
     $url = wp_nonce_url( $url );
 
     set_current_screen();
-    
+
     ob_start();
     if ( false === ( $creds = request_filesystem_credentials( $url, '', false, false, false ) ) ) {
       $form = ob_get_clean();
@@ -837,9 +837,9 @@ $this->strPrivateAPI - also
       $objInstaller->install( $download_url );
       echo '</div>';
       wp_cache_flush();
-      
+
       if ( is_wp_error( $objInstaller->skin->result ) ) {
-        
+
         update_option( $this->strPluginSlug.'_deferred_notices', $this->strPluginName.' install failed - '. $objInstaller->skin->result->get_error_message() );
         $bResult = false;
       }
@@ -847,7 +847,7 @@ $this->strPrivateAPI - also
         if ( $objInstaller->plugin_info() ) {
           $plugin_basename = $objInstaller->plugin_info();
         }
-        
+
         $activate = activate_plugin( $plugin_basename );
         if ( is_wp_error( $activate ) ) {
           update_option( $this->strPluginSlug.'_deferred_notices', $this->strPluginName.'  install failed - '. $activate->get_error_message() );
@@ -859,10 +859,10 @@ $this->strPrivateAPI - also
       $sTaskDone = $this->strPluginName.' upgraded successfully!';
       echo '<div style="display: none;">';
       $objInstaller = new Plugin_Upgrader();
-      $objInstaller->upgrade( $sPluginBasenameReal );    
+      $objInstaller->upgrade( $sPluginBasenameReal );
       echo '</div></div>';  //  explanation: extra closing tag just to be safe (in case of "The plugin is at the latest version.")
       wp_cache_flush();
-      
+
       if ( is_wp_error( $objInstaller->skin->result ) ) {
         update_option( $this->strPluginSlug.'_deferred_notices', $this->strPluginName.' extension upgrade failed - '.$objInstaller->skin->result->get_error_message() );
         $bResult = false;
@@ -871,7 +871,7 @@ $this->strPrivateAPI - also
         if ( $objInstaller->plugin_info() ) {
           $plugin_basename = $objInstaller->plugin_info();
         }
-        
+
         $activate = activate_plugin( $plugin_basename );
         if ( is_wp_error( $activate ) ) {
           update_option( $this->strPluginSlug.'_deferred_notices', $this->strPluginName.' extension upgrade failed - '.$activate->get_error_message() );

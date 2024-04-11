@@ -3,6 +3,8 @@
 class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Base {
 
   function __construct() {
+    global $wpdb;
+
     if ( ! defined( 'ABSPATH' ) ) {
       exit;
     }
@@ -10,7 +12,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
     parent::__construct( array(
       'title' => 'FV Player PositionsMeta2Table Conversion',
       'slug' => 'positions_meta2table',
-      'help' => __( "This converts position values from usermeta to fv_player_user_video_positions table", 'fv-player' )
+      'help' => sprintf( __( "This converts position values from <code>%s</code> to <code>%s</code> table.", 'fv-player' ), $wpdb->usermeta, $wpdb->prefix . 'fv_player_user_video_positions' )
     ) );
 
     $this->conversion_limit = 2500;
@@ -29,7 +31,7 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
 
     add_action( 'init', array( $this, 'cron_init' ) );
     add_action( 'admin_init', array( $this, 'set_pointer_checked' ) );
-    add_action( 'fv_flowplayer_' .$this->slug . '_cleanup' , array( $this, 'meta_cleanup' ) );
+    add_action( 'fv_player_' .$this->slug . '_cleanup' , array( $this, 'meta_cleanup' ) );
   }
 
   /**
@@ -386,10 +388,10 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       }
     }
 
-    if ( $should_cleanup && !wp_next_scheduled( 'fv_flowplayer_' .$this->slug . '_cleanup' ) ) {
-      wp_schedule_event( time(), '5minutes', 'fv_flowplayer_' .$this->slug . '_cleanup' );
-    } else if( !$should_cleanup && wp_next_scheduled( 'fv_flowplayer_' .$this->slug . '_cleanup' ) ) {
-      wp_clear_scheduled_hook( 'fv_flowplayer_' .$this->slug . '_cleanup' );
+    if ( $should_cleanup && !wp_next_scheduled( 'fv_player_' .$this->slug . '_cleanup' ) ) {
+      wp_schedule_event( time(), '5minutes', 'fv_player_' .$this->slug . '_cleanup' );
+    } else if( !$should_cleanup && wp_next_scheduled( 'fv_player_' .$this->slug . '_cleanup' ) ) {
+      wp_clear_scheduled_hook( 'fv_player_' .$this->slug . '_cleanup' );
     }
   }
 
