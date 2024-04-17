@@ -103,13 +103,11 @@ if( typeof(flowplayer) != "undefined" ) {
 
     fv_player_track( player, false, "Video " + (root.hasClass('is-cva')?'Ad ':'') + "error", "YouTube video removed", src );
 
-
     setTimeout( function() {
       root.removeClass('is-splash'); //  we only do this for the preloaded player
 
       player.loading = false; //  we need to reset this to make sure user can pick another video in playlist
       root.removeClass('is-loading'); //  same as above
-
       if( player.conf.clip.sources.length > 1 ) {
 
         player.youtube.destroy();
@@ -128,18 +126,6 @@ if( typeof(flowplayer) != "undefined" ) {
           player.trigger('error', [ player, { code: 4, video: player.video } ] );
         } );
 
-      } else {
-        player.paused = false;  //  we need to make sure it's not paused which happens in case of autoadvance
-        root.removeClass('is-paused');  //  same as above
-
-        player.ready = true;  //  we need to set this otherwise further clicks will make the video load again
-        player.bind('load', function() {
-          player.ready = false; //  we need to set this otherwise playlist advance won't trigger all the events properly
-        });
-
-        setTimeout( function() {
-          player.next();	//	todo fix for mobile
-        }, 1000 );
       }
 
     });
@@ -168,7 +154,7 @@ if( typeof(flowplayer) != "undefined" ) {
         // seems we need this for mobile load, otherwise onReady calls playVideo()
         // but now we had to exclude Safari (which means iPad too) from it
         autoplay: 0,
-        controls: !jQuery(root).hasClass('no-controlbar') && fv_player_pro_youtube_is_old_android() ? 1 : 0, //  todo: no interface if it's a video ad!                       
+        controls: !jQuery(root).hasClass('no-controlbar') && fv_player_pro_youtube_is_old_android() ? 1 : 0, //  todo: no interface if it's a video ad!
         disablekb: 1,
         enablejsapi: 1,
         fs: 0,
@@ -322,12 +308,15 @@ if( typeof(flowplayer) != "undefined" ) {
           // So we act as if it's the splash state - means no controls
           root.addClass('is-splash');
 
-          // If it's not a playlist or there are other sources trigger error
-          // In case of other sources FV Player Alternative Sources will play the other source
-          if( player.conf.playlist.length == 0 || player.conf.clip.sources.length > 1 ) {
-            player.trigger('error', [ player, { code: 4, video: player.video } ] );
+          player.trigger('error', [ player, { code: 4, video: player.video } ] );
 
-          } else {
+          /**
+           * Go to next video if it's a playlist and if there are not other sources.
+           * In case of other sources FV Player Alternative Sources will already play the other
+           * source based on that error trigger above.
+           */
+          if( player.conf.playlist.length > 1 && player.conf.clip.sources.length == 0 ) {
+
             setTimeout( function() {
               player.loading = false; //  we need to reset this to make sure user can pick another video in playlist
               root.removeClass('is-loading'); //  same as above
