@@ -306,7 +306,7 @@ CREATE TABLE " . self::$db_table_name . " (
           foreach ($cache as $player_id => $player_meta) {
             if (isset($player_meta[$id])) {
               $is_cached = true;
-              $some_meta_exist = (count($player_meta[$id]) ? true : false);
+              $some_meta_exist = is_array( $player_meta[ $id ] ) && count( $player_meta[ $id ] ) ? true : false;
             }
           }
         }
