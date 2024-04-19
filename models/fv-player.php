@@ -761,7 +761,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       );
 
       $aNewOptions = array();
-      foreach( 
+      foreach(
         apply_filters(
           'fv_player_settings',
           array(
@@ -886,7 +886,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
                 if ( is_array( $post_value ) ) {
                   foreach( $post_value AS $post_key_2 => $post_value_2 ) {
-                    if ( ! is_array( $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] ) ) {
+                    if ( empty( $aNewOptions[ $key ] ) ) {
+                      $aNewOptions[ $key ] = array();
+                    }
+                    if ( empty( $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] ) ) {
                       $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = array();
                     }
                     $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ][ sanitize_text_field( $post_key_2 ) ] = sanitize_text_field( $post_value_2 );
@@ -894,12 +897,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
                 } else {
 
-                  if ( is_array( $html_fields[ $key ] ) && in_array( $post_key, $html_fields[ $key ] ) ) {
+                  if ( ! empty( $html_fields[ $key ] ) && is_array( $html_fields[ $key ] ) && in_array( $post_key, $html_fields[ $key ] ) ) {
                     add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
                     $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = wp_kses( $post_value, 'post' );
                     remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
 
-                  } else if ( is_array( $multiline_fields[ $key ] ) && in_array( $post_key, $multiline_fields[ $key ] ) ) {
+                  } else if ( ! empty( $multiline_fields[ $key ] ) && is_array( $multiline_fields[ $key ] ) && in_array( $post_key, $multiline_fields[ $key ] ) ) {
                     $aNewOptions[ $key ][ sanitize_text_field( $post_key ) ] = sanitize_textarea_field( $post_value );
 
                   } else {
@@ -920,7 +923,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $aNewOptions = fv_player_handle_secrets( $aNewOptions, $this->conf);
-  
+
     $is_ajax = isset($aNewOptions['fv-wp-flowplayer-submit-ajax']);
 
     if( $is_ajax ) {
@@ -2239,7 +2242,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $path     = isset( $parsed_url['path'] ) ? $parsed_url['path'] : '';
     $query    = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
     $fragment = isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '';
-  
+
     return "$scheme$user$pass$host$port$path$query$fragment";
   }
 
@@ -2769,7 +2772,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   public static function json_encode( $input ) {
-    if( version_compare(phpversion(), '5.3.0', '>') ) {        
+    if( version_compare(phpversion(), '5.3.0', '>') ) {
       return wp_json_encode( $input, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP );
     } else {
       return str_replace( "'", '\u0027', wp_json_encode( $input ) );
@@ -3090,7 +3093,7 @@ function fv_wp_flowplayer_save_post( $post_id ) {
   if ( ! $saved_post ) {
     return;
   }
-  
+
   $videos = FV_Player_Checker::get_videos($saved_post->ID);
 
   $iDone = 0;
