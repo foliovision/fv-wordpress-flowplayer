@@ -202,7 +202,10 @@ class flowplayer_frontend extends flowplayer
       }
 
     // Otherwise let it just affect the player aspect ratio
-    } else {
+    } else if(
+      stripos( $width, '%' ) === false && intval( $width ) > 0 &&
+      stripos( $height, '%' ) === false && intval( $height ) > 0
+    ) {
       $height = $width * $this->get_ratio();
     }
 
