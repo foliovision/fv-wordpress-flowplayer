@@ -70,7 +70,7 @@
 .freedomplayer.is-mouseover .fp-captions, .freedomplayer.is-paused .fp-captions {
   bottom: 3em; }
 
-.freedomplayer.is-poster .fp-engine, .freedomplayer.is-loading .fp-engine {
+.freedomplayer.is-loading .fp-engine {
   opacity: 0; }
 
 .freedomplayer.is-loading .fp-ui .fp-header, .freedomplayer.is-loading .fp-ui .fp-controls {
