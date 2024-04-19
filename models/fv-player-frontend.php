@@ -42,8 +42,6 @@ class flowplayer_frontend extends flowplayer
 
   var $splash_count = 0;
 
-  private $fRatio = null;
-
   /**
    * Retrieves instance of current player
    * with data loaded from database.
@@ -202,6 +200,10 @@ class flowplayer_frontend extends flowplayer
       if ( ! empty( $this->aCurArgs['height'] ) ) {
         $height = trim( $this->aCurArgs['height'] );
       }
+
+    // Otherwise let it just affect the player aspect ratio
+    } else {
+      $height = $width * $this->get_ratio();
     }
 
     $src1 = ( isset($this->aCurArgs['src1']) && !empty($this->aCurArgs['src1']) ) ? trim($this->aCurArgs['src1']) : false;
@@ -636,24 +638,7 @@ class flowplayer_frontend extends flowplayer
 
         // Calculate player aspect ratio
         if( !$bIsAudio ) {
-
-          // Use video dimensions if provided
-          $ratio_width = ! empty( $this->aCurArgs['width'] ) ? intval( $this->aCurArgs['width'] ) : $width;
-          $ratio_height = ! empty( $this->aCurArgs['height'] ) ? intval( $this->aCurArgs['height'] ) : $height;
-
-          // Do not calculate ratio if % values are provided
-          if(
-            stripos( $ratio_width, '%' ) === false && intval( $ratio_width ) > 0 &&
-            stripos( $ratio_height, '%' ) === false && intval( $ratio_height ) > 0
-          ) {
-            $ratio = round( intval( $ratio_height ) / intval( $ratio_width ), 4);
-          } else {
-            $ratio = 9/16;
-          }
-
-          $this->fRatio = $ratio;
-
-          $attributes['data-ratio'] = str_replace(',','.',$ratio);
+          $attributes['data-ratio'] = str_replace(',','.', $this->get_ratio() );
         }
 
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {
@@ -792,8 +777,8 @@ class flowplayer_frontend extends flowplayer
 
         $this->ret['html'] .= '<div id="wpfp_' . $this->hash . '"'.$attributes_html.'>'."\n";
 
-        if( isset($this->fRatio) ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->fRatio * 100).'%"></div>'."\n";
+        if( !$bIsAudio ) {
+          $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->get_ratio() * 100).'%"></div>'."\n";
         }
 
         if( !$bIsAudio && !empty($splash_img) ) {
@@ -846,9 +831,9 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( flowplayer::is_special_editor() ) {
-          $this->ret['html'] .= '<div class="fp-ui"></div>';       
+          $this->ret['html'] .= '<div class="fp-ui"></div>';
         } else if( current_user_can('manage_options') && empty($this->aCurArgs['lazy']) && empty($this->aCurArgs['lightbox']) && empty($this->aCurArgs['error']) && empty($this->aCurArgs['checker']) ) {
-          $this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="https://foliovision.com/pro-support" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';       
+          $this->ret['html'] .= '<div id="wpfp_'.$this->hash.'_admin_error" class="fvfp_admin_error"><div class="fvfp_admin_error_content"><h4>Admin JavaScript warning:</h4><p>I\'m sorry, your JavaScript appears to be broken. Please use "Check template" in plugin settings, read our <a href="https://foliovision.com/player/installation#fixing-broken-javascript" target="_blank">troubleshooting guide</a>, <a href="https://foliovision.com/troubleshooting-javascript-errors" target="_blank">troubleshooting guide for programmers</a> or <a href="https://foliovision.com/pro-support" target="_blank">order our pro support</a> and we will get it fixed for you.</p></div></div>';
         }
 
         $this->ret['html'] .= apply_filters( 'fv_flowplayer_inner_html', null, $this );
@@ -1188,6 +1173,42 @@ class flowplayer_frontend extends flowplayer
     }
 
     return false;
+  }
+
+  /**
+   * Get player aspect ratio based on the first video.
+   *
+   * Logic:
+   * * use the aspect_ratio loaded from database
+   * * or calculate from the video dimensions if provided
+   * * or calculate form the global settings of default player dimensions if in pixels
+   * * or use 9/16 as a default
+   *
+   * @return float Aspect ratio of the first video.
+   */
+  function get_ratio() {
+    if ( ! empty( $this->aCurArgs['aspect_ratio'] ) && floatval( $this->aCurArgs['aspect_ratio'] ) > 0 ) {
+      return floatval( $this->aCurArgs['aspect_ratio'] );
+    }
+
+    $width = $this->_get_option('width');
+    $height = $this->_get_option('height');
+
+    // Use video dimensions if provided
+    $ratio_width = ! empty( $this->aCurArgs['width'] ) ? intval( $this->aCurArgs['width'] ) : $width;
+    $ratio_height = ! empty( $this->aCurArgs['height'] ) ? intval( $this->aCurArgs['height'] ) : $height;
+
+    // Do not calculate ratio if % values are provided
+    if(
+      stripos( $ratio_width, '%' ) === false && intval( $ratio_width ) > 0 &&
+      stripos( $ratio_height, '%' ) === false && intval( $ratio_height ) > 0
+    ) {
+      $ratio = round( intval( $ratio_height ) / intval( $ratio_width ), 4);
+    } else {
+      $ratio = 9/16;
+    }
+
+    return $ratio;
   }
 
   function get_rtmp_server($rtmp) {
