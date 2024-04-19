@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '8.0.beta.25.4';
+$fv_wp_flowplayer_ver = '8.0.beta.25.5';
 $fv_wp_flowplayer_core_ver = '8.0.beta.22.106.2';
 
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
@@ -106,7 +106,7 @@ if (
   if( version_compare(phpversion(),'5.5.0') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser.php');
   }
- 
+
   if( version_compare(phpversion(),'7.4') != -1 ) {
     include_once(dirname( __FILE__ ) . '/models/media-browser-s3.php');
   }
