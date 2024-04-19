@@ -136,7 +136,7 @@ function fv_flowplayer_admin_amazon_options() {
           <?php $fv_fp->_get_checkbox(__( 'Force the default expiration time', 'fv-player' ), 'amazon_expire_force'); ?>
           <?php
           $can_use_aws_sdk = version_compare(phpversion(),'7.4') != -1;
-          
+
           $fv_fp->_get_checkbox( array(
             'name' => __( 'Amazon S3 Browser', 'fv-player' ).' (beta)',
             'key' => 's3_browser',
@@ -503,7 +503,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
           ),
           'preload' => array(
             'label' => __( 'Video Preload', 'fv-player' ),
-            'description' => __( 'First video on page will preload. Then it will play instantly when clicked.', 'fv-player' )
+            'description' => __( 'First 3 videos on page will preload (or 1 if it\'s HLS). Then it will play instantly when clicked.', 'fv-player' )
           ),
           'viewport' => array(
             'label' => __( 'Autoplay Video in Viewport', 'fv-player' ),
