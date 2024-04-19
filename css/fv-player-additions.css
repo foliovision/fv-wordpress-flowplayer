@@ -881,6 +881,15 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-ready.is-youtube.is-cva .fp-ui {
   pointer-events: auto;
 }
+.flowplayer.is-ready.is-youtube .fp-ui .fp-play:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 iframe#youtube.fp-engine {
   height: 100%;
   width: 100%;
@@ -975,6 +984,9 @@ a.fp-youtube-title {
   position: absolute;
   fill: rgba(238, 238, 238, .9);
   width: 95px;
+}
+.flowplayer:not(.is-touch):not(.is-mouseover-bottom):not(.fixed-controls).was-played .fp-youtube-logo {
+  opacity: 0;
 }
 .flowplayer .fp-youtube-logo:hover {
   fill: rgba(238, 238, 238, 1);
