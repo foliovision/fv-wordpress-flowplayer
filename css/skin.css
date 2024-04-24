@@ -19,13 +19,13 @@
       -ms-flex-order: 100;
           order: 100; }
   .fp-fullscreen svg {
-    fill: none;
     vertical-align: text-top;
     stroke: whitesmoke;
     stroke-width: 4;
     width: 22px; }
     .fp-fullscreen svg.fp-fullscreen-exit {
       display: none;
+      fill: none;
       stroke-width: 3; }
 
 .fp-checked:before {
@@ -446,18 +446,24 @@
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
       opacity: 0; }
-  .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui > * {
+  .freedomplayer.fp-ui-shown .fp-ui > *, .freedomplayer.is-paused:not(.was-played) .fp-ui > *, .freedomplayer.is-splash .fp-ui > *, .freedomplayer.is-mouseover:not(.is-fullscreen.is-mouseover-top) .fp-ui > *, .freedomplayer.is-loading .fp-ui > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui > * {
     opacity: 1; }
-  .freedomplayer.fp-ui-shown .fp-ui .fp-controls > *, .freedomplayer.is-paused:not(.was-played) .fp-ui .fp-controls > *, .freedomplayer.is-splash .fp-ui .fp-controls > *, .freedomplayer.is-mouseover .fp-ui .fp-controls > *, .freedomplayer.is-loading .fp-ui .fp-controls > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui .fp-controls > * {
+  .freedomplayer.fp-ui-shown .fp-ui .fp-controls > *, .freedomplayer.is-paused:not(.was-played) .fp-ui .fp-controls > *, .freedomplayer.is-splash .fp-ui .fp-controls > *, .freedomplayer.is-mouseover:not(.is-fullscreen.is-mouseover-top) .fp-ui .fp-controls > *, .freedomplayer.is-loading .fp-ui .fp-controls > *, .freedomplayer.is-seeking:not(.is-mobile-seeking) .fp-ui .fp-controls > * {
     opacity: 1; }
   .freedomplayer:not(.is-touch):not(.is-mouseover-top).was-played .fp-header {
     opacity: 0; }
-  .freedomplayer:not(.is-touch):not(.is-mouseover-bottom):not(.fixed-controls).was-played .fp-controls {
+  .freedomplayer.is-fullscreen.was-played:not(.is-touch):not(.is-mouseover-bottom):not(.is-fullscreen-exit-hint):not(.fixed-controls) .fp-controls {
     opacity: 0; }
   .freedomplayer.is-mobile-seeking .fp-controls {
     opacity: 1;
     visibility: hidden; }
   .freedomplayer.is-mobile-seeking .fp-timeline, .freedomplayer.is-mobile-seeking .fp-forward, .freedomplayer.is-mobile-seeking .fp-rewind {
+    opacity: 1;
+    visibility: visible; }
+  .freedomplayer.is-fullscreen-exit-hint .fp-controls {
+    opacity: 1;
+    visibility: hidden; }
+  .freedomplayer.is-fullscreen-exit-hint .fp-timeline, .freedomplayer.is-fullscreen-exit-hint .fp-fullscreen {
     opacity: 1;
     visibility: visible; }
   .freedomplayer .fp-header {
