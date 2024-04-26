@@ -34,11 +34,11 @@ flowplayer(function(player, root) {
 
       bean.on(document, 'webkitfullscreenchange.nativefullscreen', function() {
         if (document.webkitFullscreenElement !== video) return;
-        
+
         bean.off(document, '.nativefullscreen');
         bean.on(document, 'webkitfullscreenchange.nativefullscreen', function() {
           if (document.webkitFullscreenElement) return;
-          
+
           bean.off(document, '.nativefullscreen');
           player.trigger( FS_EXIT, [player]);
         });
@@ -75,10 +75,10 @@ flowplayer(function(player, root) {
     var wrapper = jQuery(root).find('.fp-player')[0];
 
     /**
-     * If we are entering fullscreen on Safari or iPad and a fullscreen element is already 
+     * If we are entering fullscreen on Safari or iPad and a fullscreen element is already
      * present, we just do the CSS fullscreen.
-     * We allow this so that you can put <body> to fullscreen before the FV Player starts 
-     * loading. You need to do that if FV Player HTML load with Ajax. Ajax request cannot 
+     * We allow this so that you can put <body> to fullscreen before the FV Player starts
+     * loading. You need to do that if FV Player HTML load with Ajax. Ajax request cannot
      * initiate fullscreen in Safari.
      */
     if ( flowplayer.support.browser.safari && flowplayer.support.fullscreen && flag && document.fullscreenElement ) {
@@ -122,7 +122,7 @@ flowplayer(function(player, root) {
 
   //  copy of original Flowplayer variable declarations and FS events
   var lastClick, common = flowplayer.common;
-  
+
   player.on("mousedown.fs", function() {
     if (+new Date() - lastClick < 150 && player.ready) player.fullscreen();
     lastClick = +new Date();
@@ -133,10 +133,12 @@ flowplayer(function(player, root) {
       common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
       common.removeClass(root, 'fp-minimal');
 
+      common.addClass( document.body, 'has-fv-player-fullscreen' );
+
       /**
-       * If fullscreen is not supported we have add all the extra CSS which helps us to make 
+       * If fullscreen is not supported we have add all the extra CSS which helps us to make
        * the player fullscreen.
-       * 
+       *
        * Also do this if you support fullscreen but some other element is in fullscreen.
        */
       if (!FS_SUPPORT || document.fullscreenElement) {
@@ -153,7 +155,7 @@ flowplayer(function(player, root) {
       common.removeClass(root, 'fp-minimal-fullscreen');
 
       /**
-       * If we support fullscreen but some other element is in fullscreen, we have to make 
+       * If we support fullscreen but some other element is in fullscreen, we have to make
        * sure to remove all the extra CSS which helped us to make the player fullscreen
        */
       var fs_support = FS_SUPPORT && jQuery(root).find('.fp-player')[0] == document.fullscreenElement;
@@ -169,12 +171,15 @@ flowplayer(function(player, root) {
       }
 
       common.removeClass(root, 'is-fullscreen');
+
+      common.removeClass( document.body, 'has-fv-player-fullscreen' );
+
       if (!fs_support && player.engine === "html5") setTimeout(function() { root.css('opacity', oldOpacity); });
       player.isFullscreen = false;
 
       if( player.engine.engineName != 'fvyoutube' ){ // youtube scroll ignore
         win.scrollTo(scrollX, scrollY);
-      } 
+      }
    }).on('unload', function() {
      if (player.isFullscreen) player.fullscreen();
    });
