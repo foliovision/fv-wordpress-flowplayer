@@ -102,9 +102,9 @@ function zipProject() {
 // export tasks
 exports.zip = zipProject;
 exports.pot = potFileGenerate;
-exports.cssplayer = cssFreedomPlayer;
+exports.css = cssFreedomPlayer;
 exports.jsmodules = jsModulesMinify;
 exports.jsfiles = jsFilessMinify;
 exports.js = parallel( jsModulesMinify, jsFilessMinify );
 
-exports.default = series( parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate), zipProject );
+exports.default = parallel(jsModulesMinify, jsFilessMinify, cssFreedomPlayer, potFileGenerate);
