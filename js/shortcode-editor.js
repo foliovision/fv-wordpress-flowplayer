@@ -1064,12 +1064,16 @@ jQuery(function() {
           el_input = fv_flowplayer_uploader_button.prev('.components-panel__row').find('input');
         }
 
-        // Initial state of fv player block
-        if( ! el_input.length ) {
-          el_input = jQuery(this);
+        /**
+         * Mark the input as target.
+         *
+         * If using Gutenberg block .fv_flowplayer_target won't be added anywhere, but it does not matter.
+         * We update the block properites directly.
+         */
+        if( el_input.length ) {
+          el_input.addClass('fv_flowplayer_target');
         }
 
-        el_input.addClass('fv_flowplayer_target');
         //If the uploader object has already been created, reopen the dialog
         if (fv_flowplayer_uploader) {
           fv_flowplayer_uploader.open();
@@ -1124,8 +1128,19 @@ jQuery(function() {
           var attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
           var target_element = $('.fv_flowplayer_target');
 
-          target_element.val(attachment.url).trigger('change').trigger('keyup');
-          target_element.removeClass('fv_flowplayer_target' );
+          // Update the HTML input field
+          if ( target_element.length ) {
+            target_element.val(attachment.url).trigger('change').trigger('keyup');
+            target_element.removeClass('fv_flowplayer_target' );
+
+          }
+
+          // Update the block attribute
+          var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+
+          if ( clientId ) {
+            wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: attachment.url });
+          }
 
           if( attachment.type == 'video' ) {
             // TODO: Fill video title
