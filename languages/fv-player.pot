@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2024-01-11 10:29+0000\n"
+"POT-Creation-Date: 2024-04-26 08:54+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -35,27 +35,27 @@ msgstr ""
 msgid "You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>%s</code>"
 msgstr ""
 
-#: controller/backend.php:407
+#: controller/backend.php:402
 msgid "License key acquired successfully. <a href=\"\">Reload</a>"
 msgstr ""
 
-#: controller/backend.php:603, controller/backend.php:611
+#: controller/backend.php:598, controller/backend.php:606
 msgid "To update FV Player please either renew your license or disable FV Player Pro."
 msgstr ""
 
-#: controller/backend.php:664
+#: controller/backend.php:659
 msgid "FV Player has found old shortcodes in the content of your posts. <a href=\"%1$s\">Run the conversion script.</a>"
 msgstr ""
 
-#: controller/backend.php:886
+#: controller/backend.php:881
 msgid "FV Player: Please upgrade to FV Player Pro version %s or above!"
 msgstr ""
 
-#: controller/backend.php:902
+#: controller/backend.php:897
 msgid "FV Player: Please upgrade to FV Player Pay Per View version %s or above!"
 msgstr ""
 
-#: controller/backend.php:918
+#: controller/backend.php:913
 msgid "FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!"
 msgstr ""
 
@@ -71,91 +71,91 @@ msgstr ""
 msgid "Cannot obtain video screenshot, please make sure the video is served with <a href=\"https://foliovision.com/player/video-hosting/hls#hls-js\">CORS headers</a>."
 msgstr ""
 
-#: controller/editor.php:131
+#: controller/editor.php:121
 msgid "Add FV Player"
 msgstr ""
 
-#: controller/editor.php:747, models/list-table.php:72, view/admin.php:2101, view/wizard.php:614
+#: controller/editor.php:737, models/list-table.php:72, view/admin.php:2117, view/wizard.php:580
 msgid "Subtitles"
 msgstr ""
 
-#: controller/editor.php:748
+#: controller/editor.php:738
 msgid "Subtitle"
 msgstr ""
 
-#: controller/editor.php:774
+#: controller/editor.php:764
 msgid "Video Link"
 msgstr ""
 
-#: controller/editor.php:798
+#: controller/editor.php:788
 msgid "Live Stream"
 msgstr ""
 
-#: controller/editor.php:802
+#: controller/editor.php:792
 msgid "DVR Stream"
 msgstr ""
 
-#: controller/editor.php:809
+#: controller/editor.php:799
 msgid "Audio Stream"
 msgstr ""
 
-#: controller/editor.php:813
+#: controller/editor.php:803
 msgid "Advanced Settings"
 msgstr ""
 
-#: controller/editor.php:818, view/admin.php:972
+#: controller/editor.php:808, view/admin.php:968
 msgid "Mobile Video"
 msgstr ""
 
-#: controller/editor.php:825
+#: controller/editor.php:815
 msgid "Alternative Format 1"
 msgstr ""
 
-#: controller/editor.php:832
+#: controller/editor.php:822
 msgid "Alternative Format 2"
 msgstr ""
 
-#: controller/editor.php:839
+#: controller/editor.php:829
 msgid "RTMP"
 msgstr ""
 
-#: controller/editor.php:845
+#: controller/editor.php:835
 msgid "Path"
 msgstr ""
 
-#: controller/editor.php:851
+#: controller/editor.php:841
 msgid "Server"
 msgstr ""
 
-#: controller/editor.php:861
+#: controller/editor.php:851
 msgid "Splash Screen"
 msgstr ""
 
-#: controller/editor.php:866
+#: controller/editor.php:856
 msgid "Will appear in place of the video before it plays."
 msgstr ""
 
-#: controller/editor.php:873
+#: controller/editor.php:863
 msgid "Title"
 msgstr ""
 
-#: controller/editor.php:877
+#: controller/editor.php:867
 msgid "Will appear below the player and on playlist thumbnails. Also used for tracking."
 msgstr ""
 
-#: controller/editor.php:880, view/admin.php:978
+#: controller/editor.php:870, view/admin.php:974
 msgid "Splash Text"
 msgstr ""
 
-#: controller/editor.php:884
+#: controller/editor.php:874
 msgid "Will appear over the video before it plays."
 msgstr ""
 
-#: controller/editor.php:887, view/admin.php:980
+#: controller/editor.php:877, view/admin.php:976
 msgid "Synopsis"
 msgstr ""
 
-#: controller/editor.php:891
+#: controller/editor.php:881
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
@@ -391,171 +391,171 @@ msgstr ""
 msgid "Please watch the video carefully."
 msgstr ""
 
-#: controller/settings.php:219
+#: controller/settings.php:220
 msgid "FV Player Video Position Conversion"
 msgstr ""
 
-#: controller/settings.php:222
+#: controller/settings.php:223
 msgid "Migrate"
 msgstr ""
 
-#: controller/settings.php:234
+#: controller/settings.php:235
 msgid "FV Player Video Checker"
 msgstr ""
 
-#: controller/settings.php:235
+#: controller/settings.php:236
 msgid "<p>FV Player includes a <a href='https://foliovision.com/player/basic-setup/how-to-use-video-checker' target='_blank'>free video checker</a> which will check your videos for any encoding errors and helps ensure smooth playback of all your videos. To work its magic, our video checker must contact our server.</p><p>Would you like to enable the video encoding checker?</p>"
 msgstr ""
 
-#: controller/settings.php:237
+#: controller/settings.php:238
 msgid "Allow"
 msgstr ""
 
-#: controller/settings.php:238
+#: controller/settings.php:239
 msgid "Disable the video checker"
 msgstr ""
 
-#: controller/settings.php:246
+#: controller/settings.php:247
 msgid "FV Player Video Sitemap coverage"
 msgstr ""
 
-#: controller/settings.php:247
+#: controller/settings.php:248
 msgid "<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>"
 msgstr ""
 
-#: controller/settings.php:249, controller/settings.php:274
+#: controller/settings.php:250, controller/settings.php:275
 msgid "Thanks for letting me know!"
 msgstr ""
 
-#: controller/settings.php:250
+#: controller/settings.php:251
 msgid "Go to setting"
 msgstr ""
 
-#: controller/settings.php:259
+#: controller/settings.php:260
 msgid "FV Player 8"
 msgstr ""
 
-#: controller/settings.php:411
+#: controller/settings.php:412
 msgid "Africa (Cape Town)"
 msgstr ""
 
-#: controller/settings.php:412
+#: controller/settings.php:413
 msgid "Asia Pacific (Hong Kong)"
 msgstr ""
 
-#: controller/settings.php:413
+#: controller/settings.php:414
 msgid "Asia Pacific (Mumbai)"
 msgstr ""
 
-#: controller/settings.php:414
+#: controller/settings.php:415
 msgid "Asia Pacific (Osaka-Local)"
 msgstr ""
 
-#: controller/settings.php:415
+#: controller/settings.php:416
 msgid "Asia Pacific (Seoul)"
 msgstr ""
 
-#: controller/settings.php:416
+#: controller/settings.php:417
 msgid "Asia Pacific (Singapore)"
 msgstr ""
 
-#: controller/settings.php:417
+#: controller/settings.php:418
 msgid "Asia Pacific (Sydney)"
 msgstr ""
 
-#: controller/settings.php:418
+#: controller/settings.php:419
 msgid "Asia Pacific (Tokyo)"
 msgstr ""
 
-#: controller/settings.php:420
+#: controller/settings.php:421
 msgid "Canada (Central)"
 msgstr ""
 
-#: controller/settings.php:422
+#: controller/settings.php:423
 msgid "China (Beijing)"
 msgstr ""
 
-#: controller/settings.php:423
+#: controller/settings.php:424
 msgid "China (Ningxia)"
 msgstr ""
 
-#: controller/settings.php:425
+#: controller/settings.php:426
 msgid "Europe (Frankfurt)"
 msgstr ""
 
-#: controller/settings.php:426
+#: controller/settings.php:427
 msgid "Europe (Ireland)"
 msgstr ""
 
-#: controller/settings.php:427
+#: controller/settings.php:428
 msgid "Europe (London)"
 msgstr ""
 
-#: controller/settings.php:428
+#: controller/settings.php:429
 msgid "Europe (Milan)"
 msgstr ""
 
-#: controller/settings.php:429
+#: controller/settings.php:430
 msgid "Europe (Paris)"
 msgstr ""
 
-#: controller/settings.php:430
+#: controller/settings.php:431
 msgid "Europe (Stockholm)"
 msgstr ""
 
-#: controller/settings.php:432
+#: controller/settings.php:433
 msgid "Middle East (Bahrain)"
 msgstr ""
 
-#: controller/settings.php:434
+#: controller/settings.php:435
 msgid "South America (S&atilde;o Paulo)"
 msgstr ""
 
-#: controller/settings.php:436
+#: controller/settings.php:437
 msgid "US West (N. California)"
 msgstr ""
 
-#: controller/settings.php:437
+#: controller/settings.php:438
 msgid "US East (N. Virginia)"
 msgstr ""
 
-#: controller/settings.php:438
+#: controller/settings.php:439
 msgid "US East (Ohio)"
 msgstr ""
 
-#: controller/settings.php:439
+#: controller/settings.php:440
 msgid "US West (Oregon)"
 msgstr ""
 
-#: models/cdn.class.php:164
+#: models/cdn.class.php:165
 msgid "Domain"
 msgstr ""
 
-#: models/cdn.class.php:167
+#: models/cdn.class.php:168
 msgid "You can enter multiple domains separated by <code>,</code>."
 msgstr ""
 
-#: models/cdn.class.php:171
+#: models/cdn.class.php:172
 msgid "Secure Token"
 msgstr ""
 
-#: models/cdn.class.php:178, models/digitalocean-spaces.class.php:160, models/email-subscription.php:116, models/linode-object-storage.class.php:91, models/stats.php:157, models/youtube.php:394, view/admin.php:91, view/admin.php:221, view/admin.php:416, view/admin.php:551, view/admin.php:759, view/admin.php:779, view/admin.php:795, view/admin.php:812, view/admin.php:864, view/admin.php:933, view/admin.php:987, view/admin.php:1219, view/admin.php:1559, view/admin.php:1586, view/admin.php:1627, view/admin.php:1695, view/admin.php:2052
+#: models/cdn.class.php:179, models/digitalocean-spaces.class.php:160, models/email-subscription.php:116, models/linode-object-storage.class.php:91, models/stats.php:157, models/youtube.php:387, view/admin.php:91, view/admin.php:220, view/admin.php:412, view/admin.php:547, view/admin.php:755, view/admin.php:775, view/admin.php:791, view/admin.php:808, view/admin.php:860, view/admin.php:929, view/admin.php:983, view/admin.php:1215, view/admin.php:1572, view/admin.php:1602, view/admin.php:1643, view/admin.php:1711, view/admin.php:2068
 msgid "Save"
 msgstr ""
 
-#: models/custom-videos.php:306, models/custom-videos.php:661, models/list-table.php:71
+#: models/custom-videos.php:306, models/custom-videos.php:705, models/list-table.php:71
 msgid "Videos"
 msgstr ""
 
-#: models/custom-videos.php:667
+#: models/custom-videos.php:720
 msgid "You can put your Vimeo or YouTube links here."
 msgstr ""
 
-#: models/custom-videos.php:667
+#: models/custom-videos.php:720
 msgid "These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up."
 msgstr ""
 
-#: models/custom-videos.php:686
+#: models/custom-videos.php:739
 msgid "Profile Videos"
 msgstr ""
 
@@ -599,11 +599,11 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: models/email-subscription.php:150, view/wizard.php:615
+#: models/email-subscription.php:150, view/wizard.php:581
 msgid "Options"
 msgstr ""
 
-#: models/email-subscription.php:151, view/admin.php:884
+#: models/email-subscription.php:151, view/admin.php:880
 msgid "Status"
 msgstr ""
 
@@ -615,7 +615,7 @@ msgstr ""
 msgid "View list"
 msgstr ""
 
-#: models/email-subscription.php:227, view/admin.php:922
+#: models/email-subscription.php:227, view/admin.php:918
 msgid "Remove"
 msgstr ""
 
@@ -663,11 +663,11 @@ msgstr ""
 msgid "<strong>Requirements</strong>: video has to be on https:// and splash screen has to be present. Videos with download protection are automatically excluded."
 msgstr ""
 
-#: models/fv-player.php:645, view/admin.php:376
+#: models/fv-player.php:653, view/admin.php:375
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:2909
+#: models/fv-player.php:3035
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
@@ -695,7 +695,7 @@ msgstr ""
 msgid "Use if FV Player lightbox is not working and you see a \"fancyBox already initialized\" message on JavaScript console."
 msgstr ""
 
-#: models/lightbox.php:589, view/admin.php:1037
+#: models/lightbox.php:589, view/admin.php:1033
 msgid "Enable video lightbox"
 msgstr ""
 
@@ -751,7 +751,7 @@ msgstr ""
 msgid "Plays"
 msgstr ""
 
-#: models/player-position-save.php:540
+#: models/player-position-save.php:544
 msgid "Remember video position"
 msgstr ""
 
@@ -771,23 +771,23 @@ msgstr ""
 msgid "System Info"
 msgstr ""
 
-#: models/xml-video-sitemap.php:562
+#: models/xml-video-sitemap.php:560
 msgid "Use XML Video Sitemap"
 msgstr ""
 
-#: models/xml-video-sitemap.php:562
+#: models/xml-video-sitemap.php:560
 msgid "Creates <code>%s</code> which you can submit via Google Webmaster Tools."
 msgstr ""
 
-#: models/xml-video-sitemap.php:562
+#: models/xml-video-sitemap.php:560
 msgid "As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing."
 msgstr ""
 
-#: models/xml-video-sitemap.php:571
+#: models/xml-video-sitemap.php:569
 msgid "Sitemap Post Meta"
 msgstr ""
 
-#: models/xml-video-sitemap.php:571
+#: models/xml-video-sitemap.php:569
 msgid "You can enter post meta keys here, use <code>,</code> to separate multiple values."
 msgstr ""
 
@@ -871,1187 +871,1183 @@ msgstr ""
 msgid "Show Amazon S3 Browser in the \"Add Video\" dialog."
 msgstr ""
 
-#: view/admin.php:158
+#: view/admin.php:157
 msgid "Amazon Bucket"
 msgstr ""
 
-#: view/admin.php:158
+#: view/admin.php:157
 msgid "We recommend that you simply put all of your protected video into a single bucket and enter its name here. All matching videos will use the protected URLs."
 msgstr ""
 
-#: view/admin.php:162
+#: view/admin.php:161
 msgid "Region"
 msgstr ""
 
-#: view/admin.php:165
+#: view/admin.php:164
 msgid "Select the region"
 msgstr ""
 
-#: view/admin.php:178
+#: view/admin.php:177
 msgid "Access Key ID"
 msgstr ""
 
-#: view/admin.php:195
+#: view/admin.php:194
 msgid "Secret Access Key"
 msgstr ""
 
-#: view/admin.php:209
+#: view/admin.php:208
 msgid "remove"
 msgstr ""
 
-#: view/admin.php:222
+#: view/admin.php:221
 msgid "Add more Amazon S3 secure buckets"
 msgstr ""
 
-#: view/admin.php:238
+#: view/admin.php:237
 msgid "Controlbar Always Visible"
 msgstr ""
 
-#: view/admin.php:240
+#: view/admin.php:239
 msgid "Default Video Size"
 msgstr ""
 
-#: view/admin.php:243, view/wizard.php:883
+#: view/admin.php:242, view/wizard.php:849
 msgid "Width"
 msgstr ""
 
-#: view/admin.php:244, view/wizard.php:889
+#: view/admin.php:243, view/wizard.php:855
 msgid "Height"
 msgstr ""
 
-#: view/admin.php:245
+#: view/admin.php:244
 msgid "Enter values in pixels or 100%."
 msgstr ""
 
-#: view/admin.php:250
+#: view/admin.php:249
 msgid "Default Volume"
 msgstr ""
 
-#: view/admin.php:258
+#: view/admin.php:257
 msgid "Disable Admin Video Checker"
 msgstr ""
 
-#: view/admin.php:258
+#: view/admin.php:257
 msgid "Checks your video encoding when you open a post with video as admin. Notifies you about possible playback issues."
 msgstr ""
 
-#: view/admin.php:259
+#: view/admin.php:258
 msgid "Disable Embed Button"
 msgstr ""
 
-#: view/admin.php:259
+#: view/admin.php:258
 msgid "Removes embed button from top bar."
 msgstr ""
 
-#: view/admin.php:260
+#: view/admin.php:259
 msgid "Disable Playlist Autoadvance"
 msgstr ""
 
-#: view/admin.php:260
+#: view/admin.php:259
 msgid "Playlist won't play the next video automatically."
 msgstr ""
 
-#: view/admin.php:261
+#: view/admin.php:260
 msgid "Disable Sharing"
 msgstr ""
 
-#: view/admin.php:261
+#: view/admin.php:260
 msgid "Removes sharing buttons from top bar."
 msgstr ""
 
-#: view/admin.php:262
+#: view/admin.php:261
 msgid "Disable Video Links"
 msgstr ""
 
-#: view/admin.php:262
+#: view/admin.php:261
 msgid "Removes the \"Link\" item to the top bar."
 msgstr ""
 
-#: view/admin.php:262
+#: view/admin.php:261
 msgid "Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public."
 msgstr ""
 
-#: view/admin.php:263
+#: view/admin.php:262
 msgid "Enable Chromecast"
 msgstr ""
 
-#: view/admin.php:263
+#: view/admin.php:262
 msgid "Adds support for Google Chromecast."
 msgstr ""
 
-#: view/admin.php:267
+#: view/admin.php:266
 msgid "Flash Streaming Server (deprecated)"
 msgstr ""
 
-#: view/admin.php:270
+#: view/admin.php:269
 msgid "Enter your default RTMP streaming server (Amazon CloudFront domain)."
 msgstr ""
 
-#: view/admin.php:276
+#: view/admin.php:275
 msgid "Force HD Streaming"
 msgstr ""
 
-#: view/admin.php:276
+#: view/admin.php:275
 msgid "Use HD quality for HLS/MPEG-DASH even on slow connections."
 msgstr ""
 
-#: view/admin.php:276
+#: view/admin.php:275
 msgid "User can still switch to lower quality by hand. Doesn't work on iPhones."
 msgstr ""
 
-#: view/admin.php:278
+#: view/admin.php:277
 msgid "Fullscreen Button"
 msgstr ""
 
-#: view/admin.php:278
+#: view/admin.php:277
 msgid "Adds fullscreen button to player control bar."
 msgstr ""
 
-#: view/admin.php:281
+#: view/admin.php:280
 msgid "Google Analytics ID"
 msgstr ""
 
-#: view/admin.php:284
+#: view/admin.php:283
 msgid "Will be automatically loaded when playing a video."
 msgstr ""
 
-#: view/admin.php:292
+#: view/admin.php:291
 msgid "Paste logo url or upload image to show custom logo on player."
 msgstr ""
 
-#: view/admin.php:293, view/admin.php:403
+#: view/admin.php:292, view/admin.php:402
 msgid "Upload Image"
 msgstr ""
 
-#: view/admin.php:299
+#: view/admin.php:298
 msgid "Position"
 msgstr ""
 
-#: view/admin.php:300
+#: view/admin.php:299
 msgid "Bottom-left"
 msgstr ""
 
-#: view/admin.php:301
+#: view/admin.php:300
 msgid "Bottom-right"
 msgstr ""
 
-#: view/admin.php:302
+#: view/admin.php:301
 msgid "Top-left"
 msgstr ""
 
-#: view/admin.php:303
+#: view/admin.php:302
 msgid "Top-right"
 msgstr ""
 
-#: view/admin.php:309
+#: view/admin.php:308
 msgid "Matomo/Piwik Tracking"
 msgstr ""
 
-#: view/admin.php:312
+#: view/admin.php:311
 msgid "matomo.your-domain.com"
 msgstr ""
 
-#: view/admin.php:313
+#: view/admin.php:312
 msgid "Site ID"
 msgstr ""
 
-#: view/admin.php:318
+#: view/admin.php:317
 msgid "Multiple video playback"
 msgstr ""
 
-#: view/admin.php:318
+#: view/admin.php:317
 msgid "Allows multiple players to play at once. Only one player remains audible."
 msgstr ""
 
-#: view/admin.php:320
+#: view/admin.php:319
 msgid "No Picture Button"
 msgstr ""
 
-#: view/admin.php:320
+#: view/admin.php:319
 msgid "Adds a button to turn the video picture on and off."
 msgstr ""
 
-#: view/admin.php:326
+#: view/admin.php:325
 msgid "The big play icon on top of the player. Recommended size is 168 pixels."
 msgstr ""
 
-#: view/admin.php:327
+#: view/admin.php:326
 msgid "Upload Icon"
 msgstr ""
 
-#: view/admin.php:333
+#: view/admin.php:332
 msgid "Playlist style"
 msgstr ""
 
-#: view/admin.php:361
+#: view/admin.php:360
 msgid "Enter your default playlist style here"
 msgstr ""
 
-#: view/admin.php:368
+#: view/admin.php:367
 msgid "Repeat Button"
 msgstr ""
 
-#: view/admin.php:368
+#: view/admin.php:367
 msgid "Adds a button to set playlist/track repeat and shuffle."
 msgstr ""
 
-#: view/admin.php:370
+#: view/admin.php:369
 msgid "Rewind/Forward Button"
 msgstr ""
 
-#: view/admin.php:370
+#: view/admin.php:369
 msgid "Adds a button to go 10 seconds back/forth."
 msgstr ""
 
-#: view/admin.php:373
+#: view/admin.php:372
 msgid "Sharing Text"
 msgstr ""
 
-#: view/admin.php:381, view/admin.php:977, view/wizard.php:779
+#: view/admin.php:380, view/admin.php:973, view/wizard.php:745
 msgid "Speed Buttons"
 msgstr ""
 
-#: view/admin.php:381
+#: view/admin.php:380
 msgid "Speed buttons control playback speed and only work in HTML5 compatible browsers."
 msgstr ""
 
-#: view/admin.php:384
+#: view/admin.php:383
 msgid "Speed Step"
 msgstr ""
 
-#: view/admin.php:395
+#: view/admin.php:394
 msgid "Speed buttons will increase or decrease the speed in steps of selected value"
 msgstr ""
 
-#: view/admin.php:400
+#: view/admin.php:399
 msgid "Splash Image"
 msgstr ""
 
-#: view/admin.php:402
+#: view/admin.php:401
 msgid "Default which will be used for any player without its own splash image."
 msgstr ""
 
-#: view/admin.php:406
+#: view/admin.php:405
 msgid "Subtitles On By Default"
 msgstr ""
 
-#: view/admin.php:406
+#: view/admin.php:405
 msgid "Normally you have to hit a button in controlbar to turn on subtitles."
 msgstr ""
 
-#: view/admin.php:411
-msgid "Missing settings? Check <a class=\"fv-settings-anchor\" href=\"#fv_flowplayer_integrations\">Integrations/Compatbility</a> box below."
-msgstr ""
-
-#: view/admin.php:581
+#: view/admin.php:577
 msgid "FV Player is a free, easy-to-use, and complete solution for embedding"
 msgstr ""
 
-#: view/admin.php:583
+#: view/admin.php:579
 msgid "and"
 msgstr ""
 
-#: view/admin.php:585
+#: view/admin.php:581
 msgid "videos into your posts or pages. With MP4 videos, FV Player offers 98&#37; coverage even on mobile devices."
 msgstr ""
 
-#: view/admin.php:602
+#: view/admin.php:598
 msgid "You can customize the colors of the player to match your website."
 msgstr ""
 
-#: view/admin.php:619
+#: view/admin.php:615
 msgid "Here you can enable and configure advanced hosting options."
 msgstr ""
 
-#: view/admin.php:636
+#: view/admin.php:632
 msgid "Here you can configure ads and banners that will be shown in the video."
 msgstr ""
 
-#: view/admin.php:653
+#: view/admin.php:649
 msgid "Maintenance tools and debug info."
 msgstr ""
 
-#: view/admin.php:673
+#: view/admin.php:669
 msgid "Purchase <a href=\"https://foliovision.com/player/download\" target=\"_blank\"><b>FV Player Licence</b></a>, and you will be able to configure multiple, clickable Video Ads, that can be played before or after Your videos."
 msgstr ""
 
-#: view/admin.php:676
+#: view/admin.php:672
 msgid "You can configure video ads globally, or on a per video basis."
 msgstr ""
 
-#: view/admin.php:679
+#: view/admin.php:675
 msgid "If you are interested in VAST or VPAID ads, then check out <a href=\"https://foliovision.com/player/vast\" target=\"_blank\"><b>FV Player VAST</b></a>."
 msgstr ""
 
-#: view/admin.php:690
+#: view/admin.php:686
 msgid "Following options are suitable for web developers and programmers."
 msgstr ""
 
-#: view/admin.php:693
+#: view/admin.php:689
 msgid "Disable database conversion"
 msgstr ""
 
-#: view/admin.php:693
+#: view/admin.php:689
 msgid "Stop converting [fvplayer src=\"...\"] shortcodes, [video] shortcodes, Vimeo and YouTube links to database-driven FV Player when post is saved."
 msgstr ""
 
-#: view/admin.php:694
+#: view/admin.php:690
 msgid "Disable saving skin CSS to a static file"
 msgstr ""
 
-#: view/admin.php:694
+#: view/admin.php:690
 msgid "Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css."
 msgstr ""
 
-#: view/admin.php:694
+#: view/admin.php:690
 msgid "We do this to avoid a big style tag in your site &lt;head&gt;. Don't edit this file though, as it will be overwritten by plugin update or saving its options!"
 msgstr ""
 
-#: view/admin.php:697
+#: view/admin.php:693
 msgid "Enable profile videos"
 msgstr ""
 
-#: view/admin.php:702
+#: view/admin.php:698
 msgid "Check your site carefully after enabling. Videos attached to the user profile will be showing as a part of the user bio."
 msgstr ""
 
-#: view/admin.php:704
+#: view/admin.php:700
 msgid "This feature is designed for YouTube and Vimeo videos and works best for our licensed users who get these videos playing without YouTube or Vimeo branding."
 msgstr ""
 
-#: view/admin.php:705
+#: view/admin.php:701
 msgid "Some themes show author bio on the author post archive automatically (Genesis framework and others). Or you can also just put this code into your theme archive.php template, right before <code>while ( have_posts() )</code> is called:"
 msgstr ""
 
-#: view/admin.php:721
+#: view/admin.php:717
 msgid "We will be adding integration for it for popular user profile plugins."
 msgstr ""
 
-#: view/admin.php:728
+#: view/admin.php:724
 msgid "Handle WordPress audio/video"
 msgstr ""
 
-#: view/admin.php:729
+#: view/admin.php:725
 msgid "Load JavaScript everywhere"
 msgstr ""
 
-#: view/admin.php:729
+#: view/admin.php:725
 msgid "If you use some special JavaScript integration you might prefer this option."
 msgstr ""
 
-#: view/admin.php:729
+#: view/admin.php:725
 msgid "Otherwise our JavaScript only loads if the shortcode is found in any of the posts being currently displayed. Required if you load content using Ajax, like in various LMS systems."
 msgstr ""
 
-#: view/admin.php:732
+#: view/admin.php:728
 msgid "Optimize JavaScript loading"
 msgstr ""
 
-#: view/admin.php:736
+#: view/admin.php:732
 msgid "WP Rocket setting to <a href=\"%s\" target=\"_blank\">Delay JavaScript execution</a> is enabled, cannot use this setting."
 msgstr ""
 
-#: view/admin.php:737
+#: view/admin.php:733
 msgid "Helps with Google PageSpeed scores."
 msgstr ""
 
-#: view/admin.php:738
+#: view/admin.php:734
 msgid "FV Player JavaScript will be only loaded once the user user start to use the page or on video tap."
 msgstr ""
 
-#: view/admin.php:742
+#: view/admin.php:738
 msgid "Parse old shortcodes with commas"
 msgstr ""
 
-#: view/admin.php:742
+#: view/admin.php:738
 msgid "Older versions of this plugin used commas to sepparate shortcode parameters."
 msgstr ""
 
-#: view/admin.php:742
+#: view/admin.php:738
 msgid "This option will make sure it works with current version. Turn this off if you have some problems with display or other plugins which use shortcodes."
 msgstr ""
 
-#: view/admin.php:743
+#: view/admin.php:739
 msgid "Parse Vimeo and YouTube links"
 msgstr ""
 
-#: view/admin.php:743
+#: view/admin.php:739
 msgid "Affects comments, bbPress and BuddyPress. These links will be displayed as videos."
 msgstr ""
 
-#: view/admin.php:743
+#: view/admin.php:739
 msgid "This option makes most sense together with FV Player Pro as it embeds these videos using FV Player. Enables use of shortcodes in comments and bbPress."
 msgstr ""
 
-#: view/admin.php:744
+#: view/admin.php:740
 msgid "Post Thumbnail"
 msgstr ""
 
-#: view/admin.php:744
+#: view/admin.php:740
 msgid "Setting a video splash screen from the media library will automatically make it the splash image if there is none."
 msgstr ""
 
-#: view/admin.php:745
+#: view/admin.php:741
 msgid "Prefer Flash player by default"
 msgstr ""
 
-#: view/admin.php:745
+#: view/admin.php:741
 msgid "Provides greater compatibility."
 msgstr ""
 
-#: view/admin.php:745
+#: view/admin.php:741
 msgid "We use Flash for MP4 files in IE9-10 and M4V files in Firefox regardless of this setting."
 msgstr ""
 
-#: view/admin.php:746
+#: view/admin.php:742
 msgid "RTMP bufferTime tweak (deprecated)"
 msgstr ""
 
-#: view/admin.php:746
+#: view/admin.php:742
 msgid "Use if your live streams are not smooth."
 msgstr ""
 
-#: view/admin.php:746
+#: view/admin.php:742
 msgid "Adobe <a href=\"http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/NetStream.html#bufferTime\">recommends</a> to set bufferTime to 0 for live streams, but if your stream is not smooth, you can use this setting."
 msgstr ""
 
-#: view/admin.php:772
+#: view/admin.php:768
 msgid "Use native fullscreen on mobile"
 msgstr ""
 
-#: view/admin.php:772
+#: view/admin.php:768
 msgid "Stops popups, ads or subtitles from working, but provides faster interface. We set this for Android < 4.4 and iOS < 7 automatically."
 msgstr ""
 
-#: view/admin.php:773
+#: view/admin.php:769
 msgid "Force fullscreen on mobile"
 msgstr ""
 
-#: view/admin.php:773
+#: view/admin.php:769
 msgid "Video playback will start in fullscreen. iPhone with iOS < 10 always forces fullscreen for video playback."
 msgstr ""
 
-#: view/admin.php:775
+#: view/admin.php:771
 msgid "Alternative iPhone fullscreen mode"
 msgstr ""
 
-#: view/admin.php:775
+#: view/admin.php:771
 msgid "Use if you see site elements such as floating header bar ovelaying the player when in fullscreen."
 msgstr ""
 
-#: view/admin.php:792
+#: view/admin.php:788
 msgid "Disable local storage"
 msgstr ""
 
-#: view/admin.php:792
+#: view/admin.php:788
 msgid "Remember video position will not work for non logged users. Video volume, mute status and subtitles selection will also not be stored."
 msgstr ""
 
-#: view/admin.php:808
+#: view/admin.php:804
 msgid "Use Schema.org markup"
 msgstr ""
 
-#: view/admin.php:808
+#: view/admin.php:804
 msgid " Adds the video meta data information for search engines."
 msgstr ""
 
-#: view/admin.php:833
+#: view/admin.php:829
 msgid "None"
 msgstr ""
 
-#: view/admin.php:834
+#: view/admin.php:830
 msgid "Random"
 msgstr ""
 
-#: view/admin.php:856
+#: view/admin.php:852
 msgid "Default Popup"
 msgstr ""
 
-#: view/admin.php:859
+#: view/admin.php:855
 msgid "You can set a default popup here and then skip it for individual videos."
 msgstr ""
 
-#: view/admin.php:875
+#: view/admin.php:871
 msgid "Add any popups here which you would like to use with multiple videos."
 msgstr ""
 
-#: view/admin.php:903, view/admin.php:1163
+#: view/admin.php:899, view/admin.php:1159
 msgid "Name"
 msgstr ""
 
-#: view/admin.php:911
+#: view/admin.php:907
 msgid "Custom<br />CSS"
 msgstr ""
 
-#: view/admin.php:919
+#: view/admin.php:915
 msgid "Show on pause"
 msgstr ""
 
-#: view/admin.php:921
+#: view/admin.php:917
 msgid "Disable"
 msgstr ""
 
-#: view/admin.php:934
+#: view/admin.php:930
 msgid "Add more Popups"
 msgstr ""
 
-#: view/admin.php:965
+#: view/admin.php:961
 msgid "Which features should be available in shortcode editor?"
 msgstr ""
 
-#: view/admin.php:967
+#: view/admin.php:963
 msgid "Ads"
 msgstr ""
 
-#: view/admin.php:968, view/wizard.php:696
+#: view/admin.php:964, view/wizard.php:662
 msgid "Autoplay"
 msgstr ""
 
-#: view/admin.php:969, view/admin.php:1415, view/wizard.php:766
+#: view/admin.php:965, view/admin.php:1417, view/wizard.php:732
 msgid "Controlbar"
 msgstr ""
 
-#: view/admin.php:970
+#: view/admin.php:966
 msgid "Embed"
 msgstr ""
 
-#: view/admin.php:971, view/wizard.php:773
+#: view/admin.php:967, view/wizard.php:739
 msgid "LMS | Teaching"
 msgstr ""
 
-#: view/admin.php:973, view/wizard.php:730
+#: view/admin.php:969, view/wizard.php:696
 msgid "Playlist Auto Advance"
 msgstr ""
 
-#: view/admin.php:974, view/wizard.php:736
+#: view/admin.php:970, view/wizard.php:702
 msgid "Playlist Style"
 msgstr ""
 
-#: view/admin.php:975
+#: view/admin.php:971
 msgid "Playlist Item Titles"
 msgstr ""
 
-#: view/admin.php:976, view/wizard.php:797
+#: view/admin.php:972, view/wizard.php:763
 msgid "Sharing Buttons"
 msgstr ""
 
-#: view/admin.php:979
+#: view/admin.php:975
 msgid "Sticky"
 msgstr ""
 
-#: view/admin.php:981
+#: view/admin.php:977
 msgid "Video Actions"
 msgstr ""
 
-#: view/admin.php:981
+#: view/admin.php:977
 msgid "Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen"
 msgstr ""
 
-#: view/admin.php:1006
+#: view/admin.php:1002
 msgid "Purchase FV Player license"
 msgstr ""
 
-#: view/admin.php:1006
+#: view/admin.php:1002
 msgid "to enable Pro features!"
 msgstr ""
 
-#: view/admin.php:1004
+#: view/admin.php:1000
 msgid "Valid license found, click the button at the top of the screen to install FV Player Pro!"
 msgstr ""
 
-#: view/admin.php:1010
+#: view/admin.php:1006
 msgid "Advanced Vimeo embeding"
 msgstr ""
 
-#: view/admin.php:1014
+#: view/admin.php:1010
 msgid "Use Vimeo as your video host and use all of FV Player features."
 msgstr ""
 
-#: view/admin.php:1019
+#: view/admin.php:1015
 msgid "Advanced YouTube embeding"
 msgstr ""
 
-#: view/admin.php:1023
+#: view/admin.php:1019
 msgid "Use YouTube as your video host and use all of FV Player features."
 msgstr ""
 
-#: view/admin.php:1028
+#: view/admin.php:1024
 msgid "Enable user defined AB loop"
 msgstr ""
 
-#: view/admin.php:1032
+#: view/admin.php:1028
 msgid "Let your users repeat the parts of the video which they like!"
 msgstr ""
 
-#: view/admin.php:1041
+#: view/admin.php:1037
 msgid "Enables Lightbox video gallery to show videos in a lightbox popup!"
 msgstr ""
 
-#: view/admin.php:1046
+#: view/admin.php:1042
 msgid "Enable quality switching"
 msgstr ""
 
-#: view/admin.php:1050
+#: view/admin.php:1046
 msgid "Upload your videos in multiple quality for best user experience with YouTube-like quality switching!"
 msgstr ""
 
-#: view/admin.php:1055
+#: view/admin.php:1051
 msgid "Amazon CloudFront protected content"
 msgstr ""
 
-#: view/admin.php:1059
+#: view/admin.php:1055
 msgid "Protect your Amazon CDN hosted videos"
 msgstr ""
 
-#: view/admin.php:1064
+#: view/admin.php:1060
 msgid "Autoplay just once"
 msgstr ""
 
-#: view/admin.php:1068
+#: view/admin.php:1064
 msgid "Makes sure each video autoplays only once for each visitor."
 msgstr ""
 
-#: view/admin.php:1073
+#: view/admin.php:1069
 msgid "Enable video ads"
 msgstr ""
 
-#: view/admin.php:1077
+#: view/admin.php:1073
 msgid "Define your own videos ads to play in together with your videos - postroll or prerool"
 msgstr ""
 
-#: view/admin.php:1082
+#: view/admin.php:1078
 msgid "Upcoming pro features"
 msgstr ""
 
-#: view/admin.php:1085
+#: view/admin.php:1081
 msgid "Enable PayWall"
 msgstr ""
 
-#: view/admin.php:1089
+#: view/admin.php:1085
 msgid "Monetize the video content on your membership site."
 msgstr ""
 
-#: view/admin.php:1099
+#: view/admin.php:1095
 msgid "This section allows you to convert videos posted using other plugins to FV Player shortcodes."
 msgstr ""
 
-#: view/admin.php:1118
+#: view/admin.php:1114
 msgid "Default pre-roll ad:"
 msgstr ""
 
-#: view/admin.php:1126
+#: view/admin.php:1122
 msgid "Set which ad should be played before videos."
 msgstr ""
 
-#: view/admin.php:1131
+#: view/admin.php:1127
 msgid "Default post-roll ad:"
 msgstr ""
 
-#: view/admin.php:1139
+#: view/admin.php:1135
 msgid "Set which ad should be played after videos."
 msgstr ""
 
-#: view/admin.php:1144
+#: view/admin.php:1140
 msgid "Default ad skip time"
 msgstr ""
 
-#: view/admin.php:1147
+#: view/admin.php:1143
 msgid "Enter value in seconds"
 msgstr ""
 
-#: view/admin.php:1163
+#: view/admin.php:1159
 msgid "Ad name"
 msgstr ""
 
-#: view/admin.php:1164
+#: view/admin.php:1160
 msgid "Click URL"
 msgstr ""
 
-#: view/admin.php:1164
+#: view/admin.php:1160
 msgid "Clicking the video ad will open the URL in new window"
 msgstr ""
 
-#: view/admin.php:1165, view/wizard.php:613
+#: view/admin.php:1161, view/wizard.php:579
 msgid "Video"
 msgstr ""
 
-#: view/admin.php:1165
+#: view/admin.php:1161
 msgid "Enter the video URL here"
 msgstr ""
 
-#: view/admin.php:1177
+#: view/admin.php:1173
 msgid "Add more video ads"
 msgstr ""
 
-#: view/admin.php:1249
+#: view/admin.php:1251
 msgid "Hint: play the video to see live preview of the color settings"
 msgstr ""
 
-#: view/admin.php:1257, view/admin.php:2070
+#: view/admin.php:1259, view/admin.php:2086
 msgid "Skin"
 msgstr ""
 
-#: view/admin.php:1308, view/admin.php:1336
+#: view/admin.php:1310, view/admin.php:1338
 msgid "Color"
 msgstr ""
 
-#: view/admin.php:1372
+#: view/admin.php:1374
 msgid "Border"
 msgstr ""
 
-#: view/admin.php:1379
+#: view/admin.php:1381
 msgid "Border color"
 msgstr ""
 
-#: view/admin.php:1388
+#: view/admin.php:1390
 msgid "Bottom Margin"
 msgstr ""
 
-#: view/admin.php:1390
+#: view/admin.php:1392
 msgid "Enter value in em"
 msgstr ""
 
-#: view/admin.php:1397
+#: view/admin.php:1399
 msgid "Buffer"
 msgstr ""
 
-#: view/admin.php:1406
+#: view/admin.php:1408
 msgid "Canvas"
 msgstr ""
 
-#: view/admin.php:1424, view/admin.php:1605
+#: view/admin.php:1426, view/admin.php:1621
 msgid "Font Face"
 msgstr ""
 
-#: view/admin.php:1426
+#: view/admin.php:1428
 msgid "(inherit from template)"
 msgstr ""
 
-#: view/admin.php:1439
+#: view/admin.php:1441
 msgid "Player position"
 msgstr ""
 
-#: view/admin.php:1442
+#: view/admin.php:1444
 msgid "Centered"
 msgstr ""
 
-#: view/admin.php:1451
+#: view/admin.php:1453
 msgid "Progress"
 msgstr ""
 
-#: view/admin.php:1460
+#: view/admin.php:1462
 msgid "Time"
 msgstr ""
 
-#: view/admin.php:1469
+#: view/admin.php:1471
 msgid "Buttons"
 msgstr ""
 
-#: view/admin.php:1479
+#: view/admin.php:1481
 msgid "Timeline"
 msgstr ""
 
-#: view/admin.php:1482, view/admin.php:1497
+#: view/admin.php:1484, view/admin.php:1499
 msgid "Default"
 msgstr ""
 
-#: view/admin.php:1483
+#: view/admin.php:1485
 msgid "Slim"
 msgstr ""
 
-#: view/admin.php:1484
+#: view/admin.php:1486
 msgid "Full"
 msgstr ""
 
-#: view/admin.php:1485
+#: view/admin.php:1487
 msgid "Fat"
 msgstr ""
 
-#: view/admin.php:1486
+#: view/admin.php:1488
 msgid "Minimal"
 msgstr ""
 
-#: view/admin.php:1494
+#: view/admin.php:1496
 msgid "Icons"
 msgstr ""
 
-#: view/admin.php:1498
+#: view/admin.php:1500
 msgid "Edgy"
 msgstr ""
 
-#: view/admin.php:1499
+#: view/admin.php:1501
 msgid "Outlined"
 msgstr ""
 
-#: view/admin.php:1500
+#: view/admin.php:1502
 msgid "Playful"
 msgstr ""
 
-#: view/admin.php:1520
+#: view/admin.php:1533
 msgid "Hint: you can click the thumbnails to switch videos in the above player. This preview uses the horizontal playlist style."
 msgstr ""
 
-#: view/admin.php:1527
+#: view/admin.php:1540
 msgid "Playlist Design"
 msgstr ""
 
-#: view/admin.php:1532
+#: view/admin.php:1545
 msgid "2017"
 msgstr ""
 
-#: view/admin.php:1533
+#: view/admin.php:1546
 msgid "2017 with captions"
 msgstr ""
 
-#: view/admin.php:1534
+#: view/admin.php:1547
 msgid "2014"
 msgstr ""
 
-#: view/admin.php:1538, view/admin.php:1621
+#: view/admin.php:1551, view/admin.php:1637
 msgid "Background Color"
 msgstr ""
 
-#: view/admin.php:1543
+#: view/admin.php:1556
 msgid "Active Item"
 msgstr ""
 
-#: view/admin.php:1548
+#: view/admin.php:1561
 msgid "Font Color"
 msgstr ""
 
-#: view/admin.php:1553
+#: view/admin.php:1566
 msgid "Use custom color"
 msgstr ""
 
-#: view/admin.php:1553, view/admin.php:1554, view/admin.php:1651
+#: view/admin.php:1566, view/admin.php:1567, view/admin.php:1667
 msgid ""
 msgstr ""
 
-#: view/admin.php:1554
+#: view/admin.php:1567
 msgid "Inherit from theme"
 msgstr ""
 
-#: view/admin.php:1608
+#: view/admin.php:1624
 msgid "(inherit from player)"
 msgstr ""
 
-#: view/admin.php:1616
+#: view/admin.php:1632
 msgid "Font Size"
 msgstr ""
 
-#: view/admin.php:1617, view/admin.php:1677
+#: view/admin.php:1633, view/admin.php:1693
 msgid "Enter value in pixels"
 msgstr ""
 
-#: view/admin.php:1634
+#: view/admin.php:1650
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 
-#: view/admin.php:1635
+#: view/admin.php:1651
 msgid "Second line."
 msgstr ""
 
-#: view/admin.php:1664
+#: view/admin.php:1680
 msgid "Placement"
 msgstr ""
 
-#: view/admin.php:1675
+#: view/admin.php:1691
 msgid "Desktop Player Width [px]"
 msgstr ""
 
-#: view/admin.php:1678
+#: view/admin.php:1694
 msgid "Used on desktop and (if enabled) also on mobile in landscape orientation and tablets."
 msgstr ""
 
-#: view/admin.php:1683
+#: view/admin.php:1699
 msgid "Mobile Player Width"
 msgstr ""
 
-#: view/admin.php:1685
+#: view/admin.php:1701
 msgid "Used on mobile (device width lower than 480 pixels)."
 msgstr ""
 
-#: view/admin.php:1709
+#: view/admin.php:1725
 msgid "Why FV Player?"
 msgstr ""
 
-#: view/admin.php:1719
+#: view/admin.php:1735
 msgid "Getting Started"
 msgstr ""
 
-#: view/admin.php:1736
+#: view/admin.php:1752
 msgid "Creating and Managing Playlists"
 msgstr ""
 
-#: view/admin.php:1742
+#: view/admin.php:1758
 msgid "FAQ"
 msgstr ""
 
-#: view/admin.php:1749
+#: view/admin.php:1765
 msgid "Setting Screens"
 msgstr ""
 
-#: view/admin.php:1761
+#: view/admin.php:1777
 msgid "Video Hosting"
 msgstr ""
 
-#: view/admin.php:1778
+#: view/admin.php:1794
 msgid "Advanced features"
 msgstr ""
 
-#: view/admin.php:1792
+#: view/admin.php:1808
 msgid "Accessibility Features"
 msgstr ""
 
-#: view/admin.php:1805
+#: view/admin.php:1821
 msgid "Sharing Options"
 msgstr ""
 
-#: view/admin.php:1816
+#: view/admin.php:1832
 msgid "Video Security"
 msgstr ""
 
-#: view/admin.php:1826
+#: view/admin.php:1842
 msgid "CDN Options"
 msgstr ""
 
-#: view/admin.php:1840
+#: view/admin.php:1856
 msgid "Secure Video Encoding"
 msgstr ""
 
-#: view/admin.php:1851
+#: view/admin.php:1867
 msgid "Video Membership, Pay Per View and eLearning"
 msgstr ""
 
-#: view/admin.php:1860
+#: view/admin.php:1876
 msgid "Membership Sites"
 msgstr ""
 
-#: view/admin.php:1867
+#: view/admin.php:1883
 msgid "WordPress eLearning"
 msgstr ""
 
-#: view/admin.php:1874
+#: view/admin.php:1890
 msgid "FV Player VAST/VPAID"
 msgstr ""
 
-#: view/admin.php:1891, view/admin.php:2074
+#: view/admin.php:1907, view/admin.php:2090
 msgid "Tools"
 msgstr ""
 
-#: view/admin.php:1900
+#: view/admin.php:1916
 msgid "Live Streaming"
 msgstr ""
 
-#: view/admin.php:1908
+#: view/admin.php:1924
 msgid "Video Advertising"
 msgstr ""
 
-#: view/admin.php:1917
+#: view/admin.php:1933
 msgid "Analytics"
 msgstr ""
 
-#: view/admin.php:1928
+#: view/admin.php:1944
 msgid "Google Ads"
 msgstr ""
 
-#: view/admin.php:1935
+#: view/admin.php:1951
 msgid "Casting Options"
 msgstr ""
 
-#: view/admin.php:1941
+#: view/admin.php:1957
 msgid "Audio Player"
 msgstr ""
 
-#: view/admin.php:1948
+#: view/admin.php:1964
 msgid "Troubleshooting"
 msgstr ""
 
-#: view/admin.php:1959
+#: view/admin.php:1975
 msgid "For Developers"
 msgstr ""
 
-#: view/admin.php:1972
+#: view/admin.php:1988
 msgid "Changelog"
 msgstr ""
 
-#: view/admin.php:1979
+#: view/admin.php:1995
 msgid "Legal"
 msgstr ""
 
-#: view/admin.php:2047
+#: view/admin.php:2063
 msgid "Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working."
 msgstr ""
 
-#: view/admin.php:2049
+#: view/admin.php:2065
 msgid "Remove all data"
 msgstr ""
 
-#: view/admin.php:2049
+#: view/admin.php:2065
 msgid "This action is irreversible, please backup your website if you are not absolutely sure."
 msgstr ""
 
-#: view/admin.php:2069
+#: view/admin.php:2085
 msgid "Setup"
 msgstr ""
 
-#: view/admin.php:2071
+#: view/admin.php:2087
 msgid "Hosting"
 msgstr ""
 
-#: view/admin.php:2072, view/wizard.php:616
+#: view/admin.php:2088, view/wizard.php:582
 msgid "Actions"
 msgstr ""
 
-#: view/admin.php:2073, view/admin.php:2117
+#: view/admin.php:2089, view/admin.php:2133
 msgid "Video Ads"
 msgstr ""
 
-#: view/admin.php:2075
+#: view/admin.php:2091
 msgid "Help"
 msgstr ""
 
-#: view/admin.php:2084
+#: view/admin.php:2100
 msgid "Post Interface Options"
 msgstr ""
 
-#: view/admin.php:2085
+#: view/admin.php:2101
 msgid "Sitewide FV Player Defaults"
 msgstr ""
 
-#: view/admin.php:2086
+#: view/admin.php:2102
 msgid "Autoplay and preloading"
 msgstr ""
 
-#: view/admin.php:2087
+#: view/admin.php:2103
 msgid "Integrations/Compatibility"
 msgstr ""
 
-#: view/admin.php:2088
+#: view/admin.php:2104
 msgid "Mobile Settings"
 msgstr ""
 
-#: view/admin.php:2089
+#: view/admin.php:2105
 msgid "Video SEO"
 msgstr ""
 
-#: view/admin.php:2090
+#: view/admin.php:2106
 msgid "Privacy Settings"
 msgstr ""
 
-#: view/admin.php:2093
+#: view/admin.php:2109
 msgid "Pro Features"
 msgstr ""
 
-#: view/admin.php:2098
+#: view/admin.php:2114
 msgid "Player Skin"
 msgstr ""
 
-#: view/admin.php:2099, view/wizard.php:612
+#: view/admin.php:2115, view/wizard.php:578
 msgid "Playlist"
 msgstr ""
 
-#: view/admin.php:2100
+#: view/admin.php:2116
 msgid "Custom CSS"
 msgstr ""
 
-#: view/admin.php:2102
+#: view/admin.php:2118
 msgid "Sticky Video"
 msgstr ""
 
-#: view/admin.php:2106
+#: view/admin.php:2122
 msgid "Amazon S3 Protected Content"
 msgstr ""
 
-#: view/admin.php:2110
+#: view/admin.php:2126
 msgid "End of Video"
 msgstr ""
 
-#: view/admin.php:2111
+#: view/admin.php:2127
 msgid "Custom Popups"
 msgstr ""
 
-#: view/admin.php:2112
+#: view/admin.php:2128
 msgid "Overlay"
 msgstr ""
 
-#: view/admin.php:2122
+#: view/admin.php:2138
 msgid "Conversion"
 msgstr ""
 
-#: view/admin.php:2123
+#: view/admin.php:2139
 msgid "Database"
 msgstr ""
 
-#: view/admin.php:2124
+#: view/admin.php:2140
 msgid "Embeded Posts Information"
 msgstr ""
 
-#: view/admin.php:2125
+#: view/admin.php:2141
 msgid "Rollback"
 msgstr ""
 
-#: view/admin.php:2126
+#: view/admin.php:2142
 msgid "Uninstall"
 msgstr ""
 
-#: view/admin.php:2129
+#: view/admin.php:2145
 msgid "Usage"
 msgstr ""
 
-#: view/admin.php:2135
+#: view/admin.php:2151
 msgid "Documentation"
 msgstr ""
 
-#: view/admin.php:2161
+#: view/admin.php:2177
 msgid "Apply Pro upgrade"
 msgstr ""
 
-#: view/admin.php:2158
+#: view/admin.php:2174
 msgid "Install Pro extension"
 msgstr ""
 
-#: view/admin.php:2156
+#: view/admin.php:2172
 msgid "Pro pack installed"
 msgstr ""
 
-#: view/admin.php:2154
+#: view/admin.php:2170
 msgid "Enable the Pro extension"
 msgstr ""
 
-#: view/admin.php:2164
+#: view/admin.php:2180
 msgid "Check template"
 msgstr ""
 
-#: view/admin.php:2165
+#: view/admin.php:2181
 msgid "Check videos"
 msgstr ""
 
-#: view/admin.php:2168
+#: view/admin.php:2184
 msgid "Click here for license info"
 msgstr ""
 
-#: view/admin.php:2183
+#: view/admin.php:2199
 msgid "Host your videos anywhere"
 msgstr ""
 
-#: view/admin.php:2185
+#: view/admin.php:2201
 msgid "Pick your favorite CDN"
 msgstr ""
 
-#: view/admin.php:2186
+#: view/admin.php:2202
 msgid "Encrypt your videos to avoid downloading"
 msgstr ""
 
-#: view/admin.php:2187
+#: view/admin.php:2203
 msgid "Interactive transcript, AB loop&hellip;"
 msgstr ""
 
-#: view/admin.php:2189
+#: view/admin.php:2205
 msgid "Christmas sale!"
 msgstr ""
 
-#: view/admin.php:2189
+#: view/admin.php:2205
 msgid "All Licenses 20% Off"
 msgstr ""
 
@@ -2063,155 +2059,155 @@ msgstr ""
 msgid "Improves video download protection."
 msgstr ""
 
-#: view/fv-player.php:76
+#: view/fv-player.php:61
 msgid "Players per page"
 msgstr ""
 
-#: view/wizard.php:594
+#: view/wizard.php:560
 msgid "Add your video"
 msgstr ""
 
-#: view/wizard.php:599, view/wizard.php:645
+#: view/wizard.php:565, view/wizard.php:611
 msgid "This does not look like a video link."
 msgstr ""
 
-#: view/wizard.php:602
+#: view/wizard.php:568
 msgid "Playlist too long, click here for preview"
 msgstr ""
 
-#: view/wizard.php:617
+#: view/wizard.php:583
 msgid "Embeds"
 msgstr ""
 
-#: view/wizard.php:646
+#: view/wizard.php:612
 msgid "Please post a link to the new video or choose one."
 msgstr ""
 
-#: view/wizard.php:693
+#: view/wizard.php:659
 msgid "Appearance"
 msgstr ""
 
-#: view/wizard.php:698
+#: view/wizard.php:664
 msgid "Video will autoplay when the page loads."
 msgstr ""
 
-#: view/wizard.php:702
+#: view/wizard.php:668
 msgid "Muted Autoplay"
 msgstr ""
 
-#: view/wizard.php:754
+#: view/wizard.php:720
 msgid "Sticky video"
 msgstr ""
 
-#: view/wizard.php:756
+#: view/wizard.php:722
 msgid "Watch the playing video when scrolling down the page."
 msgstr ""
 
-#: view/wizard.php:763
+#: view/wizard.php:729
 msgid "Controls"
 msgstr ""
 
-#: view/wizard.php:768
+#: view/wizard.php:734
 msgid "Without the controlbar seeking in video is impossible."
 msgstr ""
 
-#: view/wizard.php:775
+#: view/wizard.php:741
 msgid "Seeking forward not allowed if user did not see the full video."
 msgstr ""
 
-#: view/wizard.php:781
+#: view/wizard.php:747
 msgid "Allows user to speed up or slow down the video."
 msgstr ""
 
-#: view/wizard.php:788
+#: view/wizard.php:754
 msgid "Sharing"
 msgstr ""
 
-#: view/wizard.php:791
+#: view/wizard.php:757
 msgid "Embedding"
 msgstr ""
 
-#: view/wizard.php:793
+#: view/wizard.php:759
 msgid "Allows users to embed your player on their websites."
 msgstr ""
 
-#: view/wizard.php:799
+#: view/wizard.php:765
 msgid "Provides a quick way of sharing your article on Facebook, Twitter or via Email."
 msgstr ""
 
-#: view/wizard.php:831
+#: view/wizard.php:797
 msgid "End of Video Action"
 msgstr ""
 
-#: view/wizard.php:833
+#: view/wizard.php:799
 msgid "What should happen at the end of the video."
 msgstr ""
 
-#: view/wizard.php:836
+#: view/wizard.php:802
 msgid "Pick the action"
 msgstr ""
 
-#: view/wizard.php:851
+#: view/wizard.php:817
 msgid "Redirect"
 msgstr ""
 
-#: view/wizard.php:856
+#: view/wizard.php:822
 msgid "Popup"
 msgstr ""
 
-#: view/wizard.php:862
+#: view/wizard.php:828
 msgid "Email list"
 msgstr ""
 
-#: view/wizard.php:871
+#: view/wizard.php:837
 msgid "Show Overlay"
 msgstr ""
 
-#: view/wizard.php:873
+#: view/wizard.php:839
 msgid "Enter text or HTML to show on top of video while it's playing."
 msgstr ""
 
-#: view/wizard.php:876
+#: view/wizard.php:842
 msgid "Overlay Code"
 msgstr ""
 
-#: view/wizard.php:878
+#: view/wizard.php:844
 msgid "Shows after %d seconds."
 msgstr ""
 
-#: view/wizard.php:905
+#: view/wizard.php:871
 msgid "Do not show global overlay"
 msgstr ""
 
-#: view/wizard.php:907
+#: view/wizard.php:873
 msgid "Use to disable overlay set in <a href=\"%s\" target=\"_blank\">Actions -> Overlays</a>"
 msgstr ""
 
-#: view/wizard.php:929
+#: view/wizard.php:895
 msgid "You are using the legacy popup functionality. Move the popup code"
 msgstr ""
 
-#: view/wizard.php:929
+#: view/wizard.php:895
 msgid "here"
 msgstr ""
 
-#: view/wizard.php:929
+#: view/wizard.php:895
 msgid ", then use the drop down menu above."
 msgstr ""
 
-#: view/wizard.php:946
+#: view/wizard.php:912
 msgid "E-mail list"
 msgstr ""
 
-#: models/conversion/positionsMeta2Table.php:13
-msgid "This converts position values from usermeta to fv_player_user_video_positions table"
-msgstr ""
-
-#: models/conversion/positionsMeta2Table.php:19
-msgid "This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing."
+#: models/conversion/positionsMeta2Table.php:15
+msgid "This converts position values from <code>%s</code> to <code>%s</code> table."
 msgstr ""
 
 #: models/conversion/positionsMeta2Table.php:21
+msgid "This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing."
+msgstr ""
+
+#: models/conversion/positionsMeta2Table.php:23
 msgid "The conversion has finished. The usermeta table will be purged of the FV Player video position data in 4 weeks."
 msgstr ""
 
