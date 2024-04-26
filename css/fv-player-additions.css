@@ -1025,6 +1025,10 @@ a.fp-youtube-title {
   display: none !important;
 }
 
+body.has-fv-player-fullscreen #chat-widget-container {
+  display: none;
+}
+
 /* Minimal playlist styling to avoid FOUC as playlists.css loads in footer! */
 .fp-playlist { display: none }
 
