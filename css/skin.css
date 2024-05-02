@@ -207,22 +207,22 @@
 .freedomplayer.no-buffer .fp-ui .fp-controls .fp-timeline .fp-buffer {
   display: none; }
 
-.freedomplayer.no-controls .fp-controls {
+.freedomplayer.no-controlbar .fp-controls {
   visibility: hidden; }
 
-.freedomplayer.no-controls.is-muted .fp-controls .fp-volume {
+.freedomplayer.no-controlbar.is-muted .fp-controls .fp-volume {
   -webkit-box-ordinal-group: 102;
       -ms-flex-order: 101;
           order: 101; }
 
-.freedomplayer.no-controls.is-muted .fp-controls .fp-volumebtn {
+.freedomplayer.no-controlbar.is-muted .fp-controls .fp-volumebtn {
   visibility: visible;
   display: block; }
 
-.freedomplayer.no-controls.is-muted .fp-controls .fp-volumebar {
+.freedomplayer.no-controlbar.is-muted .fp-controls .fp-volumebar {
   display: none; }
 
-.freedomplayer.no-controls .fp-forward, .freedomplayer.no-controls .fp-rewind {
+.freedomplayer.no-controlbar .fp-forward, .freedomplayer.no-controlbar .fp-rewind {
   display: none; }
 
 .freedomplayer.no-volume .fp-volumebar {
@@ -813,7 +813,7 @@
               transform: scaleY(0.75); }
   .freedomplayer.fp-slim .fp-timeline {
     height: .2em; }
-  .freedomplayer.fp-slim.fp-controls:hover .fp-timeline:before, .freedomplayer.fp-slim.is-mobile-seeking .fp-timeline:before, .freedomplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
+  .freedomplayer.fp-slim:not(.fp-full) .fp-controls:hover .fp-timeline:before, .freedomplayer.fp-slim:not(.fp-full).is-mobile-seeking .fp-timeline:before, .freedomplayer.fp-slim .fp-controls:hover .fp-bar-slider:before {
     content: '';
     position: absolute;
     top: -1.2em;
