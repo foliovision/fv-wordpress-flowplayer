@@ -158,8 +158,11 @@ flowplayer(function(player, root) {
            parent.style.transform = add ? 'none' : '';
          }
          if( styles.zIndex ) {
-          parent.style.zIndex = add ? 'auto' : '';
-        }
+           parent.style.zIndex = add ? 'auto' : '';
+         }
+         if( styles.position ) {
+           parent.style.position = add ? 'unset' : '';
+         }
        } catch(e) {}
        parent = parent.parentNode;
      }
