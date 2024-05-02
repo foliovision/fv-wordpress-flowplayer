@@ -223,7 +223,7 @@
   display: none; }
 
 .freedomplayer.no-controlbar .fp-forward, .freedomplayer.no-controlbar .fp-rewind {
-  display: none; }
+  visibility: hidden; }
 
 .freedomplayer.no-volume .fp-volumebar {
   display: none; }
