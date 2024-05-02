@@ -9,7 +9,7 @@ class FV_Player_lightbox {
   static $instance = null;
 
   private $lightboxHtml = '';
-  
+
   public $bLoad = false;
 
   public static function _get_instance() {
@@ -19,13 +19,13 @@ class FV_Player_lightbox {
 
     return self::$instance;
   }
-  
+
   public function __construct() {
 
     if ( ! defined( 'ABSPATH' ) ) {
       exit;
     }
-    
+
     add_action('init', array($this, 'remove_pro_hooks'), 10);
 
     add_filter('fv_flowplayer_shortcode', array($this, 'shortcode'), 15, 3);
@@ -43,28 +43,28 @@ class FV_Player_lightbox {
     add_filter('the_content', array($this, 'html_lightbox_images'), 999);  //  moved after the shortcodes are parsed to work for galleries
 
     add_action('fv_flowplayer_shortcode_editor_tab_options', array($this, 'shortcode_editor'), 8);
-    
+
     add_filter( 'fv_player_editor_player_options', array( $this, 'editor_setting' ) );
 
     add_action('fv_flowplayer_admin_default_options_after', array( $this, 'lightbox_admin_default_options_html' ) );
     add_filter('fv_flowplayer_admin_interface_options_after', array( $this, 'lightbox_admin_interface_html' ) );
     add_filter('fv_flowplayer_admin_integration_options_after', array( $this, 'lightbox_admin_integrations_html' ) );
-    
+
     add_action( 'wp_footer', array( $this, 'disp__lightboxed_players' ), 0 );
 
     add_filter('fv_player_conf_defaults', array( $this, 'conf_defaults' ) );
-    
+
     add_action('wp_head', array( $this, 'remove_other_fancybox' ), 8 );
     add_action('wp_footer', array( $this, 'remove_other_fancybox' ), 19 );
-    
+
     add_filter( 'shortcode_atts_gallery', array( $this, 'improve_galleries' ) );
-    
+
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ), 999 );
   }
-  
+
   /*
    * Load CSS if it's actually needed or if the global settings are set.
-   * 
+   *
    * @param bool $force Used to tell the function that the CSS is indeed required
    */
   function css_enqueue( $force ) {
@@ -73,7 +73,7 @@ class FV_Player_lightbox {
       !$force &&
       !$fv_fp->_get_option('lightbox_force') // "Remove fancyBox" compatibility option is disabled
     ) return;
-    
+
     if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox') ) {
       // TODO: Should we still enqueue CSS somehow?
 
@@ -96,7 +96,7 @@ class FV_Player_lightbox {
 
   function remove_pro_hooks() {
     global $FV_Player_Pro;
-    
+
     if (isset($FV_Player_Pro)) {
       //remove_filter('fv_flowplayer_shortcode', array($FV_Player_Pro, 'shortcode'));
       remove_filter('fv_flowplayer_html', array($FV_Player_Pro, 'lightbox_html'), 11 );
@@ -126,7 +126,7 @@ class FV_Player_lightbox {
 
     return $sType;
   }
-  
+
   /*
    * Runs when "Remove fancyBox" compatibility option is enabled. Removes any other fancyBox script.
    */
@@ -141,8 +141,8 @@ class FV_Player_lightbox {
           }
         }
       }
-    }    
-  }  
+    }
+  }
 
   function shortcode($attrs) {
     $aArgs = func_get_args();
@@ -159,7 +159,7 @@ class FV_Player_lightbox {
       echo wp_kses_post( $this->lightboxHtml ) . "<!-- lightboxed players -->\n\n";
     }
   }
-  
+
   function editor_setting( $options ) {
     global $fv_fp;
     $options['general']['items'][] = array(
@@ -190,7 +190,7 @@ class FV_Player_lightbox {
 
   function is_text_lightbox($aArgs) {
     $aLightbox = preg_split('~[;]~', $aArgs['lightbox']);
-    
+
     foreach ($aLightbox AS $k => $i) {
       if ($i == 'text') {
         return true;
@@ -208,26 +208,26 @@ class FV_Player_lightbox {
       if( isset($args['lightbox']) && $args['lightbox'] != false && !get_query_var('fv_player_embed') ) {
 
         $this->bLoad = true;
-        
+
         global $fv_fp;
-        
+
         $iConfWidth = intval($fv_fp->_get_option('width'));
         $iConfHeight = intval($fv_fp->_get_option('height'));
 
         $iPlayerWidth = ( isset($args['width']) && intval($args['width']) > 0 ) ? intval($args['width']) : $iConfWidth;
         $iPlayerHeight = ( isset($args['height']) && intval($args['height']) > 0 ) ? intval($args['height']) : $iConfHeight;
-        
-        /* 
+
+        /*
          * Going back to the oldschool days...
          * The possibilities here are:
-         * 
+         *
          * true
          * true;text
          * true;Lightbox title
          * true;640;360;Lightbox title
          */
         $aLightbox = preg_split('~[;]~', $args['lightbox']);
-        
+
         // Properties set up by FV Player DB
         if( !empty($args['lightbox_width']) ) {
           $aLightbox[1] = $args['lightbox_width'];
@@ -238,44 +238,44 @@ class FV_Player_lightbox {
         if( !empty($args['lightbox_caption']) ) {
           $aLightbox[3] = $args['lightbox_caption'];
         }
-        
+
         $hash = $aArgs[1]->hash;
         $container = "wpfp_".$hash."_container";
         $button = "fv_flowplayer_".$hash."_lightbox_starter";
-        
+
         $sTitle = '';
-        
+
         // Using "text" as in "true;640;360;text" makes it a text lightbox and it should not be used for the lightbox title
         if( !empty($aLightbox[3]) && $aLightbox[3] != 'text' ) {
           $sTitle = $aLightbox[3];
-          
+
         // If we only have "true;Lightbox title" then we know it's the lightbox title
         } else if( !empty($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3]) && $aLightbox[1] != 'text'  ) {
           $sTitle = $aLightbox[1];
-          
+
         } else if( empty($args['playlist']) && !empty($args['caption']) ) {
           $sTitle = $args['caption'];
         }
-        
+
         if( !empty($sTitle) ) {
           $sTitle = " title='".esc_attr($sTitle)."'";
         }
-        
+
         // The original player HTML markup becomes the hidden lightbox content
         // We add the lightboxed class
         $lightbox = str_replace(array('class="freedomplayer ', "class='freedomplayer "), array('class="freedomplayer lightboxed ', "class='freedomplayer lightboxed "), $html);
         // ...and wrap it in hidden DIV
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n" . wp_kses_post( $lightbox ) . "</div>\n";
-        
+
         if ( $this->is_text_lightbox($args) ) {
           if( !empty($args['playlist']) ) {
             list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $fv_fp->build_playlist( $args, $args['src'], $args['src1'], $args['src2'], false, false );
             if( is_array($aCaptions) ) {
-              $html = '<ul class="fv-player-lightbox-text-playlist" rel="'.$container.'">'; 
+              $html = '<ul class="fv-player-lightbox-text-playlist" rel="'.$container.'">';
               foreach( $aCaptions AS $key => $caption ) {
                 $html .= '<li><a';
                 // we only add the fancyBox attributes for the first link as having multiple links for one fancyBox view causes issues, we handle the clicks in JS
-                if( $key == 0 ) { 
+                if( $key == 0 ) {
                   $html .= $this->fancybox_opts().' href="#'.$container.'"';
                 } else {
                   $html .= ' href="#"';
@@ -287,7 +287,7 @@ class FV_Player_lightbox {
           } else {
             $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
           }
-          
+
           // in this case we put the lightboxed player into footer as putting it behind the anchor might break the parent block element
           $this->lightboxHtml .= $lightbox;
 
@@ -320,7 +320,7 @@ class FV_Player_lightbox {
             if( $ratio > 0 ) {
               $ratio = round($ratio, 4);
               $html = preg_replace( '~ data-ratio=".*?"~', ' data-ratio="'.$ratio.'"', $html );
-              
+
               $ratio = str_replace(',','.', $ratio * 100 );
               $html = preg_replace( '~<div class="fp-ratio".*?</div>~', '<div class="fp-ratio" style="padding-top: '.$ratio.'%"></div>', $html );
             }
@@ -351,7 +351,7 @@ class FV_Player_lightbox {
     $aConf['lightbox_images'] = $fv_fp->_get_option('lightbox_images'); // should FV Player fancybox be used to show images?
     $aConf['js_url'] = flowplayer::get_plugin_url().'/js/fancybox.js';
     $aConf['css_url'] = FV_FP_RELATIVE_PATH . '/css/fancybox.css';
-    
+
     $this->css_enqueue(true);
 
     if ( $fv_fp->_get_option('js-optimize') && ! did_action('fv_player_force_load_lightbox')  ) {
@@ -412,12 +412,12 @@ class FV_Player_lightbox {
 
     //  todo: disabling the option should turn this off
     if (stripos($content, 'colorbox') !== false) {
-      $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?colorbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
+      $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?\bcolorbox\b[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
       return $content;
     }
 
     if( stripos($content, 'lightbox') !== false ) {
-      $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?lightbox[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
+      $content = preg_replace_callback('~<a[^>]*?class=[\'"][^\'"]*?\blightbox\b[^\'"]*?[\'"][^>]*?>([\s\S]*?)</a>~', array($this, 'html_to_lightbox_videos_callback'), $content);
       return $content;
     }
 
@@ -438,9 +438,9 @@ class FV_Player_lightbox {
        stripos($html,'youtu.be/') !== false &&
        stripos($html,'vimeo.com/') !== false
        ) {
-      return $html;  
+      return $html;
     }
-    
+
     if( preg_match( '~href=[\'"](.*?(?:mp4|webm|m4v|mov|ogv|ogg|m3u8|youtube\.com|youtu\.be|vimeo.com).*?)[\'"]~', $html, $href ) ) {
       if( stripos($caption,'<img') === 0 ) {
         return '[fvplayer src="'.esc_attr($href[1]).'" lightbox="true;text" caption_html="'.base64_encode($caption).'"]';
@@ -472,7 +472,7 @@ class FV_Player_lightbox {
 
   function html_lightbox_images_callback($matches) {
     if( stripos($matches[1],'data-fancybox') ) return $matches[0];
-    
+
     if (!preg_match('/href=[\'"][^\'"]*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
       return $matches[0];
 
@@ -516,7 +516,7 @@ class FV_Player_lightbox {
       $this->load_scripts();
     }
   }
-  
+
   function parse_args( $aArgs ) {
     foreach ($aArgs AS $k => $i) {
       if ($i == 'text') {
@@ -578,7 +578,7 @@ class FV_Player_lightbox {
       <?php
     }
   }
-  
+
   function lightbox_admin_integrations_html() {
     global $fv_fp;
     $fv_fp->_get_checkbox(__( 'Remove fancyBox', 'fv-player' ), 'lightbox_force', __( 'Use if FV Player lightbox is not working and you see a "fancyBox already initialized" message on JavaScript console.', 'fv-player' ));
@@ -631,7 +631,7 @@ class FV_Player_lightbox {
     </script>
     <?php
   }
-  
+
   function fancybox_opts( $splash = false ) {
     $options = array('touch' => false);
     if( !empty($splash) ) $options['thumb'] = $splash;
