@@ -14,6 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
   $date_range = isset($_REQUEST['stats_range']) ? sanitize_text_field($_REQUEST['stats_range']) : 'this_week';
 
+  // Validate the interval
+  $interval = FV_Player_Stats::get_interval_from_range($date_range);
+  if ( ! $interval || empty( $interval[0] ) || empty( $interval[1] ) ) {
+    $date_range = 'this_week';
+  }
+
   if( isset($_GET['player_id']) && intval($_GET['player_id']) ) { // specific player stats
     $fv_single_player_stats_data = $FV_Player_Stats->get_player_stats( intval($_GET['player_id']), $date_range );
   } else { // aggregated top stats
@@ -117,7 +123,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       <?php endif; ?>
 
       <?php if( $user_id ): ?>
-        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . $user_id . '&stats_range=' . $date_range . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ));?>">Export CSV</a>
+        <a id="export" class="button" href="<?php echo admin_url('admin.php?page=fv_player_stats&fv-stats-export-user=' . intval( $user_id ) . '&stats_range=' . esc_attr( $date_range ) . '&nonce=' . wp_create_nonce( 'fv-stats-export-user-' . $user_id ));?>">Export CSV</a>
       <?php endif; ?>
 
     </form>
