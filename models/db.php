@@ -48,7 +48,7 @@ class FV_Player_Db {
     add_action( 'wp_ajax_fv_player_db_import', array($this, 'import_player_data') );
     add_action( 'wp_ajax_fv_player_db_clone', array($this, 'clone_player') );
     add_action( 'wp_ajax_fv_player_db_remove', array($this, 'remove_player') );
-    add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') ); // todo: nonce
+    add_action( 'wp_ajax_fv_player_db_retrieve_all_players_for_dropdown', array($this, 'retrieve_all_players_for_dropdown') );
     add_action( 'wp_ajax_fv_player_db_save', array($this, 'db_store_player_data') );
   }
 
