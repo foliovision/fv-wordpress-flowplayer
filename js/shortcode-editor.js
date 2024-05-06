@@ -4374,17 +4374,6 @@ jQuery(function() {
     });
 
     /*
-    Click on Loading Overlay Close button
-    */
-    $doc.on('click', '[data-fv-player-editor-overlay-close]', function() {
-      $.fn.fv_player_box.close();
-      // hide the overlay asynchronously to allow the actual modal close animation to finish,
-      // so it doesn't blink from error message to an empty editor and only then starts to fade
-      setTimeout(overlay_hide, 1000);
-      return false;
-    });
-
-    /*
     Click on Import player
     */
     $doc.on('click', '#fv-player-editor-import-overlay-import', function() {
