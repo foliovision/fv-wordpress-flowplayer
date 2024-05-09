@@ -112,6 +112,7 @@ function fv_flowplayer_get_js_translations() {
     'audio_menu' => __('Audio', 'fv-player' ),
     'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-player' ),
     'invalid_youtube' => __('Invalid Youtube video ID.', 'fv-player'),
+    'redirection' => __( "Admin note:\n\nThis player is set to redirect to a URL at the end of the video:\n\n%url%\n\nWould you like to be redirected?\n\nThis note only shows to logged in Administrators and Editors for security reasons, other users are redirected without any popup or confirmation.", 'fv-player' ),
     'video_loaded' => __('Video loaded, click to play.', 'fv-player'),
     'msg_no_skipping' => __('Skipping is not allowed.', 'fv-player' ),
     'msg_watch_video' => __('Please watch the video carefully.', 'fv-player' ),
@@ -1264,9 +1265,9 @@ function fvplayer_editor( $args ) {
 
 /**
  * The nonce normally only work up to 24 hours, but it might just be 12 hours.
- * 
+ *
  * We set the nonce life to 7 days to make sure caching plugins don't break the video tracking etc.
- * 
+ *
  * So far we were able to use 42 hours old nonce without any issues. When the nonce was 4 days and 19 hours old
  * it would already fail. So my guess is that this way we can be sure that the nonce is valid for 3.5 days,
  * but it might be up to 7 days.
@@ -1276,7 +1277,7 @@ add_filter( 'nonce_life', 'fv_player_frontend_nonce_life', PHP_INT_MAX, 2 );
 /**
  * @param int $seconds
  * @param string|false $action This has one been added in WordPress 6.1 unfortunately
- * 
+ *
  * @return int Longer nonce TTL if it's used by FV Player
  */
 function fv_player_frontend_nonce_life( $seconds, $action = false ) {
