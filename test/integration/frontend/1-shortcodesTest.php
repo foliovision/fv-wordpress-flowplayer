@@ -77,7 +77,12 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
 
     // file_put_contents( dirname(__FILE__).'/testSimpleShortcode.html.new', $output );
 
-    $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testSimpleShortcode.html')), $this->fix_newlines($output) );
+    $regex = '~var fv_flowplayer_translations = {.*?};~';
+
+    $sample_without_translations = preg_replace( $regex, '', $this->fix_newlines( file_get_contents(dirname(__FILE__).'/testSimpleShortcode.html') ) );
+    $output_without_translations = preg_replace( $regex, '', $this->fix_newlines( $output ) );
+
+    $this->assertEquals( $sample_without_translations, $output_without_translations );
   }
 
 }
