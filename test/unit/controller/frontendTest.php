@@ -218,6 +218,15 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [audio_menu] => Audio
     [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
     [invalid_youtube] => Invalid Youtube video ID.
+    [redirection] => Admin note:
+
+This player is set to redirect to a URL at the end of the video:
+
+%url%
+
+Would you like to be redirected?
+
+This note only shows to logged in Administrators and Editors for security reasons, other users are redirected without any popup or confirmation.
     [video_loaded] => Video loaded, click to play.
     [msg_no_skipping] => Skipping is not allowed.
     [msg_watch_video] => Please watch the video carefully.
