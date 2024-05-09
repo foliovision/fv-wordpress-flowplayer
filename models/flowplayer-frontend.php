@@ -1191,13 +1191,19 @@ class flowplayer_frontend extends flowplayer
     $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
 
     $aStartend = !empty($this->aCurArgs['startend']) ? explode(";",$this->aCurArgs['startend']) : array();  //  todo: somehow move to Pro?
-    
+
     foreach( $aPlaylistItems AS $key => $aSrc ) {
       if( !empty($aStartend[$key]) ) $this->aCurArgs['startend'] = $aStartend[$key];
-      
+
+      // Do not let it load the same player again
       unset($this->aCurArgs['id']);
       unset($this->aCurArgs['playlist']);
-      $this->aCurArgs['src'] = $aSrc['sources'][0]['src'];  //  todo: remaining sources!
+
+      foreach( array( 'src', 'src1', 'src2' ) as $k ) {
+        if ( ! empty( $aSrc['sources'][0][ $k ] ) ) {
+          $this->aCurArgs[ $k ] = $aSrc['sources'][0][ $k ];
+        }
+      }
       
       $this->aCurArgs['splash'] = isset($aSplashScreens[$key])?$aSplashScreens[$key]:'';
       unset($this->aCurArgs['caption']);
