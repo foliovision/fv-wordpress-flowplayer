@@ -1244,7 +1244,7 @@ class flowplayer_frontend extends flowplayer
       $aSharing = explode( ';', $this->aCurArgs['share'] );
       if( count($aSharing) == 2 ) {
         $sPermalink = $aSharing[1];
-        $sMail = apply_filters( 'fv_player_sharing_mail_content',$sSharingText.': '.$aSharing[1] );
+        $sMail = apply_filters( 'fv_player_sharing_mail_content',$aSharing[0].': '.$aSharing[1] );
         $sTitle = $aSharing[0].' ';
         $bVideoLink = false;
       } else if( count($aSharing) == 1 && $this->aCurArgs['share'] != 'yes' && $this->aCurArgs['share'] != 'no' ) {
