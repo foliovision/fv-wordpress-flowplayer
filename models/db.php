@@ -2090,6 +2090,8 @@ class FV_Player_Db {
 
       $search_terms = $search_terms_encoded;
 
+      $search_terms = array_unique( $search_terms );
+
       unset($search_terms_encoded);
 
       $exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
