@@ -2262,6 +2262,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
       $search_terms = array_unique( $search_terms_encoded );
 
+      $search_terms = array_unique( $search_terms );
+
       unset($search_terms_encoded);
 
       $exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
