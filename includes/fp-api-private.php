@@ -590,6 +590,15 @@ $this->strPrivateAPI - also
     if( !$data )
       return $res;
 
+    /**
+     * Some users run into issue that the function was not defined.
+     * Did some other plugin run plugins_api_result in front end? Seems like security-malware-firewall.
+     * Let's just give up in such case.
+     */
+    if ( ! function_exists( 'get_plugin_data' ) ) {
+      return $res;
+    }
+
     $plugin_data = get_plugin_data($this->strPluginPath);
     
     $pluginReq = preg_match( '~Requires at least:\s*([0-9.]*)~', $data, $reqMatch ) ? $reqMatch[1] : false;
