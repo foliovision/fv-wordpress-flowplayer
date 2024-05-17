@@ -518,8 +518,11 @@ class FV_Player_Checker {
 
     $is_bad_request = false;
 
-    // Do not permit requests to private IPs
-    if ( ! filter_var( $parsed_url['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE |  FILTER_FLAG_NO_RES_RANGE ) ) {
+    // If it's IP address then do not permit requests to private IPs
+    if (
+      filter_var( $parsed_url['host'], FILTER_VALIDATE_IP ) &&
+      ! filter_var( $parsed_url['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE )
+    ) {
       $is_bad_request = true;
     }
 
