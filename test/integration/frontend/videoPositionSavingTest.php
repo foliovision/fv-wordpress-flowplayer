@@ -61,7 +61,7 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
       $this->assertIsObject($response );
-      $this->assertObjectHasAttribute( 'success', $response );
+      $this->assertObjectHasProperty( 'success', $response );
       $this->assertFalse( $response->success );
     }
 
@@ -117,7 +117,7 @@ HTML;
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
       $this->assertIsObject( $response );
-      $this->assertObjectHasAttribute( 'success', $response );
+      $this->assertObjectHasProperty( 'success', $response );
       $this->assertTrue( $response->success );
     }
 
@@ -164,7 +164,7 @@ HTML;
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
       $this->assertIsObject( $response );
-      $this->assertObjectHasAttribute( 'success', $response );
+      $this->assertObjectHasProperty( 'success', $response );
       $this->assertTrue( $response->success );
     }
 
@@ -191,7 +191,7 @@ HTML;
     } catch ( WPAjaxDieContinueException $e ) {
       $response = json_decode( $this->_last_response );
       $this->assertIsObject( $response );
-      $this->assertObjectHasAttribute( 'success', $response );
+      $this->assertObjectHasProperty( 'success', $response );
       $this->assertTrue( $response->success );
     }
 
