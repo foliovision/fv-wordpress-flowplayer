@@ -359,6 +359,18 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.46.7212 - 2024-05-20 =
+
+* Security - Redirection - improving the admin notice
+* Security - XSS fix for stats export
+* Bugfix - bug when removing player form post
+* Bugfix - fixes for custom sharing links
+* Bugfix - fix FV Player list screen performance
+* Bugfix - HTML lightbox should not work with the "glightbox" class, only "lightbox" and "colorbox"
+* Bugfix - Playlist Tabs: Fix video position restoring
+* Bugfix - Video duration check fix after the server ports scanning security fix
+* Bugfix - YouTube: Don't loop in playlist on video errors
+
 = 7.5.45.7212 - 2024/03/28 =
 
 * Security - Redirection - Contributor level user is able to post a FV Player video with malicious redirection URL at the end of a video. Then the Editor or Administrators reviewing Contributor's post before publication would be taken to that URL. We have added a confirmation prompt for redirection URLs for Editors and Administrators.
