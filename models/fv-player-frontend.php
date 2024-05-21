@@ -787,9 +787,26 @@ class flowplayer_frontend extends flowplayer
         if( !$bIsAudio && !empty($splash_img) ) {
           $alt = $this->get_title() ? $this->get_title() : 'video';
 
+          // Get the first video splash image attachment ID
+          $current_player = $this->current_player();
+          if ( $current_player ) {
+            $current_player_videos = $current_player->getVideos();
+            if ( $current_player_videos ) {
+              foreach ( $current_player_videos as $current_player_video ) {
+                $current_player_video_splash_id = $current_player_video->getSplashAttachmentId();
+
+                if ( $current_player_video_splash_id ) {
+                  $splash_img = $current_player_video_splash_id;
+                }
+
+                break;
+              }
+            }
+          }
+
            // load the image from WP Media Library if you got a number
           if( is_numeric($splash_img) ) {
-            $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
+            $image = wp_get_attachment_image($splash_img, 'large', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
           } else {
             $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
           }

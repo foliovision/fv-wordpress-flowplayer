@@ -1166,7 +1166,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     if( $sListStyle != 'text' ) {
-      if( $sSplashImage ) {
+      $current_video_splash_id = false;
+
+      $current_video = $this->current_video();
+      if ( $current_video ) {
+        $current_video_splash_id = $current_video->getSplashAttachmentId();
+      }
+
+      if ( $current_video_splash_id ) {
+        $sHTML .= "<div class='fvp-playlist-thumb-img'>";
+        $sHTML .= wp_get_attachment_image( $current_video_splash_id, 'medium', false, array( 'fv_sizes' => '25vw, 50vw, 100vw', 'loading' => 'lazy' ) );
+
+      } else if( $sSplashImage ) {
         $sHTML .= "<div class='fvp-playlist-thumb-img'>";
         if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
           $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='".esc_attr($sSplashImage)."' />";
