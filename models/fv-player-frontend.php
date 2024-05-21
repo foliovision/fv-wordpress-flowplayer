@@ -806,7 +806,7 @@ class flowplayer_frontend extends flowplayer
 
            // load the image from WP Media Library if you got a number
           if( is_numeric($splash_img) ) {
-            $image = wp_get_attachment_image($splash_img, 'large', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
+            $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
           } else {
             $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
           }
