@@ -2587,6 +2587,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         case 'm3u8' :
           $output = 'application/'.$output;
           break;
+        case 'flac' :
         case 'mp3' :
         case 'ogg' :
         case 'wav' :
