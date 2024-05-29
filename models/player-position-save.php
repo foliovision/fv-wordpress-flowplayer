@@ -575,4 +575,5 @@ class FV_Player_Position_Save {
   }
 }
 
+global $FV_Player_Position_Save;
 $FV_Player_Position_Save = new FV_Player_Position_Save();
