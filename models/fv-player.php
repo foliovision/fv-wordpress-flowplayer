@@ -1910,6 +1910,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
+
+    // Only keep relative paths
+    $sCSSCurrent = str_replace( home_url(), '', $sCSSCurrent );
+
+    // Replace any left-over URLs with protocol agnostic URLs
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, "/*\n * FV Player custom styles\n *\n * Warning: This file should not to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n */\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
@@ -2582,6 +2587,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         case 'm3u8' :
           $output = 'application/'.$output;
           break;
+        case 'flac' :
         case 'mp3' :
         case 'ogg' :
         case 'wav' :

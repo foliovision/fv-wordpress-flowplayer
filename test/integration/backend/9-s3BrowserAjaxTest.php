@@ -47,7 +47,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     $this->assertTrue( has_action('wp_ajax_load_s3_assets') );
 
     // Spoof the nonce in the POST superglobal
-    //$_POST['_wpnonce'] = wp_create_nonce( 'anything-here-if-needed' );
+    $_POST['nonce'] = wp_create_nonce( 'wp_ajax_load_s3_assets' );
 
     // set up POST data for video resume times
     // $_POST['action'] = 'fv_wp_flowplayer_video_position_save';

@@ -76,15 +76,15 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
   // For logged in users the video position saving Ajax should affect the FV Player output - adding position to data-item
   public function testSaveAndPlaylistHTMLForLoggedInUsers() {
+    global $FV_Player_Position_Save;
+
     // is anybody listening out there?
     $this->assertTrue( has_action('wp_ajax_fv_wp_flowplayer_video_position_save') );
-    
-    // Spoof the nonce in the POST superglobal
-    //$_POST['_wpnonce'] = wp_create_nonce( 'anything-here-if-needed' );
+
+    // Make sure the user video position tables are present
+    do_action( 'fv_player_update' );
 
     // set this user as the active one
-    global $current_user;
-    $restore_user = $current_user;
     wp_set_current_user($this->userID);
 
     // set up POST data for video resume times
@@ -97,6 +97,9 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
       )
     ) ) );
 
+    // Spoof the nonce in the POST superglobal
+    $_POST['nonce'] = wp_create_nonce( 'fv_player_video_position_save' );
+
     // call the AJAX which
     try {
       $this->_handleAjax( 'fv_wp_flowplayer_video_position_save' );
@@ -108,8 +111,8 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     }
 
     // check if metadata was saved correctly
-    $this->assertEquals(12, get_user_meta($this->userID, 'fv_wp_flowplayer_position_2', true ));
-    $this->assertEquals(32, get_user_meta($this->userID, 'fv_wp_flowplayer_top_position_2', true ));
+    $this->assertEquals( 12, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'last_position' ) );
+    $this->assertEquals( 32, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'top_position' ) );
 
     // check that the playlist HTML is being generated correctly, with the last player position taken into consideration
     $post = get_post( $this->postID );
@@ -141,9 +144,9 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     }
 
     // check if metadata was saved correctly
-    $this->assertEquals(10, get_user_meta($this->userID, 'fv_wp_flowplayer_position_2', true ));
+    $this->assertEquals( 10, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'last_position' ) );
     // however the previous top position should still be stored as it was bigger
-    $this->assertEquals(32, get_user_meta($this->userID, 'fv_wp_flowplayer_top_position_2', true ));
+    $this->assertEquals( 32, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'top_position' ) );
 
     // finally a request indicating the user saw the whole video
     $this->_last_response = '';
@@ -168,11 +171,11 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
     }
 
     // check if metadata was saved correctly
-    $this->assertEquals(12, get_user_meta($this->userID, 'fv_wp_flowplayer_position_2', true ));
+    $this->assertEquals( 12, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'last_position' ) );
     // however the top position should no longer be stored
-    $this->assertFalse(false, get_user_meta($this->userID, 'fv_wp_flowplayer_top_position_2', true ));
+    $this->assertEquals( 0, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'top_position' ) );
     // and it shoudl be remembered user saw the video
-    $this->assertEquals( 1, get_user_meta($this->userID, 'fv_wp_flowplayer_saw_2', true ) );
+    $this->assertEquals( 1, $FV_Player_Position_Save->get_video_position( $this->userID, 2, 'finished' )  );
 
     // check that the playlist HTML is being generated correctly, with the last player position taken into consideration and saw flag present
     $post = get_post( $this->postID );
@@ -180,8 +183,6 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
     $this->assertTrue( substr_count( $output, "data-item" ) == 3 );
     $this->assertTrue( substr_count( $output, '"position":12,"saw":true' ) == 1 );
-    
-    $current_user;
   }
 
 }
