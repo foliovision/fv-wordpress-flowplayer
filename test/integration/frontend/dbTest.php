@@ -55,7 +55,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   public function testDBExport() {
     global $FV_Player_Db;
     $output = json_encode( $FV_Player_Db->export_player_data(false,false, $this->import_ids[0] ), JSON_UNESCAPED_SLASHES );
-    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );
+    $this->assertEquals( trim( file_get_contents(dirname(__FILE__).'/player-data.json') ), $output );
   }
 
   public function testDBShortcode() {
@@ -76,7 +76,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
       $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
       // Video title
-      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['title'] ) === 0 );
 
       // Video splash
       $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
@@ -111,7 +111,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
       $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
       // Video title
-      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['title'] ) === 0 );
 
       // Video splash
       $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
@@ -144,7 +144,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
       $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
       // Video title
-      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['title'] ) === 0 );
 
       // Video splash
       $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
@@ -170,7 +170,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     usort(
       $videos_json,
       function( $a, $b ) {
-        return strcmp( $a['caption'], $b['caption'] );
+        return strcmp( $a['title'], $b['title'] );
       }
     );
 
@@ -181,7 +181,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
       $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
       // Video title
-      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['title'] ) === 0 );
 
       // Video splash
       $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
@@ -225,7 +225,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
       $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
       // Video title
-      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['title'] ) === 0 );
 
       // Video splash
       $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
