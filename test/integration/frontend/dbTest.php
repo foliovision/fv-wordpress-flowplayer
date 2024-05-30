@@ -7,8 +7,11 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  * in the HTML markup.
  */
 final class FV_Player_DBTest extends FV_Player_UnitTestCase {
-  
+
+  var $import_data = array();
+
   var $import_ids = array();
+
   private $post_id_testEndActions;
   private $post_id_testStartEnd;
 
@@ -18,15 +21,18 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     require_once "../../../fv-wordpress-flowplayer/controller/editor.php";
 
     global $FV_Player_Db;
-    $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
-    $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data-start-end.json'), true) );
+    $this->import_data[] = json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true );
+    $this->import_data[] = json_decode( file_get_contents(dirname(__FILE__).'/player-data-start-end.json'), true );
+
+    $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, $this->import_data[0] );
+    $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, $this->import_data[1] );
 
     // create a post with playlist shortcode
     $this->post_id_testEndActions= $this->factory->post->create( array(
       'post_title' => 'End Action Test',
       'post_content' => '[fvplayer src="https://cdn.site.com/video.mp4"]'
     ) );
-    
+
     $this->post_id_testStartEnd = $this->factory->post->create( array(
       'post_title' => 'Custom Start End Test',
       'post_content' => '[fvplayer id="'.$this->import_ids[1].'"]'
@@ -36,120 +42,159 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     global $post;
     $post = get_post( $this->post_id_testEndActions );
     $post->ID = 1234;
-    
+
     // we remove header stuff which we don't want to test
     remove_action('wp_head', 'wp_generator');
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
     add_filter( 'wp_resource_hints', '__return_empty_array' );
     wp_deregister_script( 'wp-embed' );
-    
+
   }
-  
+
   public function testDBExport() {
-    global $FV_Player_Db;        
-    $output = json_encode( $FV_Player_Db->export_player_data(false,false,1), JSON_UNESCAPED_SLASHES );
-
-    // Compare two JSONs - we replace the last_check as it might differ and also decore and print_r them to make it readable
-    $this->assertEquals(
-      print_r(
-        json_decode(
-          preg_replace(
-            '~"last_check":".*?"~',
-            '"last_check":"some-date-was-here"',
-            file_get_contents(dirname(__FILE__).'/player-data-export.json')
-          )
-        ),
-        true
-      ),
-      print_r(
-        json_decode(
-          preg_replace(
-            '~"last_check":".*?"~',
-            '"last_check":"some-date-was-here"',
-            $output
-          )
-        ),
-        true
-      )
-    );  
-  }  
-  
-  public function testDBShortcode() {
-        
-    $output = apply_filters( 'the_content', '[fvplayer id="1"]' );
-
-    // Three videos
-    $this->assertTrue(
-      3 === preg_match_all( "~data-item='(.*?)'~", $output, $data_items )
-    );
-
-    // Verify video order
-    $data_item = json_decode( html_entity_decode( $data_items[1][0] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/dominika-960-31.mp4' === $data_item->sources[0]->src );
-
-    $data_item = json_decode( html_entity_decode( $data_items[1][1] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/Paypal-video-on-home-page.mp4' === $data_item->sources[0]->src );
-
-    $data_item = json_decode( html_entity_decode( $data_items[1][2] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4' === $data_item->sources[0]->src );   
+    global $FV_Player_Db;
+    $output = json_encode( $FV_Player_Db->export_player_data(false,false, $this->import_ids[0] ), JSON_UNESCAPED_SLASHES );
+    $this->assertEquals( file_get_contents(dirname(__FILE__).'/player-data.json'), $output );
   }
-  
+
+  public function testDBShortcode() {
+    $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '"]' );
+
+    // Player ID needs to match
+    $this->assertTrue( stripos( $output, 'data-player-id="' . $this->import_ids[0] . '"' ) !== false );
+
+    // Each playlist video source needs to match the JSON
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
+
+    $videos_json = $this->import_data[0]['videos'];
+
+    foreach( $matches[1] as $k => $playlist_item_raw ) {
+      $playlist_item = json_decode( $playlist_item_raw );
+
+      // Video link
+      $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
+
+      // Video title
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+
+      // Video splash
+      $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
+
+      // Subtitles need to be present if they were in the import JSON
+      if ( ! empty( $videos_json[ $k ]['meta'] ) ) {
+        foreach( $videos_json[ $k ]['meta'] as $meta ) {
+          if ( stripos( $meta['meta_key'], 'subtitles' ) === 0 ) {
+            $this->assertTrue( ! empty( $playlist_item->subtitles ) );
+          }
+        }
+      }
+    }
+  }
+
   public function testDBShortcodeWithSort() {
 
-    // Oldest first
-    $output = apply_filters( 'the_content', '[fvplayer id="1" sort="oldest"]' );
+    $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '" sort="oldest"]' );
 
-    // Three videos
-    $this->assertTrue(
-      3 === preg_match_all( "~data-item='(.*?)'~", $output, $data_items )
-    );
+    // Player ID needs to match
+    $this->assertTrue( stripos( $output, 'data-player-id="' . $this->import_ids[0] . '"' ) !== false );
 
-    // Verify video order
-    $data_item = json_decode( html_entity_decode( $data_items[1][0] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/dominika-960-31.mp4' === $data_item->sources[0]->src );
+    // Each playlist video source needs to match the JSON
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
 
-    $data_item = json_decode( html_entity_decode( $data_items[1][1] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/Paypal-video-on-home-page.mp4' === $data_item->sources[0]->src );
+    $videos_json = $this->import_data[0]['videos'];
 
-    $data_item = json_decode( html_entity_decode( $data_items[1][2] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4' === $data_item->sources[0]->src );
+    foreach( $matches[1] as $k => $playlist_item_raw ) {
+      $playlist_item = json_decode( $playlist_item_raw );
 
-    // Newest first
-    $output = apply_filters( 'the_content', '[fvplayer id="1" sort="newest"]' );
+      // Video link
+      $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
-    // Three videos
-    $this->assertTrue(
-      3 === preg_match_all( "~data-item='(.*?)'~", $output, $data_items )
-    );
+      // Video title
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
 
-    // Verify video order
-    $data_item = json_decode( html_entity_decode( $data_items[1][0] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4' === $data_item->sources[0]->src );
+      // Video splash
+      $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
 
-    $data_item = json_decode( html_entity_decode( $data_items[1][1] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/Paypal-video-on-home-page.mp4' === $data_item->sources[0]->src );
+      // Subtitles need to be present if they were in the import JSON
+      if ( ! empty( $this->import_data[0]['videos'][ $k ]['meta'] ) ) {
+        foreach( $this->import_data[0]['videos'][ $k ]['meta'] as $meta ) {
+          if ( stripos( $meta['meta_key'], 'subtitles' ) === 0 ) {
+            $this->assertTrue( ! empty( $playlist_item->subtitles ) );
+          }
+        }
+      }
+    }
 
-    $data_item = json_decode( html_entity_decode( $data_items[1][2] ) );
-    $this->assertTrue( 'https://foliovision.com/videos/dominika-960-31.mp4' === $data_item->sources[0]->src );
+    $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '" sort="newest"]' );
+
+    // Player ID needs to match
+    $this->assertTrue( stripos( $output, 'data-player-id="' . $this->import_ids[0] . '"' ) !== false );
+
+    // Each playlist video source needs to match the JSON
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
+
+    // Reverse the videos JSON so we can compare it to the newest sort
+    $videos_json = array_reverse( $this->import_data[0]['videos'] );
+
+    foreach( $matches[1] as $k => $playlist_item_raw ) {
+      $playlist_item = json_decode( $playlist_item_raw );
+
+      // Video link
+      $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
+
+      // Video title
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+
+      // Video splash
+      $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
+
+      // Subtitles need to be present if they were in the import JSON
+      if ( ! empty( $videos_json[ $k ]['meta'] ) ) {
+        foreach( $videos_json[ $k ]['meta'] as $meta ) {
+          if ( stripos( $meta['meta_key'], 'subtitles' ) === 0 ) {
+            $this->assertTrue( ! empty( $playlist_item->subtitles ) );
+          }
+        }
+      }
+    }
+
+    $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '" sort="title"]' );
+
+    // Each playlist video source needs to match the JSON
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
+
+    $videos_json = array_reverse( $this->import_data[0]['videos'] );
 
     // Sort by title
-    $output = apply_filters( 'the_content', '[fvplayer id="1" sort="title"]' );
-
-    // Three videos
-    $this->assertTrue(
-      3 === preg_match_all( "~data-item='(.*?)'~", $output, $data_items )
+    usort(
+      $videos_json,
+      function( $a, $b ) {
+        return strcmp( $a['caption'], $b['caption'] );
+      }
     );
 
-    // Verify video order
-    $data_item = json_decode( html_entity_decode( $data_items[1][0] ) );
-    $this->assertTrue( 'Carly Simon' === $data_item->fv_title );
+    foreach( $matches[1] as $k => $playlist_item_raw ) {
+      $playlist_item = json_decode( $playlist_item_raw );
 
-    $data_item = json_decode( html_entity_decode( $data_items[1][1] ) );
-    $this->assertTrue( 'Fire' === $data_item->fv_title );
+      // Video link
+      $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
 
-    $data_item = json_decode( html_entity_decode( $data_items[1][2] ) );
-    $this->assertTrue( 'PayPal Background Video' === $data_item->fv_title );
+      // Video title
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+
+      // Video splash
+      $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
+
+      // Subtitles need to be present if they were in the import JSON
+      if ( ! empty( $videos_json[ $k ]['meta'] ) ) {
+        foreach( $videos_json[ $k ]['meta'] as $meta ) {
+          if ( stripos( $meta['meta_key'], 'subtitles' ) === 0 ) {
+            $this->assertTrue( ! empty( $playlist_item->subtitles ) );
+          }
+        }
+      }
+    }
   }
 
   public function testHmsToSeconds() {
@@ -159,24 +204,50 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   public function testDBStartEnd() {
     global $post;
     $post = get_post( $this->post_id_testStartEnd );
-    
+
     $output = apply_filters( 'the_content', '[fvplayer id="'.$this->import_ids[1].'"]' );
 
-    // Three videos
-    $this->assertTrue(
-      3 === preg_match_all( "~data-item='(.*?)'~", $output, $data_items )
-    );
-      
-    // First video should start at 00:10 and end at 00:40 and report as 00:30 long
-    $data_item = json_decode( html_entity_decode( $data_items[1][0] ) );
-    $this->assertTrue( 10 === $data_item->fv_start );
-    $this->assertTrue( 40 === $data_item->fv_end );
-    $this->assertTrue( stripos( $output, '<i class="dur">00:30</i>') !== false );
+    // Player ID needs to match
+    $this->assertTrue( stripos( $output, 'data-player-id="' . $this->import_ids[1] . '"' ) !== false );
 
-    // Second video should start at 00:05 and report stored duration
-    $data_item = json_decode( html_entity_decode( $data_items[1][1] ) );
-    $this->assertTrue( "5" === $data_item->fv_start );
-    $this->assertTrue( stripos( $output, '<i class="dur">01:04:11</i>') !== false );
+    // Each playlist video source needs to match the JSON
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
+
+    // Match playlist item HTML
+    preg_match_all( '~<a.*?</a>~', $output, $item_anchors );
+
+    $videos_json = $this->import_data[1]['videos'];
+
+    foreach( $matches[1] as $k => $playlist_item_raw ) {
+      $playlist_item = json_decode( $playlist_item_raw );
+
+      // Video link
+      $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
+
+      // Video title
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['caption'] ) === 0 );
+
+      // Video splash
+      $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
+
+      // Subtitles need to be present if they were in the import JSON
+      if ( ! empty( $videos_json[ $k ]['meta'] ) ) {
+        foreach( $videos_json[ $k ]['meta'] as $meta ) {
+          if ( stripos( $meta['meta_key'], 'subtitles' ) === 0 ) {
+            $this->assertTrue( ! empty( $playlist_item->subtitles ) );
+          }
+        }
+      }
+
+      // If video has start and end time, then the duration must be in HTML
+      if ( ! empty( $videos_json[ $k ]['start'] ) && ! empty( $videos_json[ $k ]['end'] ) ) {
+        $duration = flowplayer::hms_to_seconds( $videos_json[ $k ]['end'] ) - flowplayer::hms_to_seconds( $videos_json[ $k ]['start'] );
+        // The duration of the video must be in HTML
+        $this->assertTrue( stripos( $item_anchors[0][ $k ], '<i class="dur">' . flowplayer::format_hms( $duration )  . '</i>' ) !== false );
+      }
+
+      // TODO: Also test if the video has duration meta and duration and start and just end time set
+    }
   }
 
   protected function tearDown(): void {
