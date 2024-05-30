@@ -167,6 +167,11 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         // The video source URL might require the URL signature to allow opening, so we add that here
         $source_signed = apply_filters( 'fv_flowplayer_video_src', $source_no_query_string, array( 'dynamic' => true ) );
 
+        // No signature added? Then use the original URL for link
+        if ( strcmp( $source_signed, $source_no_query_string ) === 0 ) {
+          $source_signed = $job->$column_name ;
+        }
+
         $value = "<a href='" . esc_attr( $source_signed ) . "' target='_blank'>" . $source_no_query_string . "</a>";
         break;
       case 'status':
