@@ -1385,7 +1385,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
       
-    .wpfp_custom_background { display: none; position: absolute; background-size: contain; width: 100%; height: 100%; z-index: 1 }  
+    .wpfp_custom_background { display: none; position: absolute; background-position: center center; background-repeat: no-repeat; background-size: contain; width: 100%; height: 100%; z-index: 1 }  
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
     .is-finished .wpfp_custom_background { display: block; }  
