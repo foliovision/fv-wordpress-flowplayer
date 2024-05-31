@@ -1516,31 +1516,36 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       }
 
+      $sHTML = "\t<div$attributes_html>\n" . $items . "\t</div>\n";
+
       /**
-       * Pure-JavaScript version of freedomplayer_playlist_size_check().
+       * Pure-JavaScript version of freedomplayer_playlist_size_check() to avoid layout shift as the JavaScript loads.
+       *
+       * We don't need it if playlists is in lightbox = using slider playlist style.
        */
-      $script_fit_thumbs = '';
-      if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'polaroid', 'version-one', 'version-two' ) ) ) {
-        $script_fit_thumbs = "
-        var fit_thumbs = Math.floor( parseInt( getComputedStyle( el ).width ) / " . $limit . " );
-        if( fit_thumbs > 8 ) fit_thumbs = 8;
-        else if( fit_thumbs< 2 ) fit_thumbs = 2;
-        el.style.setProperty('--fp-playlist-items-per-row', String(fit_thumbs));
-        ";
+      if ( ! in_array( $this->aCurArgs['liststyle'], array( 'slider' ) ) ) {
+        $script_fit_thumbs = '';
+        if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'polaroid', 'version-one', 'version-two' ) ) ) {
+          $script_fit_thumbs = "
+          var fit_thumbs = Math.floor( parseInt( getComputedStyle( el ).width ) / " . $limit . " );
+          if( fit_thumbs > 8 ) fit_thumbs = 8;
+          else if( fit_thumbs< 2 ) fit_thumbs = 2;
+          el.style.setProperty('--fp-playlist-items-per-row', String(fit_thumbs));
+          ";
+        }
+
+        $script = "( function() {
+          var el = document.getElementById( '" . $attributes['id'] ."' );
+          if ( el.parentNode.getBoundingClientRect().width >= 900 ) {
+            el.classList.add( 'is-wide' );
+          } " . $script_fit_thumbs . "
+        } )();";
+
+        // remove whitespace
+        $script = preg_replace( '~\s+~m', ' ', $script );
+
+        $sHTML .= "\t<script>" . $script . "</script>\n";
       }
-
-      $script = "( function() {
-        var el = document.getElementById( '" . $attributes['id'] ."' );
-        if ( el.parentNode.getBoundingClientRect().width >= 900 ) {
-          el.classList.add( 'is-wide' );
-        } " . $script_fit_thumbs . "
-      } )();";
-
-      // remove whitespace
-      $script = preg_replace( '~\s+~m', ' ', $script );
-
-      $sHTML = "\t<div$attributes_html>\n".$items."\t</div>\n";
-      $sHTML .= "\t<script>" . $script . "</script>\n";
 
       if( isset($aArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $sHTML = "<div class='fv-playlist-slider-wrapper'>".$sHTML."</div>\n";
