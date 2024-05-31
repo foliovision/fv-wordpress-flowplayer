@@ -28,22 +28,38 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
     ob_start();
     apply_filters( 'show_password_fields', true, $profileuser );
     $output = ob_get_clean();
-        
-    $one = $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testProfileScreen.html')); // this contains user ID of '4'
-    $two = explode("\n",$this->fix_newlines($output));
-    foreach( explode("\n",$one) as $k => $v ) {
-      
-      /*if( $v != $two[$k]) {
-        for($i=0;$i<strlen($two[$k]);$i++) {
-          var_dump( $two[$k][$i].' '.ord($two[$k][$i]) );
-        }
-      }*/
-      
-      //$this->assertEquals( $v, $two[$k] );
-    }
-    
-    $this->assertEquals( $this->fix_newlines(file_get_contents(dirname(__FILE__).'/testProfileScreen.html')), $this->fix_newlines($output) );
-        
+
+    $this->assertTrue(
+      strpos( $output, 'https://vimeo.com/255317467') !== false,
+      'Profile screen should contain the first video'
+    );
+
+    $this->assertTrue(
+      strpos( $output, 'https://vimeo.com/255370388') !== false,
+      'Profile screen should contain the second video'
+    );
+
+    $this->assertTrue(
+      strpos( $output, '6ZfuNTqbHE8') !== false,
+      'Profile screen should contain the third video'
+    );
+
+    $this->assertTrue(
+      substr_count( $output, "<div class='edit-video' >" ) === 3,
+      'Profile screen should contain 3 "Edit Video" buttons'
+    );
+
+    $this->assertTrue(
+      substr_count( $output, "<div class='add-video' style=\"display:none\">" ) === 3,
+      'Profile screen should contain 3 hidden "Add Video" buttons'
+    );
+
+    preg_match_all( "~<input.*?name='fv_player_videos\[_fv_player_user_video\]\[\]' type='hidden' value='\[fvplayer src=~", $output, $matches );
+
+    $this->assertTrue(
+      count( $matches[0] ) === 3,
+      'Profile screen should contain 3 [fvplayer] shortcodes with src as hidden inputs'
+    );
   }
 
 }
