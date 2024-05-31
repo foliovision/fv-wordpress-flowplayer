@@ -141,7 +141,7 @@ final class FV_Player_EndActionsTest extends FV_Player_UnitTestCase {
     $this->assertTrue( substr_count( $output, "data-item" ) == 1 );
 
     // Splash to show at the end should be present
-    $this->assertTrue( substr_count( $output, ' class="wpfp_custom_background" style="position: absolute; background: url(\'https://cdn.site.com/video.jpg\')' ) == 1 );
+    $this->assertTrue( substr_count( $output, ' class="wpfp_custom_background" style="background: url(\'https://cdn.site.com/video.jpg\')' ) == 1 );
   }
 
   protected function tearDown(): void {
