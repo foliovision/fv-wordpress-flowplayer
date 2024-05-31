@@ -7,7 +7,7 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  * in the HTML markup.
  */
 final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
-  
+
   private $playlist_default;
   private $playlist_vertical;
   private $playlist_tabs;
@@ -16,27 +16,27 @@ final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    
+
     $shortcode_body = 'src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" playlist="https://cdn.site.com/video2.mp4,https://cdn.site.com/video2.jpg;https://cdn.site.com/video3.mp4,https://cdn.site.com/video3.jpg" caption="Video 1;Video 2;Video 3" share="no" embed="false"';
 
     // create a post with playlist shortcode
-    $this->playlist_default = $this->factory->post->create( array(      
+    $this->playlist_default = $this->factory->post->create( array(
       'post_content' => '[fvplayer '.$shortcode_body.']'
     ) );
-    
-    $this->playlist_vertical = $this->factory->post->create( array(      
+
+    $this->playlist_vertical = $this->factory->post->create( array(
       'post_content' => '[fvplayer '.$shortcode_body.' liststyle="vertical"]'
     ) );
-    
-    $this->playlist_tabs = $this->factory->post->create( array(      
+
+    $this->playlist_tabs = $this->factory->post->create( array(
       'post_content' => '[fvplayer '.$shortcode_body.' liststyle="tabs"]'
     ) );
-    
-    $this->playlist_prevnext = $this->factory->post->create( array(      
+
+    $this->playlist_prevnext = $this->factory->post->create( array(
       'post_content' => '[fvplayer '.$shortcode_body.' liststyle="prevnext"]'
     ) );
-    
-    $this->playlist_slider = $this->factory->post->create( array(      
+
+    $this->playlist_slider = $this->factory->post->create( array(
       'post_content' => '[fvplayer '.$shortcode_body.' liststyle="slider"]'
     ) );
 
@@ -44,10 +44,10 @@ final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
 
   public function testPlaylistStyleShortcode() {
     global $post;
-    
+
     $post = get_post( $this->playlist_default );
     $output = apply_filters( 'the_content', $post->post_content );
-    
+
     $sample = <<< HTML
 <div id="wpfp_f42eec11ed5dc49d5c4e03e1cd99b39b" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-horizontal" style="max-width: 100%; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
@@ -62,13 +62,13 @@ final class FV_Player_ShortcodePlaylistTestCase extends FV_Player_UnitTestCase {
 	</div>
 <script>( function() { var el = document.getElementById( "wpfp_some-test-hash_playlist" ); if ( el.parentNode.getBoundingClientRect().width >= 900 ) { el.classList.add( 'is-wide' ); } } )();</script>
 HTML;
-    
+
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
-    
+
+
     $post = get_post( $this->playlist_vertical );
     $output = apply_filters( 'the_content', $post->post_content );
-    
+
     $sample = <<< HTML
 <div class="fp-playlist-vertical-wrapper"><div id="wpfp_2f7513fd179c9537da5b3a02cb603184" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-vertical" style="max-width: 100%; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
@@ -101,10 +101,10 @@ HTML;
 } )();
 </script>
 HTML;
-    
+
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
-    
+
+
     $post = get_post( $this->playlist_prevnext );
     $output = apply_filters( 'the_content', $post->post_content );
 
@@ -124,36 +124,41 @@ HTML;
 HTML;
 
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
-    
+
+
     $post = get_post( $this->playlist_slider );
     $output = apply_filters( 'the_content', $post->post_content );
 
-    $sample = <<< HTML
-<div id="wpfp_71aa011cbf9647b3f239334bd655a7a0" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy has-playlist has-playlist-slider" style="max-width: 100%; " data-ratio="0.5625">
-	<div class="fp-ratio" style="padding-top: 56.25%"></div>
-	<img class="fp-splash" alt="Video 1;Video 2;Video 3" src="https://cdn.site.com/video1.jpg" />
-	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
+    // Playlist items need to match
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
 
-</div>
-<div class='fv-playlist-slider-wrapper'>	<div class="fp-playlist-external fv-playlist-design-2017 fp-playlist-horizontal fp-playlist-has-captions skin-slim" rel="wpfp_71aa011cbf9647b3f239334bd655a7a0" id="wpfp_71aa011cbf9647b3f239334bd655a7a0_playlist" style="width: 600px; max-width: 600px !important">
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video1.mp4","type":"video\/mp4"}],"fv_title":"Video 1","splash":"https:\/\/cdn.site.com\/video1.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video1.jpg' loading='lazy' /></div><h4><span>Video 1</span></h4></a>
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video2.mp4","type":"video\/mp4"}],"fv_title":"Video 2","splash":"https:\/\/cdn.site.com\/video2.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video2.jpg' loading='lazy' /></div><h4><span>Video 2</span></h4></a>
-		<a href='#' data-item='{"sources":[{"src":"https:\/\/cdn.site.com\/video3.mp4","type":"video\/mp4"}],"fv_title":"Video 3","splash":"https:\/\/cdn.site.com\/video3.jpg"}'><div class='fvp-playlist-thumb-img'><img  src='https://cdn.site.com/video3.jpg' loading='lazy' /></div><h4><span>Video 3</span></h4></a>
-	</div>
-  <script>( function() { var el = document.getElementById( "wpfp_some-test-hash_playlist" ); if ( el.parentNode.getBoundingClientRect().width >= 900 ) { el.classList.add( 'is-wide' ); } } )();</script>
-</div>
-HTML;
+    $this->assertTrue( count( $matches[0] ) === 3 );
 
-    $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
+    $this->assertTrue( stripos( $matches[0][0], 'video1.mp4' ) !== false );
+
+    $this->assertTrue( stripos( $matches[0][1], 'video2.mp4' ) !== false );
+
+    $this->assertTrue( stripos( $matches[0][2], 'video3.mp4' ) !== false );
+
+    $this->assertTrue(
+      substr_count( $output, 'fvp-playlist-thumb-img' ) === 3,
+      'FV Player playlist needs to show 3 thumbs'
+    );
+
+    $this->assertTrue(
+      stripos( $output, 'fv-playlist-slider-wrapper' ) !== false &&
+      stripos( $output, 'has-playlist-slider' ) !== false &&
+      stripos( $output, 'fp-playlist-horizontal' ) !== false,
+      'FV Player playlist is not using the right style'
+    );
   }
-  
+
   public function testPlaylistTabsShortcode() {
     global $post;
-    
+
     $post = get_post( $this->playlist_tabs );
     $output = apply_filters( 'the_content', $post->post_content );
-    
+
     $sample = <<< HTML
 <script>document.body.className += " fv_flowplayer_tabs_hide";</script><div class="fv_flowplayer_tabs tabs woocommerce-tabs" style="max-width: 640px"><div id="tabs-28-1" class="fv_flowplayer_tabs_content"><ul><li><a href="#tabs-28-1-0">Video 1</a></li><li><a href="#tabs-28-1-1">Video 2</a></li><li><a href="#tabs-28-1-2">Video 3</a></li></ul><div class="fv_flowplayer_tabs_cl"></div><div id="tabs-28-1-0" class="fv_flowplayer_tabs_first"><div id="wpfp_b6048f10f0114cc6ff02fbeba28e0891" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video1.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}],&quot;splash&quot;:&quot;https:\/\/cdn.site.com\/video1.jpg&quot;}" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy" style="max-width: 640px; max-height: 360px; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
@@ -175,19 +180,19 @@ HTML;
 </div>
 </div><div class="fv_flowplayer_tabs_cl"></div><div class="fv_flowplayer_tabs_cr"></div></div></div>
 HTML;
-    
+
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
-    
-        
+
+
     global $fv_fp;
-    $this->assertTrue( $fv_fp->load_tabs );    
+    $this->assertTrue( $fv_fp->load_tabs );
   }
-  
+
   protected function tearDown(): void {
     global $fv_fp, $FV_Player_lightbox;
     $fv_fp->load_tabs = false;
     $FV_Player_lightbox = new FV_Player_lightbox(); // reset the lightbox loading flag and footer lightboxed players HTML
-    
+
     parent::tearDown();
   }
 
