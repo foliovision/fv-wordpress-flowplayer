@@ -154,6 +154,11 @@ class FV_Player_lightbox {
     return $attrs;
   }
 
+  // Used in integration tests
+  public function clear_lightboxed_players() {
+    $this->lightboxHtml = '';
+  }
+
   function disp__lightboxed_players() {
     if ( strlen( $this->lightboxHtml ) ) {
       echo wp_kses_post( $this->lightboxHtml ) . "<!-- lightboxed players -->\n\n";
