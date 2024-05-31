@@ -44,28 +44,28 @@
 .fv-player-buttons a.current { background-color: #bb0000 !important; }
 #content .flowplayer.skin-custom, .flowplayer.skin-custom { font-family: Tahoma, Geneva, sans-serif; }
 .flowplayer.skin-custom .fp-dropdown li.active { background-color: #bb0000 !important }
-      
-    .wpfp_custom_background { display: none; }  
+
+    .wpfp_custom_background { display: none; position: absolute; background-position: center center; background-repeat: no-repeat; background-size: contain; width: 100%; height: 100%; z-index: 1 }
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
     .wpfp_custom_popup h1, .wpfp_custom_popup h2, .wpfp_custom_popup h3, .wpfp_custom_popup h4 { color: #fff; }
-    .is-finished .wpfp_custom_background { display: block; }  
-    
+    .is-finished .wpfp_custom_background { display: block; }
+
     .wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }
 .wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }    .wpfp_custom_ad { color: #888; z-index: 20 !important; }
     .wpfp_custom_ad a { color: #ff3333 }
-    
+
     .fp-playlist-external > a > span { background-color:#808080; }
         .fp-playlist-external > a.is-active > span { border-color:#bb0000; }
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4,.fp-playlist-external.fp-playlist-only-captions a.is-active,.fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 { color:#bb0000; }
     .fp-playlist-vertical { background-color:#808080; }
-    .flowplayer .fp-player .fp-captions p { font-size: 16px; }        .flowplayer .fp-logo { bottom: 30px; left: 15px; }      
+    .flowplayer .fp-player .fp-captions p { font-size: 16px; }        .flowplayer .fp-logo { bottom: 30px; left: 15px; }
     .flowplayer .fp-player .fp-captions p { background-color: rgba(0,0,0,0.5) }
     .flowplayer .fp-player.is-sticky { max-width: 380px }
     @media screen and ( max-width: 480px ) {
         .flowplayer .fp-player.is-sticky { max-width: 100% }
     }
-  
-                  </style>  
+
+                  </style>
     <div id="wpfp_3607b211dfa3827d5a62f96a0823a499" data-item="{&quot;sources&quot;:[{&quot;src&quot;:&quot;https:\/\/cdn.site.com\/video.mp4&quot;,&quot;type&quot;:&quot;video\/mp4&quot;}]}" class="freedomplayer flowplayer no-brand is-splash is-paused skin-slim no-svg fp-slim fp-edgy" data-fv-embed="http://example.org/?p=1234&amp;fv_player_embed=1" style="max-width: 640px; max-height: 360px; " data-ratio="0.5625">
 	<div class="fp-ratio" style="padding-top: 56.25%"></div>
 	<div class="fp-ui"><noscript>Please enable JavaScript</noscript><div class="fp-play fp-visible"><svg class="fp-play-sharp-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.fp-color-play{opacity:0.65;}.controlbutton{fill:#fff;}</style></defs><title>play-sharp-fill</title><path class="fp-color-play" d="M49.9217-.078a50,50,0,1,0,50,50A50.0564,50.0564,0,0,0,49.9217-.078Z"/><polygon class="controlbutton" points="73.601 50 37.968 70.573 37.968 29.427 73.601 50" filter="url(#f1)"/></svg></div><div class="fp-preload"><b></b><b></b><b></b><b></b></div></div>
@@ -406,7 +406,7 @@ class FV_Player_JS_Loader {
                 if( el.getAttribute && el.getAttribute('data-item') ) {
                     playlist_item = el;
                 }
-                
+
                 if( el.className && el.className.match && el.className.match(/\b(flowplayer|fp-playlist-external)\b/) && !el.className.match(/\bis-ready\b/) ) {
                     /* Players with autoplay should stop */
 
