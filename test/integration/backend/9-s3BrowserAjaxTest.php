@@ -22,8 +22,14 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     );
 
     set_current_screen( 'edit-post' );
-    // without this included, fv_wp_flowplayer_delete_extensions_transients() would not be found
-    include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
+
+    // Load the media browser classes which normally only load in wp-admin, important when running all the tests at once
+    include_once "../../controller/settings.php";
+    include_once "../../models/media-browser.php";
+    include_once "../../models/media-browser-s3.php";
+
+    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
+
     parent::wpSetUpBeforeClass();
 
     $fv_fp->_set_conf($_POST);
