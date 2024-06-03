@@ -1233,7 +1233,7 @@ jQuery(function() {
 
       $doc.on("change", "#fv-player-shortcode-editor-right input, #fv-player-shortcode-editor-right select", save );
 
-      $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea", function(e) {
+      $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=number], #fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea", function(e) {
         clearTimeout(int_keyup);
         int_keyup = setTimeout( function() {
           save(e);
