@@ -25,7 +25,7 @@ if( isset($options['remove_all_data']) && filter_var($options['remove_all_data']
   delete_option( 'fv_flowplayer_vast' );
 
   // delete transients
-  delete_transient( 'fv_flowplayer_license' );
+  delete_transient( 'fv_player_license' );
   delete_transient( 'fv_player_s3_browser_cf' );
 
   // delete tables

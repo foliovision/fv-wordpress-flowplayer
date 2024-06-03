@@ -1554,6 +1554,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return array( $sHTML, $aPlaylistItems, $aSplashScreens, $aCaptions );
   }
 
+  public function check_license( $force ) {
+    parent::setLicenseTransient( $force );
+  }
 
   function css_generate( $skip_style_tag = true ) {
     $this->_get_conf(); //  todo: without this the colors for skin-slim might end up empty, why?
