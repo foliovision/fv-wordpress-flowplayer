@@ -412,10 +412,10 @@ function fv_flowplayer_browser_browse(data, options) {
 
 // adds new tab on top of the Media Library popup
 function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
-  var $tab = jQuery('#' + tabId);
+  var $tab = jQuery('#' + tabId),
+    input_name = jQuery('.fv_flowplayer_target').attr('name');
 
-  // Bail if it's not the Media Library for video src and it's Vimeo
-  // Amazon S3 should be allowed
+  // Bail if it's a tab which provides video files only (Bunny Stream, Cloudflare Stream etc.) and it's not the video src field
   if (
     [
       'fv_player_bunny_stream_browser_media_tab',
@@ -426,11 +426,13 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       'fv_player_cloudflare_stream_browser_media_tab'
     ].indexOf( tabId ) > -1
      &&
-    ( 'fv_wp_flowplayer_field_src' !== jQuery('.fv_flowplayer_target').attr('name') &&
-      'fv_wp_flowplayer_field_src1' !== jQuery('.fv_flowplayer_target').attr('name') &&
-      'fv_wp_flowplayer_field_src2' !== jQuery('.fv_flowplayer_target').attr('name') &&
-      'fv-player-gutenberg-media' !== jQuery('.fv_flowplayer_target').attr('name')
-    )
+    [
+      'fv_wp_flowplayer_field_src',
+      'fv_wp_flowplayer_field_src1',
+      'fv_wp_flowplayer_field_src2',
+      'fv-player-gutenberg-media',
+      'fv_wp_flowplayer_field_ppv_preview'
+    ].indexOf( input_name ) == -1
   ) {
 
     if ( $tab.length ) {
