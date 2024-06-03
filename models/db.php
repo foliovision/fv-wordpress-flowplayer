@@ -921,7 +921,7 @@ class FV_Player_Db {
     return $atts;
   }
 
-  public function db_load_player_data( $player_id, $current_video_to_edit = -1 ) {
+  public function db_load_player_data( $player_id, $current_video_to_edit = -1, $current_editor_tab = false ) {
     global $fv_fp;
 
     $this->getPlayerAttsFromDb( array( 'id' => $player_id ) );
@@ -975,6 +975,10 @@ class FV_Player_Db {
     $args = array( 'id' => $fv_fp->current_player()->getId(), 'lightbox' => false );
     if( $current_video_to_edit > -1 ) {
       $args['current_video_to_edit'] = $current_video_to_edit;
+    }
+
+    if ( $current_editor_tab ) {
+      $args['current_editor_tab'] = $current_editor_tab;
     }
 
     $preview_data = $fv_fp->build_min_player( false, $args );
@@ -1297,7 +1301,10 @@ class FV_Player_Db {
           }
 
           $current_video_to_edit = isset($post_data['current_video_to_edit']) ? $post_data['current_video_to_edit'] : -1;
-          wp_send_json( $this->db_load_player_data( $id, $current_video_to_edit ) );
+
+          $current_editor_tab = ! empty( $post_data['current_editor_tab'] ) ? $post_data['current_editor_tab'] : false;
+
+          wp_send_json( $this->db_load_player_data( $id, $current_video_to_edit, $current_editor_tab ) );
 
         } else {
           global $wpdb;

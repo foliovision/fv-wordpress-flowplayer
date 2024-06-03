@@ -26,6 +26,8 @@ jQuery(function() {
     current_video_db_id = 0,
     current_video_to_edit = -1,
 
+    current_editor_tab = false,
+
     current_post_id = 0,
     current_post_meta_key = 0,
 
@@ -868,6 +870,8 @@ jQuery(function() {
         $(this).addClass('nav-tab-active')
         $('.fv-player-tabs > .fv-player-tab').hide();
         $('.' + $(this).data('tab')).show();
+
+        current_editor_tab = $(this).data('tab');
       });
 
       /*
@@ -4006,6 +4010,9 @@ jQuery(function() {
     function set_control_fields( ajax_data ) {
       // add current video that we're editing into the save data
       ajax_data['current_video_to_edit'] = get_playlist_items_count() > 1 ? current_video_to_edit : -1;
+
+      // set current editor tab for ajax_data
+      ajax_data['current_editor_tab'] = current_editor_tab;
 
       if( current_post_id ) {
         ajax_data['current_post_id'] = current_post_id;
