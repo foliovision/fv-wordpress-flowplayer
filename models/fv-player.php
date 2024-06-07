@@ -1179,8 +1179,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       } else if( $sSplashImage ) {
         $sHTML .= "<div class='fvp-playlist-thumb-img'>";
-        if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) ) {
+        if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) && apply_filters( 'do_rocket_lazyload', true ) ) {
           $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='".esc_attr($sSplashImage)."' />";
+
         } else {
           $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='".esc_attr($sSplashImage)."' loading='lazy' />";
         }
