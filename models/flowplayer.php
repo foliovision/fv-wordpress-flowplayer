@@ -1591,10 +1591,23 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     $sCSSCurrent = preg_replace_callback( '~url\(.*?\)~', array( $this, 'css_relative_paths_fix' ), $sCSSCurrent );
 
-    // Only keep relative paths
-    $sCSSCurrent = str_replace( home_url(), '', $sCSSCurrent );
+    /**
+     * Only keep relative paths by replacing the https://domain.com with an empty string
+     */
+    $home_url_parsed = wp_parse_url( home_url() );
 
-    // Replace any left-over URLs with protocol agnostic URLs
+    if ( ! empty( $home_url_parsed['path'] ) ) {
+      unset( $home_url_parsed['path'] );
+    }
+
+    // reverse wp_parse_url for $home_url_parsed
+    $home_url_without_path = $home_url_parsed['scheme'] . '://' . $home_url_parsed['host'] . ( isset( $home_url_parsed['port'] ) ? ':' . $home_url_parsed['port'] : '' );
+
+    $sCSSCurrent = str_replace( $home_url_without_path, '', $sCSSCurrent );
+
+    /**
+     * Replace any left-over URLs with protocol agnostic URLs
+     */
     $sCSSCurrent = str_replace( array('http://', 'https://'), array('//','//'), $sCSSCurrent );
 
     if( !$wp_filesystem->put_contents( $filename, "/*\nFV Flowplayer custom styles\n\nWarning: This file is not mean to be edited. Please put your custom CSS into your theme stylesheet or any custom CSS field of your template.\n*/\n\n".$sCSSCurrent.$sCSS, FS_CHMOD_FILE) ) {
