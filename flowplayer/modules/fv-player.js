@@ -847,7 +847,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         } );
       }
     } else if( flowplayer.support.inlineVideo ) {
-      api.one( api.playing ? 'progress' : 'ready', function (e,api) {
+      api.one( 'progress', function (e,api) {
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_player_video_link_seek( api, fTime, abEnd, abStart );
