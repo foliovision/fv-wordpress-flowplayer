@@ -102,10 +102,10 @@ abstract class FV_Player_CDN {
                 }
               }
             }
-            
-            if ( ! empty( $this->aSecureTokens[$i] ) ) {
-              $url = $this->secure_link($url,$this->aSecureTokens[$i],$ttl);
-            }
+
+            $secureToken = ! empty( $this->aSecureTokens[ $i ] ) ? $this->aSecureTokens[ $i ] : false;
+
+            $url = $this->secure_link( $url, $secureToken ,$ttl );
           }
         }
       }
