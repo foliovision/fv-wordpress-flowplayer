@@ -330,7 +330,7 @@ class FV_Player_Db_Player {
   /**
    * @return int
    */
-  public function getPlaylistAttachmentId() {
+  public function getPlaylistSplashAttachmentId() {
     return $this->playlist_splash_attachment_id;
   }
 
