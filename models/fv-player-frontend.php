@@ -788,19 +788,10 @@ class flowplayer_frontend extends flowplayer
           $alt = $this->get_title() ? $this->get_title() : 'video';
 
           // Get the first video splash image attachment ID
-          $current_player = $this->current_player();
-          if ( $current_player ) {
-            $current_player_videos = $current_player->getVideos();
-            if ( $current_player_videos ) {
-              foreach ( $current_player_videos as $current_player_video ) {
-                $current_player_video_splash_id = $current_player_video->getSplashAttachmentId();
-
-                if ( $current_player_video_splash_id ) {
-                  $splash_img = $current_player_video_splash_id;
-                }
-
-                break;
-              }
+          if ( $this->current_video() ) {
+            $current_player_video_splash_id = $this->current_video()->getSplashAttachmentId();
+            if ( $current_player_video_splash_id ) {
+              $splash_img = $current_player_video_splash_id;
             }
           }
 
