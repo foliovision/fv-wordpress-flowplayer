@@ -293,6 +293,7 @@ class flowplayer_frontend extends flowplayer
       // Pick title and splash from the previewed video
       $this->aCurArgs['title'] = $aPlaylistItems[0]['fv_title'];
       $splash_img = $aPlaylistItems[0]['splash'];
+      $this->aCurArgs['splash_attachment_id'] = $aPlaylistItems[0]['splash_attachment_id'];
 
       // Make sure it's not using a playlist style
       $this->aCurArgs['liststyle'] = 'horizontal';
@@ -787,12 +788,9 @@ class flowplayer_frontend extends flowplayer
         if( !$bIsAudio && !empty($splash_img) ) {
           $alt = $this->get_title() ? $this->get_title() : 'video';
 
-          // Get the first video splash image attachment ID
-          if ( $this->current_video() ) {
-            $current_player_video_splash_id = $this->current_video()->getSplashAttachmentId();
-            if ( $current_player_video_splash_id ) {
-              $splash_img = $current_player_video_splash_id;
-            }
+          // Use the attachment ID if available
+          if ( ! empty( $this->aCurArgs['splash_attachment_id'] ) ) {
+            $splash_img = $this->aCurArgs['splash_attachment_id'];
           }
 
           // Use the playlist splash if it's playlist
