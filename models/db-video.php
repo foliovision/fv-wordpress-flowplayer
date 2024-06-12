@@ -901,7 +901,7 @@ CREATE TABLE " . self::$db_table_name . " (
             $video_url = $secured_url;
           }
 
-          $check = $FV_Player_Checker->check_mimetype( array($video_url), false, true );
+          /*$check = $FV_Player_Checker->check_mimetype( array($video_url), false, true );
           foreach( array(
             'aspect_ratio',
             'duration',
@@ -918,7 +918,7 @@ CREATE TABLE " . self::$db_table_name . " (
             if( !empty($check[$key]) ) {
               $video_data[$key] = $check[$key];
             }
-          }
+          }*/
         }
       }
 

@@ -52,6 +52,8 @@ class FV_Player_Db_Player {
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
+    $playlist_splash, // Playlist splash screen URL
+    $playlist_splash_attachment_id, // Playlist splash screen attachment ID
     $popup, // (NON-ORM, class property only) ID of the popup to show at the end of playlist
     $qsel,
     $redirect, // (NON-ORM, class property only) where to redirect after the end of playlist
@@ -320,6 +322,22 @@ class FV_Player_Db_Player {
   /**
    * @return string
    */
+  public function getPlaylistSplash() {
+    return $this->playlist_splash;
+  }
+
+
+  /**
+   * @return int
+   */
+  public function getPlaylistAttachmentId() {
+    return $this->playlist_splash_attachment_id;
+  }
+
+
+  /**
+   * @return string
+   */
   public function getPopup() {
     return $this->popup;
   }
@@ -514,6 +532,8 @@ CREATE TABLE " . self::$db_table_name . " (
   overlay_skip varchar(7) NOT NULL,
   playlist varchar(10) NOT NULL,
   playlist_advance varchar(7) NOT NULL,
+  playlist_splash varchar(1024) NOT NULL,
+  playlist_splash_attachment_id bigint(20) unsigned,
   qsel varchar(25) NOT NULL,
   share varchar(7) NOT NULL,
   share_title varchar(120) NOT NULL,

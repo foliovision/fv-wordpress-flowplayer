@@ -727,7 +727,29 @@ function fv_player_guttenberg_attributes_save() {
   ) );
 }
 
+function fv_player_editor_playlist_fields() {
+  $playlist_fields = apply_filters( 'fv_player_editor_playlist_fields', array(
+    'playlist' => array(
+      'items' => array(
+        array(
+          'label' => __( 'Playlist Splash', 'fv-player' ),
+          'name' => 'playlist_splash',
+          'browser' => true,
+          'type' => 'text',
+          'visible' => true,
+          'description' => __( 'Will appear in place of the video before the playlist is played.', 'fv-player' ),
+        ),
+        array(
+          'name' => 'playlist_splash_attachment_id',
+          'type' => 'hidden',
+        ),        
+      ),
+      'sort' => false
+    )
+  ) );
 
+  return $playlist_fields;
+}
 
 function fv_player_editor_subtitle_fields() {
   $subtitle_fields = apply_filters('fv_player_editor_subtitle_fields', array(
