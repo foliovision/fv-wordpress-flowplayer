@@ -543,6 +543,11 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     </div>
 
     <div id="fv-player-shortcode-editor-left">
+      <div class="fv-player-playlist-fields hide-if-singular-active" data-playlist-fields>
+        <?php
+        fv_player_editor_input_group( fv_player_editor_playlist_fields() );
+        ?>
+      </div>
       <div id="fv-player-shortcode-editor-preview">
         <div id="fv-player-shortcode-editor-preview-spinner" class="fv-player-shortcode-editor-helper"></div>
         <div id="fv-player-shortcode-editor-preview-no" class="fv-player-shortcode-editor-helper">
