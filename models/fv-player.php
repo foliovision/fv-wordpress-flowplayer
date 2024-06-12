@@ -1966,6 +1966,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     foreach( $item['sources'] AS $k => $source ) {
+
+      // Not if the video URL has no path
+      if ( empty( $source['src'] ) || ! wp_parse_url( $source['src'], PHP_URL_PATH ) ) {
+        continue;
+      }
+
       if( function_exists('get_rocket_cdn_url') ) {
         $item['sources'][$k]['src'] = get_rocket_cdn_url($source['src']);
       }
