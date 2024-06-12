@@ -795,6 +795,15 @@ class flowplayer_frontend extends flowplayer
             }
           }
 
+          // Use the playlist splash if it's playlist
+          if ( count($aPlaylistItems) > 1 ) {
+            if ( ! empty( $this->aCurArgs['playlist_splash_attachment_id'] ) ) {
+              $splash_img = $this->aCurArgs['playlist_splash_attachment_id'];
+            } else if ( ! empty( $this->aCurArgs['playlist_splash'] ) ) {
+              $splash_img = $this->aCurArgs['playlist_splash'];
+            }
+          }
+
            // load the image from WP Media Library if you got a number
           if( is_numeric($splash_img) ) {
             $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
@@ -1417,7 +1426,7 @@ class flowplayer_frontend extends flowplayer
 
       /**
        * Make sure each item is aware of its DB entry.
-       * 
+       *
        * Somehow adjusting $this->currentPlayerObject->video_objects is not required.
        */
       if ( ! empty( $this->aCurArgs['video_objects'] ) ) {
