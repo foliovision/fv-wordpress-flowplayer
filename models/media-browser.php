@@ -3,6 +3,7 @@
 abstract class FV_Player_Media_Browser {
 
   public $ajax_action_name = false;
+  public $ajax_action_name_add_new_folder = false;
   private $s3_assets_loaded = false;
 
   public function __construct($args) {
