@@ -17,6 +17,9 @@
 */
 
 // player instance with options that's stored in a DB
+
+use SebastianBergmann\CodeCoverage\Report\PHP;
+
 class FV_Player_Db_Player {
 
   private
@@ -327,7 +330,7 @@ class FV_Player_Db_Player {
   /**
    * @return int
    */
-  public function getPlaylistAttachmentId() {
+  public function getPlaylistSplashAttachmentId() {
     return $this->playlist_splash_attachment_id;
   }
 
@@ -1070,6 +1073,25 @@ CREATE TABLE " . self::$db_table_name . " (
       $this->author = $this->changed_by;
     }
 
+    if ( $is_update ) {
+
+      // Remove stored playlist splash attachment ID if splash was removed
+      $playlist_splash_attachment_id = $this->getPlaylistSplashAttachmentId();
+
+      if ( ! empty( $playlist_splash_attachment_id ) ) {
+        $saved_splash = wp_get_attachment_image_url( $playlist_splash_attachment_id, 'full', false);
+        if( !empty( $saved_splash ) ) {
+          $saved_path = wp_parse_url( $saved_splash, PHP_URL_PATH );
+          $current_path = $this->getPlaylistSplash() ? wp_parse_url( $this->getPlaylistSplash(), PHP_URL_PATH ) : false;
+
+          // if playlist splash removed or changed, delete playlist splash attachment id
+          if ( ! $saved_path || ( strcmp( $saved_path, $current_path ) !== 0) ) {
+            $this->playlist_splash_attachment_id = '';
+          }
+        }
+      }
+    }
+
     foreach (get_object_vars($this) as $property => $value) {
       if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields'))) {
         // don't update author or date created if we're updating
@@ -1243,7 +1265,7 @@ CREATE TABLE " . self::$db_table_name . " (
       foreach ($videos as $video) {
         // only delete videos which are used for this particular player and no other player
         if( $wpdb->get_var( $wpdb->prepare( "select count(*) from `{$wpdb->prefix}fv_player_players` where FIND_IN_SET( %d, videos )", $video->getId() ) ) > 1 ) {
-          continue; 
+          continue;
         }
 
         $video->delete();
