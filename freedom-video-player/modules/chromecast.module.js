@@ -3,7 +3,7 @@
 // copy of the original function with some mods
 flowplayer(function(api, root) {
   if ( !api.conf.fv_chromecast ) return;
-  
+
   // TODO: Only load when some video is started?
   if( !window['__onGCastApiAvailable'] ) {
     jQuery.getScript( { url: 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js', cache: true });
@@ -38,7 +38,7 @@ flowplayer(function(api, root) {
   function receiverListener(ev) {
     console.log('FV Player: Chromecast listener',ev);
     if (ev !== chrome.cast.ReceiverAvailability.AVAILABLE) return;
-    
+
     flowplayer.conf.chromecast_available = true;
   }
 
@@ -49,12 +49,14 @@ flowplayer(function(api, root) {
   }
 
   function createUIElements() {
-    var btnContainer = common.find('.fp-header', root)[0];
-    if (!btnContainer) return; // UI no more available
-    common.find('.fp-chromecast', btnContainer).forEach(common.removeNode);
+    common.find('.fp-chromecast', root).forEach(common.removeNode);
     common.find('.fp-chromecast-engine', root).forEach(common.removeNode);
     trigger = common.createElement('a', { 'class': 'fp-chromecast fp-icon', title: 'Play on Cast device'})
-    btnContainer.appendChild(trigger);
+    trigger.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="125 40 625 500"><path fill="whitesmoke" d="M644 486h37V98H181v83h-55V43h610v498H487v-55h157zm-224-24c6 22 9 44 10 66v13h-54c-1-69-25-128-74-176-48-48-107-73-176-73v-55l29 1a300 300 0 0 1 171 74 304 304 0 0 1 94 150zm-294-79v-34c87-4 192 69 194 192h-55a139 139 0 0 0-139-138v-20zm49 91c22 17 33 39 34 67h-83v-82c18 0 34 5 49 15z"/></svg>';
+
+    var fs = common.find('.fp-fullscreen')[0];
+    fs.parentNode.insertBefore(trigger, fs);
+
     var chromeCastEngine = common.createElement('div', { 'class': 'fp-chromecast-engine' })
       , chromeCastStatus = common.createElement('p', { 'class': 'fp-chromecast-engine-status' })
       , chromeCastIcon = common.createElement('p', { 'class': 'fp-chromecast-engine-icon' });
@@ -75,7 +77,7 @@ flowplayer(function(api, root) {
 
   function get_media() {
     var media = false;
-    
+
     // we need MP4 or MPEG-DASH
     var sources = api.video.sources_fvqs || api.video.sources;
     for( var i in sources ) {
@@ -96,7 +98,7 @@ flowplayer(function(api, root) {
         }
       }
     }
-    
+
     // if it's using encryption, we cannot use it
     if( api.video.fvhkey && !api.conf.hls_cast ) return false;
 
@@ -127,14 +129,14 @@ flowplayer(function(api, root) {
 
     return media;
   }
-  
+
   function load_media() {
     var media = get_media();
 
     if( !media ) {
       return false;
     }
-    
+
     // TODO: Test with Vimeo
     var cast_subtitles = [];
     if( api.video.subtitles ) {
@@ -142,7 +144,7 @@ flowplayer(function(api, root) {
         if( v.src.match(/\.srt/) ) {
           console.log('FV Player: Chromecast doesn\'t support SRT subtitles');
         }
-        
+
         var subtitles = new chrome.cast.media.Track(k, chrome.cast.media.TrackType.TEXT);
         subtitles.trackContentId = v.src;
         subtitles.trackContentType = 'text/vtt';
@@ -159,9 +161,9 @@ flowplayer(function(api, root) {
     // if we do not provide media.type below, then Stream Loader HLS streams won't be recognized as HLS
     var mediaInfo = new chrome.cast.media.MediaInfo(media.src, media.type);
     mediaInfo.tracks = cast_subtitles;
-    
+
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
-    
+
     // do not play the video from start, but continue where you left off
     if( !api.live ) {
       request.currentTime = api.video.time;
@@ -170,7 +172,7 @@ flowplayer(function(api, root) {
     // the old interval might be running and ruining the party
     clearInterval(timer);
     timer = false;
-    
+
     session.loadMedia(request, onMediaDiscovered, function onMediaError(e) {
       console.log('onMediaError', e)
     });
@@ -179,13 +181,13 @@ flowplayer(function(api, root) {
   function onMediaDiscovered(chromecast) {
     // use the selected audio tracks or subtitles
     switch_tracks( chromecast );
-    
+
     chromecast.addUpdateListener(function(alive) {
       if (!session) return; // Already destoryed
-      
+
       timer = timer || setInterval(function() {
         api.trigger('progress', [api, chromecast.getEstimatedTime()]);
-        
+
         // hilight the active audio track
         // seems like subtitles are hilighted elsewhere
         chromecast.activeTrackIds.forEach( function(track_id) {
@@ -194,7 +196,7 @@ flowplayer(function(api, root) {
             if( v.trackId == track_id && v.type == 'AUDIO' ) {
               // Match by name first
               var found = hilight_audio_track( "data-audio", v.language );
-              
+
               // If no match found, match by language code
               // We do this as there might be two different audio tracks
               // which are in the same language but with different names
@@ -205,9 +207,9 @@ flowplayer(function(api, root) {
             }
           });
         });
-        
+
       }, 500);
-      
+
       if (alive) {
         common.toggleClass(root, 'is-chromecast', true);
         common.toggleClass(trigger, 'fp-active', true);
@@ -217,17 +219,17 @@ flowplayer(function(api, root) {
             chromecast.pause();
           },
           resume: function() {
-          
+
             // support replay
             if( api.finished ) {
               clearInterval(timer);
               timer = null;
               api.release();
-              
+
               load_media();
               return;
             }
-            
+
             chromecast.play();
           },
           seek: function(time) {
@@ -238,10 +240,10 @@ flowplayer(function(api, root) {
         });
       }
       var playerState = chromecast.playerState;
-      
+
       if (api.paused && playerState === chrome.cast.media.PlayerState.PLAYING) api.trigger('resume', [api]);
       if (api.playing && playerState === chrome.cast.media.PlayerState.PAUSED) api.trigger('pause', [api]);
-      
+
       // when seeking we must wait for it to buffer to be able to really tell if
       // it did seek
       if (api.seeking && playerState === chrome.cast.media.PlayerState.BUFFERING) {
@@ -252,51 +254,51 @@ flowplayer(function(api, root) {
         waiting_for_seek = false;
         api.trigger('seek', [api]);
       }
-      
+
       if( playerState == chrome.cast.media.PlayerState.IDLE && chromecast.idleReason == chrome.cast.media.IdleReason.FINISHED ) {
         api.trigger('finish', [api]);
       }
-      
+
       common.toggleClass(root, 'is-loading', playerState === chrome.cast.media.PlayerState.BUFFERING);
     });
   }
-  
+
   api.bind('ready', function(e,api,video) {
-    
+
     // already using Chromecast
     if( session ) {
-      if( get_media() ) {      
+      if( get_media() ) {
         // we wait a bit to be able to pause the video that just loaded
         api.one('progress', function(e,api) {
           // take the power back!
           api.release();
           api.pause();
-          
+
           // make sure it won't be muted when you disabled Chromecast
           api.mute(false,true);
-          
+
           load_media();
         });
 
         // make that wait silent
         api.mute(true,true);
 
-        
+
       } else {
         session.stop();
         session = null;
         destroy();
         jQuery(trigger).hide();
       }
-        
+
       return;
     }
-    
+
     if( !flowplayer.conf.chromecast_available ) return;
-    
+
     if( get_media() ) {
       createUIElements();
-      
+
       jQuery(trigger).show();
     } else {
       fv_player_log('FV Player: Can\'t find media source suitable for Chromecast!');
@@ -310,7 +312,7 @@ flowplayer(function(api, root) {
     if (session) {
       // without this the video cannot continue playing
       api.trigger('pause', [api]);
-      
+
       // restore playback position
       if( session.media[0].media ) {
         var seek = session.media[0].getEstimatedTime();
@@ -318,7 +320,7 @@ flowplayer(function(api, root) {
           api.seek( seek );
         }, 0 );
       }
-      
+
       session.stop();
       session = null;
       destroy();
@@ -330,18 +332,18 @@ flowplayer(function(api, root) {
     chrome.cast.requestSession(function(s) {
       // user clicked the Chromecast device, so let's make it impossible to use the player before it really initializes
       jQuery(root).addClass('is-loading');
-      
+
       session = s;
       var receiverName = session.receiver.friendlyName;
       common.html(common.find('.fp-chromecast-engine-status',root)[0], 'Playing on device ' + receiverName);
-      
+
       load_media();
 
     }, function(err) {
       console.error('requestSession error', err);
     });
   });
-  
+
   // changing audio tracks or subtitles
   bean.on(root, 'click', '.fv-fp-hls-menu [data-audio], .fp-subtitle-menu [data-subtitle-index]', function() {
     if( session && session.media[0].media ) {
@@ -353,7 +355,7 @@ flowplayer(function(api, root) {
   function hilight_audio_track( attr, chromecast_language ) {
     var audio_tracks_menu = jQuery(root).find(".fv-fp-hls-menu a"),
       found = false;
-    
+
     audio_tracks_menu.each(function (k,el) {
       if( jQuery(el).attr(attr) === chromecast_language ) {
         jQuery(el).addClass("fp-selected");
@@ -365,33 +367,33 @@ flowplayer(function(api, root) {
 
     return found;
   }
-  
-  
+
+
   function switch_tracks( chromecast ) {
     console.log( chromecast.media.tracks );
-    
+
     // use the selected audio track
     var audio = jQuery(root).find('.fv-fp-hls-menu [data-audio].fp-selected').data('audio'),
       audio_lang = jQuery(root).find('.fv-fp-hls-menu [data-audio].fp-selected').data('lang'),
       subtitle_index = jQuery(root).find('.fp-subtitle-menu [data-subtitle-index].fp-selected').data('subtitle-index'),
       subtitles = subtitle_index > -1 ? api.video.subtitles[subtitle_index].srclang : false;
-    
+
     var audio_found = false,
       subtitles_found = false,
       tracks_selected = [];
-    
+
     // Match audio track by name
     jQuery.each( chromecast.media.tracks, function(k,v) {
       if( v.language == audio && v.type == 'AUDIO' ) {
         audio_found = v;
       }
-      
+
       // we also chech the index as there might be multiple subtitles in the same lang
       if( v.language == subtitles+'-'+subtitle_index && v.type == 'TEXT' ) {
         subtitles_found = v;
       }
     });
-    
+
     // If no audio track match found, match by language code
     // We do this as there might be two different audio tracks
     // which are in the same language but with different names
@@ -403,7 +405,7 @@ flowplayer(function(api, root) {
         }
       });
     }
-    
+
     var debug_log = '';
     if( audio_found ) {
       tracks_selected.push( audio_found.trackId );
@@ -414,7 +416,7 @@ flowplayer(function(api, root) {
       if( debug_log ) debug_log += ' ';
       debug_log += subtitles_found.language+' subtitles';
     }
-    
+
     if( tracks_selected ) {
       var request = new chrome.cast.media.EditTracksInfoRequest( tracks_selected );
       chromecast.editTracksInfo(request, function(){
