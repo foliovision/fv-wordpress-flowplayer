@@ -1293,6 +1293,10 @@ class flowplayer_frontend extends flowplayer
     if (isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash'])) {
       $splash_img = $this->aCurArgs['splash'];
 
+      /**
+       * If the URL is not a number and it does not start with protocol it's a relative URL.
+       * So we change if from relative to absolute URL.
+       */
       if( !is_numeric($splash_img) && strpos($splash_img,'http://') !== 0 && strpos($splash_img,'https://') !== 0 && strpos($splash_img,'//') !== 0 ) {
         if ( $splash_img[0] === '/' ) {
           $splash_img = substr($splash_img, 1);
@@ -1300,9 +1304,7 @@ class flowplayer_frontend extends flowplayer
 
         $splash_img = $this->get_server_url() . $splash_img;
       }
-      else {
-        $splash_img = trim($this->aCurArgs['splash']);
-      }
+
     } else if( $this->_get_option('splash') ) {
       $splash_img = $this->_get_option('splash');
     }
