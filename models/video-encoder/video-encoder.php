@@ -406,6 +406,8 @@ abstract class FV_Player_Video_Encoder {
     // submit the job to the Encoder service
     $result = $this->job_submit($id);
 
+    do_action( 'fv_player_encoder_job_submit', $id, $job, $result );
+
     if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
       $this->include_listing_lib();
 
