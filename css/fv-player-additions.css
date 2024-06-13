@@ -1051,3 +1051,10 @@ body.has-fv-player-fullscreen #chat-widget-container {
 .fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 2px}
 
 .fp-playlist-horizontal, .fp-playlist-vertical-wrapper, .fv-playlist-slider-wrapper, .fp-playlist-polaroid, .fp-playlist-text-wrapper {max-width:100% !important}
+
+/* Remove Top and Bottom Black Bars */
+@media (min-aspect-ratio: 16/9) {
+  .freedomplayer.remove-black-bars.is-fullscreen .fp-engine {
+    object-fit: cover;
+  }
+}

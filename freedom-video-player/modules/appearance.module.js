@@ -121,10 +121,18 @@ jQuery( document ).ready( freedomplayer_playlist_size_check );
 flowplayer(function(api, root) {
   root = jQuery(root);
 
-  /*
-   *  Chrome 55>= video download button fix 
-   */  
-  api.bind('ready', function() {
+  api.bind('ready', function( e, api, video ) {
+
+    // Remove Top and Bottom Black Bars
+    if ( video.remove_black_bars ) {
+      root.addClass('remove-black-bars');
+    } else {
+      root.removeClass('remove-black-bars');
+    }
+
+    /*
+     *  Chrome 55>= video download button fix
+     */
     if( /Chrome/.test(navigator.userAgent) && parseFloat(/Chrome\/(\d\d)/.exec(navigator.userAgent)[1], 10) > 54 ) {
       if( api.video.subtitles ) {
         jQuery(root).addClass('chrome55fix-subtitles');
@@ -133,25 +141,25 @@ flowplayer(function(api, root) {
       }
     }
   });
-  
+
   /*
    *  Splash dimension bugfix
    */
   var image_src = root.css('background-image')
   if( image_src ) {
     image_src = image_src.replace(/url\((['"])?(.*?)\1\)/gi, '$2').split(',');
-    if( !image_src || !image_src[0].match(/^(https?:)?\/\//) ) return;      
+    if( !image_src || !image_src[0].match(/^(https?:)?\/\//) ) return;
     var image = new Image();
     image.src = image_src[0];
-    
+
     var image_ratio = image.height/image.width;
     var player_ratio = root.height()/root.width();
-    
+
     var ratio_diff = Math.abs(player_ratio - image_ratio);
     if( ratio_diff < 0.05 ) {
       root.css('background-size','cover');
     }
-    
+
   }
 
   /*
@@ -161,12 +169,12 @@ flowplayer(function(api, root) {
   jQuery(api.conf.playlist).each( function(k,v) {
     if( v.sources[0].type.match(/youtube/) ) is_youtube = true;
   });
-  
-  if( is_youtube ) {      
+
+  if( is_youtube ) {
     root.addClass('is-youtube');
   }
-  
-  api.bind("ready", function (e,api,video) {    
+
+  api.bind("ready", function (e,api,video) {
     if( video.type == 'video/youtube' ) {
       root.addClass('is-youtube');
     } else {
@@ -180,14 +188,14 @@ flowplayer(function(api, root) {
  */
 (function($) {
   $(window).on('resize',function(){
-    var iframe = $('iframe[id][src][height][width]'); 
+    var iframe = $('iframe[id][src][height][width]');
     iframe.each(function(){
       if( $(this).attr('id').match(/fv_vimeo_/) && $(this).width() <= $(this).attr('width') )
         $(this).height( $(this).width() * $(this).attr('height') / $(this).attr('width') );
     })
-    
-    var wistia = jQuery('.wistia_embed'); 
-    wistia.each(function(){      
+
+    var wistia = jQuery('.wistia_embed');
+    wistia.each(function(){
       $(this).height( $(this).width() * $(this).data('ratio') );
     })
   }).trigger('resize');

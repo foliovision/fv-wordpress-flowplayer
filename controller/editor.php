@@ -826,6 +826,13 @@ function fv_player_editor_video_fields() {
               'visible' => true
             ),
             array(
+              'label'       => __( 'Remove Top and Bottom Black Bars', 'fv-player' ),
+              'name'        => 'remove_black_bars',
+              'description' => __( 'Fixes video fit in mobile fullscreen when in landscape.', 'fv-player' ),
+              'video_meta'  => true,
+              'visible'     => true
+            ),
+            array(
               'label' => __( 'RTMP', 'fv-player' ),
               'name' => 'rtmp_show',
               'no_data' => true,
