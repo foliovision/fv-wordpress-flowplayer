@@ -17,9 +17,6 @@
 */
 
 // player instance with options that's stored in a DB
-
-use SebastianBergmann\CodeCoverage\Report\PHP;
-
 class FV_Player_Db_Player {
 
   private
@@ -316,6 +313,22 @@ class FV_Player_Db_Player {
   public function getPlaylistAdvance() {
     return $this->playlist_advance;
   }
+
+  /**
+   * @return string
+   */
+  public function getPlaylistSplash() {
+    return $this->playlist_splash;
+  }
+
+
+  /**
+   * @return int
+   */
+  public function getPlaylistAttachmentId() {
+    return $this->playlist_splash_attachment_id;
+  }
+
 
   /**
    * @return string
@@ -1051,25 +1064,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
     if (!$is_update) {
       $this->author = $this->changed_by;
-    }
-
-    if ( $is_update ) {
-
-      // Remove stored playlist splash attachment ID if splash was removed
-      $playlist_splash_attachment_id = $this->getPlaylistSplashAttachmentId();
-
-      if ( ! empty( $playlist_splash_attachment_id ) ) {
-        $saved_splash = wp_get_attachment_image_url( $playlist_splash_attachment_id, 'full', false);
-        if( !empty( $saved_splash ) ) {
-          $saved_path = wp_parse_url( $saved_splash, PHP_URL_PATH );
-          $current_path = $this->getPlaylistSplash() ? wp_parse_url( $this->getPlaylistSplash(), PHP_URL_PATH ) : false;
-
-          // if playlist splash removed or changed, delete playlist splash attachment id
-          if ( ! $saved_path || ( strcmp( $saved_path, $current_path ) !== 0) ) {
-            $this->playlist_splash_attachment_id = '';
-          }
-        }
-      }
     }
 
     foreach (get_object_vars($this) as $property => $value) {
