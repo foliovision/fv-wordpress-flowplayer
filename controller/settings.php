@@ -7,17 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /*
  *  Admin menus and such...
  */
-add_action('admin_menu', 'fv_player_admin_menu');
-
-function fv_player_admin_menu() {
-  if( function_exists('add_submenu_page') ) {
-    add_options_page( 'FV Player', 'FV Player', 'manage_options', 'fvplayer', 'fv_player_admin_page' );
-  }
-}
-
-
-
-
 function fv_player_admin_page() {
   include dirname( __FILE__ ) . '/../view/admin.php';
 }
