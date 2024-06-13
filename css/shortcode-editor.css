@@ -473,9 +473,9 @@ body.is-fv-player-editor-modal-open {
   position:relative;
   border-right: 1px solid #e9e9e9;
   display: flex;
+  justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  flex-direction: column;
 }
 #fv-player-shortcode-editor-right {
   float: left;
@@ -546,9 +546,6 @@ New FV Player Editor inputs styling
   border: none;
   border-top: 1px solid #e0e0e0;
   padding: 16px;
-}
-#fv-player-shortcode-editor .fv-player-playlist-fields .fv_player_editor-panel__body {
-  border-top: 0;
 }
 #fv-player-shortcode-editor .fv_player_editor-panel__body.fv-player-editor-legacy {
   border-top: none;

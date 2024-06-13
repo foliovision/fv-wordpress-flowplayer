@@ -1152,11 +1152,7 @@ jQuery(function() {
           } else if( attachment.type == 'image' ) {
             if( attachment.id ) {
               // update splash attachent id
-              if ( 'fv_wp_flowplayer_field_playlist_splash' === target_element.attr( 'name' ) ) {
-                get_field( 'playlist_splash_attachment_id' ).val( attachment.id );
-              } else {
-                get_field( 'splash_attachment_id', true ).val(attachment.id);
-              }
+              get_field( 'splash_attachment_id', true ).val(attachment.id);
             }
 
             if( typeof(fv_flowplayer_set_post_thumbnail_id) != "undefined" ) {
@@ -1239,9 +1235,9 @@ jQuery(function() {
         }
       });
 
-      $doc.on("change", "#fv-player-shortcode-editor-right input, #fv-player-shortcode-editor-right select, .fv-player-playlist-fields input, .fv-player-playlist-fields select", save );
+      $doc.on("change", "#fv-player-shortcode-editor-right input, #fv-player-shortcode-editor-right select", save );
 
-      $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=number], #fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea, .fv-player-playlist-fields input[type=number], .fv-player-playlist-fields input[type=text], .fv-player-playlist-fields textarea", function(e) {
+      $doc.on("keyup", "#fv-player-shortcode-editor-right input[type=number], #fv-player-shortcode-editor-right input[type=text], #fv-player-shortcode-editor-right textarea", function(e) {
         clearTimeout(int_keyup);
         int_keyup = setTimeout( function() {
           save(e);
@@ -2032,7 +2028,7 @@ jQuery(function() {
      */
     function build_ajax_data( give_it_all ) {
       var
-        $tabs                  = $el_editor.find('.fv-player-tab, [data-playlist-fields]'),
+        $tabs                  = $el_editor.find('.fv-player-tab'),
         regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
         data                   = {'video_meta' : {}, 'player_meta' : {}},
         end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val(),
