@@ -1538,7 +1538,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
        *
        * We don't need it if playlists is in lightbox = using slider playlist style.
        */
-      if ( ! in_array( $this->aCurArgs['liststyle'], array( 'slider' ) ) ) {
+      if ( ! empty( $this->aCurArgs['liststyle'] ) && ! in_array( $this->aCurArgs['liststyle'], array( 'slider' ) ) ) {
         $script_fit_thumbs = '';
         if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'polaroid', 'version-one', 'version-two' ) ) ) {
           $script_fit_thumbs = "
