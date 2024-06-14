@@ -92,6 +92,48 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
     }
   }
 
+  public function testDBShortcodeWithPrefer() {
+    $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '" prefer="webm"]' );
+
+    // Player ID needs to match
+    $this->assertTrue( stripos( $output, 'data-player-id="' . $this->import_ids[0] . '"' ) !== false );
+
+    // Each playlist video source needs to match the JSON
+    preg_match_all( "~data-item='(.*?)'~", $output, $matches );
+
+    $videos_json = $this->import_data[0]['videos'];
+
+    foreach( $matches[1] as $k => $playlist_item_raw ) {
+      $playlist_item = json_decode( $playlist_item_raw );
+
+      // If second video sources is available and it's webm, then it should be the first one now
+      if ( ! empty( $videos_json[ $k ]['src1'] ) && stripos( $videos_json[ $k ]['src1'], '.webm' ) != false ) {
+        $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src1'] ) === 0 );
+
+        // ...and first source should be second
+        $this->assertTrue( strcmp( $playlist_item->sources[1]->src, $videos_json[ $k ]['src'] ) === 0 );
+
+      } else {
+        $this->assertTrue( strcmp( $playlist_item->sources[0]->src, $videos_json[ $k ]['src'] ) === 0 );
+      }
+
+      // Video title
+      $this->assertTrue( strcmp( $playlist_item->fv_title, $videos_json[ $k ]['title'] ) === 0 );
+
+      // Video splash
+      $this->assertTrue( strcmp( $playlist_item->splash, $videos_json[ $k ]['splash'] ) === 0 );
+
+      // Subtitles need to be present if they were in the import JSON
+      if ( ! empty( $videos_json[ $k ]['meta'] ) ) {
+        foreach( $videos_json[ $k ]['meta'] as $meta ) {
+          if ( stripos( $meta['meta_key'], 'subtitles' ) === 0 ) {
+            $this->assertTrue( ! empty( $playlist_item->subtitles ) );
+          }
+        }
+      }
+    }
+  }
+
   public function testDBShortcodeWithSort() {
 
     $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '" sort="oldest"]' );
