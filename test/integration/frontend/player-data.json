@@ -1,1 +1,127 @@
-{"ab":"","align":"","autoplay":"","controlbar":"","copy_text":"","embed":"off","end_actions":"","end_action_value":"","height":"","hflip":"","lightbox":"","lightbox_caption":"","lightbox_height":"","lightbox_width":"","overlay":null,"overlay_height":null,"overlay_width":null,"overlay_skip":null,"player_name":"MP4 Test Playlist","player_slug":"","playlist":"","playlist_advance":"","qsel":"","share":"no","share_title":"","share_url":"","speed":"","sticky":"","video_ads":"","video_ads_post":"","width":"","status":"","toggle_end_action":null,"toggle_overlay":null,"videos":[{"title":"Fire","end":"","mobile":"","rtmp":"","rtmp_path":"","splash":"https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg","splash_text":"","splash_attachment_id":"","src":"https://foliovision.com/videos/dominika-960-31.mp4","src1":"","src2":"","start":"","width":"","height":"","aspect_ratio":"","duration":"","live":"","toggle_advanced_settings":"","last_check":"2024-05-30 15:27:58","meta":[{"meta_key":"last_video_meta_check_src","meta_value":"https://foliovision.com/videos/dominika-960-31.mp4"}]},{"title":"PayPal Background Video","end":"","mobile":"","rtmp":"","rtmp_path":"","splash":"https://foliovision.com/videos/paypal-splash.jpg","splash_text":"","splash_attachment_id":"","src":"https://foliovision.com/videos/Paypal-video-on-home-page.mp4","src1":"","src2":"","start":"","width":"","height":"","aspect_ratio":"","duration":"","live":"","toggle_advanced_settings":"","last_check":"2024-05-30 15:27:58","meta":[{"meta_key":"last_video_meta_check_src","meta_value":"https://foliovision.com/videos/Paypal-video-on-home-page.mp4"},{"meta_key":"subtitles_en","meta_value":"https://foliovision.com/videos/paypal-splash.vtt"}]},{"title":"Carly Simon","end":"","mobile":"","rtmp":"","rtmp_path":"","splash":"https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png","splash_text":"","splash_attachment_id":"","src":"https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4","src1":"","src2":"","start":"","width":"","height":"","aspect_ratio":"","duration":"","live":"","toggle_advanced_settings":"","last_check":"2024-05-30 15:27:58","meta":[{"meta_key":"last_video_meta_check_src","meta_value":"https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4"},{"meta_key":"subtitles_en","meta_value":"https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.vtt"}]}]}
+{
+  "ab": "",
+  "align": "",
+  "autoplay": "",
+  "controlbar": "",
+  "copy_text": "",
+  "embed": "off",
+  "end_actions": "",
+  "end_action_value": "",
+  "height": "",
+  "hflip": "",
+  "lightbox": "",
+  "lightbox_caption": "",
+  "lightbox_height": "",
+  "lightbox_width": "",
+  "overlay": null,
+  "overlay_height": null,
+  "overlay_width": null,
+  "overlay_skip": null,
+  "player_name": "MP4 Test Playlist",
+  "player_slug": "",
+  "playlist": "",
+  "playlist_advance": "",
+  "qsel": "",
+  "share": "no",
+  "share_title": "",
+  "share_url": "",
+  "speed": "",
+  "sticky": "",
+  "video_ads": "",
+  "video_ads_post": "",
+  "width": "",
+  "status": "",
+  "toggle_end_action": null,
+  "toggle_overlay": null,
+  "videos": [
+    {
+      "title": "Fire",
+      "end": "",
+      "mobile": "",
+      "rtmp": "",
+      "rtmp_path": "",
+      "splash": "https://foliovision.com/video/burning-hula-hoop-girl-dominika.jpg",
+      "splash_text": "",
+      "splash_attachment_id": "",
+      "src": "https://foliovision.com/videos/dominika-960-31.mp4",
+      "src1": "",
+      "src2": "",
+      "start": "",
+      "width": "",
+      "height": "",
+      "aspect_ratio": "",
+      "duration": "",
+      "live": "",
+      "toggle_advanced_settings": "",
+      "last_check": "2024-05-30 15:27:58",
+      "meta": [
+        {
+          "meta_key": "last_video_meta_check_src",
+          "meta_value": "https://foliovision.com/videos/dominika-960-31.mp4"
+        }
+      ]
+    },
+    {
+      "title": "PayPal Background Video",
+      "end": "",
+      "mobile": "",
+      "rtmp": "",
+      "rtmp_path": "",
+      "splash": "https://foliovision.com/videos/paypal-splash.jpg",
+      "splash_text": "",
+      "splash_attachment_id": "",
+      "src": "https://foliovision.com/videos/Paypal-video-on-home-page.mp4",
+      "src1": "",
+      "src2": "",
+      "start": "",
+      "width": "",
+      "height": "",
+      "aspect_ratio": "",
+      "duration": "",
+      "live": "",
+      "toggle_advanced_settings": "",
+      "last_check": "2024-05-30 15:27:58",
+      "meta": [
+        {
+          "meta_key": "last_video_meta_check_src",
+          "meta_value": "https://foliovision.com/videos/Paypal-video-on-home-page.mp4"
+        },
+        {
+          "meta_key": "subtitles_en",
+          "meta_value": "https://foliovision.com/videos/paypal-splash.vtt"
+        }
+      ]
+    },
+    {
+      "title": "Carly Simon",
+      "end": "",
+      "mobile": "",
+      "rtmp": "",
+      "rtmp_path": "",
+      "splash": "https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.png",
+      "splash_text": "",
+      "splash_attachment_id": "",
+      "src": "https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4",
+      "src1": "",
+      "src2": "",
+      "start": "",
+      "width": "",
+      "height": "",
+      "aspect_ratio": "",
+      "duration": "",
+      "live": "",
+      "toggle_advanced_settings": "",
+      "last_check": "2024-05-30 15:27:58",
+      "meta": [
+        {
+          "meta_key": "last_video_meta_check_src",
+          "meta_value": "https://foliovision.com/videos/Carly-Simon-Anticipation-1971.mp4"
+        },
+        {
+          "meta_key": "subtitles_en",
+          "meta_value": "https://foliovision.com/images/2014/01/carly-simon-1971-anticipation.vtt"
+        }
+      ]
+    }
+  ]
+}

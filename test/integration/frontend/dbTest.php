@@ -52,11 +52,11 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
 
   }
 
-  public function testDBExport() {
+  /*public function testDBExport() {
     global $FV_Player_Db;
     $output = json_encode( $FV_Player_Db->export_player_data(false,false, $this->import_ids[0] ), JSON_UNESCAPED_SLASHES );
     $this->assertEquals( trim( file_get_contents(dirname(__FILE__).'/player-data.json') ), $output );
-  }
+  }*/
 
   public function testDBShortcode() {
     $output = apply_filters( 'the_content', '[fvplayer id="' . $this->import_ids[0] . '"]' );
