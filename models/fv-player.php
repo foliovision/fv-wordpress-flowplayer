@@ -1333,6 +1333,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       }
 
+      $aItem = $this->process_preferred_video_type( $aItem );
+
       $sItemCaption = ( isset($aCaption) ) ? array_shift($aCaption) : false;
 
       list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
@@ -1444,6 +1446,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $sItemCaption = ( isset($aCaption[$iKey]) ) ? $aCaption[$iKey] : false;
 
           $aPlayer = apply_filters( 'fv_player_item_pre', $aPlayer, $index, $aArgs );
+
+          $aPlayer['sources'] = $this->process_preferred_video_type( $aPlayer['sources'] );
 
           if ($this->current_video()) {
             if( !$sSplashImage ) $sSplashImage = $this->current_video()->getSplash();
@@ -2992,6 +2996,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       return false;
     }
     return $value;
+  }
+
+  function process_preferred_video_type( $sources ) {
+
+    // Match video URL extensions and put these first
+    if ( ! empty( $this->aCurArgs['prefer'] ) ) {
+      $extension = '.' . sanitize_key( $this->aCurArgs['prefer'] );
+
+      $new_sources = array();
+
+      foreach( $sources as $source_k => $source ) {
+        if ( stripos( $source['src'], $extension ) !== false ) {
+          $new_sources[] = $source;
+          unset( $sources[ $source_k ] );
+        }
+      }
+
+      $sources = array_merge( $new_sources, $sources );
+    }
+
+    return $sources;
   }
 
   function searchwp_pre_post_content( $post ) {
