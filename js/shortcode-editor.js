@@ -4871,6 +4871,10 @@ jQuery(function() {
 
       insertUpdateOrDeleteVideoMeta,
 
+      is_busy_saving() {
+        return ajax_save_this_please || is_saving;
+      },
+
       // Allows external entities to set which video will be edited once the editor opens
       set_current_video_to_edit,
 
