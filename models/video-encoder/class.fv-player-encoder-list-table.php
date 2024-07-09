@@ -283,7 +283,15 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   }
 
   private function get_data($id = false, $args = false ) {
-    if( !$args ) $args = $_GET;
+    if( !$args ) {
+      $args = array();
+      if ( ! empty( $_GET['exclude'] ) ) $args['exclude'] = sanitize_text_field( $_GET['exclude'] );
+      if ( ! empty( $_GET['order'] ) ) $args['order'] = sanitize_key( $_GET['order'] );
+      if ( ! empty( $_GET['orderby'] ) ) $args['orderby'] = sanitize_key( $_GET['orderby'] );
+      if ( ! empty( $_GET['paged'] ) ) $args['paged'] = absint( $_GET['paged'] );
+      if ( ! empty( $_GET['status'] ) ) $args['status'] = sanitize_key( $_GET['status'] );
+      if ( ! empty( $_GET['s'] ) ) $args['s'] = sanitize_text_field( $_GET['s'] );
+    }
     
     $args = wp_parse_args( $args, array(
       'exclude' => false,
@@ -303,8 +311,9 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     } else if( $id ) {
       $aWhere[] = 'id = '.intval($id);
     }
-    
+
     if( $args['exclude'] ) {
+      $args['exclude'] = array_map( 'intval', $args['exclude'] );
       $aWhere[] = 'id NOT IN ('.implode(',',$args['exclude']).')';
     }
 
@@ -312,15 +321,16 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     if( $args['status'] == 'complete' ) $aWhere[] = "status = 'complete'";
     if( $args['status'] == 'error' ) $aWhere[] = "status = 'error'";
 
+    global $wpdb;
+
     if( $args['s'] ) {
-      $search = sanitize_text_field($args['s']);
-      $aWhere[] = "source LIKE '%".$search."%'";
+      $aWhere[] = $wpdb->prepare( "source LIKE %s", '%' . $wpdb->esc_like( $args['s'] ) . '%' );
     }
 
     $where = count($aWhere) ? " WHERE ".implode( " AND ", $aWhere ) : "";
 
-    $order = esc_sql($args['order']);
-    $order_by = esc_sql($args['orderby']);
+    $order = in_array( $args['order'], array( 'asc', 'desc' ) ) ? $args['order'] : 'desc';
+    $order_by = in_array( $args['orderby'], array( 'id', 'date_descted', 'source', 'target', 'status', 'author' ) ) ? $args['orderby'] : 'date_created';
 
     $per_page = intval($this->args['per_page']);
     $offset = ( $args['paged'] - 1 ) * $per_page;
