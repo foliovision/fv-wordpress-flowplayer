@@ -591,6 +591,8 @@
         var fv_flowplayer_uploader_button;
 
         $doc.on( 'click', '#fv-player-shortcode-editor .button.add_media', function(e) {
+          debug_log('Click to open Media Library...' );
+
           e.preventDefault();
 
           fv_flowplayer_uploader_button = jQuery(this);
@@ -599,9 +601,13 @@
 
           //If the uploader object has already been created, reopen the dialog
           if (fv_flowplayer_uploader) {
+            debug_log('Using existing instance of Media Library...' );
+
             fv_flowplayer_uploader.open();
             return;
           }
+
+          debug_log('Creating new instance of Media Library...' );
 
           //Extend the wp.media object
           fv_flowplayer_uploader = wp.media.frames.file_frame = wp.media({
@@ -612,7 +618,11 @@
             multiple: false
           });
 
+          debug_log('Created new instance of Media Library', fv_flowplayer_uploader );
+
           fv_flowplayer_uploader.on('open', function() {
+            debug_log('Media Library open' );
+
             $( document ).trigger( "mediaBrowserOpen" );
             jQuery('.media-router .media-menu-item').eq(0).click();
             jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
@@ -620,6 +630,8 @@
 
           //When a file is selected, grab the URL and set it as the text field's value
           fv_flowplayer_uploader.on('select', function() {
+            debug_log('Media Library select' );
+
             var attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
             var target_element = $('.fv_flowplayer_target');
 
