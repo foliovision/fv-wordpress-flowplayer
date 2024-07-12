@@ -2046,7 +2046,7 @@ function fv_flowplayer_admin_embedded_on() {
 
 function fv_flowplayer_admin_rollback() {
   global $fv_wp_flowplayer_ver;
-  $base = 'options-general.php?page=fvplayer&action=fv-player-rollback&version=';
+  $base = 'admin.php?page=fvplayer&action=fv-player-rollback&version=';
   ?>
     <p>Are you having issues with version <?php echo esc_attr( $fv_wp_flowplayer_ver ); ?>?</p>
     <p>You can go back to the previous 7.5 version - without changes to Chromecast, WordPress audio/video handling, MPEG-DASH and YouTube:</p>

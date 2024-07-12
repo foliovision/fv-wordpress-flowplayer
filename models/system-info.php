@@ -19,7 +19,7 @@ class FV_Player_System_Info {
   public function admin__add_meta_boxes() {
     add_meta_box('fv_flowplayer_system_information', __( 'System Info', 'fv-player' ), array($this, 'settings_box'), 'fv_flowplayer_settings_tools', 'normal');
   }
-  
+
   public function export() {
     if( current_user_can('install_plugins') && isset($_GET['action']) && sanitize_key( $_GET['action'] ) == 'fv-player-system-info' && !empty($_REQUEST['_wpnonce']) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'fv-player-system-info' ) ) {
       ob_start();
@@ -32,10 +32,10 @@ class FV_Player_System_Info {
         header("Expires: 0");
         echo esc_html( $match[1] );
         die();
-      }      
+      }
     }
   }
-  
+
   public function settings_box () {
     global $wpdb, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $FV_Player_Pro, $FV_Player_VAST, $FV_Player_PayPerView;
 
@@ -166,17 +166,17 @@ if( isset($conf['amazon_secret']) && count($conf['amazon_secret']) > 0 ) $conf['
 if( isset($conf['pro']) ) {
   if( !empty($conf['pro']['vimeo_at']) ) $conf['pro']['vimeo_at'] = '(redacted)';
   if( !empty($conf['pro']['youtube_key']) ) $conf['pro']['youtube_key'] = '(redacted)';
-  
+
   if( !empty($conf['pro']['cf_key_id']) ) $conf['pro']['cf_key_id'] = '(redacted)';
   if( !empty($conf['pro']['cf_pk']) ) $conf['pro']['cf_pk'] = '(redacted)';
-  
+
   if( !empty($conf['pro']['elastic_key']) ) $conf['pro']['elastic_key'] = '(redacted)';
   if( !empty($conf['pro']['elastic_secret']) ) $conf['pro']['elastic_secret'] = '(redacted)';
-  
+
   foreach( $conf['pro'] AS $k => $v ) {
     if( stripos($k,'secure_token') !== false ) $conf['pro'][$k] = '(redacted)';
   }
-  
+
 }
 
 function fv_player_system_info_hide_private_info(&$item, $key) {
@@ -214,7 +214,7 @@ foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos',
 
 ### End System Info ###
 </textarea>
-<a class="button" href="<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php esc_html_e( 'Export', 'fv-player' ); ?></a>
+<a class="button" href="<?php echo wp_nonce_url( admin_url('admin.php?page=fvplayer&action=fv-player-system-info'), 'fv-player-system-info' ); ?>"><?php esc_html_e( 'Export', 'fv-player' ); ?></a>
     <?php
   }
 

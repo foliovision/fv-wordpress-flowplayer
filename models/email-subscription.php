@@ -206,9 +206,9 @@ class FV_Player_Email_Subscription {
                   </td>
                 <?php endif; ?>
                 <td>
-                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php esc_html_e( 'Download CSV', 'fv-player' ); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('admin.php?page=fvplayer&fv-email-export='.$key ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php esc_html_e( 'Download CSV', 'fv-player' ); ?></a>
                   <br />
-                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('options-general.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php esc_html_e( 'View list', 'fv-player' ); ?></a>
+                  <a class='fv-player-list-export' href='<?php echo wp_nonce_url( admin_url('admin.php?page=fvplayer&fv-email-export-screen='.$key), 'fv-email-show', 'nonce' ); ?>' target="_blank" ><?php esc_html_e( 'View list', 'fv-player' ); ?></a>
                 </td>
                 <td>
                     <input type='hidden' name='email_lists[<?php echo esc_attr( $key ); ?>][first_name]' value='0' />
@@ -307,14 +307,14 @@ class FV_Player_Email_Subscription {
       function fv_player_open_preview_window(url, width, height){
         height = Math.min(window.screen.availHeight * 0.80, height + 25);
         width = Math.min(window.screen.availWidth * 0.66, width + 100);
-        
+
         if( typeof fv_player_preview_window == 'undefined' || fv_player_preview_window == null || fv_player_preview_window.self == null || fv_player_preview_window.closed ){
           fv_player_preview_window = window.open(url,'window','toolbar=no, menubar=no, resizable=yes width=' + width + ' height=' + height);
         }else{
           fv_player_preview_window.location.assign(url);
           fv_player_preview_window.focus();
         }
-        
+
       }
     </script>
     <?php
@@ -679,7 +679,7 @@ class FV_Player_Email_Subscription {
         </tbody>
       </table>
       <p>
-        <a class='fv-player-list-export button' href='<?php echo admin_url('options-general.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php esc_attr_e( 'Download CSV', 'fv-player' ); ?></a>
+        <a class='fv-player-list-export button' href='<?php echo admin_url('admin.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php esc_attr_e( 'Download CSV', 'fv-player' ); ?></a>
       </p>
 
     <?php

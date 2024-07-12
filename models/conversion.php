@@ -17,7 +17,7 @@ class FV_Player_Conversion {
         <td><label>Convert JW Player shortcodes to <code>[fvplayer]</code>:</label></td>
         <td>
           <p class="description">
-            <input type="button" class="button" value="<?php esc_attr_e('Convert JW Player shortcodes', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php esc_attr_e('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-player-pro'); ?>') ) location.href='<?php echo wp_nonce_url( site_url('wp-admin/options-general.php?page=fvplayer'), 'convert_jwplayer', 'convert_jwplayer'); ?>'; "/>
+            <input type="button" class="button" value="<?php esc_attr_e('Convert JW Player shortcodes', 'fv-player-pro'); ?>" style="margin-top: 2ex;" onclick="if( confirm('<?php esc_attr_e('This converts the [jwplayer] shortcodes into [fvplayer] shortcodes.\n\n Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-player-pro'); ?>') ) location.href='<?php echo wp_nonce_url( site_url('wp-admin/admin.php?page=fvplayer'), 'convert_jwplayer', 'convert_jwplayer'); ?>'; "/>
           </p>
         </td>
       </tr>
@@ -55,14 +55,14 @@ class FV_Player_Conversion {
         break;
       }
 
-      echo "<li><strong>" .  esc_html( $objPost->post_title ) . '</strong> (' . intval( $objPost->ID ) . ') '; 
+      echo "<li><strong>" .  esc_html( $objPost->post_title ) . '</strong> (' . intval( $objPost->ID ) . ') ';
 
       $method = 'convert__'.$sType.'_callback';
       $new_content = $this->$method($objPost->post_content);
 
       if( strlen($new_content) != strlen($objPost->post_content) || $new_content != $objPost->post_content ) {
         $iFound++;
-        
+
         $post_id = wp_update_post( array( 'ID' => $objPost->ID, 'post_content' => $new_content ) );
         if( is_wp_error($post_id) ) {
           $errors = $post_id->get_error_messages();
@@ -94,7 +94,7 @@ class FV_Player_Conversion {
 
     die();
   }
-  
+
   function convert__jwplayer_callback( $content ) {
     $content = preg_replace_callback( '~\[jwplayer.*?\]~', array( $this, 'convert__jwplayer_callback_parse' ), $content );
     return $content;
@@ -140,9 +140,9 @@ class FV_Player_Conversion {
         foreach( $aAttachments AS $objAttachment ) {
           $src = get_post_meta($objAttachment->ID,'_wp_attached_file',true);
           $src = $this->get_full_url($src);
-          
+
           $splash = $this->parse_jwplayer_image($objAttachment->ID);
-          
+
           if( $iCount == 0 ) {
             $aFVPlayer['src'] = $src;
             if( $splash ) $aFVPlayer['splash'] = $splash;
@@ -168,9 +168,9 @@ class FV_Player_Conversion {
       if( $objAttachment ) {
         $src = get_post_meta($objAttachment->ID,'_wp_attached_file',true);
         $src = $this->get_full_url($src);
-        
+
         $splash = $this->parse_jwplayer_image($objAttachment->ID);
-        
+
         $aFVPlayer['src'] = $src;
         if( $splash ) $aFVPlayer['splash'] = $splash;
         $aFVPlayer['caption'] = flowplayer::esc_caption($objAttachment->post_title);

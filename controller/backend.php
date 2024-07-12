@@ -424,7 +424,7 @@ function fv_player_admin_update() {
   if( !isset($aOptions['version']) || version_compare( $fv_wp_flowplayer_ver, $aOptions['version'] ) ) {
     do_action( 'fv_player_update' ); // trigger update actions
 
-    //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">the settings page</a> for automated checks!' );
+    //update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Flowplayer upgraded - please click "Check template" and "Check videos" for automated check of your site at <a href="'.site_url().'/wp-admin/admin.php?page=fvplayer">the settings page</a> for automated checks!' );
 
     if( !empty($aOptions['version']) && $aOptions['version'] == '6.0.5.20' && $aOptions['playlist_advance'] == 'true' ) { //  version 6.0.5 used reverse logic for this option!
       $aOptions['playlist_advance'] = false;
@@ -672,7 +672,7 @@ function fv_wp_flowplayer_admin_notice() {
     echo '<div class="updated" id="fvwpflowplayer_conversion_notice"><p>';
     printf(
       wp_kses( __( 'FV Player has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>', 'fv-player' ), array( 'a' => array( 'href' => array() ) ) ),
-      get_admin_url() . 'options-general.php?page=fvplayer');
+      get_admin_url() . 'admin.php?page=fvplayer');
     echo "</p></div>";
   }
 }
@@ -702,7 +702,7 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
     $plugin_package,
     $plugin_basename,
     $download_url,
-    admin_url('options-general.php?page=fvplayer&reload='.wp_rand()),
+    admin_url('admin.php?page=fvplayer&reload='.wp_rand()),
     'fv_wordpress_flowplayer_deferred_notices',
     'fv_player_pro_install'
   );

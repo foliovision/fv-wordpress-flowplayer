@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <h1>FV Player Video Ad Stats</h1>
 
 <?php if ( ! $fv_fp->_get_option('video_stats_enable') ) : ?>
-  <p>Enable <a href="<?php echo admin_url( 'options-general.php?page=fvplayer#fv_player_stats ' ); ?>">Video Stats</a> to see stats of video ad plays and clicks.</p>
+  <p>Enable <a href="<?php echo admin_url( 'admin.php?page=fvplayer#fv_player_stats ' ); ?>">Video Stats</a> to see stats of video ad plays and clicks.</p>
 <?php else : ?>
 
   <div>

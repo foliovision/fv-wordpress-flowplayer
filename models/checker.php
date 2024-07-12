@@ -1,5 +1,5 @@
 <?php
-/*  FV Player - HTML5 video player    
+/*  FV Player - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 */
 
 class FV_Player_Checker {
-  
-  
+
+
   var $is_cron = false;
-  
-  
-  function __construct() {    
-    add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) ); 
+
+
+  function __construct() {
+    add_filter( 'cron_schedules', array( $this, 'cron_schedules' ) );
     add_action( 'fv_flowplayer_checker_event', array( $this, 'checker_cron' ) );
     add_action( 'init', array( $this, 'cron_init' ) );
   }
-  
 
-  
+
+
   public static function check_headers( $headers, $remotefilename, $random, $args = false ) {
     $args = wp_parse_args( $args, array( 'talk_bad_mime' => 'Video served with a bad mime type' , 'wrap'=>'p' ) );
-  
+
     $sOutput = '';
-  
+
     $video_errors = array();
-  
+
     $bFatal = false;
     if( $headers && $headers['response']['code'] == '404' ) {
       $video_errors[] = 'File not found (HTTP 404)!';
@@ -47,19 +47,19 @@ class FV_Player_Checker {
     } else if( $headers && $headers['response']['code'] != '200' && $headers['response']['code'] != '206' ) {
       $video_errors[] = 'Can\'t check the video (HTTP '.$headers['response']['code'].')!';
       $bFatal = true;
-    } else {  
-    
+    } else {
+
       if(
         ( !isset($headers['headers']['accept-ranges']) || $headers['headers']['accept-ranges'] != 'bytes' ) &&
         !isset($headers['headers']['content-range'])
       ) {
-        $video_errors[] = 'Server does not support HTTP range requests! Please check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#getting-error-about-range-requests">our FAQ</a>.';  
+        $video_errors[] = 'Server does not support HTTP range requests! Please check <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#getting-error-about-range-requests">our FAQ</a>.';
       }
-    
+
       if(
         ( stripos( $remotefilename, '.mp4' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' ) ||
         ( stripos( $remotefilename, '.m4v' ) !== FALSE && $headers['headers']['content-type'] != 'video/x-m4v' ) ||
-        ( stripos( $remotefilename, '.webm' ) !== FALSE && $headers['headers']['content-type'] != 'video/webm' ) ||			
+        ( stripos( $remotefilename, '.webm' ) !== FALSE && $headers['headers']['content-type'] != 'video/webm' ) ||
         ( stripos( $remotefilename, '.mov' ) !== FALSE && $headers['headers']['content-type'] != 'video/mp4' )
       ) {
         if( stripos( $remotefilename, '.mov' ) !== FALSE ) {
@@ -69,10 +69,10 @@ class FV_Player_Checker {
         } else {
           $meta_note_addition = ' Some web browsers may experience playback issues in HTML5 mode (Internet Explorer 9 - 10).';
           /*if( $fv_fp->conf['engine'] == 'default' ) {
-            $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/options-general.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
+            $meta_note_addition .= ' Currently you are using the "Default (mixed)" <a href="'.site_url().'/wp-admin/admin.php?page=fvplayer">Preferred Flowplayer engine</a> setting, so IE will always use Flash and will play fine.';
           }*/
-        } 
-        
+        }
+
         $fix = '<div class="fix-meta-'.$random.'" style="display: none; ">
           <p>If the video is hosted on Amazon S3:</p>
           <blockquote>Using your Amazon AWS Management Console, you can go though your videos and find file content type under the "Metadata" tab in an object\'s "Properties" pane and fix it to "video/mp4" for MP4, "video/x-m4v" for M4V files, "video/mp4" for MOV files and "video/webm" for WEBM files.</blockquote>
@@ -86,8 +86,8 @@ class FV_Player_Checker {
     # hls transport stream segments:
     AddType video/mp2t            .ts</pre>
           <p>If you are using Microsoft IIS, you need to use the IIS manager. Check our <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/faq#video-doesnt-play-internet-explorer" target="_blank">FAQ</a> for more info.</p>
-        </div>';     
-        
+        </div>';
+
         $sOutput = ( $args['wrap'] ) ? '<'.$args['wrap'].'>' : '';
         $sOutput .= '<strong>Bad mime type</strong>: '.$args['talk_bad_mime'].' <tt>'.$headers['headers']['content-type'].'</tt>!'.$meta_note_addition.' (<a href="#" onclick="jQuery(\'.fix-meta-'.$random.'\').toggle(); return false">show fix</a>)';
         $sOutput .= ( $args['wrap'] ) ? '</'.$args['wrap'].'>' : '';
@@ -95,25 +95,25 @@ class FV_Player_Checker {
         $video_errors[] = $sOutput;
       }
     }
-  
+
     return array( $video_errors, (isset($headers['headers']['content-type'])) ? $headers['headers']['content-type'] : '', $bFatal );
   }
-  
-  
-  
-  
+
+
+
+
   public function check_mimetype( $URLs = false, $meta = array(), $force_is_cron = false ) {
 
     $error = false;
     $tStart = microtime(true);
-  
+
     global $fv_wp_flowplayer_ver, $fv_fp;
-    
+
     if( !empty($meta) ) {
       extract( $meta, EXTR_SKIP );
     }
 
-    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( sanitize_url( $_SERVER['HTTP_REFERER'] ), home_url() ) === 0 ) { 
+    if( defined('DOING_AJAX') && DOING_AJAX && isset( $_POST['media'] ) && stripos( sanitize_url( $_SERVER['HTTP_REFERER'] ), home_url() ) === 0 ) {
       $URLs = json_decode( stripslashes( trim( wp_strip_all_tags( $_POST['media'] ) ) ) );
     }
 
@@ -133,12 +133,12 @@ class FV_Player_Checker {
         $remotefilename_encoded = flowplayer::get_encoded_url($remotefilename);
 
         $bValidFile = true;
-        
+
         if ( ! class_exists( 'getID3' ) ) {
           require( ABSPATH . WPINC . '/ID3/getid3.php' );
-        }    
-        $getID3 = new getID3;     
-        
+        }
+        $getID3 = new getID3;
+
         $upload_dir = wp_upload_dir();
         $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(wp_rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
 
@@ -203,7 +203,7 @@ class FV_Player_Checker {
           $height = false;
 
           if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
-            $time = $ThisFileInfo['playtime_seconds'];    	
+            $time = $ThisFileInfo['playtime_seconds'];
           }
           if( !empty($ThisFileInfo['video']['resolution_x']) ) {
             $width = intval($ThisFileInfo['video']['resolution_x']);
@@ -270,12 +270,12 @@ class FV_Player_Checker {
 
                 if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) {
                   $had_ext_x_stream_inf = true;
-                  
+
                   // If there are sub-playlists we can be certain it's either audio stream...
                   if( $is_audio == -1 ) {
                     $is_audio = true;
                   }
-                  
+
                   // ...or we found a video track, then we are sure it's not audio stream
                   if( stripos($line,'RESOLUTION=') !== false ) {
                     if( preg_match( '~RESOLUTION=(\d+)x(\d+)~', $line, $resoluton ) ) {
@@ -289,7 +289,7 @@ class FV_Player_Checker {
                     $is_audio = false;
                   }
                 }
-                
+
               }
 
               $width = $resoluton_x_max;
@@ -320,26 +320,26 @@ class FV_Player_Checker {
 
                   foreach($segments[1] as $segment_item){
                     $duration += $segment_item;
-                  }  
+                  }
                 }
                 if($duration > 0)
                   break;
               }
             }
-  
+
             $time = $duration;
           }
 
           $time = apply_filters( 'fv_flowplayer_checker_time', $time, $remotefilename_encoded );
           $key = flowplayer::get_video_key($remotefilename_encoded);
-          
+
           global $post;
           $fv_flowplayer_meta = array();
           if( !empty($post) ) {
             $fv_flowplayer_meta = get_post_meta( $post->ID, $key, true );
             if( !$fv_flowplayer_meta ) $fv_flowplayer_meta = array();
           }
-         
+
           $fv_flowplayer_meta['error'] = $error;
           $fv_flowplayer_meta['duration'] = $time;
           $fv_flowplayer_meta['width'] = $width;
@@ -350,23 +350,23 @@ class FV_Player_Checker {
           $fv_flowplayer_meta['etag'] = ! is_wp_error( $res ) && isset($res['headers']['etag']) ? $res['headers']['etag'] : false;  //  todo: check!
           $fv_flowplayer_meta['date'] = time();
           $fv_flowplayer_meta['check_time'] = microtime(true) - $tStart;
-  
+
           if( $time > 0 || $error || $this->is_cron ) {
             if( !empty($post) ) {
               update_post_meta( $post->ID, $key, $fv_flowplayer_meta );
             }
             return $fv_flowplayer_meta;
           }
-          
+
         }
-        
-      }	//	end isset($media) 
+
+      }	//	end isset($media)
     }
   }
-  
-  
-  
-  
+
+
+
+
   function checker_cron() {
     global $fv_fp;
     if( $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
@@ -374,7 +374,7 @@ class FV_Player_Checker {
       // get all video IDs for which the duration is zero and are not live streams and were not checked in last day
       global $wpdb;
       $aVideos = $wpdb->get_col( "SELECT id FROM `{$wpdb->prefix}fv_player_videos` WHERE duration = 0 AND live = 0 AND DATE_SUB( UTC_TIMESTAMP(), INTERVAL 1 DAY ) > last_check ORDER BY id DESC" );
-      
+
       if( $aVideos ) {
           global $FV_Player_Db;
         foreach( $aVideos AS $video_id ) {
@@ -404,8 +404,8 @@ class FV_Player_Checker {
         }
       }
     }
-    
-    // legacy    
+
+    // legacy
     if( !$aQueue = self::queue_get() ) return;
     $tStart = microtime(true);
     $this->is_cron = true;
@@ -416,27 +416,27 @@ class FV_Player_Checker {
       global $post;
       $tmp = $post;
       $post = get_post($key);
-      
+
       do_action( 'fv_flowplayer_checker_cron_post', $key );
-      
-      fv_wp_flowplayer_save_post($key);     
+
+      fv_wp_flowplayer_save_post($key);
       $post = $tmp;
     }
-    
+
   }
-  
-  
-  
-  
+
+
+
+
   function cron_init() {
       if ( !wp_next_scheduled( 'fv_flowplayer_checker_event' ) ) {
         wp_schedule_event( time(), '5minutes', 'fv_flowplayer_checker_event' );
     }
   }
 
-  
-  
-  
+
+
+
   function cron_schedules( $schedules ) {
     $schedules['5minutes'] = array(
       'interval' => 300,
@@ -444,18 +444,18 @@ class FV_Player_Checker {
     );
     return $schedules;
   }
-  
-  
-  
-  
+
+
+
+
   public static function get_videos( $post_id ) {
     global $fv_fp;
-    
+
     $objPost = get_post($post_id);
     if( $objPost ) {
       $content = $objPost->post_content;
       preg_match_all( '~\[(?:flowplayer|fvplayer).*?\]~', $content, $matches );
-      
+
       $aMeta = get_post_custom($post_id);
       if( $aMeta && is_array($aMeta) && count($aMeta) > 0) {
         $meta_values = '';
@@ -466,23 +466,23 @@ class FV_Player_Checker {
           $matches[0] = array_merge($matches[0], $meta_matches[0]);
         }
       }
-      
+
     }
-    
+
     $videos = array();
     if( isset($matches[0]) && count($matches[0]) ) {
       $aPlaylistItems = array();
       foreach( $matches[0] AS $shortcode ) {
         $aArgs = shortcode_parse_atts( rtrim($shortcode,']') );
         list( $playlist_items_external_html, $aPlaylistItems ) = $fv_fp->build_playlist( $aArgs, isset($aArgs['src']) ? $aArgs['src'] : false, false, false, false, false, true );
-        
+
         if( count($aPlaylistItems) > 0 ) {
           foreach( $aPlaylistItems AS $aItem ) {
-            if( isset($aItem['sources']) && isset($aItem['sources'][0]) && isset($aItem['sources'][0]['src']) ) {              
+            if( isset($aItem['sources']) && isset($aItem['sources'][0]) && isset($aItem['sources'][0]['src']) ) {
               $videos[] = $aItem['sources'][0]['src'];
             }
           }
-        }      
+        }
       }
     }
 
@@ -502,10 +502,10 @@ class FV_Player_Checker {
     $aQueue[$post_id] = true;
     update_option( 'fv_flowplayer_checker_queue', $aQueue );
   }
-  
-  
-  
-  
+
+
+
+
   public static function queue_check( $post_id = false ) {
     global $post;
     $post_id = ( isset($post->ID) ) ? $post->ID : $post_id;
@@ -514,27 +514,27 @@ class FV_Player_Checker {
       return true;
     }
     return false;
-  }  
-  
-  
-  
-  
+  }
+
+
+
+
   public static function queue_get() {
     return get_option( 'fv_flowplayer_checker_queue', array() );
   }
-  
-  
-  
-  
+
+
+
+
   public static function queue_remove( $post_id ) {
     $aQueue = get_option( 'fv_flowplayer_checker_queue' ) ? get_option( 'fv_flowplayer_checker_queue' ) : array();
     if( isset($aQueue[$post_id]) ) {
       unset($aQueue[$post_id]);
     }
     update_option( 'fv_flowplayer_checker_queue', $aQueue );
-  }    
-  
-  
-  
-  
+  }
+
+
+
+
 }

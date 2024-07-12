@@ -1,5 +1,5 @@
 <?php
-/*  FV Player - HTML5 video player    
+/*  FV Player - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -14,14 +14,14 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
+*/
 
 if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
 require_once dirname( __FILE__ ) . '/../models/fv-player.php';
-if (!class_exists('flowplayer_frontend')) 
+if (!class_exists('flowplayer_frontend'))
   require_once dirname( __FILE__ ) . '/../models/fv-player-frontend.php';
 
 add_shortcode('flowplayer','flowplayer_content_handle');
@@ -35,8 +35,8 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
   if( !$fv_fp ) return false;
 
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
-    
-    if( !isset( $atts['src'] ) ) {     
+
+    if( !isset( $atts['src'] ) ) {
       foreach( $atts AS $key => $att ) {
         if( stripos( $att, 'src=' ) !== FALSE ) {
           if( stripos( $att, ',' ) === FALSE ) {  //  if the broken attribute is not using ','
@@ -49,7 +49,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         }
       }
     }
-  
+
     if( !isset( $atts['splash'] ) ) {
       foreach( $atts AS $key => $att ) {
         if( stripos( $att, 'splash=' ) !== FALSE ) {
@@ -58,7 +58,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
         }
       }
     }
-    
+
     //  the popup should really be a content of the shortcode, not an attribute
     //  this part will fix the popup if there is any single quote in it.
     if( !isset( $atts['popup'] ) ) {
@@ -75,7 +75,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
       $popup = implode( ' ', $popup );
       $atts['popup'] = preg_replace( '/^\s*?popup=[\'"](.*)[\'"]\s*?$/mi', '$1', $popup );
     }
-    
+
     //	same for ad code
     if( !isset( $atts['ad'] ) ) {
       $ad = array();
@@ -90,50 +90,50 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
       }
       $ad = implode( ' ', $ad );
       $atts['ad'] = preg_replace( '/^\s*?ad=[\'"](.*)[\'"]\s*?$/mi', '$1', $ad );
-    }    
-    
+    }
+
   }
-  
-  $atts = wp_parse_args( $atts, array(  
+
+  $atts = wp_parse_args( $atts, array(
     'admin_warning' => '',
     'align' => '',
     'autoplay' => '',
     'caption' => '',
     'caption_html' => '',
     'controlbar' => '',
-    'embed' => '',    
+    'embed' => '',
     'end_popup_preview' => '',
-    'engine' => '',    
+    'engine' => '',
     'height' => '',
     'mobile' => '',
     'linking' => '',
-    'liststyle' => '',    
+    'liststyle' => '',
     'live' => '',
     'logo' => '',
     'loop' => '',
     'overlay' => '',
     'overlay_width' => '',
     'overlay_height' => '',
-    'overlay_skip' => '',  
+    'overlay_skip' => '',
     'play_button' => '',
-    'playlist' => '',    
+    'playlist' => '',
     'playlist_advance' => '',
     'playlist_hide' => '',
-    'popup' => '',    
+    'popup' => '',
     'post' => '',
-    'redirect' => '',    
+    'redirect' => '',
     'rtmp' => '',
-    'rtmp_path' => '',    
-    'share' => '',    
+    'rtmp_path' => '',
+    'share' => '',
     'skin' => '',
     'speed' => '',
     'splash' => '',
     'splash_text' => '',
-    'splashend' => '',    
+    'splashend' => '',
     'src' => '',
     'src1' => '',
     'src2' => '',
-    'sticky' => '',    
+    'sticky' => '',
     'subtitles' => '',
     'title' => '',
     'width' => '',
@@ -147,18 +147,18 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 				$arguments[$k] = preg_replace('/\,/', '', $v);
 			}
 		}
-		
+
 	} else {
 		$arguments = $atts;
 	}
-  
+
   if( ( !isset($arguments['src']) || strlen(trim($arguments['src'])) == 0 ) && isset($arguments['mobile']) && strlen(trim($arguments['mobile'])) ) {
     $arguments['src'] = $arguments['mobile'];
     unset($arguments['mobile']);
   }
-  
+
   $arguments = apply_filters( 'fv_flowplayer_shortcode', $arguments, $fv_fp, $atts );
-	
+
   if( $arguments['post'] == 'this' ) {
     $arguments['post'] = get_the_ID();
   }
@@ -177,7 +177,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     } else {
       return '';
     }
-        
+
   } else  if( intval($arguments['post']) > 0 ) {
     $objVideoQuery = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => intval($post), 'post_mime_type' => 'video' ) );
     if( $objVideoQuery->have_posts() ) {
@@ -204,7 +204,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 
       return $sHTML;
     }
-        
+
   } else if( $arguments['src'] != '' || ( ( ( strlen($fv_fp->conf['rtmp']) && $fv_fp->conf['rtmp'] != 'false' ) || strlen($arguments['rtmp'])) && strlen($arguments['rtmp_path']) ) ) {
 		// build new player
     $new_player = $fv_fp->build_min_player($arguments['src'],$arguments);
@@ -217,7 +217,7 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
     } else {
       return '';
     }
-    
+
 	}
   return false;
 }
@@ -228,18 +228,18 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 add_filter( 'the_content', 'fv_flowplayer_optimizepress', 1 );
 
 function fv_flowplayer_optimizepress( $post_content ) {
-  
+
   if( stripos( $post_content, '[video_player type="url"' ) === false ) {
-    return $post_content;    
+    return $post_content;
   }
-  
+
   $post_content = preg_replace_callback( '~\[video_player.*?\].*?\[/video_player\]~', 'fv_flowplayer_optimizepress_bridge', $post_content );
   return $post_content;
 }
 
 function fv_flowplayer_optimizepress_bridge( $input ) {
   $video = $input[0];
-  
+
   $atts = shortcode_parse_atts($video);
 
   $default = array(
@@ -265,9 +265,9 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
 			'url2' => '', //  ok
 	);
 	$vars = shortcode_atts($default, $atts);
-  
+
   $shortcode = '[fvplayer';
-  
+
   $content = preg_replace( '~\[video_player.*?\](.*?)\[/video_player\]~', '$1', $video );
   $content = base64_decode($content);
   if(preg_match('|(https?://[^<"]+)|im',$content,$matches)){
@@ -281,16 +281,16 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   if(preg_match('|(https?://[^<"]+)|im',$url2,$matches)){
     $shortcode .= ' src2="'.$matches[1].'"';
   }
-  
+
   if( $vars['placeholder'] ) {
     $shortcode .= ' splash="'.$vars['placeholder'].'"';
   }
-  
+
   if( $vars['auto_play'] == 'Y' ) {
     $shortcode .= ' autoplay="true"';
-  }  
+  }
 
-  
+
   $shortcode .= ' width="'.$vars['width'].'"';
   $shortcode .= ' height="'.$vars['height'].'"';
   $shortcode .= ' align="'.$vars['align'].'"';
@@ -305,9 +305,9 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
       isset($vars['border_color'])
     )
   ) {
-    $shortcode .= ' admin_warning="Admin note: Some of the OptimizePress styling parameters are not supported by FV Player. Please visit the <a href=\''.admin_url('options-general.php?page=fvplayer').'\'>settings</a> and set your global appearance preferences there."';
+    $shortcode .= ' admin_warning="Admin note: Some of the OptimizePress styling parameters are not supported by FV Player. Please visit the <a href=\''.admin_url('admin.php?page=fvplayer').'\'>settings</a> and set your global appearance preferences there."';
   }
-  
+
   $shortcode .= ']';
 
   return $shortcode;
@@ -327,7 +327,7 @@ function fv_player_time( $args = array() ) {
       }
     }
   }
-  
+
   if( $post->ID > 0 && isset($fv_fp->aCurArgs['src']) ) {
     return flowplayer::get_duration( $post->ID, $fv_fp->aCurArgs['src'] );
   } else {
@@ -354,12 +354,12 @@ function fv_player_handle_video_tags( $html, $closing = '<!-- link converted by 
 function fv_flowplayer_shortcode_video( $output ) {
   $aArgs = func_get_args();
   $atts = $aArgs[1];
-  
+
   $bridge_atts = array();
   if( isset($atts['src']) ) {
     $bridge_atts['src'] = $atts['src'];
   }
-  
+
   $count = 0;
   foreach( array('mp4','webm','ogv','mov','flv','wmv','m4v','mp3') AS $key => $value ) {
     if( !empty($atts[$value]) ) {
@@ -368,30 +368,30 @@ function fv_flowplayer_shortcode_video( $output ) {
       $count++;
     }
   }
-  
+
   if( isset($atts['poster']) ) {
     $bridge_atts['splash'] = $atts['poster'];
   }
-  
+
   if( isset($atts['loop']) && $atts['loop'] == 'on' ) {
     $bridge_atts['loop'] = 'true';
   } else if( isset($atts['loop']) && $atts['loop'] == 'off' ) {
     $bridge_atts['loop'] = 'false';
   }
-  
+
   if( isset($atts['autoplay']) && $atts['autoplay'] == 'on' ) {
     $bridge_atts['autoplay'] = 'true';
   } else if( isset($atts['loop']) && $atts['loop'] == 'off' ) {
     $bridge_atts['autoplay'] = 'false';
   }
-  
+
   if( isset($atts['width']) ) {
     $bridge_atts['width'] = $atts['width'];
   }
   if( isset($atts['height']) ) {
     $bridge_atts['height'] = $atts['height'];
   }
-  
+
   if( count($bridge_atts) == 0 ) {
     return "<!--FV Player video shortcode integration - no attributes recognized-->";
   }
@@ -410,8 +410,8 @@ function fv_flowplayer_shortcode_playlist( $output ) {
       $attr['orderby'] = 'post__in';
     }
     $attr['include'] = $attr['ids'];
-  }  
-  
+  }
+
   $atts = shortcode_atts( array(
     'type'		=> 'audio',
     'order'		=> 'ASC',
@@ -424,8 +424,8 @@ function fv_flowplayer_shortcode_playlist( $output ) {
     'tracknumbers' => true,
     'images'	=> true,
     'artists'	=> true
-  ), $atts, 'playlist' );    
-    
+  ), $atts, 'playlist' );
+
   $args = array(
     'post_status' => 'inherit',
     'post_type' => 'attachment',
@@ -433,7 +433,7 @@ function fv_flowplayer_shortcode_playlist( $output ) {
     'order' => $atts['order'],
     'orderby' => $atts['orderby']
   );
-  
+
   if( !empty($atts['include']) ) {
     $args['include'] = $atts['include'];
     $_attachments = get_posts( $args );
@@ -448,7 +448,7 @@ function fv_flowplayer_shortcode_playlist( $output ) {
   } else {
     return false;
   }
-  
+
   $bridge_atts = array();
   $aPlaylistItems = array();
   $aPlaylistImages = array();
@@ -457,7 +457,7 @@ function fv_flowplayer_shortcode_playlist( $output ) {
   $i = 0;
   foreach ( $attachments as $attachment ) {
     $i++;
-    
+
     $url = wp_get_attachment_url( $attachment->ID );
     if( $i == 1 ) {
       $bridge_atts['src'] = $url;
@@ -467,17 +467,17 @@ function fv_flowplayer_shortcode_playlist( $output ) {
 
     $thumb_id = get_post_thumbnail_id( $attachment->ID );
     $src = false;
-    if( !empty( $thumb_id ) ) {        
+    if( !empty( $thumb_id ) ) {
       list( $src, $width, $height ) = wp_get_attachment_image_src( $thumb_id, 'thumbnail' );
     }
     if( $i == 1 ) {
       $bridge_atts['splash'] = $src;
     } else {
       $aPlaylistImages[] = $src;
-    }      
-    
+    }
+
     $aPlaylistCaptions[] = str_replace( array('"',';'), '', flowplayer::esc_caption($attachment->post_title) );
-    
+
     $meta = wp_get_attachment_metadata( $attachment->ID );
     if( !empty($meta) ) {
       if( !empty($meta['length']) ) {
@@ -486,8 +486,8 @@ function fv_flowplayer_shortcode_playlist( $output ) {
     }
 
   }
-  
-  
+
+
   $bridge_atts['playlist'] = '';
   foreach( $aPlaylistItems AS $key => $src ) {
     $bridge_atts['playlist'] .= $src;
@@ -499,26 +499,26 @@ function fv_flowplayer_shortcode_playlist( $output ) {
   $bridge_atts['playlist'] = trim($bridge_atts['playlist'],';');
   if( count($aPlaylistCaptions) > 1 || $atts['tracklist'] ) $bridge_atts['caption'] = implode(';',$aPlaylistCaptions);
   $bridge_atts['durations'] = implode(';',$aPlaylistDurations);
-   
+
   if( $atts['tracklist'] ) {
     $bridge_atts['listshow'] = true;
   }
-  
+
   if( isset($atts['width']) ) {
     $bridge_atts['width'] = $atts['width'];
   }
   if( isset($atts['height']) ) {
     $bridge_atts['height'] = $atts['height'];
   }
-  
+
   if( count($bridge_atts) == 0 ) {
     return "<!--FV Flowplayer video shortcode integration - no attributes recognized-->";
   }
-  
+
   if( !empty($atts['type']) && $atts['type'] == 'audio' ) {
     $bridge_atts['liststyle'] = 'horizontal';
   }
-  
+
   return flowplayer_content_handle( $bridge_atts, false, 'video' );
 }
 
@@ -535,16 +535,16 @@ if( ( empty($_POST['action']) || sanitize_key( $_POST['action'] ) != 'parse-medi
 
   /**
    * Fix excerpts if video links are converted to FV Player.
-   * 
+   *
    * If FV Player is inserted using shortcode, then it's removed by core WordPress
    * strip_shortcodes() before the excerpt is created in wp_trim_excerpt().
-   * 
+   *
    * However if we use the "Handle WordPress audio/video" setting
    * integrations[]'wp_core_video'] the video is just a link and it does not get stripped.
-   * 
+   *
    * That way FV Player puts in the HTML code which is then removed, while keeping its text
    * content and this shows as excerpt:
-   * 
+   *
    * "Please enable JavaScriptplay-sharp-fill 01:53 LinkEmbedCopy and paste this HTML code into your webpage to embed."
    */
   add_filter( 'wp_trim_words', 'fv_player_fix_wp_trim_words', 100, 4 );
@@ -570,14 +570,14 @@ if( ( empty($_POST['action']) || sanitize_key( $_POST['action'] ) != 'parse-medi
 add_filter( 'fv_flowplayer_shortcode', 'fv_flowplayer_shortcode_fix_fancy_quotes' );
 
 function fv_flowplayer_shortcode_fix_fancy_quotes( $aArgs ) {
-  
-  foreach( $aArgs AS $k => $v ) {   
+
+  foreach( $aArgs AS $k => $v ) {
     $v = preg_replace( "~^(\xe2\x80\x9c|\xe2\x80\x9d|\xe2\x80\xb3)~","", $v);
     $v = preg_replace( "~(\xe2\x80\x9c|\xe2\x80\x9d|\xe2\x80\xb3)$~","", $v);
-            
+
     $aArgs[$k] = $v;
   }
-  
+
   return $aArgs;
 }
 
@@ -607,7 +607,7 @@ function fvplayer_watched( $args = array() ) {
   global $wpdb;
   $videos2durations = $wpdb->get_results(
     $wpdb->prepare(
-      // $placeholders is a string of %d created above 
+      // $placeholders is a string of %d created above
       // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
       "SELECT v.id AS video_id, vm.meta_value AS duration FROM {$wpdb->prefix}fv_player_videos AS v JOIN {$wpdb->prefix}fv_player_videometa AS vm ON v.id = vm.id_video WHERE v.id IN ({$placeholder}) AND vm.meta_key = 'duration'",
       $video_ids

@@ -46,7 +46,7 @@ function fv_wp_flowplayer_plugin_action_links($links, $file) {
   if( $file == 'fv-player/fv-player.php') {
     $settings_link = '<a href="https://foliovision.com/pro-support" target="_blank">Premium Support</a>';
     array_unshift($links, $settings_link);
-    $settings_link = '<a href="options-general.php?page=fvplayer">Settings</a>';
+    $settings_link = '<a href="admin.php?page=fvplayer">Settings</a>';
     array_unshift($links, $settings_link);
   }
   return $links;
@@ -238,7 +238,7 @@ function fv_player_admin_pointer_boxes() {
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __( 'Thanks for letting me know!', 'fv-player' ),
       'button2' => __( 'Go to setting', 'fv-player' ),
-      'function2' => 'location.href = "'.admin_url('options-general.php?page=fvplayer').'#fv_flowplayer_seo"',
+      'function2' => 'location.href = "'.admin_url('admin.php?page=fvplayer').'#fv_flowplayer_seo"',
     );
   }
 

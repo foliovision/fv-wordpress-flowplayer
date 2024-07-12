@@ -28,7 +28,7 @@ jQuery( function($) {
       var
         renderOptions = {
           'dropdownItems' : [],
-          'dropDownNoOptionEnabledWarningMsg' : '<strong>You have no S3 buckets configured <a href="options-general.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has complete settings (region, key ID and secret key).</strong>',
+          'dropDownNoOptionEnabledWarningMsg' : '<strong>You have no S3 buckets configured <a href="admin.php?page=fvplayer#postbox-container-tab_hosting">in settings</a> or none of them has complete settings (region, key ID and secret key).</strong>',
           'dropdownItemSelected' : ret.active_bucket_id
         };
 

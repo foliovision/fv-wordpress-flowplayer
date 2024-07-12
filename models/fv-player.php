@@ -1897,7 +1897,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $aOptions[$this->css_option()] = false;
     update_option( 'fvwpflowplayer', $aOptions );
 
-    /*$url = wp_nonce_url('options-general.php?page=fvplayer','otto-theme-options');
+    /*$url = wp_nonce_url('admin.php?page=fvplayer','otto-theme-options');
     if( false === ($creds = request_filesystem_credentials($url, $method, false, false, $_POST) ) ) { //  todo: no annoying notices here
       return false; // stop the normal page form from displaying
     }   */
