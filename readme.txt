@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.5
+Tested up to: 6.6
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -363,6 +363,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 * Security - Bunny Stream - avoid authenticated user SQL injection
 * CSS - better markup for splash screen showing at the end
+* Tested up to: 6.6
 
 = 7.5.46.7212 - 2024-05-20 =
 
