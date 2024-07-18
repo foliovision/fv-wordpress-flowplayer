@@ -359,6 +359,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.47.7212 - 2024-07-18 =
+
+* Security - Bunny Stream - avoid authenticated user SQL injection
+* CSS - better markup for splash screen showing at the end
+
 = 7.5.46.7212 - 2024-05-20 =
 
 * Security - Redirection - improving the admin notice
