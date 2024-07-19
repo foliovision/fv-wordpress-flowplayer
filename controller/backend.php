@@ -247,22 +247,22 @@ function fv_wp_flowplayer_check_script_version( $url ) {
 	}
 
 	global $fv_wp_flowplayer_ver;
-	if( strpos( $url, '/fv-player/freedom-video-player/fv-player.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
+	if( strpos( $url, '/freedom-video-player/fv-player.min.js?ver='.$fv_wp_flowplayer_ver ) !== false ) {
 		return 1;
   }
 
   // when using Google PageSpeed module
-  if( strpos( $url, '/fv-player/freedom-video-player/fv-player.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
+  if( strpos( $url, '/freedom-video-player/fv-player.min.js,qver='.$fv_wp_flowplayer_ver ) !== false ) {
     return 1;
   }
 
   // when using SCRIPT_DEBUG
-  if( strpos( $url, '/fv-player/freedom-video-player/freedomplayer.min.js?ver=' ) !== false ) {
+  if( strpos( $url, '/freedom-video-player/freedomplayer.min.js?ver=' ) !== false ) {
 		return 1;
   }
 
   // when using SCRIPT_DEBUG with Google PageSpeed module
-  if( strpos( $url, '/fv-player/freedom-video-player/freedomplayer.min.js,qver=' ) !== false ) {
+  if( strpos( $url, '/freedom-video-player/freedomplayer.min.js,qver=' ) !== false ) {
     return 1;
   }
 
