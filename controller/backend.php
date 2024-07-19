@@ -538,9 +538,8 @@ add_action('admin_init', 'fv_player_lchecks');
 
 function fv_player_lchecks() {
   $aCheck = get_transient( 'fv-player_license' );
-  $aInstalled = get_option('fv_flowplayer_extension_install');
 
-  if( !isset($aInstalled['fv_player_pro']) || ( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce_fv_player_pro_install'] ) ), 'fv_player_pro_install') ) ) {
+  if( isset($_REQUEST['nonce_fv_player_pro_install']) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce_fv_player_pro_install'] ) ), 'fv_player_pro_install') ) {
 
     if ( ! $aCheck || empty( $aCheck->valid ) ) {
       global $fv_fp, $fv_wp_flowplayer_ver;
@@ -582,7 +581,7 @@ function fv_wp_flowplayer_admin_key_update() {
     update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
     return false;
 	} else {
-    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Player License upgrade failed - please check if you are running the plugin on your licensed domain.' );
+    update_option( 'fv_wordpress_flowplayer_deferred_notices', 'FV Player License upgrade failed - please check if you are running the plugin on your licensed domain or download FV Player Pro on <a href="https://foliovision.com/my-licenses" target="_blank">Your Foliovison.com Licenses page</a>' );
     update_option( 'fvwpflowplayer_core_ver', flowplayer::get_core_version() );
 		return false;
 	}
@@ -710,6 +709,17 @@ function fv_wp_flowplayer_install_extension( $plugin_package = 'fv_player_pro' )
   update_option('fv_flowplayer_extension_install', $aInstalled );
 
   $aPluginInfo = get_transient( 'fv-player_license' );
+
+  if ( ! $aPluginInfo || empty( $aPluginInfo->valid ) ) {
+    global $fv_fp, $fv_wp_flowplayer_ver;
+    $fv_fp->strPluginSlug = 'fv-player';
+    $fv_fp->version = $fv_wp_flowplayer_ver;
+    $fv_fp->license_key = 'activation';
+
+    $fv_fp->check_license( true );
+
+    $aPluginInfo = get_transient( 'fv-player_license' );
+  }
 
   $plugin_basename = $aPluginInfo->{$plugin_package}->slug;
   $download_url = $aPluginInfo->{$plugin_package}->url;
