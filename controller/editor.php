@@ -872,6 +872,16 @@ function fv_player_editor_video_fields() {
           'type' => 'text',
           'visible' => isset($fv_flowplayer_conf["interface"]["playlist_titles"]) && $fv_flowplayer_conf["interface"]["playlist_titles"] == 'true',
           'description' => __( 'Will appear below the player and on playlist thumbnails. Also used for tracking.', 'fv-player' ),
+          'children' => array(
+            array(
+              'label'        => __( 'Hide Title', 'fv-player' ),
+              'name'         => 'title_hide',
+              'visible'      => true,
+              // Only shows if Adanced Settings for video is on
+              'dependencies' => array( 'toggle_advanced_settings' => true ),
+              'description'  => __( 'Use if you only want the title for tracking.', 'fv-player' ),
+            ),
+          ),
         ),
         array(
           'label' => __( 'Splash Text', 'fv-player' ),

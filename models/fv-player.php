@@ -1124,6 +1124,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     $sItemCaption = flowplayer::filter_possible_html($sItemCaption);
 
+    if ($this->current_video()) {
+      if ( $this->current_video()->getTitleHide() && $this->current_video()->getToggleAdvancedSettings() ) {
+        $sItemCaption = false;
+      }
+    }
+
     if( !$sItemCaption && $sListStyle == 'text' ) $sItemCaption = 'Video '.($index+1);
 
     $sItemCaptionOriginal = $sItemCaption;

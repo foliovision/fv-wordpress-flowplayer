@@ -1547,6 +1547,10 @@ class flowplayer_frontend extends flowplayer
       $title = $this->aCurArgs['title'];
     }
 
+    if ( !empty( $this->aCurArgs['title_hide'] ) && !empty( $this->aCurArgs['toggle_advanced_settings'] ) ) {
+      $title = false;
+    }
+
     $title = flowplayer::filter_possible_html($title);
     $title = trim($title);
 

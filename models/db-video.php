@@ -23,6 +23,7 @@ class FV_Player_Db_Video {
     $id, // automatic ID for the video
     $is_valid = false, // used when loading the video from DB to determine whether we've found it
     $title, // optional video title
+    $title_hide, // optional video title
     $end, // allows you to show only a specific part of a video
     $mobile, // mobile (smaller-sized) version of this video
     $rtmp, // optional RTMP server URL
@@ -204,6 +205,13 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * @return bool
+   */
+  public function getTitleHide() {
+    return boolval( $this->title_hide );
+  }
+
+  /**
    * @return string
    */
   public function getTitleFromSrc() {
@@ -278,6 +286,7 @@ CREATE TABLE " . self::$db_table_name . " (
   splash varchar(512) NOT NULL,
   splash_text varchar(512) NOT NULL,
   title varchar(1024) NOT NULL,
+  title_hide varchar(7) NOT NULL,
   end varchar(16) NOT NULL,
   mobile varchar(512) NOT NULL,
   rtmp varchar(128) NOT NULL,
@@ -825,7 +834,7 @@ CREATE TABLE " . self::$db_table_name . " (
    *
    * @param array $meta_data An optional array of key-value objects
    *                         with possible meta data for this video.
-   * @param bool  $skip_meta If true, meta data will not be processed. Used in 
+   * @param bool  $skip_meta If true, meta data will not be processed. Used in
    *                         fv_player_guttenberg_attributes_save().
    *                         We need this as empty $meta_data would mean it should
    *                         all be removed.

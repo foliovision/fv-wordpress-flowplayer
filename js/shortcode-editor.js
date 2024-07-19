@@ -3712,6 +3712,7 @@ jQuery(function() {
         get_field('rtmp_path',new_item).val(objVid.rtmp_path);
 
         get_field('title',new_item).val(objVid.title).trigger( 'change' );
+        get_field('title_hide',new_item).prop( 'checked', objVid.title_hide ).trigger( 'change' );
         get_field('splash',new_item).val(objVid.splash);
         get_field('splash_text',new_item).val(objVid.splash_text).trigger( 'change' );
         get_field('splash_attachment_id',new_item).val(objVid.splash_attachment_id);
@@ -4749,7 +4750,10 @@ jQuery(function() {
         jQuery.each( window.fv_player_editor_dependencies[name], function(value,inputs) {
 
           jQuery.each( inputs, function(k,input_name) {
-            let field_wrap = $('.fv-player-editor-field-wrap-'+input_name);
+
+            // We get the last matching field as if we are loading a playlist, we might have multiple fields
+            // TODO: Do this more sensibly, like when switching playlist items
+            let field_wrap = $('.fv-player-editor-field-wrap-' + input_name + ':last' );
 
             // TODO: What should be saved when it's enabled?
             field_wrap.toggleClass( 'is-visible-dependency', value == compare );
