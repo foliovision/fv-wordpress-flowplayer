@@ -111,6 +111,13 @@ function fv_wp_flowplayer_activate_extension() {
 add_action('wp_ajax_fv_wp_flowplayer_check_template', 'fv_wp_flowplayer_check_template');
 
 function fv_wp_flowplayer_check_template() {
+
+  if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'fv_wp_flowplayer_check_template' ) ) {
+    $output = array( 'errors' => array( 'Nonce verification failed' ), 'ok' => false );
+    echo '<FVFLOWPLAYER>' . wp_json_encode( $output ) . '</FVFLOWPLAYER>';
+    die();
+  }
+
 	$ok = array();
 	$errors = array();
 
@@ -295,6 +302,13 @@ function fv_wp_flowplayer_check_jquery_version( $url, &$array, $key ) {
 add_action('wp_ajax_fv_wp_flowplayer_check_files', 'fv_wp_flowplayer_check_files');
 
 function fv_wp_flowplayer_check_files() {
+
+  if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'fv_wp_flowplayer_check_files' ) ) {
+    $output = array( 'errors' => array( 'Nonce verification failed' ), 'ok' => false );
+    echo '<FVFLOWPLAYER>' . wp_json_encode( $output ) . '</FVFLOWPLAYER>';
+    die();
+  }
+
   global $wpdb;
 
   $bNotDone = false;
@@ -398,7 +412,10 @@ function fv_wp_flowplayer_check_files() {
 add_action('wp_ajax_fv_wp_flowplayer_check_license', 'fv_wp_flowplayer_check_license');
 
 function fv_wp_flowplayer_check_license() {
-  if( fv_wp_flowplayer_admin_key_update() ) {
+  if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'fv_wp_flowplayer_check_license' ) ) {
+    $output = array( 'errors' => array( 'Nonce verification failed' ), 'ok' => false );
+
+  } else if( fv_wp_flowplayer_admin_key_update() ) {
     $output = array( 'errors' => false, 'ok' => array(__( 'License key acquired successfully. <a href="">Reload</a>', 'fv-player' )) );
     fv_wp_flowplayer_install_extension();
   } else {

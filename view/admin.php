@@ -2174,11 +2174,11 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
           <input type="submit" class="button fv-license-yellow" value="<?php esc_attr_e( 'Install Pro extension', 'fv-player' ); ?>" /><?php wp_nonce_field('fv_player_pro_install', 'nonce_fv_player_pro_install') ?>
         <?php endif; ?>
       <?php else : ?>
-        <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license'); return false" value="<?php esc_attr_e( 'Apply Pro upgrade', 'fv-player' ); ?>" />
+        <input type="button" class="button fv-license-inactive" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_license', '<?php echo wp_create_nonce( 'fv_wp_flowplayer_check_license' ); ?>'); return false" value="<?php esc_attr_e( 'Apply Pro upgrade', 'fv-player' ); ?>" />
       <?php endif; ?>
 
-      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template'); return false" value="<?php esc_attr_e( 'Check template', 'fv-player' ); ?>" />
-      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files')" value="<?php esc_attr_e( 'Check videos', 'fv-player' ); ?>" />
+      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_template', '<?php echo wp_create_nonce( 'fv_wp_flowplayer_check_template' ); ?>'); return false" value="<?php esc_attr_e( 'Check template', 'fv-player' ); ?>" />
+      <input type="button" class="button" onclick="fv_flowplayer_ajax_check('fv_wp_flowplayer_check_files', '<?php echo wp_create_nonce( 'fv_wp_flowplayer_check_files' ); ?>')" value="<?php esc_attr_e( 'Check videos', 'fv-player' ); ?>" />
 
       <?php if( !$fv_fp->_get_option('key') ) : ?>
         <a title="<?php esc_attr_e( 'Click here for license info', 'fv-player' ); ?>" target="_blank" href="https://foliovision.com/player/download"><span class="dashicons dashicons-editor-help"></span></a>
@@ -2267,10 +2267,10 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
   	});
   }
 
-  function fv_flowplayer_ajax_check( type ) {
+  function fv_flowplayer_ajax_check( type, nonce ) {
     jQuery('.'+type+'-spin').show();
     var ajaxurl = '<?php echo esc_attr( site_url() ); ?>/wp-admin/admin-ajax.php';
-    jQuery.post( ajaxurl, { action: type }, function( response ) {
+    jQuery.post( ajaxurl, { action: type, nonce: nonce }, function( response ) {
       response = response.replace( /[\s\S]*<FVFLOWPLAYER>/, '' );
       response = response.replace( /<\/FVFLOWPLAYER>[\s\S]*/, '' );
       try {
