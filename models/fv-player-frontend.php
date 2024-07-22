@@ -773,6 +773,8 @@ class flowplayer_frontend extends flowplayer
         if( !$bIsAudio && !empty($splash_img) ) {
           $alt = $this->get_title() ? $this->get_title() : 'video';
 
+          $splash_img_id = false;
+
           // Get the first video splash image attachment ID
           // Since current_video is the last video in playlist, we need to find the first video
           // TODO: What if we apply_filters( 'fv_player_item_pre', $aPlayer, 0, $aArgs ); here?
@@ -785,7 +787,7 @@ class flowplayer_frontend extends flowplayer
                 $current_player_video_splash_id = $current_player_video->getSplashAttachmentId();
 
                 if ( $current_player_video_splash_id ) {
-                  $splash_img = $current_player_video_splash_id;
+                  $splash_img_id = $current_player_video_splash_id;
                 }
 
                 if ( -1 === $this->get_current_video_to_edit() || $this->get_current_video_to_edit() === $count ) {
@@ -806,11 +808,15 @@ class flowplayer_frontend extends flowplayer
             }
           }
 
+          $image = false;
+
            // load the image from WP Media Library if you got a number
-          if( is_numeric($splash_img) ) {
-            $image = wp_get_attachment_image($splash_img, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
-          } else {
-            $image = '<img class="fp-splash" alt="'.esc_attr($alt).'" src="'.esc_attr($splash_img).'" />';
+          if( $splash_img_id ) {
+            $image = wp_get_attachment_image( $splash_img_id, 'full', false, array('class' => 'fp-splash', 'fv_sizes' => '25vw, 50vw, 100vw') );
+          }
+
+          if ( ! $image ) {
+            $image = '<img class="fp-splash" alt="' . esc_attr( $alt ) . '" src="' . esc_attr( $splash_img ) . '" />';
           }
 
           /**
