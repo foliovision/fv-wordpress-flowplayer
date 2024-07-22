@@ -116,11 +116,11 @@ class FV_Player_Db {
     return ($id_meta !== null ? isset($this->player_meta_cache[$id_player][$id_meta]) : isset($this->player_meta_cache[$id_player]));
   }
 
-  public function setCurrentVideoAndPlayer($aItem, $index, $aPlayer) {
+  public function setCurrentVideoAndPlayer($aItem, $index, $aArgs) {
     global $fv_fp;
 
-    if (!empty($aPlayer['video_objects'][$index])) {
-      $vid_obj = $aPlayer['video_objects'][$index];
+    if (!empty($aArgs['video_objects'][$index])) {
+      $vid_obj = $aArgs['video_objects'][$index];
       $fv_fp->currentVideoObject = $vid_obj;
 
       if( !empty($aItem['sources'][0]['src']) && ( is_numeric($aItem['sources'][0]['src']) ) || stripos($aItem['sources'][0]['src'],'preview-') === 0 ) {
