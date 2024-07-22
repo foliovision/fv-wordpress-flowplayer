@@ -1179,18 +1179,28 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $current_video_splash_id = $current_video->getSplashAttachmentId();
       }
 
-      if ( $current_video_splash_id ) {
+      if ( $current_video_splash_id || $sSplashImage ) {
         $sHTML .= "<div class='fvp-playlist-thumb-img'>";
-        $sHTML .= wp_get_attachment_image( $current_video_splash_id, 'medium', false, array( 'fv_sizes' => '25vw, 50vw, 100vw', 'loading' => 'lazy' ) );
 
-      } else if( $sSplashImage ) {
-        $sHTML .= "<div class='fvp-playlist-thumb-img'>";
-        if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) && apply_filters( 'do_rocket_lazyload', true ) ) {
-          $sHTML .= "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='".esc_attr($sSplashImage)."' />";
+        $image_html = false;
 
-        } else {
-          $sHTML .= "<img ".(get_query_var('fv_player_embed') ? "data-no-lazy='1'":"")." src='".esc_attr($sSplashImage)."' loading='lazy' />";
+        // Load from WordPress Media Library
+        if ( $current_video_splash_id ) {
+          $image_html = wp_get_attachment_image( $current_video_splash_id, 'medium', false, array( 'fv_sizes' => '25vw, 50vw, 100vw', 'loading' => 'lazy' ) );
         }
+
+        // Fall back to URL is the image is not in the Media Library
+        if( ! $image_html && $sSplashImage ) {
+          if( !(  defined( 'DONOTROCKETOPTIMIZE' ) && DONOTROCKETOPTIMIZE ) && function_exists( 'get_rocket_option' ) && get_rocket_option( 'lazyload' ) && apply_filters( 'do_rocket_lazyload', true ) ) {
+            $image_html = "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='" . esc_attr( $sSplashImage ) . "' />";
+
+          } else {
+            $image_html = "<img ". ( get_query_var('fv_player_embed') ? "data-no-lazy='1'" : "" ) . " src='" . esc_attr( $sSplashImage ) . "' loading='lazy' />";
+          }
+
+        }
+
+        $sHTML .= $image_html;
 
       } else {
         $sHTML .= "<div class='fvp-playlist-thumb-img no-image'>";
