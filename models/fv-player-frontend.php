@@ -285,18 +285,6 @@ class flowplayer_frontend extends flowplayer
 
     list( $playlist_items_external_html, $aPlaylistItems, $aSplashScreens, $aCaptions ) = $this->build_playlist( $this->aCurArgs, $media, $src1, $src2, $rtmp, $splash_img );
 
-    // remove all playlist items but the one we need if we're previewing
-    // and only editing a single video
-    if ( $this->get_current_video_to_edit() > - 1 ) {
-      $aPlaylistItems = array( $aPlaylistItems[ $args['current_video_to_edit'] ] );
-
-      // Pick title and splash from the previewed video
-      $this->aCurArgs['title'] = $aPlaylistItems[0]['fv_title'];
-      $splash_img = $aPlaylistItems[0]['splash'];
-
-      // Make sure it's not using a playlist style
-      $this->aCurArgs['liststyle'] = 'horizontal';
-    }
 
     // Load playlists.css later, if it's used.
     if ( count( $aPlaylistItems ) > 1 ) {
@@ -786,6 +774,8 @@ class flowplayer_frontend extends flowplayer
           $alt = $this->get_title() ? $this->get_title() : 'video';
 
           // Get the first video splash image attachment ID
+          // Since current_video is the last video in playlist, we need to find the first video
+          // TODO: What if we apply_filters( 'fv_player_item_pre', $aPlayer, 0, $aArgs ); here?
           $current_player = $this->current_player();
           if ( $current_player ) {
             $current_player_videos = $current_player->getVideos();

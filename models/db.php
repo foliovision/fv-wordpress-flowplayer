@@ -837,6 +837,19 @@ class FV_Player_Db {
 
           }
 
+          /**
+           * In editor only load the video which is being edited
+           */
+          if ( isset( $atts['current_video_to_edit'] ) && $atts['current_video_to_edit'] > -1 ) {
+            $current_video_to_edit = $atts['current_video_to_edit'];
+
+            $videos = explode( ',', $data['videos'] );
+
+            $data['videos'] = $videos[ $current_video_to_edit ];
+
+            $atts['video_objects'] = array( $atts['video_objects'][ $current_video_to_edit ] );
+          }
+
           // preload all videos
           $player->getVideos();
 
@@ -1595,7 +1608,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     /**
      * Also load count of subtitles, cues, chapters and transcripts
-     * 
+     *
      * If we do this is the original query with JOIN it takes 10x longer
      */
     if( is_admin() ) {
