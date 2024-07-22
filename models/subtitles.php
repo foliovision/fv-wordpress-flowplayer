@@ -23,7 +23,7 @@ class FV_Player_Subtitles {
   function add_subtitles( $aItem, $index ) {
     global $fv_fp;
 
-    $aSubtitles = $fv_fp->get_subtitles($index);
+    $aSubtitles = $this->get_subtitles($index);
     if( count($aSubtitles) == 0 ) return $aItem;
 
     $aLangs = flowplayer::get_languages();
@@ -85,6 +85,61 @@ class FV_Player_Subtitles {
     }
 
     return $aItem;
+  }
+
+  function get_subtitles($index = 0) {
+    global $fv_fp;
+
+    $aSubtitles = array();
+
+    // each video can have subtitles in any language with new DB-based shortcodes
+    if ( $fv_fp->current_video()) {
+      if ( $fv_fp->current_video()->getMetaData()) {
+        foreach ( $fv_fp->current_video()->getMetaData() as $meta_object) {
+          if (strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
+            // subtitles meta data found, create URL from it
+            // note: we ignore $index here, as it's used to determine an index
+            //       for a single subtitle file from all subtitles set for the whole
+            //       playlist, which was the old way of doing stuff
+            $aSubtitles[str_replace( 'subtitles_', '', $meta_object->getMetaKey() )] = $this->get_subtitles_url( $meta_object->getMetaValue() );
+          }
+        }
+      }
+    } else {
+      if( $this->aCurArgs && count($this->aCurArgs) > 0 ) {
+        foreach( $this->aCurArgs AS $key => $subtitles ) {
+          if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
+            continue;
+          }
+
+          $subtitles = explode( ";",$subtitles);
+          if( empty($subtitles[$index]) ) continue;
+
+          $aSubtitles[str_replace( 'subtitles_', '', $key )] = $this->get_subtitles_url( $subtitles[$index] );
+        }
+      }
+    }
+
+    return $aSubtitles;
+  }
+
+  function get_subtitles_url( $subtitles ) {
+    global $fv_fp;
+
+    if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
+      if ( $subtitles[0] === '/' ) {
+        $subtitles = substr($subtitles, 1);
+      }
+
+      $subtitles = $fv_fp->get_server_url() . $subtitles;
+    }
+    else {
+      $subtitles = trim($subtitles);
+    }
+
+    $subtitles = apply_filters( 'fv_flowplayer_resource', $subtitles );
+
+    return $subtitles;
   }
 
 }

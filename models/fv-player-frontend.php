@@ -490,8 +490,6 @@ class flowplayer_frontend extends flowplayer
 
         $popup = '';
 
-        $aSubtitles = $this->get_subtitles();
-
         if(
           // new, DB playlist code
           (!empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'splashend')
@@ -1335,61 +1333,6 @@ class flowplayer_frontend extends flowplayer
     $splash_img = apply_filters( 'fv_flowplayer_splash', $splash_img, !empty($this->aCurArgs['src']) ? $this->aCurArgs['src'] : false );
 
     return $splash_img;
-  }
-
-  function get_subtitles_url($protocol, $subtitles) {
-    if( strpos($subtitles,'http://') === false && strpos($subtitles,'https://') === false ) {
-      if ( $subtitles[0] === '/' ) {
-        $subtitles = substr($subtitles, 1);
-      }
-
-      $subtitles = $this->get_server_url() . $subtitles;
-    }
-    else {
-      $subtitles = trim($subtitles);
-    }
-
-    $subtitles = apply_filters( 'fv_flowplayer_resource', $subtitles );
-
-    return $subtitles;
-  }
-
-  function get_subtitles($index = 0) {
-    global $fv_fp;
-
-    $aSubtitles = array();
-    $args = $this->aCurArgs;
-    $protocol = is_ssl() ? 'https' : 'http';
-
-    // each video can have subtitles in any language with new DB-based shortcodes
-    if ($this->current_video()) {
-      if ($this->current_video()->getMetaData()) {
-        foreach ($this->current_video()->getMetaData() as $meta_object) {
-          if (strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
-            // subtitles meta data found, create URL from it
-            // note: we ignore $index here, as it's used to determine an index
-            //       for a single subtitle file from all subtitles set for the whole
-            //       playlist, which was the old way of doing stuff
-            $aSubtitles[str_replace( 'subtitles_', '', $meta_object->getMetaKey() )] = $this->get_subtitles_url($protocol, $meta_object->getMetaValue());
-          }
-        }
-      }
-    } else {
-      if( $args && count($args) > 0 ) {
-        foreach( $args AS $key => $subtitles ) {
-          if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
-            continue;
-          }
-
-          $subtitles = explode( ";",$subtitles);
-          if( empty($subtitles[$index]) ) continue;
-
-          $aSubtitles[str_replace( 'subtitles_', '', $key )] = $this->get_subtitles_url($protocol, $subtitles[$index]);
-        }
-      }
-    }
-
-    return $aSubtitles;
   }
 
   function get_tabs($aPlaylistItems,$aSplashScreens,$aCaptions,$width) {
