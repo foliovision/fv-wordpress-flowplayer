@@ -68,6 +68,10 @@ class FV_Player_Db_Player {
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $meta_data = null,
+    $subtitles_count,
+    $chapters_count,
+    $transcript_count,
+    $cues_count,
     $ignored_input_fields = array();
 
   private static
@@ -889,7 +893,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields'))) {
+      if (!in_array($property, array('numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'meta_data', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
         $data[$property] = $value;
       }
     }
@@ -1201,7 +1205,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields'))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
         $export_data[$property] = $value;
       }
     }
