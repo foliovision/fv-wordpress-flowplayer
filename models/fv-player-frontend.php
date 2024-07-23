@@ -786,11 +786,12 @@ class flowplayer_frontend extends flowplayer
               foreach ( $current_player_videos as $current_player_video ) {
                 $current_player_video_splash_id = $current_player_video->getSplashAttachmentId();
 
-                if ( $current_player_video_splash_id ) {
-                  $splash_img_id = $current_player_video_splash_id;
-                }
-
                 if ( -1 === $this->get_current_video_to_edit() || $this->get_current_video_to_edit() === $count ) {
+
+                  if ( $current_player_video_splash_id ) {
+                    $splash_img_id = $current_player_video_splash_id;
+                  }
+
                   break;
                 }
 
