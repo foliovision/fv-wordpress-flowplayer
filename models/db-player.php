@@ -1071,7 +1071,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields'))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
