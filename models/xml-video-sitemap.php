@@ -456,7 +456,7 @@ class FV_Xml_Video_Sitemap {
         echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">'."\n";
         foreach ($data as $xml_loc) {
           echo "\t<url>\n";
-          echo "\t\t<loc>".$xml_loc['loc']."</loc>\n";
+          echo "\t\t<loc>" . esc_url( $xml_loc['loc'] ) . "</loc>\n";
           foreach ($xml_loc['video'] as $xml_video ) {
             echo "\t\t<video:video>\n";
             foreach( $xml_video AS $videoTag => $videoTagValue) {
