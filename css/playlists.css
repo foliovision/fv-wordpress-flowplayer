@@ -586,7 +586,7 @@
 	transform: translateX(-30px);
 }
 
-.freedomplayer[data-ratio="0.5625"] + .fp-playlist-version-one.fp-playlist-external a h4,
+.fp-playlist-version-one.fp-playlist-external a h4,
 .fp-playlist-version-two.fp-playlist-external a h4 {
 	position: relative;
 	opacity: 1;
@@ -598,7 +598,7 @@
 	line-height: 1.4;
 }
 
-.freedomplayer[data-ratio="0.5625"] + .fp-playlist-version-one.fp-playlist-external a h4 span,
+.fp-playlist-version-one.fp-playlist-external a h4 span,
 .fp-playlist-version-two.fp-playlist-external a h4 span {
 	position: static;
 	padding: 0;
@@ -609,7 +609,7 @@
 	transform: none;
 }
 
-.freedomplayer[data-ratio="0.5625"] + .fp-playlist-version-one.fp-playlist-external .dur,
+.fp-playlist-version-one.fp-playlist-external .dur,
 .fp-playlist-version-two.fp-playlist-external .dur,
 .fp-playlist-version-two.fp-playlist-external a:hover .dur {
 	position: static;
