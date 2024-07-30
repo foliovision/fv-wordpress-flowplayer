@@ -98,7 +98,7 @@
 	font-weight: bold;
 	text-shadow: 0 0 1px #000;
 	cursor: pointer;
-	z-index: 12; /* make clickable */ 
+	z-index: 12; /* make clickable */
 	opacity: 1;
 }
 .flowplayer .fp-prev {
@@ -197,12 +197,12 @@
 .fp-playlist-only-captions.fp-playlist-vertical a h4 {position:relative;top:auto;background-color:transparent;opacity:1;text-shadow:none}
 .fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
 
-/* Playlist 2014 - classic */ 
+/* Playlist 2014 - classic */
 .fv-playlist-design-2014.fp-playlist-external a h4 {opacity:1;position:relative;margin-bottom:7px;padding:0 10px 4px;color:#000;background-color:transparent;text-shadow:none}
 .fv-playlist-design-2014.fp-playlist-external a h4 span {background-color:transparent;position:relative;transform:none;top:auto;padding:0}
 .fv-playlist-design-2014.fp-playlist-external a:hover h4,.fv-playlist-design-2014.fp-playlist-external a.fvp-video-thumb-no-splash h4,#dashboard-widgets .flowplayer-wrapper .fv-playlist-design-2014 a:hover h4 {color:inherit}
 
-/* Playlist 2017 - text only */ 
+/* Playlist 2017 - text only */
 .fp-playlist-text.fp-playlist-external a h4,.visible-captions.fp-playlist-external a h4 {background-color:transparent;opacity:1}
 .visible-captions.fp-playlist-external a h4 span {color: #fff;background-color:rgb(0, 0, 0);background-color:rgba(0, 0, 0, 0.5)}
 .fp-playlist-text.fp-playlist-external a:hover .fvp-playlist-thumb {background-color:#666}
@@ -214,7 +214,7 @@
 	.fp-playlist-only-captions.fp-playlist-vertical a {display:block;}
 	.fp-playlist-text-wrapper.is-fv-narrow .flowplayer,.fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-text,.fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions,.fp-playlist-vertical-wrapper.is-fv-narrow .flowplayer,.fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical {width:100%;float:none;margin-bottom:0}
 	.fp-playlist-vertical-wrapper.is-fv-narrow .fp-playlist-vertical a {width:49%;float:left;margin:0.75% 0.5%}
-	.fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions a {width:100%;float:none;display:block} 
+	.fp-playlist-text-wrapper.is-fv-narrow .fp-playlist-only-captions a {width:100%;float:none;display:block}
 	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4, .entry-content .fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 { text-align: left; padding:2px 8px }
 	.fp-playlist-external.fp-playlist-vertical.fp-playlist-only-captions a h4 span { position:relative;top:auto;left:auto;right:auto;-webkit-transform:none;transform:none;padding:0 }
 	.fp-playlist-only-captions.fp-playlist-external .dur { opacity:1;color:#999;position:relative;right:auto;top:auto;text-shadow:none;margin-left:6px; }
@@ -239,7 +239,7 @@
 	border: 10px solid ghostwhite;
 	padding-bottom: 40px;
 }
-.fp-playlist-external.fp-playlist-polaroid a:hover, 
+.fp-playlist-external.fp-playlist-polaroid a:hover,
 .entry-content .fp-playlist-external.fp-playlist-polaroid a:hover {
 	background-color: #f4f4f4;
 	border: 10px solid #f4f4f4;
@@ -441,9 +441,9 @@
 	display: block;
 	text-decoration: underline;
 }
-.fp-playlist-external.fp-playlist-season a:hover h4, 
+.fp-playlist-external.fp-playlist-season a:hover h4,
 .fp-playlist-external.fp-playlist-season a.fvp-video-thumb-no-splash h4,
-.fp-playlist-external.fp-playlist-season a.is-active:hover h4, 
+.fp-playlist-external.fp-playlist-season a.is-active:hover h4,
 .fp-playlist-external.fp-playlist-season a:hover .dur {
 	color: #000;
 }
@@ -516,7 +516,7 @@
 	background: linear-gradient(to bottom, transparent 18px, #12784a 18px 22px, transparent 22px);
 }
 
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover { 
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover {
 	background: linear-gradient(to bottom, transparent 17px, #12784a 17px 23px, transparent 23px);
 }
 
@@ -596,8 +596,6 @@
 	text-align: left;
 	padding: 0;
 	line-height: 1.4;
-	filter: invert(1);
-	mix-blend-mode: difference;
 }
 
 .freedomplayer[data-ratio="0.5625"] + .fp-playlist-version-one.fp-playlist-external a h4 span,
