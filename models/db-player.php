@@ -529,7 +529,7 @@ CREATE TABLE " . self::$db_table_name . " (
   overlay_height varchar(7) NOT NULL,
   overlay_width varchar(7) NOT NULL,
   overlay_skip varchar(7) NOT NULL,
-  playlist varchar(10) NOT NULL,
+  playlist varchar(12) NOT NULL,
   playlist_advance varchar(7) NOT NULL,
   qsel varchar(25) NOT NULL,
   share varchar(7) NOT NULL,
