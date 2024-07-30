@@ -2687,7 +2687,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     // Playlist design doesn't have any use for these two playlist styles:
-    if( !empty($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) {
+    if( !empty($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid', 'version-one', 'version-two' ) ) ) {
       $sClass = '';
     }
 
