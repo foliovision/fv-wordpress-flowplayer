@@ -33,6 +33,40 @@ if ( ! defined( 'ABSPATH' ) ) {
   return;
 }
 
+function fv_player_7_deactivate_notice() {
+  ?>
+  <div class="notice notice-error is-dismissible">
+    <p><?php _e( 'FV Player 8 cannot run together with FV Player 7. Please deactivate FV Player 7 first.', 'fv-player' ); ?></p>
+  </div>
+  <?php
+}
+
+function fv_player__pro_7_deactivate_notice() {
+  ?>
+  <div class="notice notice-error is-dismissible">
+    <p><?php _e( 'FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension.', 'fv-player' ); ?></p>
+  </div>
+  <?php
+}
+
+if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
+  $active_plugins = get_option( 'active_plugins', array() );
+  foreach( $active_plugins as $key => $plugin ) {
+    if( stripos( $plugin, 'fv-wordpress-flowplayer/' ) === 0 ) {
+      add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
+
+      // Do not load as PHP would get fatal error
+      return;
+    }
+
+    if( stripos( $plugin, 'fv-player-pro/' ) === 0 ) {
+      add_action( 'admin_notices', 'fv_player__pro_7_deactivate_notice' );
+
+      // Continue loading as the videos are still working, at least in most cases
+    }
+  }
+}
+
 global $fv_wp_flowplayer_ver;
 
 $fv_wp_flowplayer_ver = '8.0.1.beta';
