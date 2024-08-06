@@ -52,7 +52,20 @@ class FV_Xml_Video_Sitemap {
 
     function get_post_types() {
       $types = get_post_types( array( 'public' => true ) );
-      unset($types['revision'], $types['attachment'], $types['topic'], $types['reply']);
+
+      foreach (
+        array(
+          'revision',
+          'attachment',
+          'topic',
+          'reply',
+          'elementor_library',
+        ) as
+        $type
+      ) {
+        unset( $types[ $type ] );
+      }
+
       return array_keys($types);
     }
 
