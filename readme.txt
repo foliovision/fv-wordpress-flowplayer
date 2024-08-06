@@ -1,14 +1,14 @@
-=== FV Player ===
+=== FV Player 8 Beta ===
 Contributors: FolioVision
 Donate link: https://foliovision.com/donate
-Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
-Requires at least: 3.5
+Tags: video player, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
+Requires at least: 5.7
 Tested up to: 6.6
-Stable tag: 8.0.beta.1
+Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-WordPress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, stats, Vimeo and YouTube.
+WordPress's most reliable, easy to use and feature-rich video player. Supports playlists, ads, stats and user video position saving.
 
 == Description ==
 
