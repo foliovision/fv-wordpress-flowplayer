@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.3
+Tested up to: 6.6
 Stable tag: 8.0.beta.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -11,6 +11,8 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 WordPress's most reliable, easy to use and feature-rich video player. Supports responsive design, HTML5, playlists, ads, stats, Vimeo and YouTube.
 
 == Description ==
+
+This is a beta version of FV Player 8. If you are a long time FV Player user we recommend you to keep using FV Player 7 for now: https://wordpress.org/plugins/fv-wordpress-flowplayer/
 
 FV Player is a free, easy-to-use, and complete solution for embedding MP4 or HLS videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
@@ -72,7 +74,7 @@ Back to school special 25% off pro licenses until end of September.
 [Support](https://foliovision.com/support/fv-wordpress-flowplayer/) |
 [Change Log](https://foliovision.com/player/changelog) |
 [Installation](https://foliovision.com/player/installation)|
-[User Guide](https://foliovision.com/player/user-guide) | 
+[User Guide](https://foliovision.com/player/user-guide) |
 [Detailed FAQ](https://foliovision.com/player/faq)
 
 == Installation ==
@@ -126,7 +128,7 @@ You can check [demo in here](https://foliovision.com/player/demos/align-settings
 
 = 5. How do I fix the bad metadata (moov) position? =
 
-This means that the video information (such as what codecs are used) is not stored at the beginning of the file. In our experience, video with bad meta data position might be slow to load in Flash engine (check some browser which doesn't play MP4 format in Flash - like Opera) and Firefox. Although Safary and iOS (iPAd, iPhone) may play it just fine. 
+This means that the video information (such as what codecs are used) is not stored at the beginning of the file. In our experience, video with bad meta data position might be slow to load in Flash engine (check some browser which doesn't play MP4 format in Flash - like Opera) and Firefox. Although Safary and iOS (iPAd, iPhone) may play it just fine.
 
 In general we recommend you to re-encode your video as [per our instructions](https://foliovision.com/player/encoding#encoding-samples), but here are some quick tools:
 
@@ -163,7 +165,7 @@ There is also a workaround - on each page what is using one of the OptimizePress
 
 = 9. I'm using OptimizePress version 2 template. =
 
-FV Player will handle all the videos inserted by the Live Edit. 
+FV Player will handle all the videos inserted by the Live Edit.
 
 = 10. I installed the plugin, inserted the video, but it's not working - there is no control bar or only a gray box appears. =
 
@@ -257,10 +259,35 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.1 - 2024-08-06 =
+
+* Editor: Hide Title setting available for each video is "Advanced Settings" for video is on
+* Optimization: Load responsive images if splash image is from WordPress Media Library
+* Move settings our of wp-admin -> Settings -> FV Player to wp-admin -> FV Player -> Settings
+* Preload: Add option to preload video
+* Remove Top and Bottom Black Bars: Per video setting to remove black bars from top and bottom of video
+* Security: Add missing output escaping
+* Security: Sanitize input variables
+* Security: Use nonces with increased lifetime for stats and user video position storing
+* S3 Upload: Use custom Ajax endpoint to avoid conflicts with different AWS SDK and Guzzle HTTP versions
+* Bugfix: Editor: avoid closing if still saving
+* Bugfix: Editor: not saving new playlist styles properly
+* Bugfix: Editor: not showing preview for selected video properly
+
 = 8.0 - 2023-09-19 =
 
 * Initial release of FV Player 8
-* Subtitles - fix for RTL languages when the line contains latin word - thanks to Olivier Legendre
+* No longer showing watermark on free version
+* Autoplay: can now only play a video that is visible. You can choose if it also becomes sticky if the user scrolls past the video.
+* Database: Improved strucure
+* Editor: New editor layout
+* Lightbox: Loading JavaScript and CSS only when user actually clicks the video or image
+* Mobile: controls now show/hide on single tap
+* Playlists: Two New Playlist Styles: Sliderland and Sliderbar
+* Position saving: use its own database table instead of user meta, conversion tool shows after plugin update
+* Bugfix: Subtitles" fix for RTL languages when the line contains latin word - thanks to Olivier Legendre
+
+Please refer to https://foliovision.com/player/developers/changelog for changelog prior to FV Player version 8.
 
 == External Services ==
 
