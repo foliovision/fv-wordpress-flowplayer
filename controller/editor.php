@@ -471,7 +471,7 @@ function fv_player_splashcreen_action() {
   }
 
   if( check_ajax_referer( "fv-player-splashscreen", "security" , false ) == 1 ) {
-    $title = sanitize_text_field( ['title'] );
+    $title = sanitize_text_field( $_POST['title'] );
     $img = sanitize_text_field( $_POST['img'] );
     $limit = 128 - 5; // .jpeg
 
