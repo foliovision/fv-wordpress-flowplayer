@@ -52,7 +52,7 @@ function fv_player__pro_7_deactivate_notice() {
 if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
   $active_plugins = get_option( 'active_plugins', array() );
   foreach( $active_plugins as $key => $plugin ) {
-    if( stripos( $plugin, 'fv-wordpress-flowplayer/' ) === 0 ) {
+    if( stripos( $plugin, 'fv-wordpress-flowplayer/flowplayer.php' ) === 0 ) {
       add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
 
       // Do not load as PHP would get fatal error
