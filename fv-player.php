@@ -42,6 +42,14 @@ function fv_player_7_deactivate_notice() {
 }
 
 function fv_player__pro_7_deactivate_notice() {
+
+  global $FV_Player_Pro;
+  if( isset( $FV_Player_Pro ) && ! empty( $FV_Player_Pro->version ) ) {
+    if( version_compare( $FV_Player_Pro->version, '7.9' ) != -1 ) {
+      return;
+    }
+  }
+
   ?>
   <div class="notice notice-error is-dismissible">
     <p><?php _e( 'FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension.', 'fv-player' ); ?></p>
