@@ -459,6 +459,9 @@ function fv_player_splashcreen_action() {
       $title = end($arr);
     }
 
+    // Remove file extension from $title
+    $title = preg_replace('/\.[^.]+$/', '', $title);
+
     $vid_replacements = array(
       'watch?v=' => 'YouTube: '
     );
