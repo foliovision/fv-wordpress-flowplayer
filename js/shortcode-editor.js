@@ -1075,6 +1075,9 @@ jQuery(function() {
          * We update the block properites directly.
          */
         if( el_input.length ) {
+          // Remove target from the previous field
+          jQuery('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
+
           el_input.addClass('fv_flowplayer_target');
         }
 
