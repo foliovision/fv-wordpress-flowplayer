@@ -198,7 +198,7 @@ class FV_Xml_Video_Sitemap {
             // check for caption - if none present, build it up from page title and video position
             // note: html characters must be substituted or enclosed in CDATA, from which the first
             //       is easier to do correctly on a single line
-            $sanitized_caption = !empty($aArgs['caption']) ? htmlspecialchars(wp_strip_all_tags($aArgs['caption']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE ) : false;
+            $sanitized_caption = !empty($aArgs['title']) ? htmlspecialchars(wp_strip_all_tags($aArgs['title']), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE ) : false;
             $sanitized_src = htmlspecialchars(wp_strip_all_tags(trim($aArgs['src'])), ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE );
 
             // make sure the URLs are absolute
