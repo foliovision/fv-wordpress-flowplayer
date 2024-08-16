@@ -699,7 +699,7 @@ class FV_Player_Db {
       // this makes the preview work with YouTube playlists obtained via API
       // this lets you set the splash screen for Vimeo channel
       $preserve = array();
-      foreach( array('autoplay','splash','src','splash_text', 'share' ) AS $attr2preserve ) {
+      foreach( array('autoplay','splash', 'splash_attachment_id', 'src','splash_text', 'share' ) AS $attr2preserve ) {
         if( !empty($atts[$attr2preserve]) ) {
           $preserve[$attr2preserve] = $atts[$attr2preserve];
         }
