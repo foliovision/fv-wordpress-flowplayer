@@ -10,6 +10,8 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
 
     global $fv_fp;
     $this->restore = $fv_fp->conf;
+
+    $fv_fp->bCSSLoaded = false;
   }
 
   public function fix_newlines( $html ) {
