@@ -18,6 +18,7 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
+    // Need to use the back-end controller to import the player data
     require_once "../../../fv-wordpress-flowplayer/controller/editor.php";
 
     global $FV_Player_Db;
