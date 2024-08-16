@@ -770,7 +770,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= "\t".'<div class="fp-ratio" style="padding-top: '.str_replace(',','.',$this->get_ratio() * 100).'%"></div>'."\n";
         }
 
-        if( !$bIsAudio && !empty($splash_img) ) {
+        if( !$bIsAudio && ( ! empty( $splash_img ) || ! empty( $this->aCurArgs['splash_attachment_id'] ) ) ) {
           $alt = $this->get_title() ? $this->get_title() : 'video';
 
           $splash_img_id = false;
@@ -798,6 +798,10 @@ class flowplayer_frontend extends flowplayer
                 $count++;
               }
             }
+          }
+
+          if ( ! $splash_img_id && ! empty( $this->aCurArgs['splash_attachment_id'] ) && intval( $this->aCurArgs['splash_attachment_id'] ) > 0 ) {
+            $splash_img_id = intval( $this->aCurArgs['splash_attachment_id'] );
           }
 
           // Use the playlist splash if it's playlist
