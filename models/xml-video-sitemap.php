@@ -215,8 +215,13 @@ class FV_Xml_Video_Sitemap {
 
             // set thumbnail
             $thumb = apply_filters( 'fv_flowplayer_splash', apply_filters( 'fv_player_sitemap_thumbnail', $splash, $aArgs['src'], $objPost->ID ) );
-            $thumb_parts = wp_parse_url( $thumb );
-            $xml_video['thumbnail_loc'] = str_replace( $thumb_parts['query'], str_replace('&', '&amp;', $thumb_parts['query'] ), $thumb );
+            $thumb_query_string = wp_parse_url( $thumb, PHP_URL_QUERY );
+
+            if ( ! empty( $thumb_query_string ) ) {
+              $thumb = str_replace( $thumb_query_string, str_replace('&', '&amp;', $thumb_query_string ), $thumb );
+            }
+
+            $xml_video['thumbnail_loc'] = $thumb;
 
             // set video title
             if (!empty($sanitized_caption)) {
