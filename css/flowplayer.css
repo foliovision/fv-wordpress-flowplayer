@@ -2370,7 +2370,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-youtube .fp-player .fp-splash { /*  for mobile loading */
   object-fit: cover;
 }
-.flowplayer.is-loading.is-youtube .fp-ui, .flowplayer.is-ready.is-youtube .fp-ui {
+.flowplayer.is-loading.is-youtube .fp-ui, .flowplayer.is-ready.is-youtube .fp-ui, body.is-fv-player-fb-app .flowplayer.is-splash.is-youtube .fp-ui {
   pointer-events: none;
 }
 .flowplayer.is-touch.is-ready.is-youtube .fp-ui {
