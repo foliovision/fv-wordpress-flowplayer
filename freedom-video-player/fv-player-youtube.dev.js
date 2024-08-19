@@ -134,6 +134,12 @@ if( typeof(flowplayer) != "undefined" ) {
 
 
   function fv_player_pro_youtube_is_mobile() {
+    // If it's the Facebook in-app browser or Messenger
+    if( navigator.userAgent.match(/FBAN|FBAV|FB_IAB|FB4A|FBMD|FBBV|FBDV|FBSN|FBSV|FBSS|FBID|FBLC|FBOP|FBRV|FBSF|FBAN|FB4A|FBMD|FBAV|FBBV|FBDV|FBSN|FBSV|FBSS|FBID|FBLC|FBOP|FBRV|FBSF|FB_IAB/i) ) {
+      jQuery('body').addClass( 'is-fv-player-fb-app' );
+      return true;
+    }
+
     // If it's Android, then it gets a special permission to play YouTube with sound! So we do not consider that a mobile
     // Include Safari (which means iPad too)
     return !flowplayer.support.android && (
