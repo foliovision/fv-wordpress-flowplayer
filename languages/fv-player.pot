@@ -7,9 +7,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2024-07-30 14:40+0000\n"
+"POT-Creation-Date: 2024-08-19 11:14+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: fv-player.php:39
+msgid "FV Player 8 cannot run together with FV Player 7. Please deactivate FV Player 7 first."
+msgstr ""
+
+#: fv-player.php:55
+msgid "FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension."
+msgstr ""
 
 #: controller/backend.php:172
 msgid "We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working."
@@ -75,103 +83,103 @@ msgstr ""
 msgid "Add FV Player"
 msgstr ""
 
-#: controller/editor.php:737, models/list-table.php:72, view/admin.php:2117, view/wizard.php:569
+#: controller/editor.php:740, models/list-table.php:72, view/admin.php:2117, view/wizard.php:569
 msgid "Subtitles"
 msgstr ""
 
-#: controller/editor.php:738
+#: controller/editor.php:741
 msgid "Subtitle"
 msgstr ""
 
-#: controller/editor.php:764
+#: controller/editor.php:767
 msgid "Video Link"
 msgstr ""
 
-#: controller/editor.php:788
+#: controller/editor.php:791
 msgid "Live Stream"
 msgstr ""
 
-#: controller/editor.php:792
+#: controller/editor.php:795
 msgid "DVR Stream"
 msgstr ""
 
-#: controller/editor.php:799
+#: controller/editor.php:802
 msgid "Audio Stream"
 msgstr ""
 
-#: controller/editor.php:803
+#: controller/editor.php:806
 msgid "Advanced Settings"
 msgstr ""
 
-#: controller/editor.php:808, view/admin.php:968
+#: controller/editor.php:811, view/admin.php:968
 msgid "Mobile Video"
 msgstr ""
 
-#: controller/editor.php:815
+#: controller/editor.php:818
 msgid "Alternative Format 1"
 msgstr ""
 
-#: controller/editor.php:822
+#: controller/editor.php:825
 msgid "Alternative Format 2"
 msgstr ""
 
-#: controller/editor.php:829
+#: controller/editor.php:832
 msgid "Remove Top and Bottom Black Bars"
 msgstr ""
 
-#: controller/editor.php:831
+#: controller/editor.php:834
 msgid "Fixes video fit in mobile fullscreen when in landscape."
 msgstr ""
 
-#: controller/editor.php:836
+#: controller/editor.php:839
 msgid "RTMP"
 msgstr ""
 
-#: controller/editor.php:842
+#: controller/editor.php:845
 msgid "Path"
 msgstr ""
 
-#: controller/editor.php:848
+#: controller/editor.php:851
 msgid "Server"
 msgstr ""
 
-#: controller/editor.php:858
+#: controller/editor.php:861
 msgid "Splash Screen"
 msgstr ""
 
-#: controller/editor.php:863
+#: controller/editor.php:866
 msgid "Will appear in place of the video before it plays."
 msgstr ""
 
-#: controller/editor.php:870
+#: controller/editor.php:873
 msgid "Title"
 msgstr ""
 
-#: controller/editor.php:874
+#: controller/editor.php:877
 msgid "Will appear below the player and on playlist thumbnails. Also used for tracking."
 msgstr ""
 
-#: controller/editor.php:877
+#: controller/editor.php:880
 msgid "Hide Title"
 msgstr ""
 
-#: controller/editor.php:882
+#: controller/editor.php:885
 msgid "Use if you only want the title for tracking."
 msgstr ""
 
-#: controller/editor.php:887, view/admin.php:974
+#: controller/editor.php:890, view/admin.php:974
 msgid "Splash Text"
 msgstr ""
 
-#: controller/editor.php:891
+#: controller/editor.php:894
 msgid "Will appear over the video before it plays."
 msgstr ""
 
-#: controller/editor.php:894, view/admin.php:976
+#: controller/editor.php:897, view/admin.php:976
 msgid "Synopsis"
 msgstr ""
 
-#: controller/editor.php:898
+#: controller/editor.php:901
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
@@ -696,7 +704,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3131
+#: models/fv-player.php:3136
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
@@ -800,23 +808,23 @@ msgstr ""
 msgid "System Info"
 msgstr ""
 
-#: models/xml-video-sitemap.php:560
+#: models/xml-video-sitemap.php:578
 msgid "Use XML Video Sitemap"
 msgstr ""
 
-#: models/xml-video-sitemap.php:560
+#: models/xml-video-sitemap.php:578
 msgid "Creates <code>%s</code> which you can submit via Google Webmaster Tools."
 msgstr ""
 
-#: models/xml-video-sitemap.php:560
+#: models/xml-video-sitemap.php:578
 msgid "As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing."
 msgstr ""
 
-#: models/xml-video-sitemap.php:569
+#: models/xml-video-sitemap.php:587
 msgid "Sitemap Post Meta"
 msgstr ""
 
-#: models/xml-video-sitemap.php:569
+#: models/xml-video-sitemap.php:587
 msgid "You can enter post meta keys here, use <code>,</code> to separate multiple values."
 msgstr ""
 
