@@ -494,6 +494,9 @@
 	width: 0 !important;
 }
 
+.fp-playlist-version-one .fv-playlist-draggable {
+	scrollbar-width: none;
+}
 .fp-playlist-version-two .fv-playlist-draggable {
 	--fp-playlist-items-gap: 4px;
 	touch-action: pan-x;
