@@ -481,9 +481,10 @@
 
 .fv-playlist-draggable {
 	display: grid;
+	--fp-playlist-items-gap: 20px;
 	grid-auto-flow: column;
-	grid-auto-columns: calc(100% / var(--fp-playlist-items-per-row));
-	column-gap: 20px;
+	grid-auto-columns: calc( ( 100% - ( var(--fp-playlist-items-per-row) - 1 ) * var(--fp-playlist-items-gap) ) / var(--fp-playlist-items-per-row) );
+	column-gap: var(--fp-playlist-items-gap);
 	overflow: auto hidden;
 	user-select: none;
 	width: 100%;
@@ -494,7 +495,7 @@
 }
 
 .fp-playlist-version-two .fv-playlist-draggable {
-	column-gap: 4px;
+	--fp-playlist-items-gap: 4px;
 	touch-action: pan-x;
 	scrollbar-color: #12784a #2222;
 	scrollbar-width: thin;
