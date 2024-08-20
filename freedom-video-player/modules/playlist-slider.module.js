@@ -29,6 +29,8 @@ freedomplayer( function(api,root) {
 
   // Prepare for dragging
   bean.on( slider, 'mousedown', function(e) {
+    e.preventDefault();
+
     isDragging = true;
     slider.classList.add('active');
     prevScrollLeft = slider.scrollLeft;
