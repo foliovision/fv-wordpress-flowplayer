@@ -610,6 +610,7 @@
 }
 
 .fp-playlist-version-one.fp-playlist-external .dur,
+.fp-playlist-version-one.fp-playlist-external a:hover .dur,
 .fp-playlist-version-two.fp-playlist-external .dur,
 .fp-playlist-version-two.fp-playlist-external a:hover .dur {
 	position: static;
