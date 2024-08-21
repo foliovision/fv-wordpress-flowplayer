@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: FV Player 8 (beta)
+Plugin Name: FV Player 8
 Plugin URI: http://foliovision.com/player
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups.
 Version: 8.0.2

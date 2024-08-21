@@ -1,4 +1,4 @@
-=== FV Player 8 Beta ===
+=== FV Player 8 ===
 Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
@@ -258,6 +258,18 @@ You can optionally edit your theme's JS to prevent the shrinking.
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 8.0.3 - 2024-08-21 =
+
+* YouTube: Facebook in-app browser fix for Android
+* Bugfix: Playlist styles Sliderland and Sliderbar hover colors and item width
+* Bugfix: XML sitemap: Fix for URLs with &: Avoid PHP warnings
+
+= 8.0.2 - 2024-08-16 =
+
+* XML sitemap: Exclude Elementor templates
+* Bugfix: Editor: Fix missing video screenshot filename
+* Bugfix: Editor: Fix Media Library item selection if you do not pick any file and just close the library
 
 = 8.0.1 - 2024-08-06 =
 
