@@ -263,6 +263,7 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 * YouTube: Facebook in-app browser fix for Android
 * Bugfix: Playlist styles Sliderland and Sliderbar hover colors and item width
+* Bugfix: Subtitles provided via subtitles="..." shortcode arguments not working
 * Bugfix: XML sitemap: Fix for URLs with &: Avoid PHP warnings
 
 = 8.0.2 - 2024-08-16 =
