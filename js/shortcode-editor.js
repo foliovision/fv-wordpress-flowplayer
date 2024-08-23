@@ -5,8 +5,6 @@
 jQuery(function() {
   // The actual editor
   window.fv_player_editor = (function($) {
-    debug_log('Loading...');
-
     var
       $doc = $(document),
       $el_editor = $('#fv-player-shortcode-editor'),
@@ -112,7 +110,11 @@ jQuery(function() {
     // list of errors that currently prevent auto-saving in the form of: { error_identifier_with_(plugin_)prefix : "the actual error text to show" }
     // ... this will be shown in place of the "Saved!" message bottom overlay and it will always show only the first error in this object,
     //     as to not overload the user and UI with errors. Once that error is corrected, it gets removed from this object and next one (if any) is shown.
-    errors = {};
+    errors = {},
+
+    store_debug_log = [];
+
+    debug_log('Loading...');
 
     /**
      * Adds a notice at the bottom of player. Used for successful save and save errors. Notices are removed on successful save.
@@ -2234,8 +2236,12 @@ jQuery(function() {
     }
 
     function debug_log( message, details ) {
+      store_debug_log.push( message );
+
       console.log( 'FV Player Editor: '+message);
       if( details ) {
+        store_debug_log.push( details );
+
         console.log(details);
       }
     }
@@ -2682,6 +2688,17 @@ jQuery(function() {
             debug_log('Finished fv_player_db_load Ajax.',response);
 
             if (response) {
+
+              if ( response.debug_duplicate_players.length ) {
+                alert( "FV Player Editor warning:\n\n\
+It seems the player #" + result[1] + " which you are about to edit is a duplicate of the player #" + response.debug_duplicate_players.join(', ') + ".\n\n\
+Any changes made to the videos will update the other player as well. \
+You can also carefully remove the duplicate player by checking which one is actually used in your post.\n\n\
+Please also contact FV Player support with the following debug information:\n\n\
+" + store_debug_log.join("\n")
+                );
+              }
+
               if( response.error ) {
                 reset_editor_ids();
 
