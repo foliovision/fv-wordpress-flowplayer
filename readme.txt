@@ -259,6 +259,11 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.4 - 2024-08-27 =
+
+* Editor: Notice when editing a duplicate player to warn user of a rare bug
+* Upload: Support debug log of FV Player Coconut 8
+
 = 8.0.3 - 2024-08-21 =
 
 * YouTube: Facebook in-app browser fix for Android
