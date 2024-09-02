@@ -73,7 +73,10 @@ class FV_Player_S3_Upload {
     global $FV_Player_DigitalOcean_Spaces;
 
     $filename = $this->sanitize_path($_POST['fileInfo']['name']);
-    $filename = ($this->remove_special_chars($filename));
+    $filename = $this->remove_special_chars($filename);
+
+    $filename = remove_accents( $filename );
+    $filename = str_replace('Ę', 'E', $filename);
 
     $target = dirname($filename);
 
