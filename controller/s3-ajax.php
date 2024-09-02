@@ -82,7 +82,8 @@ if( !function_exists('__') ) {
 // Load FV Player
 foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
   if(
-    stripos($plugin,'/fv-player') !== false && stripos($plugin,'/fv-player.php') !== false
+    stripos($plugin,'/fv-player') !== false && stripos($plugin,'/fv-player.php') !== false ||
+    stripos($plugin,'/fv-player-coconut') !== false && stripos($plugin,'/fv-player-coconut.php') !== false
   ) {
     wp_register_plugin_realpath( $plugin );
     include_once( $plugin );
@@ -126,6 +127,8 @@ if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
   require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces.class.php');
   require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces-browser.class.php');
   require_once(dirname( __FILE__ ) . '/s3-upload.php');
+
+  do_action('fv_player_shortinit_loaded');
 
   global $FV_Player_S3_Upload;
 
