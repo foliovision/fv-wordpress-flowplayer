@@ -96,6 +96,9 @@ Class FvPlayerTrackerWorker {
       2
     );
 
+    // Do not check HTTP auth as we did not load WP_Application_Passwords class
+    remove_filter( 'determine_current_user', 'wp_validate_application_password', 20 );
+
     if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'fv_player_track' ) ) {
       die( "Error: invalid nonce!" );
     }

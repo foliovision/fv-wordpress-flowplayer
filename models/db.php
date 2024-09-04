@@ -699,7 +699,7 @@ class FV_Player_Db {
       // this makes the preview work with YouTube playlists obtained via API
       // this lets you set the splash screen for Vimeo channel
       $preserve = array();
-      foreach( array('autoplay','splash','src','splash_text', 'share' ) AS $attr2preserve ) {
+      foreach( array('autoplay','splash', 'splash_attachment_id', 'src','splash_text', 'share' ) AS $attr2preserve ) {
         if( !empty($atts[$attr2preserve]) ) {
           $preserve[$attr2preserve] = $atts[$attr2preserve];
         }
@@ -1348,8 +1348,10 @@ class FV_Player_Db {
 
     if ( isset( $_POST['playerID'] ) && is_numeric( $_POST['playerID'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ),"fv-player-db-load" ) ) {
 
+      $load_player_id = absint( $_POST['playerID'] );
+
       // load player and its videos from DB
-      if ( !$this->getPlayerAttsFromDb( array( 'id' => absint( $_POST['playerID'] ) ) ) ) {
+      if ( !$this->getPlayerAttsFromDb( array( 'id' => $load_player_id ) ) ) {
         header("HTTP/1.0 404 Not Found");
         die();
       }
@@ -1430,13 +1432,40 @@ class FV_Player_Db {
       }
 
       // intval() below is important as -1 means no particular video is being edited
-      $out = $this->db_load_player_data( absint( $_POST['playerID'] ), intval( $_POST['current_video_to_edit'] ) );
+      $out = $this->db_load_player_data( $load_player_id, intval( $_POST['current_video_to_edit'] ) );
 
       if( empty($out['videos']) ) {
         wp_send_json( array( 'error' => "Failed to load videos for this player." ) );
         exit;
       }
 
+      /**
+       * Detect bug with duplicate players
+       */
+      $video_ids = explode( ',', $fv_fp->current_player()->getVideoIds() );
+
+      $db_options = array(
+        'select_fields'       => 'player_name, date_created, videos, author, status',
+        'search_by_video_ids' => $video_ids,
+      );
+
+      $this->query_players( $db_options );
+
+      $players = $this->getPlayersCache();
+
+      if ( $players && count($players) ) {
+        $out['debug_duplicate_players'] = array();
+
+        foreach ($players as $player) {
+          if ( $player->getId() != $load_player_id ) {
+            $out['debug_duplicate_players'][] = $player->getId();
+          }
+        }
+      }
+
+      /**
+       * Output JSON
+       */
       header('Content-Type: application/json');
       if (version_compare(phpversion(), '5.3', '<')) {
         echo wp_json_encode($out);

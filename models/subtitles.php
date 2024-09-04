@@ -106,8 +106,8 @@ class FV_Player_Subtitles {
         }
       }
     } else {
-      if( $this->aCurArgs && count($this->aCurArgs) > 0 ) {
-        foreach( $this->aCurArgs AS $key => $subtitles ) {
+      if( !empty( $fv_fp->aCurArgs ) && count($fv_fp->aCurArgs) > 0 ) {
+        foreach( $fv_fp->aCurArgs AS $key => $subtitles ) {
           if( stripos($key,'subtitles') !== 0 || empty($subtitles) ) {
             continue;
           }

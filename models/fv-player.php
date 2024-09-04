@@ -441,7 +441,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     ?>
       <tr>
-        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $name ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
+        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_kses( $name, $this->help_html ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <input class="<?php echo esc_attr( $class_name ); ?>" <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo 'title="' . esc_attr( $title ) . '" '; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {

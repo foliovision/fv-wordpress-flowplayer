@@ -73,7 +73,10 @@ class FV_Player_S3_Upload {
     global $FV_Player_DigitalOcean_Spaces;
 
     $filename = $this->sanitize_path($_POST['fileInfo']['name']);
-    $filename = ($this->remove_special_chars($filename));
+    $filename = $this->remove_special_chars($filename);
+
+    $filename = remove_accents( $filename );
+    $filename = str_replace('Ę', 'E', $filename);
 
     $target = dirname($filename);
 
@@ -86,9 +89,21 @@ class FV_Player_S3_Upload {
     $filename_parts = explode('.', $filename);
 
     try {
-      global $fv_fp;
-
       $s3Client = $this->s3();
+
+      if ( ! $s3Client ) {
+        $message = "AWS S3 SDK Failed to load.";
+
+        if ( version_compare(phpversion(),'7.4') == -1 ) {
+          $message .= " You need to use PHP version 7.4 or above.";
+        }
+
+        if ( function_exists( 'FV_Player_Coconut' ) ) {
+          FV_Player_Coconut()->plugin_api->log( "create_multiupload: " . $message );
+        }
+
+        wp_send_json( array( 'error' => $message ) );
+      }
 
       $bucket = $FV_Player_DigitalOcean_Spaces->get_space();
 
@@ -149,12 +164,22 @@ class FV_Player_S3_Upload {
         )
       ));
 
+      if ( function_exists( 'FV_Player_Coconut' ) ) {
+        FV_Player_Coconut()->plugin_api->log( "create_multiupload: uploadId: " . $res->get('UploadId') . " for key: " . $res->get('Key') );
+      }
+
       wp_send_json( array(
         'uploadId' => $res->get('UploadId'),
         'key' => $res->get('Key'),
       ));
     } catch( Aws\S3\Exception\S3Exception $e ) {
-      wp_send_json( array( 'error' => 'Access denied, please check your DigitalOcean Spaces keys in FV Player -> Coconut -> Settings.' ) );
+      $message = "Access denied, please check your DigitalOcean Spaces keys in FV Player -> Coconut -> Settings.";
+
+      if ( function_exists( 'FV_Player_Coconut' ) ) {
+        FV_Player_Coconut()->plugin_api->log( "create_multiupload: " . $message );
+      }
+
+      wp_send_json( array( 'error' => $message ) );
     }
 
     wp_die();
@@ -167,13 +192,19 @@ class FV_Player_S3_Upload {
 
     global $FV_Player_DigitalOcean_Spaces;
 
-    $command = $this->s3( "getCommand", "UploadPart", array(
+    $args = array(
       'Bucket'        => $FV_Player_DigitalOcean_Spaces->get_space(),
       'Key'           => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
       'UploadId'      => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] ),
       'PartNumber'    => intval( $_REQUEST['partNumber'] ),
-      'ContentLength' => intval( $_REQUEST['contentLength'] ),
-    ));
+      'ContentLength' => intval( $_REQUEST['contentLength'] )
+    );
+
+    if ( function_exists( 'FV_Player_Coconut' ) ) {
+      FV_Player_Coconut()->plugin_api->log( "multiupload_send_part: S3 UploadPart: " . print_r( $args, true ) );
+    }
+
+    $command = $this->s3( "getCommand", "UploadPart", $args );
 
     // Give it at least 24 hours for large uploads
     $request = $this->s3( "createPresignedRequest" , $command, "+48 hours" );
@@ -200,13 +231,23 @@ class FV_Player_S3_Upload {
       sleep(5);
 
       try {
-        $partsModel = $this->s3("listParts",[
+        $args = array(
           'Bucket'   => $FV_Player_DigitalOcean_Spaces->get_space(),
           'Key'      => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
           'UploadId' => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] ),
-        ]);
+        );
+
+        if ( function_exists( 'FV_Player_Coconut' ) ) {
+          FV_Player_Coconut()->plugin_api->log( "multiupload_complete: S3 listParts: " . print_r( $args, true ) );
+        }
+
+        $partsModel = $this->s3("listParts", $args);
 
       } catch ( Exception $e ) {
+        if ( function_exists( 'FV_Player_Coconut' ) ) {
+          FV_Player_Coconut()->plugin_api->log( "multiupload_complete: S3 listParts exception: " . $e->getMessage() );
+        }
+
         wp_send_json( array(
           'error'   => true,
           'message' => $e->getMessage(),
@@ -222,19 +263,30 @@ class FV_Player_S3_Upload {
       }
 
       try {
-        $ret = $this->s3( "completeMultipartUpload" , array(
+        $args = array(
           'Bucket'   => $FV_Player_DigitalOcean_Spaces->get_space(),
           'Key'      => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
           'UploadId' => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] ),
           'MultipartUpload' => array(
-            "Parts" => $parts
-          ),
-        ))->toArray();
+            "Parts" => $parts,
+          )
+        );
 
+        if ( function_exists( 'FV_Player_Coconut' ) ) {
+          FV_Player_Coconut()->plugin_api->log( "multiupload_complete: S3 completeMultipartUpload: " . print_r( $args, true ) );
+        }
+
+        $ret = $this->s3( "completeMultipartUpload", $args )->toArray();
+
+        // Do not try again if it succeeded!
         break;
 
       } catch ( Exception $e ) {
         $attempt++;
+
+        if ( function_exists( 'FV_Player_Coconut' ) ) {
+          FV_Player_Coconut()->plugin_api->log( "multiupload_complete: S3 completeMultipartUpload exception: " . $e->getMessage() );
+        }
 
         if ( $attempt > 4 ) {
           wp_send_json( array(
@@ -266,11 +318,18 @@ class FV_Player_S3_Upload {
 
     // if initial pre-upload request fails, we'll have no sendBackData to abort
     if ( !empty( $_REQUEST['sendBackData'] ) ) {
-      $this->s3("abortMultipartUpload",[
+
+      $args = array(
         'Bucket'   => $FV_Player_DigitalOcean_Spaces->get_space(),
         'Key'      => sanitize_text_field( $_REQUEST['sendBackData']['key'] ),
         'UploadId' => sanitize_text_field( $_REQUEST['sendBackData']['uploadId'] )
-      ]);
+      );
+
+      if ( function_exists( 'FV_Player_Coconut' ) ) {
+        FV_Player_Coconut()->plugin_api->log( "multiupload_abort: S3 abortMultipartUpload: " . print_r( $args, true ) );
+      }
+
+      $this->s3("abortMultipartUpload", $args );
     }
 
     wp_send_json( array(

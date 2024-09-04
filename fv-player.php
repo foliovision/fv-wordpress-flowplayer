@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: FV Player 8 (beta)
+Plugin Name: FV Player 8
 Plugin URI: http://foliovision.com/player
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups.
-Version: 8.0.1
+Version: 8.0.4
 Author URI: http://foliovision.com/
 Requires PHP: 5.6
 Text Domain: fv-player
@@ -42,6 +42,14 @@ function fv_player_7_deactivate_notice() {
 }
 
 function fv_player__pro_7_deactivate_notice() {
+
+  global $FV_Player_Pro;
+  if( isset( $FV_Player_Pro ) && ! empty( $FV_Player_Pro->version ) ) {
+    if( version_compare( $FV_Player_Pro->version, '7.9' ) != -1 ) {
+      return;
+    }
+  }
+
   ?>
   <div class="notice notice-error is-dismissible">
     <p><?php _e( 'FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension.', 'fv-player' ); ?></p>
@@ -52,7 +60,7 @@ function fv_player__pro_7_deactivate_notice() {
 if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
   $active_plugins = get_option( 'active_plugins', array() );
   foreach( $active_plugins as $key => $plugin ) {
-    if( stripos( $plugin, 'fv-wordpress-flowplayer/' ) === 0 ) {
+    if( stripos( $plugin, 'fv-wordpress-flowplayer/flowplayer.php' ) === 0 ) {
       add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
 
       // Do not load as PHP would get fatal error
@@ -69,7 +77,7 @@ if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '8.0.1.beta';
+$fv_wp_flowplayer_ver = '8.0.4';
 $fv_wp_flowplayer_core_ver = '8.0.1.beta';
 
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
