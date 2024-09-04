@@ -17,7 +17,7 @@ abstract class FV_Player_Video_Encoder {
   protected
     $version = 'latest',
     $license_key = false;
-    
+
   public
     $table_name = 'fv_player_encoding_jobs'; // table in which encoding jobs are stored
 
@@ -195,7 +195,7 @@ abstract class FV_Player_Video_Encoder {
 
     return $response;
   }
-  
+
   function locate_script( $script ) {
     $file = false;
     if( file_exists( dirname( $this->getFILE() ) . '/../js/'.$this->encoder_id.'-'.$script ) ) {
@@ -537,11 +537,11 @@ abstract class FV_Player_Video_Encoder {
       // if we don't have current_video then we're on the players listing page, so we need to find and update
       // all players where our temporary "encoder_processing_" placeholder is used
       if ( !$fv_fp->current_video() ) {
-        $videos = $FV_Player_Db->query_videos( array( 
-          'fields_to_search' =>  array('src'), 
-          'search_string' => $temporary_src, 
-          'like' => false, 
-          'and_or' => 'OR' 
+        $videos = $FV_Player_Db->query_videos( array(
+          'fields_to_search' =>  array('src'),
+          'search_string' => $temporary_src,
+          'like' => false,
+          'and_or' => 'OR'
           )
         );
 
@@ -551,22 +551,22 @@ abstract class FV_Player_Video_Encoder {
             if ( ! empty( $job_output->src[0] ) ) {
               $video->set( 'src', $job_output->src[0] );
             }
-  
+
             // also replace its thumbnail / splash
             if ( !empty( $job_output->thumbnail ) ) {
               $video->set( 'splash', $job_output->thumbnail );
             } else if ( ! empty( $job_output->splash ) ) {
               $video->set( 'splash', $job_output->splash );
             }
-  
+
             // also set its timeline preview, if received
             if ( ! empty( $job_output->timeline_previews ) ) {
               $video->updateMetaValue( 'timeline_previews', $job_output->timeline_previews );
             }
-  
+
             // save changes for this video
             $video->save();
-  
+
             // purge HTML caches for all posts where players containing this video are present
             $players = $fv_fp->get_players_by_video_ids( $video->getId() );
             foreach ( $players as $player ) {
@@ -969,6 +969,7 @@ abstract class FV_Player_Video_Encoder {
       output TEXT,
       video_data TEXT,
       author bigint(20) unsigned NOT NULL default '0',
+      fv_player_encoding_category_id bigint(20) unsigned DEFAULT NULL,
       PRIMARY KEY  (id),
       KEY source (source(191)),
       KEY type (type),

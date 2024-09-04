@@ -195,7 +195,7 @@ print_r( $conf );
 DATABASE
 
 <?php
-foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos', 'fv_player_videometa' ) AS $table) {
+foreach( array( 'fv_player_players', 'fv_player_playermeta', 'fv_player_videos', 'fv_player_videometa', 'fv_player_encoding_jobs' ) AS $table) {
   $found = false;
   $table_name = $wpdb->prefix.$table;
   if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) == $table_name ) {
