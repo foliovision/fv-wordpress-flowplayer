@@ -223,14 +223,6 @@ class FV_Player_Stats {
 
       if( is_array($data) ) {
         foreach( $data  AS $index => $item ) {
-          foreach( $item as $item_name => $item_value ) {
-            if( is_int($item_value) && (intval($item_value) >= 0 || ( strcmp( $item_name, 'play' ) == 0 && intval($item_value) > 0 ) )) {
-              continue;
-            }
-
-            continue 2;
-          }
-
           $video_id = intval($item['video_id']);
           $player_id = intval($item['player_id']);
           $post_id = intval($item['post_id']);
@@ -425,8 +417,13 @@ class FV_Player_Stats {
     return $results;
   }
 
-  public function top_ten_videos_by_plays( $interval, $user_id ) {
+  public function top_ten_videos_or_posts_by_plays( $type, $interval, $user_id ) {
     global $wpdb;
+
+    // Sanitize input for SQL
+    if ( ! in_array( $type, array( 'post', 'video' ) ) ) {
+      $type = 'video';
+    }
 
     $excluded = $this->get_posts_to_exclude();
 
@@ -436,7 +433,7 @@ class FV_Player_Stats {
         // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND user_id = %d GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10",
+          "SELECT id_" . esc_sql( $type ) . " FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND user_id = %d GROUP BY id_" . esc_sql( $type ) . " ORDER BY sum(play) DESC LIMIT 10",
           array_merge(
             array(
               $interval[0],
@@ -456,7 +453,7 @@ class FV_Player_Stats {
         // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY id_video ORDER BY sum(play) DESC LIMIT 10",
+          "SELECT id_" . esc_sql( $type ) . " FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY id_" . esc_sql( $type ) . " ORDER BY sum(play) DESC LIMIT 10",
           array_merge(
             array(
               $interval[0],
@@ -837,7 +834,7 @@ class FV_Player_Stats {
     $interval = self::get_interval_from_range( $range );
 
     $datasets = false;
-    $top_ids_results = $this->top_ten_videos_by_plays( $interval, $user_id ); // get top video ids
+    $top_ids_results = $this->top_ten_videos_or_posts_by_plays( $type, $interval, $user_id ); // get top video ids
 
     if( !empty($top_ids_results) ) {
       $top_ids = array_map( 'intval', array_values( $top_ids_results ) );
@@ -874,7 +871,7 @@ class FV_Player_Stats {
           // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE date BETWEEN %s AND %s AND id_video IN( $placeholders ) AND user_id = %d GROUP BY id_post, date",
+            "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE date BETWEEN %s AND %s AND id_post IN( $placeholders ) AND user_id = %d GROUP BY id_post, date",
             array_merge(
               array(
                 $interval[0],
@@ -914,7 +911,7 @@ class FV_Player_Stats {
           // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE date BETWEEN %s AND %s AND id_video IN( $placeholders ) GROUP BY id_post, date",
+            "SELECT date, id_post, id_video, post_title, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}posts` AS p ON s.id_post = p.ID WHERE date BETWEEN %s AND %s AND id_post IN( $placeholders ) GROUP BY id_post, date",
             array_merge(
               array(
                 $interval[0],
@@ -1212,12 +1209,24 @@ class FV_Player_Stats {
     return array( $start, $end);
   }
 
-  private function get_dates_in_range( $range ) {
+  /**
+   * Get the desired date range
+   *
+   * @param string|int $range this_week, last_week, this_month, last_month, this_year, last_year or year number          
+   * @param mixed $base_date (optional) The base date to use for this_week
+   * @return array            All the days in the date range in YYYY-MM-DD format.
+   */
+  private function get_dates_in_range( $range, $base_date = false ) {
     $dates = array();
 
+    $time = time();
+    if ( $base_date ) {
+      $time = strtotime( $base_date );
+    }
+
     if( strcmp( 'this_week', $range ) === 0 ) {
-      $end_day = gmdate('Y-m-d', strtotime('today'));
-      $start_day = gmdate('Y-m-d', strtotime('today - 7 days'));
+      $end_day = gmdate('Y-m-d', $time );
+      $start_day = gmdate('Y-m-d', strtotime( '-7 days', $time ) );
       $dates = $this->get_days_between_dates( $start_day, $end_day );
     } else if( strcmp( 'last_week', $range ) === 0 ) {
       $previous_week = strtotime("-1 week +1 day");
@@ -1308,16 +1317,61 @@ class FV_Player_Stats {
     return array_values($date_labels);
   }
 
-  private function process_graph_data( $results, $top_ids_arr, $range, $type, $metric = 'play' ) {
+  /**
+   * Group the database result rows by the video or post ID for the desired date range.
+   *
+   * @param array $raw_db_results Each item is array like:
+   *                                array(
+   *                                  'date' => '2024-09-03',
+   *                                  'id_player' => '14',
+   *                                  'id_video' => '912',
+   *                                  'title' => 'My Video',
+   *                                  'play' => '1',
+   *                                ),
+   *                                array(
+   *                                  'date' => '2024-09-05',
+   *                                  'id_player' => '171',
+   *                                  'id_video' => '912',
+   *                                  'title' => 'My Video',
+   *                                  'play' => '1',
+   *                                ),
+   *                                array(
+   *                                  'date' => '2024-09-07',
+   *                                  'id_player' => '14',
+   *                                  'id_video' => '912',
+   *                                  'title' => 'My Video',
+   *                                  'play' => '1',
+   *                                )
+   *
+   * @param mixed $top_ids_arr
+   * @param string|int $range this_week, last_week, this_month, last_month, this_year, last_year or year number 
+   * @param string $type      video or post
+   * @param string $metric    play or seconds or clicks
+   * @param string $base_date (optional) The base date to use for $range
+   *
+   * @return array            Summary of the daily video plays per video or post (see $type) by id_video or is_post:
+   *                            912 => array(
+   *                              '2024-09-02' => array( 'play' => 0 ),
+   *                              'name' => 'My Video',
+   *                              '2024-09-03' => array( 'play' => '1' ),
+   *                              '2024-09-04' => array( 'play' => 0 ),
+   *                              '2024-09-05' => array( 'play' => 1 ),
+   *                              '2024-09-06' => array( 'play' => 0 ),
+   *                              '2024-09-07' => array( 'play' => 1 ),
+   *                              '2024-09-08' => array( 'play' => 0 ),
+   *                              '2024-09-09' => array( 'play' => 0 ),
+   *                            ),
+   */
+  private function process_graph_data( $raw_db_results, $top_ids_arr, $range, $type, $metric = 'play', $base_date = false ) {
     $datasets = array();
 
-    $date_labels = $this->get_dates_in_range( $range );
+    $date_labels = $this->get_dates_in_range( $range, $base_date );
 
     // order data for graph,
     foreach( $top_ids_arr as $id ) {
       foreach( $date_labels as $date ) {
-        foreach( $results as $row) {
-          if( ( ( $type == 'video' || $type == 'player' ) && ( isset($row['id_' . $type ]) && $row['id_' . $type ] == $id ) ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) || ( isset($row['id_post']) && $row['id_video'] == $id ) ) {
+        foreach( $raw_db_results as $row) {
+          if( ( ( $type == 'video' || $type == 'player' ) && ( isset($row['id_' . $type ]) && $row['id_' . $type ] == $id ) ) || ( isset($row['user_id']) && $row['user_id'] == $id ) || ( isset($row['guest_user_id']) && $row['guest_user_id'] == $id ) || ( isset($row['id_post']) && $row['id_post'] == $id ) ) {
             if( !isset($datasets[$id]) ) {
               $datasets[$id] = array();
             }
@@ -1357,7 +1411,7 @@ class FV_Player_Stats {
             // add labels
             if( !isset($datasets[$id]['name']) ) {
               if( $type == 'video' || $type == 'player' ) {
-                $datasets[$id]['name'] = $this->get_video_name( $row['src'], $row['title'] );
+                $datasets[$id]['name'] = $this->get_video_name( $row );
               } else if( $type == 'post' ) {
                 $datasets[$id]['name'] = !empty($row['post_title'] ) ? $row['post_title'] : 'id_post_' . $row['id_post'] ;
               } else if( $type == 'user' ) {
@@ -1382,10 +1436,12 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  function get_video_name( $src, $title = '') {
-    if( !empty($title) ) {
-      return $title;
+  function get_video_name( $row ) {
+    if( ! empty( $row['title'] ) ) {
+      return $row['title'];
     }
+
+    $src = $row['src'];
 
     // check if youtube
     if( FV_Player_YouTube()->is_youtube( $src ) ) {
