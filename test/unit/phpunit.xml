@@ -3,5 +3,8 @@
         <testsuite name="controller">
             <directory suffix="Test.php">controller</directory>
         </testsuite>
+        <testsuite name="models">
+            <directory suffix="Test.php">models</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
