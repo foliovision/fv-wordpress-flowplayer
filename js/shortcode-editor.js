@@ -148,7 +148,7 @@ jQuery(function() {
     }
 
     function check_for_player_meta_field(fieldName) {
-      return [].indexOf(fieldName) > -1;
+      return get_field_conf( fieldName ).store == 'player_meta';
     }
 
     function check_for_video_meta_field(fieldName) {

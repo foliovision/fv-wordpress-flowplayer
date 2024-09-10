@@ -288,6 +288,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         'scope'             => false,
         'language'          => false,
         'type'              => false,
+        'player_meta'       => false,
         'video_meta'        => false,
         'visible'           => false,
         'width'             => false,
@@ -298,6 +299,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     if ( ! isset( $script_fv_player_editor_fields[ $name ] ) ) {
       $script_fv_player_editor_fields[ $name ] = array();
+    }
+
+    if ( $player_meta ) {
+      $script_fv_player_editor_fields[ $name ]['store'] = 'player_meta';
     }
 
     if ( $video_meta ) {
