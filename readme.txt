@@ -259,6 +259,12 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.5 - 2024-09-11 =
+
+* Editor: Support player meta fields
+* Bugfix: Stats not showing properly for "Top 10 Post Video Plays"
+* Bugfix: Video Encoder: Fix fv_player_encoding_category_id DB field missing
+
 = 8.0.4 - 2024-08-27 =
 
 * Editor: Notice when editing a duplicate player to warn user of a rare bug
