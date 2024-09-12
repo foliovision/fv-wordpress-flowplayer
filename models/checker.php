@@ -212,13 +212,10 @@ class FV_Player_Checker {
             $height = intval($ThisFileInfo['video']['resolution_y']);
           }
 
-          $is_audio = false;
           $is_live = false;
           $is_encrypted = false;
 
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
-            $is_audio = -1; // We do not know if it's audio only yet
-
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
             $request = wp_remote_get(
               $remotefilename_encoded,
@@ -271,12 +268,6 @@ class FV_Player_Checker {
                 if( stripos($line,'#EXT-X-STREAM-INF:') === 0 ) {
                   $had_ext_x_stream_inf = true;
 
-                  // If there are sub-playlists we can be certain it's either audio stream...
-                  if( $is_audio == -1 ) {
-                    $is_audio = true;
-                  }
-
-                  // ...or we found a video track, then we are sure it's not audio stream
                   if( stripos($line,'RESOLUTION=') !== false ) {
                     if( preg_match( '~RESOLUTION=(\d+)x(\d+)~', $line, $resoluton ) ) {
                       if( $resoluton[1] > $resoluton_x_max ) {
@@ -286,7 +277,6 @@ class FV_Player_Checker {
                         $resoluton_y_max = $resoluton[2];
                       }
                     }
-                    $is_audio = false;
                   }
                 }
 
@@ -345,7 +335,6 @@ class FV_Player_Checker {
           $fv_flowplayer_meta['width'] = $width;
           $fv_flowplayer_meta['height'] = $height;
           $fv_flowplayer_meta['is_live'] = $is_live;
-          $fv_flowplayer_meta['is_audio'] = $is_audio;
           $fv_flowplayer_meta['is_encrypted'] = $is_encrypted;
           $fv_flowplayer_meta['etag'] = ! is_wp_error( $res ) && isset($res['headers']['etag']) ? $res['headers']['etag'] : false;  //  todo: check!
           $fv_flowplayer_meta['date'] = time();

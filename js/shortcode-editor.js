@@ -4716,10 +4716,17 @@ Please also contact FV Player support with the following debug information:\n\n\
       jQuery.each( [ 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
-          meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false;
+          meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false,
+          force_visible = stream_fields_visible,
+          is_hls = get_current_video_object().src && get_current_video_object().src.match( /\.m3u8/ );
+
+        // Show Audio track checkbox if we have HLS with unknown dimensions
+        if ( 'audio' === v && is_hls && get_current_video_object().width == 0 && get_current_video_object().height == 0 ) {
+          force_visible = true;
+        }
 
         field.prop('checked', !!meta);
-        field.closest('.fv_player_interface_hide').toggle( !!meta || stream_fields_visible );
+        field.closest('.fv_player_interface_hide').toggle( !!meta || force_visible );
 
         checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
