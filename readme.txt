@@ -259,6 +259,13 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.6 - 2024-09-12 =
+
+* Editor: Show HLS stream options if HLS stream type detection fails. This often happens if a live stream is not yet live. Now you can safely mark it as a "Live stream" so when it goes live it will be presented properly.
+* Editor: Do not try to detect audio-only HLS streams. This is tricky as not all the HLS streams contain information about video codecs or resolution. You have to select "Audio Stream" by hand instead.
+* Bugfix: Prevent FV Player screen table layout breaking after player save
+* Bugfix: Unable to disable "DVR Stream" and "Audio Stream" checkboxes for new videos once enabled
+
 = 8.0.5 - 2024-09-11 =
 
 * Editor: Support player meta fields
