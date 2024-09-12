@@ -3546,6 +3546,10 @@ Please also contact FV Player support with the following debug information:\n\n\
       return button.id.indexOf('widget-widget_fvplayer') > -1;
     }
 
+    function is_live_stream( video ) {
+      return !! ( video.src && video.src.match( /\.m3u8|live/ ) );
+    }
+
     /*
     Sets lightbox class once it opens
     */
@@ -4698,12 +4702,16 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       // get live from video object
       var live_field = get_field('live', true),
-        live_value = get_current_video_object() ? get_current_video_object().live : false;
+        live_value   = get_current_video_object() ? get_current_video_object().live : false,
+        error        = get_playlist_video_meta_value( 'error', index ),
+        // Show the stream settings if it's not found and it's HLS stream
+        // as it often returns 404 error if it's not live at the moment
+        stream_fields_visible = !! ( error && is_live_stream( get_current_video_object() ) );
 
       live_field.prop('checked', !!live_value);
-      live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
+      live_field.closest('.fv_player_interface_hide').toggle( !!live_value || stream_fields_visible );
 
-      checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value );
+      checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value, stream_fields_visible );
 
       jQuery.each( [ 'audio', 'dvr' ], function(k,v) {
 
@@ -4711,9 +4719,9 @@ Please also contact FV Player support with the following debug information:\n\n\
           meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false;
 
         field.prop('checked', !!meta);
-        field.closest('.fv_player_interface_hide').toggle(!!meta);
+        field.closest('.fv_player_interface_hide').toggle( !!meta || stream_fields_visible );
 
-        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
+        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta, stream_fields_visible );
       });
 
     }
@@ -4743,6 +4751,11 @@ Please also contact FV Player support with the following debug information:\n\n\
       if( error ) {
         video_info.append( '<li class="error">' + error  + '</li>' );
         show = true;
+
+        if ( is_live_stream( video ) ) {
+          video_info.append( '<li>FV Player was not able to determine the stream type, please check what applies below.</li>' );
+          video_info.append( '<li>This error is normal for some of the HLS live streams if they are not currently streaming.</li>' );
+        }
       }
 
       if( show ) {
@@ -4751,17 +4764,24 @@ Please also contact FV Player support with the following debug information:\n\n\
 
     }
 
-    function checkbox_toggle_worker( wrap, name, checked ) {
+    function checkbox_toggle_worker( wrap, name, checked, visible ) {
 
       var compare = checked ? 1 : 0;
 
       wrap.toggleClass( 'is-checked', checked );
 
+      var children_wrap = wrap
+      .closest('.fv-player-editor-children-wrap');
+
       // If the checkox is checked its parents must be visible
-      if( checked ) {
-        wrap
-          .closest('.fv-player-editor-children-wrap')
-          .removeClass('fv_player_interface_hide');
+      if( checked || visible ) {
+        children_wrap
+          .removeClass('fv_player_interface_hide')
+          .addClass('fv_player_interface_hide-before');
+      } else {
+        if ( children_wrap.hasClass( 'fv_player_interface_hide-before' ) ) {
+          children_wrap.addClass( 'fv_player_interface_hide' );
+        }
       }
 
       wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
