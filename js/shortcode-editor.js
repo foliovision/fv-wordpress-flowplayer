@@ -4711,7 +4711,7 @@ Please also contact FV Player support with the following debug information:\n\n\
       live_field.prop('checked', !!live_value);
       live_field.closest('.fv_player_interface_hide').toggle( !!live_value || stream_fields_visible );
 
-      checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value, stream_fields_visible );
+      checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value );
 
       jQuery.each( [ 'audio', 'dvr' ], function(k,v) {
 
@@ -4721,7 +4721,7 @@ Please also contact FV Player support with the following debug information:\n\n\
         field.prop('checked', !!meta);
         field.closest('.fv_player_interface_hide').toggle( !!meta || stream_fields_visible );
 
-        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta, stream_fields_visible );
+        checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
 
     }
@@ -4764,24 +4764,17 @@ Please also contact FV Player support with the following debug information:\n\n\
 
     }
 
-    function checkbox_toggle_worker( wrap, name, checked, visible ) {
+    function checkbox_toggle_worker( wrap, name, checked ) {
 
       var compare = checked ? 1 : 0;
 
       wrap.toggleClass( 'is-checked', checked );
 
-      var children_wrap = wrap
-      .closest('.fv-player-editor-children-wrap');
-
       // If the checkox is checked its parents must be visible
-      if( checked || visible ) {
-        children_wrap
-          .removeClass('fv_player_interface_hide')
-          .addClass('fv_player_interface_hide-before');
-      } else {
-        if ( children_wrap.hasClass( 'fv_player_interface_hide-before' ) ) {
-          children_wrap.addClass( 'fv_player_interface_hide' );
-        }
+      if( checked ) {
+        wrap
+          .closest('.fv-player-editor-children-wrap')
+          .removeClass('fv_player_interface_hide');
       }
 
       wrap.toggleClass( 'is-default', !!window.fv_player_editor_defaults[name] );
