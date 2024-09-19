@@ -838,6 +838,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'playlistSelectedColor',
             'playlist_advance',
             'popupbox',
+            'popups',
             'popups_default',
             'postthumbnail',
             'pro', // FV Player Pro extension
