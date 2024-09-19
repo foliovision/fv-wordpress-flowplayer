@@ -16,8 +16,6 @@ class FV_Player_List_Table_View {
       $this->list_page = add_submenu_page(  'fv_player', 'FV Player', 'Videos/Playlists', 'edit_posts', 'fv_player', array($this, 'tools_panel') );
 
       add_action( 'load-'.$this->list_page, array( $this, 'screen_options' ) );
-      add_filter( 'manage_toplevel_page_fv_player_columns', array( $this, 'screen_columns' ) );
-      add_filter( 'hidden_columns', array( $this, 'screen_columns_hidden' ), 10, 3 );
     }
   }
 
@@ -34,6 +32,9 @@ class FV_Player_List_Table_View {
     add_action( 'admin_head-toplevel_page_fv_player', array($this, 'styling') );
     add_filter( 'set-screen-option', array($this, 'set_screen_option'), 10, 3);
     add_filter( 'set_screen_option_fv_player_per_page', array($this, 'set_screen_option'), 10, 3);
+
+    add_filter( 'manage_toplevel_page_fv_player_columns', array( $this, 'screen_columns' ) );
+    add_filter( 'hidden_columns', array( $this, 'screen_columns_hidden' ), 10, 3 );
   }
 
   function set_screen_option($status, $option, $value) {
@@ -46,7 +47,7 @@ class FV_Player_List_Table_View {
   }
 
   function screen_columns_hidden( $hidden, $screen, $use_defaults ) {
-    if( $use_defaults && $screen->id == $this->list_page) {
+    if ( $use_defaults && 'toplevel_page_fv_player' === $screen->id ) {
       $hidden = array( 'subtitles_count', 'chapters_count', 'transcript_count', 'author' );
     }
     return $hidden;

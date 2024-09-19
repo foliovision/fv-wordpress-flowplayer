@@ -148,7 +148,7 @@ jQuery(function() {
     }
 
     function check_for_player_meta_field(fieldName) {
-      return [].indexOf(fieldName) > -1;
+      return get_field_conf( fieldName ).store == 'player_meta';
     }
 
     function check_for_video_meta_field(fieldName) {
@@ -3546,6 +3546,10 @@ Please also contact FV Player support with the following debug information:\n\n\
       return button.id.indexOf('widget-widget_fvplayer') > -1;
     }
 
+    function is_live_stream( video ) {
+      return !! ( video.src && video.src.match( /\.m3u8|live/ ) );
+    }
+
     /*
     Sets lightbox class once it opens
     */
@@ -4698,20 +4702,31 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       // get live from video object
       var live_field = get_field('live', true),
-        live_value = get_current_video_object() ? get_current_video_object().live : false;
+        live_value   = get_current_video_object() ? get_current_video_object().live : false,
+        error        = get_playlist_video_meta_value( 'error', index ),
+        // Show the stream settings if it's not found and it's HLS stream
+        // as it often returns 404 error if it's not live at the moment
+        stream_fields_visible = !! ( error && is_live_stream( get_current_video_object() ) );
 
       live_field.prop('checked', !!live_value);
-      live_field.closest('.fv_player_interface_hide').toggle(!!live_value);
+      live_field.closest('.fv_player_interface_hide').toggle( !!live_value || stream_fields_visible );
 
       checkbox_toggle_worker( jQuery(live_field).parent('.components-form-toggle'), 'live', !!live_value );
 
       jQuery.each( [ 'audio', 'dvr' ], function(k,v) {
 
         var field = get_field(v, true),
-          meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false;
+          meta = get_current_player_object() ? get_playlist_video_meta_value( v, index ) : false,
+          force_visible = stream_fields_visible,
+          is_hls = get_current_video_object().src && get_current_video_object().src.match( /\.m3u8/ );
+
+        // Show Audio track checkbox if we have HLS with unknown dimensions
+        if ( 'audio' === v && is_hls && get_current_video_object().width == 0 && get_current_video_object().height == 0 ) {
+          force_visible = true;
+        }
 
         field.prop('checked', !!meta);
-        field.closest('.fv_player_interface_hide').toggle(!!meta);
+        field.closest('.fv_player_interface_hide').toggle( !!meta || force_visible );
 
         checkbox_toggle_worker( jQuery(field).parent('.components-form-toggle'), v, !!meta );
       });
@@ -4743,6 +4758,11 @@ Please also contact FV Player support with the following debug information:\n\n\
       if( error ) {
         video_info.append( '<li class="error">' + error  + '</li>' );
         show = true;
+
+        if ( is_live_stream( video ) ) {
+          video_info.append( '<li>FV Player was not able to determine the stream type, please check what applies below.</li>' );
+          video_info.append( '<li>This error is normal for some of the HLS live streams if they are not currently streaming.</li>' );
+        }
       }
 
       if( show ) {

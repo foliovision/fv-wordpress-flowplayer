@@ -75,6 +75,9 @@ class FV_Player_S3_Upload {
     $filename = $this->sanitize_path($_POST['fileInfo']['name']);
     $filename = $this->remove_special_chars($filename);
 
+    $filename = remove_accents( $filename );
+    $filename = str_replace('Ę', 'E', $filename);
+
     $target = dirname($filename);
 
     if( $target === '.' ) {

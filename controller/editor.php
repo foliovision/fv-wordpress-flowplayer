@@ -794,6 +794,7 @@ function fv_player_editor_video_fields() {
             array(
               'label' => __( 'DVR Stream', 'fv-player' ),
               'name' => 'dvr',
+              'video_meta'  => true,
               'visible' => true
             ),
           ),
@@ -801,6 +802,7 @@ function fv_player_editor_video_fields() {
         array(
           'label' => __( 'Audio Stream', 'fv-player' ),
           'name' => 'audio',
+          'video_meta' => true,
         ),
         array(
           'label' => __( 'Advanced Settings', 'fv-player' ),
