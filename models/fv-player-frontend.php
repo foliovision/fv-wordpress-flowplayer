@@ -122,6 +122,10 @@ class flowplayer_frontend extends flowplayer
     }
     $this->aCurArgs = apply_filters( 'fv_flowplayer_args_pre', $args );
 
+    if ( -1 !== $this->get_current_video_to_edit() ) {
+      $this->hash .= '-edit-' . $this->get_current_video_to_edit();
+    }
+
     /**
      * Restore certain shortcode arguments if provided as they should override the DB value,
      * or any value provided via fv_flowplayer_args_pre filter.
