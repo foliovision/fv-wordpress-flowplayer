@@ -10,6 +10,11 @@ if (!Date.now) {
 }
 
 (function($) {
+  if( typeof fv_player_editor_conf != 'undefined') {
+    fv_player_log('FV Player: Editor detected, disabling "Remember video position"');
+    return;
+  }
+
   var
     // number of events to pass before we auto-send current video positions
     sendPositionsEvery = 60,

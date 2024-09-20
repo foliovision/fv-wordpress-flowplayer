@@ -28,23 +28,23 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   } catch(e) {}
 
   if( !flowplayer.support.android && flowplayer.conf.dacast_hlsjs ) {
-    function FVAbrController(hls) {      
+    function FVAbrController(hls) {
       this.hls = hls;
       this.nextAutoLevel = 3;
     }
-    
+
     FVAbrController.prototype.nextAutoLevel = function(nextLevel) {
       this.nextAutoLevel = nextLevel;
     }
-    
+
     FVAbrController.prototype.destroy = function() {}
-    
-    flowplayer.conf.hlsjs = {      
+
+    flowplayer.conf.hlsjs = {
       startLevel: -1, // todo: doesn't seem to work, fix it to pick quality matching the player size
       abrController: FVAbrController
     }
   }
-  
+
   // iOS version is not parsed for Chrome on iOS, so let's fix it here
   function parseIOSVersion(UA) {
     var e = /iP(ad|hone)(; CPU)? OS (\d+_\d)/.exec(UA);
@@ -57,7 +57,7 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   if( flowplayer.support.iOS && flowplayer.support.iOS.chrome && flowplayer.support.iOS.version == 0 ) {
     flowplayer.support.iOS.version = parseIOSVersion(navigator.userAgent);
   }
-  
+
   // iOS 13 and desktop Safari above version 8 support MSE, so let's use HLS.js there
   if(
     flowplayer.support.iOS && parseInt(flowplayer.support.iOS.version) >= 13 ||
@@ -65,19 +65,19 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   ) {
     flowplayer.conf.hlsjs.safari = true;
   }
-  
+
   flowplayer.support.fvmobile = !!( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android );
-  
+
   var fls = flowplayer.support;
   if( flowplayer.conf.mobile_native_fullscreen && ( 'ontouchstart' in window ) && fls.fvmobile ) {
     flowplayer.conf.native_fullscreen = true;
   }
-  
-  if( 'ontouchstart' in window ) {    
+
+  if( 'ontouchstart' in window ) {
     if( fls.android && fls.android.version < 4.4 && ! ( fls.browser.chrome && fls.browser.version > 54 ) ) {
       flowplayer.conf.native_fullscreen = true;
     }
-    
+
     if( fls.iOS && ( fv_player_in_iframe() || fls.iOS.version < 7 ) ) {
       flowplayer.conf.native_fullscreen = true;
     }
@@ -118,11 +118,11 @@ function fv_player_videos_parse(args, root) {
   }
 
   var regex = new RegExp("[\\?&]fv_flowplayer_mobile=([^&#]*)");
-	var results = regex.exec(location.search);	
+	var results = regex.exec(location.search);
 	if(
 		(
 			(results != null && results[1] == 'yes') ||
-			(jQuery(window).width() <= 480 || jQuery(window).height() <= 480) //  todo: improve for Android with 1.5 pixel ratio 
+			(jQuery(window).width() <= 480 || jQuery(window).height() <= 480) //  todo: improve for Android with 1.5 pixel ratio
 		)
 		&&
 		(results == null || results[1] != 'no')
@@ -170,7 +170,7 @@ jQuery(document).ready( function() {
       window.fv_player_user_playlists && !window.fv_player_user_playlists.is_loaded ||
       // if using FV Player JS Loader wait until all scripts have finished loading
       window.FV_Player_JS_Loader_scripts_total && window.FV_Player_JS_Loader_scripts_loaded < window.FV_Player_JS_Loader_scripts_total
-    ) ) {      
+    ) ) {
       return;
     }
     clearInterval(loading);
@@ -191,7 +191,7 @@ function fv_escape_attr(text) {
 }
 
 function fv_player_preload() {
- 
+
   if( flowplayer.support.touch ) {
     jQuery('.fp-playlist-external.fp-playlist-horizontal.fv-playlist-design-2017').addClass('visible-captions');
     jQuery('.fp-playlist-external.fp-playlist-vertical.fv-playlist-design-2017').addClass('visible-captions');
@@ -212,7 +212,7 @@ function fv_player_preload() {
       root.find('.fp-controls').on('click', function(e) {
         if( !api.loading && !api.ready ) {
           e.preventDefault();
-          e.stopPropagation(); 
+          e.stopPropagation();
           api.load();
         }
       });
@@ -222,13 +222,13 @@ function fv_player_preload() {
     if( root.data('volume') == 0 && root.hasClass('no-controlbar') ) {
       root.find('.fp-volume').remove();
     }
-    
+
     // failsafe is Flowplayer is loaded outside of fv_player_load()
     var playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']'),
       parsed;
 
     if( ( !api.conf.playlist || api.conf.playlist.length == 0 ) && playlist.length && playlist.find('a[data-item]').length > 0 ) {  // api.conf.playlist.length necessary for iOS 9 in some setups
-      var items = [];      
+      var items = [];
       playlist.find('a[data-item]').each( function() {
         if( parsed = fv_player_videos_parse(jQuery(this).attr('data-item'), root) ) {
           items.push(parsed);
@@ -241,7 +241,7 @@ function fv_player_preload() {
     } else if( !api.conf.clip ){
       api.conf.clip = fv_player_videos_parse(jQuery(root).attr('data-item'), root);
     }
-    
+
     //  playlist item click action
     jQuery('a',playlist).on('click', function(e) {
 
@@ -260,7 +260,7 @@ function fv_player_preload() {
       if( $this.closest('.fv-playlist-draggable.is-dragging').length ) {
         return false;
       }
-      
+
       // Open editing for the playlist item which was clicked
       // TODO: There should be a better way of sending a signal to the editor!
       if( location.href.match(/wp-admin/) && $this.parents('.fv-player-editor-preview').length > 0 ) {
@@ -275,11 +275,11 @@ function fv_player_preload() {
       }
 
       if( jQuery( '#' + $this.parent().attr('rel') ).hasClass('dynamic-playlist') ) return;
-      
+
       playlist = jQuery('.fp-playlist-external[rel='+root.attr('id')+']');
-      
+
       fv_player_playlist_active(playlist,this);
-      
+
       if( api ) {
         if( api.error ) {
           api.pause();
@@ -287,7 +287,7 @@ function fv_player_preload() {
           root.removeClass('is-error');
           root.find('.fp-message.fp-shown').remove();
         }
-        
+
         if( !api.video || api.video.index == index ) return;
         api.play( index );
       }
@@ -296,7 +296,7 @@ function fv_player_preload() {
       if( !new_splash ) {
         new_splash = $this.find('img').attr('src');
       }
-      
+
       player_splash(root, fp_player, item, new_splash);
 
       var rect = root[0].getBoundingClientRect();
@@ -306,7 +306,7 @@ function fv_player_preload() {
         }, 300);
       }
     } );
-    
+
     var playlist_external = jQuery('[rel='+root.attr('id')+']');
     var playlist_progress = false;
 
@@ -315,7 +315,7 @@ function fv_player_preload() {
 
     function player_splash(root, fp_player, item, new_splash) {
       var splash_img = root.find('img.fp-splash');
-    
+
       // do we have splash to show?
       if( new_splash ) {
         // if the splash element missing? Create it!
@@ -323,13 +323,13 @@ function fv_player_preload() {
           splash_img = jQuery('<img class="fp-splash" />');
           fp_player.prepend(splash_img)
         }
-    
+
         splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
         splash_img.attr('src', new_splash );
-    
+
       // remove the splash image if there is nothing present for the item
       } else if( splash_img.length ) {
-        splash_img.remove(); 
+        splash_img.remove();
       }
     }
 
@@ -394,19 +394,19 @@ function fv_player_preload() {
 
       playlist_progress = false;
     });
-    
+
     api.bind( 'progress', function( e, api, time ) {
-      if( playlist_progress.length ) {
+      if( playlist_progress.length && api.playlist_thumbnail_progress ) {
         api.playlist_thumbnail_progress( playlist_progress, api.video, time );
       }
     });
-    
+
     api.bind( 'error-subtitles', function() {console.log('error-subtitles');
       fv_player_notice(root,fv_flowplayer_translations[8],2000);
     });
 
-    //is this needed?  
-    playlist = jQuery(root).parent().find('div.fp-playlist-vertical[rel='+jQuery(root).attr('id')+']');  
+    //is this needed?
+    playlist = jQuery(root).parent().find('div.fp-playlist-vertical[rel='+jQuery(root).attr('id')+']');
     if( playlist.length ){
       function check_size_and_all() {
         var property = playlist.hasClass('fp-playlist-only-captions') ? 'height' : 'max-height';
@@ -421,13 +421,13 @@ function fv_player_preload() {
         setTimeout( check_size_and_all, 0 );
       } );
     }
-    
+
     function vertical_playlist_height() {
       var height = root.height();
       if( height == 0 ) height = root.css('max-height');
       return height;
     }
-    
+
     api.show_status = function( type ) {
       var status = '';
       [ 'loading', 'ready', 'playing', 'paused', 'seeking' ].every( function(v,k) {
@@ -450,7 +450,7 @@ function fv_player_preload() {
         document.dispatchEvent(event);
       }, 100 );
     }
-    
+
     // It's good if the player element can tell others that the FV Player has loaded in it
     setTimeout( function() {
       root.trigger('fv_player_loaded');
@@ -473,13 +473,13 @@ function fv_player_preload() {
       });
     }
   });
-  
-  //sets height for embedded players 
+
+  //sets height for embedded players
   if( window.self != window.top && !location.href.match(/fv_player_preview/) ){
     embed_size();
     jQuery(window.self).resize(embed_size);
   }
-  
+
   function embed_size() {
     jQuery('.flowplayer.fp-is-embed').each( function() {
       var root = jQuery(this);
@@ -488,7 +488,7 @@ function fv_player_preload() {
       }
     });
   }
-  
+
   //  Playlist - old style
   if( typeof(fv_flowplayer_playlists) != "undefined" ) {
     for( var i in fv_flowplayer_playlists ) {
@@ -496,14 +496,14 @@ function fv_player_preload() {
       jQuery('#'+i).flowplayer( { playlist: fv_flowplayer_playlists[i] });
     }
   }
-  
+
   fv_player_load();
   fv_video_link_autoplay();
-  
+
   jQuery(document).ajaxComplete( function() {
     fv_player_load();
   });
-  
+
   jQuery(window).on('hashchange',fv_video_link_autoplay);
 }
 
@@ -544,10 +544,10 @@ function fv_player_load( forced_el ) {
     var conf = false, playlist, parsed;
     if( root.attr('data-item') ) {
       conf = { clip: fv_player_videos_parse(root.attr('data-item'), root) };
-      
+
     } else if( playlist = jQuery( '[rel='+root.attr('id')+']' ) ) {
       if ( playlist.find('a[data-item]').length == 0 ) return;  //  respect old playlist script setup
-      
+
       var items = [];
       playlist.find('a[data-item]').each( function() {
         if( parsed = fv_player_videos_parse(jQuery(this).attr('data-item'), root) ) {
@@ -559,7 +559,7 @@ function fv_player_load( forced_el ) {
 
       conf = { playlist: items };
     }
-    
+
     if( conf ) {
       // without this none of the root element data attributes would be processed
       conf = flowplayer.extend(conf, root.data());
@@ -568,7 +568,7 @@ function fv_player_load( forced_el ) {
       root.data('flowplayer',forced_api);
     }
   } );
-  
+
   jQuery('.fv-playlist-slider-wrapper').each( function() {
     var items = jQuery(this).find('a:visible');
     if ( 0 === items.length ) {
@@ -580,7 +580,7 @@ function fv_player_load( forced_el ) {
       jQuery(this).find('.fp-playlist-external').attr( 'style', 'width: ' + width + 'px; max-width: ' + width + 'px !important' );
     }
   });
-  
+
   if( typeof(jQuery().tabs) != "undefined" ) {
     jQuery('body').removeClass('fv_flowplayer_tabs_hide');
     jQuery('.fv_flowplayer_tabs_content').tabs();
@@ -588,7 +588,7 @@ function fv_player_load( forced_el ) {
 
   if( forced_el && forced_api ) {
     return forced_api;
-  }  
+  }
 
 }
 
@@ -598,22 +598,22 @@ function fv_player_playlist_active(playlist,item) {
     jQuery('a',playlist).removeClass('is-active');
     jQuery('.now-playing').remove();
   }
-  
+
   var $playlist = jQuery(playlist),
   $item = jQuery(item);
 
   var scroll_parent = false;
-  
+
   $item.addClass('is-active');
   var is_design_2014 = $playlist.hasClass('fv-playlist-design-2014');
   if( ( is_design_2014 && $item.find('h4').length == 0 || !is_design_2014 ) && $item.find('.now-playing').length == 0 ) $item.prepend('<strong class="now-playing"><span>'+fv_flowplayer_translations.playlist_current+'</span></strong>');
-  
+
   // adjust playlist to the encompassing DIV, if the actual playlist element itself is wrapped inside
   // another element to enable CSS scrolling
   if (!$playlist.parent().find('.flowplayer').length) {
     scroll_parent = true;
   }
-  
+
   // scroll to the currently playing video if playlist type is vertical or horizontal
   if ( (
         $playlist.hasClass('fp-playlist-vertical') ||
@@ -623,7 +623,7 @@ function fv_player_playlist_active(playlist,item) {
     $el.animate({
       scrollTop: $el.scrollTop() + ($item.position().top - $el.position().top)
     }, 750);
-  
+
     //$playlist.scrollTop($playlist.scrollTop() + ($item.position().top - $playlist.position().top));
   } else if ($playlist.hasClass('fp-playlist-horizontal') && !fullyVisibleX($item.get(0))) {
     var $el = (scroll_parent ? $playlist.parent() : $playlist);
@@ -631,7 +631,7 @@ function fv_player_playlist_active(playlist,item) {
       scrollLeft: $el.scrollLeft() + ($item.position().left - $el.position().left)
     }, 750);
   }
-  
+
   function fullyVisibleY(el) {
     var rect = el.getBoundingClientRect(), top = rect.top, height = rect.height,
       bottom = (top + height), el = el.parentNode;
@@ -644,7 +644,7 @@ function fv_player_playlist_active(playlist,item) {
     // Check its within the document viewport
     return bottom <= document.documentElement.clientHeight;
   }
-  
+
   function fullyVisibleX(el) {
     var rect = el.getBoundingClientRect(), left = rect.left, width = rect.width,
       right = (left + width), el = el.parentNode;
@@ -656,7 +656,7 @@ function fv_player_playlist_active(playlist,item) {
     } while (el != document.body);
     // Check its within the document viewport
     return right <= document.documentElement.clientWidth;
-  }  
+  }
 }
 
 
@@ -671,7 +671,7 @@ function fv_parse_sharelink(src){
   src = src.replace('https?://[^./].','')
   var prefix = 'fvp_';
   if(src.match(/(youtube.com)/)){
-    return prefix + src.match(/(?:v=)([A-Za-z0-9_-]*)/)[1]; 
+    return prefix + src.match(/(?:v=)([A-Za-z0-9_-]*)/)[1];
   }else if(src.match(/(vimeo.com)|(youtu.be)/)){
     return prefix + src.match(/(?:\/)([^/]*$)/)[1];
   }else{
@@ -695,7 +695,7 @@ function fv_player_get_video_link_hash(api) {
 
 /**
  * Converts seconds to hms format, example : 12h15m05s, 5m13s
- * 
+ *
  * @param {string|number} seconds input seconds parameter
  *
  * @returns {string} Returns formatted string
@@ -705,7 +705,7 @@ function fv_player_time_hms(seconds) {
   if(isNaN(seconds)){
     return NaN;
   }
-  
+
   // calculate h, m, s
   var sec_num = parseInt(seconds, 10)
   var hours   = Math.floor(sec_num / 3600)
@@ -713,7 +713,7 @@ function fv_player_time_hms(seconds) {
   var seconds = sec_num % 60
 
   if (hours) {
-    hours += "h"; 
+    hours += "h";
   } else {
     hours = "";
   }
@@ -741,9 +741,9 @@ function fv_player_time_hms(seconds) {
 
 /**
  * Uses fv_player_time_hms and adds milliseconds
- * 
+ *
  * @param {number|string} seconds
- * 
+ *
  * @returns {string} Returns formatted string
  */
 function fv_player_time_hms_ms(seconds) {
@@ -770,10 +770,10 @@ function fv_player_time_hms_ms(seconds) {
 
 /**
  * Converts hms format to seconds
- * 
- * @param {string|bool} time 
- * @param {number|string} duration 
- * 
+ *
+ * @param {string|bool} time
+ * @param {number|string} duration
+ *
  * @returns {number} Returns -1 if the time was false
  */
 
@@ -797,7 +797,7 @@ function fv_player_time_seconds(time, duration) {
       }
     }
   });
-  
+
   return duration ? Math.min(seconds, duration) : seconds;
 }
 
@@ -809,10 +809,10 @@ function fv_player_time_seconds(time, duration) {
  * @param {string|bool}       time  Desired play position in hh:mm:ss
  *                                  format or number of seconds.
  *                                  Or false when no start time specified.
- * @param {number}            abStart Optional - end of FV Player Pro AB 
+ * @param {number}            abStart Optional - end of FV Player Pro AB
  *                                  loop. If it's present we trigger
  *                                  the loop-ab event for FV Player Pro
- * @param {number}            abEnd Optional - end of FV Player Pro AB 
+ * @param {number}            abEnd Optional - end of FV Player Pro AB
  *                                  loop.
  */
 function fv_autoplay_init(root, index, time, abStart, abEnd){
@@ -863,7 +863,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
           fv_player_video_link_seek( api, fTime, abEnd, abStart );
         } );
       });
-      
+
       root.find('.fp-splash').attr('src', jQuery('[rel='+root.attr('id')+'] div').eq(index).find('img').attr('src')); // select splachscreen from playlist items by id
 
       if( !fv_player_in_iframe() ) {
@@ -873,7 +873,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
   } else {
     if( api.ready ) {
       fv_player_video_link_seek( api, fTime, abEnd, abStart );
-      
+
     } else {
       if( fv_player_video_link_autoplay_can(api) ) {
         api.load();
@@ -885,7 +885,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
       } );
     }
   }
-  
+
 }
 
 function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
@@ -893,7 +893,7 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
 
   var do_seek = setInterval( function() {
     if ( api.loading ) return;
-    
+
     // prevent seeking to 0s (causing glitch)
     // unless the video position is > 0
     if ( fTime > 0 || api.video.time > 0 ) {
@@ -902,7 +902,7 @@ function fv_player_video_link_seek( api, fTime, abEnd, abStart ) {
         api.custom_seek(fTime);
       } else {
         api.seek(fTime);
-      } 
+      }
     }
 
     if ( abEnd && abStart) api.trigger('link-ab', [api, abStart, abEnd]);
@@ -932,7 +932,7 @@ function fv_video_link_autoplay(){
       }
       var api = root.data('flowplayer');
       if(!api) return;
-      
+
       var playlist = typeof(api.conf.playlist) !== 'undefined' && api.conf.playlist.length > 1 ? api.conf.playlist : [ api.conf.clip ];
 
       // first play if id is set
@@ -942,8 +942,8 @@ function fv_video_link_autoplay(){
         var id = (typeof(playlist[item].id) !== 'undefined') ? fv_parse_sharelink(playlist[item].id.toString()) : false;
         if( hash === id && autoplay ) {
           if( api.conf.playlist.length > 0 ) api.conf.playlist[item].prevent_position_restore = true;
-          else api.conf.clip.prevent_position_restore = true; 
-          
+          else api.conf.clip.prevent_position_restore = true;
+
           console.log('fv_autoplay_exec for '+id,item);
 
           fv_autoplay_init(root, parseInt(item), time, abStart, abEnd);
@@ -959,7 +959,7 @@ function fv_video_link_autoplay(){
         var src = fv_parse_sharelink(playlist[item].sources[0].src);
         if( hash === src  && autoplay ) {
           if( api.conf.playlist.length > 0 ) api.conf.playlist[item].prevent_position_restore = true;
-          else api.conf.clip.prevent_position_restore = true; 
+          else api.conf.clip.prevent_position_restore = true;
 
           console.log('fv_autoplay_exec for '+src,item);
 
@@ -973,11 +973,11 @@ function fv_video_link_autoplay(){
   }
 }
 
-function fv_player_video_link_autoplay_can( api, item ) {  
+function fv_player_video_link_autoplay_can( api, item ) {
   var video = item ? api.conf.playlist[item] : api.conf.clip;
-  
+
   if( video.sources[0].type == 'video/youtube' && ( flowplayer.support.iOS || flowplayer.support.android ) || fv_player_in_iframe() ) return false;
-  
+
   return flowplayer.support.firstframe;
 }
 
@@ -990,11 +990,11 @@ function fv_player_video_link_autoplay_can( api, item ) {
 function fv_player_notice(root, message, timeout) {
   var notices = jQuery('.fvfp-notices',root);
   if( !notices.length ) {
-    notices = jQuery('<div class="fvfp-notices">');    
+    notices = jQuery('<div class="fvfp-notices">');
     jQuery('.fp-player',root).append(notices);
   }
-  
-  var notice = jQuery('<div class="fvfp-notice-content">'+message+'</div></div>');  
+
+  var notice = jQuery('<div class="fvfp-notice-content">'+message+'</div></div>');
   notices.append(notice);
   if ( typeof(timeout) == 'string' ) {
     var player = jQuery(root).data('flowplayer');
@@ -1030,7 +1030,7 @@ var fv_player_clipboard = function(text, successCallback, errorCallback) {
     } else {
       if( typeof(errorCallback) != "undefined" ) errorCallback();
     }
-    
+
   } catch (e) {
     if( typeof(errorCallback) != "undefined" ) errorCallback(e);
   }
@@ -1091,5 +1091,5 @@ function fv_player_log( message, variable ) {
 
   if( fv_flowplayer_conf.debug && typeof(window.location.search) != "undefined" && window.location.search.match(/fvfp/) ) {
     jQuery('body').prepend(message+'<br />');
-  }    
+  }
 }

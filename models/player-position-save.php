@@ -370,6 +370,11 @@ class FV_Player_Position_Save {
   }
 
   public function set_last_positions( $aItem, $index, $aArgs ) {
+
+    if ( did_action( 'wp_ajax_fv_player_db_load' ) ) {
+      return $aItem;
+    }
+
     global $fv_fp;
     // we only use the first source to check for stored position,
     // since other sources would be alternatives (in quality, etc.)
@@ -545,6 +550,11 @@ class FV_Player_Position_Save {
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
+
+    if ( did_action( 'wp_ajax_fv_player_db_load' ) ) {
+      return $attributes;
+    }
+
     if( !empty($fv_fp->aCurArgs['saveposition']) ) {
       $attributes['data-save-position'] = $fv_fp->aCurArgs['saveposition'];
     }
