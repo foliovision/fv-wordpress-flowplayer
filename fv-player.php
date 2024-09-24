@@ -78,7 +78,7 @@ if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
 global $fv_wp_flowplayer_ver;
 
 $fv_wp_flowplayer_ver = '8.0.6';
-$fv_wp_flowplayer_core_ver = '8.0.1.beta';
+$fv_wp_flowplayer_core_ver = '8.0.5.1';
 
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
