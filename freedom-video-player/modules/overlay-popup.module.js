@@ -68,6 +68,10 @@ flowplayer(function (api,root) {
     if( popup_data ) {
       if( ( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) ) && root.find('.wpfp_custom_popup').length == 0 ) {
         root.addClass('is-popup-showing');
+
+        // Important for mobile at the end of the video, so that the constrol bar shows
+        root.addClass('is-mouseover');
+
         root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+popup_data.html+'</div>' );
       }
     }
