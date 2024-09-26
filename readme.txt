@@ -12,8 +12,6 @@ WordPress's most reliable, easy to use and feature-rich video player. Supports p
 
 == Description ==
 
-This is a beta version of FV Player 8. If you are a long time FV Player user we recommend you to keep using FV Player 7 for now: https://wordpress.org/plugins/fv-wordpress-flowplayer/
-
 FV Player is a free, easy-to-use, and complete solution for embedding MP4 or HLS videos into your posts or pages. With MP4 videos, FV Player offers 98% coverage even on mobile devices.
 
 Features:
