@@ -7,11 +7,11 @@ flowplayer(function (api,root) {
     current_overlay = false;
 
   if( root.data('end_popup_preview') ){
-    jQuery(document).ready( function() {      
+    jQuery(document).ready( function() {
       api.trigger('finish', [ api] );
     });
   }
-  
+
   function overlay_height_check() {
     var count = 0;
     var overlay_height_check = setInterval( function() {
@@ -23,7 +23,7 @@ flowplayer(function (api,root) {
       }
     }, 50 );
   }
-  
+
   function show_overlay() {
     var overlay_data = root.attr('data-overlay');
     if( typeof(overlay_data) !='undefined' && overlay_data.length ) {
@@ -50,7 +50,7 @@ flowplayer(function (api,root) {
     }
   }
 
-  function show_popup( event ) {
+  api.get_popup = function() {
     var popup_data = root.attr('data-popup');
     if( typeof(popup_data) !='undefined' && popup_data.length ) {
       try {
@@ -59,13 +59,20 @@ flowplayer(function (api,root) {
         return false;
       }
 
+      return popup_data;
+    }
+  }
+
+  function show_popup( event ) {
+    var popup_data = api.get_popup();
+    if( popup_data ) {
       if( ( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) ) && root.find('.wpfp_custom_popup').length == 0 ) {
         root.addClass('is-popup-showing');
         root.find('.fp-player').append( '<div id="'+player_id+'_custom_popup" class="wpfp_custom_popup">'+popup_data.html+'</div>' );
       }
     }
   }
-  
+
   api.bind("ready", function () {
     if (current_overlay.length == 1) {
       current_overlay.remove();
@@ -74,7 +81,7 @@ flowplayer(function (api,root) {
     if( !root.data('overlay_show_after') ) {
       show_overlay();
     }
-    
+
   }).bind('progress', function(e,api,current) {
     if (current > root.data('overlay_show_after') ){
       show_overlay();
@@ -96,10 +103,10 @@ flowplayer(function (api,root) {
 jQuery(document).on('click', '.fv_fp_close', function() {
   var current_overlay = jQuery(this).parents('.wpfp_custom_ad_content'),
     video = current_overlay.find('video');
-    
+
   current_overlay.fadeOut();
   if( video.length ) video[0].pause();
-  
+
   return false;
 } );
 
