@@ -33,6 +33,25 @@ if ( ! defined( 'ABSPATH' ) ) {
   return;
 }
 
+function fv_player_8_activate() {
+
+  // Deactivate FV Player 7
+  $active_plugins = get_option( 'active_plugins', array() );
+  $pattern = '/^fv-wordpress-flowplayer.*\/(flowplayer|fv-player)\.php$/';
+
+  foreach( $active_plugins as $key => $plugin ) {
+    if( preg_match($pattern, $plugin) ) {
+      if ( !function_exists('deactivate_plugins') ) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+      }
+
+      deactivate_plugins( $plugin );
+    }
+  }
+}
+
+register_activation_hook(__FILE__, 'fv_player_8_activate');
+
 function fv_player_7_deactivate_notice() {
   ?>
   <div class="notice notice-error is-dismissible">
@@ -41,7 +60,7 @@ function fv_player_7_deactivate_notice() {
   <?php
 }
 
-function fv_player__pro_7_deactivate_notice() {
+function fv_player__pro_7_deactivate_notice_with_version_check() {
 
   global $FV_Player_Pro;
   if( isset( $FV_Player_Pro ) && ! empty( $FV_Player_Pro->version ) ) {
@@ -51,16 +70,27 @@ function fv_player__pro_7_deactivate_notice() {
   }
 
   ?>
-  <div class="notice notice-error is-dismissible">
+  <div class="notice notice-error">
     <p><?php _e( 'FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension.', 'fv-player' ); ?></p>
   </div>
   <?php
 }
 
-if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
+global $fv_fp;
+
+if(
+  file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ||
+  file_exists( ABSPATH . PLUGINDIR . '/fv-player-pro' ) ||
+  ! empty( $fv_fp )
+) {
   $active_plugins = get_option( 'active_plugins', array() );
   foreach( $active_plugins as $key => $plugin ) {
-    if( stripos( $plugin, 'fv-wordpress-flowplayer/flowplayer.php' ) === 0 ) {
+    if (
+      stripos( $plugin, 'fv-wordpress-flowplayer' ) === 0 && (
+        stripos( $plugin, '/flowplayer.php' ) !== false ||
+        stripos( $plugin, '/fv-player.php' ) !== false
+      )
+    ) {
       add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
 
       // Do not load as PHP would get fatal error
@@ -68,7 +98,7 @@ if( file_exists( ABSPATH . PLUGINDIR . '/fv-wordpress-flowplayer' ) ) {
     }
 
     if( stripos( $plugin, 'fv-player-pro/' ) === 0 ) {
-      add_action( 'admin_notices', 'fv_player__pro_7_deactivate_notice' );
+      add_action( 'admin_notices', 'fv_player__pro_7_deactivate_notice_with_version_check' );
 
       // Continue loading as the videos are still working, at least in most cases
     }
