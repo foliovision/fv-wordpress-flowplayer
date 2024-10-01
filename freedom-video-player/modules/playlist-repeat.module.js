@@ -5,27 +5,27 @@ flowplayer( function(api,root) {
   if( !root.data('button-no_picture') && !root.data('button-repeat') && !root.data('button-rewind') ) return;
 
   api.bind('ready', function(e,api) {
-    
+
     // Backup original api.next() and api.prev()
     if( typeof original_next == 'undefined' && typeof original_prev == 'undefined' ) {
       original_next = api.next;
       original_prev = api.prev;
     }
 
-    if( !api.video.type.match(/^audio/) && root.data('button-no_picture') && root.find('.fv-fp-no-picture').length == 0 ) {
+    if( api.video && api.video.type && !api.video.type.match(/^audio/) && root.data('button-no_picture') && root.find('.fv-fp-no-picture').length == 0 ) {
 
       var button_no_picture = jQuery('<span class="fv-fp-no-picture"><svg viewBox="0 0 90 80" width="18px" height="18px" class="fvp-icon fvp-nopicture"><use xlink:href="#fvp-nopicture"></use></svg></span>');
-      
+
       button_no_picture.insertAfter( root.find('.fp-controls .fp-volume') ).on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         jQuery('.fp-engine',root).slideToggle(20);
         jQuery(this).toggleClass('is-active fp-color-fill');
         root.toggleClass('is-no-picture');
-      });    
+      });
     }
-    
+
     if( root.data('button-repeat') ) {
       if(
         (
@@ -48,9 +48,9 @@ flowplayer( function(api,root) {
               <a data-action="repeat_track"><svg viewBox="0 0 80.333 71" width="18px" height="18px" class="fvp-icon fvp-replay-track"><title>'+t.playlist_replay_video+'</title><use xlink:href="#fvp-replay-track"></use></svg> <span class="screen-reader-text">'+t.playlist_replay_video+'</span></a>\
               <a class="fp-selected" data-action="normal"><span id="fvp-playlist-play" title="'+t.playlist_play_all+'">'+t.playlist_play_all_button+'</span></a>\
               </div>').insertAfter( root.find('.fp-controls') );
-          
+
         api.conf.playlist_shuffle = api.conf.track_repeat = false;
-        
+
         random_seed = randomize();
 
         var should_advance = api.conf.advance;
@@ -77,12 +77,12 @@ flowplayer( function(api,root) {
             api.showMenu(playlist_menu[0]);
           }
         });
-        
+
         jQuery('a',playlist_menu).on('click', function() {
           jQuery(this).siblings('a').removeClass('fp-selected');
           jQuery(this).addClass('fp-selected');
           playlist_button.removeClass('mode-normal mode-repeat-track mode-repeat-playlist mode-shuffle-playlist');
-          
+
           var action = jQuery(this).data('action');
           if( action == 'repeat_playlist' ) {
             playlist_button.addClass('mode-repeat-playlist');
@@ -90,32 +90,32 @@ flowplayer( function(api,root) {
             api.conf.advance = true;
             api.video.loop = api.conf.track_repeat = false;
             api.conf.playlist_shuffle = false;
-          
+
           } else if( action == 'shuffle_playlist' ) {
             playlist_button.addClass('mode-shuffle-playlist');
             api.conf.loop = true;
             api.conf.advance = true;
-            api.conf.playlist_shuffle = true;          
-          
+            api.conf.playlist_shuffle = true;
+
           } else if( action == 'repeat_track' ) {
             playlist_button.addClass('mode-repeat-track');
             api.conf.track_repeat = api.video.loop = true;
             api.conf.loop = api.conf.playlist_shuffle = false;
             //api.conf.advance = !track_repeat && should_advance;
-          
+
           } else if( action == 'normal' ) {
             playlist_button.addClass('mode-normal');
             api.conf.track_repeat = api.video.loop = false;
             api.conf.loop = api.conf.playlist_shuffle = false;
-          
+
           }
-          
+
           if(api.conf.playlist_shuffle) {
             api.next = function() {
               api.play( random_seed.pop() );
               if( random_seed.length == 0 ) random_seed = randomize();
             };
-            
+
             api.prev = function() {
               api.play( random_seed.shift() );
               if( random_seed.length == 0 ) random_seed = randomize();
@@ -127,22 +127,22 @@ flowplayer( function(api,root) {
           }
 
         });
-        
+
         if( api.conf.loop ) {
           jQuery('a[data-action=repeat_playlist]', playlist_menu ).trigger('click');
         }
-        
+
         api.on('progress', function() {
-          api.video.loop = api.conf.track_repeat;        
+          api.video.loop = api.conf.track_repeat;
         });
-        
+
         api.on("finish.pl", function(e,api) {console.log('playlist_repeat',api.conf.loop,'advance',api.conf.advance,'video.loop',api.video.loop);
           if( api.conf.playlist_shuffle ) {
             api.play( random_seed.pop() );
             if( random_seed.length == 0 ) random_seed = randomize();
           }
         });
-        
+
       } else if( root.find('.fv-fp-track-repeat').length == 0 && (
         ! api.have_visible_playlist && api.conf.playlist.length == 0 ||
         ! api.have_visible_playlist() )
@@ -157,10 +157,10 @@ flowplayer( function(api,root) {
           } else {
             api.video.loop = true;
           }
-          
+
           jQuery(this).toggleClass('is-active fp-color-fill',api.video.loop);
         });
-        
+
         if( api.conf.loop ) {
           button_track_repeat.addClass('is-active fp-color-fill');
         }
@@ -174,15 +174,15 @@ flowplayer( function(api,root) {
 
       }
     }
-    
+
     if( root.data('button-rewind') && ! freedomplayer.support.touch ) {
       if( root.find('.fv-fp-rewind').length == 0 ) {
         var button_rewind = jQuery('<span class="fv-fp-rewind"><svg viewBox="0 0 24 24" width="21px" height="21px" class="fvp-icon fvp-rewind"><use xlink:href="#fvp-rewind"></use></svg></span>');
-        
+
         button_rewind.insertBefore( root.find('.fp-controls .fp-playbtn') ).on('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          
+
           api.seek(api.video.time-10);
         });
 
@@ -191,11 +191,11 @@ flowplayer( function(api,root) {
 
       if( root.find('.fv-fp-forward').length == 0 ) {
         var button_forward = jQuery('<span class="fv-fp-forward"><svg viewBox="0 0 24 24" width="21px" height="21px" class="fvp-icon fvp-forward"><use xlink:href="#fvp-forward"></use></svg></span>');
-        
+
         button_forward.insertAfter( root.find('.fp-controls .fp-playbtn') ).on('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          
+
           api.seek(api.video.time+10);
         });
 
@@ -220,12 +220,12 @@ flowplayer( function(api,root) {
     }
     return a;
   }
-  
+
   function randomize(random_seed) {
     random_seed = [];
     jQuery(api.conf.playlist).each( function(k,v) {
       random_seed.push(k);
-    });      
+    });
 
     random_seed = array_shuffle(random_seed);
     console.log('FV Player Randomizer random seed:',random_seed);
