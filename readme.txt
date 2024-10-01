@@ -359,6 +359,14 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.48.7212 - 2024-10-01 =
+
+* Security - FancyBox title stored XSS vulnerability fixed
+* Bugfix - PHP warnings
+* Bugfix - XML sitemap: Exclude Elementor templates
+* Bugfix - XML sitemap: Fix for URLs with &
+* Bugfix - YouTube: Facebook in-app browser fix
+
 = 7.5.47.7212 - 2024-07-18 =
 
 * Security - Bunny Stream - avoid authenticated user SQL injection
