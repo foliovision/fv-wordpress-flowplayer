@@ -66,7 +66,16 @@ flowplayer(function (api,root) {
   function show_popup( event ) {
     var popup_data = api.get_popup();
     if( popup_data ) {
-      if( ( event == 'finish' || popup_data.pause || popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/) ) && root.find('.wpfp_custom_popup').length == 0 ) {
+      if(
+        (
+          event == 'finish' ||
+          // Detect proper pause and not pause before finishing the video
+          popup_data.pause && api.ready && api.paused ||
+          // FV Player Pay Per View
+          popup_data.html.match(/fv-player-ppv-purchase-btn-wrapper/)
+        ) &&
+        root.find('.wpfp_custom_popup').length == 0
+      ) {
         root.addClass('is-popup-showing');
 
         // Important for mobile at the end of the video, so that the constrol bar shows
@@ -95,7 +104,12 @@ flowplayer(function (api,root) {
       show_popup(e.type);
     }
   }).bind("pause", function (e) {
-    show_popup(e.type); // todo: only if showing on pause is enabled or FV Player PPV
+
+    // Give it a bit of time so that we can check if the video is paused and not just finished
+    setTimeout( function() {
+      show_popup(e.type);
+    }, 5 );
+
   }).bind("resume unload seek", function () {
     if( root.hasClass('is-popup-showing') ) {
       root.find('.wpfp_custom_popup').remove();
