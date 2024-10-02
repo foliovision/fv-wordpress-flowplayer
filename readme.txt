@@ -257,6 +257,15 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.7 - 2024-10-02 =
+
+* Deactivate FV Player 7 during activation
+* Freedom Player: Fix timeline stuck in non-seekable state in rare cases
+* Bugfix: Editor: Fix preview of playlist single item in Gutenberg
+* Bugfix: Editor: Stop "Remember video position" in preview
+* Bugfix: Popups: Do not show on pause before video finish
+* Bugfix: Popups: Settings not saving
+
 = 8.0.6 - 2024-09-12 =
 
 * Editor: Show HLS stream options if HLS stream type detection fails. This often happens if a live stream is not yet live. Now you can safely mark it as a "Live stream" so when it goes live it will be presented properly.
