@@ -83,13 +83,17 @@ if(
   file_exists( ABSPATH . PLUGINDIR . '/fv-player-pro' ) ||
   ! empty( $fv_fp )
 ) {
+  $self = trim( str_replace( WP_PLUGIN_DIR, '', __FILE__ ), '/' );
+
   $active_plugins = get_option( 'active_plugins', array() );
   foreach( $active_plugins as $key => $plugin ) {
     if (
       stripos( $plugin, 'fv-wordpress-flowplayer' ) === 0 && (
         stripos( $plugin, '/flowplayer.php' ) !== false ||
         stripos( $plugin, '/fv-player.php' ) !== false
-      )
+      ) &&
+      // FV Player 8 might be running in the old folder name as well is it the actual plugin running here?
+      'fv-wordpress-flowplayer/fv-player.php' !== $self
     ) {
       add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
 
