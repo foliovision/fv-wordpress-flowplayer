@@ -2473,4 +2473,21 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     return $this->stopwords;
   }
 
+  /**
+   * Sanitizes the value for DB class attributes.
+   * 
+   * TODO: We got a report of PHP warning where the $value was an object in FV_Player_Db_Player_Meta.
+   * How could that happen and should be sanitize objects and arrays recursively?
+   * 
+   * @param mixed $value
+   * @return mixed
+   */
+  public static function sanitize( $value ) {
+    if ( is_string( $value ) ) {
+      return stripslashes( $value );
+    } else {
+      return $value;
+    }
+  }
+
 }

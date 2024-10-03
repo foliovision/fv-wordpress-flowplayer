@@ -633,14 +633,11 @@ CREATE TABLE " . self::$db_table_name . " (
             if( $key != 'ad' ) {
               $value = wp_strip_all_tags($value);
             }
-
-            $value = stripslashes( $value );
           }
-
-          $this->$key = $value;
+          $this->$key = FV_Player_Db::sanitize( $value );
 
         } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
-          $this->$key = stripslashes($value);
+          $this->$key = FV_Player_Db::sanitize( $value );
 
         }
       }
@@ -743,7 +740,7 @@ CREATE TABLE " . self::$db_table_name . " (
         foreach ($cached_player->getAllDataValues() as $key => $value) {
           if( is_array($value) ) continue; // problem with video_objects when exporting
 
-          $this->$key = $value === null ? $value : stripslashes($value);
+          $this->$key = FV_Player_Db::sanitize( $value );
         }
 
         // add meta data

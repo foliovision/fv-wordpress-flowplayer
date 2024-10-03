@@ -1,5 +1,5 @@
 <?php
-/*  FV Player - HTML5 video player    
+/*  FV Player - HTML5 video player
     Copyright (C) 2013  Foliovision
 
     This program is free software: you can redistribute it and/or modify
@@ -184,7 +184,7 @@ CREATE TABLE " . self::$db_table_name . " (
       foreach ($options as $key => $value) {
         if (property_exists($this, $key)) {
           if ($key !== 'id') {
-            $this->$key = $value;
+            $this->$key = FV_Player_Db::sanitize( $value );
           }
         } else {
           // generate warning
@@ -346,7 +346,7 @@ CREATE TABLE " . self::$db_table_name . " (
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $meta_data as $key => $value ) {
-            $this->$key = $value;
+            $this->$key = FV_Player_Db::sanitize( $value );
           }
 
           // cache this meta in DB object
@@ -361,7 +361,7 @@ CREATE TABLE " . self::$db_table_name . " (
             if (!$first_done) {
               // fill-in our internal variables
               foreach ( $db_record as $key => $value ) {
-                $this->$key = $value;
+                $this->$key = FV_Player_Db::sanitize( $value );
               }
 
               $first_done = true;
@@ -411,7 +411,7 @@ CREATE TABLE " . self::$db_table_name . " (
         // $cached_meta will remain numeric if there are no meta data in the database
         if ($cached_meta instanceof FV_Player_Db_Video_Meta) {
           foreach ( $cached_meta->getAllDataValues() as $key => $value ) {
-            $this->$key = $value;
+            $this->$key = FV_Player_Db::sanitize( $value );
           }
         }
       } else {
