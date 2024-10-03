@@ -271,7 +271,7 @@ CREATE TABLE " . self::$db_table_name . " (
           if ($key !== 'id') {
             if( !is_string($value) ) $value = '';
 
-            $this->$key = strip_tags( stripslashes($value) );
+            $this->$key = strip_tags( FV_Player_Db::sanitize( $value ) );
           } else {
             // ID cannot be set, as it's automatically assigned to all new videos
             trigger_error('ID of a newly created DB video was provided but will be generated automatically.');
@@ -336,7 +336,7 @@ CREATE TABLE " . self::$db_table_name . " (
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $video_data as $key => $value ) {
-            $this->$key = stripslashes($value);
+            $this->$key = FV_Player_Db::sanitize( $value );
           }
 
           // cache this video in DB object
@@ -351,7 +351,7 @@ CREATE TABLE " . self::$db_table_name . " (
             if (!$first_done) {
               // fill-in our internal variables
               foreach ( $db_record as $key => $value ) {
-                $this->$key = stripslashes($value);
+                $this->$key = FV_Player_Db::sanitize( $value );
               }
 
               $first_done = true;
@@ -389,7 +389,7 @@ CREATE TABLE " . self::$db_table_name . " (
 
         if ( $cached_video ) {
           foreach ($cached_video->getAllDataValues() as $key => $value) {
-            $this->$key = stripslashes($value);
+            $this->$key = FV_Player_Db::sanitize( $value );
           }
 
           // add meta data
@@ -486,7 +486,7 @@ CREATE TABLE " . self::$db_table_name . " (
       // load up all values for this video
       foreach ($row as $key => $value) {
         if (property_exists($this, $key)) {
-          $this->$key = stripslashes($value);
+          $this->$key = FV_Player_Db::sanitize( $value );
         }
       }
 
@@ -627,7 +627,7 @@ CREATE TABLE " . self::$db_table_name . " (
     
     return false;
   }
-  
+
   /**
    * Lets you alter any of the video properties and then call save()
    *
@@ -635,7 +635,7 @@ CREATE TABLE " . self::$db_table_name . " (
    * @param string $value     The meta value     
    */
   public function set( $key, $value ) {
-    $this->$key = stripslashes($value);
+    $this->$key = FV_Player_Db::sanitize( $value );
   }
 
   /**
