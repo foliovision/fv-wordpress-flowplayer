@@ -604,6 +604,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['chromecast'] ) ) $conf['chromecast'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
+    if( !isset( $conf['logo_over_video'] ) ) $conf['logo_over_video'] = 'true';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
     if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
     if( !isset( $conf['disablesharing'] ) ) $conf['disablesharing'] = 'false';
@@ -669,6 +670,19 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if (!isset($conf['skin-youtuby'])) $conf['skin-youtuby'] = array();
 
     if ( ! isset( $conf['youtube_browser_chrome'] ) ) $conf['youtube_browser_chrome'] = 'standard';
+
+    // Avoiding negavite checkboxes, like "Disable Embed Button"
+    foreach( array(
+      'disableembedding' => 'ui_embed',
+      'disablesharing' => 'ui_sharing',
+      'disable_video_hash_links' => 'ui_video_links'
+    ) as $old_key => $new_key ) {
+      if ( ! isset( $conf[ $new_key ] ) ) {
+        if ( ! empty( $conf[ $old_key ] ) && 'false' === $conf[ $old_key ] ) {
+          $conf[ $new_key ] = 'true';
+        }
+      }
+    }
 
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
@@ -809,6 +823,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'linode_object_storage',
             'liststyle',
             'logo',
+            'logo_over_video',
             'logoPosition',
             'mailchimp_api',
             'mailchimp_label',
@@ -861,11 +876,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'subtitleFontFace',
             'subtitleOn',
             'subtitleSize',
+            'ui_embed',
             'ui_no_picture_button',
             'ui_repeat_button',
             'ui_rewind_button',
+            'ui_sharing',
             'ui_speed',
             'ui_speed_increment',
+            'ui_video_links',
             'user_playlist', // FV Player Bookmarks extension
             'version',
             'video_position_save_enable',

@@ -76,8 +76,11 @@ a.red-button {
 
 #wpfp_options table { width: 100% }
 #wpfp_options table td.first { width: 250px }
+#skin-tab-logo table td.first { width: 90px }
+#skin-tab-controls table td.first { width: 105px }
 #wpfp_options #fv_flowplayer_integrations table tr > td:first-child { padding-top: 4px; vertical-align: top; }
-#wpfp_options table.flowplayer-settings { width: 29%; }
+#fv_flowplayer_admin_skin_tabs, .skin-tab-content { width: 29%; }
+#fv_flowplayer_admin_skin_tabs h2 { display: inline-block }
 
 div.clear { clear: both }
 div.column { float: left; width: 49% }
@@ -87,9 +90,9 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .meta-box-sortables input[type=text] { width: 100%; }
 #wpfp_options .meta-box-sortables input.button-primary, #wpfp_options .meta-box-sortables input.button, #wpfp_options .meta-box-sortables a.button { margin-top: 16px }
 #wpfp_options input.button.no-margin { margin-top: 0px }
-.meta-box-sortables input.small, .meta-box-sortables select.small { width: 16%; }
+.meta-box-sortables input.small, .meta-box-sortables select.small { width: 27%; }
 .meta-box-sortables input.medium { width: 50%; }
-.meta-box-sortables input.large { width: 66%; }
+.meta-box-sortables input.large { width: 71% !important; }
 td.second-column { margin-left: 20px }
 
 span.new { color: #e00; font-weight: bold }
@@ -126,13 +129,16 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
 }
 td.aligntop { vertical-align:top; }
 td.aligntop > label { margin-top:4px; }
-#postbox-container-tab_skin .button-primary {
-	margin-left: 51%;
-}
+
 #flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
 #fv_flowplayer_skin_playlist input[type=text], #fv_flowplayer_skin_playlist select,
 #fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select {
   width: 95%;
+}
+
+#wpfp_options .flowplayer-wrapper + table,
+#fp-preview-wrapper + table {
+  width: 30%;
 }
 
 
