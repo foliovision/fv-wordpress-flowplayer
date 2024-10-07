@@ -2537,8 +2537,6 @@ jQuery(window).one( 'load', function() {
     skin_anchor = 'skin-tab-skin';
   }
 
-  console.log( anchor, skin_anchor );
-
   jQuery('#fv_flowplayer_admin_tabs .nav-tab, #fv_flowplayer_admin_skin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
@@ -2550,23 +2548,31 @@ jQuery(window).one( 'load', function() {
 });
 
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
-  e.preventDefault();
-  window.location.hash = e.target.hash;
+  if ( history.pushState ) {
+    history.pushState( null, null, '#' + e.target.hash );
+  }
+
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
+
+  return false;
 });
 
 jQuery('#fv_flowplayer_admin_skin_tabs a').on('click',function(e){
-  e.preventDefault();
-  window.location.hash = e.target.hash;
+  if ( history.pushState ) {
+    history.pushState( null, null, '#' + e.target.hash );
+  }
+
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_skin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery( '.skin-tab-content' ).hide();
   jQuery('#' + anchor).show();
+
+  return false;
 });
 
 jQuery('#normal-sortables .button-primary').on('click',function(e){
