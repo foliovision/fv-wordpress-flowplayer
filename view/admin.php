@@ -2098,10 +2098,40 @@ function fv_flowplayer_admin_uninstall() {
   ?>
     <p><?php echo wp_kses( __( 'Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-player' ), array( 'code' => array() ) ); ?></p>
     <table class="form-table2">
-      <?php   $fv_fp->_get_checkbox(__( 'Remove all data', 'fv-player' ), 'remove_all_data' , __( 'This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-player' )); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Remove all data', 'fv-player' ), 'remove_all_data' , __( 'This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-player' )); ?>
+
+      <tr>
+        <td></td>
+        <td>
+          <?php
+          // Verify that uninstall.php is there only if needed
+          $remove_all_data = $fv_fp->_get_option( 'remove_all_data' );
+
+          if ( ! class_exists( 'WP_Filesystem_Direct' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+            require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+          }
+
+          $plugin_folder = basename( dirname( dirname( __FILE__ ) ) );
+
+          $wp_filesystem       = new WP_Filesystem_Direct( '' );
+          $uninstall_file_hint = 'wp-content/plugings/' . $plugin_folder . '/uninstall.php';
+          $uninstall_file_real = $wp_filesystem->wp_plugins_dir() . $plugin_folder . '/uninstall.php';
+
+          if ( $remove_all_data && $wp_filesystem->exists( $uninstall_file_real ) ) : ?>
+            <p style="font-weight: bold; color: #f00"><?php _e( 'Warning: If you deactivate and delete FV Player, all of its data will be removed!', 'fv-player'); ?>
+          <?php elseif ( $remove_all_data && ! $wp_filesystem->exists( $uninstall_file_real ) ) : ?>
+            <p>
+              <?php printf( __( 'The <code>%s</code> file failed to create, full uninstall will not work.', 'fv-player' ), $uninstall_file_hint ); ?>
+            </p>
+          <?php elseif ( ! $remove_all_data && $wp_filesystem->exists( $uninstall_file_real ) ) : ?>
+            <?php printf( __( 'The <code>%s</code> file is still present, please remove it by hand.', 'fv-player' ), $uninstall_file_hint ); ?>
+          <?php endif; ?>
+        </td>
+      </tr>
       <tr>
         <td colspan="4">
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
         </td>
       </tr>
     </table>

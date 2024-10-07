@@ -1087,3 +1087,30 @@ function fv_player_get_post_type_taxonomies( $post_type ) {
 
   return $post_type_taxonomies;
 }
+
+function fv_player_setup_uninstall_script( $put_in_uninstall_php, $remove_uninstall_php ) {
+
+  if ( 'direct' !== get_filesystem_method( array(), dirname( dirname( __FILE__ ) ) ) ) {
+    return false;
+  }
+
+  if ( ! class_exists( 'WP_Filesystem_Direct' ) ) {
+    require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+    require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+  }
+
+  $plugin_folder = basename( dirname( dirname( __FILE__ ) ) );
+
+  $wp_filesystem = new WP_Filesystem_Direct( '' );
+  $original_file = $wp_filesystem->wp_plugins_dir() . $plugin_folder . '/uninstall-script.php';
+  $new_file      = $wp_filesystem->wp_plugins_dir() . $plugin_folder . '/uninstall.php';
+
+  if ( $put_in_uninstall_php && ! $wp_filesystem->exists( $new_file ) ) {
+    return $wp_filesystem->copy( $original_file, $new_file );
+
+  } else if ( $remove_uninstall_php && $wp_filesystem->exists( $new_file ) ) {
+    return $wp_filesystem->delete( $new_file );
+  }
+
+  return false;
+}

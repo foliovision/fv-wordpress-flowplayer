@@ -1043,6 +1043,32 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
 
+    // Was "Remove all data" activated or deactivated?
+    if ( ! empty( $_POST['fv_flowplayer_settings_ajax_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv_flowplayer_settings_ajax_nonce'] ) ), 'fv_flowplayer_settings_ajax_nonce' ) ) {
+
+      $put_in_uninstall_php = false;
+      $remove_uninstall_php = false;
+
+      // Enabled
+      if (
+        ( empty( $aOldOptions['remove_all_data'] ) || 'false' === $aOldOptions['remove_all_data'] ) &&
+        ! empty( $aNewOptions['remove_all_data'] ) && 'true' === $aNewOptions['remove_all_data']
+      ) {
+        $put_in_uninstall_php = true;
+
+      // Disabled
+      } else if (
+        ! empty( $aOldOptions['remove_all_data'] ) && 'true' === $aOldOptions['remove_all_data'] &&
+        ( empty( $aNewOptions['remove_all_data'] ) || 'false' === $aNewOptions['remove_all_data'] )
+      ) {
+        $remove_uninstall_php = true;
+      }
+
+      if ( $put_in_uninstall_php || $remove_uninstall_php ) {
+        fv_player_setup_uninstall_script( $put_in_uninstall_php, $remove_uninstall_php );
+      }
+    }
+
     return true;
   }
 
