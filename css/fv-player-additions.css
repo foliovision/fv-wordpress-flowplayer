@@ -214,7 +214,7 @@
 .flowplayer .wpfp_custom_popup .fv_player_popup p {max-width:100%}
 
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
-.flowplayer.is-fullscreen .fp-player{background-color:#000}
+.flowplayer.is-fullscreen .fp-player{background-color:#000; display: flex}
 
 .flowplayer.is-fullscreen .fp-controls {
   bottom: env(safe-area-inset-bottom)
@@ -236,10 +236,31 @@
 
 .flowplayer video.fp-engine { visibility:visible; }
 .flowplayer .fp-engine { max-width:100%; }
-.flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
-.flowplayer .fp-logo {max-width:25%;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-.flowplayer .fp-logo img {box-shadow:none;}
-.flowplayer .fp-logo {pointer-events: none;}
+.flowplayer.is-fullscreen .fp-logo {
+  margin: auto;
+  max-height: calc(100vw / var(--fp-aspect-ratio));
+}
+
+.flowplayer .fp-logo {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  pointer-events: none;
+  aspect-ratio: var(--fp-aspect-ratio);
+  position: static;
+  height: calc(100% - var(--fp-controls-height, 2.4em));
+  display: flex;
+}
+
+/* TODO: Move to skin.css */
+.freedomplayer.fp-full {
+  --fp-controls-height: 2.8em; 
+}
+
+.flowplayer .fp-logo img {
+  box-shadow: none;
+  width: var(--fp-watermark-width, min(16vw, 128px));
+  margin: auto auto 15px 15px;
+  z-index: 0;
+}
 .flowplayer.fixed-controls .fp-logo {bottom: 15px;}
 .flowplayer.is-popup-showing .fp-logo {display: none;}
 

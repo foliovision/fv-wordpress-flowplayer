@@ -123,6 +123,10 @@ flowplayer(function(api, root) {
 
   api.bind('ready', function( e, api, video ) {
 
+    if (video.width && video.height) {
+      root.find('.fp-logo').css('--fp-aspect-ratio', (video.width / video.height).toFixed(2));
+    }    
+
     // Remove Top and Bottom Black Bars
     if ( video.remove_black_bars ) {
       root.addClass('remove-black-bars');
