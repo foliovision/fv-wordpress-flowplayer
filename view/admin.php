@@ -2549,7 +2549,7 @@ jQuery(window).one( 'load', function() {
 
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
   if ( history.pushState ) {
-    history.pushState( null, null, '#' + e.target.hash );
+    history.pushState( null, null, e.target.hash );
   }
 
   var anchor = jQuery(this).attr('href').substring(1);
@@ -2563,7 +2563,7 @@ jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
 
 jQuery('#fv_flowplayer_admin_skin_tabs a').on('click',function(e){
   if ( history.pushState ) {
-    history.pushState( null, null, '#' + e.target.hash );
+    history.pushState( null, null, e.target.hash );
   }
 
   var anchor = jQuery(this).attr('href').substring(1);
