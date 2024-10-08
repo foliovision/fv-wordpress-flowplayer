@@ -165,6 +165,26 @@
     $previewElements.eq(0).trigger('input');
 
     $('[data-fv-preview]').on('select change', skinPreviewDropdownChanged);
+
+    /**
+     * Preview code for Controls tab of Skin
+     */
+    let player = $( '.freedomplayer' );
+
+    $( '#show_controlbar' ).on( 'change', function() {
+      player.toggleClass( 'fixed-controls', $( this ).prop( 'checked' ) );
+    } );
+
+    $( '#allowfullscreen' ).on( 'change', function() {
+      if ( $( this ).prop( 'checked' ) ) {
+        player.removeAttr( 'data-fullscreen' );
+        player.find( '.fp-fullscreen' ).show();
+      } else {
+        player.attr( 'data-fullscreen', 'false' );
+        player.find( '.fp-fullscreen' ).hide();
+      }
+    } );
+
   });
 
   $(document).ready( function() {

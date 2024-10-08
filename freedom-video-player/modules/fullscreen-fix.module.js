@@ -2,9 +2,6 @@
  * Improve the fullscreen calling to make sure the video covers the full visible viewport of Google Pixel 4 or iPhone Pro which have a special viewport shape
  */
 flowplayer(function(player, root) {
-  if ( jQuery(root).data('fullscreen') == false ) {
-    return;
-  }
 
   //  copy of original Flowplayer variable declarations
   var FS_ENTER = "fullscreen",
@@ -17,7 +14,7 @@ flowplayer(function(player, root) {
 
   //  copy of original Flowplayer function with some subtle changes
   player.fullscreen = function(flag) {
-    if (player.disabled) return;
+    if ( player.disabled || jQuery(root).data('fullscreen') == false ) return;
 
     if (flag === undefined) flag = !player.isFullscreen;
 
