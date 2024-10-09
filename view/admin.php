@@ -1464,7 +1464,7 @@ function fv_flowplayer_admin_skin() {
         <td class="aligntop-input"><label for="logo">Logo:</label></td>
         <td>
 
-          <input type="text" name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste logo url or upload image to show custom logo on player.', 'fv-player' ); ?>" data-fv-preview />
+          <input type="text" name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste link or upload an image.', 'fv-player' ); ?>" data-fv-preview />
           <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Image', 'fv-player' ); ?>" alt="Select Logo" />
         </td>
       </tr>
@@ -1474,7 +1474,7 @@ function fv_flowplayer_admin_skin() {
           <?php
           $value = $fv_fp->_get_option('logoPosition');
           ?>
-          <select name="logoPosition" class="small" style="width: 100%" data-fv-preview>
+          <select name="logoPosition" class="small" style="width: 9em !important" data-fv-preview>
             <option value="bottom-left"><?php esc_html_e( 'Position', 'fv-player' ); ?></option>
             <option <?php if( $value == 'bottom-left' ) echo "selected"; ?> value="bottom-left"><?php esc_html_e( 'Bottom-left', 'fv-player' ); ?></option>
             <option <?php if( $value == 'bottom-right' ) echo "selected"; ?> value="bottom-right"><?php esc_html_e( 'Bottom-right', 'fv-player' ); ?></option>
@@ -1497,7 +1497,7 @@ function fv_flowplayer_admin_skin() {
       <tr>
         <td class="first aligntop-input"><label for="play_icon">Play Icon:</label></td>
         <td>
-          <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php esc_attr_e( 'The big play icon on top of the player. Recommended size is 168 pixels.', 'fv-player' ); ?>" data-fv-preview />
+          <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Recommended size is 168 pixels.', 'fv-player' ); ?>" data-fv-preview />
           <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Icon', 'fv-player' ); ?>" />
         </td>
       </tr>
