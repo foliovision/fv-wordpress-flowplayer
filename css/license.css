@@ -127,8 +127,9 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   display: block;
   text-align: right;
 }
-td.aligntop { vertical-align:top; }
-td.aligntop > label { margin-top:4px; }
+td.aligntop, td.aligntop-input { vertical-align:top; }
+td.aligntop > label { margin-top: 4px; }
+td.aligntop-input > label { margin-top: 6px; }
 
 #flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
 #fv_flowplayer_skin_playlist input[type=text], #fv_flowplayer_skin_playlist select,
@@ -202,4 +203,18 @@ table.thirds td {
 }
 #fv_flowplayer_usage .usage-section:nth-child(2n+1) {
 	clear: both;
+}
+
+@media only screen and (max-width: 1680px) {
+  .skin-tab-content input.small,
+  .skin-tab-content select.small,
+  .skin-tab-content input.medium,
+  .skin-tab-content input.large { width: 100% !important; }
+}
+
+@media only screen and (max-width: 1024px) {
+  #fv_flowplayer_admin_skin_tabs,
+  .skin-tab-content {
+    width: 100%;
+  }
 }

@@ -1189,7 +1189,7 @@ function fv_flowplayer_admin_skin() {
     remove_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
     remove_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
     ?>
-    <?php esc_html_e( 'Hint: play the video to see live preview of the color settings', 'fv-player' ) ?>
+    <?php esc_html_e( 'Hint: play the video to see live preview of the Skin, Logo and Controls settings', 'fv-player' ) ?>
   </div>
 
   <div id="fv_flowplayer_admin_skin_tabs">
@@ -1461,7 +1461,7 @@ function fv_flowplayer_admin_skin() {
   <div id="skin-tab-logo" class="skin-tab-content">
     <table class="form-table2">
       <tr>
-        <td><label for="logo">Logo:</label></td>
+        <td class="aligntop-input"><label for="logo">Logo:</label></td>
         <td>
 
           <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste logo url or upload image to show custom logo on player.', 'fv-player' ); ?>"/>
@@ -1483,14 +1483,19 @@ function fv_flowplayer_admin_skin() {
           </select>
         </td>
       </tr>
-      <?php $fv_fp->_get_checkbox(__( 'Align to video', 'fv-player' ), 'logo_over_video', __( 'Logo stays on top of video if aspect ratio does not match.', 'fv-player' )  ); ?>
+      <?php $fv_fp->_get_checkbox(
+        array(
+          'name' => __( 'Align to video', 'fv-player' ),
+          'key'  => 'logo_over_video',
+          'help' => __( 'Logo stays on top of video if aspect ratio does not match.', 'fv-player' ),
+          'first_td_class' => 'aligntop'
+        )
+      ); ?>
       <tr>
-        <td class="first"><label for="sticky_video">Play Icon:</label></td>
+        <td class="first aligntop-input"><label for="sticky_video">Play Icon:</label></td>
         <td>
-          <p class="description">
           <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php esc_attr_e( 'The big play icon on top of the player. Recommended size is 168 pixels.', 'fv-player' ); ?>"/>
           <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Icon', 'fv-player' ); ?>" />
-          </p>
         </td>
       </tr>
       <tr>
