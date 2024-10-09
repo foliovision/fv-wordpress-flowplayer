@@ -606,10 +606,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
     if( !isset( $conf['logo_over_video'] ) ) $conf['logo_over_video'] = 'true';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
-    if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
-    if( !isset( $conf['disablesharing'] ) ) $conf['disablesharing'] = 'false';
-
-    if( !isset( $conf['disable_video_hash_links'] ) ) $conf['disable_video_hash_links'] = $conf['disableembedding'] == 'true' ? true : false;
 
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
@@ -681,6 +677,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if ( ! isset( $conf[ $new_key ] ) ) {
         if ( ! empty( $conf[ $old_key ] ) && 'false' === $conf[ $old_key ] ) {
           $conf[ $new_key ] = 'true';
+        } else {
+          $conf[ $new_key ] = 'false';
         }
       }
     }
@@ -801,10 +799,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'digitalocean_spaces',
             'disable_convert_db_save',
             'disable_localstorage',
-            'disable_video_hash_links',
             'disable_videochecker',
-            'disableembedding',
-            'disablesharing',
             'email_lists',
             'engine',
             'fv-player-pro-release', // FV Player Pro extension

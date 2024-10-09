@@ -229,7 +229,7 @@ function fv_player_admin_pointer_boxes() {
     );
   }
 
-  if( $fv_fp->_get_option('video_sitemap') && !$fv_fp->_get_option('disableembedding') && !$fv_fp->_get_option('notice_xml_sitemap_iframes') ) {
+  if( $fv_fp->_get_option('video_sitemap') && $fv_fp->_get_option( 'ui_embed' ) && !$fv_fp->_get_option('notice_xml_sitemap_iframes') ) {
     $fv_fp->pointer_boxes['fv_flowplayer_notice_xml_sitemap_iframes'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_notice_xml_sitemap_iframes',

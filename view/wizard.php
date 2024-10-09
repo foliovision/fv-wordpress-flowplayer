@@ -753,13 +753,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'label' => __( 'Embedding', 'fv-player' ),
                   'name' => 'embed',
                   'description' => __( 'Allows users to embed your player on their websites.', 'fv-player' ),
-                  'default' => !$fv_fp->_get_option('disableembedding')
+                  'default' => $fv_fp->_get_option( 'ui_embed' )
                 ),
                 array(
                   'label' => __( 'Sharing Buttons', 'fv-player' ),
                   'name' => 'share',
                   'description' => __( 'Provides a quick way of sharing your article on Facebook, Twitter or via Email.', 'fv-player' ),
-                  'default' => !$fv_fp->_get_option('disablesharing')
+                  'default' => $fv_fp->_get_option( 'ui_sharing' )
                 ), // TODO: Custom URL setting
               )
             )
