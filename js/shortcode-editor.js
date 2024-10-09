@@ -1901,7 +1901,7 @@ jQuery(function() {
         show_players_resize();
       }
 
-      $( window ).resize( show_players_resize );
+      $( window ).on( 'resize', show_players_resize );
 
       function show_players_resize() {
         let player_browser = $( '#fv-player-editor-copy_player-overlay .attachments-browser'),
