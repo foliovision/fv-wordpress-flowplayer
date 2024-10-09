@@ -245,13 +245,8 @@
   pointer-events: none;
   aspect-ratio: var(--fp-aspect-ratio);
   position: static;
-  height: calc(100% - var(--fp-controls-height, 2.4em));
+  height: 100%;
   display: flex;
-}
-
-/* TODO: Move to skin.css */
-.freedomplayer.fp-full {
-  --fp-controls-height: 2.8em; 
 }
 
 .flowplayer .fp-logo img {
