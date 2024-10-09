@@ -400,6 +400,7 @@ function flowplayer_prepare_scripts() {
     }
 
     if( $sLogo ) $aConf['logo'] = $sLogo;
+    if ( $fv_fp->_get_option( 'logo_over_video' ) ) $aConf['logo_over_video'] = true;
 
     // Used to restore volume, removed in JS if volume stored in browser localStorage
     $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );

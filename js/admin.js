@@ -74,6 +74,7 @@
 
     // dropdown value changes (slim type, icon types)
     function skinPreviewDropdownChanged() {
+      style = '';
       $previewElements.each(function() {
         var
           $this = $(this),
@@ -107,8 +108,15 @@
           $('.flowplayer')
             .removeClass('fp-edgy fp-outlined fp-playful')
             .addClass($this.val());
+
+        } else if ( 'logoPosition' === $this.attr('name') ) {
+          if ( fv_player_admin.css_logo_positions[ $this.val() ] ) {
+            style += "\n" + '.flowplayer-wrapper .freedomplayer .fp-logo img { ' + fv_player_admin.css_logo_positions[ $this.val() ] + ' }';
+          }
         }
       });
+
+      return style;
     }
 
     // input (textbox, checkbox) value changes
@@ -128,7 +136,35 @@
           return;
         }
 
-        if ($this.attr('name').endsWith('player-position]')) {
+        if ( 'logo' === $this.attr('name') ) {
+          let player = $( '.flowplayer-wrapper .freedomplayer' );
+          player.find( '.fp-logo' ).remove();
+
+          let logo_url = $this.val();
+          if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) ) {
+
+            // Update the logo in the loaded player
+            let api = player.data( 'freedomplayer' )
+            if ( api ) {
+              api.conf.logo = logo_url.trim();
+            }
+
+            let img = new Image();
+            img.src = logo_url.trim();
+
+            let logo = $( '<a class="fp-logo"></a>' );
+            logo.append( img );
+
+            $( '.flowplayer-wrapper .freedomplayer .fp-ui' ).eq(0).after( logo );
+          }
+
+        } else if ( 'play_icon' === $this.attr('name') ) {
+          let play_icon_url = $this.val();
+          if ( play_icon_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) ) {
+            style += fv_player_admin.css_play_icon.replace( /%play_icon%/g, play_icon_url.trim() );
+          }
+
+        } else if ($this.attr('name').endsWith('player-position]')) {
           if ($this.val() === 'left')
             style += preview;
 
@@ -154,10 +190,10 @@
         }
       }, 0);
 
-      $('#fv-style-preview').html(style);
-
       // update progress bar + icons style
-      skinPreviewDropdownChanged();
+      style += skinPreviewDropdownChanged();
+
+      $('#fv-style-preview').html(style);
     }
 
     // color inputs + checkbox changes
@@ -270,6 +306,12 @@
       data:        'speedb',
     } );
 
+    // Logo -> Align to video
+    controlsPreviewCheckbox( '#logo_over_video', {
+      conf_key:    'logo_over_video',
+      cb_enabled:  'setLogoPosition',
+      cb_disabled: 'setLogoPosition',
+    } );
   });
 
   $(document).ready( function() {

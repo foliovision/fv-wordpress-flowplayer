@@ -112,6 +112,42 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         )
     );
 
+  public $css_logo_positions = array(
+    'bottom-left'  => "margin: auto auto 15px 15px",
+    'bottom-right' => "margin: auto 15px 15px auto",
+    'top-left'     => "margin: 15px auto auto 15px",
+    'top-right'    => "margin: 15px 15px auto auto",
+  );
+
+  public $css_play_icon = ".freedomplayer .fp-play.fp-visible svg {
+    opacity: 0;
+  }
+  .fp-play:before {
+    background-image: url(\"%play_icon%\");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 6em;
+    height: 6em;
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: auto;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all .2s;
+  }
+  .freedomplayer.is-small .fp-play:before, .freedomplayer.is-tiny .fp-play:before {
+    max-height: 30%;
+  }
+  .fp-play.fp-visible:before {
+    opacity: 1;
+    transform: scale(1);
+  }";
+
   private $help_html = array(
     'a'     => array( 'href' => array(), 'target' => array() ),
     'code'  => array(),
@@ -1720,36 +1756,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       .flowplayer .fp-logo { display: block; opacity: 1; }
     <?php endif; ?>
 
-    <?php if ( $this->_get_option('play_icon') ) : ?>
-      .flowplayer .fp-play.fp-visible svg {
-        opacity: 0;
-      }
-      .fp-play:before {
-        background-image: url("<?php echo esc_url($this->_get_option('play_icon')); ?>");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-        width: 6em;
-        height: 6em;
-        content: ' ';
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: auto;
-        right: 0;
-        bottom: 0;
-        opacity: 0;
-        transform: scale(0.8);
-        transition: all .2s;
-      }
-      .flowplayer.is-small .fp-play:before, .flowplayer.is-tiny .fp-play:before {
-        max-height: 30%;
-      }
-      .fp-play.fp-visible:before {
-        opacity: 1;
-        transform: scale(1);
-      }
-    <?php endif; ?>
+    <?php if ( $this->_get_option('play_icon') ) {
+      echo str_replace( '%play_icon%', esc_url( $this->_get_option( 'play_icon' ) ), $this->css_play_icon );
+    } ?>
 
     .wpfp_custom_background { display: none; position: absolute; background-position: center center; background-repeat: no-repeat; background-size: contain; width: 100%; height: 100%; z-index: 1 }
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
@@ -1782,16 +1791,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo esc_html( $this->_get_option('subtitleFontFace') ); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
-      if( $value == 'bottom-left' ) {
-        $sCSS = "bottom: 30px; left: 15px;";
-      } else if( $value == 'bottom-right' ) {
-        $sCSS = "bottom: 30px; right: 15px; left: auto;";
-      } else if( $value == 'top-left' ) {
-        $sCSS = "top: 30px; left: 15px; bottom: auto;";
-      } else if( $value == 'top-right' ) {
-        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto;";
-      }
-      ?>.flowplayer .fp-logo { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
+      $sCSS = ! empty( $this->css_logo_positions[ $value ] ) ? $this->css_logo_positions[ $value ] : '';
+      ?>.flowplayer .fp-logo img { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
 
     .flowplayer .fp-player .fp-captions p { background-color: <?php echo esc_html( $sSubtitleBgColor ); ?> }
 
