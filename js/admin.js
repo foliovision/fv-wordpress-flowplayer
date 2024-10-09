@@ -147,7 +147,7 @@
            * This prevents the logo showing before the video is started, but at the same
            * time show if if user picks are different image.
            */
-          if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) && logo_url !== freedomplayer.conf.logo ) {
+          if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) && ( logo_url !== freedomplayer.conf.logo || player.hasClass( 'is-ready' ) ) ) {
 
             // Update the logo in the loaded player
             let api = player.data( 'freedomplayer' )
@@ -162,6 +162,10 @@
             logo.append( img );
 
             $( '.flowplayer-wrapper .freedomplayer .fp-ui' ).eq(0).after( logo );
+
+            if ( api ) {
+              api.setLogoPosition();
+            }
           }
 
         } else if ( 'play_icon' === $this.attr('name') ) {
