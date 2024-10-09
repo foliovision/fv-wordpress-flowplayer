@@ -483,6 +483,10 @@ function flowplayer_prepare_scripts() {
       $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
     }
 
+    if( $fv_fp->_get_option('ui_airplay') ) {
+      $aConf['airplay'] = true;
+    }
+
     $aConf['chromecast'] = false; // tell core Freedom Video Player and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = array(

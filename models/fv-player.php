@@ -655,6 +655,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
     if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';
+    if( !isset( $conf['ui_airplay'] ) ) $conf['ui_airplay'] = true;
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
@@ -876,6 +877,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'subtitleFontFace',
             'subtitleOn',
             'subtitleSize',
+            'ui_airplay',
             'ui_embed',
             'ui_no_picture_button',
             'ui_repeat_button',

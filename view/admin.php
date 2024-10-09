@@ -1505,6 +1505,7 @@ function fv_flowplayer_admin_skin() {
   <div id="skin-tab-controls" class="skin-tab-content">
     <table class="form-table2">
       <?php $fv_fp->_get_checkbox(__( 'Always Visible', 'fv-player' ), 'show_controlbar', __( 'Control bar will show below player and not just on hover.') ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Airplay', 'fv-player' ), 'ui_airplay', __( 'Adds support for Airplay.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Embed', 'fv-player' ), 'ui_embed', __( 'Embed link in top bar.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Chromecast', 'fv-player' ), 'chromecast', __( 'Adds support for Google Chromecast.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Fullscreen', 'fv-player' ), 'allowfullscreen', __( 'Adds a fullscreen button.', 'fv-player' ) ); ?>
