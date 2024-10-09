@@ -246,7 +246,11 @@
   aspect-ratio: var(--fp-aspect-ratio);
   position: static;
   height: 100%;
+  padding-bottom: var(--fp-controls-height, 2.4em);
   display: flex;
+}
+.flowplayer.fixed-controls .fp-logo {
+  padding-bottom: 0;
 }
 
 .flowplayer .fp-logo img {
