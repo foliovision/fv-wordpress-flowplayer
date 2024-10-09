@@ -1506,13 +1506,13 @@ function fv_flowplayer_admin_skin() {
     <table class="form-table2">
       <?php $fv_fp->_get_checkbox(__( 'Always Visible', 'fv-player' ), 'show_controlbar', __( 'Control bar will show below player and not just on hover.') ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Airplay', 'fv-player' ), 'ui_airplay', __( 'Adds support for Airplay.', 'fv-player' ) ); ?>
-      <?php $fv_fp->_get_checkbox(__( 'Embed', 'fv-player' ), 'ui_embed', __( 'Embed link in top bar.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Embed', 'fv-player' ), 'ui_embed', __( 'Embed link in top bar (no preview).', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Chromecast', 'fv-player' ), 'chromecast', __( 'Adds support for Google Chromecast.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Fullscreen', 'fv-player' ), 'allowfullscreen', __( 'Adds a fullscreen button.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'No Picture', 'fv-player' ), 'ui_no_picture_button', __( 'Adds a button to turn the video picture on and off.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Repeat', 'fv-player' ), 'ui_repeat_button', __( 'Adds a button to set playlist/track repeat and shuffle.', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Rewind/Forward', 'fv-player' ), 'ui_rewind_button', __( 'Adds a button to go 10 seconds back/forth.', 'fv-player' ) ); ?>
-      <?php $fv_fp->_get_checkbox(__( 'Sharing', 'fv-player' ), 'ui_sharing', __( 'Sharing buttons in top bar.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Sharing', 'fv-player' ), 'ui_sharing', __( 'Sharing buttons in top bar (no preview).', 'fv-player' ) ); ?>
       <?php $fv_fp->_get_checkbox(__( 'Speed', 'fv-player' ), 'ui_speed', __( 'Speed buttons control playback speed.', 'fv-player' ) ); ?>
       <tr>
         <td><label for="ui_speed_increment"><?php esc_html_e( 'Speed Step', 'fv-player' ); ?>:</label></td>
@@ -1530,7 +1530,7 @@ function fv_flowplayer_admin_skin() {
           </p>
         </td>
       </tr>
-      <?php $fv_fp->_get_checkbox(__( 'Video Links', 'fv-player' ), 'ui_video_links', __( '"Link" item in top bar.', 'fv-player' ), __( "Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Video Links', 'fv-player' ), 'ui_video_links', __( '"Link" item in top bar (no preview).', 'fv-player' ), __( "Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-player' ) ); ?>
       <tr>
         <td></td>
         <td>

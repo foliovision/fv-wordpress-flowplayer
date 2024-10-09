@@ -2,7 +2,7 @@
 
 // copy of the original function with some mods
 flowplayer(function(api, root) {
-  if ( !api.conf.fv_chromecast ) return;
+  if ( !api.conf.fv_chromecast && ! api.conf.skin_preview ) return;
 
   // TODO: Only load when some video is started?
   if( !window['__onGCastApiAvailable'] ) {
@@ -48,7 +48,7 @@ flowplayer(function(api, root) {
     console.log('chromecast onError');
   }
 
-  function createUIElements() {
+  api.createChromecastButton = function() {
     common.find('.fp-chromecast', root).forEach(common.removeNode);
     common.find('.fp-chromecast-engine', root).forEach(common.removeNode);
     trigger = common.createElement('a', { 'class': 'fp-chromecast fp-icon', title: 'Play on Cast device'})
@@ -65,6 +65,10 @@ flowplayer(function(api, root) {
     var engine = common.find('.fp-engine', root)[0];
     if (!engine) common.prepend(common.find('.fp-player', root)[0] || root, chromeCastEngine);
     else engine.parentNode.insertBefore(chromeCastEngine, engine);
+  }
+
+  if ( api.conf.skin_preview && api.conf.fv_chromecast ) {
+    api.createChromecastButton();
   }
 
   function destroy() {
@@ -297,7 +301,7 @@ flowplayer(function(api, root) {
     if( !flowplayer.conf.chromecast_available ) return;
 
     if( get_media() ) {
-      createUIElements();
+      createChromecastButton();
 
       jQuery(trigger).show();
     } else {
@@ -309,6 +313,12 @@ flowplayer(function(api, root) {
 
   bean.on(root, 'click', '.fp-chromecast', function(ev) {
     ev.preventDefault();
+
+    if ( api.conf.wpadmin ) {
+      alert( 'This is just an admin preview for the Chromecast button. Normally it will only show up when a video is playing using Chrome with Chromecast available on the same network and the video supports it.' );
+      return;
+    }
+
     if (session) {
       // without this the video cannot continue playing
       api.trigger('pause', [api]);

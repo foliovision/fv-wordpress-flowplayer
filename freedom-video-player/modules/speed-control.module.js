@@ -17,8 +17,8 @@
 (function() {
   var extension = function(flowplayer) {
     flowplayer(function(api, root) {
-      if( !jQuery(root).data('speedb') ) return;
-    
+      if ( ! jQuery(root).data('speedb') && ! api.conf.skin_preview ) return;
+
       var support = flowplayer.support;
       if (!support.video || !support.inlineVideo) return;
       var common = flowplayer.common
@@ -44,17 +44,17 @@
         }
       })
       .on('ready', function(ev, api) {
-        removeMenu();
+        api.removeSpeedButton();
 
         if( flowplayer.support.android && api.engine.engineName == 'html5' && api.video.type == 'application/x-mpegurl' ) return;
 
         speeds = api.conf.speeds;
         if (speeds.length > 1) {
-          createMenu();
+          api.createSpeedButton();
         }
       });
 
-      function removeMenu() {
+      api.removeSpeedButton = function() {
         common.find('.fp-speed-menu', root).forEach(common.removeNode);
         common.find('.fp-speed', root).forEach(common.removeNode);
       }
@@ -63,7 +63,11 @@
         return Math.round(val * 100) / 100;
       }
 
-      function createMenu() {
+      api.createSpeedButton = function() {
+        if ( ! jQuery(root).data( 'speedb' ) ) return;
+
+        api.removeSpeedButton();
+
         controlbar.appendChild(common.createElement('strong', { className: 'fp-speed' }, api.currentSpeed + 'x'));
         var menu = common.createElement('div', { className: 'fp-menu fp-speed-menu', css: { width: 'auto' } }, '<strong>Speed</strong>');
         speeds.forEach(function(s) {
@@ -73,6 +77,10 @@
         ui.appendChild(menu);
         selectSpeed(api.currentSpeed);
         jQuery(root).find('.fp-speed-menu strong').text(fv_flowplayer_translations.speed);
+      }
+
+      if ( api.conf.skin_preview ) {
+        api.createSpeedButton();
       }
 
       function selectSpeed(rate) {

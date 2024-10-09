@@ -530,6 +530,11 @@ function flowplayer_prepare_scripts() {
 
     if( is_admin() ) $aConf['wpadmin'] = true;
 
+    // Is it the wp-admin -> FV Player -> Settings screen?
+    if ( did_action( 'admin_head-fv-player_page_fvplayer' ) ) {
+      $aConf['skin_preview']       = true;
+    }
+
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
 
     $aLocalize = array(

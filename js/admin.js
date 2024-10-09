@@ -175,14 +175,99 @@
       player.toggleClass( 'fixed-controls', $( this ).prop( 'checked' ) );
     } );
 
-    $( '#allowfullscreen' ).on( 'change', function() {
-      if ( $( this ).prop( 'checked' ) ) {
-        player.removeAttr( 'data-fullscreen' );
-        player.find( '.fp-fullscreen' ).show();
-      } else {
-        player.attr( 'data-fullscreen', 'false' );
-        player.find( '.fp-fullscreen' ).hide();
-      }
+    /**
+     *
+     * @param {string} selector
+     * @param {Object[]} options
+     * @param {string}   options.cb_enabled        api method to call when checkbox is checked
+     * @param {string}   options.cb_disabled       api method to call when checkbox is unchecked
+     * @param {string}   options.conf_key          api.conf key to set to true/false
+     * @param {string}   options.data              Player element data-{data} attribute to set to true/false
+     * @param {string}   options.selector_disabled Element to remove when checkbox is unchecked
+     * @param {string}   options.show_hide         Element to show/hide
+     */
+    function controlsPreviewCheckbox( selector, options ) {
+      $(selector).on('change', function() {
+        let api = player.data( 'freedomplayer' ),
+          is_checked = $(this).prop('checked');
+
+        if ( options.conf_key ) {
+          api.conf[ options.conf_key ] = is_checked;
+        }
+
+        if ( options.data ) {
+          player.attr( 'data-' + options.data, is_checked );
+        }
+
+        if ( options.show_hide ) {
+          player.find( options.show_hide ).toggle( is_checked );
+        }
+
+        if ( is_checked ) {
+          if ( options.cb_enabled ) {
+            api[ options.cb_enabled ]();
+          }
+
+        } else {
+          if ( options.cb_disabled ) {
+            api[ options.cb_disabled ]();
+          }
+
+          if ( options.selector_disabled ) {
+            player.find( options.selector_disabled ).remove();
+          }
+        }
+      });
+    }
+
+    // Airplay
+    controlsPreviewCheckbox( '#ui_airplay', {
+      conf_key:          'airplay',
+      cb_enabled:        'createAirplayButton',
+      selector_disabled: '.fp-airplay'
+    } );
+
+    // Chromecast
+    controlsPreviewCheckbox( '#chromecast', {
+      conf_key:          'fv_chromecast',
+      cb_enabled:        'createChromecastButton',
+      selector_disabled: '.fp-chromecast'
+    } );
+
+    // Fullscreen
+    // TODO: Not working when initially off and then enabled
+    controlsPreviewCheckbox( '#allowfullscreen', {
+      conf_key:   'fullscreen',
+      data:       'fullscreen',
+      show_hide:  '.fp-fullscreen'
+    } );
+
+    // No Picture
+    controlsPreviewCheckbox( '#ui_no_picture_button', {
+      cb_enabled:        'createNoPictureButton',
+      data:              'button-no_picture',
+      selector_disabled: '.fv-fp-no-picture'
+    } );
+
+    // Repeat
+    controlsPreviewCheckbox( '#ui_repeat_button', {
+      cb_enabled:        'createRepeatButton',
+      data:              'button-repeat',
+      selector_disabled: '.fv-fp-playlist, .fv-fp-playlist-menu'
+    } );
+
+    // Rewind/Forward
+    controlsPreviewCheckbox( '#ui_rewind_button', {
+      cb_enabled:        'createRewindForwardButtons',
+      data:              'button-rewind',
+      selector_disabled: '.fv-fp-rewind, .fv-fp-forward'
+    } );
+
+    // Speed
+    controlsPreviewCheckbox( '#ui_speed', {
+      cb_disabled: 'removeSpeedButton',
+      cb_enabled:  'createSpeedButton',
+      data:        'speedb',
     } );
 
   });
