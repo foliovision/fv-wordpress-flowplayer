@@ -121,11 +121,16 @@ jQuery( document ).ready( freedomplayer_playlist_size_check );
 flowplayer(function(api, root) {
   root = jQuery(root);
 
-  api.bind('ready', function( e, api, video ) {
+  api.setLogoPosition = function() {
+    if ( api.conf.logo_over_video && api.video && api.video.width && api.video.height) {
+      root.find('.fp-logo').css('--fp-aspect-ratio', ( api.video.width / api.video.height).toFixed(2));
+    } else {
+      root.find('.fp-logo').css('width', '100%').css('height', '100%');
+    }
+  }
 
-    if (video.width && video.height) {
-      root.find('.fp-logo').css('--fp-aspect-ratio', (video.width / video.height).toFixed(2));
-    }    
+  api.bind('ready', function( e, api, video ) {
+    api.setLogoPosition();
 
     // Remove Top and Bottom Black Bars
     if ( video.remove_black_bars ) {
