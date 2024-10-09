@@ -93,7 +93,6 @@
 .flowplayer.fixed-controls.is-splash .fp-timestamp, .flowplayer.fixed-controls.is-poster .fp-timestamp { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-elapsed, .flowplayer.fixed-controls.is-poster .fp-elapsed { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-duration, .flowplayer.fixed-controls.is-poster .fp-duration { display: none; }
-.flowplayer.fixed-controls.is-splash .fp-controls strong, .flowplayer.fixed-controls.is-poster .fp-controls strong { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-bar, .flowplayer.fixed-controls.is-poster .fp-bar { cursor: pointer; pointer-events: none }
 .flowplayer.fixed-controls.is-splash .fp-bar-slider, .flowplayer.fixed-controls.is-poster .fp-bar-slider { cursor: pointer; pointer-events: none }
 
