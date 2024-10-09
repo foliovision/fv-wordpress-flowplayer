@@ -141,7 +141,13 @@
           player.find( '.fp-logo' ).remove();
 
           let logo_url = $this.val();
-          if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) ) {
+
+          /**
+           * Only show preview if the logo is valid and is different from the default.
+           * This prevents the logo showing before the video is started, but at the same
+           * time show if if user picks are different image.
+           */
+          if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) && logo_url !== freedomplayer.conf.logo ) {
 
             // Update the logo in the loaded player
             let api = player.data( 'freedomplayer' )
