@@ -393,7 +393,7 @@ p.fp-title::after {
 }
 .flowplayer .fv-player-buttons {
   position: absolute;
-  bottom: 3em;
+  bottom: 4em;
 }
 .flowplayer .fv-player-buttons-center {
   left: 50%;
@@ -434,6 +434,7 @@ p.fp-title::after {
 }
 .flowplayer .fv-player-buttons li {
   float: left;
+  list-style-type: none;
   margin: 0 .3em;
   padding: 0;
 }
