@@ -708,6 +708,12 @@ class flowplayer_frontend extends flowplayer
         if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
+
+        $buttons_html = $this->get_buttons();
+        if ( ! empty( $buttons_html ) ) {
+          $attributes['class'] .= ' have-buttons';
+        }
+
         if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' ) {
           $attributes['data-fv_redirect'] = sanitize_url( trim($this->aCurArgs['end_action_value']) );
         } else if( !empty($this->aCurArgs['redirect']) ) {
@@ -861,7 +867,7 @@ class flowplayer_frontend extends flowplayer
           $this->ret['html'] .= "\t".'<div class="fp-ui"' . $fp_ui_style . '><noscript>Please enable JavaScript</noscript>'.$this->get_play_button().$preload.'</div>'."\n";
         }
 
-        $this->ret['html'] .= $this->get_buttons();
+        $this->ret['html'] .= $buttons_html;
 
         if( isset($splashend_contents) ) {
           $this->ret['html'] .= $splashend_contents;
