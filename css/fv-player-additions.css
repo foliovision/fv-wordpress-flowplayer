@@ -391,32 +391,30 @@ p.fp-title::after {
 .is-splash.flowplayer .fv-player-buttons, .is-loading.flowplayer .fv-player-buttons {
   display: none;
 }
-.flowplayer .fv-player-buttons-center {
+.flowplayer .fv-player-buttons {
   position: absolute;
+  bottom: 3em;
+}
+.flowplayer .fv-player-buttons-center {
   left: 50%;
 	margin-left: -34px;
-  bottom: 30px;
 }
 .flowplayer .fv-player-buttons > ul {
   position: relative;
   z-index: 20; /* make clickable */
   display: block;
   opacity: 1;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   margin: 0 auto;
+  list-style: none;
 }
 .flowplayer .fv-player-buttons > ul:last {
   margin-left: 0px;
 }
 .flowplayer .fv-player-buttons-right {
-  position: absolute;
   right: 0;
-  bottom: 30px;
 }
 .flowplayer .fv-player-buttons-left {
-  position: absolute;
   left: 0;
-  bottom: 30px;
 }
 .flowplayer.fixed-controls .fv-player-buttons-left, .flowplayer.fixed-controls .fv-player-buttons-right, .flowplayer.fixed-controls .fv-player-buttons-center {
   bottom: 0;
