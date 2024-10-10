@@ -876,7 +876,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-ready.is-youtube.is-cva .fp-ui {
   pointer-events: auto;
 }
-.flowplayer.is-ready.is-youtube .fp-ui .fp-play:before {
+.flowplayer.is-ready.is-youtube:not(.is-touch) .fp-ui .fp-play:before {
   content: " ";
   display: block;
   position: absolute;
