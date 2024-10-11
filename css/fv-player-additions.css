@@ -253,7 +253,8 @@
   padding-bottom: 0;
 }
 
-.flowplayer .fp-logo img {
+.flowplayer > .fp-player > .fp-logo > img {
+  border: 0;
   box-shadow: none;
   width: var(--fp-watermark-width, min(16vw, 128px));
   margin: auto auto 15px 15px;
