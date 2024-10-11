@@ -79,8 +79,15 @@ if( !function_exists('__') ) {
   }
 }
 
+$plugins = wp_get_active_and_valid_plugins();
+if ( function_exists( 'wp_get_active_network_plugins' ) ) {
+  $plugins = array_merge( $plugins, wp_get_active_network_plugins() );
+}
+
+$plugins = array_unique( $plugins );
+
 // Load FV Player
-foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
+foreach ( $plugins as $plugin ) {
   if(
     stripos($plugin,'/fv-player') !== false && stripos($plugin,'/fv-player.php') !== false ||
     stripos($plugin,'/fv-player-coconut') !== false && stripos($plugin,'/fv-player-coconut.php') !== false
@@ -90,6 +97,12 @@ foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
   }
 }
 unset( $plugin );
+
+global $fv_fp;
+if ( empty( $fv_fp ) ) {
+  wp_send_json( array( 'err' => 'Error: Unable to load FV Player.' ) );
+  die();
+}
 
 
 if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
