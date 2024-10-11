@@ -1,4 +1,4 @@
-/*global YT, fv_player_log, fv_player_track */
+/*global YT, FV_YT, fv_player_log, fv_player_track */
 
 /*eslint no-inner-declarations: 0*/
 /*eslint no-cond-assign: 0*/
@@ -9,19 +9,75 @@
  */
 
 if( fv_flowplayer_conf.youtube ) {
-  // If jQuery is already present use it to load the API as it won't show in browser as if the page is loading
-  // This is important if YouTube has issues in your location, it might just time out while loading
-  if( window.jQuery ) {
-    jQuery.getScript("https://www.youtube.com/iframe_api");
 
-  // ...loading it this way show the browser loading indicator for the tab
+  if( window.YT && YT.Player ) {
+    console.log( 'FV Player: YouTube Player API already present' );
+
+    fv_player_youtube_namespace();
+
+  } else if ( fv_player_youtube_script_already_there() ) {
+    console.log( 'FV Player: YouTube Player API already loading' );
+
+    fv_player_youtube_namespace();
+
   } else {
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.body.appendChild(tag);
+      // If jQuery is already present use it to load the API as it won't show loading indicator in browser tab header
+      // This is important if YouTube has issues in your location, it might just time out while loading
+    if( window.jQuery ) {
+      jQuery.ajax( {
+        dataType: "script",
+        cache: true,
+        url: "https://www.youtube.com/iframe_api?fv_player"
+      } );
+
+      // ...loading it this way show the browser loading indicator for the tab
+    } else {
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api?fv_player";
+      document.body.appendChild(tag);
+    }
+
+    fv_player_youtube_namespace();
   }
 }
 
+/**
+ * Move YT to FV_YT namespace, if it's the only YouTube Player API loaded.
+ */
+function fv_player_youtube_namespace() {
+  var intLoad = setInterval( function() {
+    if ( window.YT && YT.Player ) {
+      clearInterval( intLoad );
+
+      window.FV_YT = window.YT;
+
+      if ( ! fv_player_youtube_script_already_there() ) {
+        console.log( 'FV Player: YouTube: Rename YT to FV_YT' );
+        window.YT = null;
+
+      } else {
+        console.log( 'FV Player: YouTube: Copy YT to FV_YT' );
+      }
+    }
+
+  } );
+}
+
+/**
+ * Check if any other copy of YouTube Player API script is present.
+ */
+function fv_player_youtube_script_already_there() {
+  if ( document.scripts ) {
+    for ( var i=0; i < document.scripts.length; i++ ) {
+      // Match /iframe_api, but not /iframe_api?fv_player
+      if ( document.scripts[i].src.match( /\/iframe_api$/) && ! document.scripts[i].src.match( /\?fv_player$/ ) ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 
 
 
@@ -80,11 +136,11 @@ if( typeof(flowplayer) != "undefined" ) {
         jQuery('.fp-splash',root).css('pointer-events','');
         root.addClass('is-loading');
         break;
-      case YT.PlayerState.PLAYING:
+      case FV_YT.PlayerState.PLAYING:
         var api = root.data('flowplayer');
         api.load();
         break;
-      case YT.PlayerState.BUFFERING:
+      case FV_YT.PlayerState.BUFFERING:
         root.addClass('is-loading');
         // todo: put in placeholder splash screen as this event occurs if you use Video Link targetting a playlist item, but most of the time it triggers in onStateChange() already
         break;
@@ -233,7 +289,7 @@ if( typeof(flowplayer) != "undefined" ) {
 
             clearInterval(intLoad);
 
-            api.youtube = new YT.Player(
+            api.youtube = new FV_YT.Player(
               wrapperTag,
               fv_player_pro_youtube_player_vars(video_id, root)
             );
@@ -521,7 +577,7 @@ if( typeof(flowplayer) != "undefined" ) {
 
               break;
 
-            case YT.PlayerState.ENDED:  //  0
+            case FV_YT.PlayerState.ENDED:  //  0
               player.playing = false;
 
               // TODO: Sometimes the end time is missing 1 second to match the duration
@@ -539,7 +595,7 @@ if( typeof(flowplayer) != "undefined" ) {
               jQuery('.fp-ui',root).show();
               break;
 
-            case YT.PlayerState.PAUSED:   //  2
+            case FV_YT.PlayerState.PAUSED:   //  2
 
               // Was it paused because of unmuting?
               if( player.youtube_unmute_attempted === 1 ) {
@@ -569,7 +625,7 @@ if( typeof(flowplayer) != "undefined" ) {
               player.trigger( "pause", [player] );
               break;
 
-            case YT.PlayerState.PLAYING:    //  1
+            case FV_YT.PlayerState.PLAYING:    //  1
               triggerVideoInfoUpdate();
               onReady();
               triggerUIUpdate();
@@ -757,10 +813,10 @@ if( typeof(flowplayer) != "undefined" ) {
                   wrapperTag.className = 'fp-engine fvyoutube-engine';
                   common.prepend(common.find(".fp-player", root)[0], wrapperTag);
 
-                  var intLoad = setInterval( function() {
-                    if( typeof(YT) == "undefined" || typeof(YT.Player) == "undefined" ) {
-                      //console.log('YT not awaken yet!');
-                      return;
+                 var intLoad = setInterval( function() {
+                    if( typeof(FV_YT) == "undefined" || typeof(FV_YT.Player) == "undefined" ) {
+                     //console.log('YT not awaken yet!');
+                     return;
                     }
 
                     clearInterval(intLoad);
@@ -769,7 +825,7 @@ if( typeof(flowplayer) != "undefined" ) {
                       jQuery('presto-player[src*=\\.youtube\\.com], presto-player[src*=\\.youtu\\.be], presto-player[src*=\\.youtube-nocookie\\.com]').length ||
                       jQuery('iframe[src*=\\.youtube\\.com], iframe[src*=\\.youtu\\.be], iframe[src*=\\.youtube-nocookie\\.com]').length;*/
 
-                    youtube = new YT.Player(
+                    youtube = new FV_YT.Player(
                       wrapperTag,
                       fv_player_pro_youtube_player_vars(video_id, root, {
                         onReady: onReady,
