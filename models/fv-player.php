@@ -1752,11 +1752,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     //  rest is not depending of the skin settings or can use the default skin
     $skin = 'skin-'.$this->_get_option('skin');
 
-    if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
-      .flowplayer .fp-logo { display: block; opacity: 1; }
-    <?php endif; ?>
-
-    <?php if ( $this->_get_option('play_icon') ) {
+    if ( $this->_get_option('play_icon') ) {
       echo str_replace( '%play_icon%', esc_url( $this->_get_option( 'play_icon' ) ), $this->css_play_icon );
     } ?>
 
@@ -1792,7 +1788,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
       $sCSS = ! empty( $this->css_logo_positions[ $value ] ) ? $this->css_logo_positions[ $value ] : '';
-      ?>.flowplayer .fp-logo img { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
+      ?>.flowplayer > .fp-player > .fp-logo > img { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
 
     .flowplayer .fp-player .fp-captions p { background-color: <?php echo esc_html( $sSubtitleBgColor ); ?> }
 
