@@ -33,6 +33,11 @@ if ( ! defined( 'ABSPATH' ) ) {
   return;
 }
 
+global $fv_wp_flowplayer_ver;
+
+$fv_wp_flowplayer_ver = '8.0.7.2';
+$fv_wp_flowplayer_core_ver = '8.0.7.1';
+
 function fv_player_8_activate() {
 
   // Deactivate FV Player 7
@@ -108,11 +113,6 @@ if(
     }
   }
 }
-
-global $fv_wp_flowplayer_ver;
-
-$fv_wp_flowplayer_ver = '8.0.7.1';
-$fv_wp_flowplayer_core_ver = '8.0.7.1';
 
 if( file_exists( dirname( __FILE__ ) . '/includes/module.php' ) ) {
   include_once( dirname( __FILE__ ) . '/includes/module.php' );
