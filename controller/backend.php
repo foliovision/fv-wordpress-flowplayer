@@ -554,6 +554,9 @@ function fv_player_lchecks() {
 
     if( isset($aCheck->valid) && $aCheck->valid){
       fv_wp_flowplayer_install_extension('fv_player_pro');
+
+    } else if ( ! empty( $aCheck->message ) ) {
+      add_action( 'admin_notices', 'fv_player_install_pro_license_notice' );
     }
   }
 
@@ -1113,4 +1116,11 @@ function fv_player_setup_uninstall_script( $put_in_uninstall_php, $remove_uninst
   }
 
   return false;
+}
+
+function fv_player_install_pro_license_notice() {
+  $aCheck = get_transient( 'fv-player_license' );
+  if ( ! empty( $aCheck->message ) ) {
+    echo "<div class='error'>" . wp_kses( $aCheck->message, 'post' ) . "</div>";
+  }
 }
