@@ -2234,62 +2234,47 @@ if( typeof(flowplayer) != "undefined" ) {
       wrapperTag.className = 'fp-engine fvyoutube-engine';
       common.prepend(common.find(".fp-player", root)[0], wrapperTag);
 
-        //console.log('new YT preload');  //  probably shouldn't happen when used in lightbox
+      //console.log('new YT preload');  //  probably shouldn't happen when used in lightbox
 
-        // this is the event which lets the player load YouTube
-        jQuery(document).one('fv-player-yt-api-loaded', function() {
+      // this is the event which lets the player load YouTube
+      jQuery(document).one('fv-player-yt-api-loaded', function() {
 
-          // only one player can enter the loading phase
-          if( ( typeof(FV_YT) == "undefined" || typeof(FV_YT.Player) == "undefined" ) && window.fv_player_pro_yt_loading ) {
-            return;
-          }
-
-          window.fv_player_pro_yt_loading = true;
-
-          var intLoad = setInterval( function() {
-            // somehow the loading indicator disappears, so we put it back
-            api.loading = true;
-            root.addClass('is-loading');
-
-            if( typeof(FV_YT) == "undefined" || typeof(FV_YT.Player) == "undefined" ) {
-              return;
-            }
-
-            clearInterval(intLoad);
-
-            api.youtube = new FV_YT.Player(
-              wrapperTag,
-              fv_player_pro_youtube_player_vars(video_id, root)
-            );
-
-            jQuery('.fp-engine.fvyoutube-engine',root)[0].allowFullscreen = false;
-
-
-
-            // splash needs to cover the iframe
-            var splash = jQuery('.fp-splash',root);
-            jQuery('.fp-ui',root).before( splash );
-            splash.css('pointer-events','none');
-
-            jQuery('.fp-ui',root).before('<div class="fv-pf-yt-temp2"></div>');
-            if( flowplayer.support.iOS && flowplayer.support.iOS.version > 11 ) {
-              jQuery(root).addClass('is-ytios11');
-              jQuery(root).find('.fv-pf-yt-temp2').on('click', function(){
-                api.toggle();
-              });
-            }
-
-            api.fv_yt_onReady = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onReady',fv_player_pro_youtube_onReady);
-            api.fv_yt_onStateChange = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onStateChange',fv_player_pro_youtube_onStateChange);
-            api.fv_yt_onError = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onError',fv_player_pro_youtube_onError);
-
-          }, 50 );
-        });
-
-        if( !window.fv_player_pro_yt_load ) {
-          window.fv_player_pro_yt_load = true;
-          jQuery(document).trigger('fv-player-yt-api-loaded');
+        // only one player can enter the loading phase
+        if ( ! window.fv_player_pro_yt_load && window.fv_player_pro_yt_loading ) {
+          return;
         }
+
+        window.fv_player_pro_yt_loading = true;
+
+        api.youtube = new FV_YT.Player(
+          wrapperTag,
+          fv_player_pro_youtube_player_vars(video_id, root)
+        );
+
+        jQuery('.fp-engine.fvyoutube-engine',root)[0].allowFullscreen = false;
+
+        // splash needs to cover the iframe
+        var splash = jQuery('.fp-splash',root);
+        jQuery('.fp-ui',root).before( splash );
+        splash.css('pointer-events','none');
+
+        jQuery('.fp-ui',root).before('<div class="fv-pf-yt-temp2"></div>');
+        if( flowplayer.support.iOS && flowplayer.support.iOS.version > 11 ) {
+          jQuery(root).addClass('is-ytios11');
+          jQuery(root).find('.fv-pf-yt-temp2').on('click', function(){
+            api.toggle();
+          });
+        }
+
+        api.fv_yt_onReady = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onReady',fv_player_pro_youtube_onReady);
+        api.fv_yt_onStateChange = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onStateChange',fv_player_pro_youtube_onStateChange);
+        api.fv_yt_onError = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onError',fv_player_pro_youtube_onError);
+      });
+
+      if( !window.fv_player_pro_yt_load ) {
+        window.fv_player_pro_yt_load = true;
+        jQuery(document).trigger('fv-player-yt-api-loaded');
+      }
 
     }
   }
@@ -2781,48 +2766,25 @@ if( typeof(flowplayer) != "undefined" ) {
                   wrapperTag.className = 'fp-engine fvyoutube-engine';
                   common.prepend(common.find(".fp-player", root)[0], wrapperTag);
 
-                  var intLoad = setInterval( function() {
-                    if( typeof(FV_YT) == "undefined" || typeof(FV_YT.Player) == "undefined" ) {
-                      //console.log('YT not awaken yet!');
-                      return;
+                  youtube = new FV_YT.Player(
+                    wrapperTag,
+                    fv_player_pro_youtube_player_vars(video_id, root, {
+                      onReady: onReady,
+                      onStateChange: onStateChange,
+                      onError: onError,
+                      onApiChange: onApiChange,
+                    })
+                  );
+
+                  var iframe = jQuery('.fp-engine.fvyoutube-engine',root);
+                  iframe[0].allowFullscreen = false;
+                  /* in Chrome it's possible to double click the video entery YouTube fullscreen that way. Cancelling the event won't help, so here is a pseudo-fix */
+                  iframe.on("webkitfullscreenchange", function() {
+                    if (document.webkitCancelFullScreen) {
+                      document.webkitCancelFullScreen();
                     }
-
-                    clearInterval(intLoad);
-
-                    /*var had_youtube_before =
-                      jQuery('presto-player[src*=\\.youtube\\.com], presto-player[src*=\\.youtu\\.be], presto-player[src*=\\.youtube-nocookie\\.com]').length ||
-                      jQuery('iframe[src*=\\.youtube\\.com], iframe[src*=\\.youtu\\.be], iframe[src*=\\.youtube-nocookie\\.com]').length;*/
-
-                    youtube = new FV_YT.Player(
-                      wrapperTag,
-                      fv_player_pro_youtube_player_vars(video_id, root, {
-                        onReady: onReady,
-                        onStateChange: onStateChange,
-                        onError: onError,
-                        onApiChange: onApiChange,
-                      })
-                    );
-
-                    /*if( had_youtube_before ) {
-                      //youtube.loadVideoById( video_id, 0, 'default' );
-
-                      setTimeout( function() {
-                        onReady();
-                      },1000);
-                    }
-
-                    console.log(youtube);*/
-
-                    var iframe = jQuery('.fp-engine.fvyoutube-engine',root);
-                    iframe[0].allowFullscreen = false;
-                    /* in Chrome it's possible to double click the video entery YouTube fullscreen that way. Cancelling the event won't help, so here is a pseudo-fix */
-                    iframe.on("webkitfullscreenchange", function() {
-                      if (document.webkitCancelFullScreen) {
-                        document.webkitCancelFullScreen();
-                      }
-                      return false;
-                    });
-                  }, 5 );
+                    return false;
+                  });
                 }
 
                 //  exp: only needed if we decide not to use standard player for iPad etc.
