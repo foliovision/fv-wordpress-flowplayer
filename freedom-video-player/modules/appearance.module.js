@@ -122,7 +122,11 @@ flowplayer(function(api, root) {
   root = jQuery(root);
 
   api.setLogoPosition = function() {
-    if ( api.conf.logo_over_video && api.video && api.video.width && api.video.height) {
+    let is_old_safari =
+      freedomplayer.support.browser.safari && parseFloat( freedomplayer.support.browser.version ) < 14.1 ||
+      freedomplayer.support.iOS && parseFloat( freedomplayer.support.iOS.version ) < 15;
+
+    if ( api.conf.logo_over_video && api.video && api.video.width && api.video.height && ! is_old_safari ) {
       root.find('.fp-logo').css('--fp-aspect-ratio', ( api.video.width / api.video.height).toFixed(2));
     } else {
       root.find('.fp-logo').css('width', '100%').css('height', '100%');
