@@ -70,28 +70,15 @@ function fv_player_block_render($attributes, $content, $block) {
   ob_start();
 
   if( !empty( $attributes['player_id'] ) && !empty( $attributes['src'] ) ) {
-    $additional_atts = '';
+    $shortcode_dimensions = '';
 
     if( $attributes['align'] == 'wide' || $attributes['align'] == 'full' ) {
-      $additional_atts = 'width="100%" height="100%"';
+      $shortcode_dimensions = 'width="100%" height="100%"';
     } else  if( $attributes['align'] == 'left' || $attributes['align'] == 'right' ) {
-      $additional_atts = 'align="left|right"';
+      $shortcode_dimensions = 'align="left|right"';
     }
 
-    // Do not ignore other shortcode attributes added in the block shortcode
-    $content_shortcode_atts = shortcode_parse_atts( trim( trim( $content ), ']' ) );
-
-    foreach( $content_shortcode_atts as $k => $v ) {
-
-      // Ignore the shortcode attributes that are already handled
-      if ( in_array( $k, array( 0, 'id', 'width', 'full' ) ) ) {
-        continue;
-      }
-      $additional_atts .= ' ' . sanitize_key( $k ) . '="' . esc_attr( $v ) . '"';
-    }
-
-    echo '<div class="' . esc_attr( $attributes['className'] ) . ' align' . esc_attr( $attributes['align'] ) .'">' . do_shortcode( '[fvplayer id="' . intval( $attributes['player_id'] ) . '" ' . $additional_atts . ']' ) . '</div>';
-
+    echo '<div class="' . esc_attr( $attributes['className'] ) . ' align' . esc_attr( $attributes['align'] ) .'">' . do_shortcode( '[fvplayer id="' . intval( $attributes['player_id'] ) . '" ' . esc_html( $shortcode_dimensions ) . ']' ) . '</div>';
   } else if ( empty( $attributes['player_id']) && is_admin() ) {
     echo 'No player created yet.';
   } else if ( empty( $attributes['src']) && is_admin() ) {
