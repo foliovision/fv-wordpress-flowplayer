@@ -39,7 +39,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
   public static function list_videos( $videos, $from, $to, $color ) {
     ?>
     <p>Videos found: <?php echo count($videos); ?></p>
-    <table class="wp-list-table widefat fixed striped logentries">
+    <table class="wp-list-table widefat striped">
       <thead>
         <tr>
           <td>Player ID</td>
@@ -58,7 +58,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
           <td><?php if( isset($video->player_id) ) echo intval( $video->player_id ) ?></td>
           <td><?php echo intval( $video->id ) ?></td>
           <?php foreach( array('src', 'src1', 'src2', 'splash', 'mobile', 'rtmp', 'rtmp_path' ) AS $field ) : ?>
-            <td><?php echo wp_kses( self::hilight( $video->$field, $from, $to, $color ), array( 'span' => array() ) ); ?></td>
+            <td><?php echo wp_kses( self::hilight( $video->$field, $from, $to, $color ), array( 'span' => array( 'style' => array() ) ) ); ?></td>
           <?php endforeach; ?>
         </tr>
       <?php endforeach; ?>
@@ -69,7 +69,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
   public static function list_meta_data( $videos, $from, $to, $color ) {
     ?>
     <p>Video meta found: </p>
-    <table class="wp-list-table widefat fixed striped logentries">
+    <table class="wp-list-table widefat striped">
       <thead>
         <tr>
           <td>Player ID</td>
@@ -83,7 +83,7 @@ class FV_Player_Migration_Wizard extends FV_Player_Wizard_Base_Class {
           <td><?php if( isset( $video->player_id) ) echo intval( $video->player_id ); ?></td>
           <td><?php echo intval( $video->id ); ?></td>
           <?php foreach( array( 'meta_key', 'meta_value' ) AS $field ) : ?>
-            <td><?php echo self::hilight( $video->$field, $from, $to, $color ); ?></td>
+            <td><?php echo wp_kses( self::hilight( $video->$field, $from, $to, $color ), array( 'span' => array( 'style' => array() ) ) ); ?></td>
           <?php endforeach; ?>
         </tr>
       <?php endforeach; ?>
