@@ -256,10 +256,24 @@
 .flowplayer > .fp-player > .fp-logo > img {
   border: 0;
   box-shadow: none;
-  width: var(--fp-watermark-width, min(16vw, 128px));
-  margin: auto auto 15px 15px;
+  margin: auto auto 2% 2%;
   z-index: 0;
 }
+
+/* Logo size depending on player size class */
+.flowplayer > .fp-player > .fp-logo > img {
+  width: 10%;
+  min-width: calc( 600px * 0.15 );
+}
+.flowplayer.is-small > .fp-player > .fp-logo > img {
+  width: 15%;
+  min-width: calc( 400px * 0.2 );
+}
+.flowplayer.is-tiny > .fp-player > .fp-logo > img {
+  width: 20%;
+  min-width: calc( 300px * 0.2 );
+}
+
 .flowplayer.fixed-controls .fp-logo {bottom: 15px;}
 .flowplayer.is-popup-showing .fp-logo {display: none;}
 
