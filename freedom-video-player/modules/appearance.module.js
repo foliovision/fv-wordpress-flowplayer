@@ -47,22 +47,32 @@ flowplayer(function(api, root) {
     var controls = root.find('.fp-controls'),
       controls_width = controls.parent().width(),
       // here are the items that we can hide
-      constols_to_sacrifice = controls.find('.fp-duration, .fp-playbtn'),
+      controls_to_sacrifice = controls.find('.fp-duration, .fp-playbtn'),
       controls_items_width = 0;
 
-    constols_to_sacrifice.removeClass( 'wont-fit' );
+    controls_to_sacrifice.removeClass( 'wont-fit' );
     root.find('.fp-controls').children(':visible:not(.fp-timeline)').each( function() {
       controls_items_width += jQuery(this).outerWidth(true);
     } );
 
     if ( controls_items_width > controls_width ) {
-      constols_to_sacrifice.addClass( 'wont-fit' );
+      controls_to_sacrifice.addClass( 'wont-fit' );
     }
   }
 
   check_size();
 
-  jQuery(window).on('resize',check_size);
+  function debounce(func, wait) {
+    var timeout;
+    return function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(func, wait);
+    };
+  }
+
+  var debouncedCheckSize = debounce( check_size, 250 );
+
+  window.addEventListener('resize', debouncedCheckSize);
 
   if ('fonts' in document) {
     api.one('load', function() {
