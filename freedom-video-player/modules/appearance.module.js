@@ -17,10 +17,6 @@ flowplayer(function(api, root) {
       jQuery('.fp-subtitle',root).removeClass('is-wide');
     }
 
-    // core FV Player classes which are normally added in requestAnimationFrame, which increases CPU load too much
-    root.toggleClass('is-tiny', width < 400);
-    root.toggleClass('is-small', width < 600 && width >= 400 );
-
     // if the player is too narrow we put the timeline on top of the control bar
     var too_narrow = width < 480 + buttons_count*35;
 
@@ -32,7 +28,7 @@ flowplayer(function(api, root) {
     if( !had_fp_full ) {
       root.toggleClass('fp-full', root.hasClass('has-abloop') || too_narrow );
     }
-
+    
     var size = '';
     if( width < 400 ) size = 'is-tiny';
     else if( width < 600 && width >= 400 ) size = 'is-small';
