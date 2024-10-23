@@ -76,7 +76,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'bufferColor' => '#eeeeee',
           'durationColor' => '#eeeeee',
           'progressColor' => '#bb0000',
-          'timeColor' => '#eeeeee',
           'backgroundColor' => '#333333',
           'font-face' =>'Tahoma, Geneva, sans-serif',
           'design-timeline' => 'fp-full',
@@ -88,7 +87,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'bufferColor' => false,
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
-          'timeColor' => 'whitesmoke',
           'durationColor' => false,
           'design-timeline' => 'fp-slim',
           'design-icons' => 'fp-edgy'
@@ -99,7 +97,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'bufferColor' => false,
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
           'font-face' =>'Tahoma, Geneva, sans-serif',
-          'timeColor' => '#ffffff',
           'durationColor' => false,
           'design-timeline' => 'fp-full',
           'design-icons' => ' '
@@ -719,7 +716,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
         'hasBorder', 'borderColor', 'bufferColor', 'backgroundColor',
-        'font-face', 'progressColor', 'timeColor', 'durationColor',
+        'font-face', 'progressColor', 'durationColor',
         'design-timeline', 'design-icons'
       );
 
@@ -1681,7 +1678,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sBuffer = $this->_get_option(array($skin, 'bufferColor') );
       $sDuration = $this->_get_option( array($skin, 'durationColor') );
       $sProgress = $this->_get_option(array($skin, 'progressColor'));
-      $sTime = $this->_get_option( array($skin, 'timeColor') );
       $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
       $sAccent = $this->_get_option( array($skin, 'accent') );
 
@@ -1693,10 +1689,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
-        $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." }\n";
         $css .= $sel." .fp-controls .fv-fp-prevbtn:before, ".$sel." .fp-controls .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
         $css .= $sel." svg.fvp-icon { fill: ".$sDuration." !important; }\n";
+
+        $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fv-player-video-checker { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fp-controls svg { fill: ".$sDuration."; stroke: ".$sDuration." }\n";
       }
 
       if( $sBuffer ) {
@@ -1708,9 +1708,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
         $css .= $sel. " .fp-bar span.chapter_unbuffered{ background-color: ".$sTimeline." !important; }\n";
       }
-
-      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
-      $css .= $sel." .fv-player-video-checker { color: ".$sTime." !important; }\n";
 
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";

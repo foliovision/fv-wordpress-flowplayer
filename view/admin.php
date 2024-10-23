@@ -1238,11 +1238,12 @@ function fv_flowplayer_admin_skin() {
             .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
             .flowplayer .fp-menu a.fp-selected { background-color: #%val% !important }
             .flowplayer .fp-color { background-color: #%val% !important }',
-      'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; }
-                    .fv-player-video-checker { color: #%val% !important; }',
       'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
                     .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }
-                    .flowplayer svg.fvp-icon { fill: #%val% !important; }',
+                    .flowplayer svg.fvp-icon { fill: #%val% !important; }
+                    .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; }
+                    .freedomplayer .fp-controls svg { fill: #%val%; stroke: #%val% }
+                    .fv-player-video-checker { color: #%val% !important; }',
       'design-timeline' => '',
       'design-icons' => '',
     );
@@ -1368,15 +1369,6 @@ function fv_flowplayer_admin_skin() {
           'class'   => 'color',
           'default' => 'BB0000',
           'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
-        ),
-
-        array(
-          'type'    => 'input_text',
-          'key'     => array('skin-custom', 'timeColor'),
-          'name'    => __(  'Time', 'fv-player' ),
-          'class'   => 'color',
-          'default' => 'EEEEEE',
-          'data'    => array( 'fv-preview' => $aPreview['timeColor'] )
         ),
 
         array(
