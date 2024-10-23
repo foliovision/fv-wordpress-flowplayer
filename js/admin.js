@@ -173,10 +173,6 @@
             style += fv_player_admin.css_play_icon.replace( /%play_icon%/g, play_icon_url.trim() );
           }
 
-        } else if ($this.attr('name').endsWith('player-position]')) {
-          if ($this.val() === 'left')
-            style += preview;
-
         } else if($this.attr('type') == 'checkbox' ) {
           if ($this.prop('checked')) {
             newStyle = preview.replace(/%val%/g, '1');

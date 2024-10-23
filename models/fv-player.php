@@ -80,7 +80,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'canvas' => '#000000',
           'backgroundColor' => '#333333',
           'font-face' =>'Tahoma, Geneva, sans-serif',
-          'player-position' => '',
           'design-timeline' => 'fp-full',
           'design-icons' => ' '
       ),
@@ -91,7 +90,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'canvas' => '#000000',
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
-          'player-position' => '',
           'timeColor' => 'whitesmoke',
           'durationColor' => false,
           'design-timeline' => 'fp-slim',
@@ -104,7 +102,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'canvas' => '#000000',
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
           'font-face' =>'Tahoma, Geneva, sans-serif',
-          'player-position' => '',
           'timeColor' => '#ffffff',
           'durationColor' => false,
           'design-timeline' => 'fp-full',
@@ -681,7 +678,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = '0.7';
-    if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = '';
     if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __( 'Check out the amazing video here', 'fv-player' );
 
@@ -726,7 +722,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       // iterate over old keys and bring them in to the new, but skin marginBottom as it's in em units now
       $old_skinless_settings_array = array(
         'hasBorder', 'borderColor', /*'marginBottom',*/ 'bufferColor', 'canvas', 'backgroundColor',
-        'font-face', 'player-position', 'progressColor', 'timeColor', 'durationColor',
+        'font-face', 'progressColor', 'timeColor', 'durationColor',
         'design-timeline', 'design-icons'
       );
 
@@ -877,7 +873,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'parse_commas',
             'parse_comments',
             'play_icon',
-            'player-position',
             'playlist-design',
             'playlistBgColor',
             'playlistFontColor',
@@ -1791,8 +1786,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       ?>.flowplayer > .fp-player > .fp-logo > img { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
 
     .flowplayer .fp-player .fp-captions p { background-color: <?php echo esc_html( $sSubtitleBgColor ); ?> }
-
-    <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
 
     .flowplayer .fp-player.is-sticky { max-width: <?php echo intval( $this->_get_option('sticky_width') ); ?>px }
     @media screen and ( max-width: 480px ) {

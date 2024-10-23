@@ -1239,7 +1239,6 @@ function fv_flowplayer_admin_skin() {
                   .fvfp_admin_error_content {  background: #%val% !important; }
                   .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }',
       'font-face' => '#content .flowplayer, .flowplayer { font-family: %val%; }',
-      'player-position' => '.flowplayer { margin-left: 0 !important; }',
       'progressColor' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
             .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
             .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
@@ -1386,19 +1385,6 @@ function fv_flowplayer_admin_skin() {
         ),
 
         array(
-          'type'           => 'select',
-          'key'            => array('skin-custom', 'player-position'),
-          'first_td_class' => 'second-column',
-          'name'           => __(  'Player position', 'fv-player' ),
-          'default'        => '',
-          'options'        => array(
-            ''     => __(  'Centered', 'fv-player' ),
-            'left' => 'Left (no text-wrap)'
-          ),
-          'data'    => array( 'fv-preview' => $aPreview['player-position'] )
-        ),
-
-        array(
           'type'    => 'input_text',
           'key'     => array('skin-custom', 'progressColor'),
           'name'    => __(  'Progress', 'fv-player' ),
@@ -1476,7 +1462,6 @@ function fv_flowplayer_admin_skin() {
           $value = $fv_fp->_get_option('logoPosition');
           ?>
           <select name="logoPosition" class="small" style="width: 9em !important" data-fv-preview>
-            <option value="bottom-left"><?php esc_html_e( 'Position', 'fv-player' ); ?></option>
             <option <?php if( $value == 'bottom-left' ) echo "selected"; ?> value="bottom-left"><?php esc_html_e( 'Bottom-left', 'fv-player' ); ?></option>
             <option <?php if( $value == 'bottom-right' ) echo "selected"; ?> value="bottom-right"><?php esc_html_e( 'Bottom-right', 'fv-player' ); ?></option>
             <option <?php if( $value == 'top-left' ) echo "selected"; ?> value="top-left"><?php esc_html_e( 'Top-left', 'fv-player' ); ?></option>

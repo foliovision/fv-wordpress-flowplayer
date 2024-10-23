@@ -1085,8 +1085,6 @@ jQuery(document).ready(function($) {
 
           <input id="skin-slim[font-face]" name="skin-slim[font-face]" type="hidden"  value="Tahoma, Geneva, sans-serif" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }" />
 
-          <input id="skin-slim[player-position]" name="skin-slim[player-position]" type="hidden"  value="" data-fv-preview=".flowplayer { margin-left: 0 !important; }" />
-
           <input id="skin-slim[timeColor]" name="skin-slim[timeColor]" type="hidden"  value="#ffffff" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
                   .fv-player-video-checker { color: #%val% !important; }" />
 
@@ -1133,8 +1131,6 @@ jQuery(document).ready(function($) {
                  .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }" />
 
           <input id="skin-youtuby[font-face]" name="skin-youtuby[font-face]" type="hidden"  value="Tahoma, Geneva, sans-serif" data-fv-preview="#content .flowplayer, .flowplayer { font-family: %val%; }" />
-
-          <input id="skin-youtuby[player-position]" name="skin-youtuby[player-position]" type="hidden"  value="" data-fv-preview=".flowplayer { margin-left: 0 !important; }" />
 
           <input id="skin-youtuby[timeColor]" name="skin-youtuby[timeColor]" type="hidden"  value="#ffffff" data-fv-preview=".flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; } 
                   .fv-player-video-checker { color: #%val% !important; }" />
@@ -1227,17 +1223,6 @@ jQuery(document).ready(function($) {
                           <option value="&quot;Courier New&quot;, Courier, monospace">Courier New</option>
                           <option value="Helvetica, sans-serif">Helvetica</option>
                           <option value="Tahoma, Geneva, sans-serif" selected="selected">Tahoma, Geneva</option>
-                  
-          </select>
-        </td>   
-      </tr>
-
-          <tr>  
-        <td class="second-column"><label for="skin-custom[player-position]">Player position</label></td>
-        <td>
-          <select id="skin-custom[player-position]" name="skin-custom[player-position]" data-fv-preview=".flowplayer { margin-left: 0 !important; }">
-                          <option value="" selected="selected">Centered</option>
-                          <option value="left">Left (no text-wrap)</option>
                   
           </select>
         </td>   
@@ -2409,9 +2394,7 @@ Array
     [amazon_expire_force] => false
     [fixed_size] => false
     [js-everywhere] => false
-    [marginBottom] => 28
     [volume] => 0.7
-    [player-position] => 
     [playlist_advance] => 
     [sharing_email_text] => Check out the amazing video here
     [liststyle] => horizontal
@@ -2443,7 +2426,6 @@ Array
             [canvas] => #000000
             [backgroundColor] => #333333
             [font-face] => Tahoma, Geneva, sans-serif
-            [player-position] => 
             [progressColor] => #bb0000
             [timeColor] => #eeeeee
             [durationColor] => #eeeeee
