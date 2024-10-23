@@ -139,24 +139,6 @@ flowplayer(function(api, root) {
     }
   }
 
-  function is_screen_taller_than_video() {
-    let value = '';
-
-    if ( api.isFullscreen && api.video && api.video.width && api.video.height ) {
-      if ( api.video.width / api.video.height > window.innerWidth / window.innerHeight ) {
-        value = 0;
-      } else {
-        value = '';
-      }
-    }
-
-    root.find('.fp-logo').css('--fp-controls-height', value );
-  }
-
-  jQuery( window ).on( 'resize', is_screen_taller_than_video );
-
-  api.on( 'fullscreen fullscreen-exit', is_screen_taller_than_video );
-
   api.bind('ready', function( e, api, video ) {
     api.setLogoPosition();
 
