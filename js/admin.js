@@ -137,10 +137,8 @@
         }
 
         if ( 'logo' === $this.attr('name') ) {
-          let player = $( '.flowplayer-wrapper .freedomplayer' );
-          player.find( '.fp-logo' ).remove();
-
-          let logo_url = $this.val();
+          let player = $( '.flowplayer-wrapper .freedomplayer' ),
+            logo_url = $this.val();
 
           /**
            * Only show preview if the logo is valid and is different from the default.
@@ -148,6 +146,7 @@
            * time show if if user picks are different image.
            */
           if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) && ( logo_url !== freedomplayer.conf.logo || player.hasClass( 'is-ready' ) ) ) {
+            player.find( '.fp-logo' ).remove();
 
             // Update the logo in the loaded player
             let api = player.data( 'freedomplayer' )
