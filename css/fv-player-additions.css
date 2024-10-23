@@ -246,8 +246,8 @@
   aspect-ratio: var(--fp-aspect-ratio);
   position: static;
   height: 100%;
-  padding-bottom: var(--fp-controls-height, 2.4em);
   display: flex;
+  padding-bottom: .6em;
 }
 .flowplayer.fixed-controls .fp-logo {
   padding-bottom: 0;
