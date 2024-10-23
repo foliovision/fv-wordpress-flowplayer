@@ -113,10 +113,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     );
 
   public $css_logo_positions = array(
-    'bottom-left'  => "margin: auto auto 15px 15px",
-    'bottom-right' => "margin: auto 15px 15px auto",
-    'top-left'     => "margin: 15px auto auto 15px",
-    'top-right'    => "margin: 15px 15px auto auto",
+    'bottom-left'  => "margin: auto auto 2% 2%",
+    'bottom-right' => "margin: auto 2% 2% auto",
+    'top-left'     => "margin: 2% auto auto 2%",
+    'top-right'    => "margin: 2% 2% auto auto",
   );
 
   public $css_play_icon = ".freedomplayer .fp-play.fp-visible svg {
