@@ -1227,10 +1227,6 @@ function fv_flowplayer_admin_skin() {
     $aPreview = array(
       'hasBorder' => '.flowplayer{border:%val%px solid !important;}',
       'borderColor' => '.flowplayer{border-color:#%val% !important;}',
-      'marginBottom' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
-                  .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
-                  .flowplayer.has-abloop { margin-bottom: %val%px !important; }
-                  .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }',
       'bufferColor' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
                   .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }',
       'canvas' => '.flowplayer { background-color: #%val% !important; }',
@@ -1332,15 +1328,6 @@ function fv_flowplayer_admin_skin() {
           'class'   => 'color',
           'default' => '666666',
           'data'    => array( 'fv-preview' => $aPreview['borderColor'] )
-        ),
-
-        array(
-          'type'    => 'input_text',
-          'key'     => array('skin-custom', 'marginBottom'),
-          'name'    => __(  'Bottom Margin', 'fv-player' ),
-          'default' => 2.8,
-          'title'   => __(  'Enter value in em', 'fv-player' ),
-          'data'    => array( 'fv-preview' => $aPreview['marginBottom'] )
         ),
 
         array(

@@ -461,7 +461,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     // use the default value if the setting is empty
-    // however in case of marginBottom you might wish to enter 0 and we need to accept that
+    // however in case of numeric settings you might wish to enter 0 and we need to accept that
     // so we just check if the default if a number and if it is, we allow even 0 value
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
 
@@ -719,7 +719,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = $this->aDefaultSkins['skin-custom'];
 
-      // iterate over old keys and bring them in to the new, but skin marginBottom as it's in em units now
+      // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
         'hasBorder', 'borderColor', /*'marginBottom',*/ 'bufferColor', 'canvas', 'backgroundColor',
         'font-face', 'progressColor', 'timeColor', 'durationColor',
@@ -1690,17 +1690,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       if( $this->_get_option(array($skin, 'hasBorder')) ) {
         $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))."; }\n";
-      }
-
-      if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
-        $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
-        $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
-        $css .= $sel.".has-title-below { margin: 0 auto; }\n";
-
-        // we also use entry-content as some themes use .entry-content > * to set margin
-        $css .= $sel.".fixed-controls, .entry-content ".$sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
-        $css .= $sel.".has-abloop, .entry-content ".$sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
-        $css .= $sel.".fixed-controls.has-abloop, .entry-content ".$sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
       }
 
       $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
