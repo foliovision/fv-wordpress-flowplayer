@@ -1202,7 +1202,7 @@ function fv_flowplayer_admin_skin() {
   </div>
 
   <div id="skin-tab-skin" class="skin-tab-content">
-    <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-Skin-settings">
       <?php
           // skin change radios
           $fv_fp->_get_radio(array(
