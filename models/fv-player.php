@@ -77,7 +77,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'durationColor' => '#eeeeee',
           'progressColor' => '#bb0000',
           'timeColor' => '#eeeeee',
-          'canvas' => '#000000',
           'backgroundColor' => '#333333',
           'font-face' =>'Tahoma, Geneva, sans-serif',
           'design-timeline' => 'fp-full',
@@ -87,7 +86,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'hasBorder' => false,
           'borderColor' => false,
           'bufferColor' => false,
-          'canvas' => '#000000',
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
           'timeColor' => 'whitesmoke',
@@ -99,7 +97,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'hasBorder' => false,
           'borderColor' => false,
           'bufferColor' => false,
-          'canvas' => '#000000',
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
           'font-face' =>'Tahoma, Geneva, sans-serif',
           'timeColor' => '#ffffff',
@@ -721,7 +718,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
-        'hasBorder', 'borderColor', /*'marginBottom',*/ 'bufferColor', 'canvas', 'backgroundColor',
+        'hasBorder', 'borderColor', 'bufferColor', 'backgroundColor',
         'font-face', 'progressColor', 'timeColor', 'durationColor',
         'design-timeline', 'design-icons'
       );
@@ -1012,7 +1009,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         // now that we have skin colors separated in an arrayed sub-values,
         // we also need to check their values for HEX colors
         foreach ($value as $sub_array_key => $sub_array_value) {
-          if( ( strpos( $sub_array_key, 'Color' ) !== FALSE || strpos( $sub_array_key, 'canvas' ) !== FALSE ) && strpos($sub_array_value, 'rgba') === FALSE) {
+          if ( strpos( $sub_array_key, 'Color' ) !== FALSE && strpos($sub_array_value, 'rgba') === FALSE) {
             $aNewOptions[$key][$sub_array_key] = (strpos($sub_array_value, '#') === FALSE ? '#' : '').strtolower($sub_array_value);
           }
         }
@@ -1023,7 +1020,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
       }
-      if( ( strpos( $key, 'Color' ) !== FALSE || strpos( $key, 'canvas' ) !== FALSE ) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
+      if ( strpos( $key, 'Color' ) !== FALSE && strpos($aNewOptions[$key], 'rgba') === FALSE) {
         $aNewOptions[$key] = (strpos($aNewOptions[$key], '#') === FALSE ? '#' : '').strtolower($aNewOptions[$key]);
       }
     }
@@ -1692,7 +1689,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))."; }\n";
       }
 
-      $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
       $css .= $sel." .fp-color, ".$sel." .fp-selected, .fp-playlist-external.".$skin." .fvp-progress, .fp-color { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";

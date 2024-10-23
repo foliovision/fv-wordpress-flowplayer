@@ -1229,7 +1229,6 @@ function fv_flowplayer_admin_skin() {
       'borderColor' => '.flowplayer{border-color:#%val% !important;}',
       'bufferColor' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
                   .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }',
-      'canvas' => '.flowplayer { background-color: #%val% !important; }',
       'backgroundColor' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
                   .fv_player_popup {  background: #%val% !important;}
                   .fvfp_admin_error_content {  background: #%val% !important; }
@@ -1337,15 +1336,6 @@ function fv_flowplayer_admin_skin() {
           'class'   => 'color',
           'default' => 'EEEEEE',
           'data'    => array( 'fv-preview' => $aPreview['bufferColor'] )
-        ),
-
-        array(
-          'type'    => 'input_text',
-          'key'     => array('skin-custom', 'canvas'),
-          'name'    => __(  'Canvas', 'fv-player' ),
-          'class'   => 'color',
-          'default' => '000000',
-          'data'    => array( 'fv-preview' => $aPreview['canvas'] )
         ),
 
         array(
