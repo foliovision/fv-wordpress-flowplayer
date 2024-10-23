@@ -198,6 +198,8 @@
       // update progress bar + icons style
       style += skinPreviewDropdownChanged();
 
+      show_player_controls_for_preview();
+
       $('#fv-style-preview').html(style);
     }
 
@@ -215,6 +217,11 @@
     $( '#show_controlbar' ).on( 'change', function() {
       player.toggleClass( 'fixed-controls', $( this ).prop( 'checked' ) );
     } );
+
+
+    function show_player_controls_for_preview() {
+      $( '.freedomplayer.is-ready' ).addClass( 'is-mouseover' ).removeClass( 'is-mouseout' );
+    }
 
     /**
      *
@@ -258,6 +265,8 @@
             player.find( options.selector_disabled ).remove();
           }
         }
+
+        show_player_controls_for_preview();
       });
     }
 
