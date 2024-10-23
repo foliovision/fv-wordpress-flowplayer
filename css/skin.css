@@ -425,7 +425,11 @@
     display: none; }
   .freedomplayer .fp-shown {
     display: block !important; }
-  .freedomplayer div {
+  .freedomplayer div,
+  .freedomplayer a,
+  .freedomplayer p,
+  .freedomplayer span,
+  .freedomplayer strong {
     -webkit-box-sizing: border-box;
             box-sizing: border-box; }
   .freedomplayer.is-ready:not(.is-poster) {
