@@ -338,7 +338,6 @@ function fv_flowplayer_admin_scripts() {
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), filemtime( (__DIR__).'/../js/admin.js' ), true );
     wp_localize_script( 'fv-player-admin', 'fv_player_admin', array(
       'css_logo_positions' => $fv_fp->css_logo_positions,
-      'css_play_icon'      => $fv_fp->css_play_icon,
     ) );
 
     wp_enqueue_script('fv-player-settings', flowplayer::get_plugin_url().'/js/settings.js',array('jquery'), filemtime( (__DIR__).'/../js/settings.js' ), true );

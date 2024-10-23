@@ -107,35 +107,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     'top-right'    => "margin: 2% 2% auto auto",
   );
 
-  public $css_play_icon = ".freedomplayer .fp-play.fp-visible svg {
-    opacity: 0;
-  }
-  .fp-play:before {
-    background-image: url(\"%play_icon%\");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 6em;
-    height: 6em;
-    content: ' ';
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: auto;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all .2s;
-  }
-  .freedomplayer.is-small .fp-play:before, .freedomplayer.is-tiny .fp-play:before {
-    max-height: 30%;
-  }
-  .fp-play.fp-visible:before {
-    opacity: 1;
-    transform: scale(1);
-  }";
-
   private $help_html = array(
     'a'     => array( 'href' => array(), 'target' => array() ),
     'code'  => array(),
@@ -863,7 +834,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'overlay_width',
             'parse_commas',
             'parse_comments',
-            'play_icon',
             'playlist-design',
             'playlistBgColor',
             'playlistFontColor',
@@ -1720,9 +1690,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     //  rest is not depending of the skin settings or can use the default skin
     $skin = 'skin-'.$this->_get_option('skin');
 
-    if ( $this->_get_option('play_icon') ) {
-      echo str_replace( '%play_icon%', esc_url( $this->_get_option( 'play_icon' ) ), $this->css_play_icon );
-    } ?>
+    ?>
 
     .wpfp_custom_background { display: none; position: absolute; background-position: center center; background-repeat: no-repeat; background-size: contain; width: 100%; height: 100%; z-index: 1 }
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }

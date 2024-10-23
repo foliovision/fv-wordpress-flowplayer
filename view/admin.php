@@ -1439,13 +1439,6 @@ function fv_flowplayer_admin_skin() {
         )
       ); ?>
       <tr>
-        <td class="first aligntop-input"><label for="play_icon">Play Icon:</label></td>
-        <td>
-          <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Recommended size is 168 pixels.', 'fv-player' ); ?>" data-fv-preview />
-          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Icon', 'fv-player' ); ?>" />
-        </td>
-      </tr>
-      <tr>
         <td></td>
         <td>
           <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>

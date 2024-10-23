@@ -167,12 +167,6 @@
             }
           }
 
-        } else if ( 'play_icon' === $this.attr('name') ) {
-          let play_icon_url = $this.val();
-          if ( play_icon_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) ) {
-            style += fv_player_admin.css_play_icon.replace( /%play_icon%/g, play_icon_url.trim() );
-          }
-
         } else if($this.attr('type') == 'checkbox' ) {
           if ($this.prop('checked')) {
             newStyle = preview.replace(/%val%/g, '1');
