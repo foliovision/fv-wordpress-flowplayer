@@ -73,7 +73,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'skin-custom' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'bufferColor' => '#eeeeee',
           'durationColor' => '#eeeeee',
           'progressColor' => '#bb0000',
           'backgroundColor' => '#333333',
@@ -84,7 +83,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'skin-slim' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'bufferColor' => false,
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
           'durationColor' => false,
@@ -94,7 +92,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'skin-youtuby' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'bufferColor' => false,
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
           'font-face' =>'Tahoma, Geneva, sans-serif',
           'durationColor' => false,
@@ -715,7 +712,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
-        'hasBorder', 'borderColor', 'bufferColor', 'backgroundColor',
+        'hasBorder', 'borderColor', 'backgroundColor',
         'font-face', 'progressColor', 'durationColor',
         'design-timeline', 'design-icons'
       );
@@ -1675,7 +1672,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sel = '.flowplayer.'.$skin;
 
       $sBackground = $this->_get_option( array($skin, 'backgroundColor') );
-      $sBuffer = $this->_get_option(array($skin, 'bufferColor') );
       $sDuration = $this->_get_option( array($skin, 'durationColor') );
       $sProgress = $this->_get_option(array($skin, 'progressColor'));
       $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
@@ -1697,11 +1693,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sDuration." !important; }\n";
         $css .= $sel." .fv-player-video-checker { color: ".$sDuration." !important; }\n";
         $css .= $sel." .fp-controls svg { fill: ".$sDuration."; stroke: ".$sDuration." }\n";
-      }
-
-      if( $sBuffer ) {
-        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
-        $css .= $sel. " .fp-bar span.chapter_buffered{ background-color: ".$sBuffer." !important; }\n";
       }
 
       if( $sTimeline ) {
