@@ -1236,7 +1236,7 @@ function fv_flowplayer_admin_skin() {
       'font-face' => '#content .flowplayer, .flowplayer { font-family: %val%; }',
       'progressColor' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
             .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
-            .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
+            .flowplayer .fp-menu a.fp-selected { background-color: #%val% !important }
             .flowplayer .fp-color { background-color: #%val% !important }',
       'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; }
                     .fv-player-video-checker { color: #%val% !important; }',
