@@ -589,7 +589,7 @@ class flowplayer_frontend extends flowplayer
 
         if(
           !empty($this->aCurArgs['embed']) && ( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) ||
-          $this->_get_option('disableembedding') && ( empty($this->aCurArgs['embed']) || $this->aCurArgs['embed'] != 'true' )
+          ! $this->_get_option('ui_embed') && ( empty($this->aCurArgs['embed']) || $this->aCurArgs['embed'] != 'true' )
         ) {
 
         } else {
@@ -1413,7 +1413,7 @@ class flowplayer_frontend extends flowplayer
     global $post;
 
     $sSharingText = $this->_get_option('sharing_email_text' );
-    $bVideoLink = empty($this->aCurArgs['linking']) ? !$this->_get_option('disable_video_hash_links' ) : $this->aCurArgs['linking'] === 'true';
+    $bVideoLink = empty($this->aCurArgs['linking']) ? $this->_get_option( 'ui_video_links' ) : $this->aCurArgs['linking'] === 'true';
 
     if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] ) {
       $aSharing = explode( ';', $this->aCurArgs['share'] );
@@ -1466,7 +1466,7 @@ class flowplayer_frontend extends flowplayer
 
     if(
       !empty($this->aCurArgs['embed']) && ( $this->aCurArgs['embed'] == 'false' || $this->aCurArgs['embed'] == 'off' ) ||
-      $this->_get_option('disableembedding') && ( empty($this->aCurArgs['embed']) || $this->aCurArgs['embed'] != 'true' )
+      ! $this->_get_option('ui_embed') && ( empty($this->aCurArgs['embed']) || $this->aCurArgs['embed'] != 'true' )
     ) {
       $sHTMLEmbed = '';
     }
@@ -1475,7 +1475,7 @@ class flowplayer_frontend extends flowplayer
       $sHTMLSharing = '';
     } else if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] && $this->aCurArgs['share'] != 'no' && $this->aCurArgs['share'] != 'false' ) {
 
-    } else if( $this->_get_option('disablesharing') ) {
+    } else if( ! $this->_get_option('ui_sharing') ) {
       $sHTMLSharing = '';
     }
 

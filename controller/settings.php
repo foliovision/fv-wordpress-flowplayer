@@ -229,7 +229,7 @@ function fv_player_admin_pointer_boxes() {
     );
   }
 
-  if( $fv_fp->_get_option('video_sitemap') && !$fv_fp->_get_option('disableembedding') && !$fv_fp->_get_option('notice_xml_sitemap_iframes') ) {
+  if( $fv_fp->_get_option('video_sitemap') && $fv_fp->_get_option( 'ui_embed' ) && !$fv_fp->_get_option('notice_xml_sitemap_iframes') ) {
     $fv_fp->pointer_boxes['fv_flowplayer_notice_xml_sitemap_iframes'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_flowplayer_notice_xml_sitemap_iframes',
@@ -322,7 +322,8 @@ function fv_wp_flowplayer_pointers_ajax() {
 add_action('admin_enqueue_scripts', 'fv_flowplayer_admin_scripts');
 
 function fv_flowplayer_admin_scripts() {
-  global $fv_wp_flowplayer_ver;
+  global $fv_wp_flowplayer_ver, $fv_fp;
+
   if( fv_player_is_admin_screen() ) {
     wp_enqueue_media();
 
@@ -335,6 +336,9 @@ function fv_flowplayer_admin_scripts() {
 
     wp_enqueue_script('jquery-minicolors', flowplayer::get_plugin_url().'/js/jquery-minicolors/jquery.minicolors.min.js',array('jquery'), $fv_wp_flowplayer_ver );
     wp_enqueue_script('fv-player-admin', flowplayer::get_plugin_url().'/js/admin.js',array('jquery','jquery-minicolors'), filemtime( (__DIR__).'/../js/admin.js' ), true );
+    wp_localize_script( 'fv-player-admin', 'fv_player_admin', array(
+      'css_logo_positions' => $fv_fp->css_logo_positions,
+    ) );
 
     wp_enqueue_script('fv-player-settings', flowplayer::get_plugin_url().'/js/settings.js',array('jquery'), filemtime( (__DIR__).'/../js/settings.js' ), true );
 

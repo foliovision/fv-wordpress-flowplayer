@@ -387,7 +387,7 @@ function flowplayer_prepare_scripts() {
       $aConf['speeds'] = array( 0.5,1,1.5,2 );
     }
 
-    $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? !$fv_fp->_get_option('disable_video_hash_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
+    $aConf['video_hash_links'] = empty($fv_fp->aCurArgs['linking']) ? $fv_fp->_get_option( 'ui_video_links' ) : $fv_fp->aCurArgs['linking'] === 'true';
 
     if( apply_filters( 'fv_flowplayer_safety_resize', true) ) {
       $aConf['safety_resize'] = true;
@@ -400,6 +400,7 @@ function flowplayer_prepare_scripts() {
     }
 
     if( $sLogo ) $aConf['logo'] = $sLogo;
+    if ( $fv_fp->_get_option( 'logo_over_video' ) ) $aConf['logo_over_video'] = true;
 
     // Used to restore volume, removed in JS if volume stored in browser localStorage
     $aConf['volume'] = floatval( $fv_fp->_get_option('volume') );
@@ -483,6 +484,10 @@ function flowplayer_prepare_scripts() {
       $aConf['matomo_site_id'] = $fv_fp->_get_option('matomo_site_id');
     }
 
+    if( $fv_fp->_get_option('ui_airplay') ) {
+      $aConf['airplay'] = true;
+    }
+
     $aConf['chromecast'] = false; // tell core Freedom Video Player and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['fv_chromecast'] = array(
@@ -525,6 +530,11 @@ function flowplayer_prepare_scripts() {
     }
 
     if( is_admin() ) $aConf['wpadmin'] = true;
+
+    // Is it the wp-admin -> FV Player -> Settings screen?
+    if ( did_action( 'admin_head-fv-player_page_fvplayer' ) ) {
+      $aConf['skin_preview']       = true;
+    }
 
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
 

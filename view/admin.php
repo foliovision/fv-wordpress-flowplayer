@@ -234,7 +234,6 @@ function fv_flowplayer_admin_default_options() {
             p.description { font-style: normal; }
           </style>
           <table class="form-table2">
-            <?php $fv_fp->_get_checkbox(__( 'Controlbar Always Visible', 'fv-player' ), 'show_controlbar' ); ?>
             <tr>
               <td><label for="width"><?php esc_html_e( 'Default Video Size', 'fv-player' ); ?>:</label></td>
               <td>
@@ -255,11 +254,8 @@ function fv_flowplayer_admin_default_options() {
             </tr>
 
             <?php $fv_fp->_get_checkbox(__( 'Disable Admin Video Checker', 'fv-player' ), 'disable_videochecker', __( 'Checks your video encoding when you open a post with video as admin. Notifies you about possible playback issues.', 'fv-player' ) ); ?>
-            <?php $fv_fp->_get_checkbox(__( 'Disable Embed Button', 'fv-player' ), 'disableembedding', __( 'Removes embed button from top bar.', 'fv-player' ) ); ?>
             <?php $fv_fp->_get_checkbox(__( 'Disable Playlist Autoadvance', 'fv-player' ), 'playlist_advance', __( 'Playlist won\'t play the next video automatically.', 'fv-player' ) ); ?>
-            <?php $fv_fp->_get_checkbox(__( 'Disable Sharing', 'fv-player' ), 'disablesharing', __( 'Removes sharing buttons from top bar.', 'fv-player' ) ); ?>
-            <?php $fv_fp->_get_checkbox(__( 'Disable Video Links', 'fv-player' ), 'disable_video_hash_links', __( 'Removes the "Link" item to the top bar.', 'fv-player' ), __( "Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-player' ) ); ?>
-            <?php $fv_fp->_get_checkbox(__( 'Enable Chromecast', 'fv-player' ), 'chromecast', __( 'Adds support for Google Chromecast.', 'fv-player' ) ); ?>
+
 
             <?php if( $fv_fp->_get_option('rtmp') ) : ?>
               <tr>
@@ -274,33 +270,12 @@ function fv_flowplayer_admin_default_options() {
 
             <?php $fv_fp->_get_checkbox(__( 'Force HD Streaming', 'fv-player' ), 'hd_streaming', __( 'Use HD quality for HLS/MPEG-DASH even on slow connections.', 'fv-player' ), __(  'User can still switch to lower quality by hand. Doesn\'t work on iPhones.', 'fv-player' ) ); ?>
 
-            <?php $fv_fp->_get_checkbox(__( 'Fullscreen Button', 'fv-player' ), 'allowfullscreen', __( 'Adds fullscreen button to player control bar.', 'fv-player' ) ); ?>
-
             <tr>
               <td><label for="googleanalytics"><?php esc_html_e( 'Google Analytics ID', 'fv-player' ); ?>:</label></td>
               <td>
                 <p class="description">
                   <input type="text" name="googleanalytics" id="googleanalytics" value="<?php echo esc_attr( $fv_fp->_get_option('googleanalytics') ); ?>" placeholder="<?php esc_attr_e( 'Will be automatically loaded when playing a video.', 'fv-player' ); ?>" />
                 </p>
-              </td>
-            </tr>
-            <tr>
-              <td><label for="logo">Logo:</label></td>
-              <td>
-
-                <input type="text"  name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste logo url or upload image to show custom logo on player.', 'fv-player' ); ?>"/>
-                <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Image', 'fv-player' ); ?>" alt="Select Logo" />
-
-                <?php
-                $value = $fv_fp->_get_option('logoPosition');
-                ?>
-                <select name="logoPosition" class="small">
-                  <option value="bottom-left"><?php esc_html_e( 'Position', 'fv-player' ); ?></option>
-                  <option <?php if( $value == 'bottom-left' ) echo "selected"; ?> value="bottom-left"><?php esc_html_e( 'Bottom-left', 'fv-player' ); ?></option>
-                  <option <?php if( $value == 'bottom-right' ) echo "selected"; ?> value="bottom-right"><?php esc_html_e( 'Bottom-right', 'fv-player' ); ?></option>
-                  <option <?php if( $value == 'top-left' ) echo "selected"; ?> value="top-left"><?php esc_html_e( 'Top-left', 'fv-player' ); ?></option>
-                  <option <?php if( $value == 'top-right' ) echo "selected"; ?> value="top-right"><?php esc_html_e( 'Top-right', 'fv-player' ); ?></option>
-                </select>
               </td>
             </tr>
 
@@ -315,18 +290,6 @@ function fv_flowplayer_admin_default_options() {
             </tr>
 
             <?php $fv_fp->_get_checkbox(__( 'Multiple video playback', 'fv-player' ), 'multiple_playback', __( 'Allows multiple players to play at once. Only one player remains audible.', 'fv-player' ) ); ?>
-
-            <?php $fv_fp->_get_checkbox(__( 'No Picture Button', 'fv-player' ), 'ui_no_picture_button', __( 'Adds a button to turn the video picture on and off.', 'fv-player' ) ); ?>
-
-            <tr>
-              <td class="first"><label for="sticky_video">Play Icon:</label></td>
-              <td>
-                <p class="description">
-                <input type="text"  name="play_icon" id="play_icon" value="<?php echo esc_attr( $fv_fp->_get_option('play_icon') ); ?>" class="large" placeholder="<?php esc_attr_e( 'The big play icon on top of the player. Recommended size is 168 pixels.', 'fv-player' ); ?>"/>
-                <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Icon', 'fv-player' ); ?>" />
-                </p>
-              </td>
-            </tr>
 
             <tr>
 							<td><label for="liststyle"><?php esc_html_e( 'Playlist style', 'fv-player' ); ?>:</label></td>
@@ -364,34 +327,11 @@ function fv_flowplayer_admin_default_options() {
 
             <?php //$fv_fp->_get_checkbox(__( 'Popup Box', 'fv-player' ), 'popupbox', __( 'Shows a generic "Would you like to replay the video?" message at the end of each video.', 'fv-player' ) ); ?>
 
-            <?php $fv_fp->_get_checkbox(__( 'Repeat Button', 'fv-player' ), 'ui_repeat_button', __( 'Adds a button to set playlist/track repeat and shuffle.', 'fv-player' ) ); ?>
-
-            <?php $fv_fp->_get_checkbox(__( 'Rewind/Forward Button', 'fv-player' ), 'ui_rewind_button', __( 'Adds a button to go 10 seconds back/forth.', 'fv-player' ) ); ?>
-
             <tr>
               <td><label for="sharing_text"><?php esc_html_e( 'Sharing Text', 'fv-player' ); ?>:</label></td>
               <td>
                 <p class="description">
                   <input type="text" name="sharing_email_text" id="sharing_email_text" value="<?php echo esc_attr( $fv_fp->_get_option('sharing_email_text') ); ?>" placeholder="<?php esc_attr_e( 'Check out the amazing video here', 'fv-player' ); ?>" />
-                </p>
-              </td>
-            </tr>
-
-            <?php $fv_fp->_get_checkbox(__( 'Speed Buttons', 'fv-player' ), 'ui_speed', __( 'Speed buttons control playback speed and only work in HTML5 compatible browsers.', 'fv-player' ) ); ?>
-
-            <tr>
-              <td><label for="ui_speed_increment"><?php esc_html_e( 'Speed Step', 'fv-player' ); ?>:</label></td>
-              <td colspan="3">
-                <p class="description">
-                  <?php
-                  $value = $fv_fp->_get_option('ui_speed_increment');
-                  ?>
-                  <select id="ui_speed_increment" name="ui_speed_increment">
-                    <option value="0.1"   <?php if( $value == 0.1 ) echo ' selected="selected"'; ?> >0.1</option>
-                    <option value="0.25"  <?php if( $value == 0.25 ) echo ' selected="selected"'; ?> >0.25</option>
-                    <option value="0.5"   <?php if ( $value == 0.5 )  echo ' selected="selected"'; ?> >0.5</option>
-                  </select>
-                  <?php esc_html_e( 'Speed buttons will increase or decrease the speed in steps of selected value', 'fv-player' ); ?>
                 </p>
               </td>
             </tr>
@@ -449,7 +389,7 @@ jQuery(document).ready(function($) {
       fv_flowplayer_uploader.on('select', function() {
           attachment = fv_flowplayer_uploader.state().get('selection').first().toJSON();
 
-          $('.fv_flowplayer_target').val(attachment.url);
+          $('.fv_flowplayer_target').val( attachment.url ).trigger('change');
           $('.fv_flowplayer_target').removeClass('fv_flowplayer_target' );
       });
 
@@ -1211,7 +1151,8 @@ function fv_flowplayer_admin_skin_get_table($options) {
       }
       ?>
         <tr>
-          <td colspan="2">
+          <td></td>
+          <td>
             <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
           </td>
         </tr>
@@ -1228,16 +1169,17 @@ function fv_flowplayer_admin_skin() {
   <div class="flowplayer-wrapper">
     <?php
     $fv_fp->admin_preview_player = flowplayer_content_handle( array(
-      'src' => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
-      'splash' => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
-      'autoplay' => 'false',
-      'preroll' => 'no',
-      'postroll' => 'no',
+      'src'       => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
+      'splash'    => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
+      'autoplay'  => 'false',
+      'preroll'   => 'no',
+      'postroll'  => 'no',
       'subtitles' => plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
-      'caption' => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
-      'playlist' => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130',
+      'caption'   => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
+      'playlist'  => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130',
 			'liststyle' => 'horizontal',
-      'vast' => 'skip'
+      'vast'      => 'skip',
+      'checker'   => 'no'
       ) );
     $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
 
@@ -1248,264 +1190,301 @@ function fv_flowplayer_admin_skin() {
     remove_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
     remove_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
     ?>
-    <?php esc_html_e( 'Hint: play the video to see live preview of the color settings', 'fv-player' ) ?>
+    <?php esc_html_e( 'Hint: play the video to see live preview of the Skin, Logo and Controls settings', 'fv-player' ) ?>
   </div>
 
-  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+  <div id="fv_flowplayer_admin_skin_tabs">
+    <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
+      <a href="#skin-tab-skin" class="nav-tab nav-tab-active" style="outline: 0px;">Skin</a>
+      <a href="#skin-tab-logo" class="nav-tab" style="outline: 0px;">Logo</a>
+      <a href="#skin-tab-controls" class="nav-tab" style="outline: 0px;">Controls</a>
+    </h2>
+  </div>
+
+  <div id="skin-tab-skin" class="skin-tab-content">
+    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-Skin-settings">
+      <?php
+          // skin change radios
+          $fv_fp->_get_radio(array(
+            'key' => 'skin',
+            'name' => __( 'Skin', 'fv-player' ),
+            'style' => 'columns',
+            'values' => array(
+              'slim' => 'Slim',
+              'youtuby' => 'YouTuby',
+              'custom' => 'Custom'
+            ),
+            'default' => 'custom',
+            'data' => array(
+              'fv-skin' => ''
+            )
+          ));
+      ?>
+    </table>
+
     <?php
-        // skin change radios
-        $fv_fp->_get_radio(array(
-          'key' => 'skin',
-          'name' => __( 'Skin', 'fv-player' ),
-          'style' => 'columns',
-          'values' => array(
-            'slim' => 'Slim',
-            'youtuby' => 'YouTuby',
-            'custom' => 'Custom'
+
+    $aPreview = array(
+      'hasBorder' => '.flowplayer{border:%val%px solid !important;}',
+      'borderColor' => '.flowplayer{border-color:#%val% !important;}',
+      'backgroundColor' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
+                  .fv_player_popup {  background: #%val% !important;}
+                  .fvfp_admin_error_content {  background: #%val% !important; }
+                  .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }',
+      'font-face' => '#content .flowplayer, .flowplayer { font-family: %val%; }',
+      'progressColor' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
+            .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
+            .flowplayer .fp-menu a.fp-selected { background-color: #%val% !important }
+            .flowplayer .fp-color { background-color: #%val% !important }',
+      'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
+                    .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }
+                    .flowplayer svg.fvp-icon { fill: #%val% !important; }
+                    .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; }
+                    .freedomplayer .fp-controls svg { fill: #%val%; stroke: #%val% }
+                    .fv-player-video-checker { color: #%val% !important; }',
+      'design-timeline' => '',
+      'design-icons' => '',
+    );
+
+    // slim skin settings
+    $aSettings = array(
+        array(
+          'type'    => 'input_text',
+          'key'     => array('skin-slim', 'progressColor'),
+          'name'    => __(  'Color', 'fv-player' ),
+          'class'   => 'color',
+          'default' => 'BB0000',
+          'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
+        )
+      );
+
+    foreach( $fv_fp->aDefaultSkins['skin-slim'] AS $k => $v ) {
+      $aSettings[] =  array(
+          'type'    => 'input_hidden',
+          'key'     => array('skin-slim', $k),
+          'default' => $v,
+          'data'    => array( 'fv-preview' => $aPreview[$k] )
+        );
+    }
+
+    fv_flowplayer_admin_skin_get_table( array(
+      'skin_name'               => 'Slim',
+      'skin_radio_button_value' => 'slim',
+      'default'                 => true,
+      'items'                   => $aSettings
+    ) );
+
+    // YouTuby skin settings
+    $aSettings = array(
+        array(
+          'type'    => 'input_text',
+          'key'     => array('skin-youtuby', 'progressColor'),
+          'name'    => __(  'Color', 'fv-player' ),
+          'class'   => 'color',
+          'default' => 'BB0000',
+          'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
+        )
+      );
+
+    foreach( $fv_fp->aDefaultSkins['skin-youtuby'] AS $k => $v ) {
+      $aSettings[] =  array(
+          'type'    => 'input_hidden',
+          'key'     => array('skin-youtuby', $k),
+          'default' => $v,
+          'data'    => array( 'fv-preview' => $aPreview[$k] ),
+          'attributes' => array( 'readonly' => 'true' )
+        );
+    }
+
+    fv_flowplayer_admin_skin_get_table( array(
+      'skin_name'               => 'YouTuby',
+      'skin_radio_button_value' => 'youtuby',
+      'default'                 => false,
+      'items'                   => $aSettings
+    ) );
+
+
+
+    // custom skin settings
+    fv_flowplayer_admin_skin_get_table( array(
+      'skin_name'               => 'Custom',
+      'skin_radio_button_value' => 'custom',
+      'default' => false,
+      'items'                   => array(
+
+        array(
+          'type' => 'checkbox',
+          'key'  => array('skin-custom', 'hasBorder'),
+          'name' => __(  'Border', 'fv-player' ),
+          'data'    => array( 'fv-preview' => $aPreview['hasBorder'] )
+        ),
+
+        array(
+          'type'    => 'input_text',
+          'key'     => array('skin-custom', 'borderColor'),
+          'name'    => __(  'Border color', 'fv-player' ),
+          'class'   => 'color',
+          'default' => '666666',
+          'data'    => array( 'fv-preview' => $aPreview['borderColor'] )
+        ),
+
+        array(
+          'type'    => 'input_text',
+          'key'     => array('skin-custom', 'backgroundColor'),
+          'name'    => __(  'Controlbar', 'fv-player' ),
+          'class'   => 'color-opacity',
+          'default' => '333333',
+          'data'    => array( 'fv-preview' => $aPreview['backgroundColor'] )
+        ),
+
+        array(
+          'type'    => 'select',
+          'key'     => array('skin-custom', 'font-face'),
+          'name'    => __(  'Font Face', 'fv-player' ),
+          'options' => array(
+            'inherit'                                     => __(  '(inherit from template)', 'fv-player' ),
+            '&quot;Courier New&quot;, Courier, monospace' => 'Courier New',
+            'Helvetica, sans-serif'                       => 'Helvetica',
+            'Tahoma, Geneva, sans-serif'                  => 'Tahoma, Geneva'
           ),
-          'default' => 'custom',
-          'data' => array(
-            'fv-skin' => ''
+          'default' => 'Tahoma, Geneva, sans-serif',
+          'data'    => array( 'fv-preview' => $aPreview['font-face'] )
+        ),
+
+        array(
+          'type'    => 'input_text',
+          'key'     => array('skin-custom', 'progressColor'),
+          'name'    => __(  'Progress', 'fv-player' ),
+          'class'   => 'color',
+          'default' => 'BB0000',
+          'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
+        ),
+
+        array(
+          'type'    => 'input_text',
+          'key'     => array('skin-custom', 'durationColor'),
+          'name'    => __(  'Buttons', 'fv-player' ),
+          'class'   => 'color',
+          'default' => 'EEEEEE',
+          'data'    => array( 'fv-preview' => $aPreview['durationColor'] )
+        ),
+
+        array(
+          'type'           => 'select',
+          'key'            => array('skin-custom', 'design-timeline'),
+          'first_td_class' => 'second-column',
+          'name'           => __(  'Timeline', 'fv-player' ),
+          'default'        => ' ',
+          'options'        => array(
+            ' '          => __(  'Default', 'fv-player' ),
+            'fp-slim'    => __(  'Slim', 'fv-player' ),
+            'fp-full'    => __(  'Full', 'fv-player' ),
+            'fp-fat'     => __(  'Fat', 'fv-player' ),
+            'fp-minimal' => __(  'Minimal', 'fv-player' ),
           )
-        ));
+        ),
+
+        array(
+          'type'           => 'select',
+          'key'            => array('skin-custom', 'design-icons'),
+          'first_td_class' => 'second-column',
+          'name'           => __(  'Icons', 'fv-player' ),
+          'default'        => ' ',
+          'options'        => array(
+            ' '           => __(  'Default', 'fv-player' ),
+            'fp-edgy'     => __(  'Edgy', 'fv-player' ),
+            'fp-outlined' => __(  'Outlined', 'fv-player' ),
+            'fp-playful'  => __(  'Playful', 'fv-player' )
+          )
+        ),
+
+      )
+    ) );
     ?>
-  </table>
+  </div>
 
-  <?php
+  <div id="skin-tab-logo" class="skin-tab-content">
+    <table class="form-table2">
+      <tr>
+        <td class="aligntop-input"><label for="logo">Logo:</label></td>
+        <td>
 
-  $aPreview = array(
-    'hasBorder' => '.flowplayer{border:%val%px solid !important;}',
-    'borderColor' => '.flowplayer{border-color:#%val% !important;}',
-    'marginBottom' => '.flowplayer { margin: 0 auto %val%px auto !important; display: block !important; }
-                .flowplayer.fixed-controls { margin: 0 auto calc(%val%px + 30px) auto !important; display: block !important; }
-                .flowplayer.has-abloop { margin-bottom: %val%px !important; }
-                .flowplayer.fixed-controls.has-abloop { margin-bottom: calc(%val%px + 30px) !important; }',
-    'bufferColor' => '.flowplayer .fp-volumeslider, .flowplayer .noUi-background { background-color: #%val% !important; }
-                 .flowplayer .fp-buffer, .flowplayer .fv-ab-loop .noUi-handle { background-color: #%val% !important; }',
-    'canvas' => '.flowplayer { background-color: #%val% !important; }',
-    'backgroundColor' => '.flowplayer .fv-ab-loop .noUi-handle  { color:#%val% !important; }
-                 .fv_player_popup {  background: #%val% !important;}
-                 .fvfp_admin_error_content {  background: #%val% !important; }
-                 .flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { background-color: #%val% !important; }',
-    'font-face' => '#content .flowplayer, .flowplayer { font-family: %val%; }',
-    'player-position' => '.flowplayer { margin-left: 0 !important; }',
-    'progressColor' => '.flowplayer .fp-volumelevel { background-color: #%val% !important; }
-          .flowplayer .fp-progress, .flowplayer .fv-ab-loop .noUi-connect, .fv-player-buttons a.current { background-color: #%val% !important; }
-          .flowplayer .fp-dropdown li.active { background-color: #%val% !important }
-					.flowplayer .fp-color { background-color: #%val% !important }',
-    'timeColor' => '.flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; }
-                  .fv-player-video-checker { color: #%val% !important; }',
-    'durationColor' => '.flowplayer .fp-controls, .flowplayer .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color:#%val% !important; }
-                  .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }
-                  .flowplayer svg.fvp-icon { fill: #%val% !important; }',
-    'design-timeline' => '',
-    'design-icons' => '',
-  );
-
-  // slim skin settings
-  $aSettings = array(
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-slim', 'progressColor'),
-        'name'    => __(  'Color', 'fv-player' ),
-        'class'   => 'color',
-        'default' => 'BB0000',
-        'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
-      )
-    );
-
-  foreach( $fv_fp->aDefaultSkins['skin-slim'] AS $k => $v ) {
-    $aSettings[] =  array(
-        'type'    => 'input_hidden',
-        'key'     => array('skin-slim', $k),
-        'default' => $v,
-        'data'    => array( 'fv-preview' => $aPreview[$k] )
-      );
-  }
-
-  fv_flowplayer_admin_skin_get_table( array(
-    'skin_name'               => 'Slim',
-    'skin_radio_button_value' => 'slim',
-    'default'                 => true,
-    'items'                   => $aSettings
-  ) );
-
-  // YouTuby skin settings
-  $aSettings = array(
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-youtuby', 'progressColor'),
-        'name'    => __(  'Color', 'fv-player' ),
-        'class'   => 'color',
-        'default' => 'BB0000',
-        'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
-      )
-    );
-
-  foreach( $fv_fp->aDefaultSkins['skin-youtuby'] AS $k => $v ) {
-    $aSettings[] =  array(
-        'type'    => 'input_hidden',
-        'key'     => array('skin-youtuby', $k),
-        'default' => $v,
-        'data'    => array( 'fv-preview' => $aPreview[$k] ),
-        'attributes' => array( 'readonly' => 'true' )
-      );
-  }
-
-  fv_flowplayer_admin_skin_get_table( array(
-    'skin_name'               => 'YouTuby',
-    'skin_radio_button_value' => 'youtuby',
-    'default'                 => false,
-    'items'                   => $aSettings
-  ) );
-
-
-
-  // custom skin settings
-  fv_flowplayer_admin_skin_get_table( array(
-    'skin_name'               => 'Custom',
-    'skin_radio_button_value' => 'custom',
-    'default' => false,
-    'items'                   => array(
-
-      array(
-        'type' => 'checkbox',
-        'key'  => array('skin-custom', 'hasBorder'),
-        'name' => __(  'Border', 'fv-player' ),
-        'data'    => array( 'fv-preview' => $aPreview['hasBorder'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'borderColor'),
-        'name'    => __(  'Border color', 'fv-player' ),
-        'class'   => 'color',
-        'default' => '666666',
-        'data'    => array( 'fv-preview' => $aPreview['borderColor'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'marginBottom'),
-        'name'    => __(  'Bottom Margin', 'fv-player' ),
-        'default' => 2.8,
-        'title'   => __(  'Enter value in em', 'fv-player' ),
-        'data'    => array( 'fv-preview' => $aPreview['marginBottom'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'bufferColor'),
-        'name'    => __(  'Buffer', 'fv-player' ),
-        'class'   => 'color',
-        'default' => 'EEEEEE',
-        'data'    => array( 'fv-preview' => $aPreview['bufferColor'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'canvas'),
-        'name'    => __(  'Canvas', 'fv-player' ),
-        'class'   => 'color',
-        'default' => '000000',
-        'data'    => array( 'fv-preview' => $aPreview['canvas'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'backgroundColor'),
-        'name'    => __(  'Controlbar', 'fv-player' ),
-        'class'   => 'color-opacity',
-        'default' => '333333',
-        'data'    => array( 'fv-preview' => $aPreview['backgroundColor'] )
-      ),
-
-      array(
-        'type'    => 'select',
-        'key'     => array('skin-custom', 'font-face'),
-        'name'    => __(  'Font Face', 'fv-player' ),
-        'options' => array(
-          'inherit'                                     => __(  '(inherit from template)', 'fv-player' ),
-          '&quot;Courier New&quot;, Courier, monospace' => 'Courier New',
-          'Helvetica, sans-serif'                       => 'Helvetica',
-          'Tahoma, Geneva, sans-serif'                  => 'Tahoma, Geneva'
-        ),
-        'default' => 'Tahoma, Geneva, sans-serif',
-        'data'    => array( 'fv-preview' => $aPreview['font-face'] )
-      ),
-
-      array(
-        'type'           => 'select',
-        'key'            => array('skin-custom', 'player-position'),
-        'first_td_class' => 'second-column',
-        'name'           => __(  'Player position', 'fv-player' ),
-        'default'        => '',
-        'options'        => array(
-          ''     => __(  'Centered', 'fv-player' ),
-          'left' => 'Left (no text-wrap)'
-        ),
-        'data'    => array( 'fv-preview' => $aPreview['player-position'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'progressColor'),
-        'name'    => __(  'Progress', 'fv-player' ),
-        'class'   => 'color',
-        'default' => 'BB0000',
-        'data'    => array( 'fv-preview' => $aPreview['progressColor'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'timeColor'),
-        'name'    => __(  'Time', 'fv-player' ),
-        'class'   => 'color',
-        'default' => 'EEEEEE',
-        'data'    => array( 'fv-preview' => $aPreview['timeColor'] )
-      ),
-
-      array(
-        'type'    => 'input_text',
-        'key'     => array('skin-custom', 'durationColor'),
-        'name'    => __(  'Buttons', 'fv-player' ),
-        'class'   => 'color',
-        'default' => 'EEEEEE',
-        'data'    => array( 'fv-preview' => $aPreview['durationColor'] )
-      ),
-
-      array(
-        'type'           => 'select',
-        'key'            => array('skin-custom', 'design-timeline'),
-        'first_td_class' => 'second-column',
-        'name'           => __(  'Timeline', 'fv-player' ),
-        'default'        => ' ',
-        'options'        => array(
-          ' '          => __(  'Default', 'fv-player' ),
-          'fp-slim'    => __(  'Slim', 'fv-player' ),
-          'fp-full'    => __(  'Full', 'fv-player' ),
-          'fp-fat'     => __(  'Fat', 'fv-player' ),
-          'fp-minimal' => __(  'Minimal', 'fv-player' ),
+          <input type="text" name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste link or upload an image.', 'fv-player' ); ?>" data-fv-preview />
+          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Image', 'fv-player' ); ?>" alt="Select Logo" />
+        </td>
+      </tr>
+      <tr>
+        <td><label for="logoPosition">Position:</label></td>
+        <td>
+          <?php
+          $value = $fv_fp->_get_option('logoPosition');
+          ?>
+          <select name="logoPosition" class="small" style="width: 9em !important" data-fv-preview>
+            <option <?php if( $value == 'bottom-left' ) echo "selected"; ?> value="bottom-left"><?php esc_html_e( 'Bottom-left', 'fv-player' ); ?></option>
+            <option <?php if( $value == 'bottom-right' ) echo "selected"; ?> value="bottom-right"><?php esc_html_e( 'Bottom-right', 'fv-player' ); ?></option>
+            <option <?php if( $value == 'top-left' ) echo "selected"; ?> value="top-left"><?php esc_html_e( 'Top-left', 'fv-player' ); ?></option>
+            <option <?php if( $value == 'top-right' ) echo "selected"; ?> value="top-right"><?php esc_html_e( 'Top-right', 'fv-player' ); ?></option>
+          </select>
+        </td>
+      </tr>
+      <?php $fv_fp->_get_checkbox(
+        array(
+          'name' => __( 'Align to video', 'fv-player' ),
+          'key'  => 'logo_over_video',
+          'help' => __( 'Logo stays on top of video if aspect ratio does not match.', 'fv-player' ),
+          'first_td_class' => 'aligntop',
+          'data' => array(
+            'fv-preview' => ''
+          )
         )
-      ),
+      ); ?>
+      <tr>
+        <td></td>
+        <td>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-      array(
-        'type'           => 'select',
-        'key'            => array('skin-custom', 'design-icons'),
-        'first_td_class' => 'second-column',
-        'name'           => __(  'Icons', 'fv-player' ),
-        'default'        => ' ',
-        'options'        => array(
-          ' '           => __(  'Default', 'fv-player' ),
-          'fp-edgy'     => __(  'Edgy', 'fv-player' ),
-          'fp-outlined' => __(  'Outlined', 'fv-player' ),
-          'fp-playful'  => __(  'Playful', 'fv-player' )
-        )
-      ),
+  <div id="skin-tab-controls" class="skin-tab-content">
+    <table class="form-table2">
+      <?php $fv_fp->_get_checkbox(__( 'Always Visible', 'fv-player' ), 'show_controlbar', __( 'Control bar will show below player and not just on hover.') ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Airplay', 'fv-player' ), 'ui_airplay', __( 'Adds support for Airplay.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Embed', 'fv-player' ), 'ui_embed', __( 'Embed link in top bar (no preview).', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Chromecast', 'fv-player' ), 'chromecast', __( 'Adds support for Google Chromecast.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Fullscreen', 'fv-player' ), 'allowfullscreen', __( 'Adds a fullscreen button.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'No Picture', 'fv-player' ), 'ui_no_picture_button', __( 'Adds a button to turn the video picture on and off.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Repeat', 'fv-player' ), 'ui_repeat_button', __( 'Adds a button to set playlist/track repeat and shuffle.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Rewind/Forward', 'fv-player' ), 'ui_rewind_button', __( 'Adds a button to go 10 seconds back/forth.', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Sharing', 'fv-player' ), 'ui_sharing', __( 'Sharing buttons in top bar (no preview).', 'fv-player' ) ); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Speed', 'fv-player' ), 'ui_speed', __( 'Speed buttons control playback speed.', 'fv-player' ) ); ?>
+      <tr>
+        <td><label for="ui_speed_increment"><?php esc_html_e( 'Speed Step', 'fv-player' ); ?>:</label></td>
+        <td colspan="3">
+          <p class="description">
+            <?php
+            $value = $fv_fp->_get_option('ui_speed_increment');
+            ?>
+            <select id="ui_speed_increment" name="ui_speed_increment" style="width: 5em">
+              <option value="0.1"   <?php if( $value == 0.1 ) echo ' selected="selected"'; ?> >0.1</option>
+              <option value="0.25"  <?php if( $value == 0.25 ) echo ' selected="selected"'; ?> >0.25</option>
+              <option value="0.5"   <?php if ( $value == 0.5 )  echo ' selected="selected"'; ?> >0.5</option>
+            </select>
+            <?php esc_html_e( 'Accuracy of the Speed button.', 'fv-player' ); ?>
+          </p>
+        </td>
+      </tr>
+      <?php $fv_fp->_get_checkbox(__( 'Video Links', 'fv-player' ), 'ui_video_links', __( '"Link" item in top bar (no preview).', 'fv-player' ), __( "Clicking the video Link gives your visitors a link to the exact place in the video they are watching. If the post access is restricted, it won't make the video open to public.", 'fv-player' ) ); ?>
+      <tr>
+        <td></td>
+        <td>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-    )
-  ) );
-  ?>
   <div style="clear: both"></div>
 <?php
   do_action('fv_player_extensions_admin_load_assets');
@@ -1568,7 +1547,8 @@ function fv_flowplayer_admin_skin_playlist() {
       </td>
     </tr>
     <tr>
-      <td colspan="2">
+      <td></td>
+      <td>
         <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
       </td>
     </tr>
@@ -1616,6 +1596,14 @@ function fv_flowplayer_admin_skin_subtitles() {
     $subtitleBgColor = 'rgba('.implode(",",$rgb).','.$opacity.')';
   }
 ?>
+  <div id="fp-preview-wrapper">
+    <div class="flowplayer skin-<?php echo esc_html( $fv_fp->_get_option('skin') ); ?>" id="preview">
+      <div class="fp-captions fp-shown">
+        <p><?php esc_html_e( 'The quick brown fox jumps over the lazy dog.', 'fv-player' ); ?></p>
+        <p><?php esc_html_e( 'Second line.', 'fv-player' ); ?></p>
+      </div>
+    </div>
+  </div>
   <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
     <tr>
       <td><label for="subtitle-font-face"><?php esc_html_e( 'Font Face', 'fv-player' ); ?></label></td>
@@ -1639,19 +1627,12 @@ function fv_flowplayer_admin_skin_subtitles() {
                  data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>
     <tr>
-      <td colspan="2">
+      <td></td>
+      <td>
         <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
       </td>
     </tr>
   </table>
-  <div id="fp-preview-wrapper">
-    <div class="flowplayer skin-<?php echo esc_html( $fv_fp->_get_option('skin') ); ?>" id="preview">
-      <div class="fp-captions fp-shown">
-        <p><?php esc_html_e( 'The quick brown fox jumps over the lazy dog.', 'fv-player' ); ?></p>
-        <p><?php esc_html_e( 'Second line.', 'fv-player' ); ?></p>
-      </div>
-    </div>
-  </div>
   <div style="clear: both"></div>
 <?php
 }
@@ -1707,7 +1688,8 @@ function fv_flowplayer_admin_skin_sticky() {
 			)
 		); ?>
     <tr>
-      <td colspan="2">
+      <td></td>
+      <td>
         <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
       </td>
     </tr>
@@ -2062,10 +2044,40 @@ function fv_flowplayer_admin_uninstall() {
   ?>
     <p><?php echo wp_kses( __( 'Check this box if you would like FV Player to completely remove all of its data when the plugin is deleted. The <code>[fvplayer]</code> shortcodes will stop working.', 'fv-player' ), array( 'code' => array() ) ); ?></p>
     <table class="form-table2">
-      <?php   $fv_fp->_get_checkbox(__( 'Remove all data', 'fv-player' ), 'remove_all_data' , __( 'This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-player' )); ?>
+      <?php $fv_fp->_get_checkbox(__( 'Remove all data', 'fv-player' ), 'remove_all_data' , __( 'This action is irreversible, please backup your website if you are not absolutely sure.', 'fv-player' )); ?>
+
+      <tr>
+        <td></td>
+        <td>
+          <?php
+          // Verify that uninstall.php is there only if needed
+          $remove_all_data = $fv_fp->_get_option( 'remove_all_data' );
+
+          if ( ! class_exists( 'WP_Filesystem_Direct' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+            require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+          }
+
+          $plugin_folder = basename( dirname( dirname( __FILE__ ) ) );
+
+          $wp_filesystem       = new WP_Filesystem_Direct( '' );
+          $uninstall_file_hint = 'wp-content/plugings/' . $plugin_folder . '/uninstall.php';
+          $uninstall_file_real = $wp_filesystem->wp_plugins_dir() . $plugin_folder . '/uninstall.php';
+
+          if ( $remove_all_data && $wp_filesystem->exists( $uninstall_file_real ) ) : ?>
+            <p style="font-weight: bold; color: #f00"><?php _e( 'Warning: If you deactivate and delete FV Player, all of its data will be removed!', 'fv-player'); ?>
+          <?php elseif ( $remove_all_data && ! $wp_filesystem->exists( $uninstall_file_real ) ) : ?>
+            <p>
+              <?php printf( __( 'The <code>%s</code> file failed to create, full uninstall will not work.', 'fv-player' ), $uninstall_file_hint ); ?>
+            </p>
+          <?php elseif ( ! $remove_all_data && $wp_filesystem->exists( $uninstall_file_real ) ) : ?>
+            <?php printf( __( 'The <code>%s</code> file is still present, please remove it by hand.', 'fv-player' ), $uninstall_file_hint ); ?>
+          <?php endif; ?>
+        </td>
+      </tr>
       <tr>
         <td colspan="4">
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
         </td>
       </tr>
     </table>
@@ -2456,25 +2468,57 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 jQuery(window).one( 'load', function() {
   jQuery('#fv_player_js_warning').hide();
 
-  var anchor = window.location.hash.substring(1);
+  var anchor = window.location.hash.substring(1),
+    skin_anchor = window.location.hash.substring(1);
+
   if( !anchor || !anchor.match(/tab_/) ) {
-    anchor = 'postbox-container-tab_basic';
+    if ( skin_anchor.match( /skin-tab-/ ) ) {
+      anchor = 'postbox-container-tab_skin';
+    } else {
+      anchor = 'postbox-container-tab_basic';
+    }
   }
 
-  jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
+  if ( ! skin_anchor || ! skin_anchor.match( /skin-tab-/ ) ) {
+    skin_anchor = 'skin-tab-skin';
+  }
+
+  jQuery('#fv_flowplayer_admin_tabs .nav-tab, #fv_flowplayer_admin_skin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
+
+  jQuery( '[href=\\#' + skin_anchor + ']' ).addClass('nav-tab-active');
+  jQuery( '.skin-tab-content' ).hide();
+  jQuery( '#' + skin_anchor ).show();
 });
 
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){
-  e.preventDefault();
-  window.location.hash = e.target.hash;
+  if ( history.pushState ) {
+    history.pushState( null, null, e.target.hash );
+  }
+
   var anchor = jQuery(this).attr('href').substring(1);
   jQuery('#fv_flowplayer_admin_tabs .nav-tab').removeClass('nav-tab-active');
   jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
   jQuery('#dashboard-widgets .postbox-container').hide();
   jQuery('#' + anchor).show();
+
+  return false;
+});
+
+jQuery('#fv_flowplayer_admin_skin_tabs a').on('click',function(e){
+  if ( history.pushState ) {
+    history.pushState( null, null, e.target.hash );
+  }
+
+  var anchor = jQuery(this).attr('href').substring(1);
+  jQuery('#fv_flowplayer_admin_skin_tabs .nav-tab').removeClass('nav-tab-active');
+  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
+  jQuery( '.skin-tab-content' ).hide();
+  jQuery('#' + anchor).show();
+
+  return false;
 });
 
 jQuery('#normal-sortables .button-primary').on('click',function(e){

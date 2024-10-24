@@ -17,10 +17,6 @@ flowplayer(function(api, root) {
       jQuery('.fp-subtitle',root).removeClass('is-wide');
     }
 
-    // core FV Player classes which are normally added in requestAnimationFrame, which increases CPU load too much
-    root.toggleClass('is-tiny', width < 400);
-    root.toggleClass('is-small', width < 600 && width >= 400 );
-
     // if the player is too narrow we put the timeline on top of the control bar
     var too_narrow = width < 480 + buttons_count*35;
 
@@ -32,7 +28,7 @@ flowplayer(function(api, root) {
     if( !had_fp_full ) {
       root.toggleClass('fp-full', root.hasClass('has-abloop') || too_narrow );
     }
-
+    
     var size = '';
     if( width < 400 ) size = 'is-tiny';
     else if( width < 600 && width >= 400 ) size = 'is-small';
@@ -51,22 +47,32 @@ flowplayer(function(api, root) {
     var controls = root.find('.fp-controls'),
       controls_width = controls.parent().width(),
       // here are the items that we can hide
-      constols_to_sacrifice = controls.find('.fp-duration, .fp-playbtn'),
+      controls_to_sacrifice = controls.find('.fp-duration, .fp-playbtn'),
       controls_items_width = 0;
 
-    constols_to_sacrifice.removeClass( 'wont-fit' );
+    controls_to_sacrifice.removeClass( 'wont-fit' );
     root.find('.fp-controls').children(':visible:not(.fp-timeline)').each( function() {
       controls_items_width += jQuery(this).outerWidth(true);
     } );
 
     if ( controls_items_width > controls_width ) {
-      constols_to_sacrifice.addClass( 'wont-fit' );
+      controls_to_sacrifice.addClass( 'wont-fit' );
     }
   }
 
   check_size();
 
-  jQuery(window).on('resize',check_size);
+  function debounce(func, wait) {
+    var timeout;
+    return function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(func, wait);
+    };
+  }
+
+  var debouncedCheckSize = debounce( check_size, 250 );
+
+  window.addEventListener('resize', debouncedCheckSize);
 
   if ('fonts' in document) {
     api.one('load', function() {
@@ -121,7 +127,20 @@ jQuery( document ).ready( freedomplayer_playlist_size_check );
 flowplayer(function(api, root) {
   root = jQuery(root);
 
+  api.setLogoPosition = function() {
+    let is_old_safari =
+      freedomplayer.support.browser.safari && parseFloat( freedomplayer.support.browser.version ) < 14.1 ||
+      freedomplayer.support.iOS && parseFloat( freedomplayer.support.iOS.version ) < 15;
+
+    if ( api.conf.logo_over_video && api.video && api.video.width && api.video.height && ! is_old_safari ) {
+      root.find('.fp-logo').css('--fp-aspect-ratio', ( api.video.width / api.video.height).toFixed(2));
+    } else {
+      root.find('.fp-logo').css('width', '100%').css('height', '100%');
+    }
+  }
+
   api.bind('ready', function( e, api, video ) {
+    api.setLogoPosition();
 
     // Remove Top and Bottom Black Bars
     if ( video.remove_black_bars ) {

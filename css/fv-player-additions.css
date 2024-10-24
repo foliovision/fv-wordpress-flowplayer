@@ -93,7 +93,6 @@
 .flowplayer.fixed-controls.is-splash .fp-timestamp, .flowplayer.fixed-controls.is-poster .fp-timestamp { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-elapsed, .flowplayer.fixed-controls.is-poster .fp-elapsed { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-duration, .flowplayer.fixed-controls.is-poster .fp-duration { display: none; }
-.flowplayer.fixed-controls.is-splash .fp-controls strong, .flowplayer.fixed-controls.is-poster .fp-controls strong { display: none; }
 .flowplayer.fixed-controls.is-splash .fp-bar, .flowplayer.fixed-controls.is-poster .fp-bar { cursor: pointer; pointer-events: none }
 .flowplayer.fixed-controls.is-splash .fp-bar-slider, .flowplayer.fixed-controls.is-poster .fp-bar-slider { cursor: pointer; pointer-events: none }
 
@@ -214,7 +213,7 @@
 .flowplayer .wpfp_custom_popup .fv_player_popup p {max-width:100%}
 
 /*this might be needed some day: .flowplayer .fp-waiting em { opacity: 1 !important; } */
-.flowplayer.is-fullscreen .fp-player{background-color:#000}
+.flowplayer.is-fullscreen .fp-player{background-color:#000; display: flex}
 
 .flowplayer.is-fullscreen .fp-controls {
   bottom: env(safe-area-inset-bottom)
@@ -236,10 +235,45 @@
 
 .flowplayer video.fp-engine { visibility:visible; }
 .flowplayer .fp-engine { max-width:100%; }
-.flowplayer.is-fullscreen .fp-logo{z-index:2147483647;}
-.flowplayer .fp-logo {max-width:25%;-webkit-tap-highlight-color: rgba(0,0,0,0);}
-.flowplayer .fp-logo img {box-shadow:none;}
-.flowplayer .fp-logo {pointer-events: none;}
+.flowplayer.is-fullscreen .fp-logo {
+  margin: auto;
+  max-height: calc(100vw / var(--fp-aspect-ratio));
+}
+
+.flowplayer .fp-logo {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  pointer-events: none;
+  aspect-ratio: var(--fp-aspect-ratio);
+  position: static;
+  height: 100%;
+  display: flex;
+  padding-bottom: .6em;
+}
+.flowplayer.fixed-controls .fp-logo {
+  padding-bottom: 0;
+}
+
+.flowplayer > .fp-player > .fp-logo > img {
+  border: 0;
+  box-shadow: none;
+  margin: auto auto 2% 2%;
+  z-index: 0;
+}
+
+/* Logo size depending on player size class */
+.flowplayer > .fp-player > .fp-logo > img {
+  width: 10%;
+  min-width: calc( 600px * 0.15 );
+}
+.flowplayer.is-small > .fp-player > .fp-logo > img {
+  width: 15%;
+  min-width: calc( 400px * 0.2 );
+}
+.flowplayer.is-tiny > .fp-player > .fp-logo > img {
+  width: 20%;
+  min-width: calc( 300px * 0.2 );
+}
+
 .flowplayer.fixed-controls .fp-logo {bottom: 15px;}
 .flowplayer.is-popup-showing .fp-logo {display: none;}
 

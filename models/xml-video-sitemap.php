@@ -280,7 +280,7 @@ class FV_Xml_Video_Sitemap {
               // filename URL
               $xml_video['content_loc'] = $sanitized_src;
 
-            } else if( $aArgs['embed'] == 'false' || $aArgs['embed'] == 'off' || ( $fv_fp->_get_option('disableembedding') && $aArgs['embed'] != 'true' ) ) {
+            } else if( $aArgs['embed'] == 'false' || $aArgs['embed'] == 'off' || ( ! $fv_fp->_get_option('ui_embed') && $aArgs['embed'] != 'true' ) ) {
               continue;
 
             } else {
@@ -577,10 +577,10 @@ class FV_Xml_Video_Sitemap {
       global $fv_fp;
       $fv_fp->_get_checkbox(__( 'Use XML Video Sitemap', 'fv-player' ), 'video_sitemap', sprintf( __( 'Creates <code>%s</code> which you can submit via Google Webmaster Tools.', 'fv-player' ), home_url('video-sitemap.xml') ), __( 'As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing.', 'fv-player' ) );
 
-      if( $fv_fp->_get_option('disableembedding') ) : ?>
+      if ( ! $fv_fp->_get_option('ui_embed') ) : ?>
         <tr>
           <td></td>
-          <td><strong>Note:</strong> Since <a href="#fv_flowplayer_default_options">Disable Embed Button</a> setting is on the video sitemap can only present the bare MP4 or HLS videos. Disable that option to make it show your other video types too.</td>
+          <td><strong>Note:</strong> Since <a href="#skin-tab-controls">Embed</a> button setting is off the video sitemap can only present the bare MP4 or HLS videos. Enable that option to make it show your other video types too.</td>
         </tr>
       <?php endif;
 

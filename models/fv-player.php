@@ -73,26 +73,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'skin-custom' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'bufferColor' => '#eeeeee',
           'durationColor' => '#eeeeee',
           'progressColor' => '#bb0000',
-          'timeColor' => '#eeeeee',
-          'canvas' => '#000000',
           'backgroundColor' => '#333333',
           'font-face' =>'Tahoma, Geneva, sans-serif',
-          'player-position' => '',
           'design-timeline' => 'fp-full',
           'design-icons' => ' '
       ),
       'skin-slim' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'bufferColor' => false,
-          'canvas' => '#000000',
           'backgroundColor' => 'transparent',
           'font-face' => 'Tahoma, Geneva, sans-serif',
-          'player-position' => '',
-          'timeColor' => 'whitesmoke',
           'durationColor' => false,
           'design-timeline' => 'fp-slim',
           'design-icons' => 'fp-edgy'
@@ -100,17 +92,20 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       'skin-youtuby' => array(
           'hasBorder' => false,
           'borderColor' => false,
-          'bufferColor' => false,
-          'canvas' => '#000000',
           'backgroundColor' => 'rgba(0, 0, 0, 0.5)',
           'font-face' =>'Tahoma, Geneva, sans-serif',
-          'player-position' => '',
-          'timeColor' => '#ffffff',
           'durationColor' => false,
           'design-timeline' => 'fp-full',
           'design-icons' => ' '
         )
     );
+
+  public $css_logo_positions = array(
+    'bottom-left'  => "margin: auto auto 2% 2%",
+    'bottom-right' => "margin: auto 2% 2% auto",
+    'top-left'     => "margin: 2% auto auto 2%",
+    'top-right'    => "margin: 2% 2% auto auto",
+  );
 
   private $help_html = array(
     'a'     => array( 'href' => array(), 'target' => array() ),
@@ -428,7 +423,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     // use the default value if the setting is empty
-    // however in case of marginBottom you might wish to enter 0 and we need to accept that
+    // however in case of numeric settings you might wish to enter 0 and we need to accept that
     // so we just check if the default if a number and if it is, we allow even 0 value
     $val = is_numeric($default) || !empty($saved_value) ? $saved_value : $default;
 
@@ -604,11 +599,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['chromecast'] ) ) $conf['chromecast'] = 'false';
     if( !isset( $conf['key'] ) ) $conf['key'] = 'false';
     if( !isset( $conf['logo'] ) ) $conf['logo'] = 'false';
+    if( !isset( $conf['logo_over_video'] ) ) $conf['logo_over_video'] = 'true';
     if( !isset( $conf['rtmp'] ) ) $conf['rtmp'] = 'false';
-    if( !isset( $conf['disableembedding'] ) ) $conf['disableembedding'] = 'false';
-    if( !isset( $conf['disablesharing'] ) ) $conf['disablesharing'] = 'false';
-
-    if( !isset( $conf['disable_video_hash_links'] ) ) $conf['disable_video_hash_links'] = $conf['disableembedding'] == 'true' ? true : false;
 
     if( !isset( $conf['popupbox'] ) ) $conf['popupbox'] = 'false';
     if( !isset( $conf['allowfullscreen'] ) ) $conf['allowfullscreen'] = 'true';
@@ -648,12 +640,12 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['amazon_expire_force'] ) ) $conf['amazon_expire_force'] = 'false';
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = '0.7';
-    if( !isset( $conf['player-position'] ) ) $conf['player-position'] = '';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = '';
     if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __( 'Check out the amazing video here', 'fv-player' );
 
 
     if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';
+    if( !isset( $conf['ui_airplay'] ) ) $conf['ui_airplay'] = true;
     if( !isset( $conf['ui_speed_increment'] ) ) $conf['ui_speed_increment'] = 0.25;
     if( !isset( $conf['popups_default'] ) ) $conf['popups_default'] = 'no';
     if( !isset( $conf['email_lists'] ) ) $conf['email_lists'] = array();
@@ -670,14 +662,29 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     if ( ! isset( $conf['youtube_browser_chrome'] ) ) $conf['youtube_browser_chrome'] = 'standard';
 
+    // Avoiding negavite checkboxes, like "Disable Embed Button"
+    foreach( array(
+      'disableembedding' => 'ui_embed',
+      'disablesharing' => 'ui_sharing',
+      'disable_video_hash_links' => 'ui_video_links'
+    ) as $old_key => $new_key ) {
+      if ( ! isset( $conf[ $new_key ] ) ) {
+        if ( ! empty( $conf[ $old_key ] ) && 'false' === $conf[ $old_key ] ) {
+          $conf[ $new_key ] = 'true';
+        } else {
+          $conf[ $new_key ] = 'false';
+        }
+      }
+    }
+
     // apply existing colors from old config values to the new, skin-based config array
     if (!isset($conf['skin-custom'])) {
       $conf['skin-custom'] = $this->aDefaultSkins['skin-custom'];
 
-      // iterate over old keys and bring them in to the new, but skin marginBottom as it's in em units now
+      // iterate over old keys and bring them in to the new
       $old_skinless_settings_array = array(
-        'hasBorder', 'borderColor', /*'marginBottom',*/ 'bufferColor', 'canvas', 'backgroundColor',
-        'font-face', 'player-position', 'progressColor', 'timeColor', 'durationColor',
+        'hasBorder', 'borderColor', 'backgroundColor',
+        'font-face', 'progressColor', 'durationColor',
         'design-timeline', 'design-icons'
       );
 
@@ -786,10 +793,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'digitalocean_spaces',
             'disable_convert_db_save',
             'disable_localstorage',
-            'disable_video_hash_links',
             'disable_videochecker',
-            'disableembedding',
-            'disablesharing',
             'email_lists',
             'engine',
             'fv-player-pro-release', // FV Player Pro extension
@@ -809,6 +813,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'linode_object_storage',
             'liststyle',
             'logo',
+            'logo_over_video',
             'logoPosition',
             'mailchimp_api',
             'mailchimp_label',
@@ -829,8 +834,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'overlay_width',
             'parse_commas',
             'parse_comments',
-            'play_icon',
-            'player-position',
             'playlist-design',
             'playlistBgColor',
             'playlistFontColor',
@@ -861,11 +864,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             'subtitleFontFace',
             'subtitleOn',
             'subtitleSize',
+            'ui_airplay',
+            'ui_embed',
             'ui_no_picture_button',
             'ui_repeat_button',
             'ui_rewind_button',
+            'ui_sharing',
             'ui_speed',
             'ui_speed_increment',
+            'ui_video_links',
             'user_playlist', // FV Player Bookmarks extension
             'version',
             'video_position_save_enable',
@@ -966,7 +973,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         // now that we have skin colors separated in an arrayed sub-values,
         // we also need to check their values for HEX colors
         foreach ($value as $sub_array_key => $sub_array_value) {
-          if( ( strpos( $sub_array_key, 'Color' ) !== FALSE || strpos( $sub_array_key, 'canvas' ) !== FALSE ) && strpos($sub_array_value, 'rgba') === FALSE) {
+          if ( strpos( $sub_array_key, 'Color' ) !== FALSE && strpos($sub_array_value, 'rgba') === FALSE) {
             $aNewOptions[$key][$sub_array_key] = (strpos($sub_array_value, '#') === FALSE ? '#' : '').strtolower($sub_array_value);
           }
         }
@@ -977,7 +984,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       } else {
         $aNewOptions[$key] = stripslashes(trim($value));
       }
-      if( ( strpos( $key, 'Color' ) !== FALSE || strpos( $key, 'canvas' ) !== FALSE ) && strpos($aNewOptions[$key], 'rgba') === FALSE) {
+      if ( strpos( $key, 'Color' ) !== FALSE && strpos($aNewOptions[$key], 'rgba') === FALSE) {
         $aNewOptions[$key] = (strpos($aNewOptions[$key], '#') === FALSE ? '#' : '').strtolower($aNewOptions[$key]);
       }
     }
@@ -1022,6 +1029,32 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       global $FV_Player_Pro_loader;
       if( isset($FV_Player_Pro_loader) ) {
         $FV_Player_Pro_loader->license_key = $sKey;
+      }
+    }
+
+    // Was "Remove all data" activated or deactivated?
+    if ( ! empty( $_POST['fv_flowplayer_settings_ajax_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv_flowplayer_settings_ajax_nonce'] ) ), 'fv_flowplayer_settings_ajax_nonce' ) ) {
+
+      $put_in_uninstall_php = false;
+      $remove_uninstall_php = false;
+
+      // Enabled
+      if (
+        ( empty( $aOldOptions['remove_all_data'] ) || 'false' === $aOldOptions['remove_all_data'] ) &&
+        ! empty( $aNewOptions['remove_all_data'] ) && 'true' === $aNewOptions['remove_all_data']
+      ) {
+        $put_in_uninstall_php = true;
+
+      // Disabled
+      } else if (
+        ! empty( $aOldOptions['remove_all_data'] ) && 'true' === $aOldOptions['remove_all_data'] &&
+        ( empty( $aNewOptions['remove_all_data'] ) || 'false' === $aNewOptions['remove_all_data'] )
+      ) {
+        $remove_uninstall_php = true;
+      }
+
+      if ( $put_in_uninstall_php || $remove_uninstall_php ) {
+        fv_player_setup_uninstall_script( $put_in_uninstall_php, $remove_uninstall_php );
       }
     }
 
@@ -1609,10 +1642,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $sel = '.flowplayer.'.$skin;
 
       $sBackground = $this->_get_option( array($skin, 'backgroundColor') );
-      $sBuffer = $this->_get_option(array($skin, 'bufferColor') );
       $sDuration = $this->_get_option( array($skin, 'durationColor') );
       $sProgress = $this->_get_option(array($skin, 'progressColor'));
-      $sTime = $this->_get_option( array($skin, 'timeColor') );
       $sTimeline = $this->_get_option( array($skin, 'timelineColor') );
       $sAccent = $this->_get_option( array($skin, 'accent') );
 
@@ -1620,40 +1651,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $css .= $sel." { border: 1px solid ".$this->_get_option(array($skin, 'borderColor'))."; }\n";
       }
 
-      if( $this->_get_option(array($skin, 'marginBottom')) !== false ) {
-        $iMargin = floatval($this->_get_option(array($skin, 'marginBottom')));
-        $css .= $sel." { margin: 0 auto ".$iMargin."em auto; display: block; }\n";
-        $css .= $sel.".has-title-below { margin: 0 auto; }\n";
-
-        // we also use entry-content as some themes use .entry-content > * to set margin
-        $css .= $sel.".fixed-controls, .entry-content ".$sel.".fixed-controls { margin-bottom: ".($iMargin+2.4)."em; display: block; }\n";
-        $css .= $sel.".has-abloop, .entry-content ".$sel.".has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
-        $css .= $sel.".fixed-controls.has-abloop, .entry-content ".$sel.".fixed-controls.has-abloop { margin-bottom: ".($iMargin+2.4)."em; }\n";
-      }
-
-      $css .= $sel." { background-color: ".$this->_get_option(array($skin, 'canvas'))." !important; }\n";
       $css .= $sel." .fp-color, ".$sel." .fp-selected, .fp-playlist-external.".$skin." .fvp-progress, .fp-color { background-color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-color-fill .svg-color, ".$sel." .fp-color-fill svg.fvp-icon, ".$sel." .fp-color-fill { fill: ".$this->_get_option(array($skin, 'progressColor'))." !important; color: ".$this->_get_option(array($skin, 'progressColor'))." !important; }\n";
       $css .= $sel." .fp-controls, .fv-player-buttons a:active, .fv-player-buttons a { background-color: ".$sBackground." !important; }\n";
       if( $sDuration ) {
-        $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." !important; }\n";
+        $css .= $sel." a.fp-play, ".$sel." a.fp-volumebtn, ".$sel." .fp-controls, ".$sel." .fv-ab-loop, .fv-player-buttons a:active, .fv-player-buttons a { color: ".$sDuration." }\n";
         $css .= $sel." .fp-controls .fv-fp-prevbtn:before, ".$sel." .fp-controls .fv-fp-nextbtn:before { border-color: ".$sDuration." !important; }\n";
         $css .= $sel." .fvfp_admin_error, ".$sel." .fvfp_admin_error a, #content ".$sel." .fvfp_admin_error a { color: ".$sDuration."; }\n";
         $css .= $sel." svg.fvp-icon { fill: ".$sDuration." !important; }\n";
-      }
 
-      if( $sBuffer ) {
-        $css .= $sel." .fp-volumeslider, ".$sel." .fp-buffer { background-color: ".$sBuffer." !important; }\n";
-        $css .= $sel. " .fp-bar span.chapter_buffered{ background-color: ".$sBuffer." !important; }\n";
+        $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fv-player-video-checker { color: ".$sDuration." !important; }\n";
+        $css .= $sel." .fp-controls svg { fill: ".$sDuration."; stroke: ".$sDuration." }\n";
       }
 
       if( $sTimeline ) {
         $css .= $sel." .fp-timeline { background-color: ".$sTimeline." !important; }\n";
         $css .= $sel. " .fp-bar span.chapter_unbuffered{ background-color: ".$sTimeline." !important; }\n";
       }
-
-      $css .= $sel." .fp-elapsed, ".$sel." .fp-duration { color: ".$sTime." !important; }\n";
-      $css .= $sel." .fv-player-video-checker { color: ".$sTime." !important; }\n";
 
       if( $sBackground != 'transparent' ) {
         $css .= $sel." .fv-ab-loop { background-color: ".$sBackground." !important; }\n";
@@ -1675,40 +1690,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     //  rest is not depending of the skin settings or can use the default skin
     $skin = 'skin-'.$this->_get_option('skin');
 
-    if ( $this->_get_option('key') && $this->_get_option('logo') ) : ?>
-      .flowplayer .fp-logo { display: block; opacity: 1; }
-    <?php endif; ?>
-
-    <?php if ( $this->_get_option('play_icon') ) : ?>
-      .flowplayer .fp-play.fp-visible svg {
-        opacity: 0;
-      }
-      .fp-play:before {
-        background-image: url("<?php echo esc_url($this->_get_option('play_icon')); ?>");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-        width: 6em;
-        height: 6em;
-        content: ' ';
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: auto;
-        right: 0;
-        bottom: 0;
-        opacity: 0;
-        transform: scale(0.8);
-        transition: all .2s;
-      }
-      .flowplayer.is-small .fp-play:before, .flowplayer.is-tiny .fp-play:before {
-        max-height: 30%;
-      }
-      .fp-play.fp-visible:before {
-        opacity: 1;
-        transform: scale(1);
-      }
-    <?php endif; ?>
+    ?>
 
     .wpfp_custom_background { display: none; position: absolute; background-position: center center; background-repeat: no-repeat; background-size: contain; width: 100%; height: 100%; z-index: 1 }
     .wpfp_custom_popup { position: absolute; top: 10%; z-index: 20; text-align: center; width: 100%; color: #fff; }
@@ -1741,20 +1723,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo esc_html( $this->_get_option('subtitleFontFace') ); ?>; }<?php endif; ?>
     <?php if( $this->_get_option('logoPosition') ) :
       $value = $this->_get_option('logoPosition');
-      if( $value == 'bottom-left' ) {
-        $sCSS = "bottom: 30px; left: 15px;";
-      } else if( $value == 'bottom-right' ) {
-        $sCSS = "bottom: 30px; right: 15px; left: auto;";
-      } else if( $value == 'top-left' ) {
-        $sCSS = "top: 30px; left: 15px; bottom: auto;";
-      } else if( $value == 'top-right' ) {
-        $sCSS = "top: 30px; right: 15px; bottom: auto; left: auto;";
-      }
-      ?>.flowplayer .fp-logo { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
+      $sCSS = ! empty( $this->css_logo_positions[ $value ] ) ? $this->css_logo_positions[ $value ] : '';
+      ?>.flowplayer > .fp-player > .fp-logo > img { <?php echo esc_html( $sCSS ); ?> }<?php endif; ?>
 
     .flowplayer .fp-player .fp-captions p { background-color: <?php echo esc_html( $sSubtitleBgColor ); ?> }
-
-    <?php if( $this->_get_option(array($skin, 'player-position')) && 'left' == $this->_get_option(array($skin, 'player-position')) ) : ?>.flowplayer { margin-left: 0; }<?php endif; ?>
 
     .flowplayer .fp-player.is-sticky { max-width: <?php echo intval( $this->_get_option('sticky_width') ); ?>px }
     @media screen and ( max-width: 480px ) {

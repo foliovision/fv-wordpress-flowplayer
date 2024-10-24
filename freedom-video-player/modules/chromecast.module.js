@@ -2,7 +2,7 @@
 
 // copy of the original function with some mods
 flowplayer(function(api, root) {
-  if ( !api.conf.fv_chromecast ) return;
+  if ( !api.conf.fv_chromecast && ! api.conf.skin_preview ) return;
 
   // TODO: Only load when some video is started?
   if( !window['__onGCastApiAvailable'] ) {
@@ -48,11 +48,11 @@ flowplayer(function(api, root) {
     console.log('chromecast onError');
   }
 
-  function createUIElements() {
+  api.createChromecastButton = function() {
     common.find('.fp-chromecast', root).forEach(common.removeNode);
     common.find('.fp-chromecast-engine', root).forEach(common.removeNode);
     trigger = common.createElement('a', { 'class': 'fp-chromecast fp-icon', title: 'Play on Cast device'})
-    trigger.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="125 40 625 500"><path fill="whitesmoke" d="M644 486h37V98H181v83h-55V43h610v498H487v-55h157zm-224-24c6 22 9 44 10 66v13h-54c-1-69-25-128-74-176-48-48-107-73-176-73v-55l29 1a300 300 0 0 1 171 74 304 304 0 0 1 94 150zm-294-79v-34c87-4 192 69 194 192h-55a139 139 0 0 0-139-138v-20zm49 91c22 17 33 39 34 67h-83v-82c18 0 34 5 49 15z"/></svg>';
+    trigger.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="125 40 625 500"><path d="M644 486h37V98H181v83h-55V43h610v498H487v-55h157zm-224-24c6 22 9 44 10 66v13h-54c-1-69-25-128-74-176-48-48-107-73-176-73v-55l29 1a300 300 0 0 1 171 74 304 304 0 0 1 94 150zm-294-79v-34c87-4 192 69 194 192h-55a139 139 0 0 0-139-138v-20zm49 91c22 17 33 39 34 67h-83v-82c18 0 34 5 49 15z"/></svg>';
 
     var fs = common.find('.fp-fullscreen')[0];
     fs.parentNode.insertBefore(trigger, fs);
@@ -65,6 +65,10 @@ flowplayer(function(api, root) {
     var engine = common.find('.fp-engine', root)[0];
     if (!engine) common.prepend(common.find('.fp-player', root)[0] || root, chromeCastEngine);
     else engine.parentNode.insertBefore(chromeCastEngine, engine);
+  }
+
+  if ( api.conf.skin_preview && api.conf.fv_chromecast ) {
+    api.createChromecastButton();
   }
 
   function destroy() {
@@ -297,7 +301,7 @@ flowplayer(function(api, root) {
     if( !flowplayer.conf.chromecast_available ) return;
 
     if( get_media() ) {
-      createUIElements();
+      createChromecastButton();
 
       jQuery(trigger).show();
     } else {
@@ -309,6 +313,12 @@ flowplayer(function(api, root) {
 
   bean.on(root, 'click', '.fp-chromecast', function(ev) {
     ev.preventDefault();
+
+    if ( api.conf.wpadmin ) {
+      alert( 'This is just an admin preview for the Chromecast button. Normally it will only show up when a video is playing using Chrome with Chromecast available on the same network and the video supports it.' );
+      return;
+    }
+
     if (session) {
       // without this the video cannot continue playing
       api.trigger('pause', [api]);

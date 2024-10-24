@@ -74,6 +74,7 @@
 
     // dropdown value changes (slim type, icon types)
     function skinPreviewDropdownChanged() {
+      style = '';
       $previewElements.each(function() {
         var
           $this = $(this),
@@ -107,8 +108,15 @@
           $('.flowplayer')
             .removeClass('fp-edgy fp-outlined fp-playful')
             .addClass($this.val());
+
+        } else if ( 'logoPosition' === $this.attr('name') ) {
+          if ( fv_player_admin.css_logo_positions[ $this.val() ] ) {
+            style += "\n" + '.flowplayer-wrapper .freedomplayer .fp-logo img { ' + fv_player_admin.css_logo_positions[ $this.val() ] + ' }';
+          }
         }
       });
+
+      return style;
     }
 
     // input (textbox, checkbox) value changes
@@ -128,9 +136,36 @@
           return;
         }
 
-        if ($this.attr('name').endsWith('player-position]')) {
-          if ($this.val() === 'left')
-            style += preview;
+        if ( 'logo' === $this.attr('name') ) {
+          let player = $( '.flowplayer-wrapper .freedomplayer' ),
+            logo_url = $this.val();
+
+          /**
+           * Only show preview if the logo is valid and is different from the default.
+           * This prevents the logo showing before the video is started, but at the same
+           * time show if if user picks are different image.
+           */
+          if ( logo_url.match( /^https?:\/\/.*?\.(jpg|jpe|jpeg|gif|png)$/i ) && ( logo_url !== freedomplayer.conf.logo || player.hasClass( 'is-ready' ) ) ) {
+            player.find( '.fp-logo' ).remove();
+
+            // Update the logo in the loaded player
+            let api = player.data( 'freedomplayer' )
+            if ( api ) {
+              api.conf.logo = logo_url.trim();
+            }
+
+            let img = new Image();
+            img.src = logo_url.trim();
+
+            let logo = $( '<a class="fp-logo"></a>' );
+            logo.append( img );
+
+            $( '.flowplayer-wrapper .freedomplayer .fp-ui' ).eq(0).after( logo );
+
+            if ( api ) {
+              api.setLogoPosition();
+            }
+          }
 
         } else if($this.attr('type') == 'checkbox' ) {
           if ($this.prop('checked')) {
@@ -154,10 +189,12 @@
         }
       }, 0);
 
-      $('#fv-style-preview').html(style);
-
       // update progress bar + icons style
-      skinPreviewDropdownChanged();
+      style += skinPreviewDropdownChanged();
+
+      show_player_controls_for_preview();
+
+      $('#fv-style-preview').html(style);
     }
 
     // color inputs + checkbox changes
@@ -165,6 +202,124 @@
     $previewElements.eq(0).trigger('input');
 
     $('[data-fv-preview]').on('select change', skinPreviewDropdownChanged);
+
+    /**
+     * Preview code for Controls tab of Skin
+     */
+    let player = $( '.freedomplayer' );
+
+    $( '#show_controlbar' ).on( 'change', function() {
+      player.toggleClass( 'fixed-controls', $( this ).prop( 'checked' ) );
+    } );
+
+
+    function show_player_controls_for_preview() {
+      $( '.freedomplayer.is-ready' ).addClass( 'is-mouseover' ).removeClass( 'is-mouseout' );
+    }
+
+    /**
+     *
+     * @param {string} selector
+     * @param {Object[]} options
+     * @param {string}   options.cb_enabled        api method to call when checkbox is checked
+     * @param {string}   options.cb_disabled       api method to call when checkbox is unchecked
+     * @param {string}   options.conf_key          api.conf key to set to true/false
+     * @param {string}   options.data              Player element data-{data} attribute to set to true/false
+     * @param {string}   options.selector_disabled Element to remove when checkbox is unchecked
+     * @param {string}   options.show_hide         Element to show/hide
+     */
+    function controlsPreviewCheckbox( selector, options ) {
+      $(selector).on('change', function() {
+        let api = player.data( 'freedomplayer' ),
+          is_checked = $(this).prop('checked');
+
+        if ( options.conf_key ) {
+          api.conf[ options.conf_key ] = is_checked;
+        }
+
+        if ( options.data ) {
+          player.attr( 'data-' + options.data, is_checked );
+        }
+
+        if ( options.show_hide ) {
+          player.find( options.show_hide ).toggle( is_checked );
+        }
+
+        if ( is_checked ) {
+          if ( options.cb_enabled ) {
+            api[ options.cb_enabled ]();
+          }
+
+        } else {
+          if ( options.cb_disabled ) {
+            api[ options.cb_disabled ]();
+          }
+
+          if ( options.selector_disabled ) {
+            player.find( options.selector_disabled ).remove();
+          }
+        }
+
+        show_player_controls_for_preview();
+      });
+    }
+
+    // Airplay
+    controlsPreviewCheckbox( '#ui_airplay', {
+      conf_key:          'airplay',
+      cb_enabled:        'createAirplayButton',
+      selector_disabled: '.fp-airplay'
+    } );
+
+    // Chromecast
+    controlsPreviewCheckbox( '#chromecast', {
+      conf_key:          'fv_chromecast',
+      cb_enabled:        'createChromecastButton',
+      selector_disabled: '.fp-chromecast'
+    } );
+
+    // Fullscreen
+    // TODO: Not working when initially off and then enabled
+    controlsPreviewCheckbox( '#allowfullscreen', {
+      conf_key:   'fullscreen',
+      data:       'fullscreen',
+      show_hide:  '.fp-fullscreen'
+    } );
+
+    // No Picture
+    controlsPreviewCheckbox( '#ui_no_picture_button', {
+      cb_enabled:        'createNoPictureButton',
+      data:              'button-no_picture',
+      selector_disabled: '.fv-fp-no-picture'
+    } );
+
+    // Repeat
+    controlsPreviewCheckbox( '#ui_repeat_button', {
+      cb_enabled:        'createRepeatButton',
+      data:              'button-repeat',
+      selector_disabled: '.fv-fp-playlist, .fv-fp-playlist-menu'
+    } );
+
+    // Rewind/Forward
+    controlsPreviewCheckbox( '#ui_rewind_button', {
+      cb_enabled:        'createRewindForwardButtons',
+      data:              'button-rewind',
+      selector_disabled: '.fv-fp-rewind, .fv-fp-forward'
+    } );
+
+    // Speed
+    controlsPreviewCheckbox( '#ui_speed', {
+      cb_disabled: 'removeSpeedButton',
+      cb_enabled:  'createSpeedButton',
+      data:        'speedb',
+    } );
+
+    // Logo -> Align to video
+    controlsPreviewCheckbox( '#logo_over_video', {
+      conf_key:    'logo_over_video',
+      cb_enabled:  'setLogoPosition',
+      cb_disabled: 'setLogoPosition',
+    } );
   });
 
   $(document).ready( function() {
