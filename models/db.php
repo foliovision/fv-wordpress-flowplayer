@@ -707,8 +707,9 @@ class FV_Player_Db {
 
       // numeric ID means we're coming from a shortcode somewhere in a post
       if (preg_match('/[\d,]+/', $atts['id']) === 1) {
-        $is_multi_playlist = (strpos($atts['id'], ',') !== false);
-        $real_id = ($is_multi_playlist ? substr($atts['id'], 0, strpos($atts['id'], ',')) : $atts['id']);
+        $is_multi_playlist  = strpos( $atts['id'], ',' ) !== false;
+        $multi_playlist_ids = array_map( 'intval', explode( ',', $atts['id'] ) );
+        $real_id            = $is_multi_playlist ? $multi_playlist_ids[0] : $atts['id'];
 
         //if ( isset( $this->player_atts_cache[ $real_id ]) && empty($atts['sort']) ) {
           //return $this->player_atts_cache[ $real_id ];
@@ -745,7 +746,8 @@ class FV_Player_Db {
           // if we have multiple players, load them here
           // and merge their videos with first player's videos
           if ($is_multi_playlist) {
-            $ids = explode(',', $atts['id']);
+            $ids = $multi_playlist_ids;
+
             array_shift($ids);
 
             foreach ($ids as $id_player) {
@@ -2475,10 +2477,10 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
   /**
    * Sanitizes the value for DB class attributes.
-   * 
+   *
    * TODO: We got a report of PHP warning where the $value was an object in FV_Player_Db_Player_Meta.
    * How could that happen and should be sanitize objects and arrays recursively?
-   * 
+   *
    * @param mixed $value
    * @return mixed
    */
