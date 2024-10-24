@@ -956,16 +956,20 @@ jQuery(function() {
         }
 
         var
-          $parent = $(e.target).parents('[data-index]'),
-          index = $parent.attr('data-index'),
+          playlist_row = $(e.target).parents('[data-index]'),
+          index = playlist_row.attr('data-index'),
           id = get_tab(index,'video-files').attr('data-id_video');
 
         deleted_videos.push(id);
 
-        $parent.remove();
+        playlist_row.remove();
+
         get_tab(index,'video-files').remove();
         get_tab(index,'subtitles').remove();
         get_tab(index,'cues').remove();
+
+        // Keep data-index in order
+        playlist_index();
 
         // if no playlist item is left, add a new one
         // TODO: Some better way? Like do it after the data is saved
@@ -3870,17 +3874,23 @@ Please also contact FV Player support with the following debug information:\n\n\
     function playlist_index() {
       $doc.trigger('fv-player-editor-initial-indexing');
 
-      $('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each(function(){
-        $(this).attr('data-index', $(this).index() );
-      });
+      $('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').each( index );
 
-      $('.fv-player-tab-video-files [data-playlist-item]').each(function(){
-        $(this).attr('data-index', $(this).index() );
-      });
+      $('.fv-player-tab-video-files [data-playlist-item]').each( index );
 
-      $('.fv-player-tab.fv-player-tab-subtitles [data-playlist-item]').each(function(){
-        $(this).attr('data-index', $(this).index() );
-      });
+      $('.fv-player-tab.fv-player-tab-subtitles [data-playlist-item]').each( index );
+
+      function index() {
+        /**
+         * The element already had the data-index defined before, so it seems
+         * we need to also set it with data(), since jQuery caches the first
+         * .data() retrieval in the internal data object.
+         *
+         * We cannot just use .data() as we use CSS selectors for elements in JS.
+         */
+        $(this).attr('data-index', $(this).index() ).data( 'index', $(this).index() );
+      }
+
     }
 
     // fills playlist editor table from individual video items
