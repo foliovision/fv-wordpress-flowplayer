@@ -1240,7 +1240,7 @@ function fv_flowplayer_admin_skin() {
                     .flowplayer .fp-controls > .fv-fp-prevbtn:before, .flowplayer .fp-controls > .fv-fp-nextbtn:before { border-color:#%val% !important; }
                     .flowplayer svg.fvp-icon { fill: #%val% !important; }
                     .flowplayer .fp-elapsed, .flowplayer .fp-duration { color: #%val% !important; }
-                    .freedomplayer .fp-controls svg { fill: #%val%; stroke: #%val% }
+                    .freedomplayer .fp-controls svg { fill: #%val% !important; stroke: #%val% !important }
                     .fv-player-video-checker { color: #%val% !important; }',
       'design-timeline' => '',
       'design-icons' => '',
