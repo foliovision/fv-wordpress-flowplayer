@@ -708,7 +708,7 @@ class FV_Player_Db {
       // numeric ID means we're coming from a shortcode somewhere in a post
       if (preg_match('/[\d,]+/', $atts['id']) === 1) {
         $is_multi_playlist  = strpos( $atts['id'], ',' ) !== false;
-        $multi_playlist_ids = array_map( 'intval', explode( ',', $atts['id'] ) );
+        $multi_playlist_ids = array_unique( array_map( 'intval', explode( ',', $atts['id'] ) ) );
         $real_id            = $is_multi_playlist ? $multi_playlist_ids[0] : $atts['id'];
 
         //if ( isset( $this->player_atts_cache[ $real_id ]) && empty($atts['sort']) ) {
