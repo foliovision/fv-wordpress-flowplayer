@@ -790,8 +790,14 @@ jQuery( function($) {
 
     // we remove the signature when we're updating the Editor field, otherwise we leave it in,
     // so we can actually preview the splash
-    if ( splash && typeof( strip_signature ) != 'undefined' && strip_signature && splash.indexOf('?') > -1) {
-      splash = splash.substring(0, splash.indexOf('?'));
+    if ( splash && typeof( strip_signature ) != 'undefined' && strip_signature ) {
+      if ( splash.indexOf('?') > -1 ) {
+        splash = splash.substring(0, splash.indexOf('?'));
+
+      // Deal with splash images with Bunny Stream token_path
+      } else if ( splash.match( /\/bcdn_token=[a-z0-9-_]+&expires=\d+&token_path=[a-z0-9-%]+\//i ) ) {
+        splash = splash.replace( /\/bcdn_token=[a-z0-9-_]+&expires=\d+&token_path=[a-z0-9-%]+\//i, '/' );
+      }
     }
 
     return splash;
