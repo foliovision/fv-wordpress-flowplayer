@@ -897,12 +897,8 @@ CREATE TABLE " . self::$db_table_name . " (
 
         // only run the actual check for real URLs
         if( filter_var($video_url, FILTER_VALIDATE_URL) && ! defined('PHPUnitTestMode') ) {
-          // add duration
-          global $FV_Player_Checker, $fv_fp;
-          if( $secured_url = $fv_fp->get_video_src( $video_url, array( 'dynamic' => true ) ) ) {
-            $video_url = $secured_url;
-          }
 
+          global $FV_Player_Checker;
           $check = $FV_Player_Checker->check_mimetype( array($video_url), false, true );
           foreach( array(
             'aspect_ratio',

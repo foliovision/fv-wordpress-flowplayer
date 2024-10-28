@@ -151,9 +151,12 @@ class FV_Player_Checker {
 
         $size = 8 * 1024 * 1024;
 
+        $remotefilename_encoded = $fv_fp->get_video_src( $remotefilename_encoded, array( 'dynamic' => true ) );
+
         $res = wp_remote_get( $remotefilename_encoded, array(
           'headers'    => array(
-            'range'    => 'bytes=0-' . $size
+            'range'    => 'bytes=0-' . $size,
+            'referer'  => home_url()
           ),
           'timeout'    => !$this->is_cron && !$force_is_cron ? apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 ) : 20,
           'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver
@@ -221,9 +224,10 @@ class FV_Player_Checker {
               $remotefilename_encoded,
               array(
                 'headers' => array(
-                  'Referer' => home_url(),
+                  'referer' => home_url(),
                 ),
-                'timeout' => 15
+                'timeout' => 15,
+                'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver
               )
             );
 
@@ -296,7 +300,15 @@ class FV_Player_Checker {
                   $item_url = $secured_url;
                 }
 
-                $request = wp_remote_get( $item_url, array( 'headers' => array( 'Referer' => home_url() ) ) );
+                $request = wp_remote_get(
+                  $item_url,
+                  array(
+                    'headers' => array(
+                      'referer' => home_url()
+                    ),
+                    'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver
+                  )
+                );
 
                 if( is_wp_error($request) ) {
                   return array( 'error' => $request->get_error_message() );

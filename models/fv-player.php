@@ -3182,13 +3182,14 @@ function fv_wp_flowplayer_save_post( $post_id ) {
       }
 
       if( isset($post->ID) && !get_post_meta( $post->ID, flowplayer::get_video_key($video), true ) ) {
-        $video_secured = array( 'media' => $fv_fp->get_video_src( $video, array( 'dynamic' => true ) ) );
-        if( isset($video_secured['media']) && $FV_Player_Checker->check_mimetype( array($video_secured['media']), array( 'meta_action' => 'check_time', 'meta_original' => $video ) ) ) {
+
+        if ( $FV_Player_Checker->check_mimetype( array( $video ), array( 'meta_action' => 'check_time' ) ) ) {
           $iDone++;
 
         } else {
           FV_Player_Checker::queue_add($post_id);
         }
+
       } else {
         $iDone++;
       }
