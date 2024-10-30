@@ -112,6 +112,16 @@ flowplayer(function(api, root) {
         ( window.innerWidth <= 667 ? 2 : 2.4 ),
       has = window.innerWidth / window.innerHeight > magic_number;
 
+    if ( navigator.userAgent.match(/CriOS/) && window.screen && window.screen.width && window.innerWidth > window.innerHeight ) {
+      /**
+       * Somehow the above aspect ratio checks are not a good fit for Chrome on iOS.
+       * So we compare the screen width to the viewport height, as we care about landscape only.
+       *
+       * 26 px is the size taken by the shrinked location bar when using maximum iOS text size. So if we find difference bigger than that the location bar is showing.
+      */
+      has = window.screen.width - window.innerHeight > 26;
+    }
+
     return has;
   }
 
