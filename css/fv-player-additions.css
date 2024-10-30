@@ -1054,6 +1054,11 @@ a.fp-youtube-title {
   display: none !important;
 }
 
+/* Gets rid of white bars on sides of the video when fullscreen in lanscape orientation on iPhone */
+body.has-fv-player-fullscreen {
+  background: black !important;
+}
+
 body.has-fv-player-fullscreen #chat-widget-container {
   display: none;
 }
