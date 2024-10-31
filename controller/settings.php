@@ -404,14 +404,19 @@ function fv_player_get_aws_regions() {
   return array(
     'af-south-1'     => __('Africa (Cape Town)', 'fv-player' ),
     'ap-east-1'      => __('Asia Pacific (Hong Kong)', 'fv-player' ),
+    'ap-south-2'     => __('Asia Pacific (Hyderabad)', 'fv-player' ),
+    'ap-southeast-3' => __('Asia Pacific (Jakarta)', 'fv-player' ),
+    'ap-southeast-5' => __('Asia Pacific (Malaysia)', 'fv-player' ),
+    'ap-southeast-4' => __('Asia Pacific (Melbourne)', 'fv-player' ),
     'ap-south-1'     => __('Asia Pacific (Mumbai)', 'fv-player' ),
-    'ap-northeast-3' => __('Asia Pacific (Osaka-Local)', 'fv-player' ),
+    'ap-northeast-3' => __('Asia Pacific (Osaka)', 'fv-player' ),
     'ap-northeast-2' => __('Asia Pacific (Seoul)', 'fv-player' ),
     'ap-southeast-1' => __('Asia Pacific (Singapore)', 'fv-player' ),
     'ap-southeast-2' => __('Asia Pacific (Sydney)', 'fv-player' ),
     'ap-northeast-1' => __('Asia Pacific (Tokyo)', 'fv-player' ),
 
     'ca-central-1'   => __('Canada (Central)', 'fv-player' ),
+    'ca-west-1'      => __('Canada West (Calgary)', 'fv-player' ),
 
     'cn-north-1'     => __('China (Beijing)', 'fv-player' ),
     'cn-northwest-1' => __('China (Ningxia)', 'fv-player' ),
@@ -421,9 +426,14 @@ function fv_player_get_aws_regions() {
     'eu-west-2'      => __('Europe (London)', 'fv-player' ),
     'eu-south-1'     => __('Europe (Milan)', 'fv-player' ),
     'eu-west-3'      => __('Europe (Paris)', 'fv-player' ),
+    'eu-south-2'     => __('Europe (Spain)', 'fv-player' ),
     'eu-north-1'     => __('Europe (Stockholm)', 'fv-player' ),
+    'eu-central-2'   => __('Europe (Zurich)', 'fv-player' ),
+
+    'il-central-1'   => __('Israel (Tel Aviv)', 'fv-player' ),
 
     'me-south-1'     => __('Middle East (Bahrain)', 'fv-player' ),
+    'me-central-1'   => __('Middle East (UAE)', 'fv-player' ),
 
     'sa-east-1'      => __('South America (S&atilde;o Paulo)', 'fv-player' ),
 
