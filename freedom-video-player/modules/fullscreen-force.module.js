@@ -34,14 +34,14 @@ flowplayer(function(api, root) {
         if( !api.ready || api.paused ) api.fullscreen(true);
       });
     }
-    
+
     jQuery('[rel='+root.attr('id')+'] a').on('click', function(e) {
       if( !api.isFullscreen ) {
         api.fullscreen();
         api.resume();
       }
     });
-    
+
     api.on('resume', function() {
       if( api.video.vr ) return;
 
@@ -56,7 +56,7 @@ flowplayer(function(api, root) {
         }
       }
     });
-    
+
     api.on('finish', function() {
       if( api.conf.playlist.length == 0 || api.conf.playlist.length -1 == api.video.index ) api.fullscreen(false);
     }).on('fullscreen', function(a,api) {
@@ -66,10 +66,10 @@ flowplayer(function(api, root) {
        root.removeClass('forced-fullscreen');
     });
   }
-  
+
   if( flowplayer.support.android && flowplayer.conf.mobile_landscape_fullscreen && window.screen && window.screen.orientation ) {
     api.on('fullscreen', function(a,api) {
-      if( is_portrait_video(api) ) { 
+      if( is_portrait_video(api) ) {
         screen.orientation.lock("portrait-primary");
       } else {
         screen.orientation.lock("landscape-primary");
@@ -105,24 +105,18 @@ flowplayer(function(api, root) {
   }
 
   function check_for_location_bar() {
-    var is_portrait = window.innerWidth < window.innerHeight,
-      magic_number = is_portrait ?
-        // using 0.6 works on 375x628 window size, 0.575 on bigger iPhones, like 414x719px ones
-        ( window.innerWidth <= 375 ? 0.6 : 0.575 ) :
-        ( window.innerWidth <= 667 ? 2 : 2.4 ),
-      has = window.innerWidth / window.innerHeight > magic_number;
+    var is_landscape = window.innerWidth > window.innerHeight;
 
-    if ( navigator.userAgent.match(/CriOS/) && window.screen && window.screen.width && window.innerWidth > window.innerHeight ) {
-      /**
-       * Somehow the above aspect ratio checks are not a good fit for Chrome on iOS.
-       * So we compare the screen width to the viewport height, as we care about landscape only.
-       *
-       * 26 px is the size taken by the shrinked location bar when using maximum iOS text size. So if we find difference bigger than that the location bar is showing.
-      */
-      has = window.screen.width - window.innerHeight > 26;
+    /**
+     * We compare the screen width to the viewport height, as we care about landscape only.
+     * 26 px is the size taken by the shrinked location bar in Chrome when using maximum iOS text size.
+     * So if the difference is bigger than that the location bar is showing.
+     */
+    if ( is_landscape && window.screen && window.screen.width && window.screen.width - window.innerHeight > 26 ) {
+      return true;
     }
 
-    return has;
+    return false;
   }
 
   function show_iphone_notice() {
@@ -138,5 +132,5 @@ flowplayer(function(api, root) {
       }, 5000 );
     }
   }
-  
+
 });
