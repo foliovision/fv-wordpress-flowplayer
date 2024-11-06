@@ -77,6 +77,17 @@ flowplayer(function(api, root) {
     });
   }
 
+  /**
+   * Does the video has portrait orientation? = Is the height is larger than width?
+   * @param {object} api - Flowplayer object
+   * @return {bool} True if portrait, false if landscape
+   */
+  function is_portrait_video( api ) {
+    // If the video dimensions are not known assume it's wide and landscape mode should be used
+    // TODO: Instead fix HLS.js engine to report video width and height properly
+    return (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height);
+  }
+
   var show_iphone_notice_timeout = false;
 
   // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
@@ -91,17 +102,6 @@ flowplayer(function(api, root) {
         api.trigger('resize-good');
       }
     } );
-  }
-
-  /**
-   * Does the video has portrait orientation? = Is the height is larger than width?
-   * @param {object} api - Flowplayer object
-   * @return {bool} True if portrait, false if landscape
-   */
-  function is_portrait_video( api ) {
-    // If the video dimensions are not known assume it's wide and landscape mode should be used
-    // TODO: Instead fix HLS.js engine to report video width and height properly
-    return (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height);
   }
 
   function check_for_location_bar() {
