@@ -88,48 +88,72 @@ flowplayer(function(api, root) {
     return (typeof api.video.width != 'undefined' && typeof api.video.height != 'undefined') && (api.video.width != 0 && api.video.height != 0 && api.video.width < api.video.height);
   }
 
-  var show_iphone_notice_timeout = false;
+  var notice_timeouts = {
+    'iphone_swipe_up_location_bar' : false,
+    'iphone_swipe_up_browser'      : false,
+  }
 
   // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
   if( flowplayer.support.iOS && !flowplayer.support.fullscreen && !flowplayer.conf.native_fullscreen ) {
-    api.on('fullscreen', show_iphone_notice );
-    window.addEventListener('resize', show_iphone_notice );
-    window.addEventListener('resize', function() {
-      // No location bar? We are all good!
-      if( !check_for_location_bar() ) {
-        clearTimeout(show_iphone_notice_timeout);
-        show_iphone_notice_timeout = false;
-        api.trigger('resize-good');
-      }
-    } );
+    api.on('fullscreen', maybe_show_iphone_notice );
+    window.addEventListener('resize', maybe_show_iphone_notice );
   }
 
-  function check_for_location_bar() {
+  /**
+   * We compare the screen width to the viewport height, as we care about landscape only.
+   * 26 px is the size taken by the shrinked location bar when using maximum iOS text size.
+   * If we find difference bigger than that the location bar is showing.
+   */
+  function check_for_location_bar( threshold = 26 ) {
     var is_landscape = window.innerWidth > window.innerHeight;
 
-    /**
-     * We compare the screen width to the viewport height, as we care about landscape only.
-     * 26 px is the size taken by the shrinked location bar in Chrome when using maximum iOS text size.
-     * So if the difference is bigger than that the location bar is showing.
-     */
-    if ( is_landscape && window.screen && window.screen.width && window.screen.width - window.innerHeight > 26 ) {
-      return true;
-    }
-
-    return false;
+    return is_landscape && window.screen && window.screen.width && window.screen.width - window.innerHeight > threshold;
   }
 
-  function show_iphone_notice() {
-    if( api.isFullscreen && window.innerWidth > window.innerHeight && check_for_location_bar() && !show_iphone_notice_timeout ) {
-      // Show the notice until the location bar disappears
-      fv_player_notice( root, fv_flowplayer_translations.iphone_swipe_up_location_bar, 'resize-good' );
+  function maybe_show_iphone_notice() {
+    if( api.isFullscreen ) {
+      if ( check_for_location_bar() ) {
+        show_iphone_notice_worker( 'iphone_swipe_up_location_bar' );
 
-      // Hide the notice after 5 seconds
-      show_iphone_notice_timeout = setTimeout( function() {
-        show_iphone_notice_timeout = false;
+      } else if ( check_for_location_bar( 8 ) ) {
+        show_iphone_notice_worker( 'iphone_swipe_up_browser' );
 
-        api.trigger('resize-good');
+      } else {
+        remove_iphone_notices( true );
+      }
+    }
+  }
+
+  function show_iphone_notice_worker( notice_id ) {
+
+    // Remove all other related notices added with fv_player_notice()
+    remove_iphone_notices( notice_id );
+
+    if ( ! notice_timeouts[ notice_id ] ) {
+      // Wait before the old notice disappears - fv_player_notice() has 100 ms fade out when removing
+      setTimeout( function() {
+        fv_player_notice(root, fv_flowplayer_translations[ notice_id ], 'notice-' + notice_id );
+      }, 100 );
+
+      // Remove the notice after 5 seconds
+      notice_timeouts[ notice_id ] = setTimeout( function() {
+        notice_timeouts[ notice_id ] = false;
+        api.trigger( 'notice-' + notice_id );
       }, 5000 );
+    }
+  };
+
+  function remove_iphone_notices( keep ) {
+    for ( var notice_id in notice_timeouts ) {
+      if ( keep && notice_id == keep ) {
+        continue;
+      }
+
+      if ( notice_timeouts[ notice_id ] ) {
+        clearTimeout( notice_timeouts[ notice_id ] );
+        notice_timeouts[ notice_id ] = false;
+        api.trigger( 'notice-' + notice_id );
+      }
     }
   }
 
