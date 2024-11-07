@@ -93,10 +93,20 @@ flowplayer(function(api, root) {
     'iphone_swipe_up_browser'      : false,
   }
 
+  function debounce(func, wait) {
+    var timeout;
+    return function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(func, wait);
+    };
+  }
+
+  var debounced_maybe_show_iphone_notice = debounce( maybe_show_iphone_notice, 10 );
+
   // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
   if( flowplayer.support.iOS && !flowplayer.support.fullscreen && !flowplayer.conf.native_fullscreen ) {
-    api.on('fullscreen', maybe_show_iphone_notice );
-    window.addEventListener('resize', maybe_show_iphone_notice );
+    api.on('fullscreen', debounced_maybe_show_iphone_notice );
+    window.addEventListener('resize', debounced_maybe_show_iphone_notice );
   }
 
   /**
@@ -119,7 +129,7 @@ flowplayer(function(api, root) {
         show_iphone_notice_worker( 'iphone_swipe_up_browser' );
 
       } else {
-        remove_iphone_notices( true );
+        remove_iphone_notices();
       }
     }
   }
