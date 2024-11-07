@@ -101,7 +101,7 @@ flowplayer(function(api, root) {
     };
   }
 
-  var debounced_maybe_show_iphone_notice = debounce( maybe_show_iphone_notice, 10 );
+  var debounced_maybe_show_iphone_notice = debounce( maybe_show_iphone_notice, 100 );
 
   // Since iPhone doesn't provide real fullscreen we show a hint to swipe up to remove location bar
   if( flowplayer.support.iOS && !flowplayer.support.fullscreen && !flowplayer.conf.native_fullscreen ) {
