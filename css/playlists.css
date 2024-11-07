@@ -452,18 +452,17 @@
 }
 
 /* Audio player playlist */
-.is-audio .fp-playlist-external { background-color:#eee }
-.flowplayer.is-audio + .fp-playlist-external a .now-playing { display:none; }
-.is-audio + .fp-playlist-external { counter-reset: 'fv-playlist-counter';background-color:#f0f0f0;border-radius:0 0 10px 10px;border-top:1px solid #fff }
+.fp-playlist-external.is-audio a .now-playing { display:none; }
+.fp-playlist-external.is-audio { counter-reset: fv-playlist-counter;background-color:#f0f0f0;border-radius:0 0 10px 10px;border-top:1px solid #fff }
 .flowplayer.is-audio + .visible-captions.fp-playlist-external a h4 span { color:inherit;background-color:transparent; }
-.flowplayer.is-audio + .fp-playlist-external .dur { color:#666;opacity:1;text-shadow:none;position:static;float:right;}
+.fp-playlist-external.is-audio .dur { color:#666;opacity:1;text-shadow:none;position:static;float:right;}
 .is-audio + .fp-playlist-horizontal {margin-left:0;margin-right:0}
 .is-audio + .fp-playlist-horizontal a .fvp-playlist-thumb,.entry-content .is-audio + .fp-playlist-horizontal a .fvp-playlist-thumb,.flowplayer.is-audio .fp-player + a { display:none;bottom:0;background-image:none !important }
-.is-audio + .fp-playlist-external.fp-playlist-horizontal a,.entry-content .is-audio + .fp-playlist-external.fp-playlist-horizontal a,.flowplayer.is-fv-narrow.is-audio + .fp-playlist-external.fp-playlist-horizontal a { counter-increment:fv-playlist-counter;width:100%;display:block;text-align:left;line-height:1.15;margin:0;padding:6px 12px;border:0;color:#666;clear:both;min-height:26px }
-.is-audio + .fp-playlist-external a:nth-child(odd),.entry-content .is-audio + .fp-playlist-external a:nth-child(odd) {background-color: #f8f8f8;}
-.is-audio + .fp-playlist-external a h4,.entry-content .is-audio + .fp-playlist-external a h4 { display: block;opacity:1;position:relative;text-align:left;font-size:13px;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
-.is-audio + .fp-playlist-external a h4 span,.entry-content .is-audio + .fp-playlist-external a h4 span { position:relative;top:auto;padding:0;transform:none }
-.is-audio + .fp-playlist-external a h4:before,.entry-content .is-audio + .fp-playlist-external a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
+.fp-playlist-external.is-audio.fp-playlist-horizontal a,.entry-content .fp-playlist-external.is-audio.fp-playlist-horizontal a,.flowplayer.is-fv-narrow .fp-playlist-external.is-audio.fp-playlist-horizontal a { counter-increment:fv-playlist-counter;width:100%;display:block;text-align:left;line-height:1.15;margin:0;padding:6px 12px;border:0;color:#666;clear:both;min-height:26px }
+.fp-playlist-external.is-audio a:nth-child(odd),.entry-content .fp-playlist-external.is-audio a:nth-child(odd) {background-color: #f8f8f8;}
+.fp-playlist-external.is-audio a h4,.entry-content .fp-playlist-external.is-audio a h4 { display: block;opacity:1;position:relative;text-align:left;font-size:13px;padding:0;clear:none;left:auto;width:auto;background-color:transparent;color:inherit }
+.fp-playlist-external.is-audio a h4 span,.entry-content .fp-playlist-external.is-audio a h4 span { position:relative;top:auto;padding:0;transform:none }
+.fp-playlist-external.is-audio a h4:before,.entry-content .fp-playlist-external.is-audio a h4:before { content: counter(fv-playlist-counter, decimal-leading-zero) ". ";float:left;min-width:26px;color:#adadad;font-weight:400 }
 
 .fp-playlist-external.is-audio a.is-active,.fp-playlist-external.is-audio a.is-active h4,.fp-playlist-external.is-audio a.is-active h4:before {color:#bb0000}
 
