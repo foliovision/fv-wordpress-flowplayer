@@ -161,11 +161,6 @@ class flowplayer_frontend extends flowplayer
       }
     }
 
-    // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
-    if ( $this->is_audio_playlist() ) {
-      $this->aCurArgs['liststyle'] = 'horizontal';
-    }
-
     $media = $this->aCurArgs['src'];
 
     if( !$media && empty($this->aCurArgs['rtmp_path']) ) {
@@ -265,6 +260,11 @@ class flowplayer_frontend extends flowplayer
     } else if( preg_match( "~https?://\S*?\.wistia\.(?:com|net)/embed/(?:iframe|medias)/([a-z0-9]+)~i", $media, $aWistia ) ) {
       $wistia = $aWistia[1];
       $player_type = 'wistia';
+    }
+
+    // force horizontal playlist style for audio as that the only one styled properly if there are no splash screens
+    if ( ! $splash_img && $this->is_audio_playlist() ) {
+      $this->aCurArgs['liststyle'] = 'horizontal';
     }
 
     if( !isset($this->aCurArgs['liststyle']) || empty($this->aCurArgs['liststyle']) ){
