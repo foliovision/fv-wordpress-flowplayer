@@ -1303,7 +1303,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       }
 
-      if( $sItemCaption ) {
+      if( $sItemCaption || $this->is_audio_playlist() ) {
         $sHTML .= "<h4>".$sItemCaption."</h4>";
       }
 
