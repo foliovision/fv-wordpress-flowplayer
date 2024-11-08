@@ -88,7 +88,7 @@ function fv_flowplayer_admin_overlay() {
 						</tr>
 						<tr>
 							<td colspan="4">
-								<a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+								<a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
 							</td>
 						</tr>
 					</table>
@@ -866,7 +866,7 @@ function fv_flowplayer_admin_popups(){
       </tr>
       <tr>
         <td>
-          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
           <input type="button" value="<?php esc_attr_e( 'Add more Popups', 'fv-player' ); ?>" class="button" id="fv-player-popups-add" />
         </td>
       </tr>
