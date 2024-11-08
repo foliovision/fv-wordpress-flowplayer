@@ -83,18 +83,18 @@ final class FV_Player_Controller extends TestCase {
     include_once "../../models/lightbox.php";
     global $fv_fp;
     $fv_fp = new flowplayer();
-    
+
     include_once "../../controller/frontend.php";
   }
-  
-  public function test_flowplayer_prepare_scripts_js_everywhere() {    
+
+  public function test_flowplayer_prepare_scripts_js_everywhere() {
     global $fv_fp;
     $fv_fp->conf['js-everywhere'] = true;
-    
+
     ob_start();
     flowplayer_prepare_scripts();
     $output = ob_get_clean();
-    
+
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
 Registering fv_flowplayer for fv-wordpress-flowplayer/css/fv-player.min.css?ver=1.2.3.4
 Registering fv_freedomplayer_playlists for fv-wordpress-flowplayer/css/playlists.css?ver=1.2.3.4
@@ -118,8 +118,9 @@ Localizing flowplayer with fv_flowplayer_conf = Array
             [7] => 2
         )
 
-    [video_hash_links] => 1
+    [video_hash_links] =>
     [safety_resize] => 1
+    [logo_over_video] => 1
     [volume] => 0.7
     [default_volume] => 0.7
     [mobile_landscape_fullscreen] => 1
@@ -130,7 +131,8 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [script_hls_js] => fv-wordpress-flowplayer/freedom-video-player/hls.min.js?ver=1.2.3.4
     [script_dash_js] => fv-wordpress-flowplayer/freedom-video-player/dash.mediaplayer.min.js?ver=1.2.3.4
     [script_dash_js_engine] => fv-wordpress-flowplayer/freedom-video-player/fv-player-dashjs.min.js?ver=1.2.3.4
-    [chromecast] => 
+    [airplay] => 1
+    [chromecast] =>
     [youtube_browser_chrome] => standard
     [hlsjs] => Array
         (
@@ -152,7 +154,7 @@ Localizing flowplayer with fv_player = Array
 
 Localizing flowplayer with fv_flowplayer_translations = Array
 (
-    [0] => 
+    [0] =>
     [1] => Video loading aborted
     [2] => Network error
     [3] => Video not properly encoded
@@ -191,7 +193,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [embed_copied] => Embed Code Copied to Clipboard
     [error_copy_clipboard] => Error copying text into clipboard!
     [subtitles_disabled] => Subtitles disabled
-    [subtitles_switched] => Subtitles switched to 
+    [subtitles_switched] => Subtitles switched to
     [warning_iphone_subs] => This video has subtitles, that are not supported on your device.
     [warning_unstable_android] => You are using an old Android device. If you experience issues with the video please use <a href=\"https://play.google.com/store/apps/details?id=org.mozilla.firefox\">Firefox</a>.
     [warning_samsungbrowser] => You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser.
@@ -211,7 +213,7 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [duration_n_minutes] => %s min
     [duration_1_second] => %s second
     [duration_n_seconds] => %s second
-    [and] =>  and 
+    [and] =>  and
     [chrome_extension_disable_html5_autoplay] => It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos
     [click_to_unmute] => Click to unmute
     [audio_button] => AUD
@@ -237,27 +239,28 @@ Localizing flowplayer with fv_flowplayer_playlists = Array
 )
 
 Registering fv_player_lightbox for ?ver=
-Registering fv_player_lightbox for ?ver= footer? 
+Registering fv_player_lightbox for ?ver= footer?
 Adding inline script for fv_player_lightbox: ( function() { let fv_player_fancybox_loaded = false; const triggers = document.querySelectorAll( '[data-fancybox], .fp-playlist-external[rel$=_lightbox_starter] a' ); for (let i = 0; i < triggers.length; i++) { triggers[i].addEventListener( 'ontouchstart' in window ? 'touchstart' : 'click', function( e ) { if ( fv_player_fancybox_loaded ) return; fv_player_fancybox_loaded = true; let i = this, l = document.createElement('link'), s = document.createElement('script'); e.preventDefault(); e.stopPropagation(); l.rel = 'stylesheet'; l.type = 'text/css'; l.href = fv_player_lightbox.css_url; document.head.appendChild(l); s.onload = function () { let evt = new MouseEvent('click',{bubbles: true,cancelable:true,view:window}); i.dispatchEvent(evt); }; s.src = fv_player_lightbox.js_url; document.head.appendChild(s); }); } })();
 Localizing fv_player_lightbox with fv_player_lightbox = Array
 (
-    [lightbox_images] => 
+    [lightbox_images] =>
     [js_url] => fv-wordpress-flowplayer/js/fancybox.js
     [css_url] => fv-wordpress-flowplayer/css/fancybox.css
 )
 
-";  
+";
 
     $output = preg_replace( '~\?ver=[0-9.mod-]+~', '?ver=1.2.3.4', $output );
-      
-    /*$aOut = explode( "\n", preg_replace( '~\r\n~', "\n", $output) );  
+
+    /*$aOut = explode( "\n", preg_replace( '~\r\n~', "\n", $output) );
     $aExpected = explode( "\n", preg_replace( '~\r\n~', "\n", $expected ) );
-      
+
     foreach( $aOut AS $k => $v ) {
       $this->assertEquals( $v, $aExpected[$k] );
     }*/
-    
-    $this->assertEquals( preg_replace( '~\r\n~', "\n", $expected ), preg_replace( '~\r\n~', "\n", $output) );
+
+    // Replace windows newlines with unix newlines, including any whitespace before newline
+    $this->assertEquals( preg_replace( '~\s*?\r?\n~', "\n", $expected ), preg_replace( '~\s*?\r?\n~', "\n", $output) );
   }
 
 }
