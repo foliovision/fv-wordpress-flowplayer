@@ -80,7 +80,7 @@ if( fv_flowplayer_conf.youtube ) {
   ;
 
   /**
-   * Copy of https://www.youtube.com/s/player/2b2385a0/www-widgetapi.vflset/www-widgetapi.js with YT changed to FV_YT.
+   * Copy of https://www.youtube.com/s/player/baafab19/www-widgetapi.vflset/www-widgetapi.js with YT changed to FV_YT.
    *
    * Commented out parts where it runs onYTReady(), onYouTubeIframeAPIReady(), onYouTubePlayerAPIReady()
    */
@@ -1418,20 +1418,21 @@ if( fv_flowplayer_conf.youtube ) {
     q.G = function(a, b) {
         var c = this.h[a];
         if (c) {
-            for (var d = Array(arguments.length - 1), g = 1, k = arguments.length; g < k; g++)
-                d[g - 1] = arguments[g];
+            var d = Array(arguments.length - 1), g = arguments.length, k;
+            for (k = 1; k < g; k++)
+                d[k - 1] = arguments[k];
             if (this.A)
-                for (g = 0; g < c.length; g++) {
-                    var e = c[g];
-                    kb(this.g[e + 1], this.g[e + 2], d)
-                }
+                for (k = 0; k < c.length; k++)
+                    g = c[k],
+                    kb(this.g[g + 1], this.g[g + 2], d);
             else {
                 this.m++;
                 try {
-                    for (g = 0,
-                    k = c.length; g < k && !this.i; g++)
-                        e = c[g],
+                    for (k = 0,
+                    g = c.length; k < g && !this.i; k++) {
+                        var e = c[k];
                         this.g[e + 1].apply(this.g[e + 2], d)
+                    }
                 } finally {
                     if (this.m--,
                     this.l.length > 0 && this.m == 0)
@@ -1439,7 +1440,7 @@ if( fv_flowplayer_conf.youtube ) {
                             this.D(c)
                 }
             }
-            return g != 0
+            return k != 0
         }
         return !1
     }
@@ -1837,7 +1838,7 @@ if( fv_flowplayer_conf.youtube ) {
                     var k = g.u
                       , e = 0;
                     k.search("get") === 0 ? e = 3 : k.search("is") === 0 && (e = 2);
-                    return this.playerInfo[k.charAt(e).toLowerCase() + k.substr(e + 1)]
+                    return this.playerInfo[k.charAt(e).toLowerCase() + k.substring(e + 1)]
                 }
             }(d) : a[d.u] = function(g) {
                 return function() {
@@ -1973,32 +1974,7 @@ if( fv_flowplayer_conf.youtube ) {
         var b = a;
         b || (b = document);
         a = ya(b.getElementsByTagName("yt:player"));
-        var c = b || document;
-        if (c.querySelectorAll && c.querySelector)
-            b = c.querySelectorAll(".yt-player");
-        else {
-            var d;
-            c = document;
-            b = b || c;
-            if (b.querySelectorAll && b.querySelector)
-                b = b.querySelectorAll(".yt-player");
-            else if (b.getElementsByClassName) {
-                var g = b.getElementsByClassName("yt-player");
-                b = g
-            } else {
-                g = b.getElementsByTagName("*");
-                var k = {};
-                for (c = d = 0; b = g[c]; c++) {
-                    var e = b.className, f;
-                    if (f = typeof e.split == "function")
-                        f = ua(e.split(/\s+/), "yt-player") >= 0;
-                    f && (k[d++] = b)
-                }
-                k.length = d;
-                b = k
-            }
-        }
-        b = ya(b);
+        b = ya((b || document).querySelectorAll(".yt-player"));
         va(xa(a, b), Mb)
     });
     typeof YTConfig !== "undefined" && YTConfig.parsetags && YTConfig.parsetags !== "onload" || wb();
