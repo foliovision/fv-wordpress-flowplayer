@@ -626,14 +626,8 @@ CREATE TABLE " . self::$db_table_name . " (
       if (!in_array($key, $this->ignored_input_fields)) {
         if (property_exists($this, $key)) {
 
-          /**
-           * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
-           */
-          if ( is_string( $value ) ) {
-            if( $key != 'ad' ) {
-              $value = wp_strip_all_tags($value);
-            }
-          }
+          $value = FV_Player_Db::strip_tags( $value, $key );
+
           $this->$key = FV_Player_Db::sanitize( $value );
 
         } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
@@ -1085,14 +1079,7 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
-        /**
-         * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
-         */
-        if ( is_string( $value ) ) {
-          if( $property != 'ad' ) {
-            $value = wp_strip_all_tags($value);
-          }
-        }
+        $value = FV_Player_Db::strip_tags( $value, $property );
 
         if ( in_array( $property, array( 'author', 'changed_by' ) ) ) {
           $format[ $property ] = '%d';

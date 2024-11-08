@@ -2485,11 +2485,49 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
    * @return mixed
    */
   public static function sanitize( $value ) {
+
+    /**
+     * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
+     */
     if ( is_string( $value ) ) {
       return stripslashes( $value );
     } else {
       return $value;
     }
+  }
+
+  /**
+   * Strips tags from the value for DB class attributes.
+   *
+   * Only "overlay" is allowed to have limited HTML.
+   *
+   * @param mixed $value
+   * @param string $key
+   *
+   * @return mixed
+   */
+  public static function strip_tags( $value, $key ) {
+    global $fv_fp;
+
+    /**
+     * Avoid issues if the import JSON sets a null value for what's expected to be string "toggle_end_action":null
+     */
+    if ( is_string( $value ) ) {
+      if( 'overlay' === $key ) {
+        add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 999, 2 );
+        add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit_settings' ), 999, 2 );
+
+        $value = wp_kses( $value, 'post' );
+
+        remove_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit' ), 999, 2 );
+        remove_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit_settings' ), 999, 2 );
+
+      } else {
+        $value = wp_strip_all_tags( $value );
+      }
+    }
+
+    return $value;
   }
 
 }
