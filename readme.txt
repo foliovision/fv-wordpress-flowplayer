@@ -257,6 +257,27 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.8 - 2024-11-08 =
+
+* Airplay: Add setting to Skin -> Controls
+* AWS: Adding missing regions
+* CSS: Keeping your custom watermark over the video picture if the video aspect ratio does not match the screen
+* CSS: Performance fixes
+* CSS: Remove white bars when fullscreen on iPhone
+* CSS: Responsive logo sizing
+* Settings: Change "Disable" setting to "Enable" to not create checkboxes with reversed logic
+* Settings: Move logo and control bar settings to Skin -> Logo and Skin -> Controls
+* Settings: Removed "Player position", "Bottom Margin", "Buffer", "Time" and "Canvas" color (always transparent)
+* Uninstall: Do not warn user about loosing data when deleting plugin if 'Remove all data' setting is not on
+* Video upload: Fix for WordPress Multisite Network Activated plugins
+* YouTube: Load basic library locally to avoid conflicts with other plugins using YouTube Player API
+* Bugfix: Audio player: Fix item number not appearing when playlist
+* Bugfix: Editor: Fix broken display when deleting first playlist item
+* Bugfix: Migration Wizard not showing preview of links being replaced
+* Bugfix: Multi-playlist shortcode fix
+* Bugfix: Overlay HTML code removed on save
+* Bugfix: Popup HTML code removed on save
+
 = 8.0.7 - 2024-10-02 =
 
 * Deactivate FV Player 7 during activation
