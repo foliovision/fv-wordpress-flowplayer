@@ -639,7 +639,7 @@ function fv_player_guttenberg_attributes_save() {
     $src = sanitize_url($_POST['src']);
     $splash = sanitize_url($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
-    $timeline_previews = sanitize_url(trim($_POST['timeline_previews']));
+    $timeline_previews = ! empty( $_POST['timeline_previews'] ) && strcmp( $_POST['timeline_previews'], 'false' ) !== 0 ? sanitize_url( trim( $_POST['timeline_previews'] ) ) : false;
     $hls_hlskey = sanitize_text_field(trim($_POST['hls_hlskey']));
 
     global $FV_Player_Db;
@@ -654,7 +654,7 @@ function fv_player_guttenberg_attributes_save() {
     if( !$player_id ) {
       $meta = array();
 
-      if( !empty( $timeline_previews ) && strcmp( $timeline_previews, 'false' ) !== 0 ) {
+      if( !empty( $timeline_previews ) ) {
         $meta[] = array(
           'meta_key' => 'timeline_previews',
           'meta_value' => $timeline_previews
