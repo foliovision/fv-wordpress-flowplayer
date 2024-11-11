@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 5.7
-Tested up to: 6.6
+Tested up to: 6.7
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -256,6 +256,11 @@ You can optionally edit your theme's JS to prevent the shrinking.
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 8.0.9 - 2024-11-11 =
+
+* Bugfix: Gutenberg block: Avoid breaking video links with % encoding
+* Bugfix: Gutenberg block: Avoid removing encrypted HLS decryption key
 
 = 8.0.8 - 2024-11-08 =
 
