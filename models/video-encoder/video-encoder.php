@@ -316,7 +316,7 @@ abstract class FV_Player_Video_Encoder {
       wp_send_json( array('error' => 'Bad nonce') );
     }
 
-    $source = sanitize_text_field( $_POST['source'] );
+    $source = sanitize_url( $_POST['source'] );
     $target = sanitize_text_field( $_POST['target'] );
 
     // if the extending Encoder supports encryption, add it here
