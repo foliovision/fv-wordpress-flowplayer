@@ -636,10 +636,10 @@ function fv_player_guttenberg_attributes_save() {
   if( check_ajax_referer( "fv_player_gutenberg", "security" , false ) == 1 ) {
     $player_id = intval($_POST['player_id']);
     $splash_attachment_id = intval($_POST['splash_attachment_id']);
-    $src = sanitize_text_field($_POST['src']);
-    $splash = sanitize_text_field($_POST['splash']);
+    $src = sanitize_url($_POST['src']);
+    $splash = sanitize_url($_POST['splash']);
     $title = sanitize_text_field($_POST['title']);
-    $timeline_previews = sanitize_text_field(trim($_POST['timeline_previews']));
+    $timeline_previews = sanitize_url(trim($_POST['timeline_previews']));
     $hls_hlskey = sanitize_text_field(trim($_POST['hls_hlskey']));
 
     global $FV_Player_Db;
