@@ -2307,8 +2307,7 @@ jQuery(function() {
             timeline_previews = get_playlist_video_meta_value( 'timeline_previews', 0 ),
             hlskey = get_playlist_video_meta_value( 'hls_hlskey', 0 );
 
-
-          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews, hlskey: hlskey, player_id: current_player_db_id } );
+          wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews, hls_hlskey: hlskey, player_id: current_player_db_id } );
         }
 
       } else if( current_player_db_id > 0 ) {
