@@ -3560,15 +3560,6 @@ Please also contact FV Player support with the following debug information:\n\n\
       $("#fv_player_box").addClass("fv-flowplayer-shortcode-editor");
     }
 
-    function map_db_values_to_field_values(name, value) {
-      switch (name) {
-        case 'playlist_advance':
-          return ((value == 'true' || value == 'on') ? 'on' : (value == 'default' || value == '') ? 'default' : 'off');
-
-        default: return value;
-      }
-    }
-
     function map_checkbox_value( $element ) {
       var input_type = $element.get(0).type.toLowerCase(),
         is_checked = $element.get(0).checked;
@@ -4059,16 +4050,16 @@ Please also contact FV Player support with the following debug information:\n\n\
     }
 
     // used several times below, so it's in a function
-    function set_editor_field(key, value, id, video_table_index) {
+    function set_editor_field(key, real_val, id, video_table_index) {
       var
-        real_key = map_names_to_editor_fields(key),
-        real_val = map_db_values_to_field_values(key, value),
+        real_key = map_names_to_editor_fields(key);
+
         // try ID first
         $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '#' + real_key);
 
       // special processing for end video actions
       if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
-        show_end_actions( false, value );
+        show_end_actions( false, real_val );
         return;
       } else if (['fv_wp_flowplayer_field_email_list', 'fv_wp_flowplayer_field_popup_id', 'fv_wp_flowplayer_field_redirect'].indexOf(real_key) > -1) {
         // ignore the original fields, if we still use old DB values
