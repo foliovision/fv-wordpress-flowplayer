@@ -2299,6 +2299,14 @@ if( typeof(flowplayer) != "undefined" ) {
         function onApiChange() {
           player.one('ready progress', function() { //  exp: primary issue here is that the event fires multiple times for each video. And also Flowplayer won't remove the subtitles button/menu when you switch videos
 
+            /**
+             * The progress even might trigger for another video in the playlist if we skip quickly.
+             * This video might no longer be using YouTube engine.
+             */
+            if ( 'fvyoutube' !== player.engine.engineName ) {
+              return;
+            }
+
             if( youtube.getOptions().indexOf('captions') > -1 ) {
 
               if( player.video.subtitles ) {
@@ -2615,7 +2623,12 @@ if( typeof(flowplayer) != "undefined" ) {
                 player.trigger("buffer", [player, player.video.buffer ] );
             } else if (!player.video.buffered) {
                 player.video.buffered = true;
-                player.trigger("buffer", [player, player.video.buffer ] ).trigger("buffered", [player]);
+
+                if ( player.video.buffer ) {
+                  player.trigger("buffer", [player, player.video.buffer ] )
+                }
+
+                player.trigger("buffered", [player]);
             }
 
           }, 250);
