@@ -2861,38 +2861,38 @@ if( typeof(flowplayer) != "undefined" ) {
               } else {//console.log('YT mobile unload');
                 youtube.stopVideo(); //  exp. engine.youtube is somehow undefined here?
 
-              player.one( 'load', function(e,api) {
+                player.one( 'load', function(e,api) {
                   if ( api.engine.engineName == 'fvyoutube' ) return;
 
-                clearInterval(intUIUpdate);
-                youtube.destroy();
-                player.youtube = false;
+                  clearInterval(intUIUpdate);
+                  youtube.destroy();
+                  player.youtube = false;
 
-                jQuery('.fvyoutube-engine',root).remove();
-                jQuery('.fv-pf-yt-temp2',root).remove();
-                jQuery(root).removeClass('is-ytios11');
+                  jQuery('.fvyoutube-engine',root).remove();
+                  jQuery('.fv-pf-yt-temp2',root).remove();
+                  jQuery(root).removeClass('is-ytios11');
 
-                //  exp: if the next video is not YouTube, iPad will have issues loading it as there was no video element on the page previously
-                //e.preventDefault();
-                /*jQuery('.fp-ui',root).css('background-image','');
-                jQuery(root).removeClass('is-loading');
-                jQuery(root).removeClass('is-mouseover');
-                jQuery(root).addClass('is-mouseout');
-                jQuery('.fp-ui',root).append('<div class="wpfp_custom_popup fp-notice-load" style="height: 100%"><div class="wpfp_custom_popup_content">' + fv_flowplayer_translations.video_loaded + '</div></div>'); //  we show this so that we can capture the user click
+                  //  exp: if the next video is not YouTube, iPad will have issues loading it as there was no video element on the page previously
+                  //e.preventDefault();
+                  /*jQuery('.fp-ui',root).css('background-image','');
+                  jQuery(root).removeClass('is-loading');
+                  jQuery(root).removeClass('is-mouseover');
+                  jQuery(root).addClass('is-mouseout');
+                  jQuery('.fp-ui',root).append('<div class="wpfp_custom_popup fp-notice-load" style="height: 100%"><div class="wpfp_custom_popup_content">' + fv_flowplayer_translations.video_loaded + '</div></div>'); //  we show this so that we can capture the user click
 
-                api.loading = false;
+                  api.loading = false;
 
-                var i = api.video.index;
-                jQuery('.fp-notice-load').one( 'click', function(e) {
+                  var i = api.video.index;
+                  jQuery('.fp-notice-load').one( 'click', function(e) {
                   jQuery('.fp-notice-load',root).remove();
 
                   var api = jQuery(root).data('flowplayer');
                   api.loading = false;
                   api.error = false;
                   api.play(i);
-                } );*/
+                  } );*/
 
-              });
+                });
               }
 
               player.youtube_unmute_attempted = false;
