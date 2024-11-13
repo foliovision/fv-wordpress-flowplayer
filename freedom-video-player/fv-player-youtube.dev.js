@@ -2855,15 +2855,14 @@ if( typeof(flowplayer) != "undefined" ) {
 
               if( !fv_player_pro_youtube_is_mobile() ) {
                 youtube.destroy();
+                jQuery('.fvyoutube-engine',root).remove();
+                clearInterval(intUIUpdate);
+
               } else {//console.log('YT mobile unload');
                 youtube.stopVideo(); //  exp. engine.youtube is somehow undefined here?
-              }
-              player.youtube_unmute_attempted = false;
-
-              //player.trigger("unload", [engine.player]);
 
               player.one( 'load', function(e,api) {
-                if( !fv_player_pro_youtube_is_mobile() || api.engine.engineName == 'fvyoutube' ) return;
+                  if ( api.engine.engineName == 'fvyoutube' ) return;
 
                 clearInterval(intUIUpdate);
                 youtube.destroy();
@@ -2894,6 +2893,9 @@ if( typeof(flowplayer) != "undefined" ) {
                 } );*/
 
               });
+              }
+
+              player.youtube_unmute_attempted = false;
 
               if( !flowplayer.support.firstframe ) {  // prevent playback of the next video on iOS 9 and so on
                 player.one( 'ready', function(e,api) {
