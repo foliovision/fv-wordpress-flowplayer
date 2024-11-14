@@ -145,7 +145,7 @@
 
         if( should_show ) {
           if ( root.find( '#fv-player-shortcode-editor-preview' ).length === 0 ) {
-          button.appendTo('#fv-player-shortcode-editor-preview');
+            button.appendTo('#fv-player-shortcode-editor-preview');
           } else {
             button.show();
           }
@@ -166,10 +166,13 @@
     // Resume video after setting crossOrigin
     api.on('resume progress', function() {
       if( seek_recovery && api.video.seekable ) {
-        api.seek(seek_recovery, function() {
+        var time = seek_recovery;
           seek_recovery = false;
 
-          // try to take the screenshot again
+        api.seek( time, function() {
+          api.pause();
+
+          // ... and try to take the screenshot again
           button.click();
         });
       }
