@@ -28,7 +28,7 @@
     }
 
     button.on('click', function() {
-      console.log('FV Player Editor Screenshots: Taking screenshot for' + actual_index);
+      console.log('FV Player Editor Screenshots: Taking screenshot for ' + actual_index);
 
       try {
         button.prop("disabled", true);
@@ -144,10 +144,12 @@
         }
 
         if( should_show ) {
-          // just in case delete all previous buttons
-          jQuery('#fv-splash-screen-button').remove();
-
+          if ( root.find( '#fv-player-shortcode-editor-preview' ).length === 0 ) {
           button.appendTo('#fv-player-shortcode-editor-preview');
+          } else {
+            button.show();
+          }
+
           try {
             takeScreenshot();
           } catch(err) {
