@@ -153,7 +153,7 @@
           try {
             takeScreenshot();
           } catch(err) {
-            button.prop("disabled", true);
+            console.log('FV Player Editor Screenshots: Failed test with error: ' + err );
           }
         } else {
           console.log('FV Player Editor Screenshots: Unsupported video type' );
