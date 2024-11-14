@@ -86,12 +86,9 @@ if ( function_exists( 'wp_get_active_network_plugins' ) ) {
 
 $plugins = array_unique( $plugins );
 
-// Load FV Player
+// Load FV Player and all related plugins
 foreach ( $plugins as $plugin ) {
-  if(
-    stripos($plugin,'/fv-player') !== false && stripos($plugin,'/fv-player.php') !== false ||
-    stripos($plugin,'/fv-player-coconut') !== false && stripos($plugin,'/fv-player-coconut.php') !== false
-  ) {
+  if ( stripos($plugin,'/fv-player') !== false ) {
     wp_register_plugin_realpath( $plugin );
     include_once( $plugin );
   }
