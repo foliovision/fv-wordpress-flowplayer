@@ -257,6 +257,15 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.10 - 2024-11-14 =
+
+* Tested up to WordPress 6.7
+* Bugfix: Deactivate FV Player 7 during activation: Multisite fix
+* Bugfix: Editor: "Playlist Auto Advance" saving disabled when editing existing playlist
+* Bugfix: Editor: Screenshot feature fixes
+* Bugfix: Media Library: S3 not showing images for private buckets
+* Bugfix: YouTube JavaScript warnings
+
 = 8.0.9 - 2024-11-11 =
 
 * Bugfix: Gutenberg block: Avoid breaking video links with % encoding
