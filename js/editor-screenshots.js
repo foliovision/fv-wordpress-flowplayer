@@ -128,7 +128,7 @@
       console.log('FV Player Editor Screenshots: Video index: '+ actual_index);
 
       var src = fv_player_editor.get_field('src').eq( actual_index ).val(), // get current video src
-        should_show = true;
+        should_show = !! root.find('video').length;
 
       if ( typeof src != 'undefined' ) {
         fv_player_editor_conf_screenshots.disable_domains.forEach(function(item) {
@@ -153,6 +153,10 @@
           } catch(err) {
             button.prop("disabled", true);
           }
+        } else {
+          console.log('FV Player Editor Screenshots: Unsupported video type' );
+
+          button.hide();
         }
       }
     });
