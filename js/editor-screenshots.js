@@ -78,12 +78,14 @@
 
           console.log('FV Player Editor Screenshots: Got screenshot URL: '+response.src , 'video index: '+actual_index);
 
-          var splashInput = fv_player_editor.get_field('splash').eq( actual_index );
+          var splashInput = fv_player_editor.get_field('splash').eq( actual_index ),
+            wrap = splashInput.closest('.components-base-control__field');
+
           splashInput.val(response.src);
-          splashInput.css('background-color','#6ef442');
+          wrap.css('background-color','#6ef442');
 
           // trigger autosave
-          splashInput.trigger('keyup');
+          splashInput.trigger('keyup').trigger('change');
         }
         if(response.error) {
           fv_player_editor.add_notice('error', response.error, 2500);
@@ -95,7 +97,7 @@
         // trigger preview
         fv_wp_flowplayer_submit('refresh-button');
         setTimeout(function(){
-          splashInput.css('background-color','#ffffff');
+          wrap.css('background-color','');
         }, 2000);
       });
     });
