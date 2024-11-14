@@ -39,18 +39,22 @@ $fv_wp_flowplayer_ver = '8.0.9.1';
 $fv_wp_flowplayer_core_ver = '8.0.8.1';
 
 function fv_player_8_activate() {
+  foreach(
+    array(
+      'network_activated' => is_multisite() ? wp_get_active_network_plugins() : array(),
+      'standard'          => wp_get_active_and_valid_plugins()
+    ) as $activation_type => $plugins
+  ) {
+    $pattern = '/fv-wordpress-flowplayer.*\/(flowplayer|fv-player)\.php$/';
 
-  // Deactivate FV Player 7
-  $active_plugins = get_option( 'active_plugins', array() );
-  $pattern = '/^fv-wordpress-flowplayer.*\/(flowplayer|fv-player)\.php$/';
+    foreach( $plugins as $key => $plugin ) {
+      if( preg_match($pattern, $plugin) ) {
+        if ( !function_exists('deactivate_plugins') ) {
+          require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
 
-  foreach( $active_plugins as $key => $plugin ) {
-    if( preg_match($pattern, $plugin) ) {
-      if ( !function_exists('deactivate_plugins') ) {
-        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        deactivate_plugins( $plugin, true, 'network_activated' === $activation_type );
       }
-
-      deactivate_plugins( $plugin );
     }
   }
 }
@@ -90,26 +94,32 @@ if(
 ) {
   $self = trim( str_replace( WP_PLUGIN_DIR, '', __FILE__ ), '/' );
 
-  $active_plugins = get_option( 'active_plugins', array() );
-  foreach( $active_plugins as $key => $plugin ) {
-    if (
-      stripos( $plugin, 'fv-wordpress-flowplayer' ) === 0 && (
-        stripos( $plugin, '/flowplayer.php' ) !== false ||
-        stripos( $plugin, '/fv-player.php' ) !== false
-      ) &&
-      // FV Player 8 might be running in the old folder name as well is it the actual plugin running here?
-      'fv-wordpress-flowplayer/fv-player.php' !== $self
-    ) {
-      add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
+  foreach(
+    array(
+      is_multisite() ? wp_get_active_network_plugins() : array(),
+      wp_get_active_and_valid_plugins()
+    ) as $plugins
+  ) {
+    foreach( $plugins as $key => $plugin ) {
+      if (
+        stripos( $plugin, 'fv-wordpress-flowplayer' ) !== false && (
+          stripos( $plugin, '/flowplayer.php' ) !== false ||
+          stripos( $plugin, '/fv-player.php' ) !== false
+        ) &&
+        // FV Player 8 might be running in the old folder name as well is it the actual plugin running here?
+        'fv-wordpress-flowplayer/fv-player.php' !== $self
+      ) {
+        add_action( 'admin_notices', 'fv_player_7_deactivate_notice' );
 
-      // Do not load as PHP would get fatal error
-      return;
-    }
+        // Do not load as PHP would get fatal error
+        return;
+      }
 
-    if( stripos( $plugin, 'fv-player-pro/' ) === 0 ) {
-      add_action( 'admin_notices', 'fv_player__pro_7_deactivate_notice_with_version_check' );
+      if( stripos( $plugin, 'fv-player-pro/' ) === 0 ) {
+        add_action( 'admin_notices', 'fv_player__pro_7_deactivate_notice_with_version_check' );
 
-      // Continue loading as the videos are still working, at least in most cases
+        // Continue loading as the videos are still working, at least in most cases
+      }
     }
   }
 }
