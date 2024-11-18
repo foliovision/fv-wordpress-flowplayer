@@ -1993,6 +1993,25 @@ if( fv_flowplayer_conf.youtube ) {
 
 if( typeof(flowplayer) != "undefined" ) {
 
+  function fv_player_youtube_error( code ) {
+
+    code = parseInt( code );
+
+    switch( code ) {
+      case 2:
+        return "Invalid parameter value.";
+      case 5:
+        return 'HTML5 player error.';
+      case 100:
+        return "The video could not be found. It's either removed or private.";
+      case 101:
+      case 150:
+        return "The video cannot be embedded."
+      default:
+        return 'Code: ' + code;
+    }
+  }
+
   function fv_player_pro_youtube_get_video_id( src ) {
     var aMatch;
     if( aMatch = src.match(/(?:\?|&)v=([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
@@ -2085,11 +2104,12 @@ if( typeof(flowplayer) != "undefined" ) {
         jQuery('.fp-ui',root).css('background-image','');
         jQuery('.fp-ui',root).append('<div class="wpfp_custom_popup fp-notice-load" style="height: 100%"><div class="wpfp_custom_popup_content">' + fv_flowplayer_translations.video_loaded + '</div></div>'); //  we show this so that we can capture the user click
 
+        // TODO: Remove dead code
         jQuery('.fp-notice-load').one( 'click', function()  {
           jQuery('.fp-notice-load',root).remove();
 
           //var api = jQuery(root).data('flowplayer');
-          player.trigger('error', [ player, { code: 4, video: player.video } ] );
+          player.trigger('error', [ player, { code: 4, video: player.video, custom_error: fv_player_youtube_error( e.data ) } ] );
         } );
 
       }
@@ -2265,7 +2285,7 @@ if( typeof(flowplayer) != "undefined" ) {
           // So we act as if it's the splash state - means no controls
           root.addClass('is-splash');
 
-          player.trigger('error', [ player, { code: 4, video: player.video } ] );
+          player.trigger('error', [ player, { code: 4, video: player.video, custom_message: 'Error: ' + fv_player_youtube_error( e.data ) } ] );
 
           /**
            * Go to next video if it's a playlist and if there are not other sources.
@@ -2426,7 +2446,7 @@ if( typeof(flowplayer) != "undefined" ) {
 
             player.YTErrorTimeout = setTimeout( function() {
               if( !player.error && youtube.getPlayerState() == -1 ) {  //  exp: the onError event sometimes won't fire :( (Safari 11 most of the time)
-                player.trigger('error', [ player, { code: 4, video: player.video } ] );
+                player.trigger('error', [ player, { code: 4, video: player.video, custom_message: 'Error: YouTube video not started'  } ] );
               }
             }, 1000 );
           }
@@ -2872,6 +2892,7 @@ if( typeof(flowplayer) != "undefined" ) {
                   jQuery('.fv-pf-yt-temp2',root).remove();
                   jQuery(root).removeClass('is-ytios11');
 
+                  // TODO: Remove dead code
                   //  exp: if the next video is not YouTube, iPad will have issues loading it as there was no video element on the page previously
                   //e.preventDefault();
                   /*jQuery('.fp-ui',root).css('background-image','');
