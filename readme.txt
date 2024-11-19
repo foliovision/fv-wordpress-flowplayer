@@ -257,6 +257,14 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.11 - 2024-11-19 =
+
+* YouTube: Better error messages
+* Bugfix: Editor: Fix disabling Autoplay for individual players
+* Bugfix: Preload: Fix controls not appearing
+* Bugfix: Position saving: Avoid autoplay when using Preload
+* Bugfix: Video custom fields being preload in wp-admin where not needed
+
 = 8.0.10 - 2024-11-14 =
 
 * Tested up to WordPress 6.7
