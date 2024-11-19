@@ -566,11 +566,20 @@ class FV_Player_Custom_Videos_Master {
    */
   function preload_post_list_players( $posts ) {
 
+    // Only do this once as you never know what plugin might call the_posts filter multiple times
+    static $finished;
+
+    if ( ! empty( $finished ) ) {
+      return $posts;
+    }
+
     // Are we looking at the wp-admin list of posts?
     global $current_screen;
     if( !is_admin() || empty($current_screen->post_type) || 'edit' !== $current_screen->base || !$this->has_post_type($current_screen->post_type) ) {
       return $posts;
     }
+
+    $finished = true;
 
     $players = array();
     foreach( $posts AS $post ) {
