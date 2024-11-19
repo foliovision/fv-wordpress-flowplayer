@@ -620,8 +620,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     //
 
     if( !isset( $conf['parse_commas'] ) ) $conf['parse_commas'] = 'false';
-    if( !isset( $conf['width'] ) ) $conf['width'] = '640';
-    if( !isset( $conf['height'] ) ) $conf['height'] = '360';
+    if( !isset( $conf['width'] ) ) $conf['width'] = '1280';
+    if( !isset( $conf['height'] ) ) $conf['height'] = '720';
     if( !isset( $conf['engine'] ) ) $conf['engine'] = 'false';
     if( !isset( $conf['overlay'] ) ) $conf['overlay'] = '';
     if( !isset( $conf['overlay_width'] ) ) $conf['overlay_width'] = '';
