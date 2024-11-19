@@ -580,17 +580,24 @@ if (!Date.now) {
     // but then we run into some reliability issue with HLS.js, so it's safer
     // to use progress
     api.on( 'ready', function() {
-      api.one( 'progress', seekIntoPosition);
+      if ( api.conf.poster ) {
+        api.one( 'resume', function() {
+          api.one( 'progress', seekIntoPosition);
+        });
+
+      } else {
+        api.one( 'progress', seekIntoPosition);
+      }
     });
 
     api.bind('progress', storeVideoPosition);
 
     api.bind('unload', function() {
       item_changed = false;
-      api.one('ready', restorePlaylistItem);
+      api.one( api.conf.poster ? 'resume' : 'ready', restorePlaylistItem);
     });
 
-    api.one('ready', restorePlaylistItem);
+    api.one( api.conf.poster ? 'resume' : 'ready', restorePlaylistItem);
 
     jQuery(".fp-ui", root).on('click', function() {
       restorePlaylistItem();
