@@ -655,8 +655,8 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                 array(
                   'label' => __( 'Autoplay', 'fv-player' ),
                   'name' => 'autoplay',
-                  'description' => __( 'Video will autoplay when the page loads.', 'fv-player' ),
-                  'default' => $fv_fp->_get_option('autoplay'),
+                  'description' => __( 'Video will autoplay when it\'s in browser viewport.', 'fv-player' ),
+                  'default'     => in_array( $fv_fp->_get_option('autoplay_preload'), array( 'sticky', 'viewport' ) ),
                   'children' => array(
                     array(
                       'label' => __( 'Muted Autoplay', 'fv-player' ),
