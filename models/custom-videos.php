@@ -568,7 +568,7 @@ class FV_Player_Custom_Videos_Master {
 
     // Are we looking at the wp-admin list of posts?
     global $current_screen;
-    if( !is_admin() || empty($current_screen->post_type) || !$this->has_post_type($current_screen->post_type) ) {
+    if( !is_admin() || empty($current_screen->post_type) || 'edit' !== $current_screen->base || !$this->has_post_type($current_screen->post_type) ) {
       return $posts;
     }
 
