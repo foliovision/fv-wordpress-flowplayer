@@ -359,6 +359,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.49.7212 - 2024-11-21 =
+
+* Bugfix - iOS 18: Playback failing if 'Use native fullscreen on mobile' setting is enabled and the video has subtitles
+* Bugfix - PHP warnings
+
 = 7.5.48.7212 - 2024-10-01 =
 
 * Security - FancyBox title stored XSS vulnerability fixed
