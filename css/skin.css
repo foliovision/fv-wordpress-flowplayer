@@ -584,6 +584,8 @@
       margin: .1em; }
   .freedomplayer.has-subtitles video::-webkit-media-text-track-container {
     display: none; }
+  .freedomplayer.has-subtitles.is-fullscreen video.native-subtitles::-webkit-media-text-track-container {
+    display: block; }
   .freedomplayer .fp-speed-flash {
     position: absolute;
     left: 0;
