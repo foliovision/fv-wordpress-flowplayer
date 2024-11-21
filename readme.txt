@@ -257,6 +257,11 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.12 - 2024-11-21 =
+
+* Bugfix: iOS 18: Playback failing if 'Use native fullscreen on mobile' setting is enabled and the video has subtitles
+* Bugfix: iOS: Subtitles not visible when video is not in fullscreen if 'Use native fullscreen on mobile' setting is enabled
+
 = 8.0.11 - 2024-11-19 =
 
 * YouTube: Better error messages
