@@ -165,10 +165,14 @@ function fv_player_handle_rest_content($response) {
   return $response;
 }
 
-if ( function_exists( 'get_post_types' ) ) {
-  $post_types = get_post_types( array( 'show_in_rest' => true ), 'names' );
+// Register the rest_prepare_post filter for all post types once they got a chance to be registered
+add_action( 'init', 'fv_player_handle_rest_content_register' );
 
-  foreach ( $post_types as $post_type ) {
-    add_filter( 'rest_prepare_' . $post_type, 'fv_player_handle_rest_content' );
+function fv_player_handle_rest_content_register() {
+  if ( function_exists( 'get_post_types' ) ) {
+    $post_types = get_post_types( array( 'show_in_rest' => true ), 'names' );
+    foreach ( $post_types as $post_type ) {
+      add_filter( 'rest_prepare_' . $post_type, 'fv_player_handle_rest_content' );
+    }
   }
 }
