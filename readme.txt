@@ -257,6 +257,13 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.13 - 2024-11-26 =
+
+* Bugfix: CSS: Video Link and Embed link styling inconsistency
+* Bugfix: Gutenberg block: Fix loading of old FV Player 7 block for custom post types
+* Bugfix: Iframe embed: Add allow="autoplay" to fix issues with YouTube videos
+* Bugfix: Iframe embed: Do not use fixed controls as these appear below the player and do not show in iframe
+
 = 8.0.12 - 2024-11-21 =
 
 * Bugfix: iOS 18: Playback failing if 'Use native fullscreen on mobile' setting is enabled and the video has subtitles

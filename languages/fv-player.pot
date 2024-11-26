@@ -7,15 +7,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2024-10-24 12:28+0000\n"
+"POT-Creation-Date: 2024-11-26 09:26+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fv-player.php:63
+#: fv-player.php:67
 msgid "FV Player 8 cannot run together with FV Player 7. Please deactivate FV Player 7 first."
 msgstr ""
 
-#: fv-player.php:79
+#: fv-player.php:83
 msgid "FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension."
 msgstr ""
 
@@ -481,86 +481,122 @@ msgid "Asia Pacific (Hong Kong)"
 msgstr ""
 
 #: controller/settings.php:407
-msgid "Asia Pacific (Mumbai)"
+msgid "Asia Pacific (Hyderabad)"
 msgstr ""
 
 #: controller/settings.php:408
-msgid "Asia Pacific (Osaka-Local)"
+msgid "Asia Pacific (Jakarta)"
 msgstr ""
 
 #: controller/settings.php:409
-msgid "Asia Pacific (Seoul)"
+msgid "Asia Pacific (Malaysia)"
 msgstr ""
 
 #: controller/settings.php:410
-msgid "Asia Pacific (Singapore)"
+msgid "Asia Pacific (Melbourne)"
 msgstr ""
 
 #: controller/settings.php:411
-msgid "Asia Pacific (Sydney)"
+msgid "Asia Pacific (Mumbai)"
 msgstr ""
 
 #: controller/settings.php:412
-msgid "Asia Pacific (Tokyo)"
+msgid "Asia Pacific (Osaka)"
+msgstr ""
+
+#: controller/settings.php:413
+msgid "Asia Pacific (Seoul)"
 msgstr ""
 
 #: controller/settings.php:414
-msgid "Canada (Central)"
+msgid "Asia Pacific (Singapore)"
+msgstr ""
+
+#: controller/settings.php:415
+msgid "Asia Pacific (Sydney)"
 msgstr ""
 
 #: controller/settings.php:416
-msgid "China (Beijing)"
+msgid "Asia Pacific (Tokyo)"
 msgstr ""
 
-#: controller/settings.php:417
-msgid "China (Ningxia)"
+#: controller/settings.php:418
+msgid "Canada (Central)"
 msgstr ""
 
 #: controller/settings.php:419
-msgid "Europe (Frankfurt)"
-msgstr ""
-
-#: controller/settings.php:420
-msgid "Europe (Ireland)"
+msgid "Canada West (Calgary)"
 msgstr ""
 
 #: controller/settings.php:421
-msgid "Europe (London)"
+msgid "China (Beijing)"
 msgstr ""
 
 #: controller/settings.php:422
-msgid "Europe (Milan)"
-msgstr ""
-
-#: controller/settings.php:423
-msgid "Europe (Paris)"
+msgid "China (Ningxia)"
 msgstr ""
 
 #: controller/settings.php:424
-msgid "Europe (Stockholm)"
+msgid "Europe (Frankfurt)"
+msgstr ""
+
+#: controller/settings.php:425
+msgid "Europe (Ireland)"
 msgstr ""
 
 #: controller/settings.php:426
-msgid "Middle East (Bahrain)"
+msgid "Europe (London)"
+msgstr ""
+
+#: controller/settings.php:427
+msgid "Europe (Milan)"
 msgstr ""
 
 #: controller/settings.php:428
-msgid "South America (S&atilde;o Paulo)"
+msgid "Europe (Paris)"
+msgstr ""
+
+#: controller/settings.php:429
+msgid "Europe (Spain)"
 msgstr ""
 
 #: controller/settings.php:430
-msgid "US West (N. California)"
+msgid "Europe (Stockholm)"
 msgstr ""
 
 #: controller/settings.php:431
-msgid "US East (N. Virginia)"
-msgstr ""
-
-#: controller/settings.php:432
-msgid "US East (Ohio)"
+msgid "Europe (Zurich)"
 msgstr ""
 
 #: controller/settings.php:433
+msgid "Israel (Tel Aviv)"
+msgstr ""
+
+#: controller/settings.php:435
+msgid "Middle East (Bahrain)"
+msgstr ""
+
+#: controller/settings.php:436
+msgid "Middle East (UAE)"
+msgstr ""
+
+#: controller/settings.php:438
+msgid "South America (S&atilde;o Paulo)"
+msgstr ""
+
+#: controller/settings.php:440
+msgid "US West (N. California)"
+msgstr ""
+
+#: controller/settings.php:441
+msgid "US East (N. Virginia)"
+msgstr ""
+
+#: controller/settings.php:442
+msgid "US East (Ohio)"
+msgstr ""
+
+#: controller/settings.php:443
 msgid "US West (Oregon)"
 msgstr ""
 
@@ -580,23 +616,23 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: models/custom-videos.php:306, models/custom-videos.php:705, models/list-table.php:71
+#: models/custom-videos.php:306, models/custom-videos.php:714, models/list-table.php:71
 msgid "Videos"
 msgstr ""
 
-#: models/custom-videos.php:720
+#: models/custom-videos.php:729
 msgid "You can put your Vimeo or YouTube links here."
 msgstr ""
 
-#: models/custom-videos.php:720
+#: models/custom-videos.php:729
 msgid "These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up."
 msgstr ""
 
-#: models/custom-videos.php:739
+#: models/custom-videos.php:748
 msgid "Profile Videos"
 msgstr ""
 
-#: models/db-player.php:864
+#: models/db-player.php:858
 msgid "Draft"
 msgstr ""
 
@@ -704,7 +740,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3109
+#: models/fv-player.php:3131
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
@@ -2109,7 +2145,7 @@ msgid "Appearance"
 msgstr ""
 
 #: view/wizard.php:658
-msgid "Video will autoplay when the page loads."
+msgid "Video will autoplay when it's in browser viewport."
 msgstr ""
 
 #: view/wizard.php:662
