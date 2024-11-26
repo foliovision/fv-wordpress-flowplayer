@@ -1452,7 +1452,7 @@ class flowplayer_frontend extends flowplayer
     <li><a class="sharing-email" href="mailto:?body=' . rawurlencode( $sMail ) . '" target="_blank"></a></li></ul>';
 
     if( isset($post) && isset($post->ID) ) {
-      $sHTMLVideoLink = $bVideoLink ? '<div><a class="sharing-link" href="' . esc_attr( $sPermalink ) . '" target="_blank">Link</a></div>' : '';
+      $sHTMLVideoLink = $bVideoLink ? '<div><label><a class="sharing-link" href="' . esc_attr( $sPermalink ) . '" target="_blank">Link</a></label></div>' : '';
     } else {
       $sHTMLVideoLink = false;
     }
