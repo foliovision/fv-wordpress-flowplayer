@@ -566,7 +566,7 @@ class flowplayer_frontend extends flowplayer
             $bFixedControlbar = false;
           }
         }
-        if( $bFixedControlbar ) {
+        if ( $bFixedControlbar && ! get_query_var('fv_player_embed') ) {
           $attributes['class'] .= ' fixed-controls';
         }
 
