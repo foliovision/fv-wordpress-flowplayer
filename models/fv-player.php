@@ -1058,7 +1058,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           $nested_key,
           ! empty( $settings[ $key ] ) ? $settings[ $key ] : array(),
           ! empty( $html_fields[ $key ] ) ? $html_fields[ $key ] : array(),
-          ! empty( $multiline_fields[ $key ] ) ? $multiline_fields[ $key ] : array(),
+          ! empty( $multiline_fields[ $key ] ) ? $multiline_fields[ $key ] : array()
         );
       }
       return $value;
