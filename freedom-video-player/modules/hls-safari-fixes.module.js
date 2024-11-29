@@ -1,33 +1,33 @@
 // HSL engine on iOS and on Safari doesn't report error for HTTP 403.
 // So we use certain extra events from https://developer.apple.com/documentation/webkitjs/htmlmediaelement
 // To make our best guesss
-flowplayer( function(api,root) {  
+flowplayer( function(api,root) {
   if( !flowplayer.support.browser.safari && !flowplayer.support.iOS ) return;
-  
+
   root = jQuery(root);
-  
+
   var video_tag = false,
     did_start_playing = false,
     live_stream_check = false,
     are_waiting_already = 0; // make sure you wait for the event only on one event at a time
-  
+
   // first we need to obtain the video element
   api.on('ready', function( e, api, video ) {
     are_waiting_already = 0;
 
     did_start_playing = false;
-    
+
     // only work if the video is using token in URL
     if( api.engine.engineName == 'html5' && video.src.match(/\?/) ) {
       // find the video
       video_tag = root.find('video');
-      
+
       if( !video_tag.data('fv-ios-recovery') ) {
         //video_tag.on( "stalled suspend abort emptied error waiting", debug );
 
         // triggered if the iOS video player runs out of buffer
         video_tag.on( "waiting", wait_for_stalled );
-        
+
         // we use this to ensure the video tag has the event bound only once
         video_tag.data('fv-ios-recovery',true);
       }
@@ -61,11 +61,11 @@ flowplayer( function(api,root) {
 
   // you might seek into unbuffered part of video too
   api.bind('beforeseek', wait_for_stalled );
-  
+
   function debug(e) {
     console.log("FV Player: iOS video element: " + e.type);
   }
-  
+
   function wait_for_stalled() {
     // do not run if there was not progress event
     // we don't want the initial seek when resuming position to trigger error
@@ -83,9 +83,9 @@ flowplayer( function(api,root) {
         }
         return;
       }
-      
+
       console.log("FV Player: iOS video element will trigger error after 'stalled' arrives");
-      
+
       // then it also triggers this event if it really fails to load more
       video_tag.one( "stalled", function() {
         var time = api.video.time;
@@ -110,32 +110,36 @@ flowplayer( function(api,root) {
           }
           return;
         }
-          
-        // for HLS streams - 
+
+        // for HLS streams -
         // give it a bit more time to really play
         setTimeout( function() {
           console.log(api.video.time,time);
-          
+
           // did the video advance?
           if( api.video.time != time ) {
+            are_waiting_already = 0;
+
             console.log("FV Player: iOS video element continues playing, no need for error");
             return;
           }
 
           // the video is paused, so it should not progress and it's fine
           if( api.paused ) {
+            are_waiting_already = 0;
+
             console.log("FV Player: iOS video element paused, no need for error");
             return;
-          }          
-          
+          }
+
           // so we can tell Flowplayer there is an error
           api.trigger('error', [api, { code: 4, video: api.video }]);
         }, 5000 );
-        
+
       } );
     }
   }
-  
-  
+
+
 
 });
