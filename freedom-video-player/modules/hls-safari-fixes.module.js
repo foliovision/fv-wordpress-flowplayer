@@ -140,6 +140,35 @@ flowplayer( function(api,root) {
     }
   }
 
+  /**
+   * Record video duration once it starts.
+   *
+   * Then if the video is paused and it's paused at the end of video playtime. And the current position where it paused is lower than the previously detected duration...
+   * ...then it's time to reload the video as iPhone simply failed to load the video segments and said the video is shorter.
+   */
+  var recorded_duration = 0;
+
+  api.on( 'ready', function( e, api ) {
+    api.one( 'progress', function( e, api ) {
+      recorded_duration = api.video.duration;
+      console.log( 'recorded_duration', recorded_duration );
+    })
+  });
+
+  api.on( 'pause', function( e, api ) {
+    var video_tag = root.find( 'video');
+    if ( video_tag.length ) {
+      if ( parseInt( api.video.time ) === parseInt( video_tag[0].duration ) ) {
+        if ( recorded_duration > api.video.time ) {
+          console.log( 'suddenly the video is much shorter, why?', recorded_duration, video_tag[0].duration );
+
+          api.video.duration = recorded_duration;
+
+          api.trigger('error', [api, { code: 4, video: api.video }]);
+        }
+      }
+    }
+  });
 
 
 });
