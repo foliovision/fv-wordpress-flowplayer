@@ -301,7 +301,7 @@ flowplayer(function(api, root) {
     if( !flowplayer.conf.chromecast_available ) return;
 
     if( get_media() ) {
-      createChromecastButton();
+      api.createChromecastButton();
 
       jQuery(trigger).show();
     } else {
