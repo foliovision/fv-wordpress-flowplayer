@@ -1067,11 +1067,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if ( in_array( $key, $html_fields ) ) {
       add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
       add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_settings' ), 999, 2 );
+      add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_scripts' ), 999, 2 );
 
       $value = wp_kses( $value, 'post' );
 
       remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
       remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_settings' ), 999, 2 );
+      add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_scripts' ), 999, 2 );
 
     } else if ( in_array( $key, $multiline_fields ) ) {
       $value = sanitize_textarea_field( $value );
@@ -3171,6 +3173,27 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     exit;
   }
+  }
+
+  function wp_kses_permit_scripts( $tags, $context = false ) {
+    if( $context != 'post' ) return $tags;
+
+    if ( empty($tags['ins']) ) {
+      $tags['ins'] = array();
+    }
+
+    $tags['ins']['class'] = true;
+    $tags['ins']['data-zoneid'] = true;
+
+    if ( empty($tags['script']) ) {
+      $tags['script'] = array();
+    }
+
+    $tags['script']['src'] = true;
+    $tags['script']['type'] = true;
+    $tags['script']['async'] = true;
+
+    return $tags;
   }
 
   function wp_kses_permit_settings( $tags, $context = false ) {
