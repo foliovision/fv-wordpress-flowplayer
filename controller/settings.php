@@ -259,7 +259,7 @@ function fv_player_admin_pointer_boxes() {
 <li>Increased compatibility and performance</li>
 <li>User Video Positions stored in separate database table</li>
 </ul>'.
-        '<p>More information in our <a href="https://foliovision.com/2018/09/fv-player-7" target="_blank">blog announcement</a>.</p>',
+        '<p>More information in our <a href="https://foliovision.com/player/developers/fv-player-8-changes" target="_blank">blog announcement</a>.</p>',
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1' => __( 'Thanks for letting me know!', 'fv-player' ),
     );
