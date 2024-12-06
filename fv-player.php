@@ -115,7 +115,7 @@ if(
         return;
       }
 
-      if( stripos( $plugin, 'fv-player-pro/' ) === 0 ) {
+      if ( stripos( $plugin, '/fv-player-pro/' ) !== false || stripos( $plugin, '/fv-player-pro-7/' ) !== false ) {
         add_action( 'admin_notices', 'fv_player__pro_7_deactivate_notice_with_version_check' );
 
         // Continue loading as the videos are still working, at least in most cases
