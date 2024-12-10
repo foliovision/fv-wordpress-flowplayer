@@ -214,7 +214,7 @@
 
 
     function show_player_controls_for_preview() {
-      $( '.freedomplayer.is-ready' ).addClass( 'is-mouseover' ).removeClass( 'is-mouseout' );
+      $( '.freedomplayer' ).addClass( 'is-mouseover' ).removeClass( 'is-mouseout is-poster is-splash' );
     }
 
     /**
