@@ -273,7 +273,7 @@
 
     // Chromecast
     controlsPreviewCheckbox( '#chromecast', {
-      conf_key:          'fv_chromecast',
+      conf_key:          'chromecast',
       cb_enabled:        'createChromecastButton',
       selector_disabled: '.fp-chromecast'
     } );
