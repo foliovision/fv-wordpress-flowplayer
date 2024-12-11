@@ -1642,7 +1642,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
      *
      * If we do this is the original query with JOIN it takes 10x longer
      */
-    if( is_admin() ) {
+    if( is_admin() && count( $player_data ) > 0 ) {
       $placeholders = implode( ', ', array_fill( 0, count( $player_data ), '%d' ) );
 
       $meta_counts = $wpdb->get_results(
