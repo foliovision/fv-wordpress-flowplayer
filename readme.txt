@@ -257,6 +257,13 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.14 - 2024-12-11 =
+
+* Bugfix: Chromecast not working due to update it the Web Sender SDK, although we still have to fix the subtitles and multiple-audio tracks support
+* Bugfix: FV Player Pro 7 detection, asking you to update to FV Player Pro 8
+* Bugfix: iPhone HLS playback error detection: Fix for iOS 18
+* Bugfix: PHP 7.2 fatal error
+
 = 8.0.13 - 2024-11-26 =
 
 * Bugfix: CSS: Video Link and Embed link styling inconsistency
