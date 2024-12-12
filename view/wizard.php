@@ -257,7 +257,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <div class="components-base-control__field">
       <div class="<?php echo esc_attr( $field_class ); ?>">
-        <?php echo wp_kses_post( $content ); ?>
+        <?php echo $content; // TODO: use wp_kses() allowing <select> and <option> ?>
       </div>
     </div>
   </div>
