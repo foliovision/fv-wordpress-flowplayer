@@ -329,8 +329,12 @@ abstract class FV_Player_Video_Encoder {
       $trailer = sanitize_text_field( $_POST['trailer'] );
     }
 
+    $target = $this->util__sanitize_target($target);
+
     // if we get a proper category link, we prepend its Name (and parent Names) to the target
     if ( !empty($_POST['category_id']) ) {
+      $this->create_encoding_categories();
+
       if ( $folder = $this->util__category_id_to_folder( absint( $_POST['category_id'] ) ) ) {
         $target = $folder.'/'.$target;
       }
@@ -339,8 +343,6 @@ abstract class FV_Player_Video_Encoder {
     if( isset( $_POST['id_video'] ) ) {
       $id_video = intval( $_POST['id_video'] );
     }
-
-    $target = $this->util__sanitize_target($target);
 
     // check for a valid source URL
     if ( empty( $_POST['no_source_verify'] ) && !preg_match('~^(https?|s?ftp)://~', $source) ) {
