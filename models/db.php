@@ -408,19 +408,6 @@ class FV_Player_Db {
         // TODO: This class should not provide search
         $vids_data = new FV_Player_Db_Video( $videos, array(), $this );
 
-        // reset $videos variable and index all of our video data,
-        // so they are easily accessible when building the resulting
-        // display data
-        if ($vids_data) {
-          /* @var FV_Player_Db_Video[] $videos */
-          $videos = array();
-          if (count($this->getVideosCache())) {
-            foreach ( $this->getVideosCache() as $video_object ) {
-              $videos[ $video_object->getId() ] = $video_object;
-            }
-          }
-        }
-
         // build the result
         foreach ($players as $player) {
           // player data first
@@ -434,6 +421,20 @@ class FV_Player_Db {
           $result_row->chapters_count = $player->getCount('chapters');
           $result_row->transcript_count = $player->getCount('transcript');
           $result_row->status = $player->getStatus();
+
+          $videos = array();
+
+          // put in the videos which belong to the player
+          if ($vids_data) {
+            if (count($this->getVideosCache())) {
+              foreach ( $this->getVideosCache() as $video_object ) {
+                if ( in_array( $video_object->getId(), explode(',', $player->getVideoIds() ) ) ) {
+                  $videos[ $video_object->getId() ] = $video_object;
+                }
+              }
+            }
+          }
+
           $result_row->video_objects = $videos;
 
           $result_row->player_name = $player->getPlayerName();
