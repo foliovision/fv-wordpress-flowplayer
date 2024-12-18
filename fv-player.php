@@ -3,7 +3,7 @@
 Plugin Name: FV Player 8
 Plugin URI: http://foliovision.com/player
 Description: Formerly FV WordPress Flowplayer. Supports MP4, HLS, MPEG-DASH, WebM and OGV. Advanced features such as overlay ads or popups.
-Version: 8.0.14
+Version: 8.0.15
 Author URI: http://foliovision.com/
 Requires PHP: 5.6
 Text Domain: fv-player
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '8.0.14';
+$fv_wp_flowplayer_ver = '8.0.15';
 $fv_wp_flowplayer_core_ver = '8.0.9';
 
 function fv_player_8_activate() {

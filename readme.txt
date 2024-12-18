@@ -257,6 +257,10 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.15 - 2024-12-18 =
+
+* Support for FV Player CMS: New plugin which lets you embed a player without publishing it to the WordPress site.
+
 = 8.0.14 - 2024-12-11 =
 
 * Bugfix: Chromecast not working due to update it the Web Sender SDK, although we still have to fix the subtitles and multiple-audio tracks support
