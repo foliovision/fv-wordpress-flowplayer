@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'WP_List_Table' ) ) {
   require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
-  
+
 class FV_Player_List_Table extends WP_List_Table {
 
   public $args;
@@ -17,11 +17,11 @@ class FV_Player_List_Table extends WP_List_Table {
   private $post_types;
 
   public $total_impressions = 0;
-  
+
   public $total_clicks = 0;
-  
+
   public $total_items = 0;
-  
+
   private $dropdown_cache = false;
 
   public function __construct( $args = array() ) {
@@ -42,7 +42,7 @@ class FV_Player_List_Table extends WP_List_Table {
     $this->process_bulk_action();
     $this->base_url = admin_url( 'admin.php?page=fv_player' );
   }
-  
+
   public function advanced_filters() {
     if ( ! empty( $_REQUEST['orderby'] ) )
       echo '<input type="hidden" name="orderby" value="' . esc_attr( sanitize_text_field( $_REQUEST['orderby'] ) ) . '" />';
@@ -56,7 +56,7 @@ class FV_Player_List_Table extends WP_List_Table {
     </p>
     <?php
   }
-  
+
   function get_columns() {
     return self::get_columns_worker();
   }
@@ -95,11 +95,11 @@ class FV_Player_List_Table extends WP_List_Table {
       'transcript_count' => array( 'transcript_count', true )*/
     );
   }
-  
+
   protected function get_primary_column_name() {
     return 'id';
   }
-  
+
   function get_user_dropdown( $user_id, $name = false, $disabled = false ) {
     if( !$this->dropdown_cache ) {
       $this->dropdown_cache  = wp_dropdown_users( array(
@@ -110,14 +110,14 @@ class FV_Player_List_Table extends WP_List_Table {
       ) );
     }
     $html = $this->dropdown_cache;
-    
+
     $html = str_replace("value='".$user_id."'>","value='".$user_id."' selected>",$html);
     if( $name ) $html = str_replace("name='user_id' ","name='".$name."' ' ",$html);
     if( $disabled ) $html = str_replace("<select ","<select disabled='disabled' ",$html);
-    
+
     return $html;
   }
-  
+
   public function column_cb( $player ) {
     return sprintf(
       '<input type="checkbox" name="%1$s[]" value="%2$s" />',
@@ -125,7 +125,7 @@ class FV_Player_List_Table extends WP_List_Table {
       $player->id
     );
   }
-  
+
   public function column_default( $player, $column_name ) {
     $id = $player->id;
 
@@ -165,11 +165,13 @@ class FV_Player_List_Table extends WP_List_Table {
 
         $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
 
+        $value .= apply_filters( 'fv_player_list_table_extra_row_actions', '', $id, $player );
+
         $value .= "</div>\n";
         break;
       case 'embeds':
         $value = '';
-      
+
         foreach( $player->embeds AS $post_id => $post ) {
 
           $title = !empty($post->post_title) ? $post->post_title : '#'.$post->ID;
@@ -179,7 +181,7 @@ class FV_Player_List_Table extends WP_List_Table {
 
           $value .= '<li><a href="'.get_permalink($post).'" target="_blank">'.$title.'</a></li>';
         }
-        
+
         if( $value ) $value = '<ul>'.$value.'</ul>';
 
       break;
@@ -208,13 +210,13 @@ class FV_Player_List_Table extends WP_List_Table {
   public function get_bulk_actions() { // todo: any bulk action?
     return array();
   }
-    
+
   public function get_views() {
     $current = isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : 'all';
 
-    
+
     if ( ! empty( $_GET['post_type'] ) ) {
-      // Remove the taxonomy arg from the URL 
+      // Remove the taxonomy arg from the URL
       $post_type_taxonomies = fv_player_get_post_type_taxonomies( sanitize_key( $_GET['post_type'] ) );
 
       foreach ( $post_type_taxonomies AS $tax ) {
@@ -253,7 +255,7 @@ class FV_Player_List_Table extends WP_List_Table {
   public function process_bulk_action() {  // todo: any bulk action?
     return;
   }
-  
+
   public function get_result_counts() {
     global $FV_Player_Db;
     $this->total_items = $FV_Player_Db->getListPageCount();
@@ -305,7 +307,7 @@ class FV_Player_List_Table extends WP_List_Table {
         $this->post_types['none'] = $no_post_type;
       }
 
-      $this->post_types[ 'all' ]->player_count = count( $total_count ); 
+      $this->post_types[ 'all' ]->player_count = count( $total_count );
     }
 
     if ( ! empty( $_GET['post_type'] ) ) {
@@ -353,7 +355,7 @@ class FV_Player_List_Table extends WP_List_Table {
     global $FV_Player_Db;
     return $FV_Player_Db->getListPageData( $args );
   }
-  
+
   public function prepare_items() {
 
     wp_reset_vars( array( 'action', 'payment', 'orderby', 'order', 's' ) );
