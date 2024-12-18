@@ -189,7 +189,7 @@
 .fp-playlist-vertical.fp-playlist-only-captions a h4 span {line-height:1}
 .fp-playlist-vertical a .fvp-playlist-thumb {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
 .fp-playlist-vertical a h4 {margin:0;font-size:13px;color:#000}
-	.fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left;margin-bottom:0}
+	.fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 2px}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a {display:block;margin-bottom:2px}
 	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video {min-height:0 !important;height:100% !important}

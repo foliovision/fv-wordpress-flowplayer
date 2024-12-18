@@ -1073,6 +1073,9 @@ body.has-fv-player-fullscreen #chat-widget-container {
 
 .fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
 .fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left;margin-bottom:0}
+.fp-playlist-vertical-wrapper .flowplayer.fixed-controls {margin-bottom:2.4em}
+.fp-playlist-vertical-wrapper .flowplayer.fixed-controls.fp-full {margin-bottom:2.8em}
+.fp-playlist-vertical-wrapper .flowplayer.fixed-controls.is-tiny.fp-full {margin-bottom:3.2em}
 .fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 2px}
 
 .fp-playlist-horizontal, .fp-playlist-vertical-wrapper, .fv-playlist-slider-wrapper, .fp-playlist-polaroid, .fp-playlist-text-wrapper {max-width:100% !important}
