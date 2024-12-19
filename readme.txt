@@ -260,6 +260,7 @@ You can optionally edit your theme's JS to prevent the shrinking.
 = 8.0.15 - 2024-12-18 =
 
 * Support for FV Player CMS: New plugin which lets you embed a player without publishing it to the WordPress site.
+* Bugfix: Fix control bar not showing for Vertical playlist if using "Always Visible" setting for Controls
 
 = 8.0.14 - 2024-12-11 =
 
