@@ -683,7 +683,7 @@ abstract class FV_Player_Video_Encoder {
       'source' => $source,
       'target' => $args['target'],
       'job_id' => $job_id,
-      'video_id' => $args['video_id'],
+      'video_id' => $args['id_video'],
     );
 
     if ( isset( $args['encryption'] ) ) {
