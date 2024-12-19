@@ -42,10 +42,13 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     $this->process_bulk_action();
     $this->base_url = admin_url( 'admin.php?page=' . $this->encoder_id );
   }
-  
+
   public function advanced_filters() {
     ?>
     <style>
+    #fv-player-filter table {
+      table-layout: auto;
+    }
     .hover-wrap { position: relative }
     .hover-details {
       position: absolute;
@@ -103,7 +106,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     </p>
     <?php
   }
-  
+
   public function get_sortable_columns() {
     return array(
       'id'               => array( 'id', true ),
@@ -115,11 +118,11 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       'author'           => array( 'author', true )
     );
   }
-  
+
   protected function get_primary_column_name() {
     return 'id';
   }
-  
+
   /*function get_user_dropdown( $user_id, $name = false, $disabled = false ) {
     if( !$this->dropdown_cache ) {
       $this->dropdown_cache  = wp_dropdown_users( array(
@@ -130,14 +133,14 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       ) );
     }
     $html = $this->dropdown_cache;
-    
+
     $html = str_replace("value='".$user_id."'>","value='".$user_id."' selected>",$html);
     if( $name ) $html = str_replace("name='user_id' ","name='".$name."' ' ",$html);
     if( $disabled ) $html = str_replace("<select ","<select disabled='disabled' ",$html);
-    
+
     return $html;
   }*/
-  
+
   public function column_cb( $player ) {
     return sprintf(
       '<input type="checkbox" name="%1$s[]" value="%2$s" />',
@@ -145,7 +148,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       $player->id
     );
   }
-  
+
   public function column_default( $job, $column_name ) {
     switch ( $column_name ) {
       case 'id' :
@@ -204,10 +207,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
         $value = isset($job->$column_name) && $job->$column_name ? $job->$column_name : '';
         break;
     }
-    
+
     return $value;
   }
-  
+
   private function json_prettyPrint( $json ) {
       $result = '';
       $level = 0;
@@ -271,7 +274,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   public function process_bulk_action() {  // todo: any bulk action?
     return;
   }
-  
+
   private function get_result_counts() {
     global $wpdb;
 
@@ -306,7 +309,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       if ( ! empty( $_GET['status'] ) ) $args['status'] = sanitize_key( $_GET['status'] );
       if ( ! empty( $_GET['s'] ) ) $args['s'] = sanitize_text_field( $_GET['s'] );
     }
-    
+
     $args = wp_parse_args( $args, array(
       'exclude' => false,
       'order' => 'desc',
@@ -315,17 +318,17 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       'status' => false,
       's' => false
     ));
-    
+
     $aWhere = array();
     $aWhere[] = "type = '{$this->encoder_id}'";
-    
+
     if( is_array($id) ) {
       $id = array_map('intval', $id);
       $aWhere[] = 'id IN ('.implode(',',$id).')';
     } else if( $id ) {
       $aWhere[] = 'id = '.intval($id);
     }
-    
+
     if( $args['exclude'] ) {
       $args['exclude'] = array_map( 'intval', $args['exclude'] );
       $aWhere[] = 'id NOT IN ('.implode(',',$args['exclude']).')';
@@ -412,7 +415,7 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     $hidden   = array(); // No hidden columns
     $sortable = $this->get_sortable_columns();
     $this->items     = $this->get_data( $id, $args );
-    
+
     $this->_column_headers = array( $columns, $hidden, $sortable );
 
     $this->set_pagination_args( array(
