@@ -188,6 +188,18 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       case 'author':
         $value = '<a href="#">'.get_the_author_meta( 'user_nicename' , $job->author ).'</a>';
         break;
+      case 'fv_player_encoding_category_id':
+        $term = get_term( $job->fv_player_encoding_category_id, 'fv_player_encoding_category' );
+        if ( $term && ! is_wp_error( $term ) ) {
+          $value = $term->name;
+          $parent = $term->parent;
+          while( $parent ) {
+            $term = get_term( $parent, 'fv_player_encoding_category' );
+            $value = $term->name . ' > ' . $value;
+            $parent = $term->parent;
+          }
+        }
+        break;
       default:
         $value = isset($job->$column_name) && $job->$column_name ? $job->$column_name : '';
         break;
@@ -279,7 +291,8 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
       'target'           => __( 'Target' ),
       'status'           => __( 'Status' ),
       'author'           => __( 'Author' ),
-      'player_id'        => __( 'Player ID' )
+      'player_id'        => __( 'Player ID' ),
+      'fv_player_encoding_category_id' => __( 'Video Category' )
     );
   }
 
