@@ -102,8 +102,8 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     // sorting by date, descending
     // TODO: Make this an interface option? How to handle it for paged listings, like on Vimeo?
     function FV_Player_DigitalOcean_Spaces_Browser_date_compare($a, $b) {
-      $t1 = strtotime($a['LastModified']);
-      $t2 = strtotime($b['LastModified']);
+      $t1 = ! empty( $a['LastModified'] ) ? strtotime($a['LastModified']) : 0;
+      $t2 = ! empty( $b['LastModified'] ) ? strtotime($b['LastModified']) : 0;
       return $t1 - $t2;
     }
     usort($output['items'], 'FV_Player_DigitalOcean_Spaces_Browser_date_compare');

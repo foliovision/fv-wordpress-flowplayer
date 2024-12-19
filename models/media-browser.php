@@ -182,7 +182,7 @@ abstract class FV_Player_Media_Browser {
 
         $item = array();
 
-        $path = $object['Prefix'] ? $object['Prefix'] : $object['Key'];
+        $path = ! empty( $object['Prefix'] ) ? $object['Prefix'] : $object['Key'];
 
         if( isset($sum_up) && !empty($object['Key']) && preg_match( '~\.ts$~', $object['Key'] ) ) {
           if( empty($sum_up['ts']) ) $sum_up['ts'] = 0;

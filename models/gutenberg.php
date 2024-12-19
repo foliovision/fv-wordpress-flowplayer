@@ -155,11 +155,13 @@ function fv_player_handle_post_content($content) {
 add_filter( 'the_content', 'fv_player_handle_post_content', 8 );
 
 function fv_player_handle_rest_content($response) {
-  $updated_content = fv_player_update_block_attributes($response->data['content']['raw']);
+  if ( ! empty( $response->data['content'] ) && ! empty( $response->data['content']['raw'] ) ) {
+    $updated_content = fv_player_update_block_attributes($response->data['content']['raw']);
 
-  // check if changed
-  if ( $updated_content !== $response->data['content']['raw'] ) {
-    $response->data['content']['raw'] = $updated_content;
+    // check if changed
+    if ( $updated_content !== $response->data['content']['raw'] ) {
+      $response->data['content']['raw'] = $updated_content;
+    }
   }
 
   return $response;
