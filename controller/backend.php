@@ -1124,3 +1124,18 @@ function fv_player_install_pro_license_notice() {
     echo "<div class='error'>" . wp_kses( $aCheck->message, 'post' ) . "</div>";
   }
 }
+
+/**
+ * Paid FV Player extensions need to know what's the FV Player version.
+ */
+add_filter( 'http_request_args', 'fv_player_license_checks_base_plugin_version', 10, 2 );
+
+function fv_player_license_checks_base_plugin_version( $parsed_args, $url ) {
+
+  global $fv_wp_flowplayer_ver;
+  if ( stripos( $url, '//foliovision.com/' ) !== false ) {
+    $parsed_args['body']['fv_player_core_version'] = $fv_wp_flowplayer_ver;
+  }
+
+  return $parsed_args;
+}
