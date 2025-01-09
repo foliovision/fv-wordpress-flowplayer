@@ -7,7 +7,7 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  * in the HTML markup.
  */
 final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
-  
+
   private $post_id_SimpleShortcode;
 
   protected function setUp(): void {
@@ -33,10 +33,11 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     global $post;
     $post = get_post( $this->post_id_SimpleShortcode );
     $post->ID = 1234;
-    
+
     remove_action('wp_head', 'wp_generator');
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
+    remove_action( 'wp_head', 'wp_print_auto_sizes_contain_css_fix', 1 );
     add_filter( 'wp_resource_hints', '__return_empty_array' );
 
     // Avoid certain CSS files which WordPress started to include as the block themes become the new default
