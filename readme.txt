@@ -257,6 +257,13 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.16 - 2025-01-09 =
+
+* Bugfix: Audio player: Fix appearance during page load if using "Optimize JavaScript loading"
+* Bugfix: iOS: Fix live HLS stream playback is the "Live" flag is not set
+* Bugfix: Lightbox: Avoid opening lightbox when trying to scroll down the page by starting the swipe gesture on the video, if using "Optimize JavaScript loading" setting
+* Bugfix: Setting "Use Schema.org markup" overwritten by "Handle WordPress audio/video", "Facebook Video Sharing" and vice versa
+
 = 8.0.15 - 2024-12-18 =
 
 * Support for FV Player CMS: New plugin which lets you embed a player without publishing it to the WordPress site.
