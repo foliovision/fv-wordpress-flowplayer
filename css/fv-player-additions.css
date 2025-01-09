@@ -1080,6 +1080,9 @@ body.has-fv-player-fullscreen #chat-widget-container {
 
 .fp-playlist-horizontal, .fp-playlist-vertical-wrapper, .fv-playlist-slider-wrapper, .fp-playlist-polaroid, .fp-playlist-text-wrapper {max-width:100% !important}
 
+.fp-playlist-text-wrapper .flowplayer {width:65%;float:left}
+.fp-playlist-text-wrapper .fp-playlist-vertical {width:35%}
+
 /* Remove Top and Bottom Black Bars */
 @media (min-aspect-ratio: 16/9) {
   .freedomplayer.remove-black-bars.is-fullscreen .fp-engine {
