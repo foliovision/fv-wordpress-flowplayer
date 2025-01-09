@@ -976,7 +976,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( isset($aNewOptions['pro']) ) $aNewOptions['pro'] = array_merge($aOldOptions['pro'],$aNewOptions['pro']);
 
     // merge the rest of the options
-    $aNewOptions = array_merge($aOldOptions,$aNewOptions);
+    $aNewOptions = array_replace_recursive( $aOldOptions, $aNewOptions );
 
     // Ensure only one of "Load FV Flowplayer JS everywhere" and
     // "Optimize FV Flowplayer JS loading" can be enabled
