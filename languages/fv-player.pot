@@ -1,4 +1,4 @@
-# Copyright (C) 2024 fv-wordpress-flowplayer
+# Copyright (C) 2025 fv-wordpress-flowplayer
 # This file is distributed under the same license as the fv-wordpress-flowplayer package.
 msgid ""
 msgstr ""
@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2024-11-26 09:26+0000\n"
+"POT-Creation-Date: 2025-01-10 14:13+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -740,7 +740,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3131
+#: models/fv-player.php:3139
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
