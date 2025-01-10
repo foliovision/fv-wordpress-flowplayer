@@ -227,8 +227,8 @@
   content: '';
   display: block;
   height: 100%;
-  position: relative;
-  -webkit-filter: drop-shadow( 0 0 4px #aaa );
+  position: absolute;
+  width: 100%;
   filter: drop-shadow( 0 0 4px #aaa );
   pointer-events: none;
 }
