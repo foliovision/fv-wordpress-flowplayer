@@ -257,6 +257,10 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.17 - 2025-01-10 =
+
+* YouTube: Support youtube.com/live/{video_id} links
+
 = 8.0.16 - 2025-01-09 =
 
 * Bugfix: Audio player: Fix appearance during page load if using "Optimize JavaScript loading"
