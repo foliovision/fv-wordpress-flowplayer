@@ -457,9 +457,8 @@ class FV_Player_YouTube {
 
     if(
       preg_match( "~youtube.com/.*?(?:v|list)=([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
-      preg_match( "~youtube.com/shorts/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
-      preg_match( "~youtu.be/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
-      preg_match( "~(?:youtube\.com|youtube-nocookie\.com)/embed/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic )
+      preg_match( "~youtube(?:-nocookie)?.com/(?:embed|live|shorts)/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic ) ||
+      preg_match( "~youtu.be/([a-zA-Z0-9_-]+)(?:\?|$|&)~i", $sURL, $aDynamic )
     ) {
       $this->bYoutube = true;
       return $aDynamic;

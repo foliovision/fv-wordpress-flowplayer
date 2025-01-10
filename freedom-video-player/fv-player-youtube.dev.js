@@ -2020,10 +2020,7 @@ if( typeof(flowplayer) != "undefined" ) {
     if( aMatch = src.match(/youtu.be\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];
     }
-    if( aMatch = src.match(/embed\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
-      return aMatch[1];
-    }
-    if( aMatch = src.match(/shorts\/([a-zA-Z0-9_-]+)/) ){
+    if( aMatch = src.match(/(?:embed|live|shorts)\/([a-zA-Z0-9_-]+)(?:\?|$|&)/) ){
       return aMatch[1];
     }
     return false;
