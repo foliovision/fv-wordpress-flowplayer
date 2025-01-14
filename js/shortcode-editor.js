@@ -1486,6 +1486,14 @@ jQuery(function() {
                 playlist_refresh();
               }
 
+              /**
+               * Allow plugins to fill in the hidden fields with data coming back from save response.
+               * These are the fields which hold ID of any additional items created, like PPV product IDs.
+               * Their IDs need to be taken into consideration right away as otherwise the PPV products might multiple
+               * if you make more changes to the price and save again before the initial save is done.
+               */
+              $doc.trigger( 'fv_flowplayer_player_meta_load_high_priority', [ response ] );
+
               // Did the data change while saving?
               if( next ) {
                 debug_log('There is more to save...');
