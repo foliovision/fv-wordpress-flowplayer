@@ -659,8 +659,8 @@ jQuery(function() {
               }, function(json_export_data) {
                 var overlay = overlay_show('export');
                 overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-              }).fail(function() {
-                overlay_show('message', 'An unexpected error has occurred. Please try again.');
+              }).fail( function( jqXHR, textStatus, errorThrown ) {
+                overlay_show('message', 'An unexpected error has occurred while exporting player #' + player_id + ': <code>' + errorThrown + '</code><br /><br />Please try again.');
               });
 
             },
@@ -1839,8 +1839,8 @@ jQuery(function() {
         $.post(ajaxurl, {
           action: 'fv_player_db_retrieve_all_players_for_dropdown',
           nonce: fv_player_editor_conf.search_nonce,
-        }, show_players ).fail(function () {
-          overlay_show('message', 'An unexpected error has occurred. Please try again.');
+        }, show_players ).fail( function ( jqXHR, textStatus, errorThrown ) {
+          overlay_show('message', 'An unexpected error has occurred while loading players: <code>' + errorThrown + '</code><br /><br />Please try again.');
         });
 
         return false;
@@ -1866,8 +1866,8 @@ jQuery(function() {
             action: 'fv_player_db_retrieve_all_players_for_dropdown',
             nonce: fv_player_editor_conf.search_nonce,
             search: search_val
-          }, show_players ).fail(function () {
-            overlay_show('message', 'An unexpected error has occurred. Please try again.');
+          }, show_players ).fail( function ( jqXHR, textStatus, errorThrown ) {
+            overlay_show('message', 'An unexpected error has occurred while searching in player data: <code>' + errorThrown + '</code><br /><br />Please try again.');
           });
 
           is_searching = true;
@@ -2853,11 +2853,11 @@ Please also contact FV Player support with the following debug information:\n\n\
 
             $doc.trigger('fv_player_editor_finished');
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
-          }).fail(function(xhr) {
-            if (xhr.status == 404) {
-              overlay_show('message', 'The requested player could not be found. Please try again.');
+          }).fail( function( jqXHR, textStatus, errorThrown ) {
+            if ( jqXHR.status == 404 ) {
+              overlay_show('message', 'The requested player #' + result[1] + ' could not be found.');
             } else {
-              overlay_show('message', 'An unexpected error has occurred. Please try again.');
+              overlay_show('message', 'An unexpected error has occurred while loading player #' + result[1] + ': <code>' + errorThrown + '</code><br /><br />Please try again.');
             }
 
             // show the Insert button, as this is only used when adding a new player into a post
@@ -3362,8 +3362,8 @@ Please also contact FV Player support with the following debug information:\n\n\
             jQuery('#fv_player_copy_to_clipboard').select();
           }
         },
-        error: function( jqXHR, textStatus, errorThrown) {
-          overlay_show('message', 'An unexpected error has occurred: ' + errorThrown + ' Please try again');
+        error: function( jqXHR, textStatus, errorThrown ) {
+          overlay_show('message', 'An unexpected error has occurred while saving player: <code>' + errorThrown + '</code><br /><br />Please try again');
         }
       });
 
@@ -3995,11 +3995,11 @@ Please also contact FV Player support with the following debug information:\n\n\
           el_preview_target.html( response.html )
           $doc.trigger('fvp-preview-complete');
         }
-      }).fail(function(xhr) {
-        if (xhr.status == 404) {
-          overlay_show('message', 'The requested player could not be found. Please try again.');
+      }).fail(function( jqXHR, textStatus, errorThrown ) {
+        if ( jqXHR.status == 404) {
+          overlay_show('message', 'The requested player #' + current_player_db_id + ' could not be found.');
         } else {
-          overlay_show('message', 'An unexpected error has occurred. Please try again.');
+          overlay_show('message', 'An unexpected error has occurred while loading player #' + current_player_db_id + ': <code>' + errorThrown + '</code><br /><br />Please try again.');
         }
       }).always(function() {
         el_spinner.hide();
