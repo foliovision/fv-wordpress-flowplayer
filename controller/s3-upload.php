@@ -132,7 +132,22 @@ class FV_Player_S3_Upload {
       // TODO: Is this needed anywhere? If so do it properly!
       $_POST['fileInfo']['name'] = $filename_final;
 
-      // make sure we have correct CORS on the DOS bucket
+    } catch( Aws\S3\Exception\S3Exception $e ) {
+      $message = "Error checking files, please check your DigitalOcean Spaces keys in FV Player -> Coconut -> Settings.";
+
+      if ( function_exists( 'FV_Player_Coconut' ) ) {
+        FV_Player_Coconut()->plugin_api->log( "create_multiupload: " . $message . " Details: " . $e->getMessage() );
+      }
+
+      wp_send_json( array( 'error' => $message ) );
+    }
+
+    /**
+     * Make sure we have correct CORS on the DOS bucket.
+     * But if this fails then just go on as we want to allow key without full privileges
+     * to succeed at the upload.
+     */
+    try {
       $this->s3("putBucketCors",
         array(
           "Bucket" => $FV_Player_DigitalOcean_Spaces->get_space(),
@@ -152,7 +167,13 @@ class FV_Player_S3_Upload {
           ),
         )
       );
+    } catch( Aws\S3\Exception\S3Exception $e ) {
+      if ( function_exists( 'FV_Player_Coconut' ) ) {
+        FV_Player_Coconut()->plugin_api->log( "create_multiupload: Error setting CORS: " . $e->getMessage() );
+      }
+    }
 
+    try {
       $res = $this->s3( "createMultipartUpload", array(
         'Bucket' => $FV_Player_DigitalOcean_Spaces->get_space(),
         'Key' => $filename_final,
@@ -173,10 +194,10 @@ class FV_Player_S3_Upload {
         'key' => $res->get('Key'),
       ));
     } catch( Aws\S3\Exception\S3Exception $e ) {
-      $message = "Access denied, please check your DigitalOcean Spaces keys in FV Player -> Coconut -> Settings.";
+      $message = "Error creating upload, please check your DigitalOcean Spaces keys in FV Player -> Coconut -> Settings.";
 
       if ( function_exists( 'FV_Player_Coconut' ) ) {
-        FV_Player_Coconut()->plugin_api->log( "create_multiupload: " . $message );
+        FV_Player_Coconut()->plugin_api->log( "create_multiupload: " . $message . " Details: " . $e->getMessage() );
       }
 
       wp_send_json( array( 'error' => $message ) );
