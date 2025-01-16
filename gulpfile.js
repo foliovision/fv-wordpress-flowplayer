@@ -39,7 +39,7 @@ function jsModulesMinify() {
       ["@babel/preset-env", {"modules": false} ]
     ]}))
     .pipe(concat('fv-player.min.js'))
-    .pipe(uglify({mangle: true}).on('error', console.error))
+    .pipe(uglify({ compress: { loops: false }, mangle: true}).on('error', console.error))
     .pipe(dest('./freedom-video-player/')
   );
 }
@@ -49,7 +49,7 @@ function jsFilessMinify() {
     .pipe(babel({"presets": [
       ["@babel/preset-env", {"modules": false} ]
     ]}))
-    .pipe(uglify({mangle: true}).on('error', console.error))
+    .pipe(uglify({ compress: { loops: false }, mangle: true}).on('error', console.error))
     .pipe(rename(function (path) {
       path.basename = path.basename.replace(/\.dev/, '');
       path.extname = ".min.js";
