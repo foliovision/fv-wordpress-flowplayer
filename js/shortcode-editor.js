@@ -2377,6 +2377,8 @@ jQuery(function() {
       if (current_player_db_id > 0 ){
         edit_lock_removal[current_player_db_id] = 1;
         current_player_db_id = 0;
+
+        debug_log( 'editor_close current_player_db_id = 0' );
       }
 
       editor_init();
@@ -2688,7 +2690,7 @@ jQuery(function() {
           // load video data via an AJAX call
           debug_log('Running fv_player_db_load Ajax.');
 
-          fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl+'?fv_player_db_load', {
+          fv_player_shortcode_editor_ajax = jQuery.post( ajaxurl + '?fv_player_db_load=' + result[1], {
             action : 'fv_player_db_load',
             nonce : fv_player_editor_conf.db_load_nonce,
             playerID :  result[1],
@@ -3982,14 +3984,19 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       el_spinner.show();
 
+      debug_log('Running fv_player_db_load Ajax.');
+
       // load player data and reload preview of the full player
       // when we go back from editing a single video in a playlist
-      fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl, {
+      fv_player_shortcode_editor_ajax = jQuery.post( ajaxurl + '?fv_player_db_load=' + current_player_db_id, {
         action : 'fv_player_db_load',
         nonce : fv_player_editor_conf.db_load_nonce,
         playerID :  current_player_db_id,
         current_video_to_edit: get_playlist_items_count() > 1 ? video_index : -1,
       }, function(response) {
+
+        debug_log('Finished fv_player_db_load Ajax.',response);
+
         if ( response.html ) {
           // auto-refresh preview
           el_preview_target.html( response.html )
@@ -4011,6 +4018,8 @@ Please also contact FV Player support with the following debug information:\n\n\
     }
 
     function reset_editor_ids() {
+      debug_log( 'reset_editor_ids' );
+
       current_player_db_id = 0;
       current_player_object = false;
       current_video_db_id = 0;
