@@ -1445,23 +1445,25 @@ class FV_Player_Db {
       /**
        * Detect bug with duplicate players
        */
-      $video_ids = explode( ',', $fv_fp->current_player()->getVideoIds() );
+      if ( $fv_fp->current_player() ) {
+        $video_ids = explode( ',', $fv_fp->current_player()->getVideoIds() );
 
-      $db_options = array(
-        'select_fields'       => 'player_name, date_created, videos, author, status',
-        'search_by_video_ids' => $video_ids,
-      );
+        $db_options = array(
+          'select_fields'       => 'player_name, date_created, videos, author, status',
+          'search_by_video_ids' => $video_ids,
+        );
 
-      $this->query_players( $db_options );
+        $this->query_players( $db_options );
 
-      $players = $this->getPlayersCache();
+        $players = $this->getPlayersCache();
 
-      if ( $players && count($players) ) {
-        $out['debug_duplicate_players'] = array();
+        if ( $players && count($players) ) {
+          $out['debug_duplicate_players'] = array();
 
-        foreach ($players as $player) {
-          if ( $player->getId() != $load_player_id ) {
-            $out['debug_duplicate_players'][] = $player->getId();
+          foreach ($players as $player) {
+            if ( $player->getId() != $load_player_id ) {
+              $out['debug_duplicate_players'][] = $player->getId();
+            }
           }
         }
       }
