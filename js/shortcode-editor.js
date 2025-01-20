@@ -2702,7 +2702,7 @@ jQuery(function() {
 
             if (response) {
 
-              if ( response.debug_duplicate_players.length ) {
+              if ( response.debug_duplicate_players && response.debug_duplicate_players.length ) {
                 alert( "FV Player Editor warning:\n\n\
 It seems the player #" + result[1] + " which you are about to edit is a duplicate of the player #" + response.debug_duplicate_players.join(', ') + ".\n\n\
 Any changes made to the videos will update the other player as well. \
