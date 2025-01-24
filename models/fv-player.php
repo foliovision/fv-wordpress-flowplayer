@@ -809,6 +809,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'googleanalytics',
           'hd_streaming',
           'height',
+          'indie_video_ads', // FV Player Indie Video Ads extension
           'integrations',
           'interface',
           'js-everywhere',
