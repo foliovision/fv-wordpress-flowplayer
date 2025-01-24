@@ -186,7 +186,38 @@ if( fv_flowplayer_conf.youtube ) {
         ;
         return a
     }
-    function v(a) {
+    var fa = typeof Object.create == "function" ? Object.create : function(a) {
+        function b() {}
+        b.prototype = a;
+        return new b
+    }
+    , v;
+    if (typeof Object.setPrototypeOf == "function")
+        v = Object.setPrototypeOf;
+    else {
+        var w;
+        a: {
+            var ha = {
+                a: !0
+            }
+              , ia = {};
+            try {
+                ia.__proto__ = ha;
+                w = ia.a;
+                break a
+            } catch (a) {}
+            w = !1
+        }
+        v = w ? function(a, b) {
+            a.__proto__ = b;
+            if (a.__proto__ !== b)
+                throw new TypeError(a + " is not extensible");
+            return a
+        }
+        : null
+    }
+    var ja = v;
+    function x(a) {
         var b = typeof Symbol != "undefined" && Symbol.iterator && a[Symbol.iterator];
         if (b)
             return b.call(a);
@@ -196,37 +227,6 @@ if( fv_flowplayer_conf.youtube ) {
             };
         throw Error(String(a) + " is not an iterable or ArrayLike");
     }
-    var fa = typeof Object.create == "function" ? Object.create : function(a) {
-        function b() {}
-        b.prototype = a;
-        return new b
-    }
-    , w;
-    if (typeof Object.setPrototypeOf == "function")
-        w = Object.setPrototypeOf;
-    else {
-        var x;
-        a: {
-            var ha = {
-                a: !0
-            }
-              , ia = {};
-            try {
-                ia.__proto__ = ha;
-                x = ia.a;
-                break a
-            } catch (a) {}
-            x = !1
-        }
-        w = x ? function(a, b) {
-            a.__proto__ = b;
-            if (a.__proto__ !== b)
-                throw new TypeError(a + " is not extensible");
-            return a
-        }
-        : null
-    }
-    var ja = w;
     function y() {
         this.j = !1;
         this.h = null;
@@ -601,14 +601,14 @@ if( fv_flowplayer_conf.youtube ) {
         ;
         b.race = function(e) {
             return new b(function(f, h) {
-                for (var l = v(e), m = l.next(); !m.done; m = l.next())
+                for (var l = x(e), m = l.next(); !m.done; m = l.next())
                     d(m.value).B(f, h)
             }
             )
         }
         ;
         b.all = function(e) {
-            var f = v(e)
+            var f = x(e)
               , h = f.next();
             return h.done ? d([]) : new b(function(l, m) {
                 function n(ba) {
@@ -655,7 +655,7 @@ if( fv_flowplayer_conf.youtube ) {
         function b(h) {
             this.g = (f += Math.random() + 1).toString();
             if (h) {
-                h = v(h);
+                h = x(h);
                 for (var l; !(l = h.next()).done; )
                     l = l.value,
                     this.set(l[0], l[1])
@@ -783,7 +783,7 @@ if( fv_flowplayer_conf.youtube ) {
             this[1] = b();
             this.size = 0;
             if (f) {
-                f = v(f);
+                f = x(f);
                 for (var h; !(h = f.next()).done; )
                     h = h.value,
                     this.set(h[0], h[1])
@@ -796,7 +796,7 @@ if( fv_flowplayer_conf.youtube ) {
                 var f = Object.seal({
                     x: 4
                 })
-                  , h = new a(v([[f, "s"]]));
+                  , h = new a(x([[f, "s"]]));
                 if (h.get(f) != "s" || h.size != 1 || h.get({
                     x: 4
                 }) || h.set({
@@ -890,7 +890,7 @@ if( fv_flowplayer_conf.youtube ) {
         function b(c) {
             this.g = new Map;
             if (c) {
-                c = v(c);
+                c = x(c);
                 for (var d; !(d = c.next()).done; )
                     this.add(d.value)
             }
@@ -903,7 +903,7 @@ if( fv_flowplayer_conf.youtube ) {
                 var c = Object.seal({
                     x: 4
                 })
-                  , d = new a(v([c]));
+                  , d = new a(x([c]));
                 if (!d.has(c) || d.size != 1 || d.add(c) != d || d.size != 1 || d.add({
                     x: 4
                 }) != d || d.size != 2)
@@ -1270,7 +1270,7 @@ if( fv_flowplayer_conf.youtube ) {
         this.message = b.message;
         "stack"in b && (this.stack = b.stack);
         this.type = a;
-        this.name = "TypeCannotBeUsedWithIntentError"
+        this.name = "TypeCannotBeUsedWithIframeIntentError"
     }
     var N = Error;
     M.prototype = fa(N.prototype);
@@ -1556,7 +1556,7 @@ if( fv_flowplayer_conf.youtube ) {
       , U = new T
       , vb = {};
     function wb() {
-        for (var a = v(ub), b = a.next(); !b.done; b = a.next())
+        for (var a = x(ub), b = a.next(); !b.done; b = a.next())
             b = b.value,
             b()
     }
@@ -1812,7 +1812,7 @@ if( fv_flowplayer_conf.youtube ) {
         }
     }
     function Kb(a, b) {
-        b = v(b);
+        b = x(b);
         for (var c = b.next(), d = {}; !c.done; d = {
             u: void 0
         },
