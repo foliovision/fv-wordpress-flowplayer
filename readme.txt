@@ -257,9 +257,12 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
-= 8.0.17 - 2025-01-10 =
+= 8.0.17 - 2025-01-24 =
 
 * YouTube: Support youtube.com/live/{video_id} links
+* Bugfix: Editor saving of Pay Per View product ID
+* Bugfix: Fix splash image switching for audio tracks when using retina image
+* Bugfix: Simpler min.js to avoid issues with WP Rocket JS minification
 
 = 8.0.16 - 2025-01-09 =
 
