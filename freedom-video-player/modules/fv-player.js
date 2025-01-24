@@ -324,6 +324,7 @@ function fv_player_preload() {
         }
 
         splash_img.attr('alt', item.fv_title ? fv_escape_attr(item.fv_title) : 'video' );
+        splash_img.removeAttr( 'srcset' );
         splash_img.attr('src', new_splash );
 
       // remove the splash image if there is nothing present for the item
@@ -863,7 +864,7 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
         } );
       });
 
-      root.find('.fp-splash').attr('src', jQuery('[rel='+root.attr('id')+'] div').eq(index).find('img').attr('src')); // select splachscreen from playlist items by id
+      root.find('.fp-splash').attr( 'src', jQuery('[rel='+root.attr('id')+'] div').eq(index).find('img').attr('src') ).removeAttr( 'srcset' ); // select splachscreen from playlist items by id
 
       if( !fv_player_in_iframe() ) {
         fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
