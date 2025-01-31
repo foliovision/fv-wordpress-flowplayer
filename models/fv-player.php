@@ -144,6 +144,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
+    add_filter( 'fv_flowplayer_resource', array( $this, 'get_amazon_secure') );
 
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
