@@ -142,9 +142,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     add_action( 'init', array( $this, 'enable_cdn_rewrite_maybe') );
 
-    add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure') );
-    add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure') );
-    add_filter( 'fv_flowplayer_resource', array( $this, 'get_amazon_secure') );
+    add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure_long') );
+    add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure_long') );
+    add_filter( 'fv_flowplayer_resource', array( $this, 'get_amazon_secure_long') );
 
     add_action( 'wp_enqueue_scripts', array( $this, 'css_enqueue' ) );
     add_action( 'admin_enqueue_scripts', array( $this, 'css_enqueue' ) );
@@ -2122,6 +2122,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       $time = apply_filters( 'fv_flowplayer_amazon_expires', $time, $media );
 
+      // Allow to set the expire time to 0 to disable it = use 1 week
+      if ( ! $time ) {
+        $time = WEEK_IN_SECONDS;
+      }
+
       $url_components = wp_parse_url($resource);
 
       // decode the path, as it might come partially URL encoded already
@@ -2199,6 +2204,16 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     return $media;
+  }
+
+  function get_amazon_secure_long( $media ) {
+    add_filter( 'fv_flowplayer_amazon_expires', '__return_false' );
+
+    $signed_media = $this->get_amazon_secure( $media, WEEK_IN_SECONDS );
+
+    remove_filter( 'fv_flowplayer_amazon_expires', '__return_false' );
+
+    return $signed_media;
   }
 
   public static function hms_to_seconds( $tDuration ) {
