@@ -519,7 +519,8 @@ function flowplayer_prepare_scripts() {
       'startLevel' => -1,
       'fragLoadingMaxRetry' => 3,
       'levelLoadingMaxRetry' => 3,
-      'capLevelToPlayerSize' => true
+      'capLevelToPlayerSize' => true,
+      'use_for_safari'       => class_exists( 'FV_Player_DRM' ),
     );
 
     // The above HLS.js config doesn't work well on Chrome and Firefox, so we detect that in JS and use this config for it instead. Todo: make this a per-video thing

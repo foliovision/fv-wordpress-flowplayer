@@ -57,12 +57,14 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
     flowplayer.support.iOS.version = parseIOSVersion(navigator.userAgent);
   }
 
-  // iOS 13 and desktop Safari above version 8 support MSE, so let's use HLS.js there
-  if(
-    flowplayer.support.iOS && parseInt(flowplayer.support.iOS.version) >= 13 ||
-    !flowplayer.support.iOS && flowplayer.support.browser.safari && parseInt(flowplayer.support.browser.version) >= 8
-  ) {
-    flowplayer.conf.hlsjs.safari = true;
+  if ( flowplayer.conf.hlsjs.use_for_safari ) {
+    // iOS 13 and desktop Safari above version 8 support MSE, so let's use HLS.js there
+    if(
+      flowplayer.support.iOS && parseInt(flowplayer.support.iOS.version) >= 13 ||
+      !flowplayer.support.iOS && flowplayer.support.browser.safari && parseInt(flowplayer.support.browser.version) >= 8
+    ) {
+      flowplayer.conf.hlsjs.safari = true;
+    }
   }
 
   flowplayer.support.fvmobile = !!( !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.android );
