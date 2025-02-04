@@ -500,7 +500,7 @@ class FV_Player_Position_Save {
           }
 
           // ab loop times
-          if(!empty($record['ab_start'] && !empty($record['ab_end']))) {
+          if ( ! empty( $record['ab_start'] ) && ! empty( $record['ab_end'] ) ) {
             $this->set_video_position($uid, $name, 'ab_start', intval($record['ab_start']));
             $this->set_video_position($uid, $name, 'ab_end', intval($record['ab_end']));
           } else {

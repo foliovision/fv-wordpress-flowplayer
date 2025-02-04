@@ -258,7 +258,7 @@ class FV_Player_Custom_Videos_Master {
 
   function add_meta_boxes() {
     global $post;
-    if( !empty($this->aMetaBoxes[$post->post_type]) ) {
+    if ( ! empty( $post->post_type ) && ! empty( $this->aMetaBoxes[ $post->post_type ] ) ) {
       foreach( $this->aMetaBoxes[$post->post_type] AS $meta_key => $args ) {
         global $FV_Player_Custom_Videos_form_instances;
         $id = 'fv_player_custom_videos-field_'.$meta_key;
