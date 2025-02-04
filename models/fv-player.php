@@ -1071,7 +1071,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_settings' ), 999, 2 );
       add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_scripts' ), 999, 2 );
 
-      $value = wp_kses( $value, 'post' );
+      $value = wp_kses( wp_unslash( $value ), 'post' );
 
       remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
       remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_settings' ), 999, 2 );
@@ -3236,8 +3236,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
 
     $tags['iframe']['class'] = true;
+    $tags['iframe']['frameborder'] = true;
+    $tags['iframe']['data-*'] = true;
+    $tags['iframe']['height'] = true;
     $tags['iframe']['id'] = true;
     $tags['iframe']['src'] = true;
+    $tags['iframe']['style'] = true;
+    $tags['iframe']['width'] = true;
 
     if ( empty($tags['input']) ) {
       $tags['input'] = array();
