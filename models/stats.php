@@ -127,6 +127,11 @@ class FV_Player_Stats {
     global $fv_fp, $blog_id;
     if( $this->used || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('video_stats_enable') ) { // we want to enable the tracking if it's used, if FV Player JS is enabled globally or if the tracking is enabled globally
 
+      // Do not track admins and editors.
+      if ( current_user_can( 'edit_posts' ) ) {
+        return $conf;
+      }
+
       $conf['fv_stats'] = array(
                                 'url' => flowplayer::get_plugin_url().'/controller/track.php',
                                 'blog_id' => $blog_id,
@@ -382,7 +387,7 @@ class FV_Player_Stats {
     if( $user_type == 'user' ) {
       $results = $wpdb->get_col(
         // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber        
+        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
           "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY user_id ORDER BY sum(seconds) DESC LIMIT 10",
@@ -464,7 +469,7 @@ class FV_Player_Stats {
         )
       );
     }
-    
+
     return $results;
   }
 
@@ -592,7 +597,7 @@ class FV_Player_Stats {
 
   /**
    * Get post IDs to exclude for stats
-   * 
+   *
    * @return array Array of post IDs with 0 value always included to make sure the query SQL is valid
    */
   public function get_posts_to_exclude() {
@@ -613,7 +618,7 @@ class FV_Player_Stats {
       );
 
     }
-    
+
     // No posts to exclude? We still return the 0 post ID
     return array(
       'placeholder' => '%d',
@@ -664,7 +669,7 @@ class FV_Player_Stats {
       if( $metric == 'play' ) {
         $results_user = $wpdb->get_results(
           // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber          
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT date, user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND user_id IN( $placeholders ) GROUP BY user_id, date",
@@ -682,7 +687,7 @@ class FV_Player_Stats {
       } else {
         $results_user = $wpdb->get_results(
           // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber          
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT date, user_id, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND user_id IN( $placeholders ) GROUP BY user_id, date",
@@ -710,7 +715,7 @@ class FV_Player_Stats {
       if( $metric == 'play' ) {
         $results_guest = $wpdb->get_results(
           // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber          
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT date, guest_user_id, SUM(play) AS play FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND guest_user_id IN( $placeholders ) GROUP BY guest_user_id, date",
@@ -783,7 +788,7 @@ class FV_Player_Stats {
     if( is_numeric( $user_id ) ) {
       $results = $wpdb->get_results(
         // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber        
+        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
           "SELECT date, id_player, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND id_video IN( $placeholders ) AND user_id = %d GROUP BY id_video, date",
@@ -804,7 +809,7 @@ class FV_Player_Stats {
     } else {
       $results = $wpdb->get_results(
         // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber        
+        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
           "SELECT date, id_player, id_video, title, src, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND id_video IN( $placeholders ) GROUP BY id_video, date",
@@ -817,7 +822,7 @@ class FV_Player_Stats {
           )
         ),
         ARRAY_A
-      );      
+      );
     }
 
     if( !empty($results) ) {
@@ -848,7 +853,7 @@ class FV_Player_Stats {
       if( $type == 'video' ) { // video stats
         $results = $wpdb->get_results(
           // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber          
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT date, id_player, id_video, title, src, SUM(play) AS play  FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND id_video IN( $placeholders ) AND user_id = %d GROUP BY id_video, date",
@@ -955,7 +960,7 @@ class FV_Player_Stats {
 
     $results = $wpdb->get_results(
       // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
-      // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber      
+      // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
       $wpdb->prepare(
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         "SELECT date, id_player, id_video, title, src, SUM($metric) AS {$metric} FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->prefix}fv_player_videos` AS v ON s.id_video = v.id WHERE date BETWEEN %s AND %s AND id_video IN( $placeholders ) GROUP BY id_video, date",
@@ -1095,11 +1100,11 @@ class FV_Player_Stats {
           ),
           ARRAY_A
         );
-        
+
       } else {
         $result = $wpdb->get_results(
           // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
-          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber          
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
           $wpdb->prepare(
             // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             "SELECT date FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) LIMIT 1",
@@ -1212,7 +1217,7 @@ class FV_Player_Stats {
   /**
    * Get the desired date range
    *
-   * @param string|int $range this_week, last_week, this_month, last_month, this_year, last_year or year number          
+   * @param string|int $range this_week, last_week, this_month, last_month, this_year, last_year or year number
    * @param mixed $base_date (optional) The base date to use for this_week
    * @return array            All the days in the date range in YYYY-MM-DD format.
    */
@@ -1344,7 +1349,7 @@ class FV_Player_Stats {
    *                                )
    *
    * @param mixed $top_ids_arr
-   * @param string|int $range this_week, last_week, this_month, last_month, this_year, last_year or year number 
+   * @param string|int $range this_week, last_week, this_month, last_month, this_year, last_year or year number
    * @param string $type      video or post
    * @param string $metric    play or seconds or clicks
    * @param string $base_date (optional) The base date to use for $range
