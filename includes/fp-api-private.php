@@ -284,13 +284,13 @@ class FV_Wordpress_Flowplayer_Plugin_Private
       'timeout' => 20,
       'user-agent' => $this->strPluginSlug.'-'.$this->version
     );
-    $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $post );
+    $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $post );
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\s]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\s]*?~', '$1', $resp['body'] ) ) ) {
       return $data;
     
     } else if( is_wp_error($resp) ) {
       $post['sslverify'] = false;
-      $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $post );
+      $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $post );
     
       if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {    
         return $data;
@@ -555,14 +555,14 @@ $this->strPrivateAPI - also
         'timeout' => 20,
         'user-agent' => $this->strPluginSlug.'-'.$this->version
       );
-      $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true&readme=1', $args );
+      $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true&readme=1', $args );
       
       if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {
         $output = $resp['body'];
       
       } else if( is_wp_error($resp) ) {
         $args['sslverify'] = false;
-        $resp = wp_remote_post( 'https://foliovision.com/?fv_remote=true', $args );
+        $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $args );
       
         if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] ) {    
           $output = $resp['body'];
