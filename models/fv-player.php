@@ -1624,10 +1624,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         $script_fit_thumbs = '';
         if( isset($aArgs['liststyle']) && in_array( $this->aCurArgs['liststyle'], array( 'polaroid', 'version-one', 'version-two' ) ) ) {
           $script_fit_thumbs = "
-          var fit_thumbs = Math.floor( parseInt( getComputedStyle( el ).width ) / " . $limit . " );
-          if( fit_thumbs > 8 ) fit_thumbs = 8;
-          else if( fit_thumbs< 2 ) fit_thumbs = 2;
-          el.style.setProperty('--fp-playlist-items-per-row', String(fit_thumbs));
+          var w = getComputedStyle( el ).width;
+          while ( w === 'auto' && el.parentNode ) {
+            el = el.parentNode;
+            w = getComputedStyle(el).width;
+          }
+          var f = Math.floor( parseInt( 'auto' === w ? 0 : w  ) / " . $limit . " );
+          if( f > 8 ) f = 8;
+          else if( f < 2 ) f = 2;
+          el.style.setProperty('--fp-playlist-items-per-row', String(f));
           ";
         }
 
