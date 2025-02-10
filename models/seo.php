@@ -5,9 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class FV_Player_SEO {
-  
+
   var $can_seo = false;
-  
+
   public function __construct() {
 
     if ( ! defined( 'ABSPATH' ) ) {
@@ -20,26 +20,26 @@ class FV_Player_SEO {
     add_filter('fv_player_item_html', array($this, 'playlist_video_seo'), 10, 7 );
 
   }
-  
+
   function single_attributes( $attributes, $media, $fv_fp ) {
     if( !empty($fv_fp->aCurArgs['playlist']) || $this->video_ads_active($fv_fp->aCurArgs)  || !$this->can_seo ) {
       return $attributes;
     }
-    
+
     $attributes['itemprop'] = 'video';
     $attributes['itemscope'] = '';
     $attributes['itemtype'] = 'http://schema.org/VideoObject';
-    
+
     return $attributes;
   }
-  
+
   function video_ads_active($args) {
     $conf = get_option( 'fvwpflowplayer' );
 
     // check globals ads
     if(!empty($conf['pro']['video_ads_default'])) {
       if( $conf['pro']['video_ads_default'] != 'no') return true;
-    } 
+    }
 
     if( !empty($conf['pro']['video_ads_postroll_default']) ) {
       if( $conf['pro']['video_ads_postroll_default'] != 'no' ) return true;
@@ -74,7 +74,7 @@ class FV_Player_SEO {
     if( !$title ) {
       $title = get_the_title();
     }
-    
+
     if( !$description ) { //  todo: read this from shortcode
       $description = get_post_meta(get_the_ID(),'_aioseop_description', true );
     }
@@ -87,11 +87,37 @@ class FV_Player_SEO {
     if( !$description ) {
       $description = get_option('blogdescription');
     }
-    
+
+    /**
+     * Do not use $url if it's not MP4, M3U8, WebM or OGV
+     * https://developers.google.com/search/docs/appearance/video#supported-video-files
+     */
+    if ( $url ) {
+      $extension = wp_parse_url( $url, PHP_URL_PATH );
+      $extension = pathinfo( $extension, PATHINFO_EXTENSION );
+      $extension = strtolower( $extension );
+
+      if ( ! in_array( $extension, array( 'mp4', 'm3u8', 'webm', 'ogv' ) ) ) {
+        $url = false;
+      }
+    }
+
+    /**
+     * Do not use the video URL if it has a signature
+     * https://developers.google.com/search/docs/appearance/video#stable-url
+     */
+    if ( $url ) {
+      $signed_url = apply_filters( 'fv_flowplayer_video_src', $url, array( 'dynamic' => true ) );
+
+      if ( strcmp( $url, $signed_url ) !== 0 ) {
+        $url = false;
+      }
+    }
+
     if( !$url ) {
       $url = get_permalink();
     }
-    
+
     if( stripos($splash,'://') === false ) {
       $splash = home_url($splash);
     }
@@ -125,7 +151,7 @@ class FV_Player_SEO {
 
     return $schema_tags;
   }
-  
+
   function playlist_video_seo( $sHTML, $aArgs, $sSplashImage, $sItemCaption, $aPlayer, $index, $tDuration ) {
     if( $this->can_seo ) {
       $sHTML = str_replace( '<a', '<a itemprop="video" itemscope itemtype="http://schema.org/VideoObject" ', $sHTML );
@@ -139,31 +165,35 @@ class FV_Player_SEO {
         $args['duration'] = $tDuration;
       }
 
+      if ( ! empty( $aPlayer['sources'][0]['src'] ) ) {
+        $args['url'] = $aPlayer['sources'][0]['src'];
+      }
+
       $sHTML = str_replace( '</a>', $this->get_markup( $args ).'</a>', $sHTML );
     }
     return $sHTML;
   }
-  
+
   function should_i( $args ) {
     global $fv_fp;
     if( !$fv_fp->_get_option( array( 'integrations', 'schema_org' ) ) ) {
       $this->can_seo = false;
       return $args;
     }
-    
+
     if( !get_permalink() || !$fv_fp->get_splash() ) {
       $this->can_seo = false;
     }
-    
+
     $dynamic_domains = apply_filters('fv_player_pro_video_ajaxify_domains', array());
     $amazon = $fv_fp->_get_option('amazon_bucket');
     if( $amazon && is_array($amazon) && count($amazon) > 0 ) {
       foreach( $amazon AS $bucket ) {
         $dynamic_domains[] = 'amazonaws.com/'.$bucket.'/';
         $dynamic_domains[] = '//'.$bucket.'.s3';
-      }      
+      }
     }
-    
+
     $cf = $fv_fp->_get_option( array('pro','cf_domain') );
     if( $cf ) {
       $cf = explode( ',', $cf );
@@ -172,12 +202,12 @@ class FV_Player_SEO {
           $dynamic_domains[] = $cf_domain;
         }
       }
-    }  
+    }
 
     $this->can_seo = true;
     return $args;
   }
-  
+
   function single_video_seo( $html, $fv_fp ) {
     if( !empty($fv_fp->aCurArgs['playlist']) || $this->video_ads_active($fv_fp->aCurArgs)  || !$this->can_seo ) {
       return $html;
@@ -190,6 +220,10 @@ class FV_Player_SEO {
 
     if( !empty($fv_fp->aCurArgs['caption']) ) {
       $args['title'] = $fv_fp->aCurArgs['caption'];
+    }
+
+    if( !empty($fv_fp->aCurArgs['src']) ) {
+      $args['url'] = $fv_fp->aCurArgs['src'];
     }
 
     $html .= "\n".$this->get_markup( $args )."\n";
