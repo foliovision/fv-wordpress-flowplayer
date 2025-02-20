@@ -137,13 +137,15 @@
 	padding-top: 56.25%;
 	position: relative;
 }
-.fp-playlist-external .fvp-playlist-thumb-img img {
+.fp-playlist-external > a > .fvp-playlist-thumb-img > img,
+.fp-playlist-external > div > a > .fvp-playlist-thumb-img > img {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	border: 0;
 }
 .fvp-playlist-thumb-img.no-image {
 	background: radial-gradient(transparent, transparent, rgba( 128, 128, 128, 0.15) )
