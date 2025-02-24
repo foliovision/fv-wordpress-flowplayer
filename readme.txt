@@ -257,6 +257,16 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.18 - 2025-02-24 =
+
+* HLS: Do not use HLS.js for Safari
+* Schema.org: Use video file for contentURL if it's MP4, HLS, WebM or OGV and does not require URL signature
+* Video Stats: Exclude Administrators and Editors
+* Bugfix: Amazon S3 signatures missing for subtitles
+* Bugfix: CSS: Make sure theme does not add border for playing images
+* Bugfix: YouTube: Fix video to have sound enabled right from the start without any lag
+* Bugfix: YouTube: Lower the lag when unmuting the sound after autoplaying the video
+
 = 8.0.17 - 2025-01-24 =
 
 * YouTube: Support youtube.com/live/{video_id} links
