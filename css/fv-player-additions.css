@@ -1062,13 +1062,15 @@ body.has-fv-player-fullscreen #chat-widget-container {
 	padding-top: 56.25%;
 	position: relative;
 }
-.fp-playlist-external .fvp-playlist-thumb-img img {
+.fp-playlist-external > a > .fvp-playlist-thumb-img > img,
+.fp-playlist-external > div > a > .fvp-playlist-thumb-img > img {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	border: 0;
 }
 
 .fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
