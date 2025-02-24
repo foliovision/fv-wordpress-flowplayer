@@ -2423,11 +2423,15 @@ if( typeof(flowplayer) != "undefined" ) {
 
           if( !player.ready ) {
 
-            // we init YouTube muted to allow muted autoplay
-            // we need to do this before we trigger ready event as there we might need to mute the video for custom start time
-            player.mute(true,true); // mute, but don't remember it!
+            if ( player.autoplayed ) {
+                // we init YouTube muted to allow muted autoplay
+                // we need to do this before we trigger ready event as there we might need to mute the video for custom start time
+                player.mute(true,true); // mute, but don't remember it!
+
+                // look for youtube_unmute_attempted to see what happens next
+            }
+
             youtube.playVideo();
-            // look for youtube_unmute_attempted to see what happens next
 
             // TODO: Shouldn't this trigger on YT.PlayerState.PLAYING - if so, do we need this onReady at all?
             //  workaround for iPad "QuotaExceededError: DOM Exception 22: An attempt was made to add something to storage that exceeded the quota." http://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
@@ -2525,7 +2529,7 @@ if( typeof(flowplayer) != "undefined" ) {
             case FV_YT.PlayerState.PAUSED:   //  2
 
               // Was it paused because of unmuting?
-              if( player.youtube_unmute_attempted === 1 ) {
+              if( player.autoplayed && player.youtube_unmute_attempted === 1 ) {
                 player.youtube_unmute_attempted = 2;
                 fv_player_log('FV FP YouTube: Volume restore failed.');
 
@@ -2578,8 +2582,9 @@ if( typeof(flowplayer) != "undefined" ) {
               }
 
               // Without this delay we cannot be sure the youtube.isMuted() reports properly in playlists
+              // We could make the lag shorter in triggerUIUpdate()
               player.one('progress', function() {
-                if( !player.youtube_unmute_attempted && youtube.isMuted() ) {
+                if( player.autoplayed && !player.youtube_unmute_attempted && youtube.isMuted() ) {
                   fv_player_log('FV FP YouTube: Trying to restore volume to '+player.volumeLevel);
 
                   player.volume(player.volumeLevel); // unmute
