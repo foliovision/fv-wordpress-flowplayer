@@ -149,13 +149,14 @@ class FV_Player_Checker {
           WP_Filesystem();
         }
 
-        $size = 8 * 1024 * 1024;
+        $real_file_size = 0;
+        $analysis_size  = 8 * 1024 * 1024;
 
         $remotefilename_encoded = $fv_fp->get_video_src( $remotefilename_encoded, array( 'dynamic' => true ) );
 
         $res = wp_remote_get( $remotefilename_encoded, array(
           'headers'    => array(
-            'range'    => 'bytes=0-' . $size,
+            'range'    => 'bytes=0-' . $analysis_size,
             'referer'  => home_url()
           ),
           'timeout'    => !$this->is_cron && !$force_is_cron ? apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 ) : 20,
@@ -163,6 +164,15 @@ class FV_Player_Checker {
         ) );
 
         if ( ! is_wp_error( $res ) ) {
+
+          // Get the real file size out of Content-length: 0-8388608/{full file size here}
+          if ( $content_range = wp_remote_retrieve_header( $res, 'content-range' ) ) {
+            $content_range_parts = explode( '/', $content_range );
+            if ( 2 === count( $content_range_parts ) ) {
+              $real_file_size = intval( $content_range_parts[1] );
+            }
+          }
+
           $wp_filesystem->put_contents( $localtempfilename, wp_remote_retrieve_body( $res ) );
 
           if( !empty($res['response']['code']) ) {
@@ -207,6 +217,17 @@ class FV_Player_Checker {
 
           if( isset($ThisFileInfo) && isset($ThisFileInfo['playtime_seconds']) ) {
             $time = $ThisFileInfo['playtime_seconds'];
+
+            /**
+             * MP3 duration check is not reliable if we only check a part of file.
+             * So here we multiply the duration by the ratio of the real file size to the analysis size,
+             * if it's bigger than the analysis size.
+             */
+            if ( stripos( $remotefilename_encoded, '.mp3' ) !== false ) {
+              if ( $real_file_size > $analysis_size ) {
+                $time = $time * $real_file_size / $analysis_size;
+              }
+            }
           }
           if( !empty($ThisFileInfo['video']['resolution_x']) ) {
             $width = intval($ThisFileInfo['video']['resolution_x']);
