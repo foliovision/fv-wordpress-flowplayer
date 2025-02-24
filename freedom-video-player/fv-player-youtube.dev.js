@@ -2614,10 +2614,17 @@ if( typeof(flowplayer) != "undefined" ) {
         function triggerUIUpdate() {
           var P_previous = false;
           if( intUIUpdate ) return;
-          intUIUpdate = setInterval(function () {
+
+          // Initial quick update to lower the youtube_unmute_attempted lag
+          intUIUpdate = setTimeout( triggerUIUpdate_cb, 100 );
+
+          // Periodic update
+          intUIUpdate = setInterval( triggerUIUpdate_cb, 250 );
+
+          function triggerUIUpdate_cb() {
             if( typeof(youtube) == "undefined" || typeof(youtube.getCurrentTime) == "undefined" ){
-              return;
-            }
+                return;
+              }
 
             var P = youtube.getCurrentTime();
 
@@ -2659,9 +2666,7 @@ if( typeof(flowplayer) != "undefined" ) {
 
                 player.trigger("buffered", [player]);
             }
-
-          }, 250);
-
+          }
         }
 
 
