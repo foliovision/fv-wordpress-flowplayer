@@ -2131,7 +2131,7 @@ if( typeof(flowplayer) != "undefined" ) {
     }
 
     // If it's Android, then it gets a special permission to play YouTube with sound! So we do not consider that a mobile
-    // Include Safari (which means iPad too)
+    // Include Safari (which means iPad too) as it won't let us unmute the video
     return !flowplayer.support.android && (
       !flowplayer.support.firstframe || flowplayer.support.iOS || flowplayer.support.browser.safari
     );
@@ -2528,7 +2528,7 @@ if( typeof(flowplayer) != "undefined" ) {
 
             case FV_YT.PlayerState.PAUSED:   //  2
 
-              // Was it paused because of unmuting?
+              // Was it paused because of unmuting? This happens on Safari even on desktop.
               if( player.autoplayed && player.youtube_unmute_attempted === 1 ) {
                 player.youtube_unmute_attempted = 2;
                 fv_player_log('FV FP YouTube: Volume restore failed.');
