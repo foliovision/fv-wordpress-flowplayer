@@ -341,42 +341,76 @@ class FV_Player_Stats {
 
     $excluded = $this->get_posts_to_exclude();
 
-    if( $user_type == 'user' ) {
-      $results = $wpdb->get_col(
-        // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-        $wpdb->prepare(
-          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY user_id ORDER BY sum(play) DESC LIMIT 10",
-          array_merge(
-            array(
-              $interval[0],
-              $interval[1]
-            ),
-            $excluded['values']
-          )
-        )
-      );
+    $offset  = 0;
+    $limit   = 50000;
+    $grouped = array();
 
-    } else {
-      $results = $wpdb->get_col(
-        // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-        $wpdb->prepare(
-          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT guest_user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND guest_user_id > 0 GROUP BY guest_user_id ORDER BY sum(play) DESC LIMIT 10",
-          array_merge(
-            array(
-              $interval[0],
-              $interval[1]
-            ),
-            $excluded['values']
-          )
-        )
-      );
+    // Determine limit by the amount of PHP memory available
+    if ( intval( ini_get('memory_limit') ) > 32 ) {
+      $limit = intval( ini_get('memory_limit') ) * 800;
     }
 
-    return $results;
+    do {
+      if( $user_type == 'user' ) {
+        $results = $wpdb->get_results(
+          // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT user_id, play FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) LIMIT %d, %d",
+            array_merge(
+              array(
+                $interval[0],
+                $interval[1]
+              ),
+              $excluded['values'],
+              array(
+                $offset,
+                $limit
+              )
+            )
+          )
+        );
+
+      } else {
+        $results = $wpdb->get_results(
+          // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT guest_user_id AS user_id, play FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND guest_user_id > 0 LIMIT %d, %d",
+            array_merge(
+              array(
+                $interval[0],
+                $interval[1]
+              ),
+              $excluded['values'],
+              array(
+                $offset,
+                $limit
+              )
+            )
+          )
+        );
+      }
+
+      // Group by user ID and sum up the plays, it's faster in PHP than MySQL.
+      if ( ! empty( $results ) ) {
+        foreach( $results as $row ) {
+          $user_id             = $row->user_id;
+          $grouped[ $user_id ] = isset( $grouped[ $user_id ] ) ? $grouped[ $user_id ] + $row->play : $row->play;
+        }
+      }
+
+      $offset += $limit;
+
+    } while( ! empty( $results ) && count( $results ) > 0 );
+
+    arsort( $grouped );
+
+    $grouped = array_slice( $grouped, 0, 10, true );
+
+    return array_keys( $grouped );
   }
 
   public function top_ten_users_by_watch_time( $interval, $user_type = 'user' ) {
@@ -384,42 +418,76 @@ class FV_Player_Stats {
 
     $excluded = $this->get_posts_to_exclude();
 
-    if( $user_type == 'user' ) {
-      $results = $wpdb->get_col(
-        // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-        $wpdb->prepare(
-          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY user_id ORDER BY sum(seconds) DESC LIMIT 10",
-          array_merge(
-            array(
-              $interval[0],
-              $interval[1]
-            ),
-            $excluded['values']
-          )
-        )
-      );
+    $offset  = 0;
+    $limit   = 50000;
+    $grouped = array();
 
-    } else {
-      $results = $wpdb->get_col(
-        // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-        $wpdb->prepare(
-          // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT guest_user_id FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND guest_user_id > 0 GROUP BY guest_user_id ORDER BY sum(seconds) DESC LIMIT 10",
-          array_merge(
-            array(
-              $interval[0],
-              $interval[1]
-            ),
-            $excluded['values']
-          )
-        )
-      );
+    // Determine limit by the amount of PHP memory available
+    if ( intval( ini_get('memory_limit') ) > 32 ) {
+      $limit = intval( ini_get('memory_limit') ) * 800;
     }
 
-    return $results;
+    do {
+      if( $user_type == 'user' ) {
+        $results = $wpdb->get_results(
+          // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT user_id, seconds FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) LIMIT %d, %d",
+            array_merge(
+              array(
+                $interval[0],
+                $interval[1]
+              ),
+              $excluded['values'],
+              array(
+                $offset,
+                $limit
+              )
+            )
+          )
+        );
+
+      } else {
+        $results = $wpdb->get_results(
+          // Explanation: $excluded['placeholder'] comes from get_posts_to_exclude() and is a string for $wpdb->prepare(), it uses variable number of placements
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT guest_user_id AS user_id, seconds FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND guest_user_id > 0 LIMIT %d, %d",
+            array_merge(
+              array(
+                $interval[0],
+                $interval[1]
+              ),
+              $excluded['values'],
+              array(
+                $offset,
+                $limit
+              )
+            )
+          )
+        );
+      }
+
+      // Group by user ID and sum up the plays, it's faster in PHP than MySQL.
+      if ( ! empty( $results ) ) {
+        foreach( $results as $row ) {
+          $user_id             = $row->user_id;
+          $grouped[ $user_id ] = isset( $grouped[ $user_id ] ) ? $grouped[ $user_id ] + $row->seconds : $row->seconds;
+        }
+      }
+
+      $offset += $limit;
+
+    } while( ! empty( $results ) && count( $results ) > 0 );
+
+    arsort( $grouped );
+
+    $grouped = array_slice( $grouped, 0, 10, true );
+
+    return array_keys( $grouped );
   }
 
   public function top_ten_videos_or_posts_by_plays( $type, $interval, $user_id ) {
