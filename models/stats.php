@@ -404,7 +404,7 @@ class FV_Player_Stats {
 
       $offset += $limit;
 
-    } while( ! empty( $results ) && count( $results ) > 0 );
+    } while( ! empty( $results ) && count( $results ) >= $limit );
 
     arsort( $grouped );
 
@@ -481,7 +481,7 @@ class FV_Player_Stats {
 
       $offset += $limit;
 
-    } while( ! empty( $results ) && count( $results ) > 0 );
+    } while( ! empty( $results ) && count( $results ) >= $limit );
 
     arsort( $grouped );
 
