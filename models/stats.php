@@ -1072,6 +1072,9 @@ class FV_Player_Stats {
         $ids_arr[] = $row['id_video'];
       }
 
+      // Make sure each video is only considered once, otherwise this ends up multiplying the stats is loading for one player only
+      $ids_arr = array_unique( $ids_arr );
+
       $datasets = $this->process_graph_data( $results, $ids_arr, $range, 'video' );
     }
 
