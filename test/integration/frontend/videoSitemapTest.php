@@ -29,7 +29,7 @@ Here is the intro paragraph
 
 [fvplayer src="https://cdn.site.com/video.mp4"]
 
-Some video with embed disabled
+Some video with embed disabled, it should not be in the sitemap:
 
 [fvplayer src="https://cdn.site.com/video.mp4" embed="false"]
 
@@ -45,7 +45,7 @@ Paragraph after second player
 
 [fvplayer src="https://cdn.site.com/video-2.mp4"]
 
-Paragraph after third player
+Paragraph after third player, this will not be in sitemap as it's YouTube and embedding is not enabled globally
 
 [fvplayer id="2"]
 HTML

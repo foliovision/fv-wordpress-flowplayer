@@ -276,6 +276,8 @@ class FV_Xml_Video_Sitemap {
             }
             $xml_video['publication_date'] = get_the_date(DATE_W3C, $objPost->ID);
 
+            // This make sure the video URLs with extension are in sitemap, even if embedding is not enabled
+            // TODO: But it means a YouTube URL will not be in the sitemap, if embedding is not enabled
             if ((strpos($aArgs['src'], '.') !== false) && ($extension = substr(strrchr($aArgs['src'], "."), 1)) && strlen($extension) < 10) {
               // filename URL
               $xml_video['content_loc'] = $sanitized_src;
