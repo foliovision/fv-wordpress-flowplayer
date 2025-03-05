@@ -140,6 +140,7 @@ Localizing flowplayer with fv_flowplayer_conf = Array
             [fragLoadingMaxRetry] => 3
             [levelLoadingMaxRetry] => 3
             [capLevelToPlayerSize] => 1
+            [use_for_safari] =>
         )
 
 )
