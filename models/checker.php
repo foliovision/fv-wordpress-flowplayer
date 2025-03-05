@@ -398,7 +398,7 @@ class FV_Player_Checker {
       $aVideos = $wpdb->get_col( "SELECT id FROM `{$wpdb->prefix}fv_player_videos` WHERE duration = 0 AND live = 0 AND DATE_SUB( UTC_TIMESTAMP(), INTERVAL 1 DAY ) > last_check ORDER BY id DESC" );
 
       if( $aVideos ) {
-          global $FV_Player_Db;
+        global $FV_Player_Db;
         foreach( $aVideos AS $video_id ) {
           $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
 
@@ -421,7 +421,8 @@ class FV_Player_Checker {
             continue;
           }
 
-          $objVideo->save();
+          // Make sure we do no loose video meta!
+          $objVideo->save( array(), true );
 
         }
       }
