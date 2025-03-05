@@ -66,7 +66,8 @@ td.bunny_stream_api_access_key .show-info {
       'name' => __('Please provide the API Access Key to finish this operation. FV Player will not store it', 'fv-player-bunny_stream'),
       'class' => 'regular-text code',
       'help' => $help,
-      'first_td_class' => 'bunny_stream_api_access_key'
+      'first_td_class' => 'bunny_stream_api_access_key',
+      'autocomplete'   => 'off'
     ) );
     ?>
     <tr id="fv-player-pro-compatibility" style="display: none;">

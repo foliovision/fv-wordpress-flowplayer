@@ -399,6 +399,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $title          = ! empty( $options['title'] ) ? $options['title'] : '';
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');
+    $autocomplete   = ! empty( $options['autocomplete'] ) ? ' autocomplete="' . esc_attr( $options['autocomplete'] ) . '"' : '';
 
     // Only use fields with secret values obfuscated if FV Player Pro is not there or is ready for it
     if(
@@ -445,6 +446,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
                 echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
               }
             }
+
+          echo $autocomplete;
           ?> />
           <?php if ( $help ) { ?>
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo wp_kses( $help, $this->help_html ); ?></span></p>
