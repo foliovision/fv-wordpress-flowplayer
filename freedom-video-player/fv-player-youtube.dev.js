@@ -2057,6 +2057,19 @@ if( typeof(flowplayer) != "undefined" ) {
 
     //  signal to the other players that 1MB YouTube API base.js has loaded
     jQuery(document).trigger('fv-player-yt-api-loaded');
+
+    // YouTube doesn't tell us if it's a live stream
+    // but it seems when you check the duration in this moment
+    // it gives 0 on live streams
+    var duration = api.youtube.getDuration();
+    if( duration == 0 ) {
+      api.live = true;
+      jQuery(root).addClass('is-live');
+
+      // TODO: Problem is that when you use this in playlist
+      // the next video will also behave like a live stream
+      // but it appears to be a problem with Flowplayer in general
+    }
   }
 
 
