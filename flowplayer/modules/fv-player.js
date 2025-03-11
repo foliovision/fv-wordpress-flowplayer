@@ -81,8 +81,8 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
   if( flowplayer.conf.mobile_native_fullscreen && ( 'ontouchstart' in window ) && fls.fvmobile ) {
     flowplayer.conf.native_fullscreen = true;
   }
-  
-  if( 'ontouchstart' in window ) {    
+
+  if( 'ontouchstart' in window ) {
     if( fls.android && fls.android.version < 4.4 && ! ( fls.browser.chrome && fls.browser.version > 54 ) ) {
       flowplayer.conf.native_fullscreen = true;
     }
@@ -91,6 +91,60 @@ if( typeof(fv_flowplayer_conf) != "undefined" ) {
       flowplayer.conf.native_fullscreen = true;
     }
   }
+
+  jQuery('.fp-playlist-vertical-wrapper').each(function(index, element){
+    var el = jQuery(element);
+
+    if(el.width() <= 560) {
+      el.addClass('is-fv-narrow');
+    } else {
+      el.removeClass('is-fv-narrow');
+    }
+  });
+
+  jQuery('.fp-playlist-text-wrapper').each(function(index, element){
+    var el = jQuery(element);
+
+    if(el.width() <= 560) {
+      el.addClass('is-fv-narrow');
+    } else {
+      el.removeClass('is-fv-narrow');
+    }
+  });
+
+  function check_size_and_all(playlist) {
+    if(playlist.length > 1) return;
+
+    var property = playlist.hasClass('fp-playlist-only-captions') ? 'height' : 'max-height';
+    if( playlist.parents('.fp-playlist-text-wrapper').hasClass('is-fv-narrow') ){
+      property = 'max-height';
+    }
+    playlist.css(property,vertical_playlist_height(playlist));
+    if( property == 'max-height' ) playlist.css('height','auto');
+  }
+
+  function vertical_playlist_height(playlist) {
+    var root = jQuery('#'+ playlist.attr('rel'));
+
+    var height = root.height();
+    if( height == 0 ) height = root.css('max-height');
+    return height;
+  }
+
+  jQuery('.fp-playlist-vertical').each(function(index, element) {
+    var playlist = jQuery(element);
+    check_size_and_all(playlist);
+  });
+
+  jQuery(window).on('resize tabsactivate', function() {
+    setTimeout( function(){
+      jQuery('fp-playlist-vertical').each(function(index, element) {
+        var playlist = jQuery(element);
+        check_size_and_all(playlist);
+      });
+    }, 0 );
+  });
+
 }
 if( typeof(fv_flowplayer_translations) != "undefined" ) {
   flowplayer.defaults.errors = fv_flowplayer_translations;
@@ -403,29 +457,6 @@ function fv_player_preload() {
       fv_player_notice(root,fv_flowplayer_translations[8],2000);
     });
 
-    //is this needed?  
-    playlist = jQuery(root).parent().find('div.fp-playlist-vertical[rel='+jQuery(root).attr('id')+']');  
-    if( playlist.length ){
-      function check_size_and_all() {
-        var property = playlist.hasClass('fp-playlist-only-captions') ? 'height' : 'max-height';
-        if( playlist.parents('.fp-playlist-text-wrapper').hasClass('is-fv-narrow') ){
-          property = 'max-height';
-        }
-        playlist.css(property,vertical_playlist_height());
-        if( property == 'max-height' ) playlist.css('height','auto');
-      }
-      check_size_and_all();
-      jQuery(window).on('resize tabsactivate', function() {
-        setTimeout( check_size_and_all, 0 );
-      } );
-    }
-    
-    function vertical_playlist_height() {
-      var height = root.height();
-      if( height == 0 ) height = root.css('max-height');
-      return height;
-    }
-    
     api.show_status = function( type ) {
       var status = '';
       [ 'loading', 'ready', 'playing', 'paused', 'seeking' ].every( function(v,k) {
