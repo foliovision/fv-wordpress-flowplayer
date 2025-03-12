@@ -195,7 +195,7 @@ class FV_Player_YouTube {
           // get channel id
           $channel_id = !empty($obj_item->snippet->channelId) ? $obj_item->snippet->channelId : false;
 
-          $obj = false;
+          $youtube_channel_obj = false;
 
           if( $channel_id ) {
             $api_url = add_query_arg( array(
@@ -207,19 +207,21 @@ class FV_Player_YouTube {
 
             $response = wp_remote_get( $api_url, array( 'sslverify' => false ) );
 
-            $obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
+            $youtube_channel_obj = is_wp_error($response) ? false : @json_decode( wp_remote_retrieve_body($response) );
           }
 
-          if( $obj && !empty($obj->items[0]) ) {
+          if ( $youtube_channel_obj && ! empty( $youtube_channel_obj->items[0]->snippet ) ) {
+            $snippet = $youtube_channel_obj->items[0]->snippet;
+
             // get 'default' thumbnail
-            $author_thumbnail_url = !empty($obj->items[0]->snippet->thumbnails->default->url) ? $obj->items[0]->snippet->thumbnails->default->url : false;
+            $author_thumbnail_url = ! empty( $snippet->thumbnails->default->url) ? $snippet->thumbnails->default->url : false;
 
             // get channel name
-            $author_name = !empty($obj->items[0]->snippet->title) ? $obj->items[0]->snippet->title : false;
+            $author_name = ! empty( $snippet->title) ? $snippet->title : false;
             $fv_flowplayer_meta['author_name'] = $author_name;
 
             // get channel url
-            $author_url = !empty($obj->items[0]->snippet->customUrl) ? 'https://www.youtube.com/'.$obj->items[0]->snippet->customUrl : false;
+            $author_url = ! empty( $snippet->customUrl) ? 'https://www.youtube.com/' . $snippet->customUrl : false;
             $fv_flowplayer_meta['author_url'] = $author_url;
 
             if( $author_thumbnail_url && $author_name ) { // download channel thumbnail to media library
