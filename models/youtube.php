@@ -52,7 +52,7 @@ class FV_Player_YouTube {
 
     add_filter( 'fv_flowplayer_conf', array($this, 'fv_flowplayer_conf'), 10, 2);
 
-    add_filter( 'fv_player_meta_data', array($this, 'fetch_yt_data'), 10, 2);
+    add_filter( 'fv_player_meta_data', array($this, 'fetch_yt_data'), 10, 3);
 
     //add_action( 'wp_footer', array( $this, 'scripts' ), 0 );
 
@@ -110,7 +110,7 @@ class FV_Player_YouTube {
     return $aArgs;
   }
 
-  function fetch_yt_data($video, $post_id = false) {
+  function fetch_yt_data($video, $post_id = false, $videoObj = false ) {
     global $fv_fp;
 
     // must be url string
@@ -269,6 +269,8 @@ class FV_Player_YouTube {
             'author_url' => $fv_flowplayer_meta['author_url'],
             // Note: No way of getting the actual video size unless you own the video and can use part=fileDetails
         );
+
+        $videoData = apply_filters( 'fv_player_meta_data_youtube', $videoData, $video, $obj, $videoObj, $fv_flowplayer_meta );
       }
 
       if( isset($obj->items[0]->snippet->liveBroadcastContent) && $obj->items[0]->snippet->liveBroadcastContent == 'live' ) {
