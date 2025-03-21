@@ -1095,6 +1095,10 @@ CREATE TABLE " . self::$db_table_name . " (
       // Get all registered input names which belong to video meta
       $video_meta_inputs = array();
 
+      if ( ! function_exists( 'fv_player_editor_video_fields' ) ) {
+        require_once( dirname( __FILE__ ) . '/../controller/editor.php' );
+      }
+
       foreach (
         array(
           fv_player_editor_video_fields(),
