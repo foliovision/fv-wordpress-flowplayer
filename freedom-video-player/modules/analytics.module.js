@@ -28,7 +28,7 @@ flowplayer( function(api,root) {
       });
     }
   }
-  
+
   // Load Matomo if not already loaded when needed
   if( !window._paq && api.conf.matomo_domain && api.conf.matomo_site_id ) {
     var u="//"+api.conf.matomo_domain+"/";
@@ -42,7 +42,7 @@ flowplayer( function(api,root) {
   api.bind('progress', function(e,api,current) {
     // Only track the video if it played for at least 1 second
     if ( current > 1 ) {
-    fv_track(e,api,current);
+      fv_track(e,api,current);
     }
 
   }).bind('finish ready ', function(e,api) {
@@ -53,7 +53,7 @@ flowplayer( function(api,root) {
       if( !fv_ga_events.hasOwnProperty(j) ) continue;
       root.removeData('fv_track_'+fv_ga_events[j]);
     }
-    
+
   // TODO errors in GA4
   }).bind('error', function(e,api,error) {
     setTimeout( function() {
@@ -99,7 +99,7 @@ flowplayer( function(api,root) {
 
   bean.on(window, 'unload', fv_track_seconds_played);
 
-  var fv_ga_events = is_ga_4( api ) ? 
+  var fv_ga_events = is_ga_4( api ) ?
     [ 'Play', '25 Percent Played', '50  Percent Played', '75 Percent Played', '100 Percent Played' ] :
     [ 'start', 'first quartile', 'second quartile', 'third quartile', 'complete' ];
 
@@ -128,13 +128,14 @@ flowplayer( function(api,root) {
 
     var name = fv_player_track_name(root,video);
 
-    if( dur ) {
+    // Only track video quartiles if it's more than 4 seconds long
+    if( dur > 4 ) {
       if( data > 19 * dur/20 ) i = 4;
       else if( data > 3 * dur/4 ) i = 3;
       else if( data > dur/2 ) i = 2;
       else if( data > dur/4 ) i = 1;
     }
-    
+
     // For live streams we can only track the start
     if( api.live ) i = 0;
 
@@ -142,7 +143,7 @@ flowplayer( function(api,root) {
 
     for( var j in fv_ga_events ) {  //  make sure user triggered the previous quartiles before tracking
       if( !fv_ga_events.hasOwnProperty(j) ) continue;
-      
+
       if(j == i) break;
       if( !root.data('fv_track_'+fv_ga_events[j]) ) return;
     }
@@ -152,7 +153,7 @@ flowplayer( function(api,root) {
 
     fv_player_track( api, false, "Video " + (root.hasClass('is-cva')?'Ad ':'') +  fv_ga_events[i] , api.engine.engineName + "/" + video.type, name );
   }
-  
+
   api.get_time_played = function() {
     return time/1000;
   }
@@ -160,8 +161,8 @@ flowplayer( function(api,root) {
 
 /**
  * Checks if fvanalytics is using ga4
- * 
- * @param {object} api 
+ *
+ * @param {object} api
  * @returns {boolean}
  */
 function is_ga_4 ( api ) {
@@ -171,7 +172,7 @@ function is_ga_4 ( api ) {
 
 /**
  * Sends event statistics to Google analytics and Matomo
- * 
+ *
  * @param {string} ga_id Optional Google Analytics ID to use.
  * @param {string} event
  * @param {string} engineType
@@ -191,9 +192,9 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
   }
 
   if( !ga_id ) ga_id = flowplayer.conf.fvanalytics;
-  
+
   if( typeof(engineType) == "undefined" ) engineType = 'Unknown engine';
-  
+
   if( /fv_player_track_debug/.test(window.location.href) ) console.log('FV Player Track: ' + event + ' - ' + engineType + " '" + name + "'",value);
 
   // gtag.js
@@ -214,7 +215,7 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
       });
 
     }
-  
+
   // analytics.js
   } else if( ga_id && typeof(ga) != 'undefined' ) {
     ga('create', ga_id, 'auto', name , { allowLinker: true});
@@ -225,14 +226,14 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
     } else {
       ga('send', 'event', event, engineType, name);
     }
-    
+
   // ga.js
   } else if( ga_id && typeof(_gat) != 'undefined' ) {
     var tracker = _gat._getTracker(ga_id);
     if( typeof(tracker._setAllowLinker) == "undefined" ) {
       return;
     }
-    
+
     tracker._setAllowLinker(true);
 
     if( value ) {
