@@ -24,9 +24,9 @@
     }
 
     api.on('ready finish', function(e,api) { // first play and replay
-      api.one('progress', function(e,api) {
-        // each video should be only tracked once!
-        if( last_tracked == get_index() ) return;
+      api.on('progress', function( e, api, time ) {
+        // each video must really play for at least 1 second to be tracked and it should be only tracked once!
+        if( time < 1 || last_tracked == get_index() ) return;
 
         last_tracked = get_index();
 
