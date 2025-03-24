@@ -40,7 +40,11 @@ flowplayer( function(api,root) {
   }
 
   api.bind('progress', function(e,api,current) {
+    // Only track the video if it played for at least 1 second
+    if ( current > 1 ) {
     fv_track(e,api,current);
+    }
+
   }).bind('finish ready ', function(e,api) {
     //if( typeof(aFVPlayersSwitching[root.attr('id')]) != "undefined" ) { //  todo: problem that it won't work on video replay or playlist
       //return;
