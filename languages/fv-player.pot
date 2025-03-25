@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2025-02-24 11:21+0000\n"
+"POT-Creation-Date: 2025-03-25 10:46+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -612,7 +612,7 @@ msgstr ""
 msgid "Secure Token"
 msgstr ""
 
-#: models/cdn.class.php:181, models/digitalocean-spaces.class.php:160, models/email-subscription.php:116, models/linode-object-storage.class.php:91, models/stats.php:162, models/youtube.php:387, view/admin.php:91, view/admin.php:220, view/admin.php:352, view/admin.php:487, view/admin.php:695, view/admin.php:715, view/admin.php:731, view/admin.php:748, view/admin.php:800, view/admin.php:869, view/admin.php:923, view/admin.php:1156, view/admin.php:1444, view/admin.php:1482, view/admin.php:1552, view/admin.php:1582, view/admin.php:1632, view/admin.php:1693, view/admin.php:2080
+#: models/cdn.class.php:181, models/digitalocean-spaces.class.php:160, models/email-subscription.php:116, models/linode-object-storage.class.php:91, models/stats.php:162, models/youtube.php:391, view/admin.php:91, view/admin.php:220, view/admin.php:352, view/admin.php:487, view/admin.php:695, view/admin.php:715, view/admin.php:731, view/admin.php:748, view/admin.php:800, view/admin.php:869, view/admin.php:923, view/admin.php:1156, view/admin.php:1444, view/admin.php:1482, view/admin.php:1552, view/admin.php:1582, view/admin.php:1632, view/admin.php:1693, view/admin.php:2080
 msgid "Save"
 msgstr ""
 
@@ -736,11 +736,11 @@ msgstr ""
 msgid "<strong>Requirements</strong>: video has to be on https:// and splash screen has to be present. Videos with download protection are automatically excluded."
 msgstr ""
 
-#: models/fv-player.php:645, view/admin.php:334
+#: models/fv-player.php:648, view/admin.php:334
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3161
+#: models/fv-player.php:3164
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
@@ -844,23 +844,23 @@ msgstr ""
 msgid "System Info"
 msgstr ""
 
-#: models/xml-video-sitemap.php:578
+#: models/xml-video-sitemap.php:580
 msgid "Use XML Video Sitemap"
 msgstr ""
 
-#: models/xml-video-sitemap.php:578
+#: models/xml-video-sitemap.php:580
 msgid "Creates <code>%s</code> which you can submit via Google Webmaster Tools."
 msgstr ""
 
-#: models/xml-video-sitemap.php:578
+#: models/xml-video-sitemap.php:580
 msgid "As feeds tend to be cached by web browser make sure you clear your browser cache if you are doing some testing."
 msgstr ""
 
-#: models/xml-video-sitemap.php:587
+#: models/xml-video-sitemap.php:589
 msgid "Sitemap Post Meta"
 msgstr ""
 
-#: models/xml-video-sitemap.php:587
+#: models/xml-video-sitemap.php:589
 msgid "You can enter post meta keys here, use <code>,</code> to separate multiple values."
 msgstr ""
 
