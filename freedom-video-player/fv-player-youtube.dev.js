@@ -2054,6 +2054,7 @@ if( typeof(flowplayer) != "undefined" ) {
     var api = root.data('flowplayer');
     api.loading = false;
     api.trigger('yt-ready');
+    api.fv_yt_did_preload = true;
 
     //  signal to the other players that 1MB YouTube API base.js has loaded
     jQuery(document).trigger('fv-player-yt-api-loaded');
@@ -2490,12 +2491,23 @@ if( typeof(flowplayer) != "undefined" ) {
               // Unfortunately this information is not part of any of the get* calls on youtube
               // So we just check again if the video is still in the -1 status
               // If it is, then we show the UI to make sure the "Live in XY hours" message is visible
+              // Then the video plays properly once live stream gets live.
               setTimeout( function() {
                 var fresh_status = youtube.getPlayerState();
                 if( fresh_status == -1 ) {
                   fv_player_log('This video did not start yet!');
 
                   root.removeClass('is-youtube-nl');
+
+                  /**
+                   * If we did preload YouTube iframe, the ready event does not run, so the video
+                   * never stops loading. So since we detected the video is not playable, we need
+                   * to make sure the splash is removed so that user can see the original YouTube UI
+                   */
+                  if ( player.fv_yt_did_preload ) {
+                    root.find( '.fp-splash' ).remove();
+                    root.removeClass( 'is-loading' ).addClass( 'is-ready' );
+                  }
                 }
               }, 1000 );
               break;
