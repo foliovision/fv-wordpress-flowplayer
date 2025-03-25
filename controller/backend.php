@@ -1133,8 +1133,14 @@ add_filter( 'http_request_args', 'fv_player_license_checks_base_plugin_version',
 function fv_player_license_checks_base_plugin_version( $parsed_args, $url ) {
 
   global $fv_wp_flowplayer_ver;
-  if ( is_array( $parsed_args['body'] ) && ( stripos( $url, '//foliovision.com/' ) !== false || stripos( $url, '.foliovision.com/' ) !== false ) && stripos( $url, 'fv_remote' ) !== false ) {
-    $parsed_args['body']['fv_player_core_version'] = $fv_wp_flowplayer_ver;
+  if ( ( stripos( $url, '//foliovision.com/' ) !== false || stripos( $url, '.foliovision.com/' ) !== false ) && stripos( $url, 'fv_remote' ) !== false ) {
+    if ( is_array( $parsed_args['body'] ) ) {
+      $parsed_args['body']['fv_player_core_version'] = $fv_wp_flowplayer_ver;
+
+    // No POST? It seems this adds to the URL query string which we need to actual plugin update downloads.
+    } else if ( empty( $parsed_args['body'] ) ) {
+      $parsed_args['body'] = array( 'fv_player_core_version' => $fv_wp_flowplayer_ver );
+    }
   }
 
   return $parsed_args;
