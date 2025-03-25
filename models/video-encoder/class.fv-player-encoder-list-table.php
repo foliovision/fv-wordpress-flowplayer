@@ -150,6 +150,9 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   }
 
   public function column_default( $job, $column_name ) {
+
+    $value = '';
+
     switch ( $column_name ) {
       case 'id' :
         $value = '<a href="#"">'.$job->id.'</a>';
