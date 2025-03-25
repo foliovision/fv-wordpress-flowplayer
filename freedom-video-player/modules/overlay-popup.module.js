@@ -39,6 +39,17 @@ flowplayer(function (api,root) {
         current_overlay = jQuery('<div id="'+player_id+'_ad" class="wpfp_custom_ad">'+html+'</div>');
         root.find('.fp-player').append(current_overlay);
 
+        // Checking also on touchend to make sure tapping does not show the mobile controls overlay.
+        current_overlay.find( '.fv_fp_close' ).on( 'click touchend', function() {
+          current_overlay.fadeOut();
+
+          // Pause any video that might be in overlay.
+          var overlay_video = current_overlay.find('video');
+          if ( overlay_video.length ) overlay_video[0].pause();
+
+          return false;
+        } );
+
         overlay_height_check();
         // check if the overlay contains any video and pause the player if the video is found
         setTimeout( function() {
@@ -117,16 +128,6 @@ flowplayer(function (api,root) {
     }
   });
 });
-
-jQuery(document).on('click', '.fv_fp_close', function() {
-  var current_overlay = jQuery(this).parents('.wpfp_custom_ad_content'),
-    video = current_overlay.find('video');
-
-  current_overlay.fadeOut();
-  if( video.length ) video[0].pause();
-
-  return false;
-} );
 
 /*
  *  Popups form, disabling and enabling Flowplayer hotkeys when you enter/leave the field
