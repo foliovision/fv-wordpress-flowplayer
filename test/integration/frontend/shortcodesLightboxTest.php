@@ -92,10 +92,8 @@ HTML;
       'FV Player with "lightboxed" class and matching source not found in footer'
     );
 
-    //  are the required scripts in the footer?
-    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/skin.css' ) !== false );
-    $this->assertTrue( stripos( $footer, 'fv-wordpress-flowplayer/css/fv-player-additions.css' ) !== false );
     $this->assertTrue( stripos( $footer, 'var fv_player_lightbox = {' ) !== false );
+    $this->assertTrue( stripos( $footer, 'let fv_player_fancybox_loaded = false;' ) !== false );
 
     global $FV_Player_lightbox;
     $this->assertTrue( $FV_Player_lightbox->bLoad );  //  is the flag to load lightbox JS set?
