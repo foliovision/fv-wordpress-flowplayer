@@ -496,7 +496,11 @@ class flowplayer_frontend extends flowplayer
         $bIsAudio = false;
         if( preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $media ) ) {
           $bIsAudio = true;
-        } else  if( $video = $this->current_video() ) {
+
+        } else if( ! empty( $this->aCurArgs['type'] ) && 'audio' === $this->aCurArgs['type'] ) {
+          $bIsAudio = true;
+
+        } else if( $video = $this->current_video() ) {
           $bIsAudio = $video->getMetaValue('audio',true);
         }
 
