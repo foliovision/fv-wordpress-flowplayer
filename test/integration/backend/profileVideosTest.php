@@ -13,18 +13,18 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
   public function testProfileScreen() {
     global $fv_fp;
     $fv_fp->conf['profile_videos_enable_bio'] = true;
-    
+
     // add new user and create last saved position metadata for this new user
     $this->userID = $this->factory->user->create(array(
       'role' => 'admin'
     ));
-    
+
     add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://vimeo.com/255317467" playlist="https://vimeo.com/192934117" caption=";Talking about FV Player"]');
     add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://vimeo.com/255370388"]');
     add_user_meta($this->userID, '_fv_player_user_video', '[fvplayer src="https://www.youtube.com/watch?v=6ZfuNTqbHE8"]');
-    
+
     $profileuser = get_user_to_edit($this->userID);
-    
+
     ob_start();
     apply_filters( 'show_password_fields', true, $profileuser );
     $output = ob_get_clean();
@@ -45,12 +45,12 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
     );
 
     $this->assertTrue(
-      substr_count( $output, "<div class='edit-video' >" ) === 3,
+      substr_count( $output, "<button class='button fv-player-editor-button'>Edit Video</button>" ) === 3,
       'Profile screen should contain 3 "Edit Video" buttons'
     );
 
     $this->assertTrue(
-      substr_count( $output, "<div class='add-video' style=\"display:none\">" ) === 3,
+      substr_count( $output, "<button class='button fv-player-editor-more' style='display:none'>Add Another Video</button>" ) === 3,
       'Profile screen should contain 3 hidden "Add Video" buttons'
     );
 
