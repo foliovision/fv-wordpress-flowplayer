@@ -244,4 +244,70 @@ HTML;
     );
   }
 
+  public function testDBText() {
+
+    $output = apply_filters( 'the_content', '[fvplayer id="' . intval( $this->import_ids[0] ) . '" lightbox="true;text"]' );
+
+    // The output must be just the link
+    preg_match_all( "~^<a data-fancybox='gallery'[^>]*?>(.*)?</a>$~", $output, $matches );
+
+    $this->assertTrue( count( $matches[1] ) === 1 );
+
+    $this->assertTrue( strcmp( $matches[1][0], $this->import_data[0]['videos'][0]['title'] ) === 0 );
+
+    // Match the player data in footer HTML
+    remove_action( 'wp_footer', 'the_block_template_skip_link' );
+    ob_start();
+    do_action('wp_footer');
+    $footer = $this->fix_newlines( ob_get_clean() );
+
+    preg_match_all( '~data-item="(.*?)"~', $footer, $matches );
+
+    // There should be one video
+    $this->assertTrue( count( $matches[0] ) === 1 );
+
+    $json = html_entity_decode( $matches[1][0] );
+    $obj = json_decode( $json );
+
+    // ensure the json_decode suceeded
+    $this->assertTrue( ! empty( $obj->sources[0]->src ) );
+
+    // Make sure proper video URL is in place
+    $this->assertTrue( strcmp( $obj->sources[0]->src, $this->import_data[0]['videos'][0]['src'] ) === 0 );
+
+    // Make sure proper splash image is in place
+    $this->assertTrue(
+      substr_count( $footer, ' src="' . esc_attr( $this->import_data[0]['videos'][0]['splash'] ) . '"' ) === 1,
+      'FV Player splash URL must be used in <img /> 1 times in the markup for a single video with text lightbox. Lightbox starter splash and lightbox view splash'
+    );
+  }
+
+  public function testDBTextCustomCaption() {
+
+    $custom_title = 'Custom Title';
+
+    $output = apply_filters( 'the_content', '[fvplayer id="' . intval( $this->import_ids[0] ) . '" lightbox="true;text" caption="' . esc_attr( $custom_title ) . '"]' );
+
+    // The output must be just anchor with title
+    preg_match_all( "~^<a data-fancybox='gallery'[^>]*?>(.*)?</a>$~", $output, $matches );
+
+    $this->assertTrue( count( $matches[1] ) === 1 );
+
+    $this->assertTrue( strcmp( $matches[1][0], $custom_title ) === 0 );
+  }
+
+  // TODO: This does not pass, but it seems it should be possible to override the video title like this:
+  /*public function testDBTextCustomTitle() {
+
+    $custom_title = 'Custom Title';
+
+    $output = apply_filters( 'the_content', '[fvplayer id="' . intval( $this->import_ids[0] ) . '" lightbox="true;text" title="' . esc_attr( $custom_title ) . '"]' );
+
+    // The output must be just anchor with title
+    preg_match_all( "~^<a data-fancybox='gallery'[^>]*?>(.*)?</a>$~", $output, $matches );
+
+    $this->assertTrue( count( $matches[1] ) === 1 );
+
+    $this->assertTrue( strcmp( $matches[1][0], $custom_title ) === 0 );
+  }*/
 }
