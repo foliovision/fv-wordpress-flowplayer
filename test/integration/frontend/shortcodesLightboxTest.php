@@ -10,8 +10,17 @@ final class FV_Player_ShortcodeLightboxTestCase extends FV_Player_UnitTestCase {
 
   var $shortcode_body = 'src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" playlist="https://cdn.site.com/video2.mp4,https://cdn.site.com/video2.jpg;https://cdn.site.com/video3.mp4,https://cdn.site.com/video3.jpg" caption="Video 1;Video 2;Video 3" share="no" embed="false"';
 
+  var $import_data = array();
+
+  var $import_ids = array();
+
   protected function setUp(): void {
     FV_Player_lightbox()->clear_lightboxed_players();
+
+    global $FV_Player_Db;
+    $this->import_data[] = json_decode( file_get_contents(dirname(__FILE__).'/player-data-youtube.json'), true );
+
+    $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, $this->import_data[0] );
 
     parent::setUp();
   }
@@ -190,6 +199,49 @@ HTML;
 
     global $FV_Player_lightbox;
     $this->assertTrue( $FV_Player_lightbox->bLoad );  //  is the flag to load lightbox JS set?
+  }
+
+  public function testDB() {
+
+    $output = apply_filters( 'the_content', '[fvplayer id="' . intval( $this->import_ids[0] ) . '" lightbox="true"]' );
+
+    // Check for lightbox thumbnail
+    $this->assertTrue(
+      preg_match( '~<div.*?class="freedomplayer lightbox-starter~', $output ) === 1,
+      'FV Player "lightbox-starter" class not found'
+    );
+
+    // Check for the hidden player div
+    $this->assertTrue(
+      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $output ) === 1,
+      'The hidden lightbox container not found'
+    );
+
+    $this->assertTrue(
+      preg_match( '~<div.*?class="freedomplayer lightboxed~', $output ) === 1,
+      'FV Player with "lightboxed" class not found'
+    );
+
+    // Match the player data in HTML
+    preg_match_all( '~data-item="(.*?)"~', $output, $matches );
+
+    // There should be one video
+    $this->assertTrue( count( $matches[0] ) === 1 );
+
+    $json = html_entity_decode( $matches[1][0] );
+    $obj = json_decode( $json );
+
+    // ensure the json_decode suceeded
+    $this->assertTrue( ! empty( $obj->sources[0]->src ) );
+
+    // Make sure proper video URL is in place
+    $this->assertTrue( strcmp( $obj->sources[0]->src, $this->import_data[0]['videos'][0]['src'] ) === 0 );
+
+    // Make sure proper splash image is in place
+    $this->assertTrue(
+      substr_count( $output, ' src="' . esc_attr( $this->import_data[0]['videos'][0]['splash'] ) . '"' ) === 2,
+      'FV Player splash URL must be used in <img /> 2 times in the markup for a single video. Lightbox starter splash and lightbox view splash'
+    );
   }
 
 }
