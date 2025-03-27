@@ -260,10 +260,10 @@ class FV_Player_lightbox {
 
         // Allow caption="..." to override the title, some users use that still
         }  else if( empty( $args['playlist'] ) && ! empty( $args['caption'] ) ) {
-          $sTitle = sanitize_text_field( $args['caption'] );
+          $sTitle = wp_kses_post( $args['caption'] );
 
         } else if( empty( $args['playlist'] ) && ! empty( $args['title'] ) ) {
-          $sTitle = sanitize_text_field( $args['title'] );
+          $sTitle = wp_kses_post( $args['title'] );
 
         }
 
