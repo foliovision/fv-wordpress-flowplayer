@@ -105,6 +105,39 @@
 
   });
 
+  function stats_send() {
+    // Go through watched and round the time values
+    for ( var player_id in watched ) {
+      for ( var post_id in watched[ player_id ] ) {
+        for ( var video_id in watched[ player_id ][ post_id ] ) {
+          watched[ player_id ][ post_id ][ video_id ] = Math.round( watched[ player_id ][ post_id ][ video_id ] );
+        }
+      }
+    }
+
+    var conf = window.freedomplayer ? freedomplayer.conf : flowplayer.conf;
+
+    if ( conf.debug ) {
+      fv_player_stats_watched();
+    }
+
+    var fd = new FormData();
+    fd.append( 'tag', 'seconds' );
+    fd.append( 'blog_id', conf.fv_stats.blog_id );
+    fd.append( 'user_id', conf.fv_stats.user_id );
+    fd.append( '_wpnonce', conf.fv_stats.nonce );
+    // TODO: Can we use pure JSON?
+    fd.append( 'watched', encodeURIComponent(JSON.stringify(watched)) );
+
+    navigator.sendBeacon(
+      conf.fv_stats.url,
+      fd
+    );
+  }
+
+  /**
+   * Send stats when closing the browser
+   */
   $(window).on('beforeunload pagehide', function () {
     var sendBeaconSupported = ("sendBeacon" in navigator);
 
@@ -112,26 +145,11 @@
     if (!flowplayer.conf.stats_sent && sendBeaconSupported) {
       flowplayer.conf.stats_sent = true;
 
-      if ( !watched_has_data ) {
+      if ( ! watched_has_data ) {
         return;
       }
 
-      fv_player_stats_watched();
-
-      var conf = window.freedomplayer ? freedomplayer.conf : flowplayer.conf;
-
-      var fd = new FormData();
-      fd.append( 'tag', 'seconds' );
-      fd.append( 'blog_id', conf.fv_stats.blog_id );
-      fd.append( 'user_id', conf.fv_stats.user_id );
-      fd.append( '_wpnonce', conf.fv_stats.nonce );
-      // TODO: Can we use pure JSON?
-      fd.append( 'watched', encodeURIComponent(JSON.stringify(watched)) );
-
-      navigator.sendBeacon(
-        conf.fv_stats.url,
-        fd
-      );
+      stats_send();
     }
   });
 
