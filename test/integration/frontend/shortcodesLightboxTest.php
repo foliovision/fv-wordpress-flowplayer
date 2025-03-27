@@ -21,17 +21,17 @@ final class FV_Player_ShortcodeLightboxTestCase extends FV_Player_UnitTestCase {
     $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" splash="https://cdn.site.com/video1.jpg" lightbox="true" share="no" embed="false"]' );
 
     $this->assertTrue(
-      preg_match( '~<div.*?class=\'freedomplayer lightbox-starter~', $output ) !== false,
+      preg_match( '~<div .*?class="freedomplayer lightbox-starter~', $output ) === 1,
       'FV Player "lightbox-starter" class not found'
     );
 
     $this->assertTrue(
-      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $output ) !== false,
+      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $output ) === 1,
       'The hidden lightbox container not found'
     );
 
     $this->assertTrue(
-      preg_match( '~<div.*?class=\'freedomplayer lightboxed~', $output ) !== false,
+      preg_match( '~<div .*?class="freedomplayer lightboxed~', $output ) === 1,
       'FV Player with "lightboxed" class not found'
     );
 
@@ -83,14 +83,21 @@ HTML;
     $footer = $this->fix_newlines( ob_get_clean() );
 
     $this->assertTrue(
-      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $footer ) !== false,
+      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $footer ) === 1,
       'The hidden lightbox container should be in the footer'
     );
 
     $this->assertTrue(
-      preg_match( '~<div.*?class=\'freedomplayer lightboxed .*?data-item=".*?https:\/\/cdn.site.com\/video1.mp4~', $footer ) !== false,
-      'FV Player with "lightboxed" class and matching source not found in footer'
+      preg_match( '~<div.*?class="freedomplayer lightboxed~', $footer ) === 1,
+      'FV Player with "lightboxed" class not found in footer'
     );
+
+    // Playlist items need to match
+    preg_match_all( '~data-item="(.*?)"~', $footer, $matches );
+
+    $this->assertTrue( count( $matches[0] ) === 1 );
+
+    $this->assertTrue( stripos( $matches[0][0], 'video1.mp4' ) !== false );
 
     $this->assertTrue( stripos( $footer, 'var fv_player_lightbox = {' ) !== false );
     $this->assertTrue( stripos( $footer, 'let fv_player_fancybox_loaded = false;' ) !== false );
@@ -104,12 +111,12 @@ HTML;
     $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true"]' );
 
     $this->assertTrue(
-      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $output ) !== false,
+      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $output ) === 1,
       'The hidden lightbox container not found'
     );
 
     $this->assertTrue(
-      preg_match( '~<div.*?class=\'freedomplayer lightboxed~', $output ) !== false,
+      preg_match( '~<div.*?class="freedomplayer lightboxed~', $output ) === 1,
       'FV Player with "lightboxed" class not found'
     );
 
@@ -161,12 +168,12 @@ HTML;
     $footer = ob_get_clean();
 
     $this->assertTrue(
-      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $footer ) !== false,
+      preg_match( '~<div id=".*?" class="fv_player_lightbox_hidden" style="display: none">~', $footer ) === 1,
       'The hidden lightbox container should be in the footer'
     );
 
     $this->assertTrue(
-      preg_match( '~<div.*?class=\'freedomplayer lightboxed~', $footer ) !== false,
+      preg_match( '~<div.*?class="freedomplayer lightboxed~', $footer ) === 1,
       'FV Player with "lightboxed" class not found in footer'
     );
 
