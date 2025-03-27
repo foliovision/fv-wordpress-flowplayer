@@ -310,4 +310,53 @@ HTML;
 
     $this->assertTrue( strcmp( $matches[1][0], $custom_title ) === 0 );
   }*/
+
+  public function testHTML() {
+
+    $video = 'https://video-cdn-public.foliovision.com/Swan+Lake+Reloaded-sd.mp4';
+    $title = 'Text Link';
+
+    $output = apply_filters( 'the_content', '<a class="colorbox" href="' . esc_attr( $video ) . '">' . $title . '</a>' );
+
+    // The output must be just anchor with title
+    preg_match_all( "~<a data-fancybox='gallery'[^>]*?>(.*)?</a>~", $output, $matches );
+
+    $this->assertTrue( count( $matches[1] ) === 1 );
+
+    $this->assertTrue( strcmp( $matches[1][0], $title ) === 0 );
+
+    // Match the player data in footer HTML
+    remove_action( 'wp_footer', 'the_block_template_skip_link' );
+    ob_start();
+    do_action('wp_footer');
+    $footer = $this->fix_newlines( ob_get_clean() );
+
+    preg_match_all( '~data-item="(.*?)"~', $footer, $matches );
+
+    // There should be one video
+    $this->assertTrue( count( $matches[0] ) === 1 );
+
+    $json = html_entity_decode( $matches[1][0] );
+    $obj = json_decode( $json );
+
+    // ensure the json_decode suceeded
+    $this->assertTrue( ! empty( $obj->sources[0]->src ) );
+
+    // Make sure proper video URL is in place
+    $this->assertTrue( strcmp( $obj->sources[0]->src, $video ) === 0 );
+  }
+
+  public function testHTMLImage() {
+
+    $img_src = 'https://cdn.foliovision.com/images/2014/07/Swan-Lake-Reloaded-100x100.png';
+
+    $output = apply_filters( 'the_content', '<a class="colorbox" href="https://video-cdn-public.foliovision.com/Swan+Lake+Reloaded-sd.mp4"><img src="' . esc_attr( $img_src ) . '" width="100" height="100" /></a>' );
+
+    // The output must be just anchor with the image
+    preg_match_all( "~<a data-fancybox='gallery'[^>]*?>(.*)?</a>~", $output, $matches );
+
+    $this->assertTrue( count( $matches[1] ) === 1 );
+
+    $this->assertTrue( preg_match( '~^<img [^>]*?src="' . $img_src . '"~', $matches[1][0] ) === 1 );
+  }
 }
