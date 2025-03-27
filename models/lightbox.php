@@ -258,13 +258,16 @@ class FV_Player_lightbox {
         } else if( !empty($aLightbox[1]) && !isset($aLightbox[2]) && !isset($aLightbox[3]) && $aLightbox[1] != 'text'  ) {
           $sTitle = $aLightbox[1];
 
-        } else if( empty($args['playlist']) && !empty($args['caption']) ) {
-          $sTitle = $args['caption'];
+        // Allow caption="..." to override the title, some users use that still
+        }  else if( empty( $args['playlist'] ) && ! empty( $args['caption'] ) ) {
+          $sTitle = sanitize_text_field( $args['caption'] );
+
+        } else if( empty( $args['playlist'] ) && ! empty( $args['title'] ) ) {
+          $sTitle = sanitize_text_field( $args['title'] );
+
         }
 
-        if( !empty($sTitle) ) {
-          $sTitle = " title='".esc_attr($sTitle)."'";
-        }
+        $title_attribute = ! empty( $sTitle ) ? " title='" . esc_attr( $sTitle ) . "'" : '';
 
         // The original player HTML markup becomes the hidden lightbox content
         // We add the lightboxed class
@@ -290,7 +293,7 @@ class FV_Player_lightbox {
               $html .= '</ul>';
             }
           } else {
-            $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
+            $html = '<a'.$this->fancybox_opts().' id="'.$button.'"' . $title_attribute . ' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">' . $sTitle . '</a>';
           }
 
           // in this case we put the lightboxed player into footer as putting it behind the anchor might break the parent block element
@@ -311,7 +314,7 @@ class FV_Player_lightbox {
           $sSplash = apply_filters('fv_flowplayer_playlist_splash', $args['splash'], $args['src']);
 
           // re-use the existing player HTML and add data-fancybox, data-options, new id and href
-          $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"'.$sTitle.' href="#'.$container.'" ', $html );
+          $html = str_replace( '<div id="wpfp_'.$hash.'" ', '<div'.$this->fancybox_opts($sSplash).' id="'.$button.'"' . $title_attribute . ' href="#'.$container.'" ', $html );
 
           // add all the new classes
           $html = str_replace( 'class="freedomplayer ', 'class="freedomplayer ' . implode(' ', $add_classes ). ' ' , $html );
