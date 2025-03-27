@@ -153,6 +153,23 @@
     }
   });
 
+  /**
+   * Send stats periodically
+   */
+  setInterval( function() {
+
+    if ( ! watched_has_data ) {
+      return;
+    }
+
+    stats_send();
+
+    // Stats sent, clear the data structure
+    watched = {}
+    watched_has_data = false;
+
+  }, 60 * 1000 );
+
   // For debugging
   window.fv_player_stats_watched = function() {
 
