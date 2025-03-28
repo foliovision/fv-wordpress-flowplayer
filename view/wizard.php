@@ -713,10 +713,10 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'type'         => 'select',
                 ),
                 array(
-                  'label' => __( 'Sticky video', 'fv-player' ),
-                  'name' => 'sticky',
-                  'description' => __( 'Watch the playing video when scrolling down the page.', 'fv-player' ),
-                  'default' => $fv_fp->_get_option('sticky'),
+                  'label'        => __( 'Sticky video', 'fv-player' ),
+                  'name'         => 'sticky',
+                  'description'  => __( 'Watch the playing video when scrolling down the page.', 'fv-player' ),
+                  'default'      => in_array( $fv_fp->_get_option('sticky_video'), array( 'desktop', 'all' ) ),
                   'dependencies' => array( 'lightbox' => false )
                 )
               )
