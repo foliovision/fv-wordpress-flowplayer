@@ -96,14 +96,14 @@ final class FV_Player_Controller extends TestCase {
     $output = ob_get_clean();
 
     $expected = "Registering jquery-ui-tabs for ?ver=1.2.3.4 footer? 1
-Registering fv_flowplayer for fv-wordpress-flowplayer/css/fv-player.min.css?ver=1.2.3.4
-Registering fv_freedomplayer_playlists for fv-wordpress-flowplayer/css/playlists.css?ver=1.2.3.4
-Registering flowplayer for fv-wordpress-flowplayer/freedom-video-player/freedomplayer.min.js?ver=1.2.3.4 footer? 1
-Registering fv-player for fv-wordpress-flowplayer/freedom-video-player/fv-player.min.js?ver=1.2.3.4 footer? 1
-Registering flowplayer-hlsjs for fv-wordpress-flowplayer/freedom-video-player/hls.min.js?ver=1.2.3.4 footer? 1
-Registering dashjs for fv-wordpress-flowplayer/freedom-video-player/dash.mediaplayer.min.js?ver=1.2.3.4 footer? 1
-Registering fv-player-dash for fv-wordpress-flowplayer/freedom-video-player/fv-player-dashjs.min.js?ver=1.2.3.4 footer? 1
-Registering fv-player-youtube for fv-wordpress-flowplayer/freedom-video-player/fv-player-youtube.min.js?ver=1.2.3.4 footer? 1
+Registering fv_flowplayer for fv-player/css/fv-player.min.css?ver=1.2.3.4
+Registering fv_freedomplayer_playlists for fv-player/css/playlists.css?ver=1.2.3.4
+Registering flowplayer for fv-player/freedom-video-player/freedomplayer.min.js?ver=1.2.3.4 footer? 1
+Registering fv-player for fv-player/freedom-video-player/fv-player.min.js?ver=1.2.3.4 footer? 1
+Registering flowplayer-hlsjs for fv-player/freedom-video-player/hls.min.js?ver=1.2.3.4 footer? 1
+Registering dashjs for fv-player/freedom-video-player/dash.mediaplayer.min.js?ver=1.2.3.4 footer? 1
+Registering fv-player-dash for fv-player/freedom-video-player/fv-player-dashjs.min.js?ver=1.2.3.4 footer? 1
+Registering fv-player-youtube for fv-player/freedom-video-player/fv-player-youtube.min.js?ver=1.2.3.4 footer? 1
 Localizing flowplayer with fv_flowplayer_conf = Array
 (
     [speeds] => Array
@@ -128,9 +128,9 @@ Localizing flowplayer with fv_flowplayer_conf = Array
     [sticky_video] => off
     [sticky_place] => right-bottom
     [sticky_min_width] => 1020
-    [script_hls_js] => fv-wordpress-flowplayer/freedom-video-player/hls.min.js?ver=1.2.3.4
-    [script_dash_js] => fv-wordpress-flowplayer/freedom-video-player/dash.mediaplayer.min.js?ver=1.2.3.4
-    [script_dash_js_engine] => fv-wordpress-flowplayer/freedom-video-player/fv-player-dashjs.min.js?ver=1.2.3.4
+    [script_hls_js] => fv-player/freedom-video-player/hls.min.js?ver=1.2.3.4
+    [script_dash_js] => fv-player/freedom-video-player/dash.mediaplayer.min.js?ver=1.2.3.4
+    [script_dash_js_engine] => fv-player/freedom-video-player/fv-player-dashjs.min.js?ver=1.2.3.4
     [airplay] => 1
     [chromecast] =>
     [youtube_browser_chrome] => standard
@@ -245,8 +245,8 @@ Adding inline script for fv_player_lightbox: ( function() { let fv_player_fancyb
 Localizing fv_player_lightbox with fv_player_lightbox = Array
 (
     [lightbox_images] =>
-    [js_url] => fv-wordpress-flowplayer/js/fancybox.js
-    [css_url] => fv-wordpress-flowplayer/css/fancybox.css
+    [js_url] => fv-player/js/fancybox.js
+    [css_url] => fv-player/css/fancybox.css
 )
 
 ";

@@ -1,20 +1,20 @@
 <?php
 
 abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
-  
+
   protected $backupGlobals = false;
   protected $restore;
 
   protected function setUp(): void {
     parent::setUp();
-    
+
     global $fv_fp;
     $this->restore = $fv_fp->conf;
-    
+
     //  somehow this got hooked in again after being removed in WP_Ajax_UnitTestCase::setUpBeforeClass() already
     remove_action( 'admin_init', '_maybe_update_core' );
     remove_action( 'admin_init', '_maybe_update_plugins' );
-    remove_action( 'admin_init', '_maybe_update_themes' );    
+    remove_action( 'admin_init', '_maybe_update_themes' );
   }
 
   public function _handleAjax( $action ) {
@@ -28,27 +28,27 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
 
     parent::_handleAjax( $action );
   }
-  
+
   public function fix_newlines( $html ) {
     $html = preg_replace( '/"wpfp_[0-9a-z]+"/', '"wpfp_some-test-hash"', $html);
     $html = preg_replace( '/"wpfp_[0-9a-z]+_playlist"/', '"wpfp_some-test-hash_playlist"', $html);
     $html = preg_replace( '~<input type="hidden" id="([^"]*?)nonce" name="([^"]*?)nonce" value="([^"]*?)" />~', '<input type="hidden" id="$1nonce" name="$2nonce" value="XYZ" />', $html);
     $html = preg_replace( "~nonce: '([^']*?)'~", "nonce: 'XYZ'", $html);
-    
+
     // testProfileScreen
     $html = preg_replace( '~fv_ytplayer_[a-z0-9]+~', 'fv_ytplayer_XYZ', $html);
     $html = preg_replace( '~fv_vimeo_[a-z0-9]+~', 'fv_vimeo_XYZ', $html);
     $html = preg_replace( '~<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="[^"]*?" />~', '<input type="hidden" id="fv-player-custom-videos-_fv_player_user_video-0" name="fv-player-custom-videos-_fv_player_user_video-0" value="XYZ" />', $html);
-    
+
     $html = preg_replace( '~convert_jwplayer=[a-z0-9]+~', 'convert_jwplayer=XYZ', $html);
     $html = preg_replace( '~_wpnonce=[a-z0-9]+~', '_wpnonce=XYZ', $html);
-    
+
     $html = explode("\n",$html);
     foreach( $html AS $k => $v ) {
       if( trim($v) == '' ) unset($html[$k]);
     }
     $html = implode( "\n", array_map('trim',$html) );
-    
+
     $html = preg_replace( '~\t~', '', $html );
     return $html;
   }
@@ -61,7 +61,7 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     //include_once "../../../fv-wordpress-flowplayer/controller/backend.php";
 
     // include the flowplayer loader
-    include_once "../../../fv-wordpress-flowplayer/fv-player.php";
+    include_once "../../fv-player.php";
 
     // include the PRO plugin class, so it can intercept data saving
     // and update the ads structure as needed for saving
@@ -70,12 +70,12 @@ abstract class FV_Player_Ajax_UnitTestCase extends WP_Ajax_UnitTestCase {
     // save initial settings
     //$fv_fp->_set_conf();
   }
-  
+
   protected function tearDown(): void {
     parent::tearDown();
-    
+
     global $fv_fp;
     $fv_fp->conf = $this->restore;
-  }  
+  }
 
 }

@@ -24,8 +24,8 @@ final class FV_Player_videoPositionSavingTestCase extends FV_Player_Ajax_UnitTes
 
     global $fv_fp;
 
-    include_once "../../../fv-wordpress-flowplayer/models/flowplayer.php";
-    include_once "../../../fv-wordpress-flowplayer/models/flowplayer-frontend.php";
+    include_once "../../models/flowplayer.php";
+    include_once "../../models/flowplayer-frontend.php";
     $fv_fp = new flowplayer_frontend();
 
     // add new user and create last saved position metadata for this new user

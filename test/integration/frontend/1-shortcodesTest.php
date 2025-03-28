@@ -18,15 +18,6 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
       'post_title' => 'Simple Shortcode',
       'post_content' => '[fvplayer src="https://cdn.site.com/video.mp4"]'
     ) );
-
-    /*global $fv_fp;
-
-    include_once "../../../fv-wordpress-flowplayer/models/flowplayer.php";
-    include_once "../../../fv-wordpress-flowplayer/models/flowplayer-frontend.php";
-    $fv_fp = new flowplayer_frontend();
-
-    include_once "../../beta/fv-player-pro.class.php";
-    $this->fvPlayerProInstance = new FV_Player_Pro();*/
   }
 
   public function testSimpleShortcode() {

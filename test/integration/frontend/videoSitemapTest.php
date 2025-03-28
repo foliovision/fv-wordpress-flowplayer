@@ -65,8 +65,8 @@ HTML
     $expect = file_get_contents(dirname(__FILE__).'/video-sitemap.xml');
 
     // Fix bad play button image path due to running these tests on server console
-    $expect = preg_replace( '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~', 'wp-content/plugins/fv-wordpress-flowplayer/css', $expect );
-    $actual = preg_replace( '~wp-content/plugins/.*?/fv-wordpress-flowplayer/css~', 'wp-content/plugins/fv-wordpress-flowplayer/css', $output );
+    $expect = preg_replace( '~wp-content/plugins/.*?/fv-player/css~', 'wp-content/plugins/fv-player/css', $expect );
+    $actual = preg_replace( '~wp-content/plugins/.*?/fv-player/css~', 'wp-content/plugins/fv-player/css', $output );
 
     $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($actual) );
   }

@@ -1,7 +1,7 @@
 
 <div class="wrap">
 	<div style="position: absolute; margin-top: 10px; right: 10px;">
-		<a href="https://foliovision.com/player" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/fv-logo.png" /></a>
+		<a href="https://foliovision.com/player" target="_blank" title="Documentation"><img alt="visit foliovision" src="http://example.org/wp-content/plugins/fv-player/images/fv-logo.png" /></a>
 	</div>
   <div>
     <div id="icon-options-general" class="icon32"></div>
@@ -33,11 +33,11 @@
             <li>Or remove the logo completely</li>
             <li>The best video plugin for Wordpress</li>
             </ul>
-              <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
+              <a href="http://foliovision.com/wordpress/plugins/fv-player/download" class="red-button"><strong>Easter sale!</strong><br />All Licenses 20% Off</a></p>
           </div>
           <div class="graphic-part">
-            <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
-            <img width="297" height="239" border="0" src="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/fv-wp-flowplayer-led-monitor.png"> </a>
+            <a href="http://foliovision.com/wordpress/plugins/fv-player/buy">
+            <img width="297" height="239" border="0" src="http://example.org/wp-content/plugins/fv-player/images/fv-wp-flowplayer-led-monitor.png"> </a>
           </div>
       </div>
 
@@ -910,7 +910,7 @@ jQuery(document).ready(function($) {
 <div id="fv_player_pro" class="postbox " >
 <div class="postbox-header"><h2 class="hndle">Pro Features</h2>
 <div class="handle-actions hide-if-no-js"><button type="button" class="handle-order-higher" aria-disabled="false" aria-describedby="fv_player_pro-handle-order-higher-description"><span class="screen-reader-text">Move up</span><span class="order-higher-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_player_pro-handle-order-higher-description">Move Pro Features box up</span><button type="button" class="handle-order-lower" aria-disabled="false" aria-describedby="fv_player_pro-handle-order-lower-description"><span class="screen-reader-text">Move down</span><span class="order-lower-indicator" aria-hidden="true"></span></button><span class="hidden" id="fv_player_pro-handle-order-lower-description">Move Pro Features box down</span><button type="button" class="handlediv" aria-expanded="true"><span class="screen-reader-text">Toggle panel: Pro Features</span><span class="toggle-indicator" aria-hidden="true"></span></button></div></div><div class="inside">
-    <p><a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/download">Purchase FV Flowplayer license</a> to enable Pro features!</p>
+    <p><a href="http://foliovision.com/wordpress/plugins/fv-player/download">Purchase FV Flowplayer license</a> to enable Pro features!</p>
     <table class="form-table2">
     <tr>
       <td class="first"><label>Advanced Vimeo embeding:</label></td>
@@ -1495,7 +1495,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 					<tr>
 						<td colspan="2">
 							<p>Secured Amazon S3 URLs are recommended for member-only sections of the site. We check the video length and make sure the link expiration time is big enough for the video to buffer properly.</p>
-              <p>If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won't be accounted and the video source URLs in your cached pages won't expire. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/secure-amazon-s3-guide#wp-cache" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
+              <p>If you use a cache plugin (such as Hyper Cache, WP Super Cache or W3 Total Cache), we recommend that you set the "Default Expiration Time" to twice as much as your cache timeout and check "Force the default expiration time". That way the video length won't be accounted and the video source URLs in your cached pages won't expire. Read more in the <a href="http://foliovision.com/wordpress/plugins/fv-player/secure-amazon-s3-guide#wp-cache" target="_blank">Using Amazon S3 secure content in FV Flowplayer guide</a>.</p>
 						</td>
 					</tr>
 					<tr>
@@ -1945,7 +1945,7 @@ Hint: you can click the thumbnails to switch videos in the above player. This pr
 
             row.replaceWith( jQuery('#'+row.attr('id'),response) );
 
-            var shortcode = '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="http://example.org/wp-content/plugins/fv-wordpress-flowplayer/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="This is how the popup will appear at the end of a video"]';
+            var shortcode = '[fvplayer src="https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005" splash="https://i.vimeocdn.com/video/609485450_1280.jpg" preroll="no" postroll="no" subtitles="http://example.org/wp-content/plugins/fv-player/images/test-subtitles.vtt" end_popup_preview="true" popup="email-#key#" caption="This is how the popup will appear at the end of a video"]';
             shortcode = shortcode.replace(/#key#/,key);
 
             var url = 'http://example.org?fv_player_embed=fb6c31b85c&fv_player_preview=' + fv_player_editor.b64EncodeUnicode(shortcode);
