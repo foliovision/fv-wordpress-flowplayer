@@ -2194,7 +2194,7 @@ if( typeof(flowplayer) != "undefined" ) {
   }
 
 
-  function fv_player_pro_youtube_preload(that, api) {
+  function fv_player_pro_youtube_preload( that, api, is_lightbox ) {
     var root = jQuery(that);
     if( !api ) api = root.data('flowplayer');
 
@@ -2251,7 +2251,7 @@ if( typeof(flowplayer) != "undefined" ) {
         api.fv_yt_onError = fv_player_pro_youtube_addRemovableEventListener(api.youtube,'onError',fv_player_pro_youtube_onError);
       });
 
-      if( !window.fv_player_pro_yt_load ) {
+      if ( !window.fv_player_pro_yt_load || is_lightbox ) {
         window.fv_player_pro_yt_load = true;
         jQuery(document).trigger('fv-player-yt-api-loaded');
       }
@@ -2984,6 +2984,11 @@ if( typeof(flowplayer) != "undefined" ) {
 
             youtube.destroy();
             youtube = false;
+
+            // Get rid of preloaded YouTube player API reference
+            if ( player.youtube ) {
+              player.youtube = false;
+            }
           }
         });
 
@@ -3011,7 +3016,32 @@ if( typeof(flowplayer) != "undefined" ) {
       if( fv_player_pro_youtube_is_mobile() ) {  //  in Flowplayer 7 Andoird and iOS thinks it can autoplay
         jQuery(document).on( 'afterShow.fb', function() {
           jQuery('.fancybox-slide--current .flowplayer').each( function() {
-            fv_player_pro_youtube_preload(this);  //  todo: fix if you are opening the lightbox the second time
+            fv_player_pro_youtube_preload( this, false, true );
+          })
+        });
+
+        /**
+         * Remove YouTube engine when closing lightbox, this part does it even if you did not play the video.
+         * The "afterClose.fb beforeLoad.fb" event handler in engine would not run for such video if closing lightbox.
+         *
+         * Removing "afterClose.fb beforeLoad.fb" event handler from engine would not properly unload the video -
+         * it would no update api.was_played to false. Seems like the issue might be with "youtube" local var.
+         * Perhaps the progress event run in the "youtube" local var and then setting it in core Freedom Video Player?
+         */
+        jQuery(document).on('beforeClose.fb beforeLoad.fb', function( e, instance, slide ) {
+          jQuery( '.freedomplayer', slide.$slide ).each( function() {
+
+            var api = jQuery( this ).data('freedomplayer');
+            if ( api ) {
+              // Using player.unload() won't work as the player is not in the splash state
+              api.trigger( "unload", [ api ] );
+
+              // Get rid of preloaded YouTube player API
+              if ( api.youtube ) {
+                api.youtube.destroy();
+                api.youtube = false;
+              }
+            }
           })
         });
       }
