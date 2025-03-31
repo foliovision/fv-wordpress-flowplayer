@@ -394,7 +394,7 @@ class flowplayer_frontend extends flowplayer
       $sticky = true;
     }
 
-    if ( 'off' === $this->_get_option('sticky_video') && 'false' === $this->aCurArgs['sticky'] ) {
+    if ( 'off' !== $this->_get_option('sticky_video') && 'false' === $this->aCurArgs['sticky'] ) {
       $sticky = false;
     }
 
