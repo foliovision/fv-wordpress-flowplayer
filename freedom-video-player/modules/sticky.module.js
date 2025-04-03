@@ -137,6 +137,8 @@ flowplayer(function(api, root) {
   /* 
    * Video will not be sticky if one of the parent elements it using CSS transform,
    * so we get rid of it here. We put it back too!
+   *
+   * We also reset the z-index as with that the fixed position elements would appear on top of the video.
    */
   function sanitize_parent_elements( add ) {
     var parent = root;
@@ -145,6 +147,9 @@ flowplayer(function(api, root) {
         var styles = getComputedStyle(parent);
         if( styles.transform ) {
           parent.style.transform = add ? 'none' : '';
+        }
+        if( styles.zIndex ) {
+          parent.style.zIndex = add ? 'auto' : '';
         }
       } catch(e) {}
       parent = parent.parentNode;
