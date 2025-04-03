@@ -160,14 +160,19 @@ jQuery(function($) {
     root.addClass("is-unSticky");
 
     var $playerDiv = root.find('.fp-player');
-    $playerDiv.removeClass("is-sticky");
-    $playerDiv.removeClass("is-sticky-right-bottom");
-    $playerDiv.removeClass("is-sticky-left-bottom");
-    $playerDiv.removeClass("is-sticky-right-top");
-    $playerDiv.removeClass("is-sticky-left-top");
-    $playerDiv.css("width", "");
-    $playerDiv.css("height", "");
-    $playerDiv.css("max-height", "");
+    $playerDiv
+      .removeClass([
+        'is-sticky',
+        'is-sticky-right-bottom',
+        'is-sticky-left-bottom', 
+        'is-sticky-right-top',
+        'is-sticky-left-top'
+      ])
+      .css({
+        width: '',
+        height: '',
+        maxHeight: ''
+      });
     
     if( api.is_sticky ) {
       api.is_sticky = false;
