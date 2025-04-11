@@ -1591,7 +1591,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       // we put in enough to be sure it will fit in, later JS calculates a better value
       if( isset($this->aCurArgs['liststyle']) && $this->aCurArgs['liststyle'] == 'slider' ) {
         $slider_width = count( $aPlaylistItems ) * 200;
-        $attributes['style'] = "width: " . $slider_width . "px; max-width: " . $slider_width . "px !important";
+        $attributes['style'] = "width: " . absint( $slider_width ) . "px; max-width: " . absint( $slider_width ) . "px !important";
       }
 
       $attributes = apply_filters( 'fv_player_playlist_attributes', $attributes, $media, $this );
@@ -1632,7 +1632,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             el = el.parentNode;
             w = getComputedStyle(el).width;
           }
-          var f = Math.floor( parseInt( 'auto' === w ? 0 : w  ) / " . $limit . " );
+          var f = Math.floor( parseInt( 'auto' === w ? 0 : w  ) / " . absint( $limit ) . " );
           if( f > 8 ) f = 8;
           else if( f < 2 ) f = 2;
           el.style.setProperty('--fp-playlist-items-per-row', String(f));
