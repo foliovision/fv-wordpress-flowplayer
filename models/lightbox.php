@@ -269,11 +269,16 @@ class FV_Player_lightbox {
 
         $title_attribute = ! empty( $sTitle ) ? " title='" . esc_attr( $sTitle ) . "'" : '';
 
+        // Allow scripts for the lightboxed HTML for playlist sizing
+        add_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit_scripts' ), 999, 2 );
+
         // The original player HTML markup becomes the hidden lightbox content
         // We add the lightboxed class
         $lightbox = str_replace(array('class="freedomplayer ', "class='freedomplayer "), array('class="freedomplayer lightboxed ', "class='freedomplayer lightboxed "), $html);
         // ...and wrap it in hidden DIV
         $lightbox = "\n".'<div id="'.$container.'" class="fv_player_lightbox_hidden" style="display: none">'."\n" . wp_kses_post( $lightbox ) . "</div>\n";
+
+        remove_filter( 'wp_kses_allowed_html', array( $fv_fp, 'wp_kses_permit_scripts' ), 999, 2 );
 
         if ( $this->is_text_lightbox($args) ) {
           if( !empty($args['playlist']) ) {
