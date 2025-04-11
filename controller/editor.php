@@ -968,6 +968,7 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
   $new_content = preg_replace_callback(
     array(
       '~<!-- wp:paragraph -->\n<p>(\[fvplayer [\s\S]*?)<\/p>\n<!-- /wp:paragraph -->~',
+      '~<!-- wp:video .*? -->\n<figure class="wp-block-video">(\[fvplayer [\s\S]*?)<\/figure>\n<!-- /wp:video -->~',
     ),
     'fv_player_add_missing_attributes_callback',
     $new_content
