@@ -322,8 +322,10 @@ class FV_Player_lightbox {
           // use new size
           $html = str_replace( array( "max-width: ".$iPlayerWidth."px", "max-height: ".$iPlayerHeight."px"), array('max-width: '.$iWidth.'px', 'max-height: '.$iHeight.'px'), $html );
 
-          // new ratio for responsiveness
-          if( $iWidth > 0 ) {
+          // Only use new ratio for responsiveness if the lightbox size is specified
+          $have_custom_size = ! empty( $aLightbox[1] ) || ! empty( $aLightbox[2] );
+
+          if ( $have_custom_size ) {
             $ratio = $iHeight / $iWidth;
             if( $ratio > 0 ) {
               $ratio = round($ratio, 4);
