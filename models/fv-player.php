@@ -1078,7 +1078,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
       remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit' ), 999, 2 );
       remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_settings' ), 999, 2 );
-      add_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_scripts' ), 999, 2 );
+      remove_filter( 'wp_kses_allowed_html', array( $this, 'wp_kses_permit_scripts' ), 999, 2 );
 
     } else if ( in_array( $key, $multiline_fields ) ) {
       $value = sanitize_textarea_field( $value );
