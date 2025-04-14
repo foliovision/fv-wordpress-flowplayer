@@ -168,7 +168,7 @@
     watched = {}
     watched_has_data = false;
 
-  }, 60 * 1000 );
+  }, 5 * 60 * 1000 );
 
   // For debugging
   window.fv_player_stats_watched = function() {
