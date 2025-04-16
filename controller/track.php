@@ -322,6 +322,13 @@ Class FvPlayerTrackerWorker {
 
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
     fclose( $this->file );
+
+    // Add .htaccess to deny all direct access
+    $htaccess_path = $this->cache_path . '/.htaccess';
+    if ( ! file_exists( $htaccess_path ) ) {
+      file_put_contents( $htaccess_path, "# Deny access to tracking files\nOrder allow,deny\nDeny from all\n" );
+    }
+
   }
 }
 
