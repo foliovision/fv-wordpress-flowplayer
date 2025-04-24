@@ -257,6 +257,26 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.19 - 2025-04-24 =
+
+* Audio Player: You can use type="audio" in shortcode to force audio player for a HLS stream if the detection fails
+* Security: Stats: Block direct access to temporary files with .htaccess
+* Video stats: Send video playback duration every 5 minutes and not just when loading the page
+* Bugfix: Airplay: Fix for multiple instances
+* Bugfix: Gutenberg block: Fix conversion of video block to FV Player
+* Bugfix: Incorrect MP3 duration calculation
+* Bugfix: Lightbox: Avoid showing JavaScript as visible text when using FV Player Pro video ads in front of a video
+* Bugfix: Lightbox: Fix bad image aspect ratio if using 100% player width and height in global settings
+* Bugfix: Lightbox: Fix text link to video lightbox
+* Bugfix: Sticky video: Avoid issues if theme uses z-index
+* Bugfix: Sticky video: Fix disabling for individual players
+* Bugfix: Video Stats: Fix admin screen performance
+* Bugfix: Video Stats: Fix graph numbers for single players
+* Bugfix: Video Stats: Fix performance issues if video is less than 4 seconds
+* Bugfix: Video subtitles/chapters/transcript removed during background video duration checks if the initial duration check has failed
+* Bugfix: YouTube: Fix live stream count-down not appearing for iOS
+* Bugfix: YouTube: Fix repeated opening and closing when using Lightbox on mobile
+
 = 8.0.18 - 2025-02-24 =
 
 * HLS: Do not use HLS.js for Safari
