@@ -421,21 +421,20 @@
 	text-align: left;
 	font-size: 1em;
 	padding: 0;
-	color: black;
+	color: inherit;
 	font-weight: bold;
 	background: transparent;
+	transition: inherit;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info p {
-	color: black;
+	color: inherit;
 	margin-bottom: 0;
 }
 .fp-playlist-external.fp-playlist-season .fvp-playlist-item-info .dur {
-	color: black;
+	color: inherit;
 	font-size: 0.65em;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-.fp-playlist-external.fp-playlist-season a:hover h4 {
-	color: #333 !important;
+	transition: inherit;
 }
 .fp-playlist-external.fv-playlist-design-2017 a.is-active h4 {
 	display: block;
@@ -445,7 +444,7 @@
 .fp-playlist-external.fp-playlist-season a.fvp-video-thumb-no-splash h4,
 .fp-playlist-external.fp-playlist-season a.is-active:hover h4,
 .fp-playlist-external.fp-playlist-season a:hover .dur {
-	color: #000;
+	color: inherit;
 }
 .fp-playlist-external.fp-playlist-season a .now-playing {
 	display: none;
@@ -595,10 +594,11 @@
 	opacity: 1;
 	margin-top: 10px;
 	background: none;
-	color: #000;
+	color: inherit;
 	text-align: left;
 	padding: 0;
 	line-height: 1.4;
+	transition: inherit;
 }
 
 .fp-playlist-version-one.fp-playlist-external a h4 span,
@@ -618,7 +618,8 @@
 .fp-playlist-version-two.fp-playlist-external a:hover .dur,
 .fp-playlist-version-one.fp-playlist-external a:hover h4,
 .fp-playlist-version-two.fp-playlist-external a:hover h4 {
-	color: #000;
+	color: inherit;
+	transition: inherit;
 }
 
 .fp-playlist-version-one.fp-playlist-external .dur,
