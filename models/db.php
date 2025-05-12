@@ -622,6 +622,8 @@ class FV_Player_Db {
         // as a result
         array_shift($new_playlist_tag);
 
+        $atts['video_objects'] = $fv_fp->current_player()->getVideos();
+
         $atts['playlist'] = implode(';', $new_playlist_tag);
       }
     }
