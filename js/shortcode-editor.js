@@ -570,7 +570,7 @@ jQuery(function() {
       var
         next = false, // track if the player data has changed while saving
         overlay_close_waiting_for_save = false,
-        loading = true,
+        ajax_saving = true,
         int_keyup = false;
 
       /*$(window).on('beforeunload', function(e) {
@@ -1257,16 +1257,16 @@ jQuery(function() {
         insert_button_toggle(true);
         copy_player_button_toggle(true);
 
-        loading = false;
+        ajax_saving = false;
       });
 
       $doc.on('fv_player_editor_player_loaded', function() {
-        loading = false;
+        ajax_saving = false;
         is_unsaved = false;
       });
 
       $doc.on('fv_flowplayer_player_editor_reset', function() {
-        loading = true;
+        ajax_saving = true;
         is_unsaved = true;
         has_draft_status = true;
         //is_draft_changed = false;
@@ -1280,9 +1280,9 @@ jQuery(function() {
        * @param {object} [e] The event handle is invoked by input change event
        */
       function save(e) {
-        // "loading" is implicitly set to true to make sure we wait with any saving until
+        // "ajax_saving" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
-        if ( loading ) {
+        if ( ajax_saving ) {
           return;
         }
 
@@ -1552,7 +1552,7 @@ jQuery(function() {
                   init_saved_player_fields();
                   is_unsaved = false;
                   //is_draft_changed = false;
-                  loading = false;
+                  ajax_saving = false;
                   ajax_save_this_please = false;
                 }
 
