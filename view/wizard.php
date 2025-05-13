@@ -28,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   $script_fv_player_editor_defaults = array();
 
   $script_fv_player_editor_fields = array();
+  $script_fv_player_editor_fields_with_language = array();
 
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );
 
@@ -190,18 +191,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="components-base-control__field">
       <?php if( $language ): ?>
         <div class="field-with-language">
-          <select class="<?php echo esc_attr( $field_id ); ?>_lang" name="<?php echo esc_attr( $field_id ); ?>_lang">
-            <option value=""><?php esc_html_e('Pick language', 'fv_flowplayer'); ?></option>
-            <?php
-            $aLanguages = flowplayer::get_languages();
-            $aCurrent = explode('-', get_bloginfo('language'));
-            $sCurrent = ''; //aCurrent[0];
-            foreach ($aLanguages AS $sCode => $sLabel) {
-              ?><option value="<?php echo esc_attr( strtolower($sCode) ); ?>"<?php if (strtolower($sCode) == $sCurrent) echo ' selected'; ?>><?php echo esc_html( $sCode ); ?>&nbsp;&nbsp;(<?php echo esc_html( $sLabel ); ?>)</option>
-              <?php
-            }
-            ?>
-          </select>
+          <?php // We use a simple input field here, but it will be upgraded to a select box with all the languages in JavaScript ?>
+          <input type="text" class="<?php echo esc_attr( $field_id ); ?>_lang" name="<?php echo esc_attr( $field_id ); ?>_lang" />
       <?php endif; ?>
 
       <?php if($browser):?>
@@ -265,7 +256,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   }
 
   function fv_player_editor_input( $args, $is_child = false ) {
-    global $script_fv_player_editor_fields;
+    global $script_fv_player_editor_fields, $script_fv_player_editor_fields_with_language;
 
     $args = wp_parse_args(
       $args,
@@ -307,6 +298,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     if ( $video_meta ) {
       $script_fv_player_editor_fields[ $name ]['store'] = 'video_meta';
+    }
+
+    // This tells JavaScript to upgrade the text input to a select box with all the languages
+    if ( $language ) {
+      $script_fv_player_editor_fields_with_language[] = $name;
     }
 
     if( !empty($dependencies) ) {
@@ -978,9 +974,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
 </div>
 
 <?php
-global $script_fv_player_editor_defaults, $script_fv_player_editor_dependencies, $script_fv_player_editor_fields;
+global $script_fv_player_editor_defaults, $script_fv_player_editor_dependencies, $script_fv_player_editor_fields, $script_fv_player_editor_fields_with_language;
 
 echo "<script>var fv_player_editor_defaults = ".wp_json_encode($script_fv_player_editor_defaults)."</script>\n";
 echo "<script>var fv_player_editor_dependencies = ".wp_json_encode($script_fv_player_editor_dependencies)."</script>\n";
 echo "<script>var fv_player_editor_fields = ".wp_json_encode($script_fv_player_editor_fields)."</script>\n";
+
+// This tells JavaScript to upgrade the text input to a select box with all the languages
+echo "<script>var fv_player_editor_fields_with_language = ".wp_json_encode($script_fv_player_editor_fields_with_language)."</script>\n";
 ?>

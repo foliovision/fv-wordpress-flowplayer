@@ -3876,7 +3876,8 @@ Please also contact FV Player support with the following debug information:\n\n\
       }
 
       get_tabs('subtitles').hide();
-      get_tab(new_index,'subtitles').show();
+
+      var subtitles_tab = get_tab(new_index,'subtitles').show();
 
       if($('.fv-player-tab-playlist [data-index]').length > 1){
         $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
@@ -3906,6 +3907,31 @@ Please also contact FV Player support with the following debug information:\n\n\
       hide_inputs();
 
       $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
+
+      /**
+       * Upgrade text inputs to select boxes for matching fields
+       */
+      window.fv_player_editor_fields_with_language.forEach( function( field_name ) {
+        let fields_with_languages = $( '.fv_wp_flowplayer_field_' + field_name + '_lang', subtitles_tab );
+
+        fields_with_languages.each( function() {
+          let $element = $( this ),
+            value = $element.val();
+
+          $element.replaceWith( '<select class="fv_wp_flowplayer_field_' + field_name + '_lang" name="fv_wp_flowplayer_field_' + field_name + '_lang">' +
+            '<option value="">' + fv_player_editor_conf.field_languages_default + '</option>' +
+            Object.keys( fv_player_editor_conf.field_languages ).map( function( lang_code ) {
+              let html = '<option value="' + lang_code.toLowerCase() + '"';
+              if ( lang_code.toLowerCase() == value.toLowerCase() ) {
+                html += ' selected';
+              }
+              html += '>' + fv_player_editor_conf.field_languages[ lang_code ] + ' (' + lang_code + ')</option>'
+              return html;
+            }).join( '' ) +
+            '</select>'
+          );
+        } );
+      } );
     }
 
     /**
@@ -4309,14 +4335,14 @@ Please also contact FV Player support with the following debug information:\n\n\
         iTabIndex = 0;
       }
 
-      var oTab = get_tab( iTabIndex, 'subtitles' );
+      var current_subtitles_tab = get_tab( iTabIndex, 'subtitles' );
 
       var subElement = false;
 
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', oTab);
+        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab);
         if( subElement.length ) {
           if( get_field( field,subElement).val() ) {
             subElement = false;
@@ -4329,13 +4355,13 @@ Please also contact FV Player support with the following debug information:\n\n\
 
         // Get the last inputs and clear the values
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last').prop('outerHTML') );
+        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab ).prop('outerHTML') );
         subElement.find('[name]').val('');
         subElement.removeAttr('data-id_videometa');
 
         // Insert the new input after the last exiting input
         // TODO: Function to get last of the language inputs which is not a child
-        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', oTab) );
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
