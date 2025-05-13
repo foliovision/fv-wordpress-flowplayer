@@ -56,6 +56,8 @@ jQuery(function() {
     // Foliopress WYSIWYG instance, if any
     instance_fp_wysiwyg,
 
+    is_loading = false,
+
     // are we editing player which is not yet in DB?
     is_unsaved = true,
 
@@ -2701,6 +2703,8 @@ jQuery(function() {
           // stop Ajax saving that might occur from thinking it's a draft taking place
           is_unsaved = false;
 
+          is_loading = true;
+
           // now load playlist data
           // load video data via an AJAX call
           debug_log('Running fv_player_db_load Ajax.');
@@ -2739,6 +2743,8 @@ Please also contact FV Player support with the following debug information:\n\n\
 
                 // Prevent autosave notice from appearing
                 is_unsaved = true;
+
+                is_loading = false;
                 return;
               }
 
@@ -2841,6 +2847,8 @@ Please also contact FV Player support with the following debug information:\n\n\
 
               // Set the current data as previous to let auto-saving detect changes
               ajax_save_previous = build_ajax_data(true);
+
+              is_loading = false;
             }
 
             overlay_hide();
@@ -4889,6 +4897,11 @@ Please also contact FV Player support with the following debug information:\n\n\
     Mark each manually updated title or splash field as such
     */
     $doc.on('input change', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
+
+      if ( is_loading ) {
+        return;
+      }
+
       let $input;
 
       // if this element already has data set, don't do any of the selections below
