@@ -238,7 +238,7 @@ jQuery(function() {
             $( '#fv-player-editor-playlist .fv-player-editor-playlist-item:last').hide();
           }
 
-          editor_src_field = get_field( "src", new_item );
+          editor_src_field = get_field( "src", new_item.video_tab );
         }
       }
 
@@ -2783,6 +2783,9 @@ Please also contact FV Player support with the following debug information:\n\n\
                 }
               }
 
+              let new_video_tabs = [],
+                new_subtitles_tabs = [];
+
               // add videos from the DB
               for (var x in vids) {
                 let
@@ -2814,11 +2817,13 @@ Please also contact FV Player support with the following debug information:\n\n\
                   }
                 }
 
-                var $video_data_tab = playlist_item_add(vids[x]);
-                var $subtitles_tab = get_tab( 'last', 'subtitles' );
+                let new_item = playlist_item_add( vids[x], true );
+                new_video_tabs.push( new_item.video_tab );
+                new_subtitles_tabs.push( new_item.subtitles_tab );
 
                 $.each( video_meta_languages, function( k, v ) {
                   for (var i in v) {
+                    // TODO: Will this work with the virual new_item?
                     language_add( k, v[i].file, v[i].lang, x, v[i].id);
                   }
                 } );
@@ -2826,13 +2831,19 @@ Please also contact FV Player support with the following debug information:\n\n\
                 if (video_meta_to_set.length) {
                   for ( let i in video_meta_to_set) {
                     // predefined meta input with field already existing in the dialog
+                    // TODO: Will this work with the virual new_item?
                     set_editor_field(video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, video_meta_to_set[i].id_video);
                   }
                 }
 
                 // fire up meta load event for this video, so plugins can process it and react
-                $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab , $subtitles_tab]);
+                // TODO: Will this work with the virual new_item?
+                $doc.trigger('fv_flowplayer_video_meta_load', [ x, vids[x].meta, new_item[0] , new_item[1] ]);
               }
+
+              // Add all the new video and subtitle tabs to the DOM all at once
+              jQuery('.fv-player-tab-video-files').append( new_video_tabs );
+              jQuery('.fv-player-tab-subtitles').append( new_subtitles_tabs );
 
               debug_log( 'Finished populating editor fields for ' + vids.length + ' videos in ' + debug_time( time_start ) + '.' );
 
@@ -3152,7 +3163,14 @@ Please also contact FV Player support with the following debug information:\n\n\
             // which outlines video IDs from a database
             var aPlaylist = sPlaylist[1].split(';');
             for ( let i in aPlaylist) {
-              playlist_item_add(aPlaylist[i], aCaptions[i], aSubtitles[i], aSplashText[i]);
+
+              // TODO: Will this work?
+              playlist_item_add( {
+                src: aPlaylist[i],
+                title: aCaptions[i],
+                subtitles: aSubtitles[i],
+                splash_text: aSplashText[i]
+              } );
             }
           }
 
@@ -3742,13 +3760,11 @@ Please also contact FV Player support with the following debug information:\n\n\
      *
      * @param {object|string} input       Object from FV Player database or legacy shortcode argument
      *                                    text which was a comma separated list of URLs
-     * @param {string}        sCaption    Legacy
-     * @param {string}        sSubtitles  Legacy
-     * @param {string}        sSplashText Legacy
+     * @param {boolean}       skip_dom_add  If true, the item will not be added to the DOM and you will need to add it manually.
      *
      * @return {jQuery}                   New playlist item.
     */
-    function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
+    function playlist_item_add( input, skip_dom_add ) {
       var new_playlist_item = $(template_playlist_item);
       $('.fv-player-tab-playlist #fv-player-editor-playlist').append(new_playlist_item);
 
@@ -3762,11 +3778,10 @@ Please also contact FV Player support with the following debug information:\n\n\
       current.find('.fvp_item_video-filename').text( 'Video ' + (newIndex + 1) );
       current.find('.fvp_item_video-duration').text( '' );
 
-      jQuery('.fv-player-tab-video-files').append(template_video);
-      var new_item = get_tab('last','video-files');
+      let new_item = jQuery( template_video );
       new_item.hide().attr('data-index', newIndex);
-      jQuery('.fv-player-tab-subtitles').append(template_subtitles_tab);
-      var new_item_subtitles = get_tab('last','subtitles');
+
+      let new_item_subtitles = jQuery( template_subtitles_tab );
       new_item_subtitles.hide().attr('data-index', newIndex);
 
       // processing database input
@@ -3806,35 +3821,6 @@ Please also contact FV Player support with the following debug information:\n\n\
           if( v.meta_key == 'audio' ) get_field('audio',new_item).prop('checked',v.meta_value).attr('data-id',v.id);
         });
 
-        // processing shortcode input
-      } else if( input ) {
-        var aInput = input.split(',');
-        var count = 0;
-        for( let i in aInput ) {
-          if( aInput[i].match(/^rtmp:/) ) {
-            get_field('rtmp_path',new_item).val(aInput[i].replace(/^rtmp:/,''));
-          } else if( aInput[i].match(/\.(jpg|png|gif|jpe|jpeg)(?:\?.*?)?$/) ) {
-            get_field('splash',new_item).val(aInput[i]);
-          } else {
-            if( count == 0 ) {
-              get_field('src',new_item).val(aInput[i]);
-            } else {
-              get_field('src'+count,new_item).val(aInput[i]);
-            }
-            count++;
-          }
-        }
-        if( sCaption ) {
-          get_field('title',new_item).val(sCaption).trigger( 'change' );
-        }
-        if( sSubtitles ) {
-          get_field('subtitles',new_item_subtitles).val(sSubtitles);
-        }
-        if( sSplashText ) {
-          get_field('splash_text',new_item).val(sSplashText).trigger( 'change' );
-        }
-
-      // new item
       } else {
         new_playlist_item.find('.fvp_item_video-thumbnail').addClass( 'no-img' );
       }
@@ -3848,7 +3834,12 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       hide_inputs();
 
-      return new_item;
+      if ( ! skip_dom_add ) {
+        jQuery('.fv-player-tab-video-files').append( new_item );
+        jQuery('.fv-player-tab-subtitles').append( new_item_subtitles );
+      }
+
+      return { video_tab: new_item, subtitles_tab: new_item_subtitles };
     }
 
     /*
