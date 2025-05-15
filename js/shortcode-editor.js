@@ -1369,7 +1369,7 @@ jQuery(function() {
 
         debug_log('Running fv_player_db_save Ajax.');
 
-        let time_start = performance.now();
+        let time_start_save = performance.now();
 
         $.ajax({
           type:        'POST',
@@ -1382,7 +1382,7 @@ jQuery(function() {
           dataType:    'json',
           success: function(response) {
 
-            debug_log( 'Finished fv_player_db_save Ajax in ' + debug_time( time_start ) + '.' );
+            debug_log( 'Finished fv_player_db_save Ajax in ' + debug_time( time_start_save ) + '.' );
 
             if( response.error ) {
               if( response.fatal_error ) {
@@ -1409,6 +1409,8 @@ jQuery(function() {
 
               return;
             }
+
+            let time_start_display = performance.now();
 
             debug_log('player ID after save: '+response.id);
 
@@ -1504,6 +1506,8 @@ jQuery(function() {
                * if you make more changes to the price and save again before the initial save is done.
                */
               $doc.trigger( 'fv_flowplayer_player_meta_load_high_priority', [ response ] );
+
+              debug_log( 'Finished populating editor fields for ' + response.videos.length + ' videos in ' + debug_time( time_start_display ) + '.' );
 
               // Did the data change while saving?
               if( next ) {
