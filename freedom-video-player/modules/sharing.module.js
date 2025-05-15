@@ -98,11 +98,11 @@ flowplayer( function(api,root) {
   });
 
   var id = root.attr('id'),
-    alternative = !flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen;
+    mobile_alternative_fullscreen = ! flowplayer.support.fullscreen && ! flowplayer.conf.native_fullscreen && flowplayer.conf.mobile_alternative_fullscreen;
 
   api.bind( 'fullscreen', function(e,api) {
     jQuery('#wpadminbar, .nc_wrapper').hide();
-    if( alternative ) {
+    if( mobile_alternative_fullscreen ) {
       if( api.video.type == 'video/youtube' ) return;
       root.before('<span data-fv-placeholder="'+id+'"></span>');
       root.appendTo('body');
@@ -111,7 +111,7 @@ flowplayer( function(api,root) {
 
   api.bind( 'fullscreen-exit', function(e,api,video) {
     jQuery('#wpadminbar, .nc_wrapper').show();
-    if( alternative ) {
+    if( mobile_alternative_fullscreen ) {
       jQuery('span[data-fv-placeholder='+id+']').replaceWith(root);
     }
   });
