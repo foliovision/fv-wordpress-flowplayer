@@ -35,6 +35,9 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load" ),
     'edit_nonce' => wp_create_nonce( "fv-player-edit" ),
     'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce" ),
+    // Used to create the select box with all the languages in JavaScript
+    'field_languages' => flowplayer::get_languages(),
+    'field_languages_default' => __( 'Pick language', 'fv_flowplayer' ),
     'table_new_row_nonce' => wp_create_nonce( "fv-player-table_new_row_nonce" ),
     'preview_nonce' => wp_create_nonce( "fv_player_preview" ),
     'search_nonce' => wp_create_nonce( "fv-player-editor-search-nonce" ),

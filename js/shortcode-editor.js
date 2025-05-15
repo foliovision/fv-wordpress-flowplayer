@@ -56,6 +56,8 @@ jQuery(function() {
     // Foliopress WYSIWYG instance, if any
     instance_fp_wysiwyg,
 
+    is_loading = false,
+
     // are we editing player which is not yet in DB?
     is_unsaved = true,
 
@@ -570,7 +572,7 @@ jQuery(function() {
       var
         next = false, // track if the player data has changed while saving
         overlay_close_waiting_for_save = false,
-        loading = true,
+        ajax_saving = true,
         int_keyup = false;
 
       /*$(window).on('beforeunload', function(e) {
@@ -1257,16 +1259,16 @@ jQuery(function() {
         insert_button_toggle(true);
         copy_player_button_toggle(true);
 
-        loading = false;
+        ajax_saving = false;
       });
 
       $doc.on('fv_player_editor_player_loaded', function() {
-        loading = false;
+        ajax_saving = false;
         is_unsaved = false;
       });
 
       $doc.on('fv_flowplayer_player_editor_reset', function() {
-        loading = true;
+        ajax_saving = true;
         is_unsaved = true;
         has_draft_status = true;
         //is_draft_changed = false;
@@ -1280,9 +1282,9 @@ jQuery(function() {
        * @param {object} [e] The event handle is invoked by input change event
        */
       function save(e) {
-        // "loading" is implicitly set to true to make sure we wait with any saving until
+        // "ajax_saving" is implicitly set to true to make sure we wait with any saving until
         // all existing player's data are loaded and filled into inputs
-        if ( loading ) {
+        if ( ajax_saving ) {
           return;
         }
 
@@ -1367,6 +1369,8 @@ jQuery(function() {
 
         debug_log('Running fv_player_db_save Ajax.');
 
+        let time_start = performance.now();
+
         $.ajax({
           type:        'POST',
           url:         ajaxurl + '?action=fv_player_db_save',
@@ -1378,8 +1382,13 @@ jQuery(function() {
           dataType:    'json',
           success: function(response) {
 
+            debug_log( 'Finished fv_player_db_save Ajax in ' + debug_time( time_start ) + '.' );
+
             if( response.error ) {
               if( response.fatal_error ) {
+
+                debug_log( 'Fatal error in fv_player_db_save: ' + response.fatal_error );
+
                 var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
 
                 var overlay = overlay_show('error_saving');
@@ -1390,6 +1399,8 @@ jQuery(function() {
 
               } else {
                 add_notice( 'error', response.error );
+
+                debug_log( 'Error in fv_player_db_save: ' + response.error );
               }
 
               el_spinner.hide();
@@ -1543,7 +1554,7 @@ jQuery(function() {
                   init_saved_player_fields();
                   is_unsaved = false;
                   //is_draft_changed = false;
-                  loading = false;
+                  ajax_saving = false;
                   ajax_save_this_please = false;
                 }
 
@@ -1566,6 +1577,8 @@ jQuery(function() {
           },
           error: function( jqXHR, textStatus, errorThrown) {
             add_notice( 'error', '<p>Error saving changes: ' + errorThrown + ': ' + jqXHR.responseText + '</p>' );
+
+            debug_log( 'HTTP Error in fv_player_db_save: ' + errorThrown + ': ' + jqXHR.responseText );
 
             el_spinner.hide();
 
@@ -2258,6 +2271,10 @@ jQuery(function() {
       }
     }
 
+    function debug_time( time ) {
+      return Math.round( 100 * ( performance.now() - time ) / 1000 ) / 100 + ' seconds';
+    }
+
     /**
      * Closing the editor
      * * remove hidden tags from post editor
@@ -2686,9 +2703,13 @@ jQuery(function() {
           // stop Ajax saving that might occur from thinking it's a draft taking place
           is_unsaved = false;
 
+          is_loading = true;
+
           // now load playlist data
           // load video data via an AJAX call
           debug_log('Running fv_player_db_load Ajax.');
+
+          let time_start = performance.now();
 
           fv_player_shortcode_editor_ajax = jQuery.post( ajaxurl + '?fv_player_db_load=' + result[1], {
             action : 'fv_player_db_load',
@@ -2698,7 +2719,7 @@ jQuery(function() {
           }, function(response) {
             var vids = response['videos'];
 
-            debug_log('Finished fv_player_db_load Ajax.',response);
+            debug_log('Finished fv_player_db_load Ajax in ' + debug_time( time_start ) + '.',response);
 
             if (response) {
 
@@ -2722,8 +2743,12 @@ Please also contact FV Player support with the following debug information:\n\n\
 
                 // Prevent autosave notice from appearing
                 is_unsaved = true;
+
+                is_loading = false;
                 return;
               }
+
+              let time_start = performance.now();
 
               init_saved_player_fields( result[1] );
 
@@ -2805,6 +2830,8 @@ Please also contact FV Player support with the following debug information:\n\n\
                 $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab , $subtitles_tab]);
               }
 
+              debug_log( 'Finished populating editor fields for ' + vids.length + ' videos in ' + debug_time( time_start ) + '.' );
+
               // show playlist instead of the "add new video" form
               // if we have more than 1 video
               if( current_video_to_edit > -1 ) {
@@ -2820,6 +2847,8 @@ Please also contact FV Player support with the following debug information:\n\n\
 
               // Set the current data as previous to let auto-saving detect changes
               ajax_save_previous = build_ajax_data(true);
+
+              is_loading = false;
             }
 
             overlay_hide();
@@ -3279,6 +3308,8 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       ajax_data = set_control_fields( ajax_data );
 
+      let time_start = performance.now();
+
       // save data
       // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
       $.ajax({
@@ -3292,8 +3323,13 @@ Please also contact FV Player support with the following debug information:\n\n\
         dataType:    'json',
         success: function(response) {
 
+          debug_log( 'Finished fv_player_db_save Ajax in ' + debug_time( time_start ) + '.' );
+
           if( response.error ) {
             if( response.error && response.fatal_error ) {
+
+              debug_log( 'Fatal error in fv_player_db_save: ' + response.fatal_error );
+
               let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
 
               let overlay = overlay_show('error_saving');
@@ -3303,7 +3339,9 @@ Please also contact FV Player support with the following debug information:\n\n\
               jQuery('#fv_player_copy_to_clipboard').select();
 
             } else {
-              add_notice( 'error', response.error )
+              add_notice( 'error', response.error );
+
+              debug_log( 'Error in fv_player_db_save: ' + response.error );
             }
 
             el_spinner.hide();
@@ -3366,6 +3404,8 @@ Please also contact FV Player support with the following debug information:\n\n\
         },
         error: function( jqXHR, textStatus, errorThrown ) {
           overlay_show('message', 'An unexpected error has occurred while saving player: <code>' + errorThrown + '</code><br /><br />Please try again');
+
+          debug_log( 'HTTP Error in fv_player_db_save: ' + errorThrown + ': ' + jqXHR.responseText );
         }
       });
 
@@ -3836,7 +3876,8 @@ Please also contact FV Player support with the following debug information:\n\n\
       }
 
       get_tabs('subtitles').hide();
-      get_tab(new_index,'subtitles').show();
+
+      var subtitles_tab = get_tab(new_index,'subtitles').show();
 
       if($('.fv-player-tab-playlist [data-index]').length > 1){
         $('.fv-player-playlist-item-title').html('Playlist item no. ' + ++new_index);
@@ -3866,6 +3907,31 @@ Please also contact FV Player support with the following debug information:\n\n\
       hide_inputs();
 
       $doc.trigger('fv-player-editor-video-opened', [ new_index ] );
+
+      /**
+       * Upgrade text inputs to select boxes for matching fields
+       */
+      window.fv_player_editor_fields_with_language.forEach( function( field_name ) {
+        let fields_with_languages = $( '.fv_wp_flowplayer_field_' + field_name + '_lang', subtitles_tab );
+
+        fields_with_languages.each( function() {
+          let $element = $( this ),
+            value = $element.val();
+
+          $element.replaceWith( '<select class="fv_wp_flowplayer_field_' + field_name + '_lang" name="fv_wp_flowplayer_field_' + field_name + '_lang">' +
+            '<option value="">' + fv_player_editor_conf.field_languages_default + '</option>' +
+            Object.keys( fv_player_editor_conf.field_languages ).map( function( lang_code ) {
+              let html = '<option value="' + lang_code.toLowerCase() + '"';
+              if ( lang_code.toLowerCase() == value.toLowerCase() ) {
+                html += ' selected';
+              }
+              html += '>' + fv_player_editor_conf.field_languages[ lang_code ] + ' (' + lang_code + ')</option>'
+              return html;
+            }).join( '' ) +
+            '</select>'
+          );
+        } );
+      } );
     }
 
     /**
@@ -3984,7 +4050,9 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       el_spinner.show();
 
-      debug_log('Running fv_player_db_load Ajax.');
+      debug_log('Running fv_player_db_load Ajax for preview.');
+
+      let time_start = performance.now();
 
       // load player data and reload preview of the full player
       // when we go back from editing a single video in a playlist
@@ -3995,7 +4063,7 @@ Please also contact FV Player support with the following debug information:\n\n\
         current_video_to_edit: get_playlist_items_count() > 1 ? video_index : -1,
       }, function(response) {
 
-        debug_log('Finished fv_player_db_load Ajax.',response);
+        debug_log('Finished fv_player_db_load Ajax in ' + debug_time( time_start ) + '.',response);
 
         if ( response.html ) {
           // auto-refresh preview
@@ -4267,14 +4335,14 @@ Please also contact FV Player support with the following debug information:\n\n\
         iTabIndex = 0;
       }
 
-      var oTab = get_tab( iTabIndex, 'subtitles' );
+      var current_subtitles_tab = get_tab( iTabIndex, 'subtitles' );
 
       var subElement = false;
 
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', oTab);
+        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab);
         if( subElement.length ) {
           if( get_field( field,subElement).val() ) {
             subElement = false;
@@ -4287,13 +4355,13 @@ Please also contact FV Player support with the following debug information:\n\n\
 
         // Get the last inputs and clear the values
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last').prop('outerHTML') );
+        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab ).prop('outerHTML') );
         subElement.find('[name]').val('');
         subElement.removeAttr('data-id_videometa');
 
         // Insert the new input after the last exiting input
         // TODO: Function to get last of the language inputs which is not a child
-        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', oTab) );
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
@@ -4855,6 +4923,11 @@ Please also contact FV Player support with the following debug information:\n\n\
     Mark each manually updated title or splash field as such
     */
     $doc.on('input change', '#fv_wp_flowplayer_field_splash, #fv_wp_flowplayer_field_title', function() {
+
+      if ( is_loading ) {
+        return;
+      }
+
       let $input;
 
       // if this element already has data set, don't do any of the selections below
