@@ -2823,7 +2823,7 @@ Please also contact FV Player support with the following debug information:\n\n\
 
                 $.each( video_meta_languages, function( k, v ) {
                   for (var i in v) {
-                    // TODO: Will this work with the virual new_item?
+                    // TODO: This does not work with the new virtual item, it should get new_item.subtitles_tab
                     language_add( k, v[i].file, v[i].lang, x, v[i].id);
                   }
                 } );
@@ -2831,13 +2831,13 @@ Please also contact FV Player support with the following debug information:\n\n\
                 if (video_meta_to_set.length) {
                   for ( let i in video_meta_to_set) {
                     // predefined meta input with field already existing in the dialog
-                    // TODO: Will this work with the virual new_item?
+                    // TODO: This does not work with the new virtual item, it should get new_item.video_tab
                     set_editor_field(video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, video_meta_to_set[i].id_video);
                   }
                 }
 
                 // fire up meta load event for this video, so plugins can process it and react
-                // TODO: Will this work with the virual new_item?
+                // TODO: Will this work with the virual new_item? Check fv-player, fv-player-pro and fv-player-coconut
                 $doc.trigger('fv_flowplayer_video_meta_load', [ x, vids[x].meta, new_item[0] , new_item[1] ]);
               }
 
