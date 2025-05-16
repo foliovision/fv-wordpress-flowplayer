@@ -831,11 +831,12 @@ CREATE TABLE " . self::$db_table_name . " (
    *                         fv_player_guttenberg_attributes_save().
    *                         We need this as empty $meta_data would mean it should
    *                         all be removed.
+   * @param bool  $skip_video_meta_check If true, video meta check will be skipped.
    *
    * @return bool|int Returns record ID if successful, false otherwise.
    * @throws Exception When the underlying metadata object throws.
    */
-  public function save( $meta_data = array(), $skip_meta = false ) {
+  public function save( $meta_data = array(), $skip_meta = false, $skip_video_meta_check = false ) {
     global $wpdb;
 
     $is_update   = ($this->id ? true : false);
@@ -869,11 +870,13 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     // Check video duration, or even splash image and title if it was not checked previously
-    // TODO: What if the video source has changed?
     if(
-      !$last_video_meta_check ||
-      $last_video_meta_check + 900 < time() ||
-      strcasecmp( $video_url, $last_video_meta_check_src ) != 0
+      ! $skip_video_meta_check &&
+      (
+        !$last_video_meta_check ||
+        $last_video_meta_check + 900 < time() ||
+        strcasecmp( $video_url, $last_video_meta_check_src ) != 0
+      )
     ) {
 
       // Check if FV Player Pro can fetch the video splash, title and duration

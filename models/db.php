@@ -1917,6 +1917,9 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     if ( $data ) {
       try {
+
+        $time_import_start = microtime(true);
+
         // first, create the player
         $player_keys = $data;
         unset($player_keys['meta'], $player_keys['videos']);
@@ -1994,8 +1997,12 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
               }
             }
 
+            // Skip video meta check if the import is taking more than 10 seconds.
+            // We could also rely on the PHP max_execution_time/2 or so.
+            $skip_video_meta_check = ( microtime(true) - $time_import_start ) > 10;
+
             $video_object = new FV_Player_Db_Video(null, $video_data, $FV_Player_Db);
-            $id_video = $video_object->save( $video_data['meta'] );
+            $id_video = $video_object->save( $video_data['meta'], false, $skip_video_meta_check );
 
             $player_video_ids[] = $id_video;
           }
