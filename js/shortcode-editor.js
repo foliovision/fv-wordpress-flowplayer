@@ -3630,10 +3630,10 @@ Please also contact FV Player support with the following debug information:\n\n\
     */
     function lightbox_open() {
       $("#fv_player_box").addClass("fv-flowplayer-shortcode-editor");
-    }
+    } 
 
     function map_checkbox_value( $element ) {
-      var input_type = $element.get(0).type.toLowerCase(),
+      var input_type = $element.get(0).type && $element.get(0).type.toLowerCase(),
         is_checked = $element.get(0).checked;
 
       if ( 'checkbox' == input_type ) {
@@ -3674,7 +3674,7 @@ Please also contact FV Player support with the following debug information:\n\n\
     }
 
     function map_input_type( $el ) {
-      var input_type = $el.get(0).type.toLowerCase();
+      var input_type = $el.get(0).type && $el.get(0).type.toLowerCase();
 
       if ( 'SELECT' == $el.get(0).nodeName ) {
         input_type = 'select';

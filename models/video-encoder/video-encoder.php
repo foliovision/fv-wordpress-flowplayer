@@ -800,7 +800,7 @@ abstract class FV_Player_Video_Encoder {
   function shortcode_editor_item() {
     // TODO: The field has to start with fv_wp_flowplayer_field_ which is not easy to keep in mind!
     ?>
-    <input type="hidden" id="fv_wp_flowplayer_field_encoding_job_id" name="fv_wp_flowplayer_field_encoding_job_id" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+    <span type="hidden" id="fv_wp_flowplayer_field_encoding_job_id" name="fv_wp_flowplayer_field_encoding_job_id" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Hidden</span>
     <?php
   }
 

@@ -117,7 +117,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     ?>
   <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control__field">
     <span class="components-form-toggle<?php /*if( $default ) echo ' is-checked';*/ ?>">
-      <input class="components-form-toggle__input<?php if( $no_data ) echo ' no-data'; ?>" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo esc_html( $name ); ?>" name="fv_wp_flowplayer_field_<?php echo esc_html( $name ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+      <span class="components-form-toggle__input<?php if( $no_data ) echo ' no-data'; ?>" type="checkbox" aria-describedby="inspector-toggle-control-0__help"  id="fv_wp_flowplayer_field_<?php echo esc_html( $name ); ?>" name="fv_wp_flowplayer_field_<?php echo esc_html( $name ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Checkbox</span>
       <span class="components-form-toggle__track"></span>
       <span class="components-form-toggle__thumb"></span>
     </span>
@@ -134,7 +134,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $label ); ?></label>
     <div class="components-base-control__field">
-      <input class="components-text-control__input" type="number" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+      <span class="components-text-control__input" type="number" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Number</span>
     </div>
   </div>
     <?php
@@ -151,15 +151,15 @@ if ( ! defined( 'ABSPATH' ) ) {
         <label for="<?php echo esc_attr( $field_id ); ?>" class="components-input-control__label"><?php echo esc_html( $label ); ?></label>
       </div>
       <div class="components-input-control__container">
-        <select class="components-select-control__input" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" <?php if( $multiple ) echo 'multiple'; ?>>
+        <span class="components-select-control__input" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" <?php if( $multiple ) echo 'multiple'; ?>>
           <?php foreach( $options AS $option ) : ?>
             <?php if( is_array($option) ) : ?>
-              <option value="<?php echo esc_attr( $option[0] ); ?>"><?php echo esc_html( $option[1] ); ?></option>
+              <span value="<?php echo esc_attr( $option[0] ); ?>"><?php echo esc_html( $option[1] ); ?></span>
             <?php else : ?>
-              <option><?php echo esc_html( $option ); ?></option>
+              <span><?php echo esc_html( $option ); ?></span>
             <?php endif; ?>
           <?php endforeach; ?>
-        </select>
+        </span>
 
       </div>
     </div>
@@ -175,7 +175,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   <div<?php echo $id ? ' id="' . esc_attr( $id ) . '"' : ''; ?> class="components-base-control">
     <label class="components-base-control__label" for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $label ); ?></label>
     <div class="components-base-control__field">
-      <textarea class="components-textarea-control__input" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" rows="4" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other"></textarea>
+      <span class="components-textarea-control__input" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" rows="4" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Textarea</span>
     </div>
   </div>
     <?php
@@ -192,7 +192,7 @@ if ( ! defined( 'ABSPATH' ) ) {
       <?php if( $language ): ?>
         <div class="field-with-language">
           <?php // We use a simple input field here, but it will be upgraded to a select box with all the languages in JavaScript ?>
-          <input type="text" class="<?php echo esc_attr( $field_id ); ?>_lang" name="<?php echo esc_attr( $field_id ); ?>_lang" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+          <span class="<?php echo esc_attr( $field_id ); ?>_lang" name="<?php echo esc_attr( $field_id ); ?>_lang" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Textfield</span>
       <?php endif; ?>
 
       <?php if($browser):?>
@@ -202,7 +202,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
       <?php endif; ?>
 
-      <input class="<?php if($browser) echo "fv_player_interface_hide fv_player_editor_url_field "; ?>components-text-control__input" type="text" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+      <span class="<?php if($browser) echo "fv_player_interface_hide fv_player_editor_url_field "; ?>components-text-control__input" type="text" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Textfield</span>
 
       <?php if( $language ) : ?>
         </div><!-- /.field-with-language-->
@@ -235,7 +235,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     }
 
     ?>
-     <input type="hidden" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+     <span type="hidden" id="<?php echo esc_attr( $field_id ); ?>" name="<?php echo esc_attr( $field_id ); ?>" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Hidden</span>
     <?php
   }
 
@@ -589,7 +589,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   <span class="fvp_item_video-filename"></span>
                   <a class="configure-video" href="#">Configure video</a>
                 </div>
-                <input class="fvp_item_video-edit-input" type="text" style="display: none;" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other" />
+                <span class="fvp_item_video-edit-input" type="text" style="display: none;" data-1p-ignore data-bwignore data-lpignore="true" data-form-type="other">Textfield</span>
                 <span class="fvp_item_video-duration"></span>
                 <a class="fvp_item_remove" href="#"><span class="dashicons dashicons-trash"></span></a>
               </div>
