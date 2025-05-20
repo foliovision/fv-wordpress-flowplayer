@@ -2916,6 +2916,8 @@ Please also contact FV Player support with the following debug information:\n\n\
         } else {
           debug_log('Loading shortcode without player id...');
 
+          // TODO: Check if all the values are set properly, for example controlbar checkbox is not set properly anymore 
+
           $doc.trigger('fv-player-editor-non-db-shortcode');
           // ordinary text shortcode in the editor
           shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
@@ -3333,7 +3335,7 @@ Please also contact FV Player support with the following debug information:\n\n\
       ajax_data = set_control_fields( ajax_data );
 
       let time_start = performance.now();
-
+      
       // save data
       // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
       $.ajax({
