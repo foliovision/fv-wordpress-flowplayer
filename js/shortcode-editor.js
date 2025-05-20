@@ -2981,17 +2981,22 @@ Please also contact FV Player support with the following debug information:\n\n\
           }
           var playlist_row = jQuery('.fv-player-tab-playlist tbody tr:first')
 
-          if( srcurl != null && srcurl[1] != null )
-            document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
+          if( srcurl != null && srcurl[1] != null ) {
+            get_field( "src" ).val( srcurl[1] ).trigger('change');
+          }
+
           if( srcurl1 != null && srcurl1[1] != null ) {
-            document.getElementById("fv_wp_flowplayer_field_src1").value = srcurl1[1];
+            get_field( "src1" ).val( srcurl1[1] ).trigger('change');
+
             if( srcurl2 != null && srcurl2[1] != null ) {
-              document.getElementById("fv_wp_flowplayer_field_src2").value = srcurl2[1];
+              get_field( "src2" ).val( srcurl2[1] ).trigger('change');
             }
+
+            get_field( 'toggle_advanced_settings' ).prop( 'checked', true ).trigger('change');
           }
 
           if( srcurl != null && srcurl[1] != null ) {
-            get_field('src').val(srcurl[1]);
+            get_field( "src" ).val( srcurl[1] );
             playlist_row.find('.fvp_item_video-filename').text( srcurl[1] );
           }
 
@@ -3028,7 +3033,7 @@ Please also contact FV Player support with the following debug information:\n\n\
             get_field("mobile").val(smobile[1]);
 
           if( ssplash != null && ssplash[1] != null ) {
-            get_field("splash").val(ssplash[1]);
+            get_field("splash").val( ssplash[1] ).trigger('change');
 
             var playlist_img = jQuery('<img />')
               .attr('width', 120 )
