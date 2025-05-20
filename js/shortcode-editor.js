@@ -2835,8 +2835,7 @@ Please also contact FV Player support with the following debug information:\n\n\
                 }
 
                 // fire up meta load event for this video, so plugins can process it and react
-                // TODO: Will this work with the virual new_item? Check fv-player, fv-player-pro and fv-player-coconut
-                $doc.trigger('fv_flowplayer_video_meta_load', [ x, vids[x].meta, new_item[0] , new_item[1] ]);
+                $doc.trigger('fv_flowplayer_video_meta_load', [ x, vids[x].meta, new_item.video_tab, new_item.subtitles_tab ] );
               }
 
               // Add all the new video and subtitle tabs to the DOM all at once
