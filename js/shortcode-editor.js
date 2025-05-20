@@ -2823,8 +2823,7 @@ Please also contact FV Player support with the following debug information:\n\n\
 
                 $.each( video_meta_languages, function( k, v ) {
                   for (var i in v) {
-                    // TODO: This does not work with the new virtual item, it should get new_item.subtitles_tab
-                    language_add( k, v[i].file, v[i].lang, x, v[i].id);
+                    language_add( k, v[i].file, v[i].lang, new_item.subtitles_tab, v[i].id);
                   }
                 } );
 
@@ -4312,8 +4311,8 @@ Please also contact FV Player support with the following debug information:\n\n\
       subtitle_language_add( input[1], aLang[1] );
     }
 
-    function subtitle_language_add( sInput, sLang, iTabIndex, video_meta_id ) {
-      language_add( 'subtitles', sInput, sLang, iTabIndex, video_meta_id );
+    function subtitle_language_add( sInput, sLang ) {
+      language_add( 'subtitles', sInput, sLang );
     }
 
     /*
@@ -4322,27 +4321,27 @@ Please also contact FV Player support with the following debug information:\n\n\
      * @param {string}  field         Field name
      * @param {string}  sInput        Value to input
      * @param {string}  sLang         Language to use
-     * @param {int}     iTabIndex     Playlist item number when loading playlist for editing
+     * @param {jQuery}  subtitles_tab Video Subtitles tab element
      * @param {int}     video_meta_id Field video meta ID
      */
-    function language_add( field, sInput, sLang, iTabIndex, video_meta_id ) {
-      if( typeof(iTabIndex) == "undefined" ){
-        iTabIndex = current_video_to_edit;
-      }
+    function language_add( field, sInput, sLang, subtitles_tab, video_meta_id ) {
 
+      // Used when parsing a legacy shortcode like [fvplayer src="video-1.mp4" subtitles="video-1.vtt"]
+      if( typeof( subtitles_tab ) == "undefined" ){
       // Reguired when parsing a legacy shortcode
-      if( iTabIndex == -1 ) {
-        iTabIndex = 0;
+        if( current_video_to_edit == -1 ) {
+          current_video_to_edit = 0;
       }
 
-      var current_subtitles_tab = get_tab( iTabIndex, 'subtitles' );
+        subtitles_tab = get_tab( current_video_to_edit, 'subtitles' );;
+      }
 
       var subElement = false;
 
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab);
+        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', subtitles_tab);
         if( subElement.length ) {
           if( get_field( field,subElement).val() ) {
             subElement = false;
@@ -4355,13 +4354,13 @@ Please also contact FV Player support with the following debug information:\n\n\
 
         // Get the last inputs and clear the values
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab ).prop('outerHTML') );
+        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', subtitles_tab ).prop('outerHTML') );
         subElement.find('[name]').val('');
         subElement.removeAttr('data-id_videometa');
 
         // Insert the new input after the last exiting input
         // TODO: Function to get last of the language inputs which is not a child
-        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab) );
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', subtitles_tab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
@@ -4447,7 +4446,7 @@ Please also contact FV Player support with the following debug information:\n\n\
     Click on Add Another Language (of Subtitles)
     */
     $doc.on('click', '.add_language', function() {
-      language_add( $( this ).data( 'field_name' ), false, true );
+      language_add( $( this ).data( 'field_name' ), false );
       return false;
     });
 
