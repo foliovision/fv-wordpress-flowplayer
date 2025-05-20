@@ -3788,6 +3788,17 @@ Please also contact FV Player support with the following debug information:\n\n\
       let new_item_subtitles = jQuery( template_subtitles_tab );
       new_item_subtitles.hide().attr('data-index', newIndex);
 
+      // Since we are using the virtual DOM, we need to call the change event for the checkboxes manually
+      if ( skip_dom_add ) {
+        new_item.on( 'change', '.components-form-toggle input[type=checkbox]', function() {
+          var wrap = $(this).closest('.components-form-toggle'),
+            checked = $(this).prop('checked'),
+            name = $(this).attr('name').replace( /fv_wp_flowplayer_field_/, '' );
+  
+            checkbox_toggle_worker(wrap, name, checked);
+        });
+      }
+
       // processing database input
       if( typeof(input) == 'object' ) {
         var objVid = input;
