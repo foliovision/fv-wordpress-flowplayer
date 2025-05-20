@@ -2827,11 +2827,10 @@ Please also contact FV Player support with the following debug information:\n\n\
                   }
                 } );
 
+                // This sets some additional video meta fields, like remove_black_bars
                 if (video_meta_to_set.length) {
                   for ( let i in video_meta_to_set) {
-                    // predefined meta input with field already existing in the dialog
-                    // TODO: This does not work with the new virtual item, it should get new_item.video_tab
-                    set_editor_field(video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, video_meta_to_set[i].id_video);
+                    set_editor_field( video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, new_item.video_tab );
                   }
                 }
 
@@ -4145,12 +4144,14 @@ Please also contact FV Player support with the following debug information:\n\n\
     }
 
     // used several times below, so it's in a function
-    function set_editor_field(key, real_val, id, video_table_index) {
-      var
-        real_key = map_names_to_editor_fields(key);
+    function set_editor_field( key, real_val, id, video_tab ) {
+      var real_key = map_names_to_editor_fields(key);
 
-        // try ID first
-        $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '#' + real_key);
+      if ( video_tab ) {
+        $element = jQuery( '[name="' + real_key + '"]', video_tab );
+      } else {
+        $element = jQuery( '[name="' + real_key + '"]' );
+      }
 
       // special processing for end video actions
       if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
@@ -4161,13 +4162,8 @@ Please also contact FV Player support with the following debug information:\n\n\
         return;
       }
 
-      if (!$element.length) {
-        // no element with this ID found, we need to go for a name
-        $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '[name="' + real_key + '"]');
-      }
-
       // player and video IDs wouldn't have corresponding fields
-      if ($element.length) {
+      if ( $element && $element.length ) {
         // dropdowns could have capitalized values
         if ($element.get(0).nodeName == 'SELECT') {
           if ($element.find('option[value="' + real_val + '"]').length) {
