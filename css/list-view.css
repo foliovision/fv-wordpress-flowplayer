@@ -8,7 +8,7 @@
   display: flex;
   align-items: safe center;
 }
-.fv_player_splash_list_preview img { height: 72px; width: auto }
+.fv_player_splash_list_preview img { height: 72px; object-fit: contain; width: 128px }
 .fv_player_splash_list_preview span {display: none; color: #fff; position: absolute; left: 0; right: 0; text-align: center; text-shadow: 0 0 5px black, 0 0 5px black }
 .fv_player_splash_list_preview:hover span {display: block; }
 .fv_player_splash_list_preview.fv_player_list_preview_no_splash { width: 128px; background-color: #000; }

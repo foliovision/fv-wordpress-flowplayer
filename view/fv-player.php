@@ -68,7 +68,7 @@ class FV_Player_List_Table_View {
 
   function styling() {
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
+    wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css', array(), filemtime( dirname(__FILE__).'/../css/list-view.css' ) );
 
     wp_enqueue_media();
   }
