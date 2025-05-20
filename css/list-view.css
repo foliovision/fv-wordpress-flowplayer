@@ -1,9 +1,8 @@
-#id { width: 6em }
-#player_name { width: 20em }
-#date_created { width: 8em }
-#author { width: 8em }
-#embeds { width: 20% }
-#stats_play { width: 3em }
+#fv_player_players_table table.fixed {
+  table-layout: unset;
+}
+#id { min-width: 6em }
+#embeds { min-width: 7em }
 
 .fv_player_splash_list_preview { height: 72px; margin: 0 5px 2px 0; display: inline; float: left; position: relative; cursor: pointer;
   display: flex;
