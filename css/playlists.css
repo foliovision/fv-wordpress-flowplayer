@@ -89,9 +89,7 @@
 .fv_flowplayer_tabs .ui-tabs .ui-tabs-nav li i.dur {display: none; }
 
 /*  Prev/next playlist  */
-.flowplayer .fp-prev, .flowplayer .fp-next {
-	position: absolute;
-	top: 44%;
+.freedomplayer.fp-default-playlist .fp-prev, .freedomplayer.fp-default-playlist .fp-next {
 	font-size: 240%;
 	color: #fff;
 	padding: 4px;
