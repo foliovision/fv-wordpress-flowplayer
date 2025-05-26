@@ -107,7 +107,7 @@
 }
 .is-mouseout.flowplayer .fp-prev, .is-mouseout.flowplayer .fp-next,
 .is-cva.flowplayer .fp-prev, .is-cva.flowplayer .fp-next {
-	transition: opacity .15s .3s;
+	transition: opacity .1;
 }
 
 @-moz-keyframes blending{
