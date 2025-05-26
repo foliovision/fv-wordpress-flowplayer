@@ -97,6 +97,15 @@
 	text-shadow: 0 0 1px #000;
 	cursor: pointer;
 	z-index: 12; /* make clickable */
+	opacity: 0;
+}
+.freedomplayer.fp-default-playlist.is-mouseover:not(.is-fullscreen) .fp-prev,
+.freedomplayer.fp-default-playlist.is-mouseover:not(.is-fullscreen) .fp-next,
+.freedomplayer.fp-default-playlist.is-mouseover-bottom .fp-prev,
+.freedomplayer.fp-default-playlist.is-mouseover-bottom .fp-next {
+	opacity: 0.6;
+}
+.freedomplayer.fp-default-playlist.is-mouseover .fp-prev:hover, .freedomplayer.fp-default-playlist.is-mouseover .fp-next:hover {
 	opacity: 1;
 }
 .flowplayer .fp-prev {
