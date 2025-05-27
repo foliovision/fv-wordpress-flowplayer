@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-final class FV_Player_Stats_Test extends TestCase {
+final class statsTest extends TestCase {
 
   protected $raw_db_results_by_posts = array (
     array (
