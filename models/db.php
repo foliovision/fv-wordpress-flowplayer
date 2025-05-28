@@ -439,8 +439,6 @@ class FV_Player_Db {
 
           $result_row->player_name = $player->getPlayerName();
 
-          $result_row->video_titles = $player->getPlayerVideoNames();
-
           $embeds = array();
           if( $posts = $player->getMetaValue('post_id') ) {
             $post_ids = array();
@@ -492,6 +490,7 @@ class FV_Player_Db {
           }
           $result_row->embeds = $embeds;
 
+          $titles = array();
           foreach (explode(',', $player->getVideoIds()) as $video_id) {
             if( empty($videos[ $video_id ]) ) { // the videos field might point to a missing video
               continue;
@@ -503,6 +502,8 @@ class FV_Player_Db {
             if( !$title ) {
               $title = $video->getTitleFromSrc();
             }
+
+            $titles[] = $title;
 
             // assemble video splash
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
@@ -519,6 +520,8 @@ class FV_Player_Db {
               $result_row->stats_play += intval($video->getMetaValue('stats_play',true)); // todo: lower SQL count
             }
           }
+
+          $result_row->video_titles = $titles;
 
           $result[] = $result_row;
         }
