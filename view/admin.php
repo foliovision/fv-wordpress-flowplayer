@@ -830,6 +830,8 @@ function fv_flowplayer_admin_popups(){
             }
 
             foreach ($aPopupData AS $key => $aPopup) {
+              $value = ! empty( $aPopup['html'] ) ? $aPopup['html'] : '';
+              $lines = ! empty( $aPopup['html'] ) ? substr_count( $aPopup['html'], "\n" ) + 2 : 2;
               ?>
               <tr class='data' id="fv-player-popup-item-<?php echo esc_html( $key ); ?>"<?php echo $key === '#fv_popup_dummy_key#' ? 'style="display:none"' : ''; ?>>
                 <td class='id'><?php echo esc_html( $key ); ?></td>
@@ -841,7 +843,7 @@ function fv_flowplayer_admin_popups(){
                       	</tr>
                         <tr>
                         	<td><label>HTML:</label></td>
-                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo esc_attr( $key ); ?>][html]' placeholder=''><?php echo ( !empty($aPopup['html']) ? esc_textarea($aPopup['html']) : '' ); ?></textarea></td>
+                        	<td><textarea class="large-text code" type='text' name='popups[<?php echo esc_attr( $key ); ?>][html]' placeholder='' rows='<?php echo intval( $lines ); ?>'><?php echo esc_textarea( $value ); ?></textarea></td>
                       	</tr>
                         <tr>
                         	<td><label><?php echo wp_kses( __( 'Custom<br />CSS', 'fv-player' ), array( 'br' => array() ) ); ?>:</label></td>
