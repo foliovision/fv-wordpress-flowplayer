@@ -1554,10 +1554,7 @@ class FV_Player_Db {
       }
 
       foreach ($args['search_by_video_ids'] as $player_video_id) {
-        $player_video_id = intval($player_video_id);
-
-        // TODO: What's the problem with FIND_IN_SET() ?
-        $where_like_part[] = "(videos = \"$player_video_id\" OR videos LIKE \"%,$player_video_id\" OR videos LIKE \"$player_video_id,%\")";
+        $where_like_part[] = "FIND_IN_SET( " . intval( $player_video_id ) .", videos ) > 0";
       }
 
       $where .= ' AND (' . implode(' OR ', $where_like_part) . ') ';
