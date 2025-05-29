@@ -2902,8 +2902,6 @@ Please also contact FV Player support with the following debug information:\n\n\
 
             $doc.trigger('fv_player_editor_finished');
 
-            // TODO: Do this in some better way as this might trigger save!
-            $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
           }).fail( function( jqXHR, textStatus, errorThrown ) {
             if ( jqXHR.status == 404 ) {
               overlay_show('message', 'The requested player #' + result[1] + ' could not be found.');
