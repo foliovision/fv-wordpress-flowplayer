@@ -940,7 +940,7 @@
     position: absolute;
     width: 8em;
     right: .5em;
-    z-index: 2;
+    z-index: 21;
     font-size: 90%;
     -webkit-transition: opacity .2s, height .2s, -webkit-transform .2s;
     transition: opacity .2s, height .2s, -webkit-transform .2s;
