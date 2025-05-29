@@ -4,11 +4,6 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
-  // localstorage disabled by admin
-  if( typeof(fv_flowplayer_conf.disable_localstorage) != 'undefined' ) {
-    return;
-  }
-
   var ls = window.localStorage;
 
   // restore subtitle on ready event
@@ -35,15 +30,18 @@ flowplayer( function(api,root) {
       }
     }
 
-    // subtitle menu click
-    root.find('.fp-subtitle-menu').on('click', function(e) {
-      var subtitle_index = e.target.getAttribute('data-subtitle-index');
-      if( typeof(subtitle_index) == 'string' ) {
-        try {
-          ls.fv_player_subtitle = subtitle_index > -1 ? api.video.subtitles[subtitle_index].srclang : 'none'; // save lang shortcut to localstorage
-        } catch(e) {}
-      }
-    });
+    // localstorage disabled by admin
+    if ( typeof(fv_flowplayer_conf.disable_localstorage) == 'undefined' ) {
+      // subtitle menu click
+      root.find('.fp-subtitle-menu').on('click', function(e) {
+        var subtitle_index = e.target.getAttribute('data-subtitle-index');
+        if( typeof(subtitle_index) == 'string' ) {
+          try {
+            ls.fv_player_subtitle = subtitle_index > -1 ? api.video.subtitles[subtitle_index].srclang : 'none'; // save lang shortcut to localstorage
+          } catch(e) {}
+        }
+      });
+    }
 
   });
 });

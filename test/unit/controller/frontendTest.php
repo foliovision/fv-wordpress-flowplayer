@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-final class FV_Player_Controller extends TestCase {
+final class frontendTest extends TestCase {
 
   private $fvPlayerProInstance;
 

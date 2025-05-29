@@ -9,8 +9,11 @@
     font-family: freedomplayer;
     font-size: 1.7em; }
 
-.fp-airplay svg {
+.fp-controls svg {
   fill: whitesmoke;
+  stroke: whitesmoke;
+}
+.fp-airplay svg {
   vertical-align: text-top;
   width: 18px; }
 
@@ -20,7 +23,6 @@
           order: 100; }
   .fp-fullscreen svg {
     vertical-align: text-top;
-    stroke: whitesmoke;
     stroke-width: 4;
     width: 22px; }
     .fp-fullscreen svg.fp-fullscreen-exit {
@@ -40,7 +42,6 @@
 
 .fp-chromecast svg {
   vertical-align: text-top;
-  fill: whitesmoke;
   width: 20px; }
 
 .fp-email:before {
@@ -940,7 +941,7 @@
     position: absolute;
     width: 8em;
     right: .5em;
-    z-index: 2;
+    z-index: 21;
     font-size: 90%;
     -webkit-transition: opacity .2s, height .2s, -webkit-transform .2s;
     transition: opacity .2s, height .2s, -webkit-transform .2s;
@@ -970,14 +971,13 @@
       display: block;
       max-height: calc( 100% - 3.2em);
       overflow-y: auto; }
-    .freedomplayer .fp-menu > a,
-    .freedomplayer .fp-menu > strong {
+    .freedomplayer .fp-menu > a {
       display: block;
       padding: .4em 1.2em;
       text-align: right; }
     .freedomplayer .fp-menu strong {
       display: block;
-      padding: .7em 1.2em;
+      padding: .7em;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       background-color: rgba(0, 0, 0, 0.3);
       text-transform: uppercase;
