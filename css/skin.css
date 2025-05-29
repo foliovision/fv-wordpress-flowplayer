@@ -971,14 +971,13 @@
       display: block;
       max-height: calc( 100% - 3.2em);
       overflow-y: auto; }
-    .freedomplayer .fp-menu > a,
-    .freedomplayer .fp-menu > strong {
+    .freedomplayer .fp-menu > a {
       display: block;
       padding: .4em 1.2em;
       text-align: right; }
     .freedomplayer .fp-menu strong {
       display: block;
-      padding: .7em 1.2em;
+      padding: .7em;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       background-color: rgba(0, 0, 0, 0.3);
       text-transform: uppercase;
