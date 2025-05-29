@@ -355,18 +355,31 @@ class FV_Player_Position_Save {
     self::set_cache($user_id, 'playlist');
   }
 
-  public static function get_extensionless_file_name($path) {
-    $arr = explode('/', $path);
-    $video_name = end($arr);
+  /**
+   * Get extensionless file name from URL.
+   * For HLS streams take the folder name instead of the file name,
+   * as the file name is often index.m3u8 or stream.m3u8.
+   *
+   * @param string $url
+   *
+   * @return string Video name created from the URL.
+   */
+  public static function get_extensionless_file_name( $url ) {
+    $arr        = explode( '/', $url );
+    $video_name = end( $arr );
 
     // Do not accept HLS playlist file names as these are often index.m3u8 or stream.m3u8
     // Use folder name instead
-    if( strpos($video_name, ".m3u8") !== false ) {
-      unset($arr[count($arr)-1]);
-      $video_name = end($arr);
+    if ( strpos( $video_name, ".m3u8" ) !== false ) {
+      unset( $arr[ count( $arr ) - 1 ] );
+      $video_name = end( $arr );
     }
 
-    return pathinfo($video_name, PATHINFO_FILENAME);
+    $video_name = pathinfo( $video_name, PATHINFO_FILENAME );
+
+    $video_name = apply_filters( 'fv_player_position_save_file_name', $video_name, $url );
+
+    return $video_name;
   }
 
   public function set_last_positions( $aItem, $index, $aArgs ) {
