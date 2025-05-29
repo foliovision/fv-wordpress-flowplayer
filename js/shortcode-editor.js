@@ -238,7 +238,7 @@ jQuery(function() {
             $( '#fv-player-editor-playlist .fv-player-editor-playlist-item:last').hide();
           }
 
-          editor_src_field = get_field( "src", new_item );
+          editor_src_field = get_field( "src", new_item.video_tab );
         }
       }
 
@@ -2783,6 +2783,9 @@ Please also contact FV Player support with the following debug information:\n\n\
                 }
               }
 
+              let new_video_tabs = [],
+                new_subtitles_tabs = [];
+
               // add videos from the DB
               for (var x in vids) {
                 let
@@ -2800,8 +2803,14 @@ Please also contact FV Player support with the following debug information:\n\n\
                       if (vids[x].meta[m].meta_key.indexOf( k ) > -1) {
                         is_languages_meta = true;
 
+                        // Map subtitles_en to en and subtitles to just empty string
+                        let lang = vids[x].meta[m].meta_key.replace( k + '_', '');
+                        if ( 'subtitles' === lang ) {
+                          lang = '';
+                        }
+
                         video_meta_languages[k].push({
-                          lang: vids[x].meta[m].meta_key.replace( k + '_', ''),
+                          lang: lang,
                           file: vids[x].meta[m].meta_value,
                           id: vids[x].meta[m].id
                         });
@@ -2814,25 +2823,30 @@ Please also contact FV Player support with the following debug information:\n\n\
                   }
                 }
 
-                var $video_data_tab = playlist_item_add(vids[x]);
-                var $subtitles_tab = get_tab( 'last', 'subtitles' );
+                let new_item = playlist_item_add( vids[x], true );
+                new_video_tabs.push( new_item.video_tab );
+                new_subtitles_tabs.push( new_item.subtitles_tab );
 
                 $.each( video_meta_languages, function( k, v ) {
                   for (var i in v) {
-                    language_add( k, v[i].file, v[i].lang, x, v[i].id);
+                    language_add( k, v[i].file, v[i].lang, new_item.subtitles_tab, v[i].id);
                   }
                 } );
 
+                // This sets some additional video meta fields, like remove_black_bars
                 if (video_meta_to_set.length) {
                   for ( let i in video_meta_to_set) {
-                    // predefined meta input with field already existing in the dialog
-                    set_editor_field(video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, video_meta_to_set[i].id_video);
+                    set_editor_field( video_meta_to_set[i].meta_key, video_meta_to_set[i].meta_value, video_meta_to_set[i].id, new_item.video_tab );
                   }
                 }
 
                 // fire up meta load event for this video, so plugins can process it and react
-                $doc.trigger('fv_flowplayer_video_meta_load', [x, vids[x].meta, $video_data_tab , $subtitles_tab]);
+                $doc.trigger('fv_flowplayer_video_meta_load', [ x, vids[x].meta, new_item.video_tab, new_item.subtitles_tab ] );
               }
+
+              // Add all the new video and subtitle tabs to the DOM all at once
+              jQuery('.fv-player-tab-video-files').append( new_video_tabs );
+              jQuery('.fv-player-tab-subtitles').append( new_subtitles_tabs );
 
               debug_log( 'Finished populating editor fields for ' + vids.length + ' videos in ' + debug_time( time_start ) + '.' );
 
@@ -2908,6 +2922,8 @@ Please also contact FV Player support with the following debug information:\n\n\
         } else {
           debug_log('Loading shortcode without player id...');
 
+          // TODO: Check if all the values are set properly, for example controlbar checkbox is not set properly anymore 
+
           $doc.trigger('fv-player-editor-non-db-shortcode');
           // ordinary text shortcode in the editor
           shortcode_parse_fix = shortcode.replace(/(popup|ad)='[^']*?'/g, '');
@@ -2970,17 +2986,22 @@ Please also contact FV Player support with the following debug information:\n\n\
           }
           var playlist_row = jQuery('.fv-player-tab-playlist tbody tr:first')
 
-          if( srcurl != null && srcurl[1] != null )
-            document.getElementById("fv_wp_flowplayer_field_src").value = srcurl[1];
+          if( srcurl != null && srcurl[1] != null ) {
+            get_field( "src" ).val( srcurl[1] ).trigger('change');
+          }
+
           if( srcurl1 != null && srcurl1[1] != null ) {
-            document.getElementById("fv_wp_flowplayer_field_src1").value = srcurl1[1];
+            get_field( "src1" ).val( srcurl1[1] ).trigger('change');
+
             if( srcurl2 != null && srcurl2[1] != null ) {
-              document.getElementById("fv_wp_flowplayer_field_src2").value = srcurl2[1];
+              get_field( "src2" ).val( srcurl2[1] ).trigger('change');
             }
+
+            get_field( 'toggle_advanced_settings' ).prop( 'checked', true ).trigger('change');
           }
 
           if( srcurl != null && srcurl[1] != null ) {
-            get_field('src').val(srcurl[1]);
+            get_field( "src" ).val( srcurl[1] );
             playlist_row.find('.fvp_item_video-filename').text( srcurl[1] );
           }
 
@@ -3017,7 +3038,7 @@ Please also contact FV Player support with the following debug information:\n\n\
             get_field("mobile").val(smobile[1]);
 
           if( ssplash != null && ssplash[1] != null ) {
-            get_field("splash").val(ssplash[1]);
+            get_field("splash").val( ssplash[1] ).trigger('change');
 
             var playlist_img = jQuery('<img />')
               .attr('width', 120 )
@@ -3152,7 +3173,14 @@ Please also contact FV Player support with the following debug information:\n\n\
             // which outlines video IDs from a database
             var aPlaylist = sPlaylist[1].split(';');
             for ( let i in aPlaylist) {
-              playlist_item_add(aPlaylist[i], aCaptions[i], aSubtitles[i], aSplashText[i]);
+
+              // TODO: Will this work?
+              playlist_item_add( {
+                src: aPlaylist[i],
+                title: aCaptions[i],
+                subtitles: aSubtitles[i],
+                splash_text: aSplashText[i]
+              } );
             }
           }
 
@@ -3313,7 +3341,7 @@ Please also contact FV Player support with the following debug information:\n\n\
       ajax_data = set_control_fields( ajax_data );
 
       let time_start = performance.now();
-
+      
       // save data
       // We use ?fv_player_db_save=1 as some people use that to exclude firewall rules
       $.ajax({
@@ -3742,13 +3770,11 @@ Please also contact FV Player support with the following debug information:\n\n\
      *
      * @param {object|string} input       Object from FV Player database or legacy shortcode argument
      *                                    text which was a comma separated list of URLs
-     * @param {string}        sCaption    Legacy
-     * @param {string}        sSubtitles  Legacy
-     * @param {string}        sSplashText Legacy
+     * @param {boolean}       skip_dom_add  If true, the item will not be added to the DOM and you will need to add it manually.
      *
      * @return {jQuery}                   New playlist item.
     */
-    function playlist_item_add( input, sCaption, sSubtitles, sSplashText ) {
+    function playlist_item_add( input, skip_dom_add ) {
       var new_playlist_item = $(template_playlist_item);
       $('.fv-player-tab-playlist #fv-player-editor-playlist').append(new_playlist_item);
 
@@ -3762,12 +3788,22 @@ Please also contact FV Player support with the following debug information:\n\n\
       current.find('.fvp_item_video-filename').text( 'Video ' + (newIndex + 1) );
       current.find('.fvp_item_video-duration').text( '' );
 
-      jQuery('.fv-player-tab-video-files').append(template_video);
-      var new_item = get_tab('last','video-files');
+      let new_item = jQuery( template_video );
       new_item.hide().attr('data-index', newIndex);
-      jQuery('.fv-player-tab-subtitles').append(template_subtitles_tab);
-      var new_item_subtitles = get_tab('last','subtitles');
+
+      let new_item_subtitles = jQuery( template_subtitles_tab );
       new_item_subtitles.hide().attr('data-index', newIndex);
+
+      // Since we are using the virtual DOM, we need to call the change event for the checkboxes manually
+      if ( skip_dom_add ) {
+        new_item.on( 'change', '.components-form-toggle input[type=checkbox]', function() {
+          var wrap = $(this).closest('.components-form-toggle'),
+            checked = $(this).prop('checked'),
+            name = $(this).attr('name').replace( /fv_wp_flowplayer_field_/, '' );
+  
+            checkbox_toggle_worker(wrap, name, checked);
+        });
+      }
 
       // processing database input
       if( typeof(input) == 'object' ) {
@@ -3806,35 +3842,6 @@ Please also contact FV Player support with the following debug information:\n\n\
           if( v.meta_key == 'audio' ) get_field('audio',new_item).prop('checked',v.meta_value).attr('data-id',v.id);
         });
 
-        // processing shortcode input
-      } else if( input ) {
-        var aInput = input.split(',');
-        var count = 0;
-        for( let i in aInput ) {
-          if( aInput[i].match(/^rtmp:/) ) {
-            get_field('rtmp_path',new_item).val(aInput[i].replace(/^rtmp:/,''));
-          } else if( aInput[i].match(/\.(jpg|png|gif|jpe|jpeg)(?:\?.*?)?$/) ) {
-            get_field('splash',new_item).val(aInput[i]);
-          } else {
-            if( count == 0 ) {
-              get_field('src',new_item).val(aInput[i]);
-            } else {
-              get_field('src'+count,new_item).val(aInput[i]);
-            }
-            count++;
-          }
-        }
-        if( sCaption ) {
-          get_field('title',new_item).val(sCaption).trigger( 'change' );
-        }
-        if( sSubtitles ) {
-          get_field('subtitles',new_item_subtitles).val(sSubtitles);
-        }
-        if( sSplashText ) {
-          get_field('splash_text',new_item).val(sSplashText).trigger( 'change' );
-        }
-
-      // new item
       } else {
         new_playlist_item.find('.fvp_item_video-thumbnail').addClass( 'no-img' );
       }
@@ -3848,7 +3855,12 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       hide_inputs();
 
-      return new_item;
+      if ( ! skip_dom_add ) {
+        jQuery('.fv-player-tab-video-files').append( new_item );
+        jQuery('.fv-player-tab-subtitles').append( new_item_subtitles );
+      }
+
+      return { video_tab: new_item, subtitles_tab: new_item_subtitles };
     }
 
     /*
@@ -4139,12 +4151,14 @@ Please also contact FV Player support with the following debug information:\n\n\
     }
 
     // used several times below, so it's in a function
-    function set_editor_field(key, real_val, id, video_table_index) {
-      var
-        real_key = map_names_to_editor_fields(key);
+    function set_editor_field( key, real_val, id, video_tab ) {
+      var real_key = map_names_to_editor_fields(key);
 
-        // try ID first
-        $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '#' + real_key);
+      if ( video_tab ) {
+        $element = jQuery( '[name="' + real_key + '"]', video_tab );
+      } else {
+        $element = jQuery( '[name="' + real_key + '"]' );
+      }
 
       // special processing for end video actions
       if (real_key == 'fv_wp_flowplayer_field_end_action_value') {
@@ -4155,13 +4169,8 @@ Please also contact FV Player support with the following debug information:\n\n\
         return;
       }
 
-      if (!$element.length) {
-        // no element with this ID found, we need to go for a name
-        $element = jQuery((typeof(video_table_index) != 'undefined' ? '.fv-player-tab .fv-player-playlist-item[data-id_video=' + video_table_index + '] ' : '') + '[name="' + real_key + '"]');
-      }
-
       // player and video IDs wouldn't have corresponding fields
-      if ($element.length) {
+      if ( $element && $element.length ) {
         // dropdowns could have capitalized values
         if ($element.get(0).nodeName == 'SELECT') {
           if ($element.find('option[value="' + real_val + '"]').length) {
@@ -4316,8 +4325,8 @@ Please also contact FV Player support with the following debug information:\n\n\
       subtitle_language_add( input[1], aLang[1] );
     }
 
-    function subtitle_language_add( sInput, sLang, iTabIndex, video_meta_id ) {
-      language_add( 'subtitles', sInput, sLang, iTabIndex, video_meta_id );
+    function subtitle_language_add( sInput, sLang ) {
+      language_add( 'subtitles', sInput, sLang );
     }
 
     /*
@@ -4326,27 +4335,27 @@ Please also contact FV Player support with the following debug information:\n\n\
      * @param {string}  field         Field name
      * @param {string}  sInput        Value to input
      * @param {string}  sLang         Language to use
-     * @param {int}     iTabIndex     Playlist item number when loading playlist for editing
+     * @param {jQuery}  subtitles_tab Video Subtitles tab element
      * @param {int}     video_meta_id Field video meta ID
      */
-    function language_add( field, sInput, sLang, iTabIndex, video_meta_id ) {
-      if( typeof(iTabIndex) == "undefined" ){
-        iTabIndex = current_video_to_edit;
-      }
+    function language_add( field, sInput, sLang, subtitles_tab, video_meta_id ) {
 
+      // Used when parsing a legacy shortcode like [fvplayer src="video-1.mp4" subtitles="video-1.vtt"]
+      if( typeof( subtitles_tab ) == "undefined" ){
       // Reguired when parsing a legacy shortcode
-      if( iTabIndex == -1 ) {
-        iTabIndex = 0;
+        if( current_video_to_edit == -1 ) {
+          current_video_to_edit = 0;
       }
 
-      var current_subtitles_tab = get_tab( iTabIndex, 'subtitles' );
+        subtitles_tab = get_tab( current_video_to_edit, 'subtitles' );;
+      }
 
       var subElement = false;
 
       // If we are loading data, do we have an empty subtitle field?
       if( sInput ) {
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab);
+        subElement = $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', subtitles_tab);
         if( subElement.length ) {
           if( get_field( field,subElement).val() ) {
             subElement = false;
@@ -4359,13 +4368,13 @@ Please also contact FV Player support with the following debug information:\n\n\
 
         // Get the last inputs and clear the values
         // TODO: Function to get last of the language inputs which is not a child
-        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab ).prop('outerHTML') );
+        subElement = $( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', subtitles_tab ).prop('outerHTML') );
         subElement.find('[name]').val('');
         subElement.removeAttr('data-id_videometa');
 
         // Insert the new input after the last exiting input
         // TODO: Function to get last of the language inputs which is not a child
-        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', current_subtitles_tab) );
+        subElement.insertAfter( $('.fv-player-editor-field-wrap-' + field + ' > .components-base-control > .components-base-control__field:last', subtitles_tab) );
 
         if( !sInput ) {
           // force user to pick the language by removing the blank value and selecting what's first
@@ -4451,7 +4460,7 @@ Please also contact FV Player support with the following debug information:\n\n\
     Click on Add Another Language (of Subtitles)
     */
     $doc.on('click', '.add_language', function() {
-      language_add( $( this ).data( 'field_name' ), false, true );
+      language_add( $( this ).data( 'field_name' ), false );
       return false;
     });
 

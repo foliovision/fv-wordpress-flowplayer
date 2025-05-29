@@ -29,7 +29,7 @@ class FV_Player_List_Table_View {
     add_action( 'admin_menu', array($this, 'settings_link'), 12 );
 
     add_action( 'admin_head', array($this, 'admin_menu_styling') );
-    add_action( 'admin_head-toplevel_page_fv_player', array($this, 'styling') );
+    add_action( 'admin_print_styles-toplevel_page_fv_player', array($this, 'styling') );
     add_filter( 'set-screen-option', array($this, 'set_screen_option'), 10, 3);
     add_filter( 'set_screen_option_fv_player_per_page', array($this, 'set_screen_option'), 10, 3);
 
@@ -68,7 +68,7 @@ class FV_Player_List_Table_View {
 
   function styling() {
     global $fv_wp_flowplayer_ver;
-    wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css',array(), $fv_wp_flowplayer_ver );
+    wp_enqueue_style('fv-player-list-view', flowplayer::get_plugin_url().'/css/list-view.css', array(), filemtime( dirname(__FILE__).'/../css/list-view.css' ) );
 
     wp_enqueue_media();
   }

@@ -1,15 +1,14 @@
-#id { width: 6em }
-#player_name { width: 20em }
-#date_created { width: 8em }
-#author { width: 8em }
-#embeds { width: 20% }
-#stats_play { width: 3em }
+#fv_player_players_table table.fixed {
+  table-layout: unset;
+}
+#id { min-width: 6em }
+#embeds { min-width: 7em }
 
 .fv_player_splash_list_preview { height: 72px; margin: 0 5px 2px 0; display: inline; float: left; position: relative; cursor: pointer;
   display: flex;
   align-items: safe center;
 }
-.fv_player_splash_list_preview img { height: 72px; width: auto }
+.fv_player_splash_list_preview img { height: 72px; object-fit: contain; width: 128px }
 .fv_player_splash_list_preview span {display: none; color: #fff; position: absolute; left: 0; right: 0; text-align: center; text-shadow: 0 0 5px black, 0 0 5px black }
 .fv_player_splash_list_preview:hover span {display: block; }
 .fv_player_splash_list_preview.fv_player_list_preview_no_splash { width: 128px; background-color: #000; }

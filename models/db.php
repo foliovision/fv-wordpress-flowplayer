@@ -1087,6 +1087,9 @@ class FV_Player_Db {
     );
 
     if ($post_data) {
+
+      $time_save_start = microtime(true);
+
       // parse and resolve deleted videos
       if (!$data && !empty($post_data['deleted_videos'])) { // todo: ajax!
         $deleted_videos = explode(',', $post_data['deleted_videos']);
@@ -1236,9 +1239,13 @@ class FV_Player_Db {
               unset($id);
             }
 
+            // Skip video meta check if the save is taking more than 10 seconds.
+            // We could also rely on the PHP max_execution_time/2 or so.
+            $skip_video_meta_check = ( microtime(true) - $time_save_start ) > 10;
+
             // save only if we're not requesting new instances for preview purposes
             if (!$data) {
-              $id_video = $video->save( $video_meta );
+              $id_video = $video->save( $video_meta, false, $skip_video_meta_check );
               if( !$id_video ) {
                 global $wpdb;
                 wp_send_json( array( 'fatal_error' => true, 'error' => 'Failed to save the video: '.$wpdb->last_error ) );
