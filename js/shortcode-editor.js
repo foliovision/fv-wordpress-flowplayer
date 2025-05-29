@@ -2803,8 +2803,14 @@ Please also contact FV Player support with the following debug information:\n\n\
                       if (vids[x].meta[m].meta_key.indexOf( k ) > -1) {
                         is_languages_meta = true;
 
+                        // Map subtitles_en to en and subtitles to just empty string
+                        let lang = vids[x].meta[m].meta_key.replace( k + '_', '');
+                        if ( 'subtitles' === lang ) {
+                          lang = '';
+                        }
+
                         video_meta_languages[k].push({
-                          lang: vids[x].meta[m].meta_key.replace( k + '_', ''),
+                          lang: lang,
                           file: vids[x].meta[m].meta_value,
                           id: vids[x].meta[m].id
                         });
