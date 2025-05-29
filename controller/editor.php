@@ -73,7 +73,8 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     ),
     'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream'),
     'is_fv_player_screen' => !empty($current_screen->id) && $current_screen->id == 'toplevel_page_fv_player',
-    'is_edit_posts_screen' => !empty($current_screen->base) && $current_screen->base == 'edit' && !empty($current_screen->post_type)
+    'is_edit_posts_screen' => !empty($current_screen->base) && $current_screen->base == 'edit' && !empty($current_screen->post_type),
+    'keyup_throttle'       => 500
   );
 
   // TODO: Ideally these inputs would not only be hidden, but they wouldn't save

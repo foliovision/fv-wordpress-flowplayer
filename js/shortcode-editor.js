@@ -1252,7 +1252,7 @@ jQuery(function() {
         clearTimeout(int_keyup);
         int_keyup = setTimeout( function() {
           save(e);
-        }, 500 );
+        }, fv_player_editor_conf.keyup_throttle );
       });
 
       $doc.on('fv_flowplayer_shortcode_new fv-player-editor-non-db-shortcode', function() {
@@ -1367,7 +1367,7 @@ jQuery(function() {
 
         ajax_save_this_please = set_control_fields( ajax_save_this_please );
 
-        debug_log('Running fv_player_db_save Ajax.');
+        debug_log('Running fv_player_db_save Ajax.', ajax_save_this_please.update );
 
         let time_start_save = performance.now();
 
@@ -2901,6 +2901,8 @@ Please also contact FV Player support with the following debug information:\n\n\
             $doc.trigger('fv_player_editor_player_loaded');
 
             $doc.trigger('fv_player_editor_finished');
+
+            // TODO: Do this in some better way as this might trigger save!
             $('#fv_wp_flowplayer_field_src').trigger('keyup'); // to ensure we show/hide all relevent notices
           }).fail( function( jqXHR, textStatus, errorThrown ) {
             if ( jqXHR.status == 404 ) {

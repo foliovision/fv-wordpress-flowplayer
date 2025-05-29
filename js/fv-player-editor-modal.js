@@ -10,17 +10,21 @@
 		$( '#fv-player-editor-modal-close, #fv-player-editor-backdrop' ).on( 'click', close );
 
     function close() {
-      if ( fv_player_editor.is_busy_saving() ) {
-        alert( 'FV Player Edtior is still saving, please wait.' );
-        return false;
-      }
+      // Wait for the keyup throttle to finish as otherwise there might still be some data just starting to save
+      setTimeout( function() {
+        if ( fv_player_editor.is_busy_saving() ) {
+          alert( 'FV Player Edtior is still saving, please wait.' );
+          return false;
+        }
 
-      args.onClosed();
-      $("#fv-player-editor-modal, #fv-player-editor-backdrop").hide();
+        args.onClosed();
+        $("#fv-player-editor-modal, #fv-player-editor-backdrop").hide();
 
-      $('body').removeClass('is-fv-player-editor-modal-open');
+        $('body').removeClass('is-fv-player-editor-modal-open');
 
-      $( '#fv-player-editor-modal-close, #fv-player-editor-backdrop' ).off( 'click', close );
+        $( '#fv-player-editor-modal-close, #fv-player-editor-backdrop' ).off( 'click', close );
+
+      }, 1.2 * parseInt( fv_player_editor_conf.keyup_throttle ) );
     }
 
     $.fv_player_box.close = close;
