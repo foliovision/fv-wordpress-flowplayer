@@ -271,7 +271,7 @@ class flowplayer_frontend extends flowplayer
       $this->aCurArgs['liststyle'] = $this->_get_option('liststyle');
     }
 
-    if( get_query_var('fv_player_embed') && $this->aCurArgs['liststyle'] != 'tabs' && !in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) { // force vertical playlist when using embed and not using tabs, nor season style and it's not a preview for editing
+    if ( ( get_query_var('fv_player_embed') || get_query_var('fv_player_cms_id') ) && $this->aCurArgs['liststyle'] != 'tabs' && !in_array($this->aCurArgs['liststyle'], array( 'season', 'polaroid' ) ) ) { // force vertical playlist when using embed and not using tabs, nor season style and it's not a preview for editing
       $this->aCurArgs['liststyle'] = 'slider';
     }
 
@@ -579,7 +579,7 @@ class flowplayer_frontend extends flowplayer
             $bFixedControlbar = false;
           }
         }
-        if ( $bFixedControlbar && ! get_query_var('fv_player_embed') ) {
+        if ( $bFixedControlbar && ! get_query_var('fv_player_embed') && ! get_query_var('fv_player_cms_id') ) {
           $attributes['class'] .= ' fixed-controls';
         }
 
@@ -718,7 +718,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' has-transcript';
         }
 
-        if( get_query_var('fv_player_embed') ) {  //  this is needed for iframe embedding only
+        if ( get_query_var('fv_player_embed') || get_query_var('fv_player_cms_id') ) {  //  this is needed for iframe embedding only
           $attributes['class'] .= ' fp-is-embed';
         }
 

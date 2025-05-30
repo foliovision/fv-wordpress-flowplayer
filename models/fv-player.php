@@ -1264,7 +1264,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $image_html = "<img src='data:image/gif;base64,R0lGODdhAQABAPAAAP///wAAACwAAAAAAQABAEACAkQBADs=' data-lazy-src='" . esc_attr( $sSplashImage ) . "' />";
 
           } else {
-            $image_html = "<img ". ( get_query_var('fv_player_embed') ? "data-no-lazy='1'" : "" ) . " src='" . esc_attr( $sSplashImage ) . "' loading='lazy' />";
+            $image_html = "<img ". ( get_query_var('fv_player_embed') || get_query_var('fv_player_cms_id') ? "data-no-lazy='1'" : "" ) . " src='" . esc_attr( $sSplashImage ) . "' loading='lazy' />";
           }
 
         }
@@ -2741,7 +2741,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
     }
 
-    if( get_query_var('fv_player_embed') ) {
+    if ( get_query_var('fv_player_embed') || get_query_var('fv_player_cms_id') ) {
       $sClass .= ' fp-is-embed';
     }
 

@@ -210,7 +210,7 @@ class FV_Player_lightbox {
 
     if (isset($aArgs[1]) ) {
       $args = $aArgs[1]->aCurArgs;
-      if( isset($args['lightbox']) && $args['lightbox'] != false && !get_query_var('fv_player_embed') ) {
+      if ( isset($args['lightbox']) && $args['lightbox'] != false && ! get_query_var( 'fv_player_embed' ) && ! get_query_var( 'fv_player_cms_id' ) ) {
 
         $this->bLoad = true;
 
