@@ -797,9 +797,9 @@ jQuery(function() {
           checkbox_toggle_worker(wrap, name, checked);
       });
 
-      $el_editor.on('change', '.components-text-control__input', function() {
+      $el_editor.on('change', '.components-text-control__input, .components-select-control__input', function() {
         var input = jQuery(this),
-          parent = input.parents('.fv-player-editor-children-wrap'),
+          parent = input.closest('.fv-player-editor-children-wrap'),
           name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' ),
           wrap = input.parents( '.fv-player-editor-field-wrap-' + name );
 
@@ -812,13 +812,8 @@ jQuery(function() {
           wrap.show();
         }
 
-        if( parent.length == 1 ) {
-          if( input.val() ) {
-            parent.find('.fv-player-editor-field-children-' + name ).show();
-          } else {
-            parent.find('.fv-player-editor-field-children-' + name).hide();
-          }
-        }
+        // Show children inputs if input has value
+        parent.find('.fv-player-editor-field-children-' + name ).toggle( input.val() );
       });
 
       /*
@@ -4919,7 +4914,7 @@ Please also contact FV Player support with the following debug information:\n\n\
       var field = jQuery('#fv_wp_flowplayer_field_' + type);
       field.parents('tr').show();
       if( value ) {
-        field.val(value);
+        field.val( value ).trigger( 'change' );
       }
     }
 
