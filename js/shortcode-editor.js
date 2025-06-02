@@ -813,7 +813,7 @@ jQuery(function() {
         }
 
         // Show children inputs if input has value
-        parent.find('.fv-player-editor-field-children-' + name ).toggle( input.val() );
+        parent.find('.fv-player-editor-field-children-' + name ).toggle( !! input.val() );
       });
 
       /*
