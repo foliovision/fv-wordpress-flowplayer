@@ -40,7 +40,6 @@ class FV_Player_Db_Player {
     $lightbox_caption, // title for the lightbox popup
     $lightbox_height, // height for the lightbox popup
     $lightbox_width, // width for the lightbox popup
-    $loop, // (NON-ORM, class property only) loops player at the end if set
     $overlay, // any HTML overlay text
     $overlay_height, // height of overlay for this player
     $overlay_width, // width of overlay for this player
@@ -49,14 +48,11 @@ class FV_Player_Db_Player {
     $player_slug, // short slug to be used as a unique identifier for this player that can be used instead of an ID
     $playlist,
     $playlist_advance, // whether to auto-advance the playlist in this player (On / Off / Default)
-    $popup, // (NON-ORM, class property only) ID of the popup to show at the end of playlist
     $qsel,
-    $redirect, // (NON-ORM, class property only) where to redirect after the end of playlist
     $share, // whether to display sharing buttons (On / Off / Default)
     $share_title, // title for sharing buttons
     $share_url,
     $speed,
-    $splashend, // (NON-ORM, class property only) populated by "true" if splash should be shown when the player stops
     $sticky, // whether or not to enable sticky functionality for this player
     $video_ads,
     $video_ads_post,
@@ -333,26 +329,11 @@ class FV_Player_Db_Player {
     return $this->playlist_splash_attachment_id;
   }
 
-
-  /**
-   * @return string
-   */
-  public function getPopup() {
-    return $this->popup;
-  }
-
   /**
    * @return string
    */
   public function getQsel() {
     return $this->qsel;
-  }
-
-  /**
-   * @return string
-   */
-  public function getRedirect() {
-    return $this->redirect;
   }
 
   /**
@@ -635,35 +616,6 @@ CREATE TABLE " . self::$db_table_name . " (
 
         }
       }
-    }
-
-    // make sure we fill the appropriate non-orm object properties
-    $this->propagate_end_action_value();
-  }
-
-  /**
-   * Propagates end action value into one of the non-orm
-   * related class keys for this player. This is because
-   * we've refactored the end_actions functionality and now
-   * we don't have the original DB counterparts for the input
-   * fields in the wizard.
-   */
-  private function propagate_end_action_value() {
-    switch ($this->end_actions) {
-      case 'redirect': $this->redirect = $this->end_action_value;
-        break;
-
-      case 'popup': $this->popup = $this->end_action_value;
-        break;
-
-      case 'email_list': $this->popup = 'email-'.$this->end_action_value;
-        break;
-
-      case 'loop': $this->loop = true;
-        break;
-
-      case 'splashend': $this->splashend = true;
-        break;
     }
   }
 
@@ -1062,7 +1014,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
@@ -1189,7 +1141,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'popup', 'splashend', 'redirect', 'loop', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
         $export_data[$property] = $value;
       }
     }

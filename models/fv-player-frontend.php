@@ -727,7 +727,7 @@ class flowplayer_frontend extends flowplayer
           $attributes['class'] .= ' have-buttons';
         }
 
-        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' ) {
+        if( !empty($this->aCurArgs['end_actions']) && $this->aCurArgs['end_actions'] == 'redirect' && ! empty( $this->aCurArgs['end_action_value'] ) ) {
           $attributes['data-fv_redirect'] = sanitize_url( trim($this->aCurArgs['end_action_value']) );
         } else if( !empty($this->aCurArgs['redirect']) ) {
           // compatibility fallback for classic (non-DB) shortcode
@@ -1189,7 +1189,16 @@ class flowplayer_frontend extends flowplayer
 
     if( !empty($this->aCurArgs['end_actions']) && ($is_static_popup || $is_email_popup) ) {
       if ($is_static_popup) {
-        $popup = (!empty($this->aCurArgs['popup']) ? trim($this->aCurArgs['popup']) : trim( $this->aCurArgs['end_action_value'] ));
+        $popup = false;
+
+        if ( ! empty( $this->aCurArgs['end_action_value'] ) ) {
+          $popup = trim( $this->aCurArgs['end_action_value'] );
+        }
+
+        if ( ! empty( $this->aCurArgs['popup'] ) ) {
+          $popup = trim( $this->aCurArgs['popup'] );
+        }
+
       } else if ($is_email_popup) {
         $popup = 'email-'.trim( $this->aCurArgs['end_action_value'] );
       }
