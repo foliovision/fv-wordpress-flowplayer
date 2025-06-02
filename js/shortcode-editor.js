@@ -4050,6 +4050,8 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       tabs_refresh();
 
+      show_end_of_video_actions();
+
       $doc.trigger('fv-player-editor-video-opened', [ current_video_to_edit ] );
 
       return false;
