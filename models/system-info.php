@@ -117,7 +117,11 @@ if ( function_exists( 'openssl_sign' ) ) {
   if ( $cf_key ) {
     echo 'Using your CloudFront key from FV Player Pro settings... ';
 
-    $private_key = $cf_key;
+    $private_key = openssl_get_privatekey( $cf_key );
+
+    if ( ! $private_key ) {
+      echo 'Error: Failed to load private key:' . openssl_error_string();
+    }
 
   } else {
     echo 'Using random key... ';
@@ -128,36 +132,38 @@ if ( function_exists( 'openssl_sign' ) ) {
     ) );
   }
 
-  $data = 'test';
-  $algorithms = array(
-    'SHA1'   => 'OPENSSL_ALGO_SHA1',
-    'SHA256' => 'OPENSSL_ALGO_SHA256'
-  );
-  
-  $results = array();
-  
-  foreach ( $algorithms as $name => $algo_constant ) {
-    if ( defined( $algo_constant ) ) {
-      $result = openssl_sign( $data, $signature, $private_key, constant( $algo_constant ) );
-      $error = '';
-      if ( ! $result ) {
-        $error = openssl_error_string();
-      }
-      $results[] = $name . ': ' . ( $result ? 'works' : 'failed' ) . ' (' . $error . ') ';
+  if ( $private_key ) {
+    $data = 'test';
+    $algorithms = array(
+      'SHA1'   => 'OPENSSL_ALGO_SHA1',
+      'SHA256' => 'OPENSSL_ALGO_SHA256'
+    );
+    
+    $results = array();
+    
+    foreach ( $algorithms as $name => $algo_constant ) {
+      if ( defined( $algo_constant ) ) {
+        $result = openssl_sign( $data, $signature, $private_key, constant( $algo_constant ) );
+        $error = '';
+        if ( ! $result ) {
+          $error = openssl_error_string();
+        }
+        $results[] = $name . ': ' . ( $result ? 'works' : 'failed' ) . ' (' . $error . ')';
 
-      if ( ! $result && $name === 'SHA1' ) {
-        $cloudfront_problem = true;
-      }
+        if ( ! $result && $name === 'SHA1' ) {
+          $cloudfront_problem = true;
+        }
 
-    } else {
-      $results[] = $name . ': not supported';
+      } else {
+        $results[] = $name . ': not supported';
+      }
     }
-  }
 
-  echo implode( ', ', $results );
+    echo implode( ', ', $results );
 
-  if ( $cf_key && $cloudfront_problem ) {
-    echo ' Failing SHA1 is a problem, the CloudFront signed URLs will not work.';
+    if ( $cf_key && $cloudfront_problem ) {
+      echo ' Failing SHA1 is a problem, the CloudFront signed URLs will not work.';
+    }
   }
 
 } else {
