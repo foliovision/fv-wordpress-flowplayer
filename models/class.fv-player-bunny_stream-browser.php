@@ -90,7 +90,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     $local_jobs = $wpdb->get_results( "SELECT id, job_id FROM `{$wpdb->prefix}fv_player_encoding_jobs`" );
     $local_jobs = wp_list_pluck( $local_jobs, 'id', 'job_id');
 
-    $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
+    $query_string = array( 'itemsPerPage' => 1000, 'orderBy' => 'date' );
     $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && intval( $_POST['page'] ) == absint( $_POST['page'] ) ? absint( $_POST['page'] ) : 1 );
     if( !empty($_POST['search']) ) {
       $query_string['search'] = sanitize_text_field( $_POST['search'] );
