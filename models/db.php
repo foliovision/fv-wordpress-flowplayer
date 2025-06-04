@@ -1315,6 +1315,7 @@ class FV_Player_Db {
         if ($id) {
           do_action('fv_player_db_save', $id);
 
+          // Process Video Custom Fields
           if ( !empty($post_data['current_post_id']) ) {
             $post = get_post( $post_data['current_post_id'] );
 

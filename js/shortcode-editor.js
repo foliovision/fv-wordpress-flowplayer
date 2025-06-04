@@ -26,6 +26,7 @@ jQuery(function() {
 
     current_editor_tab = false,
 
+    // Used for Video Custom Fields
     current_post_id = 0,
     current_post_meta_key = 0,
 
