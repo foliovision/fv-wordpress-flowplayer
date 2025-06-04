@@ -4138,12 +4138,16 @@ Please also contact FV Player support with the following debug information:\n\n\
       // set current editor tab for ajax_data
       ajax_data['current_editor_tab'] = current_editor_tab;
 
+      // Used for Video Custom Fields
       if( current_post_id ) {
         ajax_data['current_post_id'] = current_post_id;
       }
       if( current_post_meta_key ) {
         ajax_data['current_post_meta_key'] = current_post_meta_key;
       }
+
+      // Used in FV Player Pay Per View to store the post ID for the product
+      ajax_data['editor_post_id'] = fv_flowplayer_set_post_thumbnail_id;
 
       return ajax_data;
     }
