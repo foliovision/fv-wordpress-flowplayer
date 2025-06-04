@@ -1067,7 +1067,7 @@ jQuery(function() {
 
         var el_input = fv_flowplayer_uploader_button.closest('.components-base-control__field').find('[name=' + fv_flowplayer_uploader_button.data('target') + ']');
 
-        // Fallback to previous input, used in FV Player Block
+        // Fallback to previous input, used in FV Player Block for the "Settings" sidebar, also called "Inspector"
         if ( ! el_input.length ) {
           el_input = fv_flowplayer_uploader_button.prev('.components-panel__row').find('input');
         }
@@ -1146,11 +1146,16 @@ jQuery(function() {
 
           }
 
-          // Update the block attribute
-          var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+          // Did we open the media library from within the block?
+          if ( fv_flowplayer_uploader_button.hasClass( 'fv-player-gutenberg-media' ) ) {
+            // Update the block attribute
+            var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
 
-          if ( clientId ) {
-            wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: attachment.url });
+            if ( clientId ) {
+              debug_log( 'Media library updating block attributes.' );
+
+              wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: attachment.url });
+            }
           }
 
           if( attachment.type == 'video' ) {

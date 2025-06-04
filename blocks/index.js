@@ -129,6 +129,8 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     }, [shortcodeContent, player_id, splash_attachment_id]);
 
     const ajaxUpdateFromDB = (id = null) => {
+      console.log( 'FV Player Block: attributes_load', id ? id : player_id );
+
       const data = new FormData();
       data.append('action', 'fv_player_guttenberg_attributes_load');
       data.append('player_id', id ? id : player_id);
@@ -160,6 +162,8 @@ registerBlockType( 'fv-player-gutenberg/basic', {
 
     // handle ajax update of attributes
     const ajaxUpdateAttributes = (newAttributes) => {
+      console.log( 'FV Player Block: attributes_save', player_id );
+
       if( player_id == 'undefined' || player_id == 0  ) {
         firstInsert = true;
       }
