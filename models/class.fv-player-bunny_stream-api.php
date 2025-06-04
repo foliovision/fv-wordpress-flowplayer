@@ -17,17 +17,44 @@ class FV_Player_Bunny_Stream_API {
   public function get_all_collections( $search = false ) {
     global $fv_fp;
 
-    $query_string = array( 'itemsPerPage' => 50, 'orderBy' => 'date' );
-    $query_string['page'] = ( !empty($_POST['page']) && is_numeric($_POST['page']) && intval( $_POST['page'] ) == absint( $_POST['page'] ) ? absint( $_POST['page'] ) : 1 );
+    // The Media Library Browser is sorting folders alphabetically anyway
+    $query_string = array( 'itemsPerPage' => 50 );
+    $all_collections = array();
+    $page = 1;
+    $total_items = 0;
 
     if( $search ) $query_string['search'] = $search;
 
-    $endpoint = add_query_arg(
-      $query_string,
-      'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections'
-    );
+    do {
+      $query_string['page'] = $page;
+      
+      $endpoint = add_query_arg(
+        $query_string,
+        'http://video.bunnycdn.com/library/'. $fv_fp->_get_option( array('bunny_stream','lib_id') ) .'/collections'
+      );
 
-    $result_collection = $this->api_call( $endpoint );
+      $result_collection = $this->api_call( $endpoint );
+      
+      // If we have an error, we break the loop
+      if ( is_wp_error( $result_collection ) ) {
+
+        // At least return all the results we have so far
+        if ( $page > 1 ) {
+          break;
+        }
+
+        return $result_collection;
+      }
+
+      if ( ! empty( $result_collection->items ) ) {
+        $all_collections = array_merge( $all_collections, $result_collection->items );
+        $total_items = $result_collection->totalItems;
+      }
+
+      $page++;
+    } while ( count($all_collections) < 200 && count($all_collections) < $total_items );
+
+    $result_collection->items = $all_collections;
 
     return $result_collection;
   }
