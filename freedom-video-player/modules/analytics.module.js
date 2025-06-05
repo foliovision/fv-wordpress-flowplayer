@@ -83,9 +83,7 @@ flowplayer( function(api,root) {
     if (!timer) {
       timer = setTimeout(function() {
         timer = null;
-        if( !is_ga_4( api ) ) {
-          fv_player_track( api, false, "FV Player heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
-        }
+        fv_player_track( api, false, "FV Player heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
       }, 10*60*1000); // heartbeat every 10 minutes
     }
 
@@ -199,7 +197,9 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
 
   // gtag.js
   if( typeof(gtag) != "undefined" ) {
-    if( is_ga_4( api ) ) {
+
+    // Track the video properties the GA4 way
+    if( is_ga_4( api ) && 'Heartbeat' !== name ) {
       gtag("event", event, {
         'video_title': name,
         'video_current_time': api.video.time,
