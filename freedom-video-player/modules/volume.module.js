@@ -36,7 +36,7 @@ flowplayer(function(api, root) {
         var mute_notice = jQuery('<div class="fp-message fp-message-muted"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
 
         // We need touchstart for mobile, otherwise click would only show te UI
-        mute_notice.on( 'click touchstart', function() {
+        freedomplayer.bean.on( mute_notice[0], 'click touchstart', function() {
           api.mute(false);
           api.volume(1);
         });
