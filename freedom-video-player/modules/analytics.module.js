@@ -92,16 +92,22 @@ flowplayer( function(api,root) {
   });
 
   api.bind('shutdown', function() {
-    bean.off(window, 'unload', fv_track_seconds_played);
+    bean.off(window, 'visibilitychange pagehide', fv_track_seconds_played);
   });
 
-  bean.on(window, 'unload', fv_track_seconds_played);
+  bean.on(window, 'visibilitychange pagehide', fv_track_seconds_played);
 
   var fv_ga_events = is_ga_4( api ) ?
     [ 'Play', '25 Percent Played', '50  Percent Played', '75 Percent Played', '100 Percent Played' ] :
     [ 'start', 'first quartile', 'second quartile', 'third quartile', 'complete' ];
 
   function fv_track_seconds_played(e, api_not_needed, video) {
+
+    // Do not track when coming back to the browser tab, we can track that when really leaving the page
+    if ( document.visibilityState === 'visible' ) {
+      return;
+    }
+
     video = video || api.video;
 
     if(e.type === 'load') {
