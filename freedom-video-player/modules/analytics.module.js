@@ -104,7 +104,8 @@ flowplayer( function(api,root) {
   function fv_track_seconds_played(e, api_not_needed, video) {
 
     // Do not track when coming back to the browser tab, we can track that when really leaving the page
-    if ( document.visibilityState === 'visible' ) {
+    // Except if it's the video load event, we need to allow that as we set the video name and track the seconds played if switching playlist items
+    if ( document.visibilityState === 'visible' && e.type !== 'load' ) {
       return;
     }
 
