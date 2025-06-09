@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2025-05-28 15:19+0000\n"
+"POT-Creation-Date: 2025-06-09 12:47+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -67,119 +67,119 @@ msgstr ""
 msgid "FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!"
 msgstr ""
 
-#: controller/editor.php:99
+#: controller/editor.php:100
 msgid "Embed feature not supported in editor preview"
 msgstr ""
 
-#: controller/editor.php:100
+#: controller/editor.php:101
 msgid "Link feature not supported in editor preview"
 msgstr ""
 
-#: controller/editor.php:101
+#: controller/editor.php:102
 msgid "Cannot obtain video screenshot, please make sure the video is served with <a href=\"https://foliovision.com/player/video-hosting/hls#hls-js\">CORS headers</a>."
 msgstr ""
 
-#: controller/editor.php:124
+#: controller/editor.php:125
 msgid "Add FV Player"
 msgstr ""
 
-#: controller/editor.php:743, models/list-table.php:72, view/admin.php:2131, view/wizard.php:570
+#: controller/editor.php:744, models/list-table.php:72, view/admin.php:2131, view/wizard.php:570
 msgid "Subtitles"
 msgstr ""
 
-#: controller/editor.php:744
+#: controller/editor.php:745
 msgid "Subtitle"
 msgstr ""
 
-#: controller/editor.php:770
+#: controller/editor.php:771
 msgid "Video Link"
 msgstr ""
 
-#: controller/editor.php:794
+#: controller/editor.php:795
 msgid "Live Stream"
 msgstr ""
 
-#: controller/editor.php:798
+#: controller/editor.php:799
 msgid "DVR Stream"
 msgstr ""
 
-#: controller/editor.php:806
+#: controller/editor.php:807
 msgid "Audio Stream"
 msgstr ""
 
-#: controller/editor.php:811
+#: controller/editor.php:812
 msgid "Advanced Settings"
 msgstr ""
 
-#: controller/editor.php:816, view/admin.php:910
+#: controller/editor.php:817, view/admin.php:910
 msgid "Mobile Video"
 msgstr ""
 
-#: controller/editor.php:823
+#: controller/editor.php:824
 msgid "Alternative Format 1"
 msgstr ""
 
-#: controller/editor.php:830
+#: controller/editor.php:831
 msgid "Alternative Format 2"
 msgstr ""
 
-#: controller/editor.php:837
+#: controller/editor.php:838
 msgid "Remove Top and Bottom Black Bars"
 msgstr ""
 
-#: controller/editor.php:839
+#: controller/editor.php:840
 msgid "Fixes video fit in mobile fullscreen when in landscape."
 msgstr ""
 
-#: controller/editor.php:844
+#: controller/editor.php:845
 msgid "RTMP"
 msgstr ""
 
-#: controller/editor.php:850
+#: controller/editor.php:851
 msgid "Path"
 msgstr ""
 
-#: controller/editor.php:856
+#: controller/editor.php:857
 msgid "Server"
 msgstr ""
 
-#: controller/editor.php:866
+#: controller/editor.php:867
 msgid "Splash Screen"
 msgstr ""
 
-#: controller/editor.php:871
+#: controller/editor.php:872
 msgid "Will appear in place of the video before it plays."
 msgstr ""
 
-#: controller/editor.php:878
+#: controller/editor.php:879
 msgid "Title"
 msgstr ""
 
-#: controller/editor.php:882
+#: controller/editor.php:883
 msgid "Will appear below the player and on playlist thumbnails. Also used for tracking."
 msgstr ""
 
-#: controller/editor.php:885
+#: controller/editor.php:886
 msgid "Hide Title"
 msgstr ""
 
-#: controller/editor.php:890
+#: controller/editor.php:891
 msgid "Use if you only want the title for tracking."
 msgstr ""
 
-#: controller/editor.php:895, view/admin.php:916
+#: controller/editor.php:896, view/admin.php:916
 msgid "Splash Text"
 msgstr ""
 
-#: controller/editor.php:899
+#: controller/editor.php:900
 msgid "Will appear over the video before it plays."
 msgstr ""
 
-#: controller/editor.php:902, view/admin.php:918
+#: controller/editor.php:903, view/admin.php:918
 msgid "Synopsis"
 msgstr ""
 
-#: controller/editor.php:906
+#: controller/editor.php:907
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
@@ -632,7 +632,7 @@ msgstr ""
 msgid "Profile Videos"
 msgstr ""
 
-#: models/db-player.php:858
+#: models/db-player.php:810
 msgid "Draft"
 msgstr ""
 
@@ -668,7 +668,7 @@ msgstr ""
 msgid "Target List"
 msgstr ""
 
-#: models/email-subscription.php:149, models/system-info.php:217
+#: models/email-subscription.php:149, models/system-info.php:280
 msgid "Export"
 msgstr ""
 
