@@ -80,10 +80,11 @@ flowplayer( function(api,root) {
        last = +new Date();
     }
 
+    // Send the seconds played event periodically too. This replace the old "FV Player heartbeat" event
     if (!timer) {
       timer = setTimeout(function() {
         timer = null;
-        fv_player_track( api, false, "FV Player heartbeat", api.engine.engineName + "/" + api.video.type, "Heartbeat", 0 );
+        fv_track_seconds_played( { type: 'heartbeat' } );
       }, 10*60*1000); // heartbeat every 10 minutes
     }
 
@@ -105,7 +106,8 @@ flowplayer( function(api,root) {
 
     // Do not track when coming back to the browser tab, we can track that when really leaving the page
     // Except if it's the video load event, we need to allow that as we set the video name and track the seconds played if switching playlist items
-    if ( document.visibilityState === 'visible' && e.type !== 'load' ) {
+    // Or if it's the heartbeat event, we need to allow that as we track the seconds played for the heartbeat too
+    if ( document.visibilityState === 'visible' && e.type !== 'load' && e.type !== 'heartbeat' ) {
       return;
     }
 
