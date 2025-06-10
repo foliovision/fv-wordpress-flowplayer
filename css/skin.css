@@ -719,6 +719,9 @@
     .freedomplayer .fp-controls > span {
       margin: 0 .6em;
       opacity: 0; }
+    .freedomplayer.is-rtl .fp-controls > span {
+      margin-left: 0;
+    }
     .freedomplayer .fp-controls strong {
       margin: 0;
       padding: .4em .6em; }
@@ -905,6 +908,8 @@
       position: relative;
       content: "/";
       left: -.3em; }
+    .freedomplayer.fp-full.is-rtl .fp-duration:before, .freedomplayer.fp-full.is-rtl .fp-remaining:before {
+      left: .3em; }      
   .freedomplayer.fp-slim.fp-full .fp-controls:hover .fp-timeline {
     height: .3em; }
   .freedomplayer.fp-minimal .fp-controls {
