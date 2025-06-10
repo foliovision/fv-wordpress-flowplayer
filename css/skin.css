@@ -719,7 +719,7 @@
     .freedomplayer .fp-controls > span {
       margin: 0 .6em;
       opacity: 0; }
-    .freedomplayer.is-rtl .fp-controls > span {
+    .freedomplayer.is-rtl .fp-buffer {
       margin-left: 0;
     }
     .freedomplayer .fp-controls strong {
