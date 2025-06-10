@@ -103,7 +103,7 @@
 .flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.fp-full.is-tiny .fp-controls {bottom: -3.2em}
 .flowplayer.fixed-controls.fp-full.fp-slim.is-tiny .fp-controls {bottom: -3.2em}
-.flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
+.flowplayer.fixed-controls.is-fullscreen .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full .fp-controls, .flowplayer.fixed-controls.is-fullscreen.fp-full.fp-slim .fp-controls {bottom: 0}
 .flowplayer.fixed-controls .fp-menu.fp-active {
   bottom: .2em;
 }
