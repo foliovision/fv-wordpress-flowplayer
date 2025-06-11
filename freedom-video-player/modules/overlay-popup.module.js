@@ -75,10 +75,6 @@ flowplayer(function (api,root) {
   }
 
   function show_popup( event ) {
-    if ( typeof api.video.click !== "undefined" ) {
-      return false;
-    }
-
     var popup_data = api.get_popup();
     if( popup_data ) {
       if(
@@ -119,6 +115,9 @@ flowplayer(function (api,root) {
       show_popup(e.type);
     }
   }).bind("pause", function (e) {
+    if ( typeof api.video.click !== "undefined" ) {
+      return false;
+    }
 
     // Give it a bit of time so that we can check if the video is paused and not just finished
     setTimeout( function() {
