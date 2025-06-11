@@ -189,7 +189,10 @@
 .flowplayer .wpfp_custom_popup{width:100%;top:0;bottom:0;margin-bottom:2.4em;-webkit-transition:all .2s;-moz-transition:all .2s;transition:all .2s;overflow:hidden}
 .flowplayer.fp-full .wpfp_custom_popup{margin-bottom:2.8em}
 .flowplayer.fp-slim.fp-full .wpfp_custom_popup{margin-bottom:2.4em}
-.flowplayer.fixed-controls .wpfp_custom_popup{margin-bottom:0}
+.flowplayer.fixed-controls .wpfp_custom_popup,
+.flowplayer.fixed-controls.fp-slim.fp-full .wpfp_custom_popup {
+  margin-bottom:0;
+}
 .flowplayer .fv_player_popup {background-color:#222;position:relative;top:0;width:100%;height:100%;padding:2em 0 1%}
 .flowplayer .fv_player_popup h1,.flowplayer .fv_player_popup h2,.flowplayer .fv_player_popup h3,.flowplayer .fv_player_popup h4,.flowplayer .fv_player_popup h5,.flowplayer .fv_player_popup h6{margin:0 0 6px !important}
 .mailchimp-form input{width:31.33333333%;max-width:31.33333333%;margin:0 1%}
