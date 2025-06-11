@@ -75,6 +75,10 @@ flowplayer(function (api,root) {
   }
 
   function show_popup( event ) {
+    if ( typeof api.video.click !== "undefined" ) {
+      return false;
+    }
+
     var popup_data = api.get_popup();
     if( popup_data ) {
       if(
