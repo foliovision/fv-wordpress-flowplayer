@@ -588,10 +588,17 @@ article .entry-content .fvfp_admin_error p { line-height: 18px }
 .flowplayer .fp-controls > .fv-fp-rewind {
   margin-right: 0;
 }
+.flowplayer.is-rtl .fp-controls > .fv-fp-rewind {
+  margin-left: 0;
+  margin-right: .6em;
+}
 .flowplayer .fp-controls > .fv-fp-forward {
   margin-left: 0;
 }
-
+.flowplayer.is-rtl .fp-controls > .fv-fp-forward {
+  margin-left: .6em;
+  margin-right: 0;
+}
 
 /*  Audio player  */
 .is-audio .fp-player {background-size: contain; background-position: top center; background-repeat: no-repeat}
