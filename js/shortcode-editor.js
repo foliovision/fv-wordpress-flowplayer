@@ -804,17 +804,7 @@ jQuery(function() {
           name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' ),
           wrap = input.parents( '.fv-player-editor-field-wrap-' + name );
 
-        // Reveal the input if it has value even if it's not enabled in Post Interface options
-        if ( input.val() ) {
-          // Only if it's not field with shortening
-          if ( input.prev( '.fv_player_editor_url_shortened' ).length === 0 ) {
-            input.closest( '.fv_player_interface_hide' ).show();
-          }
-          wrap.show();
-        }
-
-        // Show children inputs if input has value
-        parent.find('.fv-player-editor-field-children-' + name ).toggle( !! input.val() );
+        text_and_select_worker( input, parent, name, wrap );
       });
 
       /*
@@ -3804,6 +3794,16 @@ Please also contact FV Player support with the following debug information:\n\n\
   
             checkbox_toggle_worker(wrap, name, checked);
         });
+
+        // Since we are using the virtual DOM, we need to call the change event for the inputs and selects manually
+        new_item.on('change', '.components-text-control__input, .components-select-control__input', function() {
+          var input = jQuery(this),
+            parent = input.closest('.fv-player-editor-children-wrap'),
+            name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' ),
+            wrap = input.parents( '.fv-player-editor-field-wrap-' + name );
+  
+          text_and_select_worker( input, parent, name, wrap );
+        });
       }
 
       // processing database input
@@ -4909,6 +4909,20 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       wrap.closest( '.fv-player-editor-children-wrap' ).find( '.fv-player-editor-field-children-'+name ).toggle( checked );
     }
+
+    function text_and_select_worker( input, parent, name, wrap ) {
+      // Reveal the input if it has value even if it's not enabled in Post Interface options
+      if ( input.val() ) {
+        // Only if it's not field with shortening
+        if ( input.prev( '.fv_player_editor_url_shortened' ).length === 0 ) {
+          input.closest( '.fv_player_interface_hide' ).show();
+        }
+        wrap.show();
+      }
+
+      // Show children inputs if input has value
+      parent.find('.fv-player-editor-field-children-' + name ).toggle( !! input.val() );
+  }
 
     function show_end_actions( e, value ) {
       // redirect, popup and email_list
