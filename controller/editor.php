@@ -988,13 +988,13 @@ function fv_wp_flowplayer_convert_to_db($post_id, $post, $update) {
       10,
       3
     );
+
+    // remove current action to prevent infinite loop when using wp_update_post
+    remove_action( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9 );
+
+    // update post with updated content
+    wp_update_post( array( 'ID' => $post->ID, 'post_content' => $new_content ) );
   }
-
-  // remove current action to prevent infinite loop when using wp_update_post
-  remove_action( 'save_post', 'fv_wp_flowplayer_convert_to_db', 9 );
-
-  // update post with updated content
-  wp_update_post( array( 'ID' => $post->ID, 'post_content' => $new_content ) );
 }
 
 
