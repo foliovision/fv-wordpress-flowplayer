@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2025-06-09 12:47+0000\n"
+"POT-Creation-Date: 2025-06-19 11:43+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -668,7 +668,7 @@ msgstr ""
 msgid "Target List"
 msgstr ""
 
-#: models/email-subscription.php:149, models/system-info.php:280
+#: models/email-subscription.php:149, models/system-info.php:217
 msgid "Export"
 msgstr ""
 
