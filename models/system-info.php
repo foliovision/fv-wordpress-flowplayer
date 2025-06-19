@@ -108,37 +108,6 @@ WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled
 DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
 cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
 
-OpenSSL digest methods:   <?php if ( function_exists( 'openssl_get_md_methods' ) ) echo implode( ', ', openssl_get_md_methods() ); ?><?php echo "\n"; ?>
-OpenSSL CloudFront test:  <?php 
-if ( function_exists( 'openssl_sign' ) ) {
-
-  if ( defined( 'OPENSSL_ALGO_SHA1' ) ) {
-    $data = 'test';
-
-    $private_key = openssl_pkey_new( array(
-      'private_key_bits' => 2048,
-      'private_key_type' => OPENSSL_KEYTYPE_RSA,
-    ) );
-
-    $result = openssl_sign( $data, $signature, $private_key, OPENSSL_ALGO_SHA1 );
-
-    echo $result ? 'SHA1 signing works' : 'SHA1 signing failed';
-
-    echo ' (';
-    print_r($result);
-    echo ')';
-
-    openssl_free_key( $private_key);
-
-  } else {
-    echo 'SHA1 does not appear to be supported';
-  }
-
-} else {
-  echo 'openssl_sign() not available';
-}
-?><?php echo "\n"; ?>
-
 ACTIVE PLUGINS:
 
 <?php
