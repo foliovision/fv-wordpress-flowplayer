@@ -257,15 +257,15 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
-= 8.0.20 - 2025-06-TBA =
+= 8.0.20 - 2025-06-19 =
 
+* Accessibility improvements
 * Editor: Performance fixes for playlists, fixing issues with playlists of 100 or more videos
 * Editor: Speed-up "Pick existing player"
 * Editor: Limit video duration checks during import, otherwise the import might take too long
 * Bunny Stream: Browser: Load up to 1000 videos
 * Bunny Stream: Browser: Load up to 200 collections
 * FV Player screen: Better table sizing, fixing layout shifts
-* System Info: OpenSSL SHA1 check
 * Bugfix: Analytics: Fix heartbeat for GA4
 * Bugfix: Analytics: Stop using window unload event, using visibilitychange and pagehide instead
 * Bugfix: Editor: End of Video Action: Fix disabling

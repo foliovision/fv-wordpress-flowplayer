@@ -37,7 +37,7 @@ class FV_Player_System_Info {
   }
 
   public function settings_box () {
-    global $wpdb, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $FV_Player_Pro, $FV_Player_VAST, $FV_Player_PayPerView, $fv_fp;
+    global $wpdb, $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver, $FV_Player_Pro, $FV_Player_VAST, $FV_Player_PayPerView;
 
     $theme_data = wp_get_theme();
     $theme      = $theme_data->Name . ' ' . $theme_data->Version;
@@ -107,69 +107,6 @@ WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled
 
 DISPLAY ERRORS:           <?php echo ( ini_get( 'display_errors' ) ) ? 'On (' . ini_get( 'display_errors' ) . ')' : 'N/A'; ?><?php echo "\n"; ?>
 cURL:                     <?php echo ( function_exists( 'curl_init' ) ) ? 'Your server supports cURL.' : 'Your server does not support cURL.'; ?><?php echo "\n"; ?>
-
-OpenSSL digest methods:   <?php if ( function_exists( 'openssl_get_md_methods' ) ) echo implode( ', ', openssl_get_md_methods() ); ?><?php echo "\n"; ?>
-OpenSSL CloudFront test:  <?php 
-if ( function_exists( 'openssl_sign' ) ) {
-  $cloudfront_problem = false;
-
-  $cf_key = $fv_fp->_get_option( array( 'pro', 'cf_pk' ) );
-  if ( $cf_key ) {
-    echo 'Using your CloudFront key from FV Player Pro settings... ';
-
-    $private_key = openssl_get_privatekey( $cf_key );
-
-    if ( ! $private_key ) {
-      echo 'Error: Failed to load private key:' . openssl_error_string();
-    }
-
-  } else {
-    echo 'Using random key... ';
-
-    $private_key = openssl_pkey_new( array(
-      'private_key_bits' => 2048,
-      'private_key_type' => OPENSSL_KEYTYPE_RSA,
-    ) );
-  }
-
-  if ( $private_key ) {
-    $data = 'test';
-    $algorithms = array(
-      'SHA1'   => 'OPENSSL_ALGO_SHA1',
-      'SHA256' => 'OPENSSL_ALGO_SHA256'
-    );
-    
-    $results = array();
-    
-    foreach ( $algorithms as $name => $algo_constant ) {
-      if ( defined( $algo_constant ) ) {
-        $result = openssl_sign( $data, $signature, $private_key, constant( $algo_constant ) );
-        $error = '';
-        if ( ! $result ) {
-          $error = openssl_error_string();
-        }
-        $results[] = $name . ': ' . ( $result ? 'works' : 'failed' ) . ' (' . $error . ')';
-
-        if ( ! $result && $name === 'SHA1' ) {
-          $cloudfront_problem = true;
-        }
-
-      } else {
-        $results[] = $name . ': not supported';
-      }
-    }
-
-    echo implode( ', ', $results );
-
-    if ( $cf_key && $cloudfront_problem ) {
-      echo ' Failing SHA1 is a problem, the CloudFront signed URLs will not work.';
-    }
-  }
-
-} else {
-  echo 'openssl_sign() not available';
-}
-?><?php echo "\n"; ?>
 
 ACTIVE PLUGINS:
 

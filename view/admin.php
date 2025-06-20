@@ -351,6 +351,7 @@ function fv_flowplayer_admin_default_options() {
               <td colspan="4">
                 <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
                 <a class="button fv-help-link" href="https://foliovision.com/player/settings/sitewide-fv-player-defaults" target="_blank">Help</a>
+                <a href="#skin-tab-controls" class="settings-section-link">Looking for controls settings?</a>
               </td>
             </tr>
           </table>
@@ -2467,32 +2468,46 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 
 <script>
 /* TABS */
-jQuery(window).one( 'load', function() {
-  jQuery('#fv_player_js_warning').hide();
+jQuery( function($) {
+  function set_visible_tab() {
+    $('#fv_player_js_warning').hide();
 
-  var anchor = window.location.hash.substring(1),
-    skin_anchor = window.location.hash.substring(1);
+    var anchor = window.location.hash.substring(1),
+      skin_anchor = window.location.hash.substring(1);
 
-  if( !anchor || !anchor.match(/tab_/) ) {
-    if ( skin_anchor.match( /skin-tab-/ ) ) {
-      anchor = 'postbox-container-tab_skin';
-    } else {
-      anchor = 'postbox-container-tab_basic';
+    if( !anchor || !anchor.match(/tab_/) ) {
+      if ( skin_anchor.match( /skin-tab-/ ) ) {
+        anchor = 'postbox-container-tab_skin';
+      } else {
+        anchor = 'postbox-container-tab_basic';
+      }
     }
+
+    if ( ! skin_anchor || ! skin_anchor.match( /skin-tab-/ ) ) {
+      skin_anchor = 'skin-tab-skin';
+    }
+
+    $('#fv_flowplayer_admin_tabs .nav-tab, #fv_flowplayer_admin_skin_tabs .nav-tab').removeClass('nav-tab-active');
+    $('[href=\\#'+anchor+']').addClass('nav-tab-active');
+    $('#dashboard-widgets .postbox-container').hide();
+    $('#' + anchor).show();
+
+    $( '[href=\\#' + skin_anchor + ']' ).addClass('nav-tab-active');
+    $( '.skin-tab-content' ).hide();
+    $( '#' + skin_anchor ).show();
+
+    // scroll to the top of skin_anchor
+    var offset = $( '#' + skin_anchor ).offset().top - 120;
+    window.scrollTo(0, offset);
   }
 
-  if ( ! skin_anchor || ! skin_anchor.match( /skin-tab-/ ) ) {
-    skin_anchor = 'skin-tab-skin';
-  }
+  set_visible_tab();
 
-  jQuery('#fv_flowplayer_admin_tabs .nav-tab, #fv_flowplayer_admin_skin_tabs .nav-tab').removeClass('nav-tab-active');
-  jQuery('[href=\\#'+anchor+']').addClass('nav-tab-active');
-  jQuery('#dashboard-widgets .postbox-container').hide();
-  jQuery('#' + anchor).show();
-
-  jQuery( '[href=\\#' + skin_anchor + ']' ).addClass('nav-tab-active');
-  jQuery( '.skin-tab-content' ).hide();
-  jQuery( '#' + skin_anchor ).show();
+  $( '.settings-section-link' ).on('click', function(e) {
+    location.hash = $(this).attr('href');
+    set_visible_tab();
+    return false;
+  });
 });
 
 jQuery('#fv_flowplayer_admin_tabs a').on('click',function(e){

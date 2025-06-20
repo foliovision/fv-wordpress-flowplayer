@@ -276,6 +276,12 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   z-index: 1000;
 }
 
+.settings-section-link {
+  display: inline-block;
+  margin: 22px 0 0 10px;
+  text-decoration: none;
+}
+
 /*
 Brizy editor support
 */
