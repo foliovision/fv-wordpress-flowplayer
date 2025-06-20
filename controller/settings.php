@@ -351,9 +351,9 @@ function fv_flowplayer_admin_scripts() {
 
 
 
-add_action('admin_head', 'flowplayer_admin_head');
+add_action( 'admin_enqueue_scripts', 'fv_player_settings_styles' );
 
-function flowplayer_admin_head() {
+function fv_player_settings_styles() {
   if( !fv_player_is_admin_screen() ) return;
 
   global $fv_wp_flowplayer_ver;
