@@ -2003,6 +2003,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
                   unset($video_data['meta'][$k]);
                 }
               }
+            } else {
+              $video_data['meta'] = array();
             }
 
             // Skip video meta check if the import is taking more than 10 seconds.
