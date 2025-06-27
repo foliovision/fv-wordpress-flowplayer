@@ -98,7 +98,12 @@ class FV_Player_Widget extends WP_Widget {
     $filter = isset($instance['filter']) ? $instance['filter'] : 0;
     $title = sanitize_text_field($instance['title']);
 
-    //var_dump($this->number);
+    $number = intval( $this->number );
+
+    // When the widget loads for Elementor, it does not replace REPLACE_TO_ID instead of widget number
+    if ( ! empty( $_POST['action'] ) && 'elementor_ajax' == $_POST['action'] ) {
+      $number = 'REPLACE_TO_ID';
+    }
     ?><p><label for="<?php echo esc_attr( $this->get_field_id('title') ); ?>"><?php esc_html_e('Title:'); ?></label>
 
       <input class="widefat" id="<?php echo esc_attr( $this->get_field_id('title') ); ?>" name="<?php echo esc_attr( $this->get_field_name('title') ); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
@@ -108,7 +113,7 @@ class FV_Player_Widget extends WP_Widget {
         .wp-customizer .fv-wordpress-flowplayer-button { display: none; }
       </style>
       <label for="<?php echo esc_attr( $this->get_field_id('text') ); ?>"><?php esc_html_e('Player'); ?>:</label>&nbsp;&nbsp;
-      <input type="button" id="widget-widget_fvplayer-<?php echo intval( $this->number ); ?>-savewidget" class="button button-primary left fv-wordpress-flowplayer-button"  data-number="<?php echo intval( $this->number ); ?>" value="<?php echo strlen( trim($instance['text']) ) ? 'Edit' : 'Add'; ?>">    
+      <input type="button" id="widget-widget_fvplayer-<?php echo intval( $this->number ); ?>-savewidget" class="button button-primary left fv-wordpress-flowplayer-button"  data-number="<?php echo $number ?>" value="<?php echo strlen( trim($instance['text']) ) ? 'Edit' : 'Add'; ?>">
 
       <textarea class="widefat" rows="5" cols="5" id="<?php echo esc_attr( $this->get_field_id('text') ); ?>" name="<?php echo esc_attr( $this->get_field_name('text') ); ?>"><?php echo esc_textarea($instance['text']); ?></textarea>
     </p>
