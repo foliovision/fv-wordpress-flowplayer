@@ -549,19 +549,16 @@ abstract class FV_Player_Video_Encoder {
 
         if(!empty($videos)) {
           foreach ( $videos as $video ) {
-            // Ensure $video->getSrc() ends with $temporary_src
-            if ( substr( $video->getSrc(), -strlen( $temporary_src ) ) !== $temporary_src ) {
-              continue;
-            }
+            $res = $this->update_temporary_job_video( $video, $temporary_src, $job_output );
 
-            $this->update_temporary_job_video( $video, $job_output );
-
-            // purge HTML caches for all posts where players containing this video are present
-            $players = $fv_fp->get_players_by_video_ids( $video->getId() );
-            foreach ( $players as $player ) {
-              if ( $posts = $player->getMetaValue( 'post_id' ) ) {
-                foreach ( $posts as $post_id ) {
-                  wp_update_post( array( 'ID' => $post_id ) );
+            if ( $res ) {
+              // purge HTML caches for all posts where players containing this video are present
+              $players = $fv_fp->get_players_by_video_ids( $video->getId() );
+              foreach ( $players as $player ) {
+                if ( $posts = $player->getMetaValue( 'post_id' ) ) {
+                  foreach ( $posts as $post_id ) {
+                    wp_update_post( array( 'ID' => $post_id ) );
+                  }
                 }
               }
             }
@@ -569,13 +566,15 @@ abstract class FV_Player_Video_Encoder {
         }
 
       // If not, update the video with the job output if $fv_fp->current_video()->getSrc() ends with $temporary_src
-      } else if ( substr( $fv_fp->current_video()->getSrc(), -strlen( $temporary_src ) ) === $temporary_src ) {
-        $this->update_temporary_job_video( $fv_fp->current_video(), $job_output );
+      } else {
+        $res = $this->update_temporary_job_video( $fv_fp->current_video(), $temporary_src, $job_output );
 
-        // purge HTML caches for all posts where this player is present
-        if ( $posts = $fv_fp->current_player()->getMetaValue( 'post_id' ) ) {
-          foreach ( $posts as $post_id ) {
-            wp_update_post( array( 'ID' => $post_id ) );
+        if ( $res ) {
+          // purge HTML caches for all posts where this player is present 
+          if ( $posts = $fv_fp->current_player()->getMetaValue( 'post_id' ) ) {
+            foreach ( $posts as $post_id ) {
+              wp_update_post( array( 'ID' => $post_id ) );
+            }
           }
         }
       }
@@ -584,7 +583,16 @@ abstract class FV_Player_Video_Encoder {
     return $check;
   }
 
-  function update_temporary_job_video( $video, $job_output ) {
+  function update_temporary_job_video( $video, $temporary_src, $job_output ) {
+
+    /**
+     * Ensure $video->getSrc() ends with $temporary_src
+     * This ensures we match coconut_processing_1 in http://coconut_processing_1,
+     * but not in http://coconut_processing_10
+     */
+    if ( substr( $video->getSrc(), -strlen( $temporary_src ) ) !== $temporary_src ) {
+      return false;
+    }
 
     // video processed, replace its SRC
     if ( ! empty( $job_output->src[0] ) ) {
@@ -608,7 +616,7 @@ abstract class FV_Player_Video_Encoder {
     }
 
     // save changes for this video
-    $video->save();
+    return $video->save();
   }
 
   /**
