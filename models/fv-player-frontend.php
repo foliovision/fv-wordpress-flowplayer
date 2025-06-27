@@ -593,9 +593,6 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-fsforce'] = $this->aCurArgs['fsforce'];
         }
 
-        //  Align
-        $attributes['class'] .= $this->get_align();
-
         if( $this->_get_option('engine') || !empty($this->aCurArgs['engine']) && $this->aCurArgs['engine'] == 'flash' ) {
           $attributes['data-engine'] = 'flash';
         }
@@ -922,7 +919,26 @@ class flowplayer_frontend extends flowplayer
 
         $this->ret['html'] .= '</div>'."\n";
 
-        $this->ret['html'] .= $this->sHTMLAfter.$scripts_after;
+        $this->ret['html'] .= $this->sHTMLAfter;
+
+        $align = $this->get_align();
+
+        if ( $show_title_div && $align ) {
+          $align_wrapper = '<div class="fv-player-align' . $align . '" ';
+
+          if ( intval( $width ) == 0 ) {
+            $width = '100%';
+          }
+
+          $cssWidth = stripos( $width, '%' ) !== false ? $width : $width . 'px';
+
+          $align_wrapper .= 'style="max-width: ' . $cssWidth . '"';
+          $align_wrapper .= '>' . $this->ret['html'] . '</div>';
+
+          $this->ret['html'] = $align_wrapper;
+        }
+
+        $this->ret['html'] .= $scripts_after;
 
         //  change engine for IE9 and 10
         if( !empty($this->aCurArgs['engine']) && $this->aCurArgs['engine'] == 'false' ) {
