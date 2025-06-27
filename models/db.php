@@ -2378,10 +2378,9 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     // TODO: Sort by subtitles_count, 'chapters_count and transcript_count should be added here
     // TODO: Search the meta values too
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     $video_data = $wpdb->get_results(
-      $wpdb->prepare(
-        "SELECT v.* FROM `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_players` AS p ON FIND_IN_SET(v.id, p.videos) WHERE {$where} ORDER BY v.id DESC"
-      )
+      "SELECT v.* FROM `{$wpdb->prefix}fv_player_videos` AS v JOIN `{$wpdb->prefix}fv_player_players` AS p ON FIND_IN_SET(v.id, p.videos) WHERE {$where} ORDER BY v.id DESC"
     );
 
     if (!$video_data) {
