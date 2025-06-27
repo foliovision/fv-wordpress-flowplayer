@@ -924,6 +924,14 @@ function fv_player_sgs_whitelist_wp_content( $exclusions ) {
     $exclusions[] = 'track.php';
   }
 
+  if ( class_exists( 'FV_Player_Coconut' ) ) {
+    $exclusions[] = 'coconut-ajax.php';
+  }
+
+  if ( class_exists( 'FV_Player_Pro' ) ) {
+    $exclusions[] = 'stream-loader.php';
+  }
+
   return $exclusions;
 }
 
