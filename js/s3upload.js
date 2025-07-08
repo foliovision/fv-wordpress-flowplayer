@@ -22,7 +22,188 @@ function S3MultiUpload(file) {
     this.maxRetries = 4;
     this.retryBackoffTimeout = 15000; // ms
     this.completeErrors = 1;
+    
+    // File type validation
+    this.allowedMimeTypes = [
+        'video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov', 'video/wmv', 'video/flv', 'video/mkv',
+        'video/x-msvideo', 'video/quicktime', 'video/x-ms-wmv', 'video/x-flv', 'video/x-matroska',
+        'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a', 'audio/aac', 'audio/flac',
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/tiff',
+        'application/pdf', 'application/zip', 'application/x-zip-compressed'
+    ];
+    
+    this.fileSignatures = {
+        // Video formats
+        'video/mp4': ['ftyp', 'mp4', 'M4V', 'isom', 'iso2', 'avc1', 'mp41', 'mp42'],
+        'video/webm': ['webm'],
+        'video/ogg': ['OggS'],
+        'video/avi': ['RIFF'],
+        'video/mov': ['ftyp', 'qt  ', 'M4V ', 'mp41', 'mp42'],
+        'video/wmv': ['ASF_'],
+        'video/flv': ['FLV'],
+        'video/mkv': ['matroska'],
+        
+        // Audio formats
+        'audio/mp3': ['ID3', '\xFF\xFB', '\xFF\xF3', '\xFF\xF2'],
+        'audio/wav': ['RIFF'],
+        'audio/ogg': ['OggS'],
+        'audio/m4a': ['ftyp', 'M4A ', 'mp4a'],
+        'audio/aac': ['ADIF', 'ADTS'],
+        'audio/flac': ['fLaC'],
+        
+        // Image formats
+        'image/jpeg': ['\xFF\xD8\xFF'],
+        'image/png': ['\x89PNG\r\n\x1A\n'],
+        'image/gif': ['GIF87a', 'GIF89a'],
+        'image/webp': ['RIFF'],
+        'image/bmp': ['BM'],
+        'image/tiff': ['II*\x00', 'MM\x00*'],
+        
+        // Document formats
+        'application/pdf': ['%PDF'],
+        'application/zip': ['PK\x03\x04', 'PK\x05\x06', 'PK\x07\x08']
+    };
+    
+    this.maxFileSize = 10 * 1024 * 1024 * 1024; // 10 GB default max
+    this.validatedFileType = null;
+    this.validationError = null;
 }
+
+/**
+ * Validates file type using both MIME type and file signatures
+ * @param {Function} callback - Callback function with (isValid, error) parameters
+ */
+S3MultiUpload.prototype.validateFileType = function(callback) {
+    var self = this;
+    
+    // Check file size first
+    if (this.file.size > this.maxFileSize) {
+        this.validationError = 'File size exceeds maximum allowed size of ' + this.formatFileSize(this.maxFileSize);
+        callback(false, this.validationError);
+        return;
+    }
+    
+    // Check if MIME type is in allowed list
+    var mimeTypeAllowed = this.allowedMimeTypes.indexOf(this.file.type) !== -1;
+    
+    // Read file header to check file signature
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var arrayBuffer = e.target.result;
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var header = self.arrayBufferToString(uint8Array.slice(0, 64)); // Read first 64 bytes
+        
+        var signatureMatch = self.checkFileSignature(header, uint8Array);
+        
+        if (signatureMatch) {
+            self.validatedFileType = signatureMatch;
+            // If MIME type doesn't match signature, use the detected type
+            if (!mimeTypeAllowed) {
+                self.fileInfo.type = signatureMatch;
+            }
+            callback(true, null);
+        } else if (mimeTypeAllowed) {
+            // If signature check fails but MIME type is allowed, proceed with caution
+            self.validatedFileType = self.file.type;
+            callback(true, 'Warning: File signature could not be verified, but MIME type is allowed');
+        } else {
+            self.validationError = 'File type not allowed. Detected: ' + self.file.type + 
+                                 '. Allowed types: ' + self.allowedMimeTypes.join(', ');
+            callback(false, self.validationError);
+        }
+    };
+    
+    reader.onerror = function() {
+        self.validationError = 'Failed to read file for validation';
+        callback(false, self.validationError);
+    };
+    
+    reader.readAsArrayBuffer(this.file.slice(0, 64)); // Read first 64 bytes
+};
+
+/**
+ * Checks file signature against known patterns
+ * @param {string} header - File header as string
+ * @param {Uint8Array} uint8Array - File header as byte array
+ * @returns {string|null} - Detected MIME type or null
+ */
+S3MultiUpload.prototype.checkFileSignature = function(header, uint8Array) {
+    for (var mimeType in this.fileSignatures) {
+        var signatures = this.fileSignatures[mimeType];
+        for (var i = 0; i < signatures.length; i++) {
+            var signature = signatures[i];
+            
+            // Check for text-based signatures
+            if (header.indexOf(signature) === 0) {
+                return mimeType;
+            }
+            
+            // Check for binary signatures (hex patterns)
+            if (signature.startsWith('\\x')) {
+                var hexPattern = signature.replace(/\\x/g, '');
+                var patternBytes = [];
+                for (var j = 0; j < hexPattern.length; j += 2) {
+                    patternBytes.push(parseInt(hexPattern.substr(j, 2), 16));
+                }
+                
+                var match = true;
+                for (var k = 0; k < patternBytes.length; k++) {
+                    if (uint8Array[k] !== patternBytes[k]) {
+                        match = false;
+                        break;
+                    }
+                }
+                
+                if (match) {
+                    return mimeType;
+                }
+            }
+        }
+    }
+    return null;
+};
+
+/**
+ * Converts ArrayBuffer to string for text-based signature checking
+ * @param {Uint8Array} uint8Array - Byte array
+ * @returns {string} - String representation
+ */
+S3MultiUpload.prototype.arrayBufferToString = function(uint8Array) {
+    var string = '';
+    for (var i = 0; i < uint8Array.length; i++) {
+        string += String.fromCharCode(uint8Array[i]);
+    }
+    return string;
+};
+
+/**
+ * Formats file size in human readable format
+ * @param {number} bytes - Size in bytes
+ * @returns {string} - Formatted size string
+ */
+S3MultiUpload.prototype.formatFileSize = function(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    var k = 1024;
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+/**
+ * Sets allowed MIME types for validation
+ * @param {Array} mimeTypes - Array of allowed MIME types
+ */
+S3MultiUpload.prototype.setAllowedMimeTypes = function(mimeTypes) {
+    this.allowedMimeTypes = mimeTypes;
+};
+
+/**
+ * Sets maximum file size limit
+ * @param {number} maxSize - Maximum size in bytes
+ */
+S3MultiUpload.prototype.setMaxFileSize = function(maxSize) {
+    this.maxFileSize = maxSize;
+};
 
 /**
  * Creates the multipart upload
@@ -53,10 +234,17 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
 };
 
 /**
- * Call this function to start uploading to server
+ * Call this function to start uploading to server with validation
  */
 S3MultiUpload.prototype.start = function() {
-    this.createMultipartUpload();
+    var self = this;
+    this.validateFileType(function(isValid, error) {
+        if (isValid) {
+            self.createMultipartUpload();
+        } else {
+            self.onValidationError(error);
+        }
+    });
 };
 
 /** private */
@@ -289,3 +477,9 @@ S3MultiUpload.prototype.onUploadCompleted = function(serverData) {};
  *
  */
 S3MultiUpload.prototype.onPrepareCompleted = function() {};
+
+/**
+ * Override this method to handle file validation errors
+ * @param {string} error - Validation error message
+ */
+S3MultiUpload.prototype.onValidationError = function(error) {};
