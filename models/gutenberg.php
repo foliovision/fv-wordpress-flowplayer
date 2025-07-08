@@ -178,3 +178,17 @@ function fv_player_handle_rest_content_register() {
     }
   }
 }
+
+add_action(
+  'enqueue_block_assets',
+  function() {
+    // Load all of CSS
+    global $fv_fp;
+    $fv_fp->css_enqueue( true );
+
+    // Load scripts
+    do_action( 'fv_player_force_load_assets' );
+
+    flowplayer_prepare_scripts();
+  }
+);

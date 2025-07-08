@@ -151,6 +151,14 @@ if( location.href.match(/elementor-preview=/) ) {
 } else if( location.href.match(/brizy-edit-iframe/) ) {
   console.log('FV Player: Brizy editor is active');
   setInterval( fv_player_load, 1000 );
+
+} else if( 'blob:' === location.protocol ) {
+  setTimeout( function() {
+    if ( jQuery( 'body.block-editor-iframe__body' ).length ) {
+      console.log('FV Player: Site Editor is active');
+      setInterval( fv_player_load, 1000 );
+    }
+  }, 0 );
 }
 
 

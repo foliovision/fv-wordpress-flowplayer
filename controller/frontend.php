@@ -29,7 +29,7 @@ add_filter( 'run_ngg_resource_manager', '__return_false' );
 
 function fv_flowplayer_remove_bad_scripts() {
   global $wp_scripts;
-  if( isset($wp_scripts->registered['flowplayer']) && isset($wp_scripts->registered['flowplayer']->src) && stripos($wp_scripts->registered['flowplayer']->src, 'fv-wordpress-flowplayer') === false ) {
+  if( isset($wp_scripts->registered['flowplayer']) && isset($wp_scripts->registered['flowplayer']->src) && stripos($wp_scripts->registered['flowplayer']->src, 'fv-player') === false ) {
     wp_deregister_script( 'flowplayer' );
   }
 }
