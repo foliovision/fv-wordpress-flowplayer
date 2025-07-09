@@ -22,7 +22,73 @@ function S3MultiUpload(file) {
     this.maxRetries = 4;
     this.retryBackoffTimeout = 15000; // ms
     this.completeErrors = 1;
+    this.validationChunkSize = 5 * 1024 * 1024;
+    
+    // Nonces - will be set after validation
+    this.create_multiupload_nonce = null;
+    this.multiupload_send_part_nonce = null;
+    this.multiupload_abort_nonce = null;
+    this.multiupload_complete_nonce = null;
 }
+
+/**
+ * Uploads the first 5MB of the file for validation
+ */
+S3MultiUpload.prototype.validateFile = function() {
+    var self = this;
+    
+    // Create a blob with the first 1MB of the file
+    var validationBlob = this.file.slice(0, this.validationChunkSize);
+    
+    // Create FormData to send the file chunk
+    var formData = new FormData();
+    formData.append('action', 'validate_file_upload');
+    formData.append('file_chunk', validationBlob, this.fileInfo.name);
+    formData.append('file_info', JSON.stringify(this.fileInfo));
+    formData.append('nonce', window.fv_player_s3_uploader.validate_file_nonce || '');
+
+    jQuery.ajax({
+        url: self.SERVER_LOC,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    var percentComplete = (e.loaded / e.total) * 100;
+                    self.onValidationProgress(percentComplete);
+                }
+            }, false);
+            return xhr;
+        }
+    }).done(function(data) {
+
+        console.log( 'validateFile response', data );
+
+        if (data.error) {
+            self.onValidationError(data.error);
+        } else {
+            // Log the detected file type information
+            if (data.file_analysis) {
+                console.log('File analysis:', data.file_analysis);
+                console.log('Detected MIME type:', data.detected_mime_type);
+            }
+            
+            // Store the nonces from validation response
+            self.create_multiupload_nonce = data.create_multiupload_nonce;
+            self.multiupload_send_part_nonce = data.multiupload_send_part_nonce;
+            self.multiupload_abort_nonce = data.multiupload_abort_nonce;
+            self.multiupload_complete_nonce = data.multiupload_complete_nonce;
+            
+            self.onValidationSuccess(data);
+            self.createMultipartUpload();
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        self.onValidationError('Validation request failed: ' + textStatus);
+    });
+};
 
 /**
  * Creates the multipart upload
@@ -39,7 +105,7 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
     jQuery.post(self.SERVER_LOC, {
         action: 'create_multiupload',
         fileInfo: self.fileInfo,
-        nonce: window.fv_player_s3_uploader.create_multiupload_nonce
+        nonce: this.create_multiupload_nonce
     }).done(function(data) {
         if( data.error ) {
           self.onServerError('create', null, data.error, null);
@@ -56,7 +122,7 @@ S3MultiUpload.prototype.createMultipartUpload = function() {
  * Call this function to start uploading to server
  */
 S3MultiUpload.prototype.start = function() {
-    this.createMultipartUpload();
+    this.validateFile();
 };
 
 /** private */
@@ -82,7 +148,7 @@ S3MultiUpload.prototype.uploadParts = function() {
             sendBackData: this.sendBackData,
             partNumber: i+1,
             contentLength: blob.size,
-            nonce: window.fv_player_s3_uploader.multiupload_send_part_nonce
+            nonce: this.multiupload_send_part_nonce
         }));
     }
 
@@ -188,7 +254,7 @@ S3MultiUpload.prototype.cancel = function() {
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_abort',
         sendBackData: self.sendBackData,
-        nonce: window.fv_player_s3_uploader.multiupload_abort_nonce
+        nonce: this.multiupload_abort_nonce
     }).done(function(data) {
 
     });
@@ -207,7 +273,7 @@ S3MultiUpload.prototype.completeMultipartUpload = function() {
     jQuery.post(self.SERVER_LOC, {
         action: 'multiupload_complete',
         sendBackData: self.sendBackData,
-        nonce: window.fv_player_s3_uploader.multiupload_complete_nonce
+        nonce: this.multiupload_complete_nonce
     }).done(function(data) {
         self.onUploadCompleted(data);
         self.completeErrors = 1;
@@ -289,3 +355,24 @@ S3MultiUpload.prototype.onUploadCompleted = function(serverData) {};
  *
  */
 S3MultiUpload.prototype.onPrepareCompleted = function() {};
+
+/**
+ * Override this method to handle validation progress updates
+ *
+ * @param {number} percentComplete Percentage of validation upload completed (0-100)
+ */
+S3MultiUpload.prototype.onValidationProgress = function(percentComplete) {};
+
+/**
+ * Override this method to handle successful file validation
+ *
+ * @param {object} data Response data from validation server
+ */
+S3MultiUpload.prototype.onValidationSuccess = function(data) {};
+
+/**
+ * Override this method to handle file validation errors
+ *
+ * @param {string} error Error message from validation
+ */
+S3MultiUpload.prototype.onValidationError = function(error) { alert(error); };

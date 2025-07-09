@@ -131,7 +131,7 @@ if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
   $json_final = $FV_Player_Linode_Object_Storage_Browser->get_formatted_assets_data();
 
   wp_send_json($json_final);
-} else if( strpos($action, 'multiupload') !== false ) { // S3 Multiupload
+} else if( strpos($action, 'multiupload') !== false || strcmp($action, 'validate_file_upload') == 0 ) { // S3 Multiupload
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
   require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces.class.php');
@@ -142,7 +142,10 @@ if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
 
   global $FV_Player_S3_Upload;
 
-  if(strcmp($action,'create_multiupload') == 0 ) {
+  if(strcmp($action,'validate_file_upload') == 0 ) {
+    $FV_Player_S3_Upload->validate_file_upload();
+
+  } else if(strcmp($action,'create_multiupload') == 0 ) {
     $FV_Player_S3_Upload->create_multiupload();
   } else if(strcmp($action, 'multiupload_send_part') == 0) {
     $FV_Player_S3_Upload->multiupload_send_part();
