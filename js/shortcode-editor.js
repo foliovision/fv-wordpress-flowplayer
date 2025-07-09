@@ -614,12 +614,12 @@ jQuery(function() {
           widget_id = $(this).data().number;
         });
 
-        var site_editor_load = setInterval( function() {
+        function setupSiteEditorHandlers() {
           var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
           if( site_editor_iframe.length ) {
             debug_log( 'Site editor found!');
 
-            clearInterval(site_editor_load);
+            site_editor_iframe.off( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit' );
 
             site_editor_iframe.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
 
@@ -639,6 +639,20 @@ jQuery(function() {
                 onOpen: lightbox_open
               } );
               widget_id = $(this).data().number;
+            });
+          }
+        }
+
+        // Initial setup with interval
+        var site_editor_load = setInterval( function() {
+          if( jQuery('.edit-site-visual-editor__editor-canvas').length ) {
+            clearInterval(site_editor_load);
+            setupSiteEditorHandlers();
+
+            // Watch for iframe load events (fires when iframe reloads)
+            jQuery('.edit-site-visual-editor__editor-canvas').on('load', function() {
+              debug_log( 'Site editor iframe loaded, reattaching handlers' );
+              setTimeout( setupSiteEditorHandlers, 100 );
             });
           }
         }, 1000 );
