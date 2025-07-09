@@ -100,10 +100,7 @@ abstract class FV_Player_Media_Browser {
     wp_enqueue_script( 'fv-player-s3-uploader', flowplayer::get_plugin_url().'/js/s3upload.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
     wp_enqueue_script( 'fv-player-s3-uploader-base', flowplayer::get_plugin_url().'/js/s3-upload-base.js', array( 'flowplayer-browser-base' ), $fv_wp_flowplayer_ver );
     wp_localize_script( 'fv-player-s3-uploader', 'fv_player_s3_uploader', array(
-        'create_multiupload_nonce' => wp_create_nonce( 'fv_flowplayer_create_multiupload' ),
-        'multiupload_send_part_nonce' => wp_create_nonce( 'fv_flowplayer_multiupload_send_part' ),
-        'multiupload_abort_nonce' => wp_create_nonce( 'fv_flowplayer_multiupload_abort' ),
-        'multiupload_complete_nonce' => wp_create_nonce( 'fv_flowplayer_multiupload_complete' ),
+        'validate_file_nonce' => wp_create_nonce( 'fv_flowplayer_validate_file' ),
       )
     );
 
