@@ -69,6 +69,7 @@ function fv_player_gutenberg() {
 function fv_player_block_render($attributes, $content, $block) {
   ob_start();
 
+  // Runs if the block was created with FV Player 8
   if( !empty( $attributes['player_id'] ) && !empty( $attributes['src'] ) ) {
     $shortcode_dimensions = '';
 
@@ -79,6 +80,23 @@ function fv_player_block_render($attributes, $content, $block) {
     }
 
     echo '<div class="' . esc_attr( $attributes['className'] ) . ' align' . esc_attr( $attributes['align'] ) .'">' . do_shortcode( '[fvplayer id="' . intval( $attributes['player_id'] ) . '" ' . esc_html( $shortcode_dimensions ) . ']' ) . '</div>';
+
+  /**
+   * Runs if the block was created with FV Player 7.
+   * Perhaps a better solution would be to use the render_block filter, but that would require a lot of code
+   * changes and testing.
+   */
+  } else if ( ! is_admin() && preg_match( '~\[fvplayer.*?\]~', $content, $shortcode ) ) {
+    $shortcode_dimensions = '';
+
+    if ( $attributes['align'] == 'wide' || $attributes['align'] == 'full' ) {
+      $shortcode_dimensions = 'width="100%" height="100%"';
+    } else  if( $attributes['align'] == 'left' || $attributes['align'] == 'right' ) {
+      $shortcode_dimensions = 'align="left|right"';
+    }
+
+    echo '<div class="' . esc_attr( $attributes['className'] ) . ' align' . esc_attr( $attributes['align'] ) .'">' . do_shortcode( $shortcode[0] ) . '</div>';
+
   } else if ( empty( $attributes['player_id']) && is_admin() ) {
     echo 'No player created yet.';
   } else if ( empty( $attributes['src']) && is_admin() ) {
@@ -91,7 +109,7 @@ function fv_player_block_render($attributes, $content, $block) {
 
 add_action( 'init', 'fv_player_gutenberg' );
 
-function fv_player_add_missing_attributes_callback($matches) {
+function fv_player_block_add_missing_attributes_callback($matches) {
   $player_id = preg_match('/id="(\d+)"/', $matches[0], $player_id_matches) ? $player_id_matches[1] : 0;
 
   // bail out if no player id
@@ -132,8 +150,17 @@ function fv_player_add_missing_attributes_callback($matches) {
   return '<!-- wp:fv-player-gutenberg/basic ' . wp_json_encode($attributes) . ' -->'. PHP_EOL . $content . PHP_EOL . '<!-- /wp:fv-player-gutenberg/basic -->';
 }
 
+/**
+ * Update block attributes from FV Player 7 block to FV Player 8 block.
+ * Somehow this does not run for patterns as it only sees block markup like <!-- wp:block {"ref":86} /-->.
+ * Perhaps a better solution would be to use the render_block filter, but that would require a lot of code
+ * changes and testing.
+ *
+ * @param string $content Post content
+ * @return string
+ */
 function fv_player_update_block_attributes($content) {
-  $content = preg_replace_callback('/<!-- wp:fv-player-gutenberg\/basic -->(.*?)<!-- \/wp:fv-player-gutenberg\/basic -->/s', 'fv_player_add_missing_attributes_callback', $content);
+  $content = preg_replace_callback('/<!-- wp:fv-player-gutenberg\/basic -->(.*?)<!-- \/wp:fv-player-gutenberg\/basic -->/s', 'fv_player_block_add_missing_attributes_callback', $content);
 
   return $content;
 }
