@@ -53,15 +53,13 @@
     margin-right: 0.092em;
     right: 0;
 }
-.attachments-browser .nothingfound span {
-    margin: 0 auto auto 6.8em;
-    color: #ffffff;
+.attachments-browser .nothingfound p {
+    color: #fff;
     font-size: 16px;
     font-weight: 700;
-    line-height: 20px;
-    height: 13px;
-    position: relative;
-    top: 2em;
+    padding-top: 2em;
+    width: 100%;
+    text-align: center;
 }
 
 /* Icons */

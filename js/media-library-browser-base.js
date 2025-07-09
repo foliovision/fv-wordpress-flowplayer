@@ -668,7 +668,7 @@ function renderBrowserPlaceholderHTML(options) {
     '<div class="media-sidebar"></div>' +
     '\t\t<div class="nothingfound">\n' +
     '\t\t\t<div class="nofiles"></div>\n' +
-    '\t\t\t<span>No files here.</span>\n' +
+    '\t\t\t<p>No files here.</p>\n' +
     '\t\t</div>\n' +
     '\n' +
     '\t</div>';
