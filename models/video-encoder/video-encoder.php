@@ -628,7 +628,10 @@ abstract class FV_Player_Video_Encoder {
     }
 
     // also replace its thumbnail / splash
-    if ( ! empty( $job_output->thumbnail ) ) {
+    if ( ! empty( $job_output->thumbnail_large ) ) {
+      $video->set( 'splash', $job_output->thumbnail_large );
+
+    } else if ( ! empty( $job_output->thumbnail ) ) {
       $video->set( 'splash', $job_output->thumbnail );
     } else if ( ! empty( $job_output->splash ) ) {
       $video->set( 'splash', $job_output->splash );
