@@ -522,10 +522,14 @@ abstract class FV_Player_Video_Encoder {
       $check = $check_result;
     } else if ( $fv_fp->current_video() ) {
       if ( !$job_id ) {
-      $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
-    } else {
+        $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
+      } else {
         $check = $this->job_check( (int) $job_id );
       }
+
+    } else if ( $job_id ) {
+      $check = $this->job_check( absint( $job_id ) );
+
     } else {
       user_error('Could not retrieve JOB check for encoder ' . $this->encoder_name . ', job ID: ' . $job_id . ', defaulted back to input value: ' . print_r( $check_result, true ), E_USER_WARNING );
       return $check_result;
