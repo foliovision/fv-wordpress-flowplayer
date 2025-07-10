@@ -812,7 +812,9 @@ function fv_player_js_loader_mark_scripts( $tag, $handle ) {
 
     // script handle must not be one of
     ) && !in_array( $handle, array(
-      'fv_player_lightbox' // without this it would be impossible to open the lightbox without hovering the page before it, so it's really a problem on mobile
+      'fv_player_lightbox', // without this it would be impossible to open the lightbox without hovering the page before it, so it's really a problem on mobile
+      'fv-player-s3-uploader',
+      'fv-player-s3-uploader-base',
     ), true )
   ) {
     $tag = str_replace( ' src=', ' data-fv-player-loader-src=', $tag );
