@@ -1,7 +1,19 @@
 function S3MultiUpload(file) {
+    let ajaxurl = false;
+    if ( window.fv_flowplayer_browser ) {
+      ajaxurl = window.fv_flowplayer_browser.ajaxurl;
+    } else if ( window.fv_player_s3_uploader ) {
+      ajaxurl = window.fv_player_s3_uploader.ajaxurl;
+    }
+
+    if ( ! ajaxurl ) {
+      console.error( 'S3MultiUpload: ajaxurl not found' );
+      return;
+    }
+
     this.PART_SIZE = 100 * 1024 * 1024; // 100 MB per chunk
 //    this.PART_SIZE = 5 * 1024 * 1024 * 1024; // Minimum part size defined by aws s3 is 5 MB, maximum 5 GB
-    this.SERVER_LOC = window.fv_flowplayer_browser.ajaxurl + '?'; // Location of our server where we'll send all AWS commands and multipart instructions
+    this.SERVER_LOC = ajaxurl + '?'; // Location of our server where we'll send all AWS commands and multipart instructions
     this.completed = false;
     this.file = file;
     this.fileInfo = {
@@ -96,11 +108,16 @@ S3MultiUpload.prototype.validateFile = function() {
 S3MultiUpload.prototype.createMultipartUpload = function() {
     var self = this;
 
-    if( fv_player_media_browser.get_current_folder() === 'Home/' ) { // root folder
+    if( window.fv_player_media_browser && fv_player_media_browser.get_current_folder() === 'Home/' ) { // root folder
       self.fileInfo.name =  fv_player_media_browser.get_current_folder() + self.fileInfo.name
-    } else { // nested folder
+    } else if ( window.fv_player_media_browser && fv_player_media_browser.get_current_folder() ) { // nested folder
       self.fileInfo.name =  fv_player_media_browser.get_current_folder() + '/' + self.fileInfo.name
+    } else {
+      // TODO: Make sure this cannot be changed by the user.
+      self.fileInfo.name =  'frontend/' + self.fileInfo.name
     }
+
+    // TODO: Force some folder for user uploads
 
     jQuery.post(self.SERVER_LOC, {
         action: 'create_multiupload',
