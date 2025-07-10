@@ -227,6 +227,9 @@ include_once(dirname( __FILE__ ) . '/models/youtube.php');
 
 include_once(dirname( __FILE__ ) . '/models/lms-teaching.class.php');
 
+// Include the standalone S3 uploader
+include_once(dirname( __FILE__ ) . '/controller/s3-frontend.php');
+
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 
 if( !function_exists( 'fv_player_bunny_stream_include' ) && version_compare(PHP_VERSION, '5.2.17') >= 0 ) {
