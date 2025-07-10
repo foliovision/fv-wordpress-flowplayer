@@ -36,6 +36,12 @@ function fv_flowplayer_init_s3_uploader( options ) {
     });
   }
 
+  function set_upload_status( status ) {
+    if ( window.fv_player_media_browser ) {
+      window.fv_player_media_browser.set_upload_status( status );
+    }
+  }
+
   function upload( file ) {
     if (!(window.File && window.FileReader && window.FileList && window.Blob && window.Blob.prototype.slice)) {
       alert("You are using an unsupported browser. Please update your browser.");
@@ -51,7 +57,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
       return;
     }
 
-    fv_player_media_browser.set_upload_status(true);
+    set_upload_status(true);
 
     window.addEventListener('beforeunload', closeWarning);
 
@@ -60,7 +66,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     s3upload = new S3MultiUpload( file );
     s3upload.onServerError = function(command, jqXHR, textStatus, errorThrown) {
-      fv_player_media_browser.set_upload_status(false);
+      set_upload_status(false);
       window.removeEventListener('beforeunload', closeWarning);
       $progressDiv.text("Upload failed. " + textStatus );
       $progressBarDiv.hide();
@@ -71,7 +77,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     s3upload.onS3UploadError = function(xhr) {
       $progressDiv.text("Upload failed.");
       window.removeEventListener('beforeunload', closeWarning);
-      fv_player_media_browser.set_upload_status(false);
+      set_upload_status(false);
       $progressBarDiv.hide();
       upload_error_callback();
       console.log( xhr );
@@ -99,7 +105,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     s3upload.onUploadCompleted = function( data ) {
       window.removeEventListener('beforeunload', closeWarning);
-      fv_player_media_browser.set_upload_status(false);
+      set_upload_status(false);
       $progressDiv.text(upload_success_message);
       $uploadButton.add( $cancelButton ).toggle();
       recreate_file_input( file_select_input_name, file_select_input_class );
