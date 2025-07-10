@@ -410,16 +410,40 @@ abstract class FV_Player_Video_Encoder {
 
     do_action( 'fv_player_encoder_job_submit', $id, $job, $result );
 
-    if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
-      $this->include_listing_lib();
+    $response = array( 'id' => $id, 'result' => $result );
 
-      ob_start();
-      $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
-      $jobs_table->prepare_items($show);
-      $jobs_table->display();
-      $html = ob_get_clean();
+    if ( ! empty( $_POST['create_player'] ) ) {
+      global $FV_Player_Db;
+      $player_id = $FV_Player_Db->import_player_data( false, false, array(
+        'videos' => array(
+          array(
+            'src' => 'coconut_processing_' . $id,
+            'meta' => array(
+              array(
+                'meta_key'   => 'encoding_job_id',
+                'meta_value' => $id,
+              ),
+            )
+          )
+        )
+      ) );
+      $response['player_id'] = $player_id;
+    }
 
-      wp_send_json( array( 'html' => $html, 'id' => $id, 'result' => $result ) );
+    if( defined('DOING_AJAX') ) {
+      if  ( $this->use_wp_list_table ) {
+        $this->include_listing_lib();
+
+        ob_start();
+        $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
+        $jobs_table->prepare_items($show);
+        $jobs_table->display();
+        $html = ob_get_clean();
+
+        $response['html'] = $html;
+      }
+
+      wp_send_json( $response );
 
     } else {
       return $id;
