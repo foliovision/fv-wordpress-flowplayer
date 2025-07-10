@@ -612,8 +612,8 @@ function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
 }
 
 function fv_flowplayer_media_browser_show_upload( id ) {
-  jQuery('.media-toolbar-secondary > .upload_buttons').hide();
-  jQuery('.media-toolbar-secondary > .upload_buttons[data-tab-id='+id+']').show();
+  jQuery('.media-toolbar-secondary > .fv-player-upload_buttons').hide();
+  jQuery('.media-toolbar-secondary > .fv-player-upload_buttons[data-tab-id='+id+']').show();
 }
 
 function renderBrowserPlaceholderHTML(options) {
