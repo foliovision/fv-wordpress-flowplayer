@@ -431,7 +431,7 @@ abstract class FV_Player_Video_Encoder {
     }
 
     if( defined('DOING_AJAX') ) {
-      if  ( $this->use_wp_list_table ) {
+      if  ( $this->use_wp_list_table && function_exists( 'convert_to_screen' ) ) {
         $this->include_listing_lib();
 
         ob_start();
