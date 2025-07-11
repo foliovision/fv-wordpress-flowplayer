@@ -110,7 +110,7 @@ class FV_Player_lightbox {
 
   function improve_galleries( $args ) {
     global $fv_fp;
-    if( !$args['link'] && $fv_fp->_get_option('lightbox_images') && $fv_fp->_get_option('lightbox_improve_galleries') ) {
+    if ( empty( $args['link'] ) && $fv_fp->_get_option('lightbox_images') && $fv_fp->_get_option('lightbox_improve_galleries') ) {
       $args['link'] = 'file';
     }
     return $args;
