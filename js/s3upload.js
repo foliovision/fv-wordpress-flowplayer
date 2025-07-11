@@ -16,8 +16,12 @@ function S3MultiUpload(file) {
     this.SERVER_LOC = ajaxurl + '?'; // Location of our server where we'll send all AWS commands and multipart instructions
     this.completed = false;
     this.file = file;
+    
+    // Sanitize the filename to only allow letters, numbers, and hyphens
+    var sanitizedFilename = this.sanitizeFilename(this.file.name);
+    
     this.fileInfo = {
-        name: this.file.name,
+        name: sanitizedFilename,
         type: this.file.type,
         size: this.file.size,
         lastModifiedDate: this.file.lastModifiedDate
@@ -42,6 +46,34 @@ function S3MultiUpload(file) {
     this.multiupload_abort_nonce = null;
     this.multiupload_complete_nonce = null;
 }
+
+/**
+ * Sanitizes filename to only allow letters, numbers, and hyphens
+ * @param {string} filename The original filename
+ * @returns {string} The sanitized filename
+ */
+S3MultiUpload.prototype.sanitizeFilename = function(filename) {
+    // Remove file extension first
+    var lastDotIndex = filename.lastIndexOf('.');
+    var name = filename.substring(0, lastDotIndex);
+    var extension = filename.substring(lastDotIndex);
+    
+    // Sanitize the name part: keep only letters, numbers, and hyphens
+    // Replace any characters that are not letters, numbers, or hyphens with hyphens
+    // Also replace multiple consecutive hyphens with a single hyphen
+    var sanitizedName = name.replace(/[^a-zA-Z0-9-]/g, '-').replace(/-+/g, '-');
+    
+    // Remove leading and trailing hyphens
+    sanitizedName = sanitizedName.replace(/^-+|-+$/g, '');
+    
+    // If the sanitized name is empty, use 'file'
+    if (!sanitizedName) {
+        sanitizedName = 'file';
+    }
+    
+    // Return the sanitized name with the original extension
+    return sanitizedName + extension;
+};
 
 /**
  * Uploads the first 5MB of the file for validation
@@ -77,17 +109,10 @@ S3MultiUpload.prototype.validateFile = function() {
         }
     }).done(function(data) {
 
-        console.log( 'validateFile response', data );
-
         if (data.error) {
             self.onValidationError(data.error);
         } else {
-            // Log the detected file type information
-            if (data.file_analysis) {
-                console.log('File analysis:', data.file_analysis);
-                console.log('Detected MIME type:', data.detected_mime_type);
-            }
-            
+
             // Store the nonces from validation response
             self.create_multiupload_nonce = data.create_multiupload_nonce;
             self.multiupload_send_part_nonce = data.multiupload_send_part_nonce;
