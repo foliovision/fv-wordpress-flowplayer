@@ -15,7 +15,12 @@ jQuery( function($) {
       var has_required_fields = true
       get_step_fields().each( function() {
         var input = $(this);
-        if( !input.val() && !input.data('optional') ) {
+        if(
+          ! input.val() &&
+          ! input.data('optional') &&
+          // It must not be in the Chosen dropdown UI
+          ! input.closest('.chosen-drop').length
+        ) {
           add_field_error('This field is required',input);
           has_required_fields = false;
         }
@@ -133,7 +138,7 @@ jQuery( function($) {
     }
 
     function get_step_fields() {
-      return current_step_wrap.find('select, input')
+      return current_step_wrap.find('select, input');
     }
 
     function go_to_next_step() {

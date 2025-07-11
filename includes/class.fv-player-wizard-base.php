@@ -11,7 +11,7 @@ abstract class FV_Player_Wizard_Base_Class {
   // array of class names based on FV_Player_Wizard_Step_Base_Class
   private $steps = array();
 
-  private $version = '7.4.32.727';
+  private $version = '8.0.20';
 
   private $title = false;
 
