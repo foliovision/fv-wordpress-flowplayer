@@ -52,7 +52,7 @@ class FV_Player_List_Table extends WP_List_Table {
     <p class="search-box">
       <label class="screen-reader-text" for="fv_player_search">Search players:</label>
       <input type="search" id="fv_player_search" name="s" value="<?php _admin_search_query(); ?>" />
-      <?php submit_button( "Search players", 'button', false, false, array('ID' => 'search-submit') ); ?><br/>
+      <?php submit_button( "Search players", 'button', false, false, array('ID' => 'search-submit') ); ?>
     </p>
     <?php
   }
