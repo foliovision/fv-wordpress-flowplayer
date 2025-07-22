@@ -322,13 +322,6 @@ class FV_Player_S3_Upload {
       wp_send_json( array( 'error' => 'File type not allowed: ' . $detected_mime_type ) );
     }
 
-    // Additional security checks
-    // Check for executable content in the file
-    $file_content = file_get_contents( $uploaded_file['tmp_name'] );
-    if ( strpos( $file_content, '<?php' ) !== false || strpos( $file_content, '<?=' ) !== false ) {
-      wp_send_json( array( 'error' => 'File contains executable code and is not allowed.' ) );
-    }
-
     // Clean up the uploaded file
     unlink( $uploaded_file['tmp_name'] );
 
