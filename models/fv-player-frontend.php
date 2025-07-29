@@ -1626,7 +1626,7 @@ class flowplayer_frontend extends flowplayer
       }
 
     // Does the legacy shortcode start with an audio track with no splash?
-    } else if(preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+    } else if( ! empty( $this->aCurArgs['src'] ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
       return true;
     }
 
