@@ -410,16 +410,40 @@ abstract class FV_Player_Video_Encoder {
 
     do_action( 'fv_player_encoder_job_submit', $id, $job, $result );
 
-    if( defined('DOING_AJAX') && $this->use_wp_list_table ) {
-      $this->include_listing_lib();
+    $response = array( 'id' => $id, 'result' => $result );
 
-      ob_start();
-      $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
-      $jobs_table->prepare_items($show);
-      $jobs_table->display();
-      $html = ob_get_clean();
+    if ( ! empty( $_POST['create_player'] ) ) {
+      global $FV_Player_Db;
+      $player_id = $FV_Player_Db->import_player_data( false, false, array(
+        'videos' => array(
+          array(
+            'src' => 'coconut_processing_' . $id,
+            'meta' => array(
+              array(
+                'meta_key'   => 'encoding_job_id',
+                'meta_value' => $id,
+              ),
+            )
+          )
+        )
+      ) );
+      $response['player_id'] = $player_id;
+    }
 
-      wp_send_json( array( 'html' => $html, 'id' => $id, 'result' => $result ) );
+    if( defined('DOING_AJAX') ) {
+      if  ( $this->use_wp_list_table && function_exists( 'convert_to_screen' ) ) {
+        $this->include_listing_lib();
+
+        ob_start();
+        $jobs_table = new FV_Player_Encoder_List_Table( array( 'encoder_id' => $this->encoder_id, 'table_name' => $this->table_name ) );
+        $jobs_table->prepare_items($show);
+        $jobs_table->display();
+        $html = ob_get_clean();
+
+        $response['html'] = $html;
+      }
+
+      wp_send_json( $response );
 
     } else {
       return $id;
@@ -522,10 +546,14 @@ abstract class FV_Player_Video_Encoder {
       $check = $check_result;
     } else if ( $fv_fp->current_video() ) {
       if ( !$job_id ) {
-      $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
-    } else {
+        $check = $this->job_check( (int) substr( $fv_fp->current_video()->getSrc(), strlen( $this->encoder_id . '_processing_' ) ) );
+      } else {
         $check = $this->job_check( (int) $job_id );
       }
+
+    } else if ( $job_id ) {
+      $check = $this->job_check( absint( $job_id ) );
+
     } else {
       user_error('Could not retrieve JOB check for encoder ' . $this->encoder_name . ', job ID: ' . $job_id . ', defaulted back to input value: ' . print_r( $check_result, true ), E_USER_WARNING );
       return $check_result;
@@ -600,7 +628,10 @@ abstract class FV_Player_Video_Encoder {
     }
 
     // also replace its thumbnail / splash
-    if ( ! empty( $job_output->thumbnail ) ) {
+    if ( ! empty( $job_output->thumbnail_large ) ) {
+      $video->set( 'splash', $job_output->thumbnail_large );
+
+    } else if ( ! empty( $job_output->thumbnail ) ) {
       $video->set( 'splash', $job_output->thumbnail );
     } else if ( ! empty( $job_output->splash ) ) {
       $video->set( 'splash', $job_output->splash );

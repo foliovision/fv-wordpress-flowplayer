@@ -3,6 +3,7 @@
 function fv_flowplayer_init_s3_uploader( options ) {
   var
     $ = jQuery,
+    $uploadDiv,
     $uploadButton,
     $uploadInput,
     $cancelButton,
@@ -20,6 +21,10 @@ function fv_flowplayer_init_s3_uploader( options ) {
     upload_success_callback = options.upload_success_callback,
     upload_error_callback = ( typeof( options.upload_error_callback ) == 'function' ? options.upload_error_callback : function() {} );
 
+  function debug_log( ...args ) {
+    console.log( 'FV Player S3 Uploader', ...args );
+  }
+
   function recreate_file_input( input_name, input_class_name ) {
     if ( $uploadInput.length ) {
       $uploadInput.remove();
@@ -27,14 +32,20 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     $uploadButton.after('<input type="file" accept=".mp4,.mov,.web,.flv,.avi,.vmw,.avchd,.swf,.mkv,.webm.,mpeg,.mpg" class="fv-player-s3-upload-file-input ' + input_class_name + '" name="' + input_name + '" />');
 
-    $uploadInput = $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
-    $uploadInput.change(function() {
+    $uploadInput = $uploadDiv.find( '.' + input_class_name);
+    $uploadInput.on( 'change', function() {
       if( wizard_callback ) {
         wizard_callback($uploadInput[0].files[0]);
       } else {
         upload( $uploadInput[0].files[0] );
       }
     });
+  }
+
+  function set_upload_status( status ) {
+    if ( window.fv_player_media_browser ) {
+      window.fv_player_media_browser.set_upload_status( status );
+    }
   }
 
   function upload( file ) {
@@ -52,7 +63,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
       return;
     }
 
-    fv_player_media_browser.set_upload_status(true);
+    set_upload_status(true);
 
     window.addEventListener('beforeunload', closeWarning);
 
@@ -61,7 +72,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     s3upload = new S3MultiUpload( file );
     s3upload.onServerError = function(command, jqXHR, textStatus, errorThrown) {
-      fv_player_media_browser.set_upload_status(false);
+      set_upload_status(false);
       window.removeEventListener('beforeunload', closeWarning);
       $progressDiv.text("Upload failed. " + textStatus );
       $progressBarDiv.hide();
@@ -72,7 +83,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
     s3upload.onS3UploadError = function(xhr) {
       $progressDiv.text("Upload failed.");
       window.removeEventListener('beforeunload', closeWarning);
-      fv_player_media_browser.set_upload_status(false);
+      set_upload_status(false);
       $progressBarDiv.hide();
       upload_error_callback();
       console.log( xhr );
@@ -100,7 +111,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     s3upload.onUploadCompleted = function( data ) {
       window.removeEventListener('beforeunload', closeWarning);
-      fv_player_media_browser.set_upload_status(false);
+      set_upload_status(false);
       $progressDiv.text(upload_success_message);
       $uploadButton.add( $cancelButton ).toggle();
       recreate_file_input( file_select_input_name, file_select_input_class );
@@ -132,7 +143,39 @@ function fv_flowplayer_init_s3_uploader( options ) {
     return true; //Gecko + Webkit, Safari, Chrome etc.
   }
 
-  $(document).on("mediaBrowserOpen", function (event) {
+  // Are we loading into a custom element?
+  if ( options.container ) {
+    debug_log( 'Loading into custom element', options.container );
+
+    // Add wrapper on the button for styling
+    if ( ! $uploadDiv || ! $uploadDiv.length ) {
+      $uploadDiv = $('<div class="fv-player-upload_buttons"></div>');
+      options.container.append( $uploadDiv );
+    }
+
+    initUploaderElements( $uploadDiv );
+
+  // Otherwise load for WordPress Media Library modal.
+  } else {
+    debug_log( 'Loading into WordPress Media Library modal' );
+
+    $(document).on("mediaBrowserOpen", function (event) {
+      debug_log( 'Media Browser Open' );
+
+      var container = $('.media-modal .media-frame-toolbar .media-toolbar-secondary');
+
+      // add Upload to Coconut button to the media library modal, use style and data-tab-id for show/hide based on active tab in media-library-browser-base.js
+      if ( ! $uploadDiv || ! $uploadDiv.length ) {
+        $uploadDiv = $('<div class="fv-player-upload_buttons" style="display: none" data-tab-id="'+options.tab_id+'"></div>');
+        container.append( $uploadDiv );
+      }
+
+      initUploaderElements( $uploadDiv );
+    });
+  }
+
+  function initUploaderElements( $uploadDiv ) {
+
     var
       upload_button_text = options.upload_button_text, //'Upload to Coconut',
       cancel_button_class = options.cancel_button_class, //'fv-player-coconut-browser-upload-cancel',
@@ -142,41 +185,29 @@ function fv_flowplayer_init_s3_uploader( options ) {
       upload_progress_bar_number_class = options.upload_progress_bar_number_class; //'fv-player-coconut-progress-number';
 
     // add Upload to Coconut button to the media library modal
-    if ( !$('.' + upload_button_class).length ) {
-      if ( !$('.media-modal .media-frame-toolbar .media-toolbar-secondary > #'+upload_button_class+'-wrap').length ) {
-        $('.media-modal .media-frame-toolbar .media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="upload_buttons" style="display: none" data-tab-id="'+options.tab_id+'"></div>');
-      }
+    if ( ! $uploadButton || ! $uploadButton.length ) {
+      $uploadButton = $( '<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>' );
+      $cancelButton = $( '<button type="button" class="button media-button button-primary button-large fv-player-s3-upload-cancel-btn ' + cancel_button_class + '">Cancel Upload</button>' );
 
-      // check if we have the correct player version
-      if ( !fv_player_coconut_dos_upload_settings.can_use_get_space ) {
-        $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append('<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>');
+      var buttons = $( '<div class="fv-player-s3-upload-buttons"></div>' );
 
-        $('.' + upload_button_class).click(function() {
-          alert('This functionality requires the latest version of FV Flowplayer. Please update your WordPress plugins.');
-        });
-        return;
-      }
-
-      var $uploadDiv = $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap');
-
-      var upload_interface = '<div class="fv-player-s3-upload-buttons">'
-      upload_interface += '<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>';
-      upload_interface += '<button type="button" class="button media-button button-primary button-large fv-player-s3-upload-cancel-btn ' + cancel_button_class + '">Cancel Upload</button>';
+      buttons.append( $uploadButton );
+      buttons.append( $cancelButton );
+      
       if( options.upload_button_extra_html ) {
-        upload_interface += options.upload_button_extra_html;
+        buttons.append( options.upload_button_extra_html );
       }
-      upload_interface += '</div>';
 
-      upload_interface += '<div class="fv-player-s3-upload-wrap">';
+      $uploadDiv.append( buttons );
+
+      var upload_interface = '<div class="fv-player-s3-upload-wrap">';
       upload_interface += '<div class="fv-player-s3-upload-progress ' + upload_progress_class +'"></div>';
       upload_interface += '<div class="fv-player-s3-upload-progress-enclosure ' + upload_progress_bar_enclosure_class + '"><div class="fv-player-s3-upload-progress-bar ' + upload_progress_bar_class + '"></div><div class="fv-player-s3-upload-progress-number ' + upload_progress_bar_number_class + '"></div></div>';
       upload_interface += '</div>';
 
-      $('.media-modal .media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append( upload_interface);
+      $uploadDiv.append( upload_interface);
 
-      $uploadButton = $uploadDiv.find('.' + upload_button_class);
       $uploadInput = $uploadDiv.find('.' + file_select_input_class);
-      $cancelButton = $uploadDiv.find('.' + cancel_button_class);
       $progressDiv = $uploadDiv.find('.' + upload_progress_class);
       $progressBarDiv = $uploadDiv.find('.' + upload_progress_bar_enclosure_class);
       $progressBar = $uploadDiv.find('.' + upload_progress_bar_class);
@@ -188,11 +219,11 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
       recreate_file_input( file_select_input_name, file_select_input_class );
 
-      $uploadButton.click(function() {
-        $uploadInput.click();
+      $uploadButton.on( 'click', function() {
+        $uploadInput.trigger( 'click' );
       });
 
-      $cancelButton.click(function() {
+      $cancelButton.on( 'click', function() {
         s3upload.cancel();
         $uploadButton.add( $cancelButton ).toggle();
         recreate_file_input( file_select_input_name, file_select_input_class );
@@ -201,7 +232,7 @@ function fv_flowplayer_init_s3_uploader( options ) {
         $progressBarDiv.hide();
       });
     }
-  });
+  }
 
   return {
     update_progress_bar_text: function( txt ) {

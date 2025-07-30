@@ -104,6 +104,11 @@ class FV_Player_Checker {
 
   public function check_mimetype( $URLs = false, $meta = array(), $force_is_cron = false ) {
 
+    // If we create new player in FV Player Coconut in coconut-ajax.php, there will be no wp_remote_get function or WP_Http class, so we cannot check the video.
+    if ( ! function_exists( 'wp_remote_get' ) || ! class_exists( 'WP_Http' ) ) {
+      return false;
+    }
+
     $error = false;
     $tStart = microtime(true);
 
