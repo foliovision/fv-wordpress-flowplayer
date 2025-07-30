@@ -614,11 +614,15 @@ jQuery(function() {
           widget_id = $(this).data().number;
         });
 
+        /**
+         * Look for buttons in Site Editor iframe
+         */
         function setupSiteEditorHandlers() {
           var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
           if( site_editor_iframe.length ) {
-            debug_log( 'Site editor found!');
+            debug_log( 'Site editor found!' );
 
+            // FV Player Editor
             site_editor_iframe.off( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit' );
 
             site_editor_iframe.on( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit', function(e) {
@@ -640,6 +644,11 @@ jQuery(function() {
               } );
               widget_id = $(this).data().number;
             });
+
+            // FV Player Block "Select Media" button
+            site_editor_iframe.off( 'click', '.fv-player-gutenberg-media' );
+
+            site_editor_iframe.on( 'click', '.fv-player-gutenberg-media', fv_flowplayer_uploader_open );
           }
         }
 
@@ -1062,8 +1071,10 @@ jQuery(function() {
       var fv_flowplayer_uploader;
       var fv_flowplayer_uploader_button;
 
-      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media, .fv-player-gutenberg-media', function(e) {
-        console.log('Fv player uploader loaded.')
+      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media, .fv-player-gutenberg-media', fv_flowplayer_uploader_open );
+
+      function fv_flowplayer_uploader_open(e) {
+        debug_log( 'Opening Media Library...' );
 
         e.preventDefault();
 
@@ -1152,8 +1163,14 @@ jQuery(function() {
 
           // Did we open the media library from within the block?
           if ( fv_flowplayer_uploader_button.hasClass( 'fv-player-gutenberg-media' ) ) {
-            // Update the block attribute
+            // Look for block ID in the current document
             var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+
+            // Look for block ID in the Site Editor iframe
+            var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
+            if( site_editor_iframe.length ) {
+              clientId = site_editor_iframe.find('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+            }
 
             if ( clientId ) {
               debug_log( 'Media library updating block attributes.' );
@@ -1199,7 +1216,7 @@ jQuery(function() {
         //Open the uploader dialog
         fv_flowplayer_uploader.open();
 
-      });
+      }
 
       template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
       template_video = get_tab('first','video-files').parent().html();
