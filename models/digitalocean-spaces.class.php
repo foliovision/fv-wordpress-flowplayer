@@ -182,7 +182,16 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
 
     $time = $ttl ? $ttl : apply_filters('fv_player_secure_link_timeout', 900);
 
-    $url_components = parse_url($url);
+    $url_components = wp_parse_url($url);
+
+    $url_components['path'] = str_replace( array('%20','+'), ' ', $url_components['path']);
+
+    $url_components['path'] = rawurlencode($url_components['path']);
+    $url_components['path'] = str_replace('%2F', '/', $url_components['path']);
+    $url_components['path'] = str_replace('%2B', '+', $url_components['path']);
+    $url_components['path'] = str_replace('%2523', '%23', $url_components['path']);
+    $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);
+    $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);
 
     // Round the current time to the nearest $time interval to ensure consistent signatures
     // Use ceil() to ensure URLs are valid for the full $time duration
