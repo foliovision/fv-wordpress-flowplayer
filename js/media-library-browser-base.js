@@ -417,6 +417,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
 
   // Bail if it's a tab which provides video files only (Bunny Stream, Cloudflare Stream etc.) and it's not the video src field
   if (
+    // input_name must be set, it's not set when clicking on the "Select Media" button in the block and we don't want to remove the tab in that case
+    input_name && input_name.length &&
     [
       'fv_player_bunny_stream_browser_media_tab',
       'fv_flowplayer_cloudflare_stream_browser_media_tab',
