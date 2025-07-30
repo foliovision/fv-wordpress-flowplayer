@@ -479,7 +479,7 @@ function fv_player_preload() {
   //sets height for embedded players
   if( window.self != window.top && !location.href.match(/fv_player_preview/) ){
     embed_size();
-    jQuery(window.self).resize(embed_size);
+    jQuery(window.self).on( 'resize', embed_size );
   }
 
   function embed_size() {
