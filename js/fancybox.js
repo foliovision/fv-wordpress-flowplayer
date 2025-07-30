@@ -239,22 +239,40 @@ jQuery(document).on('click', '.freedomplayer.lightbox-starter, .fv-player-lightb
     index = playlist.find('a').index( this );
   }
   
-  var api = jQuery(ref).find('.freedomplayer').data('freedomplayer');
+  var player = jQuery(ref).find('.freedomplayer'),
+      api    = player.data('freedomplayer');
+
+  // Used if FV Player scripts are not loaded yet or player did not initialize yet
+  if ( ! api ) {
+    jQuery( document ).on( 'fv_player_loaded', function() {
+      fv_player_fancybox_load( player, index, player );
+    });
+    return;
+  }
+
+  return fv_player_fancybox_load( player, index, playlist );
+});
+
+function fv_player_fancybox_load( player, index, playlist ) {
+  var api = player.data('freedomplayer');
+
   if( !freedomplayer.support.firstframe || freedomplayer.support.iOS || freedomplayer.support.android ) {
     if( api.conf.clip && api.conf.clip.sources[0].type.match(/youtube/) ) return;
   }
+
   if( index == 0 && api.splash ) {
     api.load();
   } else {
     api.play(index);
   }
+
   fv_fancybox_check_size();
-  
+
   if( playlist.length && !jQuery(this).data('fancybox') ) {
-    playlist.find('a[data-fancybox]').eq(0).click();
+    playlist.find( 'a[data-fancybox]' ).eq(0).trigger( 'click' );
     return false;
-  }  
-})
+  }
+}
 
 jQuery(document).on('click', '.fp-playlist-external[rel$=_lightbox_starter] a', function() {
   var playlist = jQuery(this).closest('.fp-playlist-external'),
