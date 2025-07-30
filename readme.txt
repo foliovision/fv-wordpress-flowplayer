@@ -257,6 +257,15 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.22 - 2025-07-30 =
+
+* DigitalOcean Spaces: Use expiration cycle for signature expiration time to get consistent signatures
+* Security: Validate uploads for FV Player Coconut before uploading full file
+* Tutor LMS: Avoid forced 16:9 apsect ratio
+* Bugfix: Gutenberg: Fix for Site Editor
+* Bugfix: Gutenberg: Fix "Select Media" button to show all video hostig tabs
+* Bugfix: Lightbox not working when using blocks
+
 = 8.0.21 - 2025-07-11 =
 
 * HLS.js upgrade from 1.4.12 to 1.6.5
