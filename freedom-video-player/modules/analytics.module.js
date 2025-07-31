@@ -164,6 +164,18 @@ flowplayer( function(api,root) {
   api.get_time_played = function() {
     return time/1000;
   }
+
+  // Track subtitles
+  var original_loadSubtitles = api.loadSubtitles;
+
+  api.loadSubtitles = function(index) {
+    original_loadSubtitles( index );
+
+    if ( api.video.subtitles[ index ] ) {
+      var name = fv_player_track_name( root, api.video );
+      fv_player_track( api, false, "Video Subtitles", api.video.subtitles[ index ].srclang, name );
+    }
+  }
 });
 
 /**
