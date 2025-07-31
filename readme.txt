@@ -257,6 +257,10 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.23 - 2025-07-31 =
+
+* Bugfix: Tutor LMS: Add missing models/tutor-lms.class.php file
+
 = 8.0.22 - 2025-07-30 =
 
 * DigitalOcean Spaces: Use expiration cycle for signature expiration time to get consistent signatures
