@@ -121,6 +121,14 @@ function fv_flowplayer_init_s3_uploader( options ) {
       }
     };
 
+    s3upload.onValidationError = function( error ) {
+      $uploadButton.add( $cancelButton ).toggle();
+      recreate_file_input( file_select_input_name, file_select_input_class );
+      $progressDiv.text( error );
+      upload_error_callback();
+      $progressBarDiv.hide();
+    };
+
     $progressDiv.text("Preparing upload...");
 
     upload_start_callback();
