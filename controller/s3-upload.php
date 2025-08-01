@@ -299,6 +299,70 @@ class FV_Player_S3_Upload {
     // If getID3 couldn't detect the type, fall back to browser MIME type
     if ( empty( $detected_mime_type ) ) {
       wp_send_json( array( 'error' => 'File type not supported.' ) );
+      exit;
+    }
+
+    /**
+     * Ensure video resolution is at least the minimal resolution
+     */
+    $video_width = 0;
+    $video_height = 0;
+
+    global $fv_fp;
+    $minimal_video_resolution = $fv_fp->_get_option( array( 'coconut', 'minimal_source_video_resolution' ) );
+
+    if ( $minimal_video_resolution && ! empty( $ThisFileInfo['video']['resolution_x'] ) && ! empty( $ThisFileInfo['video']['resolution_y'] ) ) {
+
+      // Convert resolution names like 720p to actual dimensions
+      $resolution_map = array(
+        '480p'  => array( 720,  480  ),
+        '720p'  => array( 1280, 720  ),
+        '1080p' => array( 1920, 1080 ),
+        '1440p' => array( 2560, 1440 ),
+        '4K'    => array( 3840, 2160 )
+      );
+
+      if ( array_key_exists( $minimal_video_resolution, $resolution_map ) ) {
+        $minimal_width  = $resolution_map[ $minimal_video_resolution ][0];
+        $minimal_height = $resolution_map[ $minimal_video_resolution ][1];
+      } else {
+        $minimal_width  = 0;
+        $minimal_height = 0;
+      }
+
+      if ( $minimal_width && $minimal_height ) {
+
+        // For 4:3 aspect ratio
+        $minimal_width_4_3 = $minimal_height * 4 / 3;
+        $minimal_height_4_3 = $minimal_height;
+
+        // For 21:9 aspect ratio
+        $minimal_width_21_9 = $minimal_width;
+        $minimal_height_21_9 = $minimal_width * 9 / 21;
+
+        $video_width    = absint( $ThisFileInfo['video']['resolution_x'] );
+        $video_height   = absint( $ThisFileInfo['video']['resolution_y'] );
+
+        // Check for vertical video
+        // Alternatively we could parse degrees from $ThisFileInfo['video']['rotate'], but is that commonly used for vertical videos?
+        if ( $video_width < $video_height ) {
+          $video_width  = absint( $ThisFileInfo['video']['resolution_y'] );
+          $video_height = absint( $ThisFileInfo['video']['resolution_x'] );
+        }
+
+        if (
+          $video_width >= $minimal_width && $video_height >= $minimal_height ||
+          $video_width >= $minimal_width_4_3 && $video_height >= $minimal_height_4_3 ||
+          $video_width >= $minimal_width_21_9 && $video_height >= $minimal_height_21_9
+        ) {
+          // Video dimensions are good for one of the aspect ratios
+
+        } else {
+          wp_send_json( array( 'error' => 'The video resolution is too low. Please create a ' . $minimal_video_resolution . ' video.' ) );
+          exit;
+        }
+
+      }
     }
 
     // Define allowed MIME types
@@ -340,7 +404,8 @@ class FV_Player_S3_Upload {
       'file_analysis'               => array(
         'fileformat'  => isset( $ThisFileInfo['fileformat'] ) ? $ThisFileInfo['fileformat'] : 'unknown',
         'mime_type'   => $detected_mime_type,
-        'filesize'    => $file_size
+        'filesize'    => $file_size,
+        'resolution'  => $video_width . 'x' . $video_height,
       )
     ));
   }
