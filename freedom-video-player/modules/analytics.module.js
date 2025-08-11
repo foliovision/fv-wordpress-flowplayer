@@ -7,7 +7,9 @@
 flowplayer( function(api,root) {
   var root = jQuery(root),
       bean = flowplayer.bean,
-      time = 0, last = 0, timer, event_name;
+      time = 0, last = 0, timer, event_name,
+      tracked_subtitle_langs = [],
+      last_video_index = 0;
 
   // Load analytics.js if ga.js is not already loaded
   if( typeof(ga) == 'undefined' && api.conf.fvanalytics && typeof(_gat) == 'undefined' && typeof(gtag) == 'undefined' ) {
@@ -52,6 +54,13 @@ flowplayer( function(api,root) {
     for( var j in fv_ga_events ) {
       if( !fv_ga_events.hasOwnProperty(j) ) continue;
       root.removeData('fv_track_'+fv_ga_events[j]);
+    }
+
+    // Reset tracked subtitle languages when changing playlist items
+    var video_index = api.video.index || 0;
+    if ( last_video_index !== video_index ) {
+      tracked_subtitle_langs = [];
+      last_video_index = video_index;
     }
 
   // TODO errors in GA4
@@ -164,6 +173,24 @@ flowplayer( function(api,root) {
   api.get_time_played = function() {
     return time/1000;
   }
+
+  // Track subtitles
+  var original_loadSubtitles = api.loadSubtitles;
+
+  api.loadSubtitles = function(index) {
+    original_loadSubtitles( index );
+
+    if ( api.video.subtitles[ index ] ) {
+      var name = fv_player_track_name( root, api.video ),
+        lang = api.video.subtitles[ index ].srclang;
+
+      // Track the subtitle language only once per video
+      if ( tracked_subtitle_langs.indexOf( lang ) === -1 ) {
+        fv_player_track( api, false, "Video Subtitles", lang, name );
+        tracked_subtitle_langs.push( lang );
+      }
+    }
+  }
 });
 
 /**
@@ -208,7 +235,7 @@ function fv_player_track( api, ga_id, event, engineType, name, value) {
   if( typeof(gtag) != "undefined" ) {
 
     // Track the video properties the GA4 way
-    if( is_ga_4( api ) && 'Heartbeat' !== name ) {
+    if( is_ga_4( api ) && 'Video Subtitles' !== event ) {
       gtag("event", event, {
         'video_title': name,
         'video_current_time': api.video.time,

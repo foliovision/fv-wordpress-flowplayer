@@ -1,8 +1,12 @@
-.upload_buttons {
+.fv-player-upload_buttons {
     padding-top: 20px;
 }
-
-.upload_buttons .fv-player-s3-upload-cancel-btn, .upload_buttons .fv-player-s3-upload-file-input, .upload_buttons input[type="file"] {
+.fv-player-upload_buttons:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+.fv-player-upload_buttons .fv-player-s3-upload-cancel-btn, .fv-player-upload_buttons .fv-player-s3-upload-file-input, .fv-player-upload_buttons input[type="file"] {
     display: none;
 }
 

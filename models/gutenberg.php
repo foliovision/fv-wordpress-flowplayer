@@ -206,16 +206,22 @@ function fv_player_handle_rest_content_register() {
   }
 }
 
-add_action(
-  'enqueue_block_assets',
-  function() {
-    // Load all of CSS
-    global $fv_fp;
-    $fv_fp->css_enqueue( true );
+// Force load FV Player CSS and JS for Site Editor
+add_action( 'enqueue_block_assets', 'fv_player_enqueue_block_assets_for_site_editor' );
 
-    // Load scripts
-    do_action( 'fv_player_force_load_assets' );
+function fv_player_enqueue_block_assets_for_site_editor() {
 
-    flowplayer_prepare_scripts();
+  // Do not force load if it's not the Site Editor
+  if ( ! did_action( 'load-site-editor.php' ) ) {
+    return;
   }
-);
+
+  // Load all of CSS
+  global $fv_fp;
+  $fv_fp->css_enqueue( true );
+
+  // Load scripts
+  do_action( 'fv_player_force_load_assets' );
+
+  flowplayer_prepare_scripts();
+}

@@ -417,6 +417,8 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
 
   // Bail if it's a tab which provides video files only (Bunny Stream, Cloudflare Stream etc.) and it's not the video src field
   if (
+    // input_name must be set, it's not set when clicking on the "Select Media" button in the block and we don't want to remove the tab in that case
+    input_name && input_name.length &&
     [
       'fv_player_bunny_stream_browser_media_tab',
       'fv_flowplayer_cloudflare_stream_browser_media_tab',
@@ -612,8 +614,8 @@ function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
 }
 
 function fv_flowplayer_media_browser_show_upload( id ) {
-  jQuery('.media-toolbar-secondary > .upload_buttons').hide();
-  jQuery('.media-toolbar-secondary > .upload_buttons[data-tab-id='+id+']').show();
+  jQuery('.media-toolbar-secondary > .fv-player-upload_buttons').hide();
+  jQuery('.media-toolbar-secondary > .fv-player-upload_buttons[data-tab-id='+id+']').show();
 }
 
 function renderBrowserPlaceholderHTML(options) {
@@ -668,7 +670,7 @@ function renderBrowserPlaceholderHTML(options) {
     '<div class="media-sidebar"></div>' +
     '\t\t<div class="nothingfound">\n' +
     '\t\t\t<div class="nofiles"></div>\n' +
-    '\t\t\t<span>No files here.</span>\n' +
+    '\t\t\t<p>No files here.</p>\n' +
     '\t\t</div>\n' +
     '\n' +
     '\t</div>';

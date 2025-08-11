@@ -163,7 +163,7 @@ jQuery( function($) {
     // add the upload button to the media library modal
     if ( !$('.' + upload_button_class).length ) {
       if ( !$('.media-toolbar-secondary > #' + upload_button_class + '-wrap').length ) {
-        $('.media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="upload_buttons" style="display: none" data-tab-id="fv_player_bunny_stream_browser_media_tab"></div>');
+        $('.media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="fv-player-upload_buttons" style="display: none" data-tab-id="fv_player_bunny_stream_browser_media_tab"></div>');
       }
 
       var $uploadDiv = $('.media-toolbar-secondary > #' + upload_button_class + '-wrap');

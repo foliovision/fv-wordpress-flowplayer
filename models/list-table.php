@@ -52,7 +52,7 @@ class FV_Player_List_Table extends WP_List_Table {
     <p class="search-box">
       <label class="screen-reader-text" for="fv_player_search">Search players:</label>
       <input type="search" id="fv_player_search" name="s" value="<?php _admin_search_query(); ?>" />
-      <?php submit_button( "Search players", 'button', false, false, array('ID' => 'search-submit') ); ?><br/>
+      <?php submit_button( "Search players", 'button', false, false, array('ID' => 'search-submit') ); ?>
     </p>
     <?php
   }
@@ -163,7 +163,7 @@ class FV_Player_List_Table extends WP_List_Table {
         $value .= "<a href='#' class='fv-player-clone' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-export-'.$id)."'>Clone</a> | ";
         $value .= "<span class='trash'><a href='#' class='fv-player-remove' data-player_id='{$id}' data-nonce='".wp_create_nonce('fv-player-db-remove-'.$id)."'>Delete</a></span>";
 
-        $value .= '<input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
+        $value .= '<br /><input type="text" class="fv-player-shortcode-input" readonly value="'.esc_attr('[fvplayer id="'. $id .'"]').'" style="display: none" /><a href="#" class="button fv-player-shortcode-copy">Copy Shortcode</a>';
 
         $value .= apply_filters( 'fv_player_list_table_extra_row_actions', '', $id, $player );
 

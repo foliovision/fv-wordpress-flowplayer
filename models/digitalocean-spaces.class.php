@@ -193,8 +193,13 @@ class FV_Player_DigitalOcean_Spaces extends FV_Player_CDN {
     $url_components['path'] = str_replace('%252B', '%2B', $url_components['path']);
     $url_components['path'] = str_replace('%2527', '%27', $url_components['path']);
 
-    $sXAMZDate = gmdate('Ymd\THis\Z');
-    $sDate = gmdate('Ymd');
+    // Round the current time to the nearest $time interval to ensure consistent signatures
+    // Use ceil() to ensure URLs are valid for the full $time duration
+    $currentTime = time();
+    $roundedTime = ceil($currentTime / $time) * $time;
+
+    $sXAMZDate = gmdate('Ymd\THis\Z', $roundedTime);
+    $sDate = gmdate('Ymd', $roundedTime);
     $sCredentialScope = $sDate."/".$endpoint."/s3/aws4_request"; //  todo: variable
     $sSignedHeaders = "host";
     $sXAMZCredential = urlencode( $key.'/'.$sCredentialScope);
