@@ -42,6 +42,7 @@ class FV_Player_Db_Video {
     $live,
     $toggle_advanced_settings,
     $last_check,
+    $caption, // added to avoid PHP warnings, but it should not longer be used in the database table, TODO: Remove the column from the database table
     $meta_data = null; // object of this video's meta data
 
   private static
