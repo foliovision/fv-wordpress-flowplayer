@@ -871,60 +871,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           $actions = apply_filters('fv_player_editor_actions', $actions );
 
           fv_player_editor_input_group( $actions );
-          ?>
 
-          <!--
-          <tr class="fv_player_actions_end-toggle">
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_redirect" class="alignright"><?php esc_html_e('Redirect to', 'fv_flowplayer'); ?></label></th>
-          <td class="field"><input type="text" id="fv_wp_flowplayer_field_redirect" name="fv_wp_flowplayer_field_redirect" style="width: 93%" /></td>
-        </tr>
-
-        <tr class="fv_player_actions_end-toggle">
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_popup_id" class="alignright"><?php esc_html_e('End popup', 'fv_flowplayer'); ?></label></th>
-          <td>
-            <?php fv_flowplayer_admin_select_popups(array('id' => 'fv_wp_flowplayer_field_popup_id', 'show_default' => true)) ?>
-            <div style="display: none">
-              <p><span class="dashicons dashicons-warning"></span> <?php esc_html_e( 'You are using the legacy popup functionality. Move the popup code', 'fv-player' ); ?> <a href="<?php echo esc_attr( site_url() ); ?>/wp-admin/admin.php?page=fvplayer#tab_popups" target="_blank"><?php esc_html_e( 'here', 'fv-player' ); ?></a><?php esc_html_e( ', then use the drop down menu above.', 'fv-player' ); ?></p>
-              <textarea id="fv_wp_flowplayer_field_popup" name="fv_wp_flowplayer_field_popup" style="width: 93%"></textarea>
-            </div>
-          </td>
-        </tr>
-
-        <?php
-
-        $rawLists = get_option('fv_player_email_lists');
-        $aLists = array();
-        foreach($rawLists as $key => $val){
-          if(!is_numeric($key))
-            continue;
-          $aLists[] = array($key,(empty($val->name) ? "List " . $key : "$val->name" ));
-        }
-        if(count($aLists)){
-          fv_player_shortcode_row( array(
-              'label' => __( 'E-mail list', 'fv-player' ),
-              'name' => 'email_list',
-              'class' => 'fv_player_actions_end-toggle',
-              'dropdown' =>$aLists,
-          ) );
-        }
-        ?>
-        <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php esc_html_e('Ad code', 'fv_flowplayer'); ?></label></th>
-          <td>
-            <textarea id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%"></textarea>
-          </td>
-        </tr>
-        <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
-          <th scope="row" class="label"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php esc_html_e('Ad Size', 'fv_flowplayer'); ?></label></th>
-          <td class="field<?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' fv_player_interface_hide'; ?>">
-            <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php esc_attr_e('Width', 'fv_flowplayer'); ?>"/>
-            <input type="text" id="fv_wp_flowplayer_field_ad_height" name="fv_wp_flowplayer_field_ad_height" style="width: 19%; margin-right: 25px;" value="" placeholder="<?php esc_attr_e('Height', 'fv_flowplayer'); ?>"/>
-            <input type="checkbox" id="fv_wp_flowplayer_field_ad_skip" name="fv_wp_flowplayer_field_ad_skip" /> <?php esc_html_e('Skip global ad in this video', 'fv_flowplayer'); ?>
-          </td>
-        </tr>
-        -->
-
-          <?php
           // Legacy
           echo "<div class='fv_player_editor-panel__body fv-player-editor-legacy'>\n";
 

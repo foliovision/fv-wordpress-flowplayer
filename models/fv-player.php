@@ -634,7 +634,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['overlay_show_after'] ) ) $conf['overlay_show_after'] = 0;
     if( !isset( $conf['disable_videochecker'] ) ) $conf['disable_videochecker'] = 'false';
     if(  isset( $conf['videochecker'] ) && $conf['videochecker'] == 'off' ) { $conf['disable_videochecker'] = 'true'; unset($conf['videochecker']); }
-    if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'ads' => false, 'mobile' => false, 'align' => false );
+    if( !isset( $conf['interface'] ) ) $conf['interface'] = array( 'playlist' => false, 'redirect' => false, 'autoplay' => false, 'loop' => false, 'splashend' => false, 'embed' => false, 'subtitles' => false, 'mobile' => false, 'align' => false );
     if( !isset( $conf['interface']['popup'] ) ) $conf['interface']['popup'] = 'true';
     if( !isset( $conf['amazon_bucket'] ) || !is_array($conf['amazon_bucket']) ) $conf['amazon_bucket'] = array('');
     if( !isset( $conf['amazon_key'] ) || !is_array($conf['amazon_key']) ) $conf['amazon_key'] = array('');

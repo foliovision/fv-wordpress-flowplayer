@@ -903,7 +903,6 @@ function fv_flowplayer_admin_interface_options() {
 ?>
         <p><?php esc_html_e( 'Which features should be available in shortcode editor?', 'fv-player' ); ?></p>
         <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__( 'Ads', 'fv-player' ), array('interface', 'ads') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Autoplay', 'fv-player' ), array('interface', 'autoplay') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Controlbar', 'fv-player' ), array('interface', 'controlbar') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Embed', 'fv-player' ), array('interface', 'embed') ); ?>
