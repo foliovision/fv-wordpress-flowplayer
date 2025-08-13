@@ -916,7 +916,6 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__( 'Splash Text', 'fv-player' ), array('interface', 'splash_text') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Sticky', 'fv-player' ), array('interface', 'sticky') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Synopsis', 'fv-player' ), array('interface', 'synopsis') ); ?>
-          <?php $fv_fp->_get_checkbox(__( 'Video Actions', 'fv-player' ), array('interface', 'end_actions'), __( 'Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-player' ) ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
 
