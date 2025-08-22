@@ -2200,6 +2200,22 @@ if( typeof(flowplayer) != "undefined" ) {
       common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
       var wrapperTag = common.createElement("div");
       wrapperTag.className = 'fp-engine fvyoutube-engine';
+
+      /**
+       * FV Player loads YouTube as FV_YT to avoid conflicts with original YouTube Player API,
+       * that might be loaded by some other script.
+       *
+       * But we have seen scripts like Plausible Tracking, that use mutation observer to find out
+       * about new YouTube iframes and run new YT.Player() on them. When that happens our original
+       * events for the API instance stop working on iPhone!
+       *
+       * So we were going to use YT.get() on the load function below to get the API instance for
+       * the iframe. But I found that just adding the ID attribute to the iframe fixes the issue.
+       * Perhaps YouTube player API does not remove the old events if it sees the iframe has the
+       * ID attribute.
+       */
+      wrapperTag.id = 'fv-player-yt-wrapper-' + root.attr('id');
+
       common.prepend(common.find(".fp-player", root)[0], wrapperTag);
 
         //console.log('new YT preload');  //  probably shouldn't happen when used in lightbox
