@@ -1938,26 +1938,26 @@ if( fv_flowplayer_conf.youtube ) {
         Mb.add(c)
     }
     var Ob = window;
-    I("YT.PlayerState.UNSTARTED", -1);
-    I("YT.PlayerState.ENDED", 0);
-    I("YT.PlayerState.PLAYING", 1);
-    I("YT.PlayerState.PAUSED", 2);
-    I("YT.PlayerState.BUFFERING", 3);
-    I("YT.PlayerState.CUED", 5);
-    I("YT.get", function(a) {
+    I("FV_YT.PlayerState.UNSTARTED", -1);
+    I("FV_YT.PlayerState.ENDED", 0);
+    I("FV_YT.PlayerState.PLAYING", 1);
+    I("FV_YT.PlayerState.PAUSED", 2);
+    I("FV_YT.PlayerState.BUFFERING", 3);
+    I("FV_YT.PlayerState.CUED", 5);
+    I("FV_YT.get", function(a) {
         return V[a]
     });
-    I("YT.scan", ub);
-    I("YT.subscribe", function(a, b, c) {
+    I("FV_YT.scan", ub);
+    I("FV_YT.subscribe", function(a, b, c) {
         U.subscribe(a, b, c);
         tb[a] = !0;
         for (var d in V)
             V.hasOwnProperty(d) && Db(V[d], a)
     });
-    I("YT.unsubscribe", function(a, b, c) {
+    I("FV_YT.unsubscribe", function(a, b, c) {
         ib(a, b, c)
     });
-    I("YT.Player", X);
+    I("FV_YT.Player", X);
     X.prototype.destroy = X.prototype.destroy;
     X.prototype.setSize = X.prototype.setSize;
     X.prototype.getIframe = X.prototype.getIframe;
