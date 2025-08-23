@@ -257,6 +257,13 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.24 - 2025-08-23 =
+
+* HLS.js upgrade from 1.6.5 to 1.6.9
+* Editor: Removing Post Interface Options for "Video Actions" and "Ads" as these always show
+* Tracking: Adding subtitles as a new event
+* YouTube: Compatibility fixes
+
 = 8.0.23 - 2025-07-31 =
 
 * Bugfix: Tutor LMS: Add missing models/tutor-lms.class.php file
