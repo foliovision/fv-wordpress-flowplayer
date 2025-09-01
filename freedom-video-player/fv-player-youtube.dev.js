@@ -636,6 +636,9 @@ if( fv_flowplayer_conf.youtube ) {
         return Object.prototype.hasOwnProperty.call(a, b)
     }
     var pa = typeof Object.assign == "function" ? Object.assign : function(a, b) {
+        if (a == null)
+            throw new TypeError("No nullish arg");
+        a = Object(a);
         for (var c = 1; c < arguments.length; c++) {
             var d = arguments[c];
             if (d)
