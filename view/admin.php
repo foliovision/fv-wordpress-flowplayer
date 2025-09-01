@@ -304,7 +304,7 @@ function fv_flowplayer_admin_default_options() {
                       array(
                         'horizontal'  => __(  'Horizontal', 'fv-player' ),
                         'tabs'        => __(  'Tabland', 'fv-player' ),
-                        'prevnext'    => __(  'Big arrows', 'fv-player' ),
+                        'prevnext'    => __(  'Big arrows (deprecated)', 'fv-player' ),
                         'vertical'    => __(  'Vertical', 'fv-player' ),
                         'slider'      => __(  'Scrollslider', 'fv-player' ),
                         'season'      => __(  'Episodes', 'fv-player' ),
@@ -314,6 +314,11 @@ function fv_flowplayer_admin_default_options() {
                         'version-two' => __(  'Sliderbar', 'fv-player' ),
                       ) as $style => $name
                     ) {
+
+                      // Do not offer "Big arrows" if it's not already saved.
+                      if ( 'prevnext' === $style && strcmp( $value, $style ) !== 0 ) {
+                        continue;
+                      }
                       ?>
                       <option value="<?php echo esc_attr( $style ); ?>"<?php if( $value === $style ) echo ' selected="selected"'; ?>><?php echo esc_html( $name ); ?></option>
                       <?php

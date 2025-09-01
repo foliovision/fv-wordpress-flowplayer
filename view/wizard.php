@@ -696,7 +696,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                                       array( '',            'Default' ),
                                       array( 'horizontal',  'Horizontal' ),
                                       array( 'tabs',        'Tabland' ),
-                                      array( 'prevnext',    'Big arrows' ),
+                                      array( 'prevnext',    'Big arrows (deprecated)' ),
                                       array( 'vertical',    'Vertical' ),
                                       array( 'slider',      'Scrollslider' ),
                                       array( 'season',      'Episodes' ),
