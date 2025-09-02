@@ -547,7 +547,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       // do this async, so the browser has time to paint the UI
       // and change class of this tab to active on click
       setTimeout(function() {
-        jQuery('#' + tabId).click();
+        jQuery('#' + tabId).trigger( 'click' );
       }, 500);
     }
   } catch(e) {}
