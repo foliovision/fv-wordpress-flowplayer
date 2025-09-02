@@ -1066,7 +1066,7 @@ jQuery( function($) {
             jQuery('.media-button-select').prop('disabled', 'disabled');
           } else {
             // enable Choose button
-            jQuery('.media-button-select').removeAttr('disabled');
+            jQuery('.media-button-select').prop('disabled', false);
           }
         } else {
           // disable Choose button if nothing is selected
@@ -1109,7 +1109,7 @@ jQuery( function($) {
     });
 
     // close media browser
-    jQuery('.media-modal-close:visible').click();
+    jQuery('.media-modal-close:visible').trigger( 'click' );
 
     // show playlist if multiple items were inserted
     if ( selected_media_items.length > 1 ) {
@@ -1131,7 +1131,7 @@ jQuery( function($) {
     }
 
     // close media browser
-    jQuery('.media-modal-close:visible').click();
+    jQuery('.media-modal-close:visible').trigger( 'click' );
 
     return false;
   });

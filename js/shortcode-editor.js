@@ -1363,7 +1363,7 @@ jQuery(function() {
 
       function error(msg) {
         is_saving = false;
-        $el_editor.find('.button-primary').removeAttr('disabled');
+        $el_editor.find('.button-primary').prop('disabled', false);
 
         overlay_show('message', 'An unexpected error has occurred. Please try again. '+msg, true );
       }
