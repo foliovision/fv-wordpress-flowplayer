@@ -316,7 +316,7 @@ jQuery(function() {
       }
 
       if( !element.length ) {
-        console.log('FV Player Editor Error: field '+key+' not found');
+        console.log('FV Player Editor Warning: field '+key+' not found');
       }
 
       return element;
@@ -4164,7 +4164,7 @@ Please also contact FV Player support with the following debug information:\n\n\
     }
 
     function set_current_video_to_edit( index ) {
-      current_video_to_edit = index;
+      current_video_to_edit = parseInt( index );
     }
 
     function set_control_fields( ajax_data ) {
@@ -5037,7 +5037,7 @@ Please also contact FV Player support with the following debug information:\n\n\
       get_current_video_object,
 
       get_current_video_index() {
-        return current_video_to_edit;
+        return parseInt( current_video_to_edit );
       },
 
       get_current_video_db_id() {

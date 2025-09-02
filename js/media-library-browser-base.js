@@ -833,10 +833,10 @@ jQuery( function($) {
       .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
       .trigger('change'); // this check the video duration etc.
 
-
+    // Update the block attributes, if we are not updating a playlist video!
     var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
 
-    if( clientId ) {
+    if( clientId && 0 === fv_player_editor.get_current_video_index() ) {
       var editor_splash = splash ? splash : '',
         editor_timeline_previews = extra && extra.timeline_previews ? extra.timeline_previews : '';
         editor_hlskey = extra && extra.hlskey ? extra.hlskey : '';
@@ -1066,7 +1066,7 @@ jQuery( function($) {
             jQuery('.media-button-select').prop('disabled', 'disabled');
           } else {
             // enable Choose button
-            jQuery('.media-button-select').prop('disabled', false);
+            jQuery('.media-button-select').removeAttr('disabled');
           }
         } else {
           // disable Choose button if nothing is selected
