@@ -648,7 +648,7 @@ jQuery(function() {
             // FV Player Block "Select Media" button
             site_editor_iframe.off( 'click', '.fv-player-gutenberg-media' );
 
-            site_editor_iframe.on( 'click', '.fv-player-gutenberg-media', fv_flowplayer_uploader_open );
+            site_editor_iframe.on( 'click', '.fv-player-gutenberg-media', fv_flowplayer_uploader_init );
           }
         }
 
@@ -1071,11 +1071,14 @@ jQuery(function() {
       var fv_flowplayer_uploader;
       var fv_flowplayer_uploader_button;
 
-      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media, .fv-player-gutenberg-media', fv_flowplayer_uploader_open );
+      $doc.on( 'click', '#fv-player-shortcode-editor .components-button.add_media, .fv-player-gutenberg-media', fv_flowplayer_uploader_init );
 
-      function fv_flowplayer_uploader_open(e) {
-        debug_log( 'Opening Media Library...' );
-
+      /**
+       * In order for Media Library to work we need:
+       * - set fv_flowplayer_uploader_button
+       * - add .fv_flowplayer_target to the input field that will be updated
+       */
+      function fv_flowplayer_uploader_init(e) {
         e.preventDefault();
 
         fv_flowplayer_uploader_button = jQuery(this);
@@ -1099,6 +1102,12 @@ jQuery(function() {
 
           el_input.addClass('fv_flowplayer_target');
         }
+
+        fv_flowplayer_uploader_open();
+      }
+
+      function fv_flowplayer_uploader_open() {
+        debug_log( 'Opening Media Library...' );
 
         //If the uploader object has already been created, reopen the dialog
         if (fv_flowplayer_uploader) {
@@ -1215,7 +1224,6 @@ jQuery(function() {
 
         //Open the uploader dialog
         fv_flowplayer_uploader.open();
-
       }
 
       template_playlist_item = jQuery('.fv-player-tab-playlist #fv-player-editor-playlist .fv-player-editor-playlist-item').parent().html();
