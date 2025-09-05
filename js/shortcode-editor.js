@@ -615,6 +615,41 @@ jQuery(function() {
         });
 
         /**
+         * Elementor Widget support
+         */
+        if ( window.elementor && window.elementor.channels && window.elementor.channels.editor ) {
+
+          // "Configure Player" button
+          elementor.channels.editor.on( 'fv-player-elementor-editor-open', function(e) {
+            editor_button_clicked = e.el;
+
+            $.fv_player_box( {
+              onComplete : editor_open,
+              onClosed : editor_close,
+              onOpen: lightbox_open
+            } );
+          });
+
+          // "Select Media" button for "Source URL"
+          elementor.channels.editor.on( 'fv-player-elementor-pick-source_url ', function(e) {
+            fv_flowplayer_uploader_button = jQuery( e.el );
+
+            $( '.elementor-control-source_url [data-setting="url"]' ).addClass( 'fv_flowplayer_target' );
+
+            fv_flowplayer_uploader_open();
+          } );
+
+          // "Select Media" button for "Splash URL"
+          elementor.channels.editor.on( 'fv-player-elementor-pick-splash_url ', function(e) {
+            fv_flowplayer_uploader_button = jQuery( e.el );
+
+            $( '.elementor-control-splash_url [data-setting="url"]' ).addClass( 'fv_flowplayer_target' );
+
+            fv_flowplayer_uploader_open();
+          } );
+        }
+
+        /**
          * Look for buttons in Site Editor iframe
          */
         function setupSiteEditorHandlers() {
@@ -1993,6 +2028,7 @@ jQuery(function() {
 
       // is there a Custom Video field or Gutenberg field next to the button?
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
+        elementor_field = $(editor_button_clicked).closest( '#elementor-controls' ).find( '[data-setting="shortcode"]' ),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
 
       if( fv_player_editor_conf.field_selector ){
@@ -2013,6 +2049,10 @@ jQuery(function() {
         }
 
         editor_content = jQuery(field).val();
+
+      } else if( elementor_field.length ) {
+        editor_content = elementor_field.val();
+
       } else if( widget.length ){
         editor_content = widget.val();
       } else if( document.querySelector('.CodeMirror') && typeof(CodeMirror) !== 'undefined' ) {
@@ -2369,6 +2409,12 @@ jQuery(function() {
           wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(fv_player_editor.clientId, { src: src, splash: splash, title: title, timeline_previews: timeline_previews, hls_hlskey: hlskey, player_id: current_player_db_id } );
         }
 
+        // Refresh the Elementor Widget preview
+        let elementor_field = $(editor_button_clicked).closest( '#elementor-controls' ).find( '[data-setting="shortcode"]' );
+        if ( elementor_field.length ) {
+          elementor_field.trigger( 'input' );
+        }
+
       } else if( current_player_db_id > 0 ) {
 
         // Append or update player row in wp-admin -> FV Player
@@ -2485,6 +2531,8 @@ jQuery(function() {
       var
         field = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-editor-field'),
         clientId = $(editor_button_clicked).parents('.fv-player-editor-wrapper, .fv-player-gutenberg').find('.fv-player-gutenberg-client-id').val(),
+        elementor_field = $(editor_button_clicked).closest( '#elementor-controls' ).find( '[data-setting="shortcode"]' ),
+        is_elementor = elementor_field.length,
         is_gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').length,
         shortcode = false,
         shortcode_parse_fix = false;
@@ -2569,6 +2617,9 @@ jQuery(function() {
           } else {
             editor_content = '<' + helper_tag + ' rel="FCKFVWPFlowplayerPlaceholder">&shy;</' + helper_tag + '>' + editor_content + '';
           }
+
+        } else if ( is_elementor ) {
+          debug_log( 'Loading for Elementor Widget...', editor_content );
 
         // CodeMirror
         } else if( instance_code_mirror ) {
@@ -2681,9 +2732,10 @@ jQuery(function() {
 
         if( !shortcode ){
           let content = editor_content.replace(/\n/g, '\uffff');
-          // Gutenberg
-          if (is_gutenberg) {
+
+          if ( is_elementor || is_gutenberg ) {
             shortcode = content;
+
           } else {
             let match = content.match( fv_wp_flowplayer_re_edit );
             if( match ) {
@@ -3568,6 +3620,7 @@ Please also contact FV Player support with the following debug information:\n\n\
       }
 
       var field = $(editor_button_clicked).parents('.fv-player-editor-wrapper').find('.fv-player-editor-field'),
+        elementor_field = $(editor_button_clicked).closest( '#elementor-controls' ).find( '[data-setting="shortcode"]' ),
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
         custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
@@ -3578,13 +3631,15 @@ Please also contact FV Player support with the following debug information:\n\n\
 
       // is there a Gutenberg field together in wrapper with the button?
       } else if( gutenberg.length ) {
-        // TODO: Update the fields in the Gutenberg block ?
 
       // is there a plain text field together in wrapper with the button?
       } else if (field.length) {
         field.val(shortcode);
         // Prevents double event triggering in FV Player Custom Video box
         //field.trigger('fv_flowplayer_shortcode_insert', [shortcode]);
+
+      } else if ( elementor_field.length ) {
+        elementor_field.val( shortcode ).trigger( 'input' );
 
         // FV Player in a Widget
       } else if( widget.length ){

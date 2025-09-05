@@ -717,9 +717,32 @@ function fv_player_guttenberg_attributes_save() {
     }
 
     if( $player_id ) {
+
+      // Load video data again to get the updated values, used for Elementor Widget
+      $player = new FV_Player_Db_Player( $player_id );
+      if ( $player && $player->getIsValid() ) {
+        $videos = $player->getVideos();
+        if ( $videos ) {
+          foreach ( $videos as $video ) {
+            $splash               = $video->getSplash();
+            $title                = $video->getTitle();
+            $splash_attachment_id = $video->getSplashAttachmentId();
+            $timeline_previews    = $video->getMetaValue('timeline_previews', true) ? $video->getMetaValue('timeline_previews', true) : '';
+            $hls_hlskey           = $video->getMetaValue('hls_hlskey', true) ? $video->getMetaValue('hls_hlskey', true) : '';
+            break; // only first video
+          }
+        }
+      }
+
       wp_send_json( array(
         'player_id' => $player_id,
-        'shortcodeContent' => '[fvplayer id="' . $player_id . '"]'
+        'shortcodeContent' => '[fvplayer id="' . $player_id . '"]',
+        'src' => $src,
+        'splash' => $splash,
+        'title' => $title,
+        'splash_attachment_id' => $splash_attachment_id,
+        'timeline_previews' => $timeline_previews,
+        'hls_hlskey' => $hls_hlskey
       ) );
     } else {
       wp_send_json( array(
