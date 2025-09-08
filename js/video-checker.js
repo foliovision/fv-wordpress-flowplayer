@@ -261,7 +261,7 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
     function( response ) {
       jQuery('#wpfp_spin_'+hash).hide();
       jQuery('#fv_wp_fp_notice_'+hash).find('input').hide();
-      jQuery(button).removeAttr("disabled");
+      jQuery(button).prop('disabled', false);
 
       if ( response.success ) {
         jQuery(button).after(' Message sent');

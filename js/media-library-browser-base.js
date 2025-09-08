@@ -547,7 +547,7 @@ function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback,
       // do this async, so the browser has time to paint the UI
       // and change class of this tab to active on click
       setTimeout(function() {
-        jQuery('#' + tabId).click();
+        jQuery('#' + tabId).trigger( 'click' );
       }, 500);
     }
   } catch(e) {}
@@ -833,10 +833,10 @@ jQuery( function($) {
       .trigger('keyup')   // this changes the HLS key field visibility in FV Player Pro
       .trigger('change'); // this check the video duration etc.
 
-
+    // Update the block attributes, if we are not updating a playlist video!
     var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
 
-    if( clientId ) {
+    if( clientId && 0 === fv_player_editor.get_current_video_index() ) {
       var editor_splash = splash ? splash : '',
         editor_timeline_previews = extra && extra.timeline_previews ? extra.timeline_previews : '';
         editor_hlskey = extra && extra.hlskey ? extra.hlskey : '';
@@ -1109,7 +1109,7 @@ jQuery( function($) {
     });
 
     // close media browser
-    jQuery('.media-modal-close:visible').click();
+    jQuery('.media-modal-close:visible').trigger( 'click' );
 
     // show playlist if multiple items were inserted
     if ( selected_media_items.length > 1 ) {
@@ -1131,7 +1131,7 @@ jQuery( function($) {
     }
 
     // close media browser
-    jQuery('.media-modal-close:visible').click();
+    jQuery('.media-modal-close:visible').trigger( 'click' );
 
     return false;
   });

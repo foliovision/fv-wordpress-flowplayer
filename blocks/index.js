@@ -17,7 +17,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     )
   },
   title: __( 'FV Player', 'fv-player-gutenberg' ),
-  description: __( 'Embed a video from your Media Library or upload a new one.', 'fv-player-gutenberg' ),
+  description: __( 'Embed a video from your Media Library or one of your video hosting services.', 'fv-player-gutenberg' ),
   category: 'media',
   keywords: ['fv player', 'player', 'fv', 'flowplayer', 'freedomplayer', 'video', 'embed', 'media', 'stream'],
   supports: {
@@ -209,75 +209,76 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     // show initial state when no player
     if( player_id == 'undefined' || player_id == 0 ) {
       return(
-        <div className="components-placeholder block-editor-media-placeholder is-large">
+        <div className="components-placeholder block-editor-media-placeholder is-large fv-player-editor-wrapper fv-player-gutenberg">
           <div className="components-placeholder__label">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+              <path d="M21.8 8s-.195-1.377-.795-1.984c-.76-.797-1.613-.8-2.004-.847-2.798-.203-6.996-.203-6.996-.203h-.01s-4.197 0-6.996.202c-.39.046-1.242.05-2.003.846C2.395 6.623 2.2 8 2.2 8S2 9.62 2 11.24v1.517c0 1.618.2 3.237.2 3.237s.195 1.378.795 1.985c.76.797 1.76.77 2.205.855 1.6.153 6.8.2 6.8.2s4.203-.005 7-.208c.392-.047 1.244-.05 2.005-.847.6-.607.795-1.985.795-1.985s.2-1.618.2-3.237v-1.517C22 9.62 21.8 8 21.8 8zM9.935 14.595v-5.62l5.403 2.82-5.403 2.8z"></path>
+            </svg>
             FV Player
           </div>
-          <fieldset className="components-placeholder__fieldset">
-            <div className='fv-player-editor-wrapper fv-player-gutenberg'>
-              <legend className='components-placeholder__instructions'>{__('Select Media or Use FV Player Editor to see all the features.', 'fv-player-gutenberg')}</legend>
-              <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
+          <div className='components-placeholder__instructions'>{__('Select Media or Use FV Player Editor to see all the features.', 'fv-player-gutenberg')}</div>
+          <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />
+          <input
+            className="attachement-shortcode fv-player-editor-field"
+            type="hidden"
+            value=""
+          />
+          <div className="components-placeholder__fieldset">
+            <Button
+              className='is-primary fv-player-gutenberg-media'
+              name="fv-player-gutenberg-media"
+              onClick={() => {
+                setURLPopoverIsOpen(false);
+              }}
+            >Select Media
+            </Button>
+            <Button
+              className="fv-wordpress-flowplayer-button is-secondary"
+              onClick={() => {
+                setURLPopoverIsOpen(false);
+              }}
+            >FV Player Editor
+            </Button>
+            <Button
+              className="is-secondary"
+              onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
+            >Insert from URL
+            </Button>
+          </div>
+          {URLPopoverIsOpen && (
+            <URLPopover>
+              <form
+                className="block-editor-media-placeholder__url-input-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  // get input value
+                  const input = event.target.querySelector(
+                    ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
+                  );
+                  setAttributes({ src: input.value });
+                  setURLPopoverIsOpen(false);
+                }}
+              >
               <input
-                className="attachement-shortcode fv-player-editor-field"
-                type="hidden"
-                value=""
+                data-cy="url-input"
+                className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
+                type="url"
+                aria-label={__("URL", "fv-player-gutenberg/basic")}
+                placeholder={__(
+                  "Add video URL",
+                  "fv-player-gutenberg/basic"
+                )}
               />
               <Button
-                className='is-primary fv-player-gutenberg-media'
-                name="fv-player-gutenberg-media"
-                onClick={() => {
-                  setURLPopoverIsOpen(false);
-                }}
-              >Select Media
-              </Button>
-              <Button
-                className="fv-wordpress-flowplayer-button is-secondary"
-                onClick={() => {
-                  setURLPopoverIsOpen(false);
-                }}
-              >FV Player Editor
-              </Button>
-              <Button
-                className="is-secondary"
-                onClick={() => setURLPopoverIsOpen(!URLPopoverIsOpen)}
-              >Video URL
-              </Button>
-              {URLPopoverIsOpen && (
-                <URLPopover>
-                  <form
-                    className="block-editor-media-placeholder__url-input-form"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      // get input value
-                      const input = event.target.querySelector(
-                        ".block-editor-media-placeholder__url-input-field, .fv-player-gutenberg-url-input-field"
-                      );
-                      setAttributes({ src: input.value });
-                      setURLPopoverIsOpen(false);
-                    }}
-                  >
-                  <input
-                    data-cy="url-input"
-                    className="block-editor-media-placeholder__url-input-field fv-player-gutenberg-url-input"
-                    type="url"
-                    aria-label={__("URL", "fv-player-gutenberg/basic")}
-                    placeholder={__(
-                      "Add video URL",
-                      "fv-player-gutenberg/basic"
-                    )}
-                  />
-                  <Button
-                    data-cy="url-submit"
-                    className="block-editor-media-placeholder__url-input-submit-button"
-                    icon={"editor-break"}
-                    label={__("Submit", "fv-player-gutenberg/basic")}
-                    type="submit"
-                  />
-                  </form>
-                </URLPopover>
-              )}
-            </div>
-          </fieldset>
+                data-cy="url-submit"
+                className="block-editor-media-placeholder__url-input-submit-button"
+                icon={"editor-break"}
+                label={__("Submit", "fv-player-gutenberg/basic")}
+                type="submit"
+              />
+              </form>
+            </URLPopover>
+          )}
         </div>
       )
     }
@@ -286,33 +287,29 @@ registerBlockType( 'fv-player-gutenberg/basic', {
       <>
         <InspectorControls>
           <Panel>
-            <PanelBody title="Player Settings" initialOpen={true}>
-              <PanelRow>
-                <TextControl
-                  label="Source URL"
-                  className='fv-player-gutenberg-src'
-                  name="fv-player-gutenberg-media"
-                  value={src}
-                  onChange={(newSrc) => {
-                    setAttributes({ src: newSrc });
-                  }}
-                />
-              </PanelRow>
+            <PanelBody title="Video Settings" initialOpen={true}>
+              <TextControl
+                label="Source URL"
+                className='fv-player-gutenberg-src'
+                name="fv-player-gutenberg-media"
+                value={src}
+                onChange={(newSrc) => {
+                  setAttributes({ src: newSrc });
+                }}
+              />
               <Button
                 className={ ( src ? 'is-secondary' : 'is-primary' ) + ' fv-player-gutenberg-media' }
                 style={{ marginBottom: '10px' }}
-              >Select Media
+              >{ src ? 'Change Media' : 'Select Media' }
               </Button>
-              <PanelRow>
-                <TextControl
-                  label="Splash URL"
-                  className='fv-player-gutenberg-splash'
-                  value={splash}
-                  onChange={(newSplash) => {
-                    setAttributes({ splash: newSplash });
-                  }}
-                />
-              </PanelRow>
+              <TextControl
+                label="Splash URL"
+                className='fv-player-gutenberg-splash'
+                value={splash}
+                onChange={(newSplash) => {
+                  setAttributes({ splash: newSplash });
+                }}
+              />
               <MediaUploadCheck>
                 <MediaUpload
                   onSelect={(attachment) => {
@@ -331,47 +328,41 @@ registerBlockType( 'fv-player-gutenberg/basic', {
                       onClick={open}
                       className={ splash ? 'is-secondary' : 'is-primary' }
                       style={{ marginBottom: '10px' }}
-                    >Select Image
+                    >{ splash ? 'Change Image' : 'Select Image' }
                     </Button>
                   )}
                 />
               </MediaUploadCheck>
               {timeline_previews && (
-                <PanelRow>
-                  <TextControl
-                      label="Timeline Previews"
-                      className='fv-player-gutenberg-timeline-previews'
-                      value={timeline_previews}
-                      onChange={(newTimelinePreviews) => {
-                        setAttributes({ timeline_previews: newTimelinePreviews });
-                      }}
-                    />
-                </PanelRow>
+                <TextControl
+                    label="Timeline Previews"
+                    className='fv-player-gutenberg-timeline-previews'
+                    value={timeline_previews}
+                    onChange={(newTimelinePreviews) => {
+                      setAttributes({ timeline_previews: newTimelinePreviews });
+                    }}
+                  />
               )}
               {hls_hlskey && (
-                <PanelRow>
-                  <TextControl
-                      label="HLS Key"
-                      className='fv-player-gutenberg-hls-hlskey'
-                      value={hls_hlskey}
-                      onChange={(newHlsHlskey) => {
-                        setAttributes({ hls_hlskey: newHlsHlskey });
-                      }}
-                    />
-                </PanelRow>
-              )}
-              <PanelRow>
                 <TextControl
-                  label="Video Title"
-                  className='fv-player-gutenberg-title'
-                  value={title}
-                  onChange={(newTitle) => {
-                    setAttributes({ title: newTitle });
-                  }}
-                />
-              </PanelRow>
+                    label="HLS Key"
+                    className='fv-player-gutenberg-hls-hlskey'
+                    value={hls_hlskey}
+                    onChange={(newHlsHlskey) => {
+                      setAttributes({ hls_hlskey: newHlsHlskey });
+                    }}
+                  />
+              )}
+              <TextControl
+                label="Video Title"
+                className='fv-player-gutenberg-title'
+                value={title}
+                onChange={(newTitle) => {
+                  setAttributes({ title: newTitle });
+                }}
+              />
               <div className="fv-player-gutenberg">
-                <p>{__('Looking for advanced properties?', 'fv-player-gutenberg')}</p>
+                <p>{__('Looking for subtitles or player settings?', 'fv-player-gutenberg')}</p>
                 <Button className="fv-wordpress-flowplayer-button is-primary">Open in Editor</Button>
                 <input className='fv-player-gutenberg-splash-attachement-id' type="hidden" value={splash_attachment_id} />
                 <input className='fv-player-gutenberg-client-id' type="hidden" value={clientId} />

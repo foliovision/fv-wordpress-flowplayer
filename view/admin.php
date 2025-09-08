@@ -304,7 +304,7 @@ function fv_flowplayer_admin_default_options() {
                       array(
                         'horizontal'  => __(  'Horizontal', 'fv-player' ),
                         'tabs'        => __(  'Tabland', 'fv-player' ),
-                        'prevnext'    => __(  'Big arrows', 'fv-player' ),
+                        'prevnext'    => __(  'Big arrows (deprecated)', 'fv-player' ),
                         'vertical'    => __(  'Vertical', 'fv-player' ),
                         'slider'      => __(  'Scrollslider', 'fv-player' ),
                         'season'      => __(  'Episodes', 'fv-player' ),
@@ -314,6 +314,11 @@ function fv_flowplayer_admin_default_options() {
                         'version-two' => __(  'Sliderbar', 'fv-player' ),
                       ) as $style => $name
                     ) {
+
+                      // Do not offer "Big arrows" if it's not already saved.
+                      if ( 'prevnext' === $style && strcmp( $value, $style ) !== 0 ) {
+                        continue;
+                      }
                       ?>
                       <option value="<?php echo esc_attr( $style ); ?>"<?php if( $value === $style ) echo ' selected="selected"'; ?>><?php echo esc_html( $name ); ?></option>
                       <?php
@@ -903,7 +908,6 @@ function fv_flowplayer_admin_interface_options() {
 ?>
         <p><?php esc_html_e( 'Which features should be available in shortcode editor?', 'fv-player' ); ?></p>
         <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__( 'Ads', 'fv-player' ), array('interface', 'ads') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Autoplay', 'fv-player' ), array('interface', 'autoplay') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Controlbar', 'fv-player' ), array('interface', 'controlbar') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Embed', 'fv-player' ), array('interface', 'embed') ); ?>
@@ -917,7 +921,6 @@ function fv_flowplayer_admin_interface_options() {
           <?php $fv_fp->_get_checkbox(__( 'Splash Text', 'fv-player' ), array('interface', 'splash_text') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Sticky', 'fv-player' ), array('interface', 'sticky') ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Synopsis', 'fv-player' ), array('interface', 'synopsis') ); ?>
-          <?php $fv_fp->_get_checkbox(__( 'Video Actions', 'fv-player' ), array('interface', 'end_actions'), __( 'Enables end of playlist actions like Loop, Redirect, Show popup and Show splash screen', 'fv-player' ) ); ?>
 
           <?php do_action('fv_flowplayer_admin_interface_options_after'); ?>
 

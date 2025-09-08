@@ -246,7 +246,7 @@ jQuery( function($) {
           // Open DigitalOcean Spaces browser
           setTimeout(function() {
             if( !bunny_stream_browser_link.hasClass('active') ) {
-              bunny_stream_browser_link.click();
+              bunny_stream_browser_link.trigger( 'click' );
             }
           }, 500);      
         }
