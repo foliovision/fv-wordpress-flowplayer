@@ -184,7 +184,7 @@ $fv_fp = new flowplayer_frontend();
 if (
   wp_doing_cron() ||
   is_admin() ||
-  "POST" === sanitize_text_field( $_SERVER['REQUEST_METHOD'] ) && preg_match( '~/wp/v2/posts/\d+~', urldecode( sanitize_text_field( $_SERVER['REQUEST_URI'] ) ) )
+  ! empty( $_SERVER['REQUEST_METHOD'] ) && "POST" === sanitize_text_field( $_SERVER['REQUEST_METHOD'] ) && preg_match( '~/wp/v2/posts/\d+~', urldecode( sanitize_text_field( $_SERVER['REQUEST_URI'] ) ) )
 ) {
   include_once( dirname( __FILE__ ) . '/controller/backend.php' );
   include_once( dirname( __FILE__ ) . '/controller/editor.php' );
