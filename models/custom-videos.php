@@ -48,13 +48,23 @@ class FV_Player_Custom_Videos {
         global $FV_Player_Pro;
         if( isset($FV_Player_Pro) && $FV_Player_Pro ) {
           //  todo: there should be a better way than this
-          add_filter( 'fv_flowplayer_splash', array( $FV_Player_Pro, 'get__cached_splash' ) );
-          add_filter( 'fv_flowplayer_playlist_splash', array( $FV_Player_Pro, 'get__cached_splash' ), 10, 3 );
-          add_filter( 'fv_flowplayer_splash', array( $FV_Player_Pro, 'youtube_splash' ) );
-          add_filter( 'fv_flowplayer_playlist_splash', array( $FV_Player_Pro, 'youtube_splash' ), 10, 3 );
+          if ( method_exists( $FV_Player_Pro, 'get__cached_splash' ) ) {
+            add_filter( 'fv_flowplayer_splash', array( $FV_Player_Pro, 'get__cached_splash' ) );
+            add_filter( 'fv_flowplayer_playlist_splash', array( $FV_Player_Pro, 'get__cached_splash' ), 10, 3 );
+          }
 
-          add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
-          add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );  //  todo: not just for FV Player Pro
+          if ( method_exists( $FV_Player_Pro, 'youtube_splash' ) ) {
+            add_filter( 'fv_flowplayer_splash', array( $FV_Player_Pro, 'youtube_splash' ) );
+            add_filter( 'fv_flowplayer_playlist_splash', array( $FV_Player_Pro, 'youtube_splash' ), 10, 3 );
+          }
+
+          if ( method_exists( $FV_Player_Pro, 'styles' ) ) {
+            add_action('admin_footer', array( $FV_Player_Pro, 'styles' ) );
+          }
+
+          if ( method_exists( $FV_Player_Pro, 'scripts' ) ) {
+            add_action('admin_footer', array( $FV_Player_Pro, 'scripts' ) );  //  todo: not just for FV Player Pro
+          }
         }
 
         add_action('admin_footer','flowplayer_prepare_scripts');
