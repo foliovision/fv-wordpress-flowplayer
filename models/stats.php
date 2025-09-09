@@ -126,12 +126,6 @@ class FV_Player_Stats {
   function option( $conf ) {
     global $fv_fp, $blog_id;
     if( $this->used || $fv_fp->_get_option('js-everywhere') || $fv_fp->_get_option('video_stats_enable') ) { // we want to enable the tracking if it's used, if FV Player JS is enabled globally or if the tracking is enabled globally
-
-      // Do not track admins and editors.
-      if ( current_user_can( 'edit_posts' ) ) {
-        return $conf;
-      }
-
       $conf['fv_stats'] = array(
                                 'url' => flowplayer::get_plugin_url().'/controller/track.php',
                                 'blog_id' => $blog_id,
@@ -139,8 +133,8 @@ class FV_Player_Stats {
                                 'nonce'   => wp_create_nonce( 'fv_player_track' ),
                                );
       if( $fv_fp->_get_option('video_stats_enable') ) $conf['fv_stats']['enabled'] = true;
-
     }
+
     return $conf;
   }
 
@@ -151,7 +145,7 @@ class FV_Player_Stats {
   function options_html() {
     global $fv_fp;
     ?>
-    <p><?php esc_html_e( 'Track user activity on your site. Administrators and Editors are excluded. You can see the stats in the FV Player menu.', 'fv-player' ); ?></p>
+    <p><?php esc_html_e( 'Track user activity on your site. Users who can edit the post are excluded. You can see the stats in the FV Player menu.', 'fv-player' ); ?></p>
     <table class="form-table2">
       <?php
         $fv_fp->_get_checkbox(__( 'Enable', 'fv-player' ), 'video_stats_enable', __('Gives you a daily count of video plays.'), __('Uses a simple PHP script with a cron job to make sure these stats don\'t slow down your server too much.'));
@@ -168,6 +162,19 @@ class FV_Player_Stats {
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
+
+    // Do not track if user can edit the post
+    global $post;
+    if( !empty($post->ID ) ) {
+      if (
+        current_user_can( 'edit_others_posts' ) ||
+        ! empty( $post->post_author ) && absint( $post->post_author ) == get_current_user_id()
+        // TODO: Also check the FV Player player author
+      ) {
+        return $attributes;
+      }
+    }
+
     if( !empty($fv_fp->aCurArgs['stats']) ) {
       if( $fv_fp->aCurArgs['stats'] != 'no' ) {
         $this->used = true;
