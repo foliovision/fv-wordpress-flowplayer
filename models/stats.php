@@ -163,27 +163,25 @@ class FV_Player_Stats {
 
   function shortcode( $attributes, $media, $fv_fp ) {
 
-    // Do not track if user can edit the post
-    global $post;
-    if( !empty($post->ID ) ) {
-      if (
-        current_user_can( 'edit_others_posts' ) ||
-        ! empty( $post->post_author ) && absint( $post->post_author ) == get_current_user_id()
-        // TODO: Also check the FV Player player author
-      ) {
-        return $attributes;
-      }
-    }
+    if( ! empty( $fv_fp->aCurArgs['stats'] ) || $fv_fp->_get_option('video_stats_enable') ) {
+      global $post;
 
-    if( !empty($fv_fp->aCurArgs['stats']) ) {
-      if( $fv_fp->aCurArgs['stats'] != 'no' ) {
+      // Do not track if user can edit the post
+      if ( ! empty( $post->ID ) ) {
+        if (
+          current_user_can( 'edit_others_posts' ) ||
+          ! empty( $post->post_author ) && absint( $post->post_author ) == get_current_user_id()
+          // TODO: Also check the FV Player player author
+        ) {
+          return $attributes;
+        }
+      }
+
+      if ( ! empty( $fv_fp->aCurArgs['stats'] ) && $fv_fp->aCurArgs['stats'] != 'no' ) {
         $this->used = true;
       }
-      $attributes['data-fv_stats'] = $fv_fp->aCurArgs['stats'];
-    }
 
-    if( !empty($fv_fp->aCurArgs['stats']) || $fv_fp->_get_option('video_stats_enable') ) {
-      global $post;
+      $attributes['data-fv_stats'] = $fv_fp->aCurArgs['stats'];
 
       $player_id = 0; // 0 if shortcode
 
