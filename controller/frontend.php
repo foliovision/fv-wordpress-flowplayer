@@ -798,7 +798,7 @@ function fv_player_disable_scroll_autoplay_conf($conf) {
  */
 function fv_player_js_loader_mark_scripts( $tag, $handle ) {
   global $fv_fp;
-  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') || !$fv_fp->_get_option('js-optimize') || flowplayer::is_wp_rocket_setting( 'delay_js' ) ) {
+  if( is_admin() || isset($_GET['fv_player_loader_skip']) || $fv_fp->_get_option('js-everywhere') || !$fv_fp->_get_option('js-optimize') || flowplayer::is_wp_rocket_setting( 'delay_js' ) || did_action( 'fv_player_skip_js_optimize' ) ) {
     return $tag;
   }
 
