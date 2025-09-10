@@ -977,7 +977,9 @@ abstract class FV_Player_Video_Encoder {
       $body .= $result."\r\n";
     }
 
-    $body .= "\r\nManage video encoding jobs <a href='". admin_url( 'admin.php?page=' . $this->encoder_wp_url_slug ) ."'>here</a>";
+    if ( user_can( $author_id, 'manage_options' ) ) {
+      $body .= "\r\nManage video encoding jobs <a href='". admin_url( 'admin.php?page=' . $this->encoder_wp_url_slug ) ."'>here</a>";
+    }
 
     wp_mail( $to, $subject, $body, $headers );
   }
