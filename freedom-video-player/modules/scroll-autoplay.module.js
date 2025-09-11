@@ -6,7 +6,9 @@ if( typeof(flowplayer) !== 'undefined') {
   // Only autoplay if...
   if (
     // ...not in wp-admin, meaning in editor
-    ! document.body.classList.contains( 'wp-admin' )
+    ! document.body.classList.contains( 'wp-admin' ) &&
+    // ...not in Elementor editor
+    ! document.body.classList.contains( 'elementor-editor-active' )
   ) {
     freedomplayer(function(api, root) {
       fv_player_scroll_autoplay = true;
