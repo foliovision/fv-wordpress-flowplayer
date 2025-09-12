@@ -105,3 +105,18 @@ function fv_player_elementor_editor_localize_settings_replace( $data ) {
   return $data;
 }
 
+// If user has the FV Player Widget in their favorites, replace it with the new FV Player Elementor Widget.
+add_filter( 'get_user_option_elementor_editor_user_favorites', 'fv_player_elementor_editor_user_favorites' );
+
+function fv_player_elementor_editor_user_favorites( $favorites ) {
+  
+  if ( is_array( $favorites['widgets'] ) ) {
+    foreach ( $favorites['widgets'] as $key => $widget ) {
+      if ( 'wp-widget-widget_fvplayer' === $widget ) {
+        $favorites['widgets'][ $key ] = 'fv_player';
+      }
+    }
+  }
+
+  return $favorites;
+}
