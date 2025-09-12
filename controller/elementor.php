@@ -75,3 +75,33 @@ function fv_player_editor_elementor_widget_remove_settings( $data ) {
 
   return $data;
 }
+
+// Replace the old FV Player Widget with the new FV Player Elementor Widget in the Elementor editor.
+add_filter( 'elementor/editor/localize_settings', 'fv_player_elementor_editor_localize_settings' );
+
+function fv_player_elementor_editor_localize_settings( $settings ) {
+  $settings['initial_document'] = fv_player_elementor_editor_localize_settings_replace( $settings['initial_document'] );
+  return $settings;
+}
+
+function fv_player_elementor_editor_localize_settings_replace( $data ) {
+
+  if ( isset( $data['elements'] ) ) {
+    foreach( $data['elements'] as $k => $e ) {
+
+      // Handle nested elements
+      if ( is_array( $e['elements'] ) ) {
+        $data['elements'][ $k ] = fv_player_elementor_editor_localize_settings_replace( $e );
+      }
+
+      // Remove FV Player Elementor Widget settings (fields) which should not be stored
+      if ( ! empty( $e['widgetType'] ) && $e['widgetType'] === 'wp-widget-widget_fvplayer' ) {
+        $data['elements'][ $k ]['widgetType'] = 'fv_player';
+        $data['elements'][ $k ]['settings'] = array( 'shortcode' => $e['settings']['wp']['text'] );
+      }
+    }
+  }
+
+  return $data;
+}
+
