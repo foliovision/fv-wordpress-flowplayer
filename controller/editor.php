@@ -618,6 +618,7 @@ function fv_player_guttenberg_attributes_load() {
       }
 
       wp_send_json( array(
+        'shortcodeContent' => '[fvplayer id="' . $player_id . '"]',
         'src' => $video_src,
         'splash' => $video_splash,
         'title' => $video_title,

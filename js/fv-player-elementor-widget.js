@@ -4,19 +4,46 @@
 
 		elementor.hooks.addAction( 'panel/open_editor/widget/fv_player', function( panel, model, view ) {
 
-			let field_source_url = $( '.elementor-control-source_url [data-setting="url"]', panel.$el ),
-				field_splash_url = $( '.elementor-control-splash_url [data-setting="url"]', panel.$el ),
-				field_splash_attachment_id = $( '[data-setting="splash_attachment_id"]', panel.$el ),
-				field_title = $( '[data-setting="title"]', panel.$el ),
-				field_timeline_previews = $( '.elementor-control-timeline_previews [data-setting="url"]', panel.$el ),
-				field_hls_hlskey = $( '[data-setting="hls_key"]', panel.$el ),
-				field_shortcode = $( '[data-setting="shortcode"]', panel.$el ),
+			let field_source_url,
+				field_splash_url,
+				field_splash_attachment_id,
+				field_title,
+				field_timeline_previews,
+				field_show_timeline_previews,
+				field_hls_hlskey,
+				field_show_hls_hlskey,
+				field_shortcode,
+				// Which field is saved using what key in our Ajax?
+				ajax_field_map = [],
 				ajax_data = {},
 				last_ajax_data = false,
 				is_loading = false,
 				debounce_timer = null,
 				shortcode = model.get('settings').get('shortcode'),
 				player_id = get_player_id( shortcode );
+
+			function find_fields() {
+				field_source_url = $( '.elementor-control-source_url [data-setting="url"]', panel.$el );
+				field_splash_url = $( '.elementor-control-splash_url [data-setting="url"]', panel.$el );
+				field_splash_attachment_id = $( '[data-setting="splash_attachment_id"]', panel.$el );
+				field_title = $( '[data-setting="title"]', panel.$el );
+				field_timeline_previews = $( '.elementor-control-timeline_previews [data-setting="url"]', panel.$el );
+				field_show_timeline_previews = $( '[data-setting="_show_timeline_previews"]', panel.$el );
+				field_hls_hlskey = $( '[data-setting="hls_key"]', panel.$el );
+				field_show_hls_hlskey = $( '[data-setting="_show_hls_key"]', panel.$el );
+				field_shortcode = $( '[data-setting="shortcode"]', panel.$el );
+
+				ajax_field_map = [
+					{ field: field_source_url,           dataKey: 'src' },
+					{ field: field_splash_url,           dataKey: 'splash' },
+					{ field: field_splash_attachment_id, dataKey: 'splash_attachment_id' },
+					{ field: field_title,                dataKey: 'title' },
+					{ field: field_timeline_previews,    dataKey: 'timeline_previews' },
+					{ field: field_hls_hlskey,           dataKey: 'hls_hlskey' }
+				];
+			}
+
+			find_fields();
 
 			if ( player_id > 0 ) {
 				console.log('FV Player Elementor Widget data loading for player #' + player_id );
@@ -35,15 +62,7 @@
 					success: function(response) {
 						console.log('FV Player Elementor Widget data loaded', response);
 
-						field_source_url.val( response.src || '' ).trigger( 'input' );
-						field_splash_url.val( response.splash || '' ).trigger( 'input' );
-						field_title.val( response.title || '' ).trigger( 'input' );
-
-						$( '[data-setting="_show_timeline_previews"]', panel.$el ).val( response.timeline_previews !== '' ? 'yes' : '' ).trigger( 'input' );
-						field_timeline_previews.val( response.timeline_previews || '' ).trigger( 'input' );
-
-						$( '[data-setting="_show_hls_key"]', panel.$el ).val( response.hls_hlskey !== '' ? 'yes' : '' ).trigger( 'input' );
-						field_hls_hlskey.val( response.hls_hlskey || '' ).trigger( 'input' );
+						populate_fields( response );
 
 						is_loading = false;
 					},
@@ -53,6 +72,31 @@
 						is_loading = false;
 					}
 				});
+			}
+
+			// Map response to fields in DOM and to Elementor model
+			function populate_fields( resp ) {
+				const fields = [
+					{ el: field_shortcode,              val: resp.shortcodeContent,               model: 'shortcode' },
+					{ el: field_source_url,             val: resp.src,                            model: 'source_url', model_val: { 'url': resp.src } },
+					{ el: field_splash_url,             val: resp.splash,                         model: 'splash_url', model_val: { 'url': resp.splash } },
+					{ el: field_title,                  val: resp.title,                          model: 'title' },
+					{ el: field_splash_attachment_id,   val: resp.splash_attachment_id,           model: 'splash_attachment_id' },
+					{ el: field_timeline_previews,      val: resp.timeline_previews,              model: 'timeline_previews', model_val: { 'url': resp.timeline_previews } },
+					{ el: field_show_timeline_previews, val: resp.timeline_previews ? 'yes' : '', model: '_show_timeline_previews' },
+					{ el: field_hls_hlskey,             val: resp.hls_hlskey,                     model: 'hls_hlskey' },
+					{ el: field_show_hls_hlskey,        val: resp.hls_hlskey ? 'yes' : '',        model: '_show_hls_key' },
+				];
+
+				fields.forEach( function( item ) {
+					item.el.val( item.val );
+
+					// Without this Elementor would remove the field values when switching panel tabs.
+					model.get( 'settings' ).set( item.model, item.model_val || item.val );
+				} );
+
+				// Refresh the widget preview
+				field_shortcode.trigger( 'input' );
 			}
 
 			function get_player_id( shortcode) {
@@ -93,19 +137,7 @@
 
 							player_id = response.player_id;
 
-							const fields = [
-								{ field: field_shortcode,           value: response.shortcodeContent },
-								{ field: field_source_url,          value: response.src },
-								{ field: field_splash_url,          value: response.splash },
-								{ field: field_title,               value: response.title },
-								{ field: field_splash_attachment_id,value: response.splash_attachment_id },
-								{ field: field_timeline_previews,   value: response.timeline_previews },
-								{ field: field_hls_hlskey,          value: response.hls_hlskey }
-							];
-
-							fields.forEach( function( item ) {
-								item.field.val( item.value ).trigger( 'input' );
-							} );
+							populate_fields( response );
 
 						} else {
 							console.error('Error saving player attributes:', response);
@@ -124,47 +156,49 @@
 
 				clearTimeout(debounce_timer);
 				debounce_timer = setTimeout(function() {
+					ajax_field_map.forEach( function( mapping ) {
+						if ( mapping.field.val() ) {
+							ajax_data[ mapping.dataKey ] = mapping.field.val().trim();
+						} else {
+							console.log( 'FV Player Elementor Widget: Ajax save: Field not found', mapping.dataKey );
+						}
+					} );
+
 					save( ajax_data );
 				}, 500 );
 			}
 
-			field_source_url.on( 'input change', function() {
+			/**
+			 * Events to trigger save when fields are changed.
+			 * And to disable Elementor Ajax for the fields.
+			 */
+			function attach_listeners() {
+				ajax_field_map.forEach( function( mapping ) {
+					mapping.field.off( 'input change' ).on( 'input change', function() {
+						debounced_save();
 
-				console.log('src input');
+						// Avoid Elementor Ajax
+						return false;
+					});
+				});
+			}
 
-				ajax_data.src = field_source_url.val().trim();
-				debounced_save();
-			});
+			attach_listeners();
 
-			field_splash_url.on( 'input', function() {
-				ajax_data.splash = field_splash_url.val().trim();
-				debounced_save();
-			});
+			// Re-attach when the FV Player Elementor Widget preview finishes loading.
+			elementorFrontend.hooks.addAction( 'frontend/element_ready/fv_player.default', attach_listeners );
 
-			field_splash_attachment_id.on( 'input', function() {
-				ajax_data.splash_attachment_id = field_splash_attachment_id.val().trim();
-				debounced_save();
-			});
-
-			field_title.on( 'input', function() {
-				ajax_data.title = field_title.val().trim();
-				debounced_save();
-			});
-
-			field_timeline_previews.on( 'input', function() {
-				ajax_data.timeline_previews = field_timeline_previews.val().trim();
-				debounced_save();
-			});
-
-			field_hls_hlskey.on( 'input', function() {
-				ajax_data.hls_hlskey = field_hls_hlskey.val().trim();
-				debounced_save();
-			});
-
+			// Re-attach when the FV Player Elementor Widget tab is switched.
+			/**
+			 * Note: We tried to use the panel.content.currentView.ui.tabs click event, but it kept getting removed,
+			 * when changing tabs or even when changing field values in the tabs!
+			 */
+			$( panel.$el ).on( 'click', function() {
+				find_fields();
+				attach_listeners();
+			} );
 		} );
 
 	});
-
-
 
 })(jQuery);
