@@ -257,6 +257,13 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.26 - 2025-09-17 =
+
+* New Elementor Widget
+* Deprecating the "Big Arrows" playlist style. If you are already using this style, it will be kept for now.
+* Bugfix: Block editor spacing and alignment issues
+* Bugfix: Video Stats: Exclude Administrators and Editors: Also exclude Contributors and Authors if they can edit the post
+
 = 8.0.25 - 2025-08-30 =
 
 * Bugfix: Fix video saving due to missing caption field. The issue would occur if user did not upgrade from FV Player 7. Reverting PHP warnings fix from 8.0.24.
