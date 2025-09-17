@@ -836,7 +836,7 @@ jQuery( function($) {
     // Update the block attributes, if we are not updating a playlist video!
     var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
 
-    if( clientId && 0 === fv_player_editor.get_current_video_index() ) {
+    if( clientId && fv_player_editor.get_current_video_index() < 1 ) {
       var editor_splash = splash ? splash : '',
         editor_timeline_previews = extra && extra.timeline_previews ? extra.timeline_previews : '';
         editor_hlskey = extra && extra.hlskey ? extra.hlskey : '';
