@@ -457,22 +457,6 @@ class FV_Player_Elementor_Widget extends Elementor\Widget_Base {
 	}
 
 	/**
-	 * Enqueue styles for the widget.
-	 * TODO: Do we need this?
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 */
-	public function enqueue_widget_styles() {
-		wp_enqueue_style(
-			'fv-player-elementor-widget',
-			plugins_url( 'css/fv-player-elementor-widget.css', dirname( __FILE__ ) ),
-			array(),
-			filemtime( dirname( __FILE__ ) . '/../css/fv-player-elementor-widget.css' )
-		);
-	}
-
-	/**
 	 * Set script dependencies for the widget editing.
 	 *
 	 * @since 1.0.0
@@ -484,17 +468,5 @@ class FV_Player_Elementor_Widget extends Elementor\Widget_Base {
 		/** @disregard P1009 Undefined type */
 		/** @disregard P1014 Undefined property */
 		return Elementor\Plugin::$instance->preview->is_preview_mode() ? array( 'elementor-fv-player-widget' ) : array();
-	}
-
-	/**
-	 * Widget constructor.
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 */
-	public function __construct( $data = array(), $args = null ) {
-		parent::__construct( $data, $args );
-
-		add_action( 'elementor/editor/before_enqueue_styles', array( $this, 'enqueue_widget_styles' ) );
 	}
 }
