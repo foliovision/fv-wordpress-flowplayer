@@ -376,6 +376,7 @@ class FV_Player_S3_Upload {
       'video/flv',
       'video/mkv',
       'video/quicktime',
+      'video/x-matroska',
       'audio/mp3',
       'audio/wav',
       'audio/ogg',
