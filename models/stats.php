@@ -181,7 +181,9 @@ class FV_Player_Stats {
         $this->used = true;
       }
 
-      $attributes['data-fv_stats'] = $fv_fp->aCurArgs['stats'];
+      if( !empty($fv_fp->aCurArgs['stats']) ) {
+        $attributes['data-fv_stats'] = $fv_fp->aCurArgs['stats'];
+      }
 
       $player_id = 0; // 0 if shortcode
 
