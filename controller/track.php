@@ -296,7 +296,7 @@ Class FvPlayerTrackerWorker {
     $options = get_option('fvwpflowplayer');
     $guest_user_id = 0;
 
-    if( absint( $_REQUEST['user_id'] ) == 0 && !empty($options['video_stats_enable_guest']) ) { // guest user
+    if( absint( $_REQUEST['user_id'] ) == 0 && ! empty( $options['video_stats_enable_guest'] ) && 'true' === $options['video_stats_enable_guest']) { // guest user
 
       if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
         $guest_user_id = intval( $_COOKIE['fv_player_stats_guest_user_id'] );
