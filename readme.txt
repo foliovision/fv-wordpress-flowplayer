@@ -257,6 +257,14 @@ You can optionally edit your theme's JS to prevent the shrinking.
 
 == Changelog ==
 
+= 8.0.27 - 2025-09-19 =
+
+* Bugfix: Analytics: Looping a video should not count as invidual plays
+* Bugfix: Loop: Do not show the play/pause button animation
+* Bugfix: Stats: Looping a video should not count as invidual plays
+* Bugfix: Stats: Fix stats being disabled after changes in 8.0.26
+* Bugfix: Stats: Fix "Track Guest Users" being always on
+
 = 8.0.26 - 2025-09-17 =
 
 * New Elementor Widget
