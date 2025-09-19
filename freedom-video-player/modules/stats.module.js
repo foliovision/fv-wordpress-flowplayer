@@ -25,8 +25,16 @@
 
     api.on('ready finish', function(e,api) { // first play and replay
       api.on('progress', function( e, api, time ) {
-        // each video must really play for at least 1 second to be tracked and it should be only tracked once!
-        if( time < 1 || last_tracked == get_index() ) return;
+        
+        // Do not track "play" if
+        if(
+          // it's too early in the video
+          time < 1 ||
+          // if it's the end of the video, as the progress even might run if it's the "waiting" event for MPEG-DASH
+          api.video.duration && time > api.video.duration - 1 ||
+          // if the video was already trackedd
+          last_tracked == get_index()
+        ) return;
 
         last_tracked = get_index();
 
@@ -45,7 +53,10 @@
       is_first_progress = true;
 
     }).on('finish', function() {
-      last_tracked = -1; // reset on finish to allow tracking video again
+      // If the video is not set to loop...
+      if ( ! api.conf.loop ) {
+        last_tracked = -1; // reset to allow tracking video again
+      }
 
     }).on( 'progress', function( e, api, time ) {
 
