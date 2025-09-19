@@ -48,9 +48,11 @@ flowplayer( function(api,root) {
     }
 
   }).bind('finish ready ', function(e,api) {
-    //if( typeof(aFVPlayersSwitching[root.attr('id')]) != "undefined" ) { //  todo: problem that it won't work on video replay or playlist
-      //return;
-    //}
+    // Do not track video again if it's the finish event and the video is set to loop
+    if ( 'finish' === e.type && api.conf.loop ) {
+      return;
+    }
+
     for( var j in fv_ga_events ) {
       if( !fv_ga_events.hasOwnProperty(j) ) continue;
       root.removeData('fv_track_'+fv_ga_events[j]);
