@@ -969,7 +969,7 @@ class flowplayer_frontend extends flowplayer
     }
 
 
-    if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 ){
+    if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 && ! did_action( 'et_before_main_content' ) ) {
       $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
 
       // These script need to run right away to ensure nothing moves during the page loading
