@@ -1174,7 +1174,8 @@ function fv_flowplayer_admin_skin() {
 <style id="fv-style-preview"></style>
   <div class="flowplayer-wrapper">
     <?php
-    $fv_fp->admin_preview_player = flowplayer_content_handle( array(
+    global $fv_fp_admin_preview_player;
+    $fv_fp_admin_preview_player = flowplayer_content_handle( array(
       'src'       => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
       'splash'    => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
       'autoplay'  => 'false',
@@ -1187,12 +1188,12 @@ function fv_flowplayer_admin_skin() {
       'vast'      => 'skip',
       'checker'   => 'no'
       ) );
-    $fv_fp->admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp->admin_preview_player );
+    $fv_fp_admin_preview_player = explode( '<div class="fp-playlist-external', $fv_fp_admin_preview_player );
 
     // Video checker uses <noscript> and style="display: none" so we need to keep that
     add_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
     add_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
-    echo wp_kses_post( $fv_fp->admin_preview_player[0] );
+    echo wp_kses_post( $fv_fp_admin_preview_player[0] );
     remove_filter( 'wp_kses_allowed_html', 'fv_flowplayer_admin_skin_safe_tags', 10, 2 );
     remove_filter( 'safe_style_css', 'fv_flowplayer_admin_skin_safe_styles' );
     ?>
@@ -1513,8 +1514,9 @@ function fv_flowplayer_admin_skin_playlist() {
 ?>
   <div class="flowplayer-wrapper">
     <?php
-    if( isset($fv_fp->admin_preview_player[1]) ) {
-			echo '<div class="fp-playlist-external'.str_replace( 'https://i.vimeocdn.com/video/609485450_1280.jpg', 'https://i.vimeocdn.com/video/608654918_295x166.jpg', $fv_fp->admin_preview_player[1] );
+    global $fv_fp_admin_preview_player;
+    if ( isset( $fv_fp_admin_preview_player[1] ) ) {
+			echo '<div class="fp-playlist-external'.str_replace( 'https://i.vimeocdn.com/video/609485450_1280.jpg', 'https://i.vimeocdn.com/video/608654918_295x166.jpg', $fv_fp_admin_preview_player[1] );
       esc_html_e( 'Hint: you can click the thumbnails to switch videos in the above player. This preview uses the horizontal playlist style.', 'fv-player' );
     }
     ?>
