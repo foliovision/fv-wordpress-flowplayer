@@ -464,6 +464,14 @@ CREATE TABLE " . self::$db_table_name . " (
             if (!$first_done) {
               // fill-in our internal variables
               foreach ( $db_record as $key => $value ) {
+                // Do not set the caption if it's still in DB table.
+                if ( 'caption' === $key ) {
+                  // Use it as the title if there is none.
+                  if ( empty( $db_record->title ) ) {
+                    $db_record->title = $value;
+                  }
+                  continue;
+                }
                 $this->$key = FV_Player_Db::sanitize( $value );
               }
 
