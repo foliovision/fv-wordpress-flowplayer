@@ -109,8 +109,8 @@ function fv_player_elementor_editor_localize_settings_replace( $data ) {
 add_filter( 'get_user_option_elementor_editor_user_favorites', 'fv_player_elementor_editor_user_favorites' );
 
 function fv_player_elementor_editor_user_favorites( $favorites ) {
-  
-  if ( is_array( $favorites['widgets'] ) ) {
+
+  if ( ! empty( $favorites['widgets'] ) && is_array( $favorites['widgets'] ) ) {
     foreach ( $favorites['widgets'] as $key => $widget ) {
       if ( 'wp-widget-widget_fvplayer' === $widget ) {
         $favorites['widgets'][ $key ] = 'fv_player';
