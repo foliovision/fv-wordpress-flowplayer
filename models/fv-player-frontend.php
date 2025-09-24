@@ -386,7 +386,7 @@ class flowplayer_frontend extends flowplayer
      */
     $sticky = null;  //  todo: should be changed into a property
 
-    if( $this->_get_option('autoplay_preload') == 'sticky' && $this->aCurArgs['sticky'] != 'false'  ) {
+    if( $this->_get_option('autoplay_preload') == 'sticky' && ( empty( $this->aCurArgs['sticky'] ) || $this->aCurArgs['sticky'] != 'false' ) ) {
       $sticky = true;
     }
 
@@ -394,7 +394,7 @@ class flowplayer_frontend extends flowplayer
       $sticky = true;
     }
 
-    if ( 'off' !== $this->_get_option('sticky_video') && 'false' === $this->aCurArgs['sticky'] ) {
+    if ( 'off' !== $this->_get_option('sticky_video') && ! empty( $this->aCurArgs['sticky'] ) && 'false' === $this->aCurArgs['sticky'] ) {
       $sticky = false;
     }
 
