@@ -923,7 +923,7 @@ CREATE TABLE " . self::$db_table_name . " (
     // video data already loaded and present, return them
     if ($this->video_objects && $this->video_objects !== -1) {
       return $this->video_objects;
-    } else if ($this->video_objects === null) {
+    } else if ($this->video_objects === null && ! empty( $this->videos ) ) {
       // video objects not loaded yet - load them now
       $videos_in_order = explode(',', trim($this->videos, ','));
       $videos = new FV_Player_Db_Video($videos_in_order, array(), self::$DB_Instance);
