@@ -108,6 +108,15 @@ S3MultiUpload.prototype.validateFile = function() {
             return xhr;
         }
     }).done(function(data) {
+        if ( data.file_analysis ) {
+            // Set Betube theme video submission fields
+            if ( data.file_analysis.duration ) {
+                jQuery( 'body.wp-theme-betube [name=post_time]' ).val( data.file_analysis.duration );
+            }
+            if ( data.file_analysis.height ) {
+                jQuery( 'body.wp-theme-betube [name=post_quality]' ).val( data.file_analysis.height + 'p' );
+            }
+        }
 
         if (data.error) {
             self.onValidationError(data.error);
