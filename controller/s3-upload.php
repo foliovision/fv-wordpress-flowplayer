@@ -407,6 +407,8 @@ class FV_Player_S3_Upload {
         'mime_type'   => $detected_mime_type,
         'filesize'    => $file_size,
         'resolution'  => $video_width . 'x' . $video_height,
+        'height'      => $video_height,
+        'duration'    => flowplayer::format_hms( $ThisFileInfo['playtime_seconds'] ),
       )
     ));
   }
