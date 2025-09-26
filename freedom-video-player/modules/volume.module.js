@@ -36,9 +36,24 @@ flowplayer(function(api, root) {
         var mute_notice = jQuery('<div class="fp-message fp-message-muted"><span class="fp-icon fp-volumebtn-notice"></span> '+fv_flowplayer_translations.click_to_unmute+'</div>');
 
         // We need touchstart for mobile, otherwise click would only show te UI
-        freedomplayer.bean.on( mute_notice[0], 'click touchstart', function() {
+        freedomplayer.bean.on( mute_notice[0], 'click touchstart', function( e ) {
+          // Avoid pausing the video
+          e.preventDefault();
+          e.stopPropagation();
+
           api.mute(false);
           api.volume(1);
+
+          // Ugly way of getting rid of the mobile hover controls when the notice is clicked
+          // TODO: Find a better way to do this
+          var count = 0
+          var interval = setInterval( function() {
+            root.removeClass('is-mouseover');
+            count++;
+            if( count > 10 ) {
+              clearInterval( interval );
+            }
+          }, 10 );
         });
 
         root.find('.fp-ui').append( mute_notice );
