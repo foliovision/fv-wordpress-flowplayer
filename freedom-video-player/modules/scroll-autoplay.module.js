@@ -15,9 +15,9 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       api.on( 'pause', function( e, api ) {
         if ( api.manual_pause ) {
           // TODO: Do we want this at all? If so, we must fix the status for the preloaded video.
-          console.log( 'Scroll autoplay: User paused video, disabling scroll autoplay' );
+          // console.log( 'Scroll autoplay: User paused video, disabling scroll autoplay' );
 
-          jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
+          // jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
         }
       });
     } );
