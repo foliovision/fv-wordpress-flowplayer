@@ -332,13 +332,17 @@ class FV_Player_S3_Upload {
 
       if ( $minimal_width && $minimal_height ) {
 
-        // For 4:3 aspect ratio
-        $minimal_width_4_3 = $minimal_height * 4 / 3;
+        // TODO: Limit vertical videos to 9:16 with minimum width of 720px
+        // TODO: New error message: "Maximum vertical video aspect ratio is 9:16"
+        // TODO: New error message: "Maximum widescreen video aspect ratio is Cinemascope 2.55:1"
+
+        // For 1:3 aspect ratio
+        $minimal_width_4_3 = $minimal_height;
         $minimal_height_4_3 = $minimal_height;
 
-        // For 21:9 aspect ratio
+        // For 2.55:1 aspect ratio
         $minimal_width_21_9 = $minimal_width;
-        $minimal_height_21_9 = $minimal_width * 9 / 21;
+        $minimal_height_21_9 = $minimal_width * 1 / 2.55;
 
         $video_width    = absint( $ThisFileInfo['video']['resolution_x'] );
         $video_height   = absint( $ThisFileInfo['video']['resolution_y'] );
@@ -346,8 +350,15 @@ class FV_Player_S3_Upload {
         // Check for vertical video
         // Alternatively we could parse degrees from $ThisFileInfo['video']['rotate'], but is that commonly used for vertical videos?
         if ( $video_width < $video_height ) {
-          $video_width  = absint( $ThisFileInfo['video']['resolution_y'] );
-          $video_height = absint( $ThisFileInfo['video']['resolution_x'] );
+
+          // If vertical video is 1080p or higher, we accept it
+          if ( $video_height >= 1080 && $video_width >= 540 ) {
+            $minimal_width = $video_width;
+
+          } else {
+            $video_width  = intval( $ThisFileInfo['video']['resolution_y'] );
+            $video_height = intval( $ThisFileInfo['video']['resolution_x'] );
+          }
         }
 
         if (
@@ -358,7 +369,7 @@ class FV_Player_S3_Upload {
           // Video dimensions are good for one of the aspect ratios
 
         } else {
-          wp_send_json( array( 'error' => 'The video resolution is too low. Please create a ' . $minimal_video_resolution . ' video.' ) );
+          wp_send_json( array( 'error' => "I'm sorry, your video is only " . absint( $ThisFileInfo['video']['resolution_x'] ) . "x" . absint( $ThisFileInfo['video']['resolution_y'] ) . ". Please re-render it as " . $minimal_video_resolution . " or higher and upload again." ) );
           exit;
         }
 
