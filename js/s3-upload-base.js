@@ -20,6 +20,9 @@ function fv_flowplayer_init_s3_uploader( options ) {
     upload_success_message = options.upload_success_message,
     upload_success_callback = options.upload_success_callback,
     upload_error_callback = ( typeof( options.upload_error_callback ) == 'function' ? options.upload_error_callback : function() {} );
+    min_duration = options.min_duration,
+    max_duration = options.max_duration,
+    vertical_only = options.vertical_only;
 
   function debug_log( ...args ) {
     console.log( 'FV Player S3 Uploader', ...args );
@@ -70,7 +73,52 @@ function fv_flowplayer_init_s3_uploader( options ) {
     $uploadButton.add( $cancelButton ).toggle();
     $progressDiv.text('');
 
-    s3upload = new S3MultiUpload( file );
+    // Create a temporary URL for the file
+    const videoUrl = URL.createObjectURL(file);
+
+    // Create a video element
+    const video = document.createElement('video');
+    video.src = videoUrl;
+
+    // Wait for metadata to load
+    video.addEventListener('loadedmetadata', () => {
+      console.log('Duration:', video.duration);
+      console.log('Width:', video.videoWidth);
+      console.log('Height:', video.videoHeight);
+      
+      URL.revokeObjectURL(videoUrl);
+
+      if ( video.duration ) {
+        if ( min_duration && min_duration.value && video.duration < min_duration.value ) {
+          s3upload.onValidationError( min_duration.msg );
+          return;
+        } else if ( max_duration && max_duration.value && video.duration > max_duration.value ) {
+          s3upload.onValidationError( max_duration.msg );
+          return;
+        }
+      }
+
+      if ( video.videoWidth && video.videoHeight ) {
+        if ( vertical_only && vertical_only.value && video.videoWidth > video.videoHeight ) {
+          s3upload.onValidationError( vertical_only.msg );
+          return;
+        }
+      }
+
+      upload_start_callback();
+      s3upload.start();
+    });
+
+    video.addEventListener('error', () => {
+      console.log('Error loading video');
+
+      URL.revokeObjectURL(videoUrl);
+
+      upload_start_callback();
+      s3upload.start();
+    });
+
+    s3upload = new S3MultiUpload( file, options );
     s3upload.onServerError = function(command, jqXHR, textStatus, errorThrown) {
       set_upload_status(false);
       window.removeEventListener('beforeunload', closeWarning);
@@ -130,9 +178,6 @@ function fv_flowplayer_init_s3_uploader( options ) {
     };
 
     $progressDiv.text("Preparing upload...");
-
-    upload_start_callback();
-    s3upload.start();
   }
 
   function getReadableFileSizeString(fileSizeInBytes) {
