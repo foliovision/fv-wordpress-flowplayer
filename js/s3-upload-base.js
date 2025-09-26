@@ -172,7 +172,19 @@ function fv_flowplayer_init_s3_uploader( options ) {
     s3upload.onValidationError = function( error ) {
       $uploadButton.add( $cancelButton ).toggle();
       recreate_file_input( file_select_input_name, file_select_input_class );
-      $progressDiv.text( error );
+
+      if ( options.error_container && options.error_container.length ) {
+        options.error_container.html( '<p>' + error + '</p>' ).show();
+        options.error_container.one( 'click', function() {
+          options.error_container.hide();
+        });
+
+        $progressDiv.text( '' );
+
+      } else {
+        $progressDiv.text( error );
+      }
+
       upload_error_callback();
       $progressBarDiv.hide();
     };
