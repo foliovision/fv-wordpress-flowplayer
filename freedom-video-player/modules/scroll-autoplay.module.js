@@ -1,7 +1,4 @@
-if( typeof(flowplayer) !== 'undefined') {
-  var fv_autoplay_type = fv_flowplayer_conf.autoplay_preload,
-    fv_player_scroll_autoplay = false,
-    fv_player_scroll_autoplay_last_winner = -1;
+if ( typeof( flowplayer ) !== 'undefined' ) {
 
   // Only autoplay if...
   if (
@@ -10,121 +7,186 @@ if( typeof(flowplayer) !== 'undefined') {
     // ...not in Elementor editor
     ! document.body.classList.contains( 'elementor-editor-active' )
   ) {
-    freedomplayer(function(api, root) {
-      fv_player_scroll_autoplay = true;
+    freedomplayer( function(api, root) {
 
-      api.on('pause', function(e,api) {
-        if(api.manual_pause) {
-          console.log('Scroll autoplay: Manual pause for ' + jQuery(root).attr('id'));
-          api.non_viewport_pause = true;
+      // Trigger the scroll handler to load the first video
+      debouncedScrollHandler();
+
+      api.on( 'pause', function( e, api ) {
+        if ( api.manual_pause ) {
+          // TODO: Do we want this at all? If so, we must fix the status for the preloaded video.
+          console.log( 'Scroll autoplay: User paused video, disabling scroll autoplay' );
+
+          jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
         }
       });
-    })
-
-    jQuery(window).on( 'scroll', function() {
-      fv_player_scroll_autoplay = true;
     } );
 
-    var fv_player_scroll_int = setInterval( function() {
-      if( !fv_player_scroll_autoplay ) {
-        return;
+    /**
+     * Look for FV Player scroll container if you want to for example use autoplay in a snap scroll container.
+     * A snap scroll container would not trigger window scroll event, we need to listen on it directly.
+     */
+    var scroll_container = jQuery( '.fv-player-scroll-container' ),
+      is_scroll_container = scroll_container.length > 0;
+
+    /**
+     * Initialize the variables
+     */
+    var autoplay_type = fv_flowplayer_conf.autoplay_preload
+
+    var current_winner = -1,
+      previous_winner = -1;
+      past_winner = -1;
+
+    /**
+     * Debounce the scroll handler
+     */
+    function debounce( func, wait ) {
+      let timeout;
+      return function executedFunction( ...args ) {
+        const later = function() {
+          clearTimeout( timeout );
+          func( ...args );
+        }
+        clearTimeout( timeout );
+        timeout = setTimeout( later, wait );
+      };
+    }
+
+    var debouncedScrollHandler = debounce( handleScroll, 100 );
+
+    if ( is_scroll_container ) {
+      players = scroll_container.find( '.freedomplayer:not(.is-disabled)' );
+      scroll_container.on( 'scroll', debouncedScrollHandler );
+    } else {
+      players = jQuery( '.freedomplayer:not(.is-disabled)' );
+      jQuery( window ).on( 'scroll', debouncedScrollHandler );
+    }
+
+    // Scroll handler function
+    function handleScroll() {
+
+      /**
+       * This make sure the preload_api calls below work on iOS. The reason is that Freedom Video Player only allows
+       * the video preload if it's in viewport and it checks again on the scroll event.
+       *
+       * TODO: Add a way of preloading the video even if it's not in viewport.
+       */
+      if ( is_scroll_container ) {
+        freedomplayer.bean.fire( document, 'scroll' );
       }
 
-      var i = 0,
-        window_height = (window.innerHeight || document.documentElement.clientHeight );
+      let height = is_scroll_container ? jQuery( scroll_container ).height() : jQuery( window ).height();
 
-      var players = jQuery('.flowplayer:not(.is-disabled)'),
-        winner = -1;
+      players.each( function( k, v ) {
+        var root = jQuery( v );
 
-      players.each( function(k,v) {
-        var root = jQuery(this);
-
-        // Autoplay disabled for he player
+        // Autoplay disabled for the player
         if( typeof root.data('fvautoplay') != 'undefined' && root.data('fvautoplay') == -1 ) {
           return;
         }
 
-        var api = root.data('flowplayer'),
-          player = root.find('.fp-player'),
-          player_autoplay = typeof root.data('fvautoplay') != 'undefined';
+        // FV Player in wp-admin = in editor - should not autoplay
+        if( jQuery('body').hasClass('wp-admin') ) return;
+
+        var api = root.data( 'freedomplayer' ),
+          player = root.find( '.fp-player' ),
+          player_autoplay = typeof root.data( 'fvautoplay' ) != 'undefined';
 
         // No ready yet
         if ( !player.length ) {
           return;
         }
 
-        if ( api.non_viewport_pause ) {
+        // disabling for YouTube on iOS
+        if( freedomplayer.support.iOS && api.conf.clip.sources[0].type == 'video/youtube' ) {
           return;
         }
 
-        if( fv_autoplay_type == 'viewport' || fv_autoplay_type == 'sticky' || player_autoplay ) { // play video when on viewport or sticky or player enabled autoplay
-          var rect = player[0].getBoundingClientRect(); // watch .fp-player because root can ve outside viewport when stickied
-
-          // prevent play arrow and control bar from appearing for a fraction of second for an autoplayed video
-          // var play_icon = root.find('.fp-play').addClass('invisible'),
-          // control_bar = root.find('.fp-controls').addClass('invisible');
-
-          // api.one('progress', function() {
-          //   play_icon.removeClass('invisible');
-          //   control_bar.removeClass('invisible');
-          // });
-
-          if(
+        // play video when on viewport or sticky or player enabled autoplay
+        if( autoplay_type == 'viewport' || autoplay_type == 'sticky' || player_autoplay ) {
+          var rect = v.getBoundingClientRect();
+          if (
             // The player is not too far down, at least 1/4 of the player is visible
-            window_height - rect.top > player.height() / 4 &&
+            height - rect.top > player.height() / 2 &&
             // ...and the player is not too far up either, so that less than bottom 1/4 can be seen
             rect.bottom > player.height() / 4
           ) {
-            // disabling for YouTube on iOS
-            if( flowplayer.support.iOS && api.conf.clip.sources[0].type == 'video/youtube' ) {
-              return;
-            }
+            current_winner = k;
 
-            winner = k;
+            if ( past_winner === k ) {
+              past_winner = -1;
+            }
           }
         }
       });
 
-      // Pause the previously playing video
-      if ( fv_player_scroll_autoplay_last_winner != winner ) {
-        var root = players.eq( fv_player_scroll_autoplay_last_winner ),
-          api = root.data('flowplayer');
-
-        if( api && api.playing ) {
-          console.log('Scroll autoplay: Player not in viewport, pausing ' + root.attr('id'));
-          api.pause();
-        }        
+      // No scroll happened
+      if ( current_winner === previous_winner ) {
+        return;
       }
 
-      // Now play the winner
-      if ( winner > -1 && fv_player_scroll_autoplay_last_winner != winner ) {
-        var root = players.eq( winner ),
-          api = root.data('flowplayer');
+      console.log( 'STATUS current_winner: ' + current_winner + ' previous_winner: ' + previous_winner + ' past_winner: ' + past_winner );
 
-        if( !api ) {
-          console.log('Scroll autoplay: Play ' + root.attr('id'));
-          i++;
-          fv_player_load( root );
+      // Unload the video that went out of the viewport earlier
+      if ( past_winner > -1 ) {
+        let past_api = players.eq( past_winner ).data( 'freedomplayer' );
+        console.log( 'PAST unload', past_winner );
 
-          api.autoplayed = true;
+        // Bring back the splash screen argument to make sure the unload actually removes the video
+        past_api.conf.splash = true;
+        past_api.unload();
+      }
 
-        } else if( api.ready ) {
-          console.log('Scroll autoplay: Resume ' + root.attr('id'));
-          i++;
+      // Pause the video that just went out of viewport
+      if ( previous_winner > -1 ) {
+        let previous_api = players.eq( previous_winner ).data( 'freedomplayer' );
+        if ( previous_api.playing ) {
+          console.log( 'PREVIOUS pause', previous_winner );
+
+          previous_api.pause();
+        }
+      }
+
+      // Play the video in the viewport
+      if ( current_winner > - 1 ) {
+        let api = players.eq( current_winner ).data( 'freedomplayer' );
+        if ( api.ready ) {
+          console.log( 'WINNER resume', current_winner );
+
           api.resume();
 
-        } else if( !api.loading && !api.playing && !api.error ) {
-          console.log('Scroll autoplay: Load ' + root.attr('id'));
-          i++;
-          api.load();
+        } else if ( api.loading ) {
+          console.log( 'WINNER wait', current_winner );
 
-          api.autoplayed = true;
+          api.one( 'ready', function() {
+            api.resume();
+          } );
+
+        } else {
+          console.log( 'WINNER load', current_winner );
+
+          api.load();
         }
 
-        fv_player_scroll_autoplay_last_winner = winner;
+        let preload_api = players.eq( current_winner + 1 ).data( 'freedomplayer' );
+        if ( preload_api && ! preload_api.ready ) {
+          console.log( 'PRELOAD load', current_winner + 1 );
+
+          // Preload the video, setting splash to false will ensure it won't play right away
+          preload_api.conf.splash = false;
+          preload_api.load();
+        }
       }
 
-      fv_player_scroll_autoplay = false;
-    }, 200 );
+      // Keep track of the previous and past winners
+      if ( past_winner !== previous_winner ) {
+        past_winner = previous_winner;
+      }
+
+      if ( current_winner !== previous_winner ) {
+        previous_winner = current_winner;
+      }
+    }
   }
 }
