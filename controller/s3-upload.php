@@ -414,12 +414,14 @@ class FV_Player_S3_Upload {
       'validated_file_info'         => $file_info,
       'detected_mime_type'          => $detected_mime_type,
       'file_analysis'               => array(
-        'fileformat'  => isset( $ThisFileInfo['fileformat'] ) ? $ThisFileInfo['fileformat'] : 'unknown',
-        'mime_type'   => $detected_mime_type,
-        'filesize'    => $file_size,
-        'resolution'  => $video_width . 'x' . $video_height,
-        'height'      => $video_height,
-        'duration'    => flowplayer::format_hms( $ThisFileInfo['playtime_seconds'] ),
+        'fileformat'   => isset( $ThisFileInfo['fileformat'] ) ? $ThisFileInfo['fileformat'] : 'unknown',
+        'mime_type'    => $detected_mime_type,
+        'filesize'     => $file_size,
+        'resolution'   => $video_width . 'x' . $video_height,
+        'height'       => $video_height,
+        'width'        => $video_width,
+        'duration'     => $ThisFileInfo['playtime_seconds'],
+        'duration_hms' => flowplayer::format_hms( $ThisFileInfo['playtime_seconds'] ),
       )
     ));
   }
