@@ -8,9 +8,12 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     ! document.body.classList.contains( 'elementor-editor-active' )
   ) {
     freedomplayer( function(api, root) {
-
-      // Trigger the scroll handler to load the first video
-      debouncedScrollHandler();
+      
+      // Allows other plugins to wait with the autoplay until certain conditions are met, such as the age gate is passed
+      if ( ! window.fv_player_autoplay_wait ) {
+        // Trigger the scroll handler to load the first video
+        debouncedScrollHandler();
+      }
 
       api.on( 'pause', function( e, api ) {
         if ( api.manual_pause ) {
