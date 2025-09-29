@@ -1145,7 +1145,7 @@
 .freedomplayer.fp-edgy.fp-outlined .fp-volumebtn-notice:before, .freedomplayer.fp-edgy.fp-minimal .fp-volumebtn-notice:before { content: "\e30d"; }
 
 .freedomplayer.no-controlbar.is-muted .fp-message-muted,
-.freedomplayer.no-controlbar.is-muted .fp-controls,
-.freedomplayer.no-controlbar.is-muted .fp-controls .fp-volume {
+.freedomplayer.no-controlbar.is-muted:not(.has-fp-message-muted) .fp-controls,
+.freedomplayer.no-controlbar.is-muted:not(.has-fp-message-muted) .fp-controls .fp-volume {
 	opacity: 1;
 }
