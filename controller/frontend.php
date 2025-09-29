@@ -107,7 +107,6 @@ function fv_flowplayer_get_js_translations() {
     'duration_n_seconds' =>  _n( '%s second', '%s seconds', 5 ),
     'and' => sprintf( __( '%1$s and %2$s' ), '', '' ),
     'chrome_extension_disable_html5_autoplay' => __('It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos', 'fv-player' ),
-    'click_to_unmute' => __('Click to unmute', 'fv-player' ),
     'audio_button' => __('AUD', 'fv-player' ),
     'audio_menu' => __('Audio', 'fv-player' ),
     'iphone_swipe_up_location_bar' => __('To enjoy fullscreen swipe up to hide location bar.', 'fv-player' ),
@@ -536,6 +535,10 @@ function flowplayer_prepare_scripts() {
     if ( did_action( 'admin_head-fv-player_page_fvplayer' ) ) {
       $aConf['skin_preview']       = true;
     }
+
+    $aConf['msg'] = array(
+      'click_to_unmute' => __('Click to unmute', 'fv-player' ),
+    );
 
     $aConf = apply_filters( 'fv_flowplayer_conf', $aConf );
 
