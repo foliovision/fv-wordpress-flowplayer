@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2025-09-26 14:24+0000\n"
+"POT-Creation-Date: 2025-09-29 13:53+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -384,26 +384,22 @@ msgid "It appears you are using the Disable HTML5 Autoplay Chrome extension, dis
 msgstr ""
 
 #: controller/frontend.php:110
-msgid "Click to unmute"
-msgstr ""
-
-#: controller/frontend.php:111
 msgid "AUD"
 msgstr ""
 
-#: controller/frontend.php:112
+#: controller/frontend.php:111
 msgid "Audio"
 msgstr ""
 
-#: controller/frontend.php:113
+#: controller/frontend.php:112
 msgid "To enjoy fullscreen swipe up to hide location bar."
 msgstr ""
 
-#: controller/frontend.php:114
+#: controller/frontend.php:113
 msgid "Invalid Youtube video ID."
 msgstr ""
 
-#: controller/frontend.php:115
+#: controller/frontend.php:114
 msgid ""
 "Admin note:\n"
 "\n"
@@ -416,16 +412,20 @@ msgid ""
 "This note only shows to logged in Administrators and Editors for security reasons, other users are redirected without any popup or confirmation."
 msgstr ""
 
-#: controller/frontend.php:116
+#: controller/frontend.php:115
 msgid "Video loaded, click to play."
 msgstr ""
 
-#: controller/frontend.php:117
+#: controller/frontend.php:116
 msgid "Skipping is not allowed."
 msgstr ""
 
-#: controller/frontend.php:118
+#: controller/frontend.php:117
 msgid "Please watch the video carefully."
+msgstr ""
+
+#: controller/frontend.php:540
+msgid "Click to unmute"
 msgstr ""
 
 #: controller/settings.php:209
