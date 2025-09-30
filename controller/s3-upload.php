@@ -263,8 +263,14 @@ class FV_Player_S3_Upload {
       require( ABSPATH . WPINC . '/ID3/getid3.php' );
     }
     $getID3 = new getID3;
-    
-    // Analyze the uploaded file
+
+    /**
+     * Analyze the uploaded file.
+     *
+     * Note: This is not 100% reliable as not all the uploaded files will have moov meta data
+     * at the start of the file (in first 5MB). That's why we also run the check in browser,
+     * see s3-upload-base.js file where is runs document.createElement('video').
+     */
     $ThisFileInfo = $getID3->analyze($uploaded_file['tmp_name']);
     
     error_log('validate_file_upload: getID3 analysis: ' . print_r($ThisFileInfo, true));

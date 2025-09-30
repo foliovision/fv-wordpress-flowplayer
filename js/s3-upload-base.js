@@ -73,6 +73,14 @@ function fv_flowplayer_init_s3_uploader( options ) {
     $uploadButton.add( $cancelButton ).toggle();
     $progressDiv.text('');
 
+    /**
+     * Check video properties prior to video upload.
+     * This is not 100% reliable, but if the browser supports the video type,
+     * it will get proper duration, width and height. It even supports the video
+     * rotation using "displaymatrix: rotation of -90.00 degrees" as reported by
+     * ffprobe. 
+     */
+
     // Create a temporary URL for the file
     const videoUrl = URL.createObjectURL(file);
 
@@ -82,10 +90,6 @@ function fv_flowplayer_init_s3_uploader( options ) {
 
     // Wait for metadata to load
     video.addEventListener('loadedmetadata', () => {
-      console.log('Duration:', video.duration);
-      console.log('Width:', video.videoWidth);
-      console.log('Height:', video.videoHeight);
-      
       URL.revokeObjectURL(videoUrl);
 
       if ( video.duration ) {
@@ -110,8 +114,6 @@ function fv_flowplayer_init_s3_uploader( options ) {
     });
 
     video.addEventListener('error', () => {
-      console.log('Error loading video');
-
       URL.revokeObjectURL(videoUrl);
 
       upload_start_callback();
