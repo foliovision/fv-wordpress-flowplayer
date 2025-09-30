@@ -2239,9 +2239,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $seconds = round( $seconds );
 
     if( $seconds < 3600 ) {
-      return gmdate( "i:s", $seconds );
+      return gmdate( "i:s", round( $seconds ) );
     } else {
-      return gmdate( "H:i:s", $seconds );
+      return gmdate( "H:i:s", round( $seconds ) );
     }
   }
 
