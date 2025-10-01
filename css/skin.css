@@ -451,6 +451,8 @@
     top: 0; }
   .freedomplayer .fp-waiting {
     display: none; }
+  .freedomplayer .fp-waiting, .freedomplayer .fp-play, .freedomplayer .fp-pause {
+    position: static; }
   .freedomplayer .fp-ui .fp-preload {
     margin: auto; }
   .freedomplayer.is-splash .fp-preload, .freedomplayer.is-poster .fp-preload {
