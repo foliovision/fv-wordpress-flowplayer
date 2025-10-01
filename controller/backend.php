@@ -131,12 +131,24 @@ function fv_wp_flowplayer_check_template() {
     add_query_arg( 'fv_wp_flowplayer_check_template', wp_create_nonce( 'fv_wp_flowplayer_check_template' ), home_url() )
   );
 
+  $headers = ! is_wp_error( $response ) ?  wp_remote_retrieve_headers( $response ) : array();
+
   if( is_wp_error( $response ) ) {
     $error_message = $response->get_error_message();
     $output = array( 'errors' => $error_message);
   } else if ($response['response']['code'] == 401){
-    $errors[] = 'You are using http auth, we cannot check template.';
+    $errors[] = 'You are using HTTP auth, we cannot check template.';
     $output = array( 'errors' => $errors);
+
+  } else if (
+    absint( $response['response']['code'] ) === 403 &&
+    'cloudflare' === strtolower( $headers['server'] ) &&
+    ! empty( $headers['cf-mitigated'] ) &&
+    'challenge' === $headers['cf-mitigated']
+  ) {
+    $errors[] = 'Cloudflare is blocking our access to your website, we cannot check the template.';
+    $output = array( 'ok' => $errors);
+
   } else {
 
     $active_plugins = get_option( 'active_plugins' );
@@ -216,7 +228,6 @@ function fv_wp_flowplayer_check_template() {
     }
 
     // check if Permissions-Policy header is set and has autoplay=() in it
-    $headers = wp_remote_retrieve_headers( $response );
     if( isset($headers['permissions-policy']) && strpos( $headers['permissions-policy'], 'autoplay=()' ) !== false ) {
       $errors[] = sprintf(
         __( 'You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>%s</code>', 'fv-player' ),
