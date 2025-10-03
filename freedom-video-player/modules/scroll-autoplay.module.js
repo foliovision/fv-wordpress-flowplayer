@@ -10,7 +10,9 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     freedomplayer( function(api, root) {
       
       // Allows other plugins to wait with the autoplay until certain conditions are met, such as the age gate is passed
-      if ( ! window.fv_player_autoplay_wait ) {
+      if ( ! freedomplayer.did_scroll_autoplay_check && ! window.fv_player_autoplay_wait ) {
+        freedomplayer.did_scroll_autoplay_check = true;
+
         // Trigger the scroll handler to load the first video
         debouncedScrollHandler();
       }
