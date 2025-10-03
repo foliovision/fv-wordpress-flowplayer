@@ -162,26 +162,6 @@ flowplayer(function(api, root) {
   });
 
   /*
-   *  Splash dimension bugfix
-   */
-  var image_src = root.css('background-image')
-  if( image_src ) {
-    image_src = image_src.replace(/url\((['"])?(.*?)\1\)/gi, '$2').split(',');
-    if( !image_src || !image_src[0].match(/^(https?:)?\/\//) ) return;
-    var image = new Image();
-    image.src = image_src[0];
-
-    var image_ratio = image.height/image.width;
-    var player_ratio = root.height()/root.width();
-
-    var ratio_diff = Math.abs(player_ratio - image_ratio);
-    if( ratio_diff < 0.05 ) {
-      root.css('background-size','cover');
-    }
-
-  }
-
-  /*
    * YouTube player class
    */
   var is_youtube = false;
