@@ -60,7 +60,14 @@ flowplayer(function(api, root) {
     }
   }
 
-  check_size();
+  // This improves the performance about 2x, but what if we find a way of running them all at once?
+  if (typeof window.requestAnimationFrame === 'function') {
+    requestAnimationFrame( check_size );
+
+  } else {
+    check_size();
+  }
+  
 
   function debounce(func, wait) {
     var timeout;
