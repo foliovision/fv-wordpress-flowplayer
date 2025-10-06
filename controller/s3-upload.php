@@ -352,25 +352,30 @@ class FV_Player_S3_Upload {
 
         $video_width    = absint( $ThisFileInfo['video']['resolution_x'] );
         $video_height   = absint( $ThisFileInfo['video']['resolution_y'] );
+        
+        $video_width_check = $video_width;
+        $video_height_check = $video_height;
+        $force_pass = false;
 
-        // Check for vertical video
+        // We need to flip the dimentions before checking aspect ratio for vertical videos
         // Alternatively we could parse degrees from $ThisFileInfo['video']['rotate'], but is that commonly used for vertical videos?
         if ( $video_width < $video_height ) {
 
-          // If vertical video is 1080p or higher, we accept it
+          // If vertical video is 1080p or higher with a reasonable width, we accept it
           if ( $video_height >= 1080 && $video_width >= 540 ) {
-            $minimal_width = $video_width;
+            $force_pass = true;
 
           } else {
-            $video_width  = intval( $ThisFileInfo['video']['resolution_y'] );
-            $video_height = intval( $ThisFileInfo['video']['resolution_x'] );
+            $video_width_check  = intval( $ThisFileInfo['video']['resolution_y'] );
+            $video_height_check = intval( $ThisFileInfo['video']['resolution_x'] );
           }
         }
 
         if (
-          $video_width >= $minimal_width && $video_height >= $minimal_height ||
-          $video_width >= $minimal_width_4_3 && $video_height >= $minimal_height_4_3 ||
-          $video_width >= $minimal_width_21_9 && $video_height >= $minimal_height_21_9
+          $force_pass ||
+          $video_width_check >= $minimal_width && $video_height_check >= $minimal_height ||
+          $video_width_check >= $minimal_width_4_3 && $video_height_check >= $minimal_height_4_3 ||
+          $video_width_check >= $minimal_width_21_9 && $video_height_check >= $minimal_height_21_9
         ) {
           // Video dimensions are good for one of the aspect ratios
 
