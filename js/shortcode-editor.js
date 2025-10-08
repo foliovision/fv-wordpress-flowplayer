@@ -1545,6 +1545,8 @@ jQuery(function() {
 
                 if( v.title && ( !title_field.val() || auto_caption ) ) {
                   title_field.val( v.title );
+
+                  text_and_select_worker( title_field, title_field.closest('.fv-player-editor-children-wrap'), 'title', title_field.parents( '.fv-player-editor-field-wrap-title' ) );
                 }
 
                 if( auto_caption ) {
