@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2025-09-29 13:53+0000\n"
+"POT-Creation-Date: 2025-10-08 08:53+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -19,51 +19,51 @@ msgstr ""
 msgid "FV Player 8 cannot run together with FV Player Pro 7. Please remove FV Player Pro 7 and then install using wp-admin -> FV Player -> Settings -> Install Pro extension."
 msgstr ""
 
-#: controller/backend.php:172
+#: controller/backend.php:184
 msgid "We also recommend you to open any of your videos on your site and see if you get a red warning message about JavaScript not working."
 msgstr ""
 
-#: controller/backend.php:187
+#: controller/backend.php:199
 msgid "FV Player script found: "
 msgstr ""
 
-#: controller/backend.php:202
+#: controller/backend.php:214
 msgid "jQuery library found: "
 msgstr ""
 
-#: controller/backend.php:231
+#: controller/backend.php:242
 msgid "You are not using Permissions-Policy HTTP header to adjust the autoplay permissions."
 msgstr ""
 
-#: controller/backend.php:227
+#: controller/backend.php:238
 msgid "You are using Permissions-Policy HTTP header to adjust the autoplay permissions: <code>%s</code>"
 msgstr ""
 
-#: controller/backend.php:222
+#: controller/backend.php:233
 msgid "You are using Permissions-Policy HTTP header to block video autoplay. This will force muted playback of YouTube videos too and viewers will have to un-mute the videos manually: <code>%s</code>"
 msgstr ""
 
-#: controller/backend.php:419
+#: controller/backend.php:430
 msgid "License key acquired successfully. <a href=\"\">Reload</a>"
 msgstr ""
 
-#: controller/backend.php:632, controller/backend.php:640
+#: controller/backend.php:643, controller/backend.php:651
 msgid "To update FV Player please either renew your license or disable FV Player Pro."
 msgstr ""
 
-#: controller/backend.php:693
+#: controller/backend.php:704
 msgid "FV Player has found old shortcodes in the content of your posts. <a href=\"%1$s\">Run the conversion script.</a>"
 msgstr ""
 
-#: controller/backend.php:927
+#: controller/backend.php:938
 msgid "FV Player: Please upgrade to FV Player Pro version %s or above!"
 msgstr ""
 
-#: controller/backend.php:943
+#: controller/backend.php:954
 msgid "FV Player: Please upgrade to FV Player Pay Per View version %s or above!"
 msgstr ""
 
-#: controller/backend.php:959
+#: controller/backend.php:970
 msgid "FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!"
 msgstr ""
 
