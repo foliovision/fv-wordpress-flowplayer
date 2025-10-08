@@ -345,7 +345,7 @@ if (!Date.now) {
       item_changed = false,
 
       // get stored video position
-      getVideoPosition = function (api) {
+      getVideoPosition = function () {
         var
           video_id = getVideoId(api.video),
           position = api.video.position;
@@ -393,7 +393,7 @@ if (!Date.now) {
         // do not restore position for live video or video ad
         if( !isSupported() || api.video.prevent_position_restore  ) return;
 
-        var position = getVideoPosition(api);
+        var position = getVideoPosition();
 
         // no temporary positions found, let's work with DB / cookies
         if (position) {
