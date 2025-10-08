@@ -856,7 +856,7 @@ jQuery(function() {
           checkbox_toggle_worker(wrap, name, checked);
       });
 
-      $el_editor.on('change', '.components-text-control__input, .components-select-control__input', function() {
+      $el_editor.on('change input', '.components-text-control__input, .components-select-control__input', function() {
         var input = jQuery(this),
           parent = input.closest('.fv-player-editor-children-wrap'),
           name = input.attr('name').replace( /fv_wp_flowplayer_field_/, '' ),
