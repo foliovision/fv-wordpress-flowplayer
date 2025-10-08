@@ -712,6 +712,8 @@ if (!Date.now) {
 
     // TODO: find out what event can be used to force saving of playlist video positions on video change
     //api.bind('finish', forceSavePosition);
+
+    api.getVideoPosition = getVideoPosition;
   });
 
   // pagehide is required for iOS

@@ -22,7 +22,7 @@ if( typeof(flowplayer) != "undefined" ) {
 
         index = api.video.index ? api.video.index : 0 // get current video index
 
-        position = api.video.position ? api.video.position : 0;
+        position =  api.getVideoPosition();
         top_position = api.video.top_position ? api.video.top_position : 0;
 
         if( typeof stored_max_position[index]  == 'undefined' ) {
@@ -51,7 +51,7 @@ if( typeof(flowplayer) != "undefined" ) {
           // console.log('beforeseek', time, 'position', position, 'stored_max_position[index]', stored_max_position[index]);
 
           if( time <= position || time <= stored_max_position[index] ) {
-            console.log( 'FV Player lms: allow seek to' , time );
+            // console.log( 'FV Player lms: allow seek to' , time );
           } else {
             // Remove previously shown warning
             api.trigger('fv-lms-teaching-be-gone');

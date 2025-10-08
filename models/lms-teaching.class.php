@@ -13,7 +13,7 @@ class FV_Player_LMS_Teaching {
 
   function loader() {
     add_filter( 'fv_player_item', array( $this, 'check_meta' ), 11, 3 );
-    add_filter( 'fv_flowplayer_attributes', array( $this, 'edit_attributes' ), 11, 3 );
+    add_filter( 'fv_flowplayer_attributes', array( $this, 'edit_attributes' ), 11 );
   }
 
   function check_meta( $aItem, $index, $aArgs ) {
@@ -47,14 +47,9 @@ class FV_Player_LMS_Teaching {
     return $aItem;
   }
 
-  function edit_attributes( $attributes, $media, $fv_fp ) {
-    if( $this->is_enabled && is_user_logged_in() ) {
+  function edit_attributes( $attributes ) {
+    if ( $this->is_enabled ) {
       $attributes['data-lms_teaching'] = true;
-
-      // if( strpos( $attributes['class'], 'no-controlbar' ) == false ) {
-      //   $attributes['class'] .= ' no-controlbar';
-      // }
-
     }
 
     return $attributes;
