@@ -477,7 +477,8 @@
     .freedomplayer .fp-ui > p {
       -webkit-transition: opacity .1s;
       transition: opacity .1s;
-      opacity: 0; }
+      opacity: 0;
+      will-change: opacity; }
   .freedomplayer.fp-ui-shown .fp-ui > div,
   .freedomplayer.fp-ui-shown .fp-ui > p, .freedomplayer.is-paused:not(.was-played) .fp-ui > div,
   .freedomplayer.is-paused:not(.was-played) .fp-ui > p, .freedomplayer.is-splash .fp-ui > div,
