@@ -1561,6 +1561,11 @@ jQuery(function() {
                 }
               });
 
+              if ( response.trailer_video && response.trailer_video.id ) {
+                let trailer_tab = $( '.fv-player-tab-trailer' );
+                get_field( 'trailer_video_id', trailer_tab ).val( response.trailer_video.id );
+              }
+
               // If we are in playlist view, we refresh the list too
               if( current_video_to_edit == -1 ) {
                 playlist_refresh();
@@ -2855,7 +2860,15 @@ Please also contact FV Player support with the following debug information:\n\n\
 
               for (var key in response) {
                 // put the field value where it belongs
-                if (key !== 'videos') {
+                if ( 'trailer_video' === key ) {
+                  let trailer_tab = $( '.fv-player-tab-trailer' );
+                  get_field( 'trailer_video_id', trailer_tab ).val( response[ key ].id );
+                  get_field( 'trailer_src', trailer_tab ).val( response[ key ].src );
+                  get_field( 'trailer_src1', trailer_tab ).val( response[ key ].src1 );
+                  get_field( 'trailer_src2', trailer_tab ).val( response[ key ].src2 );
+                  get_field( 'trailer_toggle_advanced_settings', trailer_tab ).prop( 'checked', response[ key ].toggle_advanced_settings).trigger( 'change' );
+
+                } else if (key !== 'videos') {
                   // in case of meta data, proceed with each player meta one by one
                   if (key == 'meta') {
                     for ( let i in response[key]) {

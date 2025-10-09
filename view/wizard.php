@@ -568,6 +568,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php esc_html_e( 'Playlist', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php esc_html_e( 'Video', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php esc_html_e( 'Subtitles', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-trailer"><?php esc_html_e( 'Trailer', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php esc_html_e( 'Options', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php esc_html_e( 'Actions', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php esc_html_e( 'Embeds', 'fv-player' ); ?></a>
@@ -639,6 +640,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             echo "</div>\n";
             ?>
 
+          </div>
+        </div>
+
+        <div class="fv-player-tab fv-player-tab-trailer" style="display: none"">
+          <div class="fv-player-playlist-item">
+            <?php fv_player_editor_input_group( fv_player_editor_trailer_fields() ); ?>
           </div>
         </div>
 

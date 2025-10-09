@@ -958,7 +958,7 @@ class FV_Player_Db {
       $out['meta'][] = $meta_object->getAllDataValues();
     }
 
-    unset($out['video_objects'], $out['videos']);
+    unset( $out['video_objects'], $out['videos'], $out['trailer_video'] );
 
     // fill the $out variable with video data
     $out['videos'] = array();
@@ -975,6 +975,20 @@ class FV_Player_Db {
       }
 
       $out['videos'][] = $vid;
+    }
+
+    // fill the $out variable with trailer video data
+    $out['trailer_video'] = array();
+    if ( $fv_fp->current_player()->getTrailerVideo() ) {
+      $trailer_obj           = $fv_fp->current_player()->getTrailerVideo(); 
+      $trailer_video         = $trailer_obj->getAllDataValues();
+      $trailer_video['meta'] = array();
+
+      foreach ( $trailer_obj->getMetaData() as $meta_object ) {
+        $trailer_video['meta'][] = $meta_object->getAllDataValues();
+      }
+
+      $out['trailer_video'] = $trailer_video;
     }
 
     // load posts where this player is embedded
@@ -1132,13 +1146,41 @@ class FV_Player_Db {
         }
       }
 
+      $trailer_video_id     = false;
+      $trailer_has_src      = false;
+      $trailer_video        = array();
+      $trailer_video_meta   = array();
+
       foreach ($post_data as $field_name => $field_value) {
+        if ( strpos( $field_name, 'fv_wp_flowplayer_field_trailer_video_id' ) === 0 ) {
+          $trailer_video_id = $field_value;
+          continue;
+
+        } else if ( strpos( $field_name, 'fv_wp_flowplayer_field_trailer_src' ) === 0 ) {
+          $trailer_has_src = true;
+        }
+
         // global player or local video setting field
         if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
           if (!in_array($field_name, $ignored_player_fields)) {
             $option_name = str_replace( 'fv_wp_flowplayer_field_', '', $field_name );
-            // global player option
-            $player_options[ $option_name ] = $field_value;
+
+            if ( stripos( $option_name, 'trailer_' ) === 0 ) {
+              $option_name = str_replace( 'trailer_', '', $option_name );
+              if ( in_array( $option_name, array( 'encoding_job_id' ) ) ) {
+                $trailer_video_meta[] = array(
+                  'meta_key' => $option_name,
+                  'meta_value' => $field_value
+                );
+
+              } else {
+                $trailer_video[ $option_name ] = $field_value;
+              }
+
+            } else {
+              // global player option
+              $player_options[ $option_name ] = $field_value;
+            }
           }
         } else if ($field_name == 'videos' && is_array($field_value)) {
           // iterate over all videos for the player
@@ -1263,6 +1305,25 @@ class FV_Player_Db {
             }
           }
         }
+      }
+
+      /**
+       * Only save the trailer if the fields are present and either
+       * - the trailer video exists ($trailer_video_id is set)
+       * - or the video source is set
+       */
+      if ( $trailer_has_src && ( $trailer_video_id || ! empty( $trailer_video['src'] ) ) ) {
+        $trailer_obj = new FV_Player_Db_Video( null, $trailer_video, $this );
+
+        if ( $trailer_video_id ) {
+          $trailer_obj->link2db( $trailer_video_id );
+        }
+
+        $player_options['trailer_video'] = $trailer_obj->save( $trailer_video_meta );
+
+      // Keep the trailer video ID if it was set
+      } else if ( $trailer_video_id ) {
+        $player_options['trailer_video'] = $trailer_video_id;
       }
 
       // add all videos into this player

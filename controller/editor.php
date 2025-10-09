@@ -782,8 +782,34 @@ function fv_player_editor_subtitle_fields() {
   return $subtitle_fields;
 }
 
+function fv_player_editor_trailer_fields() {
 
+  $notice = 'Upgrade to <a href="https://foliovision.com/store/fv-player-license" target="_blank">FV Player Pro</a> to add a trailer video.';
 
+  if ( class_exists( 'FV_Player_Pro' ) && ! class_exists( 'FV_Player_Pro_Trailer' ) ) {
+    $notice = 'Please upgrade your FV Player Pro to add a trailer video.';
+  }
+
+  $trailer_fields = apply_filters('fv_player_editor_trailer_fields', array(
+    'trailer' => array(
+      'items' => array(
+        array(
+          'name' => 'trailer_video_id',
+          'type' => 'hidden'
+        ),
+        array(
+          'name'    => 'trailer_upsell',
+          'type'    => 'notice_info',
+          'content' => $notice,
+          'visible' => true
+        ),
+      ),
+      'sort' => false
+    )
+  ) );
+
+  return $trailer_fields;
+}
 
 function fv_player_editor_video_fields() {
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );

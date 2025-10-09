@@ -54,6 +54,7 @@ class FV_Player_Db_Player {
     $share_url,
     $speed,
     $sticky, // whether or not to enable sticky functionality for this player
+    $trailer_video,
     $video_ads,
     $video_ads_post,
     $width, // with of the player on page
@@ -61,6 +62,7 @@ class FV_Player_Db_Player {
     $videos, // comma-delimited IDs of videos for this player
     $toggle_end_action,
     $toggle_overlay,
+    $trailer_video_object = null,
     $video_objects = null,
     $numeric_properties = array('id', 'author', 'changed_by'),
     $meta_data = null,
@@ -374,6 +376,13 @@ class FV_Player_Db_Player {
   /**
    * @return string
    */
+  public function getTrailerVideoId() {
+    return $this->trailer_video;
+  }
+
+  /**
+   * @return string
+   */
   public function getVideoAds() {
     return $this->video_ads;
   }
@@ -518,6 +527,7 @@ CREATE TABLE " . self::$db_table_name . " (
   share_url varchar(255) NOT NULL,
   speed varchar(255) NOT NULL,
   sticky varchar(7) NOT NULL,
+  trailer_video bigint(20) unsigned NOT NULL default '0',
   video_ads varchar(10) NOT NULL,
   video_ads_post varchar(10) NOT NULL,
   width varchar(7) NOT NULL,
@@ -914,6 +924,50 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Returns trailer video object
+   *
+   * @return FV_Player_Db_Video Returns trailer video object for this player.
+   * @throws Exception When an underlying video object throws an exception.
+   */
+  public function getTrailerVideo() {
+    // video data already loaded and present, return them
+    if ( $this->trailer_video_object && $this->trailer_video_object !== -1) {
+      return $this->trailer_video_object;
+
+    } else if ($this->trailer_video_object === null && ! empty( $this->trailer_video ) ) {
+      // video objects not loaded yet - load them now
+      $trailer_video = new FV_Player_Db_Video( $this->trailer_video, array(), self::$DB_Instance);
+
+      // set meta data to -1, so we know we didn't get any meta data for this video
+      if ( ! $trailer_video->getIsValid() ) {
+        $this->trailer_video_object = -1;
+        return false;
+
+      } else {
+        new FV_Player_Db_Video_Meta(null, array('id_video' => array( $trailer_video->getId() ) ), self::$DB_Instance);
+
+        if ( self::$DB_Instance->isVideoMetaCached( $trailer_video->getId() ) ) {
+          // prepare meta data
+          $meta_2_video = array();
+          $cache = self::$DB_Instance->getVideoMetaCache();
+          foreach ($cache[ $trailer_video->getId() ] as $meta_object) {
+            $meta_2_video[] = $meta_object->getAllDataValues();
+          }
+
+          $trailer_video->link2meta( $meta_2_video );
+        } else {
+          $trailer_video->link2meta(-1);
+        }
+
+        $this->trailer_video_object = $trailer_video;
+        return $this->trailer_video_object;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Returns all video objects for this player.
    *
    * @return FV_Player_Db_Video[] Returns all video objects for this player.
@@ -1014,7 +1068,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
+      if (!in_array($property, array('id', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'video_objects', 'meta_data', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count', 'trailer_video_object' ))) {
         // don't update author or date created if we're updating
         if ($is_update && ($property == 'date_created' || $property == 'author')) {
           continue;
@@ -1141,7 +1195,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count' ))) {
+      if (!in_array($property, array('id', 'id_player', 'numeric_properties', 'is_valid', 'DB_Instance', 'db_table_name', 'videos', 'video_objects', 'meta_data', 'author', 'changed_by', 'date_created', 'date_modified', 'ignored_input_fields', 'subtitles_count', 'chapters_count', 'transcript_count', 'cues_count', 'trailer_video_object' ))) {
         $export_data[$property] = $value;
       }
     }
