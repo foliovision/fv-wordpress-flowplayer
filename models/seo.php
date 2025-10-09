@@ -75,9 +75,14 @@ class FV_Player_SEO {
       $title = get_the_title();
     }
 
+    if ( !$description ) {
+      $description = get_post_meta(get_the_ID(),'_aioseo_description', true );
+    }
+
     if( !$description ) { //  todo: read this from shortcode
       $description = get_post_meta(get_the_ID(),'_aioseop_description', true );
     }
+
     $post_content = get_the_content();
     if( !$description && strlen($post_content) > 0 ) {
       $post_content = strip_shortcodes( $post_content );
