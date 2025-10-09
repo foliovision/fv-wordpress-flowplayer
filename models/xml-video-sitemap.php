@@ -139,7 +139,9 @@ class FV_Xml_Video_Sitemap {
         $content = do_shortcode($content);
         $content = str_replace( '[noplayer', '[fvplayer', $content );
 
-        if( $meta = get_post_meta($objPost->ID, '_aioseop_description', true ) ) {
+        if( $meta = get_post_meta($objPost->ID, '_aioseo_description', true ) ) {
+          $description = $meta;
+        } else if( $meta = get_post_meta($objPost->ID, '_aioseop_description', true ) ) {
           $description = $meta;
         } else if( $meta = get_post_meta($objPost->ID, '_yoast_wpseo_metadesc', true ) ) {
           $description = $meta;
