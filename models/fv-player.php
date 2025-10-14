@@ -802,6 +802,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'css_disable',
           'css_writeout',
           'customCSS',
+          'debug_log',
           'digitalocean_spaces',
           'disable_convert_db_save',
           'disable_localstorage',

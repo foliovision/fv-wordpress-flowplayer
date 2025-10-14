@@ -1082,13 +1082,9 @@ function fv_player_doCopy(text) {
   }
 }
 
-function fv_player_log( message, variable ) {
-  if( fv_flowplayer_conf.debug && typeof(console) != "undefined" && typeof(console.log) == "function" )  {
-    if( variable ) {
-      console.log(message, variable);
-    } else {
-      console.log(message);
-    }
+function fv_player_log( ...args ) {
+  if( fv_flowplayer_conf.debug_log && typeof(console) != "undefined" && typeof(console.log) == "function" )  {
+    console.log(...args);
   }
 
   if( fv_flowplayer_conf.debug && typeof(window.location.search) != "undefined" && window.location.search.match(/fvfp/) ) {
