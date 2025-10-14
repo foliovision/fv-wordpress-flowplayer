@@ -139,7 +139,8 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
             // The player is not too far down, at least 1/4 of the player is visible
             height - rect.top > player.height() / 2 &&
             // ...and the player is not too far up either, so that less than bottom 1/4 can be seen
-            rect.bottom > player.height() / 4
+            rect.bottom > player.height() / 4 ||
+            api.playing && api.is_sticky
           ) {
             current_winner = k;
 
