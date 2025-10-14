@@ -8,6 +8,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     ! document.body.classList.contains( 'elementor-editor-active' )
   ) {
     freedomplayer( function(api, root) {
+      root = jQuery(root);
       
       // Allows other plugins to wait with the autoplay until certain conditions are met, such as the age gate is passed
       if ( ! freedomplayer.did_scroll_autoplay_check && ! window.fv_player_autoplay_wait ) {
@@ -17,14 +18,33 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
         debouncedScrollHandler();
       }
 
+      var player_autoplay = typeof root.data( 'fvautoplay' ) != 'undefined',
+        autoplay_type = fv_flowplayer_conf.autoplay_preload;
+
+      if ( autoplay_type == 'viewport' || autoplay_type == 'sticky' || player_autoplay ) {
       api.on( 'pause', function( e, api ) {
         if ( api.manual_pause ) {
-          // TODO: Do we want this at all? If so, we must fix the status for the preloaded video.
-          // fv_player_log( 'Scroll autoplay: User paused video, disabling scroll autoplay' );
+            fv_player_log( 'FV Player Scroll autoplay: User paused video, disabling scroll autoplay' );
 
-          // jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
-        }
-      });
+            if ( is_scroll_container ) {
+              jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
+            } else {
+              jQuery( window ).off( 'scroll', debouncedScrollHandler );
+            }
+          }
+
+        } ).on( 'resume', function( e, api ) {
+          if ( api.manual_resume ) {
+            fv_player_log( 'FV Player Scroll autoplay: User resumed video, enabling scroll autoplay' );
+
+            if ( is_scroll_container ) {
+              jQuery( scroll_container ).on( 'scroll', debouncedScrollHandler );
+            } else {
+              jQuery( window ).on( 'scroll', debouncedScrollHandler );
+            }
+          }
+        } );
+      }
     } );
 
     /**
@@ -131,12 +151,12 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
         return;
       }
 
-      fv_player_log( 'STATUS current_winner: ' + current_winner + ' previous_winner: ' + previous_winner + ' past_winner: ' + past_winner );
+      fv_player_log( 'FV Player Scroll autoplay: STATUS current_winner: ' + current_winner + ' previous_winner: ' + previous_winner + ' past_winner: ' + past_winner );
 
       // Unload the video that went out of the viewport earlier
       if ( past_winner > -1 ) {
         let past_api = players.eq( past_winner ).data( 'freedomplayer' );
-        fv_player_log( 'PAST unload', past_winner );
+        fv_player_log( 'FV Player Scroll autoplay: PAST unload', past_winner );
 
         // Bring back the splash screen argument to make sure the unload actually removes the video
         past_api.conf.splash = true;
@@ -147,7 +167,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       if ( previous_winner > -1 ) {
         let previous_api = players.eq( previous_winner ).data( 'freedomplayer' );
         if ( previous_api.playing ) {
-          fv_player_log( 'PREVIOUS pause', previous_winner );
+          fv_player_log( 'FV Player Scroll autoplay: PREVIOUS pause', previous_winner );
 
           previous_api.pause();
         }
@@ -157,26 +177,26 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       if ( current_winner > - 1 ) {
         let api = players.eq( current_winner ).data( 'freedomplayer' );
         if ( api.ready ) {
-          fv_player_log( 'WINNER resume', current_winner );
+          fv_player_log( 'FV Player Scroll autoplay: WINNER resume', current_winner );
 
           api.resume();
 
         } else if ( api.loading ) {
-          fv_player_log( 'WINNER wait', current_winner );
+          fv_player_log( 'FV Player Scroll autoplay: WINNER wait', current_winner );
 
           api.one( 'ready', function() {
             api.resume();
           } );
 
         } else {
-          fv_player_log( 'WINNER load', current_winner );
+          fv_player_log( 'FV Player Scroll autoplay: WINNER load', current_winner );
 
           api.load();
         }
 
         let preload_api = players.eq( current_winner + 1 ).data( 'freedomplayer' );
         if ( preload_api && ! preload_api.ready ) {
-          fv_player_log( 'PRELOAD load', current_winner + 1 );
+          fv_player_log( 'FV Player Scroll autoplay: PRELOAD load', current_winner + 1 );
 
           // Preload the video, setting splash to false will ensure it won't play right away
           preload_api.conf.splash = false;
