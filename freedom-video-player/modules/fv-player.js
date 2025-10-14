@@ -374,7 +374,7 @@ function fv_player_preload() {
             splash_img.remove();
             splash_text.remove();
           });
-        } else {debugger;
+        } else {
           splash_img.remove();
           splash_text.remove();
         }
