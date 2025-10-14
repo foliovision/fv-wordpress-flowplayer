@@ -62,6 +62,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     var current_winner = -1,
       previous_winner = -1;
       past_winner = -1,
+      have_autoplay = false,
       first_run = true;
 
     /**
@@ -131,6 +132,8 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
         // play video when on viewport or sticky or player enabled autoplay
         if( autoplay_type == 'viewport' || autoplay_type == 'sticky' || player_autoplay ) {
+          have_autoplay = true;
+
           var rect = v.getBoundingClientRect();
           if (
             // The player is not too far down, at least 1/4 of the player is visible
@@ -146,6 +149,10 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
           }
         }
       });
+
+      if ( ! have_autoplay ) {
+        return;
+      }
 
       // No scroll happened
       if ( current_winner === previous_winner && ! first_run ) {
