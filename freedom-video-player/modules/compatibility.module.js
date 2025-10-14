@@ -91,7 +91,7 @@ function fv_flowplayer_safety_resize() {
 	} );
 	
 	if( fv_flowplayer_safety_resize_init ) {
-		jQuery(window).resize(function() {
+		jQuery(window).on( 'resize', function() {
 			jQuery('.flowplayer').each( function() {
         if( jQuery(this).hasClass('lightboxed') || jQuery(this).hasClass('lightbox-starter') ) return;
         
