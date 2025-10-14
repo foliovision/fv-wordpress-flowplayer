@@ -9,7 +9,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
   ) {
     freedomplayer( function(api, root) {
       root = jQuery(root);
-      
+
       // Allows other plugins to wait with the autoplay until certain conditions are met, such as the age gate is passed
       if ( ! freedomplayer.did_scroll_autoplay_check && ! window.fv_player_autoplay_wait ) {
         freedomplayer.did_scroll_autoplay_check = true;
@@ -22,8 +22,8 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
         autoplay_type = fv_flowplayer_conf.autoplay_preload;
 
       if ( autoplay_type == 'viewport' || autoplay_type == 'sticky' || player_autoplay ) {
-      api.on( 'pause', function( e, api ) {
-        if ( api.manual_pause ) {
+        api.on( 'pause', function( e, api ) {
+          if ( api.manual_pause ) {
             fv_player_log( 'FV Player Scroll autoplay: User paused video, disabling scroll autoplay' );
 
             if ( is_scroll_container ) {
@@ -61,7 +61,8 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
     var current_winner = -1,
       previous_winner = -1;
-      past_winner = -1;
+      past_winner = -1,
+      first_run = true;
 
     /**
      * Debounce the scroll handler
@@ -147,9 +148,11 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       });
 
       // No scroll happened
-      if ( current_winner === previous_winner ) {
+      if ( current_winner === previous_winner && ! first_run ) {
         return;
       }
+
+      first_run = false;
 
       fv_player_log( 'FV Player Scroll autoplay: STATUS current_winner: ' + current_winner + ' previous_winner: ' + previous_winner + ' past_winner: ' + past_winner );
 
@@ -193,7 +196,10 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
           api.load();
         }
+      }
 
+      // Preload the next video
+      if ( players.eq( current_winner + 1 ) ) {
         let preload_api = players.eq( current_winner + 1 ).data( 'freedomplayer' );
         if ( preload_api && ! preload_api.ready ) {
           fv_player_log( 'FV Player Scroll autoplay: PRELOAD load', current_winner + 1 );

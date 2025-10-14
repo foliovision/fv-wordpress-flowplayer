@@ -453,7 +453,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
           ),
           'viewport' => array(
             'label' => __( 'Autoplay Video in Viewport', 'fv-player' ),
-            'description' => __( 'Video will autoplay when the player is visible on page load or when user scrolls down to it. It will pause when no longer in browser viewport.', 'fv-player' )
+            'description' => __( 'Video will autoplay when the player is visible on page load or when user scrolls down to it. It will pause when no longer in browser viewport. The next video will start preloading in the background.', 'fv-player' )
           ),
           'sticky' => array(
             'label' => __( 'Sticky Autoplay', 'fv-player' ),

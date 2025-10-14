@@ -369,12 +369,12 @@ function fv_player_preload() {
       if( !video.is_audio_stream && !video.type.match(/^audio/) ) {
 
         // Ensure the splash is only removed once the video really really starts playing when using autoplay
-        if( window.fv_player_pro && window.fv_player_pro.autoplay_scroll || root.data('fvautoplay') || !was_splash || 'application/x-mpegurl' == api.video.type ) {
+        if ( fv_flowplayer_conf.autoplay_preload == 'viewport' || root.data('fvautoplay') || !was_splash || 'application/x-mpegurl' == api.video.type ) {
           api.one('progress', function() {
             splash_img.remove();
             splash_text.remove();
           });
-        } else {
+        } else {debugger;
           splash_img.remove();
           splash_text.remove();
         }
