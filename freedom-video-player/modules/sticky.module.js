@@ -70,9 +70,18 @@ flowplayer(function(api, root) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) { // Sticky already added
             return false;
           } else {
+
+            if ( ! api.is_sticky ) {
+              fv_player_log( 'FV Player Sticky: Enable for: ' + $root.data( 'freedomplayer-instance-id' ) );
+            } 
+
             fv_player_sticky_class_add(); // Add sticky
           }
         } else {
+          if ( api.is_sticky ) {
+            fv_player_log( 'FV Player Sticky: Disable for: ' + $root.data( 'freedomplayer-instance-id' ) );
+          }
+
           fv_player_sticky_class_remove(); // Remove sticky
         }
       });
