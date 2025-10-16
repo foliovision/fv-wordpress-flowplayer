@@ -127,6 +127,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
         // disabling for YouTube on iOS
         if( freedomplayer.support.iOS && api.conf.clip.sources[0].type == 'video/youtube' ) {
+          fv_player_log( 'FV Player Scroll autoplay: Not supported for YouTube on iOS' );
           return;
         }
 
@@ -167,11 +168,16 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       // Unload the video that went out of the viewport earlier
       if ( past_winner > -1 ) {
         let past_api = players.eq( past_winner ).data( 'freedomplayer' );
-        fv_player_log( 'FV Player Scroll autoplay: PAST unload', past_winner );
+        if ( past_api.video && past_api.video.type == 'video/youtube' ) {
+          fv_player_log( 'FV Player Scroll autoplay: PAST unload skipped for YouTube', current_winner + 1 );
 
-        // Bring back the splash screen argument to make sure the unload actually removes the video
-        past_api.conf.splash = true;
-        past_api.unload();
+        } else {
+          fv_player_log( 'FV Player Scroll autoplay: PAST unload', past_winner );
+
+          // Bring back the splash screen argument to make sure the unload actually removes the video
+          past_api.conf.splash = true;
+          past_api.unload();
+        }
       }
 
       // Pause the video that just went out of viewport
@@ -203,6 +209,9 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
           fv_player_log( 'FV Player Scroll autoplay: WINNER load', current_winner );
 
           api.load();
+
+          // This ensures the YouTube video will attempt to unmute itself when the video is played
+          api.autoplayed = true;
         }
       }
 
@@ -210,11 +219,16 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       if ( players.eq( current_winner + 1 ) ) {
         let preload_api = players.eq( current_winner + 1 ).data( 'freedomplayer' );
         if ( preload_api && ! preload_api.ready ) {
-          fv_player_log( 'FV Player Scroll autoplay: PRELOAD load', current_winner + 1 );
+          if ( preload_api.conf.clip && preload_api.conf.clip.sources[0].type == 'video/youtube' ) {
+            fv_player_log( 'FV Player Scroll autoplay: PRELOAD skipped for YouTube', current_winner + 1 );
 
-          // Preload the video, setting splash to false will ensure it won't play right away
-          preload_api.conf.splash = false;
-          preload_api.load();
+          } else {
+            fv_player_log( 'FV Player Scroll autoplay: PRELOAD load', current_winner + 1 );
+
+            // Preload the video, setting splash to false will ensure it won't play right away
+            preload_api.conf.splash = false;
+            preload_api.load();
+          }
         }
       }
 
