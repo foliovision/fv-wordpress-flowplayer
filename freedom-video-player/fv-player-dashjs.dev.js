@@ -3,9 +3,9 @@
 
 /*!
 
-   DASH engine plugin for Flowplayer HTML5
+   DASH engine plugin for Freedom Video Player
 
-   Copyright (c) 2015-2017, Flowplayer Drive Oy
+   Copyright (c) 2016-2025, Foliovision
 
    Released under the MIT License:
    http://www.opensource.org/licenses/mit-license.php
@@ -14,7 +14,7 @@
    Copyright (c) 2015, Dash Industry Forum. All rights reserved.
    https://github.com/Dash-Industry-Forum/dash.js/blob/master/LICENSE.md
 
-   Requires Flowplayer HTML5 version 6.x
+   Requires Freedom Video Player version 8.x
    $GIT_DESC$
 
 */
@@ -26,8 +26,6 @@
           UA = navigator.userAgent,
           common = flowplayer.common,
           extend = flowplayer.extend,
-          version = flowplayer.version,
-          coreV6 = version.indexOf("6.") === 0,
           dashconf,
           trigger_finish,
 
@@ -246,7 +244,7 @@
                               posterClass = "is-poster",
                               livestartpos = 0;
 
-                          if (video.dashQualities === false || coreV6) {
+                          if (video.dashQualities === false) {
                               dashQualitiesConf = false;
                           } else if (dashQualitiesConf === undefined) {
                               dashQualitiesConf = true;
@@ -303,12 +301,6 @@
                                               height: videoTag.videoHeight,
                                               url: src
                                           });
-                                          break;
-                                      case "resume":
-                                          if (coreV6 && player.poster) {
-                                              common.removeClass(root, posterClass);
-                                              player.poster = false;
-                                          }
                                           break;
                                       case "seek":
                                           arg = ct;
@@ -369,35 +361,19 @@
                                   }
                               });
 
-                              if (!coreV6) {
-                                  player.on("quality." + engineName, function (_e, _api, q) {
-                                      mediaPlayer.updateSettings({ 'streaming': {
-                                          'abr': {
-                                            'autoSwitchBitrate': { video: q < 0 },
-                                            'limitBitrateByPortal': q == -1,
-                                            'usePixelRatioInLimitBitrateByPortal': q == -1
-                                          }
-                                      } });
-                                      if (q > -1) {
-                                          mediaPlayer.setQualityFor("video", q);
-                                      }
-                                      lastSelectedQuality = q;
-                                  });
-
-                              } else if (conf.poster) {
-                                  var posterHack = function (e) {
-                                      if (e.type === "stop" || !autoplay) {
-                                          setTimeout(function () {
-                                              if (!player.poster) {
-                                                  common.addClass(root, posterClass);
-                                                  player.poster = true;
-                                              }
-                                          });
-                                      }
-                                  };
-
-                                  player.one("ready." + engineName, posterHack).on("stop." + engineName, posterHack);
-                              }
+                              player.on("quality." + engineName, function (_e, _api, q) {
+                                mediaPlayer.updateSettings({ 'streaming': {
+                                  'abr': {
+                                    'autoSwitchBitrate': { video: q < 0 },
+                                    'limitBitrateByPortal': q == -1,
+                                    'usePixelRatioInLimitBitrateByPortal': q == -1
+                                  }
+                                } });
+                                if (q > -1) {
+                                  mediaPlayer.setQualityFor("video", q);
+                                }
+                                lastSelectedQuality = q;
+                              });
 
                               common.prepend(common.find(".fp-player", root)[0], videoTag);
 
@@ -641,22 +617,10 @@
                       }
                   };
 
-              // pre 6.0.4: no boolean api.conf.poster and no poster with autoplay
-              if (/^6\.0\.[0-3]$/.test(version) &&
-                      !player.conf.splash && !player.conf.poster && !player.conf.autoplay) {
-                  bc = common.css(root, 'backgroundColor');
-                  // spaces in rgba arg mandatory for recognition
-                  has_bg = common.css(root, 'backgroundImage') !== "none" ||
-                          (bc && bc !== "rgba(0, 0, 0, 0)" && bc !== "transparent");
-                  if (has_bg) {
-                      player.conf.poster = true;
-                  }
-              }
-
               return engine;
           };
 
-      if (mse && typeof mse.isTypeSupported === "function" && version.indexOf("5.") !== 0) {
+      if (mse && typeof mse.isTypeSupported === "function") {
           // only load engine if it can be used
           engineImpl.engineName = engineName; // must be exposed
           engineImpl.canPlay = function (type, conf) {
