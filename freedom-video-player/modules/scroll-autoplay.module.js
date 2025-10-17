@@ -227,7 +227,12 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
             // Preload the video, setting splash to false will ensure it won't play right away
             preload_api.conf.splash = false;
+            // Bypass viewport check as we might be preloading video below the fold.
+            preload_api.force_preload = true
             preload_api.load();
+
+            // Clean up the flag as otherwise Dash.js would not let user play the video.
+            delete( preload_api.force_preload );
           }
         }
       }
