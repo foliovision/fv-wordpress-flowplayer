@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $fv_wp_flowplayer_ver;
 
 $fv_wp_flowplayer_ver = '8.0.27.13';
-$fv_wp_flowplayer_core_ver = '8.0.27';
+$fv_wp_flowplayer_core_ver = '8.0.27.1';
 
 function fv_player_8_activate() {
   foreach(
