@@ -853,6 +853,10 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
       if( api.ready ) {
         fv_player_video_link_seek( api, fTime, abEnd, abStart );
       } else {
+
+        // This ensures the YouTube video will attempt to unmute itself when the video is played
+        api.autoplayed = true;
+
         api.play(parseInt(index));
         api.one('ready', function() {
           fv_player_video_link_seek( api, fTime, abEnd, abStart );
@@ -865,11 +869,11 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
           fv_player_video_link_seek( api, fTime, abEnd, abStart );
         } );
       });
-
+      
       root.find('.fp-splash').attr( 'src', jQuery('[rel='+root.attr('id')+'] div').eq(index).find('img').attr('src') ).removeAttr( 'srcset' ); // select splachscreen from playlist items by id
 
       if( !fv_player_in_iframe() ) {
-        fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
+        api.message( fv_flowplayer_translations[11], false, { close_on : 'progress' } );
       }
     }
   } else {
@@ -879,8 +883,12 @@ function fv_autoplay_init(root, index, time, abStart, abEnd){
     } else {
       if( fv_player_video_link_autoplay_can(api) ) {
         api.load();
+
+        // This ensures the YouTube video will attempt to unmute itself when the video is played
+        api.autoplayed = true;
+
       } else if ( !fv_player_in_iframe() ) {
-        fv_player_notice( root, fv_flowplayer_translations[11], 'progress' );
+        api.message( fv_flowplayer_translations[11], false, { close_on : 'progress' } );
       }
       api.one('ready', function() {
         fv_player_video_link_seek( api, fTime, abEnd, abStart );
