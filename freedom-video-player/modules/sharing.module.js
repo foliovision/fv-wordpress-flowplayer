@@ -60,7 +60,7 @@ flowplayer( function(api,root) {
 
   api.on("ready", function (e, api, video) {
     setTimeout( function () {
-      if( !root.hasClass('is-youtube-standard') && !root.hasClass('is-youtube-reduced') ) jQuery('.fvp-share-bar',root).show();
+      jQuery('.fvp-share-bar',root).toggle( !root.hasClass('is-youtube-standard') && !root.hasClass('is-youtube-reduced') );
 
       jQuery('.fv-player-buttons-wrap',root).appendTo(jQuery('.fv-player-buttons-wrap',root).parent().find('.fp-ui'));
     }, 100 );
