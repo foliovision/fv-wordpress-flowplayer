@@ -5,7 +5,9 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     // ...not in wp-admin, meaning in editor
     ! document.body.classList.contains( 'wp-admin' ) &&
     // ...not in Elementor editor
-    ! document.body.classList.contains( 'elementor-editor-active' )
+    ! document.body.classList.contains( 'elementor-editor-active' ) &&
+    // Video Link feature must not be passed via URL
+    ! location.href.match(/fvp_/)
   ) {
     freedomplayer( function(api, root) {
       root = jQuery(root);
