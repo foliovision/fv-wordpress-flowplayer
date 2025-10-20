@@ -36,7 +36,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
           }
 
         } ).on( 'resume', function( e, api ) {
-          if ( api.manual_resume ) {
+          if ( api.manual_resume && 'sticky' !== autoplay_type ) {
             fv_player_log( 'FV Player Scroll autoplay: User resumed video, enabling scroll autoplay' );
 
             if ( is_scroll_container ) {
@@ -214,6 +214,16 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
           // This ensures the YouTube video will attempt to unmute itself when the video is played
           api.autoplayed = true;
+        }
+
+        if ( 'sticky' === fv_flowplayer_conf.autoplay_preload ) {
+          fv_player_log( 'FV Player Scroll autoplay: Found a winner for the sticky autoplay, stopping scroll autoplay' );
+
+          if ( is_scroll_container ) {
+            jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
+          } else {
+            jQuery( window ).off( 'scroll', debouncedScrollHandler );
+          }
         }
       }
 
