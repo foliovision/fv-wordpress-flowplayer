@@ -231,7 +231,21 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       if ( players.eq( current_winner + 1 ) ) {
         let preload_api = players.eq( current_winner + 1 ).data( 'freedomplayer' );
         if ( preload_api && ! preload_api.ready ) {
-          if ( preload_api.conf.clip && preload_api.conf.clip.sources[0].type == 'video/youtube' ) {
+
+          // Check if fv_vast_conf.version is lower than 8.1
+          var is_vast_version_below_81 = false;
+          if (typeof fv_vast_conf !== 'undefined' && fv_vast_conf.version) {
+            var version_parts = fv_vast_conf.version.split('.');
+            var major = parseInt(version_parts[0], 10) || 0;
+            var minor = parseInt(version_parts[1], 10) || 0;
+            // If major < 8 or (major == 8 && minor < 1)
+            is_vast_version_below_81 = (major < 8) || (major === 8 && minor < 1);
+          }
+
+          if ( is_vast_version_below_81 ) {
+            fv_player_log( 'FV Player Scroll autoplay: PRELOAD skipped for VAST version below 8.1', current_winner + 1 );
+          
+          } else if ( preload_api.conf.clip && preload_api.conf.clip.sources[0].type == 'video/youtube' ) {
             fv_player_log( 'FV Player Scroll autoplay: PRELOAD skipped for YouTube', current_winner + 1 );
 
           } else {
