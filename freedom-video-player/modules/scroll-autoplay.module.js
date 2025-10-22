@@ -24,9 +24,13 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
         autoplay_type = fv_flowplayer_conf.autoplay_preload;
 
       if ( autoplay_type == 'viewport' || autoplay_type == 'sticky' || player_autoplay ) {
-        api.on( 'pause', function( e, api ) {
-          if ( api.manual_pause ) {
-            fv_player_log( 'FV Player Scroll autoplay: User paused video, disabling scroll autoplay' );
+        api.on( 'pause sticky', function( e, api ) {
+          if ( 'pause' === e.type && api.manual_pause || 'sticky' === e.type ) {
+            if ( 'pause' === e.type ) {
+              fv_player_log( 'FV Player Scroll autoplay: User paused video, disabling scroll autoplay' );
+            } else if ( 'sticky' === e.type ) {
+              fv_player_log( 'FV Player Scroll autoplay: Video became sticky, disabling scroll autoplay' );
+            }
 
             if ( is_scroll_container ) {
               jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
@@ -209,6 +213,8 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       if ( current_winner > - 1 ) {
         let api = players.eq( current_winner ).data( 'freedomplayer' );
 
+        delete( api.sticky_exclude );
+
         let root = players.eq( current_winner )[0];
         if ( 
           typeof root.fv_player_vast == 'object' &&
@@ -281,6 +287,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
             preload_api.conf.splash = false;
             // Bypass viewport check as we might be preloading video below the fold.
             preload_api.force_preload = true
+            preload_api.sticky_exclude = true;
             preload_api.load();
 
             // Clean up the flag as otherwise Dash.js would not let user play the video.
