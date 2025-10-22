@@ -24,13 +24,9 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
         autoplay_type = fv_flowplayer_conf.autoplay_preload;
 
       if ( autoplay_type == 'viewport' || autoplay_type == 'sticky' || player_autoplay ) {
-        api.on( 'pause sticky', function( e, api ) {
-          if ( 'pause' === e.type && api.manual_pause || 'sticky' === e.type ) {
-            if ( 'pause' === e.type ) {
-              fv_player_log( 'FV Player Scroll autoplay: User paused video, disabling scroll autoplay' );
-            } else if ( 'sticky' === e.type ) {
-              fv_player_log( 'FV Player Scroll autoplay: Video became sticky, disabling scroll autoplay' );
-            }
+        api.on( 'pause', function( e, api ) {
+          if ( api.manual_pause ) {
+            fv_player_log( 'FV Player Scroll autoplay: User paused video, disabling scroll autoplay' );
 
             if ( is_scroll_container ) {
               jQuery( scroll_container ).off( 'scroll', debouncedScrollHandler );
@@ -248,7 +244,12 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
           api.autoplayed = true;
         }
 
-        if ( 'sticky' === fv_flowplayer_conf.autoplay_preload ) {
+        if (
+          'sticky' === fv_flowplayer_conf.autoplay_preload ||
+          'all' === freedomplayer.conf.sticky_video ||
+          'desktop' === freedomplayer.conf.sticky_video && jQuery( window ).innerWidth() >= freedomplayer.conf.sticky_min_width ||
+          players.eq( current_winner ).data( 'fvsticky' )
+        ) {
           fv_player_log( 'FV Player Scroll autoplay: Found a winner for the sticky autoplay, stopping scroll autoplay' );
 
           if ( is_scroll_container ) {
