@@ -210,7 +210,8 @@ function fv_player_admin_pointer_boxes() {
           <li>Autoplay: Preload the video even before it comes to the viewport for faster playback start</li>
           <li>LMS | Teaching - support for non-logged in users</li>
           <li>Performance: Fixes for JavaScript loading speed and rendering</li>
-          <li>Security: Improved security for video playback</li>
+          <li>Remember audio track: Stored in localStorage and in database for logged in users</li>
+          <li>Security: Improved security for video uploads</li>
         </ul>",
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1'  => __('Thanks for letting me know!', 'fv-player'),
