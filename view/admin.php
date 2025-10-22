@@ -466,7 +466,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
           if( $value === $key || wp_json_encode($value) == $key ) { // use wp_json_encode as value can be boolean
             $radio_button .= ' checked="checked"';
           }
-          $radio_button .= '</input>';
+          $radio_button .= ' />';
           $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
 
           $radio_butons[] = $radio_button;

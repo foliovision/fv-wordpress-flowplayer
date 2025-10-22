@@ -210,6 +210,14 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1 - 2025-10-14 =
+
+* Autoplay: Preload the next video
+* LMS | Teaching - support for non-logged in users
+* Performance: Fixes for JavaScript loading speed and rendering
+* Remember audio track: Store in localStorage and in database for logged in users
+* Bugfix: CSS: tagDiv theme fix for player loading, play and pause buttons
+
 = 8.0.27 - 2025-09-19 =
 
 * Bugfix: Analytics: Looping a video should not count as invidual plays
