@@ -121,8 +121,20 @@ flowplayer( function(api,root) {
       if ( ! fv_flowplayer_conf.disable_localstorage ) {
         localStorage.fv_player_audio_name = selected_name;
         localStorage.fv_player_audio_lang = selected_lang;
+      } 
+
+      if ( fv_player.is_user_logged_in ) {
+        jQuery.post(
+          fv_player.ajaxurl,
+          {
+            action: 'fv_player_save_audio_settings',
+            name: selected_name,
+            lang: selected_lang,
+            nonce: fv_player.nonce
+          }
+        )
       }
-      
+
     });
 
     if( hlsjs ) {
@@ -183,6 +195,14 @@ flowplayer( function(api,root) {
   function restoreAudioTrack() {
     var audio_name = localStorage.fv_player_audio_name,
       audio_lang = localStorage.fv_player_audio_lang;
+
+    if ( fv_player.audio_name ) {
+      audio_name = fv_player.audio_name;
+    }
+
+    if ( fv_player.audio_lang ) {
+      audio_lang = fv_player.audio_lang;
+    }
 
     if ( ! audio_name && ! audio_lang ) {
       return;
