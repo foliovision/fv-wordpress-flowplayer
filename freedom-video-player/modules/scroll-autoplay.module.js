@@ -190,12 +190,38 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
 
           previous_api.pause();
         }
+
+        let root = players.eq( previous_winner )[0];
+        if (
+          typeof root.fv_player_vast == 'object' &&
+          root.fv_player_vast.adsManager_ &&
+          typeof root.fv_player_vast.adsManager_ == 'object' &&
+          typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' &&
+          root.fv_player_vast.adsManager_.getRemainingTime() > 0
+        ) {
+          fv_player_log( 'FV Player Scroll autoplay: PREVIOUS pause VAST', previous_winner );
+
+          root.fv_player_vast.adsManager_.pause();
+        }
       }
 
       // Play the video in the viewport
       if ( current_winner > - 1 ) {
         let api = players.eq( current_winner ).data( 'freedomplayer' );
-        if ( api.ready ) {
+
+        let root = players.eq( current_winner )[0];
+        if ( 
+          typeof root.fv_player_vast == 'object' &&
+          root.fv_player_vast.adsManager_ &&
+          typeof root.fv_player_vast.adsManager_ == 'object' &&
+          typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' &&
+          root.fv_player_vast.adsManager_.getRemainingTime() > 0
+        ) {
+          fv_player_log( 'FV Player Scroll autoplay: WINNER resume VAST', previous_winner );
+
+          root.fv_player_vast.adsManager_.resume();
+
+        } else if ( api.ready ) {
           fv_player_log( 'FV Player Scroll autoplay: WINNER resume', current_winner );
 
           api.resume();
