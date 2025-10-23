@@ -449,6 +449,14 @@ CREATE TABLE " . self::$db_table_name . " (
         if (!$multiID) {
           // fill-in our internal variables, as they have the same name as DB fields (ORM baby!)
           foreach ( $video_data as $key => $value ) {
+            // Do not set the caption if it's still in DB table.
+            if ( 'caption' === $key ) {
+              // Use it as the title if there is none.
+              if ( empty( $this->title ) ) {
+                $this->title = $value;
+              }
+              continue;
+            }
             $this->$key = FV_Player_Db::sanitize( $value );
           }
 
