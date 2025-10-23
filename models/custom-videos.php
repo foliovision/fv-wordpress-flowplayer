@@ -286,7 +286,7 @@ class FV_Player_Custom_Videos_Master {
     //  todo: following code should not add the meta boxes added by the above again!
 
     global $fv_fp;
-    if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {
+    if( ! empty( $post->ID ) && isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {
       $aMeta = get_post_custom($post->ID);
       if( $aMeta ) {
         foreach( $aMeta AS $key => $aMetas ) {
