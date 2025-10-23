@@ -195,8 +195,29 @@ function fv_player_handle_secrets($new, $old) {
 add_action('admin_init', 'fv_player_admin_pointer_boxes');
 
 function fv_player_admin_pointer_boxes() {
-  global $fv_fp;
-  global $fv_wp_flowplayer_ver, $fv_wp_flowplayer_core_ver;
+  global $fv_fp, $fv_wp_flowplayer_ver;
+
+  $nag_fv_player_upgrade = $fv_fp->_get_option( 'nag_fv_player_upgrade' );
+
+  if( ! $nag_fv_player_upgrade || version_compare( $nag_fv_player_upgrade , $fv_wp_flowplayer_ver ) !== 0 ) {
+    $fv_fp->pointer_boxes['fv_player_upgrade'] = array(
+      'id' => '#wp-admin-bar-new-content',
+      'pointerClass' => 'fv_player_upgrade',
+      'heading' => 'FV Player',
+      'content' =>
+        sprintf( __('You just upgraded to version %s with the following improvements:', 'fv-player'), $fv_wp_flowplayer_ver ) .
+        "<ul class='ul-disc'>
+          <li>Autoplay: Preload the video even before it comes to the viewport for faster playback start</li>
+          <li>LMS | Teaching - support for non-logged in users</li>
+          <li>Performance: Fixes for JavaScript loading speed and rendering</li>
+          <li>Remember audio track: Stored in localStorage and in database for logged in users</li>
+          <li>Security: Improved security for video uploads</li>
+        </ul>",
+      'position' => array( 'edge' => 'top', 'align' => 'center' ),
+      'button1'  => __('Thanks for letting me know!', 'fv-player'),
+      'value1'   => $fv_wp_flowplayer_ver,
+    );
+  }
 
   if(
     $fv_fp->_get_option('video_position_save_enable') &&
@@ -301,13 +322,14 @@ function fv_wp_flowplayer_pointers_ajax() {
   $notices = array(
     'fv_flowplayer_notice_xml_sitemap_iframes' => 'notice_xml_sitemap_iframes',
     'fv_flowplayer_fv_player_8'                => 'nag_fv_player_8',
+    'fv_player_upgrade'                        => 'nag_fv_player_upgrade',
   );
 
   if( isset($_POST['key']) && isset($_POST['value']) && in_array($_POST['key'], array_keys($notices) ) ) {
     check_ajax_referer( sanitize_key( $_POST['key'] ) );
     $conf = get_option( 'fvwpflowplayer' );
     if( $conf ) {
-      $conf[ $notices[ sanitize_key( $_POST['key'] ) ] ] = 'true';
+      $conf[ $notices[ sanitize_key( $_POST['key'] ) ] ] = sanitize_text_field( $_POST['value'] );
       update_option( 'fvwpflowplayer', $conf );
     }
     die();

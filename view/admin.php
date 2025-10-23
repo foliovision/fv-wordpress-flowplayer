@@ -453,7 +453,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
           ),
           'viewport' => array(
             'label' => __( 'Autoplay Video in Viewport', 'fv-player' ),
-            'description' => __( 'Video will autoplay when the player is visible on page load or when user scrolls down to it. It will pause when no longer in browser viewport.', 'fv-player' )
+            'description' => __( 'Video will autoplay when the player is visible on page load or when user scrolls down to it. It will pause when no longer in browser viewport. The next video will start preloading in the background.', 'fv-player' )
           ),
           'sticky' => array(
             'label' => __( 'Sticky Autoplay', 'fv-player' ),
@@ -466,7 +466,7 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
           if( $value === $key || wp_json_encode($value) == $key ) { // use wp_json_encode as value can be boolean
             $radio_button .= ' checked="checked"';
           }
-          $radio_button .= '</input>';
+          $radio_button .= ' />';
           $radio_button .= '<label for="'.$id.'">'.$field['label'].'</label><br />';
 
           $radio_butons[] = $radio_button;
@@ -631,7 +631,7 @@ function fv_flowplayer_admin_integrations() {
 ?>
         <p><?php esc_html_e( 'Following options are suitable for web developers and programmers.', 'fv-player' ); ?></p>
         <table class="form-table2">
-
+          <?php $fv_fp->_get_checkbox(__( 'Debug', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Disable database conversion', 'fv-player' ), 'disable_convert_db_save', __( 'Stop converting [fvplayer src="..."] shortcodes, [video] shortcodes, Vimeo and YouTube links to database-driven FV Player when post is saved.', 'fv-player' ) ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Disable saving skin CSS to a static file', 'fv-player' ), 'css_disable', __( 'Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css.', 'fv-player' ), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!', 'fv-player' )); ?>
 

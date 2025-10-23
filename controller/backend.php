@@ -459,10 +459,12 @@ function fv_player_admin_update() {
       $fv_fp->_get_conf();
     }
 
-    if( $fv_fp->_get_option( 'autoplay' ) || $fv_fp->_get_option( array( 'pro' ,'autoplay_scroll' )) ) {
-      $aOptions['autoplay_preload'] = 'viewport';
-    } else {
-      $aOptions['autoplay_preload'] = false;
+    if ( ! isset( $aOptions['autoplay_preload'] ) ) {
+      if( $fv_fp->_get_option( 'autoplay' ) || $fv_fp->_get_option( array( 'pro' ,'autoplay_scroll' )) ) {
+        $aOptions['autoplay_preload'] = 'viewport';
+      } else {
+        $aOptions['autoplay_preload'] = false;
+      }
     }
 
     if( empty($aOptions["interface"]['playlist_titles']) && !empty($aOptions["interface"]["playlist_captions"]) ) {

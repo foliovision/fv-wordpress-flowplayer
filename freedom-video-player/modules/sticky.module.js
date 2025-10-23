@@ -22,12 +22,19 @@ flowplayer(function(api, root) {
   }
 
   function fv_player_is_in_viewport(el) {
-    var rect = el.getBoundingClientRect();
+    var rect = el.getBoundingClientRect(),
+      height = window.innerHeight;
+
+    var top = height - rect.top > el.clientHeight / 2,
+      bottom = rect.bottom > el.clientHeight / 4,
+      left = rect.left >= 0,
+      right = rect.right / 2 <= (window.innerWidth || document.documentElement.clientWidth);
+
     return (
-      rect.top >= 0 - (jQuery(el).outerHeight() / 2) &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + (jQuery(el).outerHeight() / 2) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      top &&
+      bottom &&
+      left &&
+      right
     );
   }
 
@@ -60,19 +67,30 @@ flowplayer(function(api, root) {
 
         // Not in viewport and the player loading, or it is the audible player
         if (
-          !fv_player_is_in_viewport($flowplayerDiv[0]) && (
-            api.playing ||
-            api.loading ||
-            flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ||
-            typeof root.fv_player_vast == 'object' && typeof root.fv_player_vast.adsManager_ == 'object' && typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' && root.fv_player_vast.adsManager_.getRemainingTime() > 0
+          ! fv_player_is_in_viewport( $flowplayerDiv[0] ) && (
+            api.playing && flowplayer.audible_instance == $root.data('freedomplayer-instance-id') ||
+            api.loading && ! api.sticky_exclude ||
+            typeof root.fv_player_vast == 'object' &&
+            root.fv_player_vast.adsManager_ &&
+            typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' &&
+            root.fv_player_vast.adsManager_.getRemainingTime() > 0
           )
         ) {
           if (jQuery("div.flowplayer.is-unSticky").length > 0) { // Sticky already added
             return false;
           } else {
+
+            if ( ! api.is_sticky ) {
+              fv_player_log( 'FV Player Sticky: Enable for: ' + $root.data( 'freedomplayer-instance-id' ) );
+            } 
+
             fv_player_sticky_class_add(); // Add sticky
           }
         } else {
+          if ( api.is_sticky ) {
+            fv_player_log( 'FV Player Sticky: Disable for: ' + $root.data( 'freedomplayer-instance-id' ) );
+          }
+
           fv_player_sticky_class_remove(); // Remove sticky
         }
       });

@@ -565,7 +565,7 @@ $this->strPrivateAPI - also
       $args = wp_parse_args( $args, array(
         'button1' => false, // req
         'button2' => false,
-        'function1' => $this->class_name.'_store_answer("'.$key.'", "true","' . $nonce . '")',
+        'function1' => $this->class_name.'_store_answer("'.$key.'", "' . ( ! empty( $args['value1'] ) ? esc_js( $args['value1'] ) : 'true' ) . '","' . $nonce . '")',
         'function2' => $this->class_name.'_store_answer("'.$key.'", "false","' . $nonce . '")',
         'heading' => false, // req
         'id' => false,  // req

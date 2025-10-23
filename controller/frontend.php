@@ -487,6 +487,10 @@ function flowplayer_prepare_scripts() {
       $aConf['airplay'] = true;
     }
 
+    if ( $fv_fp->_get_option('debug_log') ) {
+      $aConf['debug_log'] = true;
+    }
+
     $aConf['chromecast'] = false; // tell core Freedom Video Player and FV Player Pro <= 7.4.43.727 to not load Chromecast
     if( $fv_fp->_get_option('chromecast') ) {
       $aConf['chromecast'] = array(
@@ -548,6 +552,12 @@ function flowplayer_prepare_scripts() {
       'email_signup_nonce'        => wp_create_nonce( 'fv_player_email_signup' ),
       'video_position_save_nonce' => wp_create_nonce( 'fv_player_video_position_save' ),
     );
+
+    if ( is_user_logged_in() ) {
+      $aLocalize['is_user_logged_in'] = true;
+      $aLocalize['audio_name'] = get_user_meta( get_current_user_id(), 'fv_player_audio_name', true );
+      $aLocalize['audio_lang'] = get_user_meta( get_current_user_id(), 'fv_player_audio_lang', true );
+    }
 
     wp_localize_script( 'flowplayer', 'fv_flowplayer_conf', $aConf );
     if( current_user_can('manage_options') ) {
@@ -1322,4 +1332,18 @@ function fv_player_frontend_nonce_life( $seconds, $action = false ) {
     $seconds = 7 * DAY_IN_SECONDS;
   }
   return $seconds;
+}
+
+add_action( 'wp_ajax_fv_player_save_audio_settings', 'fv_player_save_audio_settings' );
+
+function fv_player_save_audio_settings() {
+  if (
+    empty( $_POST['nonce'] ) ||
+    ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_frontend' )
+  ) {
+    wp_send_json_error( 'Invalid nonce' );
+  }
+
+  update_user_meta( get_current_user_id(), 'fv_player_audio_name', sanitize_text_field( $_POST['name'] ) );
+  update_user_meta( get_current_user_id(), 'fv_player_audio_lang', sanitize_text_field( $_POST['lang'] ) );
 }

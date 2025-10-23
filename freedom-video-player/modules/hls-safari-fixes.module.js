@@ -34,7 +34,7 @@ flowplayer( function(api,root) {
 
       // If it's live stream there is no "waiting" event, so it never triggers
       if( api.live && video.src.match(/m3u8|stream_loader/) ) {
-        console.log("FV Player: iOS video element is a live stream...");
+        fv_player_log( 'FV Player Safari HLS: iOS video element is a live stream...' );
 
         clearInterval(live_stream_check);
 
@@ -42,7 +42,7 @@ flowplayer( function(api,root) {
           // Check if there is a valid HLS stream
           jQuery.get( video.src, function( response ) {
             if( !response.match(/#EXT/) ) {
-              console.log("FV Player: iOS video element live stream does not look like a HLS file, triggering error...");
+              fv_player_log( 'FV Player Safari HLS: iOS video element live stream does not look like a HLS file, triggering error...' );
 
               // Trigger error, but use code 1 so that the reload routine will not be used
               api.trigger('error', [api, { code: 1, video: api.video }]);
@@ -78,13 +78,13 @@ flowplayer( function(api,root) {
       are_waiting_already++;
       if( are_waiting_already > 1 ) {
         if( are_waiting_already > 3 ) {
-          console.log("FV Player: iOS video element needs a push, triggering 'stalled'");
+          fv_player_log( 'FV Player Safari HLS: iOS video element needs a push, triggering "stalled"' );
           video_tag.trigger( "stalled" );
         }
         return;
       }
 
-      console.log("FV Player: iOS video element will trigger error after 'stalled' arrives");
+      fv_player_log( 'FV Player Safari HLS: iOS video element will trigger error after "stalled" arrives' );
 
       // then it also triggers this event if it really fails to load more
       video_tag.one( "stalled", function() {
@@ -92,18 +92,18 @@ flowplayer( function(api,root) {
 
         // simple video files can be checked directly
         if( api.video.type.match(/video\//) ) {
-          console.log("FV Player: Running check of video file...");
+          fv_player_log( 'FV Player Safari HLS: Running check of video file...' );
 
           // create a new video tag and let iOS fetch the meta data
           var test_video = document.createElement('video');
           test_video.src = api.video.src;
           test_video.onloadedmetadata = function() {
             are_waiting_already = 0;
-            console.log("FV Player: Video link works");
+            fv_player_log( 'FV Player Safari HLS: Video link works' );
           }
 
           test_video.onerror = function() {
-            console.log("FV Player: Video link issue!");
+            fv_player_log( 'FV Player Safari HLS: Video link issue!' );
             if( are_waiting_already > 0 ) {
               api.trigger('error', [api, { code: 4, video: api.video }]);
             }
@@ -114,13 +114,12 @@ flowplayer( function(api,root) {
         // for HLS streams -
         // give it a bit more time to really play
         setTimeout( function() {
-          console.log(api.video.time,time);
 
           // did the video advance?
           if( api.video.time != time ) {
             are_waiting_already = 0;
 
-            console.log("FV Player: iOS video element continues playing, no need for error");
+            fv_player_log( 'FV Player Safari HLS: iOS video element continues playing, no need for error' );
             return;
           }
 
@@ -128,7 +127,7 @@ flowplayer( function(api,root) {
           if( api.paused ) {
             are_waiting_already = 0;
 
-            console.log("FV Player: iOS video element paused, no need for error");
+            fv_player_log( 'FV Player Safari HLS: iOS video element paused, no need for error' );
             return;
           }
 
@@ -151,7 +150,7 @@ flowplayer( function(api,root) {
   api.on( 'ready', function( e, api ) {
     api.one( 'progress', function( e, api ) {
       recorded_duration = api.video.duration;
-      console.log( 'recorded_duration', recorded_duration );
+      fv_player_log( 'FV Player Safari HLS: Recorded duration: ' + recorded_duration );
     })
   });
 
@@ -160,7 +159,7 @@ flowplayer( function(api,root) {
     if ( video_tag.length ) {
       if ( parseInt( api.video.time ) === parseInt( video_tag[0].duration ) ) {
         if ( recorded_duration > api.video.time ) {
-          console.log( 'suddenly the video is much shorter, why?', recorded_duration, video_tag[0].duration );
+          fv_player_log( 'FV Player Safari HLS: Suddenly the video is much shorter ( ' + recorded_duration + ' > ' + api.video.time + ' ), triggering error... ' );
 
           api.video.duration = recorded_duration;
 

@@ -65,10 +65,13 @@ function fv_flowplayer_safety_resize() {
 	jQuery('.flowplayer').each( function() {
     if( !jQuery(this).is(":visible") || jQuery(this).hasClass('lightboxed') || jQuery(this).hasClass('lightbox-starter') || jQuery(this).hasClass('is-audio') ) return;
     
-		if( jQuery(this).width() < 30 || jQuery(this).height() < 20 ) {
+    var width = jQuery(this).width(),
+      height = jQuery(this).height();
+    
+		if( width < 30 || height < 20 ) {
 			fv_flowplayer_safety_resize_init = true
 			var el = jQuery(this);
-			while( jQuery(el).width() < 30 || jQuery(el).width() == jQuery(this).width() ) {
+			while( jQuery(el).width() < 30 || jQuery(el).width() == width ) {
         if( jQuery(el).parent().length == 0 ) break; 
 				el = jQuery(el).parent();
 
@@ -84,14 +87,20 @@ function fv_flowplayer_safety_resize() {
         }
 			}
 			
-			jQuery(this).width( jQuery(el).width() );
-			jQuery(this).height( parseInt(jQuery(this).width() * jQuery(this).attr('data-ratio')) );					
+      width = jQuery(el).width();
+      height = parseInt( width * jQuery(this).attr('data-ratio') );
+
+			jQuery(this).width(width );
+			jQuery(this).height( height );
+
+      fv_player_log( 'FV Player Safety Resize: Set player ' + jQuery(this).data('freedomplayer-instance-id') + ' to ' + width + 'x' + height );
+
 			fv_flowplayer_safety_resize_arr[jQuery(this).attr('id')] = el;                  
 		}
 	} );
 	
 	if( fv_flowplayer_safety_resize_init ) {
-		jQuery(window).resize(function() {
+		jQuery(window).on( 'resize', function() {
 			jQuery('.flowplayer').each( function() {
         if( jQuery(this).hasClass('lightboxed') || jQuery(this).hasClass('lightbox-starter') ) return;
         

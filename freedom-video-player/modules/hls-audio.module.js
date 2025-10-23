@@ -22,6 +22,8 @@ flowplayer( function(api,root) {
     if( hlsjs && api.video.type == 'application/x-mpegurl') {
       parseAudioTracksHlsJs(hlsjs);
       createAudioMenu();
+
+      restoreAudioTrack();
     }
   });
   
@@ -30,6 +32,8 @@ flowplayer( function(api,root) {
     if( api.engine.engineName == 'html5' && api.video.type == 'application/x-mpegurl') {
       parseAudioTracksSafari()
       createAudioMenu();
+
+      restoreAudioTrack();
     }
   });
   
@@ -73,13 +77,16 @@ flowplayer( function(api,root) {
         api.hideMenu(hls_audio_menu[0]);
       }
       else {
-        root.click();
+        root.trigger( 'click' );
         api.showMenu(hls_audio_menu[0]);
       }
     });
 
     jQuery('a',hls_audio_menu).on('click', function(e) {
-      var adata = e.target.getAttribute("data-audio");
+      var adata = e.target.getAttribute("data-audio"),
+        selected_name = false,
+        selected_lang = false;
+
       if( hlsjs ) {
         var gid = hlsjs.audioTracks[hlsjs.audioTrack].groupId;
 
@@ -90,7 +97,10 @@ flowplayer( function(api,root) {
         hlsjs.audioTrack = atrack.id; // change track
         
         hilightAudioTrack(atrack);
-        
+
+        selected_name = atrack.name || atrack.label;
+        selected_lang = atrack.lang;
+
       } else {
         var tracks = getVideoTagAudioTracks();
         for( var i in tracks ) {
@@ -100,11 +110,31 @@ flowplayer( function(api,root) {
             tracks[i].enabled = true;
             
             hilightAudioTrack(tracks[i]);
+
+            selected_name = tracks[i].name || tracks[i].label;
+            selected_lang = tracks[i].language;
           }
         }
-        
+
       }
-      
+
+      if ( ! fv_flowplayer_conf.disable_localstorage ) {
+        localStorage.fv_player_audio_name = selected_name;
+        localStorage.fv_player_audio_lang = selected_lang;
+      } 
+
+      if ( fv_player.is_user_logged_in ) {
+        jQuery.post(
+          fv_player.ajaxurl,
+          {
+            action: 'fv_player_save_audio_settings',
+            name: selected_name,
+            lang: selected_lang,
+            nonce: fv_player.nonce
+          }
+        )
+      }
+
     });
 
     if( hlsjs ) {
@@ -159,6 +189,113 @@ flowplayer( function(api,root) {
         id: tracks[i].id,
         name: tracks[i].label,
       } );
+    }
+  }
+
+  function restoreAudioTrack() {
+    var audio_name = localStorage.fv_player_audio_name,
+      audio_lang = localStorage.fv_player_audio_lang;
+
+    if ( fv_player.audio_name ) {
+      audio_name = fv_player.audio_name;
+    }
+
+    if ( fv_player.audio_lang ) {
+      audio_lang = fv_player.audio_lang;
+    }
+
+    if ( ! audio_name && ! audio_lang ) {
+      return;
+    }
+
+    if( hlsjs ) {
+      var gid = hlsjs.audioTracks[hlsjs.audioTrack].groupId;
+
+      var atrack = hlsjs.audioTracks.filter( function(at) {
+        return at.groupId === gid && (
+          at.name === audio_name && at.lang === audio_lang
+        );
+      })[0];
+
+      // Fall back to matching name
+      if ( ! atrack ) {
+        atrack = hlsjs.audioTracks.filter( function(at) {
+          return at.groupId === gid && (
+            at.name === audio_name
+          );
+        })[0];
+      }
+
+      // Fall back to matching language
+      if ( ! atrack ) {
+        atrack = hlsjs.audioTracks.filter( function(at) {
+          return at.groupId === gid && (
+            at.lang === audio_lang
+          );
+        })[0];
+      }
+
+      if ( atrack ) {
+        fv_player_log( 'FV Player Audio Track: Selected ' + atrack.name + ' (' + atrack.lang + ')' );
+
+        hlsjs.audioTrack = atrack.id;
+
+        hilightAudioTrack( atrack );
+
+      } else {
+        fv_player_log( 'FV Player Audio Track: No audio track found for ' + audio_name + ' (' + audio_lang + ')' );
+      }
+
+    } else {
+      var tracks = getVideoTagAudioTracks();
+
+      // Look for exact match first - name and language
+      var found = false;
+      for( var i in tracks ) {
+        if ( ! tracks.hasOwnProperty(i) ) continue;
+
+        if (
+          tracks.hasOwnProperty( i ) && 
+          ( tracks[i].label == audio_name || tracks[i].name == audio_name ) &&
+          tracks[i].language == audio_lang
+        ) {
+          found = i;
+        }
+      }
+
+      // Fall back to matching name
+      if ( ! found ) {
+        for( var i in tracks ) {
+          if ( ! tracks.hasOwnProperty(i) ) continue;
+  
+          if ( tracks[i].label == audio_name || tracks[i].name == audio_name ) {
+            found = i;
+          }
+        }
+
+        // Fall back to matching language
+        if ( ! found ) {
+          for( var i in tracks ) {
+            if ( ! tracks.hasOwnProperty(i) ) continue;
+    
+            if ( tracks[i].language == audio_lang ) {
+              found = i;
+            }
+          }
+        }
+      }
+
+      if ( found ) {
+        fv_player_log( 'FV Player Audio Track: Selected ' + tracks[ found ].label + ' (' + tracks[ found ].language + ')' );
+  
+        tracks[ found ].enabled = true;
+
+        hilightAudioTrack( tracks[ found ] );
+
+      } else {
+        fv_player_log( 'FV Player Audio Track: No audio track found for ' + audio_name + ' (' + audio_lang + ')' );
+      }
+
     }
   }
 
