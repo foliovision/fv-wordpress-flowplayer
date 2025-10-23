@@ -642,7 +642,7 @@ add_action('admin_notices', 'fv_wordpress_flowplayer_expired_license_update_noti
 
 function fv_wordpress_flowplayer_expired_license_update_notice() {
   if( get_current_screen()->base === 'update-core' && get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player' ) . '</p></div>';
+    echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'To update FV Player please either renew your support and updates or disable FV Player Pro.', 'fv-player' ) . '</p></div>';
   }
 }
 
@@ -650,7 +650,7 @@ add_action( 'after_plugin_row_fv-player/fv-player.php', 'fv_wordpress_flowplayer
 
 function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file, $plugin_data, $status) {
   if( get_option('fv_wordpress_flowplayer_expired_license_update_notice') ) {
-    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>' . esc_html__('To update FV Player please either renew your license or disable FV Player Pro.', 'fv-player') . '</p></div></td></tr>';
+    echo '<tr class="plugin-update-tr active" style="position: relative; top: -1px"><td colspan="4" class="plugin-update colspanchange"><div class="update-message notice inline notice-warning notice-alt"><p>' . esc_html__('To update FV Player please either renew your support and updates or disable FV Player Pro.', 'fv-player') . '</p></div></td></tr>';
   }
 }
 
