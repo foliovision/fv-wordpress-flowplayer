@@ -143,6 +143,11 @@ Localizing flowplayer with fv_flowplayer_conf = Array
             [use_for_safari] =>
         )
 
+    [msg] => Array
+        (
+            [click_to_unmute] => Click to unmute
+        )
+
 )
 
 Localizing flowplayer with fv_player = Array
@@ -216,7 +221,6 @@ Localizing flowplayer with fv_flowplayer_translations = Array
     [duration_n_seconds] => %s second
     [and] =>  and
     [chrome_extension_disable_html5_autoplay] => It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos
-    [click_to_unmute] => Click to unmute
     [audio_button] => AUD
     [audio_menu] => Audio
     [iphone_swipe_up_location_bar] => To enjoy fullscreen swipe up to hide location bar.
