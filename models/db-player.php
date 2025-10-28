@@ -77,6 +77,13 @@ class FV_Player_Db_Player {
     $DB_Instance = null;
 
   /**
+   * @param int $trailer_video_id
+   */
+  public function setTrailerVideoId( $trailer_video_id ) {
+    $this->trailer_video = $trailer_video_id;
+  }    
+
+  /**
    * @param mixed $videos
    */
   public function setVideos( $videos ) {

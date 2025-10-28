@@ -1930,6 +1930,15 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
             $export_data['videos'][] = $video_export_data;
           }
         }
+
+        $trailer_video_id = $player->getTrailerVideoId();
+        if ( $trailer_video_id ) {
+          $trailer_video = new FV_Player_Db_Video( $trailer_video_id );
+          if ( $trailer_video->getIsValid() ) {
+            $export_data['trailer_video'] = $trailer_video->export();
+          }
+        }
+
       } else {
         if ($output_result) {
           die( 'invalid player ID, export unsuccessful - please use the close button and try again' );
@@ -1991,7 +2000,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
         // first, create the player
         $player_keys = $data;
-        unset($player_keys['meta'], $player_keys['videos']);
+        unset( $player_keys['meta'], $player_keys['videos'], $player_keys['trailer_video'] );
 
         foreach( $player_keys AS $k => $v ) {
           if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
@@ -2015,6 +2024,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
               unset($video_data['caption']);
             }
 
+            // Sanitize input keys in case we are exporting the player saving error message.
             foreach( $video_data AS $k => $v ) {
               if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
                 $new = str_replace( 'fv_wp_flowplayer_field_', '', $k );
@@ -2077,6 +2087,29 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
             $player_video_ids[] = $id_video;
           }
+        }
+
+        // Import trailer video.
+        if ( ! empty( $data['trailer_video'] ) && is_array( $data['trailer_video'] ) ) {
+          $trailer_video_data = $data['trailer_video'];
+
+          // Sanitize input keys in case we are exporting the player saving error message.
+          foreach( $trailer_video_data AS $k => $v ) {
+            if ( stripos( $k, 'fv_wp_flowplayer_field_' ) === 0 ) {
+              $new = str_replace( 'fv_wp_flowplayer_field_', '', $k );
+              $trailer_video_data[ $new ] = $v;
+              unset( $trailer_video_data[ $k ] );
+            }
+          }
+
+          // Skip video meta check if the import is taking more than 10 seconds.
+          // We could also rely on the PHP max_execution_time/2 or so.
+          $skip_video_meta_check = ( microtime(true) - $time_import_start ) > 10;            
+
+          $video_object = new FV_Player_Db_Video( null, $trailer_video_data, $FV_Player_Db );
+          $id_video = $video_object->save( $trailer_video_data['meta'], false, $skip_video_meta_check );
+
+          $player->setTrailerVideoId( $id_video );
         }
 
         // set video IDs for the player
