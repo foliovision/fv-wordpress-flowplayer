@@ -746,16 +746,17 @@ function fv_flowplayer_admin_privacy() {
 function fv_flowplayer_admin_seo() {
   global $fv_fp;
 ?>
-        <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__( 'Use Schema.org markup', 'fv-player' ), array( 'integrations', 'schema_org' ), __( ' Adds the video meta data information for search engines.', 'fv-player' ) ); ?>
-          <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
-          <tr>
-            <td colspan="4">
-              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
-              <a class="button fv-help-link" href="https://foliovision.com/player/settings/video-seo-schema-xml" target="_blank">Help</a>
-              </td>
-          </tr>
-        </table>
+  <table class="form-table2">
+    <?php $fv_fp->_get_checkbox(__( 'Use Open Graph and X Cards', 'fv-player' ), array( 'integrations', 'open_graph' ), __( 'Accepts MP4 videos with no URL signature. Takes priority over FV Simpler SEO, Rank Math and SEOPress tags.', 'fv-player' ) ); ?>
+    <?php $fv_fp->_get_checkbox(__( 'Use Schema.org markup', 'fv-player' ), array( 'integrations', 'schema_org' ), __( 'Adds the video meta data information for search engines.', 'fv-player' ) ); ?>
+    <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
+    <tr>
+      <td colspan="4">
+        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+        <a class="button fv-help-link" href="https://foliovision.com/player/settings/video-seo-schema-xml" target="_blank">Help</a>
+        </td>
+    </tr>
+  </table>
 <?php
 }
 
