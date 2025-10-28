@@ -73,6 +73,17 @@ class FV_Player_Open_Graph {
 		}
 
 		if ( $video_for_open_graph ) {
+
+			// Stop FV Simpler SEO X Cards from appearing.
+			global $fvseo;
+			remove_action('wp_head', array( $fvseo, 'social_meta_tags' ) );
+
+			// Disable Rank Math Open Graph.
+			add_filter( 'rank_math/frontend/disable_integration', '__return_true' );
+
+			// Disable SEOPress Open Graph.
+			remove_action( 'wp_head', 'seopress_load_social_options', 0 );
+
 			$title       = get_the_title( $post->ID );
 			$site_name   = get_bloginfo( 'name' );
 
