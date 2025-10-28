@@ -58,6 +58,17 @@ class FV_Player_X_Cards {
 		}
 
 		if ( $player_for_x_card && $video_for_x_card ) {
+
+			// Stop FV Simpler SEO X Cards from appearing.
+			global $fvseo;
+			remove_action('wp_head', array( $fvseo, 'social_meta_tags' ) );
+
+			// Disable Rank Math X Cards.
+			add_filter( 'rank_math/frontend/disable_integration', '__return_true' );
+
+			// Disable SEOPress Open Graph.
+			remove_action( 'wp_head', 'seopress_load_social_options', 0 );
+
 			$title  = get_the_title( $post->ID );
 
 			$player_url = user_trailingslashit( trailingslashit( get_permalink( $post->ID ) ) . 'fvp-' . $player_for_x_card->getId() );
