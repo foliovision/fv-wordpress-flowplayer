@@ -232,6 +232,7 @@ include_once(dirname( __FILE__ ) . '/models/tutor-lms.class.php');
 
 if ( $fv_fp->_get_option( array( 'integrations', 'open_graph' ) ) ) {
   include_once(dirname( __FILE__ ) . '/models/open-graph.php');
+  include_once(dirname( __FILE__ ) . '/models/x-cards.php');
 }
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
