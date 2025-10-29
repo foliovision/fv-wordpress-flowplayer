@@ -118,7 +118,7 @@ class FV_Player_Open_Graph {
 			$this->tags   = array();
 			$this->tags[] = '<meta property="og:title" content="' . esc_attr( $title ) . '" />';
 			$this->tags[] = '<meta property="og:site_name" content="' . esc_attr( $site_name ) . '" />';
-			$this->tags[] = '<meta property="og:type" content="video" />';
+			$this->tags[] = '<meta property="og:url" content="' . esc_url( get_permalink( $post->ID ) ) . '" />';
 			if ( $description ) {
 				$this->tags[] = '<meta property="og:description" content="' . esc_attr( $description ) . '" />';
 			}
