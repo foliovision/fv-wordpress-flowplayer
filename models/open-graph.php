@@ -133,6 +133,9 @@ class FV_Player_Open_Graph {
 			}
 
 			$this->tags[] = '<meta property="og:video" content="' . esc_url( $video_src ) . '">';
+			$this->tags[] = '<meta property="og:video:url" content="' . esc_url( $video_src ) . '">';
+			$this->tags[] = '<meta property="og:video:secure_url" content="' . esc_url( $video_src ) . '">';
+
 			$this->tags[] = '<meta property="og:video:type" content="video/mp4">';
 			if ( $video_width ) {
 				$this->tags[] = '<meta property="og:video:width" content="' . esc_attr( $video_width ) . '">';
