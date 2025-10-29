@@ -76,7 +76,7 @@ class FV_Player_X_Cards {
 			$video_width = 640;
 
 			$aspect_ratio = $video_for_x_card->getAspectRatio();
-			if ( $aspect_ratio ) {
+			if ( ! $aspect_ratio ) {
 				$aspect_ratio = 9/16;
 			}
 
