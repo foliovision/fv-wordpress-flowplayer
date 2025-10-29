@@ -39,6 +39,7 @@ class FV_Player_Open_Graph {
 
 		// Find video video that is a MP4 without signed URL requirement.
 		$video_for_open_graph = false;
+		$splash               = false;
 
 		foreach( $shortcodes as $shortcode ) {
 			$atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
@@ -60,12 +61,19 @@ class FV_Player_Open_Graph {
 					}
 
 					foreach( $videos as $video ) {
+
+						// Take first splash image with URL signature.
+						if ( ! $splash && $video->getSplash() && apply_filters( 'fv_flowplayer_resource', $video->getSplash() ) === $video->getSplash() ) {
+							$splash = $video->getSplash();
+						}
+
+						// Take first MP4 video without URL signature.
 						if (
+							! $video_for_open_graph &&
 							stripos( $video->getSrc(), '.mp4' ) !== false &&
 							apply_filters( 'fv_flowplayer_video_src', $video->getSrc(), array( 'dynamic' => true ) ) === $video->getSrc()
 						) {
 							$video_for_open_graph = $video;
-							break 2;
 						}
 					}
 				}
@@ -114,6 +122,15 @@ class FV_Player_Open_Graph {
 			if ( $description ) {
 				$this->tags[] = '<meta property="og:description" content="' . esc_attr( $description ) . '" />';
 			}
+
+			if ( ! $splash ) {
+				$splash = get_the_post_thumbnail_url( $post->ID, 'thumbnail' );
+			}
+
+			if ( $splash ) {
+				$this->tags[] = '<meta property="og:image" content="' . esc_url( $splash ) . '" />';
+			}
+
 			$this->tags[] = '<meta property="og:video" content="' . esc_url( $video_src ) . '">';
 			$this->tags[] = '<meta property="og:video:type" content="video/mp4">';
 			if ( $video_width ) {
