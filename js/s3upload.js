@@ -154,8 +154,46 @@ S3MultiUpload.prototype.validateFile = function() {
             self.onValidationSuccess(data);
             self.createMultipartUpload();
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        self.onValidationError('Validation request failed: ' + textStatus);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        // Try to extract as much info as possible from the jqXHR object
+        var errorMsg = 'Validation request failed: ' + textStatus;
+
+        // Check for HTTP status
+        if (jqXHR.status) {
+            errorMsg += ' (HTTP ' + jqXHR.status + ')';
+        }
+
+        // Try to extract server response text
+        if (jqXHR.responseText) {
+            // Try to parse as JSON for any structured error message
+            try {
+                var responseJson = JSON.parse(jqXHR.responseText);
+                if (responseJson.error) {
+                    errorMsg += ' - ' + responseJson.error;
+                } else if (responseJson.message) {
+                    errorMsg += ' - ' + responseJson.message;
+                } else {
+                    errorMsg += ' - ' + jqXHR.responseText;
+                }
+            } catch (e) {
+                // Not JSON, but check if there's HTML—strip tags before appending the response
+                var rawResponse = jqXHR.responseText;
+                if (typeof rawResponse === "string") {
+                    // Create a temporary DOM element and extract text content to strip HTML tags
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = rawResponse;
+                    rawResponse = tempDiv.textContent || tempDiv.innerText || "";
+                }
+                errorMsg += ' - ' + rawResponse;
+            }
+        }
+
+        // If there's an explicit error passed by jQuery as errorThrown, add it too
+        if (errorThrown) {
+            errorMsg += ' (' + errorThrown + ')';
+        }
+
+        self.onValidationError(errorMsg);
     });
 };
 
