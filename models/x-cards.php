@@ -40,18 +40,43 @@ class FV_Player_X_Cards {
 		// Find first player and its video.
 		$player_for_x_card = false;
 		$video_for_x_card  = false;
+		$splash            = false;
 
 		foreach( $shortcodes as $shortcode ) {
 			$atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
 			if ( ! empty( $atts['id'] ) ) {
 				$player = new FV_Player_Db_Player( $atts['id'] );
 				if ( $player->getIsValid() ) {
-					$player_for_x_card = $player;
-
 					$videos = $player->getVideos();
+
+					// Try the trailer video first.
+					$trailer_video_id = $player->getTrailerVideoId();
+					if ( $trailer_video_id ) {
+						$trailer_video = new FV_Player_Db_Video( $trailer_video_id );
+						if ( $trailer_video->getIsValid() ) {
+							if ( ! $videos ) { 
+								$videos = array();
+							}
+							$videos = array_merge( array( $trailer_video ), $videos );
+						}
+					}
+
 					foreach( $videos as $video ) {
-						$video_for_x_card = $video;
-						break;
+
+						// Take first splash image with URL signature.
+						if ( ! $splash && $video->getSplash() && apply_filters( 'fv_flowplayer_resource', $video->getSplash() ) === $video->getSplash() ) {
+							$splash = $video->getSplash();
+						}
+
+						// Take first MP4 video without URL signature.
+						if (
+							! $video_for_x_card &&
+							stripos( $video->getSrc(), '.mp4' ) !== false &&
+							apply_filters( 'fv_flowplayer_video_src', $video->getSrc(), array( 'dynamic' => true ) ) === $video->getSrc()
+						) {
+							$player_for_x_card = $player;
+							$video_for_x_card  = $video;
+						}
 					}
 				}
 			}
@@ -90,6 +115,7 @@ class FV_Player_X_Cards {
 			$this->tags[] = '<meta name="twitter:description" content="' . esc_attr( $this->get_description( $video_for_x_card ) ) . '" />';
 			$this->tags[] = '<meta name="twitter:url" content="' . esc_url( get_permalink( $post->ID ) ) . '">';
 			$this->tags[] = '<meta name="twitter:player" content="' . esc_url( $player_url ) . '">';
+			$this->tags[] = '<meta name="twitter:player:stream" content="' . esc_url( $video_for_x_card->getSrc() ) . '">';
 
 			if ( $video_width ) {
 				$this->tags[] = '<meta name="twitter:player:width" content="' . esc_attr( $video_width ) . '">';
