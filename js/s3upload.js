@@ -125,10 +125,13 @@ S3MultiUpload.prototype.validateFile = function() {
                     self.onValidationError( self.max_duration.msg );
                     return;
                 }
-
-                // Set the Betube video submission field
-                jQuery( 'body.wp-theme-betube [name=post_time]' ).val( data.file_analysis.duration );
             }
+
+            if ( data.file_analysis.duration_hms ) {
+                // Set the Betube video submission field
+                jQuery( 'body.wp-theme-betube [name=post_time]' ).val( data.file_analysis.duration_hms );
+            }
+
             if ( data.file_analysis.height ) {
 
                 // Set the Betube video submission field
