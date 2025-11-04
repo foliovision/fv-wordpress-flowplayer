@@ -521,7 +521,7 @@ abstract class FV_Player_Video_Encoder {
       $check_result = $this->job_check( $pending_job );
 
       // if this job was completed, update SRC of all players where its temporary placeholder is used
-      if ( $check_result['status'] == 'completed' ) {
+      if ( ! empty( $check_result['status'] ) && $check_result['status'] == 'completed' ) {
         $this->update_temporary_job_src( $check_result, $pending_job->id );
       }
     }
