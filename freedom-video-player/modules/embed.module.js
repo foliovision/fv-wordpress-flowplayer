@@ -11,6 +11,15 @@ flowplayer(function(player, root) {
     var height = root.height();
     height += 2;
 
+    // Limit iframe height for vertical videos to 720 pixels
+    if ( height > width ) {
+      if ( height > 720 ) {
+        var ration = width / height;
+        height = 720;
+        width  = height * ration;
+      }
+    }
+
     // adjust height to show at least some of chapters and transcripts
     if (root.hasClass('has-chapters') || root.hasClass('has-transcript') ) {
       height += 300;
