@@ -71,33 +71,13 @@ class FV_Player_X_Cards {
 
 			$title  = get_the_title( $post->ID );
 
-			$player_url = user_trailingslashit( trailingslashit( get_permalink( $post->ID ) ) . 'fvp-' . $player_for_x_card->getId() );
-
-			$video_width = 640;
-
-			$aspect_ratio = $video_for_x_card->getAspectRatio();
-			if ( ! $aspect_ratio ) {
-				$aspect_ratio = 9/16;
-			}
-
-			$video_height = round( $video_width * $aspect_ratio );
-
 			// Output the HTML.
 			$this->tags   = array();
 			$this->tags[] = '<meta name="twitter:title" content="' . esc_attr( $title ) . '" />';
-			$this->tags[] = '<meta name="twitter:card" content="player" />';
+			$this->tags[] = '<meta name="twitter:card" content="summary_large_image" />';
 			$this->tags[] = '<meta name="twitter:image" content="' . esc_url( $this->get_splash( $video_for_x_card ) ) . '" />';
 			$this->tags[] = '<meta name="twitter:description" content="' . esc_attr( $this->get_description( $video_for_x_card ) ) . '" />';
 			$this->tags[] = '<meta name="twitter:url" content="' . esc_url( get_permalink( $post->ID ) ) . '">';
-			$this->tags[] = '<meta name="twitter:player" content="' . esc_url( $player_url ) . '">';
-
-			if ( $video_width ) {
-				$this->tags[] = '<meta name="twitter:player:width" content="' . esc_attr( $video_width ) . '">';
-			}
-
-			if ( $video_height ) {
-				$this->tags[] = '<meta name="twitter:player:height" content="' . esc_attr( $video_height) . '">';
-			}
 		}
 	}
 
