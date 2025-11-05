@@ -3025,18 +3025,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $bFound = true;
             break;
           }
-
-          // If Open Graph is enabled, look for player with the matching ID as we need it for X Cards.
-          if ( $this->_get_option( array( 'integrations', 'open_graph' ) ) ) {
-            if ( preg_match( '/id="wpfp_(\d+)"/', $v, $matches ) ) {
-              // Use absint() as $embed_id is like -470 matched out of site.com/post/fv-470
-              if ( absint( $matches[1] ) === absint( $this->embed_id ) ) {
-                echo substr( $v, stripos( $v, '<div id="wpfp_' ) );
-                $bFound = true;
-                break;
-              }
-            }
-          }
         }
       }
 
