@@ -143,8 +143,8 @@ class FV_Player_X_Cards {
 
 		if (
 			! $splash ||
-			stripos( $splash, '//' . $home_url_host . '/' ) === 0 &&
-			stripos( $splash, '.' . $home_url_host . '/' ) === 0 ||
+			stripos( $splash, '//' . $home_url_host . '/' ) === false &&
+			stripos( $splash, '.' . $home_url_host . '/' ) === false ||
 			apply_filters( 'fv_flowplayer_resource', $splash ) !== $splash
 		) {
 			$splash = get_the_post_thumbnail_url( $post->ID, 'thumbnail' );
