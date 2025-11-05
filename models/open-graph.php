@@ -38,7 +38,6 @@ class FV_Player_Open_Graph {
 		}
 
 		// Find video video that is a MP4 without signed URL requirement.
-		$player_for_open_graph = false;
 		$video_for_open_graph = false;
 		$splash               = false;
 
@@ -74,7 +73,6 @@ class FV_Player_Open_Graph {
 							stripos( $video->getSrc(), '.mp4' ) !== false &&
 							apply_filters( 'fv_flowplayer_video_src', $video->getSrc(), array( 'dynamic' => true ) ) === $video->getSrc()
 						) {
-							$player_for_open_graph = $player;
 							$video_for_open_graph = $video;
 						}
 					}
@@ -148,9 +146,6 @@ class FV_Player_Open_Graph {
 			if ( $video_duration ) {
 				$this->tags[] = '<meta property="og:video:duration" content="' . esc_attr( $video_duration ) . '">';
 			}
-
-			$player_url = user_trailingslashit( trailingslashit( get_permalink( $post->ID ) ) . 'fvp-' . $player_for_open_graph->getId() );
-			$this->tags[] = '<meta property="og:video:iframe" content="' . esc_attr( $player_url ) . '">';
 		}
 	}
 
