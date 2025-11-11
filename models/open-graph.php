@@ -21,7 +21,7 @@ class FV_Player_Open_Graph {
 	public function find_suitable_video() {
 		global $post;
 
-		if ( !is_singular() ) {
+		if ( !is_singular() || empty( $post ) ) {
 			return;
 		}
 
