@@ -113,8 +113,8 @@ function fv_player_block_add_missing_attributes_callback($matches) {
   $player_id = preg_match('/id="(\d+)"/', $matches[0], $player_id_matches) ? $player_id_matches[1] : 0;
 
   // bail out if no player id
-  if ( !$player_id ) {
-    return $matches[0];
+  if ( ! $player_id ) {
+    return '<!-- wp:fv-player-gutenberg/basic --><!-- /wp:fv-player-gutenberg/basic -->';
   }
 
   $player = new FV_Player_Db_Player( $player_id );
@@ -195,7 +195,7 @@ function fv_player_handle_rest_content($response) {
 }
 
 // Register the rest_prepare_post filter for all post types once they got a chance to be registered
-add_action( 'init', 'fv_player_handle_rest_content_register' );
+add_action( 'init', 'fv_player_handle_rest_content_register', 999 );
 
 function fv_player_handle_rest_content_register() {
   if ( function_exists( 'get_post_types' ) ) {
