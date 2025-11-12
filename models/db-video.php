@@ -31,6 +31,7 @@ class FV_Player_Db_Video {
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
     $splash_attachment_id, // splash attachment id
+    $sharing_image, // URL to the sharing image
     $src, // the main video source
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
@@ -285,6 +286,7 @@ CREATE TABLE " . self::$db_table_name . " (
   splash_attachment_id bigint(20) unsigned,
   splash varchar(1024) NOT NULL,
   splash_text varchar(512) NOT NULL,
+  sharing_image varchar(1024) NOT NULL,
   title varchar(1024) NOT NULL,
   title_hide varchar(7) NOT NULL,
   end varchar(16) NOT NULL,
@@ -1105,6 +1107,11 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
       }
+    }
+
+    // TODO: This should only happen if there was a change in the splash image.
+    if ( $splash_attachment_id ) {
+      $this->sharing_image = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id );
     }
 
     $this->save_do( true );
