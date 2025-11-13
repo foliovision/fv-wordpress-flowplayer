@@ -526,6 +526,11 @@ class FV_Player_X_Cards {
 	private function get_splash( $video ) {
 		global $post;
 
+		$sharing_image = $video->getSharingImage();
+		if ( $sharing_image ) {
+			return $sharing_image;
+		}
+
 		$splash = $video->getSplash();
 
 		$home_url_host = wp_parse_url( home_url(), PHP_URL_HOST );
