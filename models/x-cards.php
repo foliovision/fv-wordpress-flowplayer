@@ -31,22 +31,64 @@ class FV_Player_X_Cards {
 			return false;
 		}
 
-		// Check if this is an image
-		$mime_type = get_post_mime_type( $attachment_id_or_url );
-		if ( ! $mime_type || strpos( $mime_type, 'image/' ) !== 0 ) {
-			return;
-		}
-	
-		// Get the attachment file path
-		$file_path = get_attached_file( $attachment_id_or_url );
-		if ( ! $file_path ) {
-			return;
-		}
+		$filename = false;
 
-		// Prepare the splash image (copy/resize)
-		$filename = self::copy_and_resize_splash_image( $file_path );
-		if ( ! $filename ) {
-			return;
+		// Download the image if it's an URL.
+		if ( sanitize_url( $attachment_id_or_url ) && in_array( strtolower( pathinfo( wp_parse_url( $attachment_id_or_url, PHP_URL_PATH ), PATHINFO_EXTENSION ) ), array( 'jpg', 'jpeg', 'png', 'gif' ) ) ) {
+
+			// Let FV Player add URL signature if needed.
+			$download_url = apply_filters( 'fv_flowplayer_resource', $attachment_id_or_url );
+
+			// Download the image to a temporary file
+			if ( ! function_exists( 'download_url' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+			}
+
+			$temp_file = download_url( $download_url );
+			if ( is_wp_error( $temp_file ) ) {
+				return false;
+			}
+
+			$path_no_query_string = wp_parse_url( $attachment_id_or_url, PHP_URL_PATH );
+			$folder               = dirname( $path_no_query_string );
+			$filename             = basename( $path_no_query_string );
+			$extension            = pathinfo( $filename, PATHINFO_EXTENSION );
+
+			// Use the folder name if the filename starts with something too generic and we have a real folder.
+			if ( stripos( $filename, 'thumbnail-' ) === 0 && "/" !== $folder ) {
+				$filename = basename( dirname( $path_no_query_string ) ) . '.' . $extension;
+			}
+
+			// Prepare the splash image (copy/resize to 1280px width)
+			$filename = self::copy_and_resize_splash_image( $temp_file, array( 'target_filename' => $filename ) );
+			
+			// Clean up temporary file
+			@unlink( $temp_file );
+
+			if ( ! $filename ) {
+				return false;
+			}
+
+		// Copy existing image from Media Library if it's an attachment ID.
+		} else if ( is_numeric( $attachment_id_or_url ) ) {
+
+			// Check if this is an image
+			$mime_type = get_post_mime_type( $attachment_id_or_url );
+			if ( ! $mime_type || strpos( $mime_type, 'image/' ) !== 0 ) {
+				return;
+			}
+		
+			// Get the attachment file path
+			$file_path = get_attached_file( $attachment_id_or_url );
+			if ( ! $file_path ) {
+				return;
+			}
+
+			// Prepare the splash image (copy/resize)
+			$filename = self::copy_and_resize_splash_image( $file_path );
+			if ( ! $filename ) {
+				return;
+			}
 		}
 
 		$target_path = trailingslashit( $upload_dir['basedir'] ) . 'fv-player-video-sharing/' . $filename;
@@ -295,13 +337,23 @@ class FV_Player_X_Cards {
 	 * Prepare splash image: copy and resize to 1280px wide in fv-player-video-sharing folder
 	 *
 	 * @param string $file_path Source image file path.
-	 * @param int    $target_width Target width in pixels. Default 1280.
+	 * @param array  $args      Arguments array.
+	 *                          'target_filename' => 'custom-filename-here.jpg' (optional),
+	 *                          'target_width'   => 1280,
 	 * @return string|false Target file path on success, false on failure.
 	 */
-	private static function copy_and_resize_splash_image( $file_path, $target_width = 1280 ) {
+	private static function copy_and_resize_splash_image( $file_path, $args = array() ) {
 		if ( ! $file_path || ! file_exists( $file_path ) ) {
 			return false;
 		}
+
+		$args = wp_parse_args( $args, array(
+			'target_filename' => false,
+			'target_width'   => 1280,
+		) );
+
+		$target_filename = $args['target_filename'];
+		$target_width    = $args['target_width'];
 
 		// Get upload directory
 		$upload_dir = wp_upload_dir();
@@ -329,7 +381,12 @@ class FV_Player_X_Cards {
 		}
 
 		// Generate filename for the processed image
-		$file_info = pathinfo( $file_path );
+		if ( $target_filename ) {
+			$file_info = pathinfo( $target_filename );
+
+		} else {
+			$file_info = pathinfo( $file_path );
+		}
 
 		// Generate unique filename if file exists
 		$ext      = isset( $file_info['extension'] ) ? '.' . $file_info['extension'] : '';

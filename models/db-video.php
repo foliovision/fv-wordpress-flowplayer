@@ -1114,9 +1114,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     // TODO: This should only happen if there was a change in the splash image.
-    if ( $splash_attachment_id ) {
-      $this->sharing_image = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id );
-    }
+    $this->sharing_image = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash() );
 
     $this->save_do( true );
 
