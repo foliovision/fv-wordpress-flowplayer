@@ -16,10 +16,6 @@ class FV_Player_X_Cards {
 		add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
 
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
-
-		if ( stripos( $_SERVER['REQUEST_URI'], 'wp-admin/media-new.php' ) === false ) {
-			add_action( 'add_attachment', array( $this, 'add_play_icon_to_splash_image' ) );
-		}
 	}
 
 	/**
