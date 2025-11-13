@@ -238,6 +238,10 @@ class FV_Player_Db_Video {
     return $this->is_valid;
   }
 
+  public function getUtilityFields() {
+    return array( 'is_valid', 'db_table_name', 'DB_Instance', 'meta_data' );
+  }
+
   /**
    * Initializes database name, including WP prefix
    * once WPDB class is initialized.
@@ -697,7 +701,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ( ! in_array( $property, $this->getUtilityFields(), true ) ) {
         if ( 'live' === $property ) {
           $value = $value ? true : false;
         }
@@ -1253,7 +1257,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ( ! in_array( $property, $this->getUtilityFields(), true ) ) {
+
+        // Also skip the ID field.
+        if ( 'id' === $property ) {
+          continue;
+        }
 
         if ( 'live' === $property ) {
           $value = $value ? true : false;
@@ -1314,7 +1323,13 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ( ! in_array( $property, $this->getUtilityFields(), true ) ) {
+
+        // Also skip the ID field.
+        if ( 'id' === $property ) {
+          continue;
+        }
+
         $export_data[$property] = $value;
       }
     }
