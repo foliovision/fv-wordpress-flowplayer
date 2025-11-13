@@ -43,6 +43,7 @@ class FV_Player_Db_Video {
     $live,
     $toggle_advanced_settings,
     $last_check,
+    $updated_fields = array(), // keep track of which fields have been updated in save()
     $meta_data = null; // object of this video's meta data
 
   private static
@@ -239,7 +240,7 @@ class FV_Player_Db_Video {
   }
 
   public function getUtilityFields() {
-    return array( 'is_valid', 'db_table_name', 'DB_Instance', 'meta_data' );
+    return array( 'is_valid', 'db_table_name', 'DB_Instance', 'meta_data', 'updated_fields' );
   }
 
   /**
@@ -568,7 +569,8 @@ CREATE TABLE " . self::$db_table_name . " (
       'height',
       'aspect_ratio',
       'duration',
-      'last_check'
+      'last_check',
+      'sharing_image'
     );
 
     $missing_something = false;
@@ -579,12 +581,27 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
+    $objVideo = new FV_Player_Db_Video( $id, array(), self::$DB_Instance );
+
     if( $missing_something ) {
-      $objVideo = new FV_Player_Db_Video( $id, array(), self::$DB_Instance );
       foreach( $fields AS $field ) {
         if( empty($this->$field) ) {
           $this->$field = $objVideo->$field;
         }
+      }
+    }
+
+    // Check which fields were updated.
+    foreach( $objVideo->getAllDataValues() as $key => $value ) {
+
+      // Compare only non-empty values, using numeric comparison for numbers.
+      if (
+        ! empty( $value ) && ! empty( $this->$key ) && (
+          ! is_numeric( $value ) && ! is_numeric( $this->$key ) && $value !== $this->$key ||
+          is_numeric( $value ) && is_numeric( $this->$key ) && intval( $value ) !== intval( $this->$key )
+        )
+      ) {
+        $this->updated_fields[] = $key;
       }
     }
 
