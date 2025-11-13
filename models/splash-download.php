@@ -23,64 +23,22 @@ class FV_Player_Splash_Download {
    * @return array
    */
   function splash_data($video_data, $post_id, $videoObj = false ) {
-
-    $force_download = false;
-
-    // Download image if it's stored on DigitalOcean Spaces for FV Coconut
-    global $fv_fp;
-    if ( stripos( $videoObj->getSplash(), $fv_fp->_get_option( array('coconut','s3_bucket') ) ) !== false ) {
-      $force_download = true;
-    }
-
     // Do not download if it's not a player video stored in database
     if ( !$videoObj ) {
       return $video_data;
     }
 
     // Do not download if video already has splash set
-    if ( ! $force_download && $videoObj && method_exists( $videoObj, 'getSplash' ) && $videoObj->getSplash() ) {
+    if ( $videoObj && method_exists( $videoObj, 'getSplash' ) && $videoObj->getSplash() ) {
       return $video_data;
     }
 
-    $download_url = false;
-    $name         = false;
-
-    // Download image obtained using videometa checks.
     if( is_array($video_data) && !empty($video_data['thumbnail']) ) {
-      $download_url = $video_data['thumbnail'];
-      $name         = isset($video_data['name']) ? $video_data['name'] : false;
+      $splash_data = $this->download_splash( $video_data['thumbnail'], isset($video_data['name']) ? $video_data['name'] : false );
 
-    // Forced image download.
-    } else if ( $force_download ) {
-      $download_url = apply_filters( 'fv_flowplayer_splash', $videoObj->getSplash() );
-      $name         = $videoObj->getTitle() ? $videoObj->getTitle() : $videoObj->getTitleFromSrc();
-    }
-
-    if ( $download_url ) {
-      $splash_data = $this->download_splash( $download_url, $name );
-
-      if ( !empty( $splash_data ) ) {
-
-        // Update image path in videometa data.
-        if ( is_array( $video_data ) ) {
-          $video_data['thumbnail'] = $splash_data['url'];
-          $video_data['splash_attachment_id'] = $splash_data['attachment_id'];
-        }
-
-        // Update the video splash and its ID.
-        if ( $force_download ) {
-          $videoObj->set( 'splash', $splash_data['url'] );
-          $videoObj->set( 'splash_attachment_id', $splash_data['attachment_id'] );
-          $videoObj->save(
-            // This meta makes sure editor shows the new value.
-            array(
-              array(
-                'meta_key' => 'auto_splash',
-                'meta_value' => true
-              )
-            ),
-          );
-        }
+      if( !empty( $splash_data ) ) {
+        $video_data['thumbnail'] = $splash_data['url'];
+        $video_data['splash_attachment_id'] = $splash_data['attachment_id'];
       }
     }
 
