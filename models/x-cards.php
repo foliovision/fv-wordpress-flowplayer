@@ -53,7 +53,7 @@ class FV_Player_X_Cards {
 
 		// Add play button overlay
 		// Get play button image path
-		$play_button_path = dirname( dirname( __FILE__ ) ) . '/images/playbutton-to-add-cropped-darkergrey-02.png';
+		$play_button_path = dirname( dirname( __FILE__ ) ) . '/images/playbutton-to-add-cropped-darkergrey-03.png';
 		if ( ! file_exists( $play_button_path ) ) {
 			return false;
 		}
