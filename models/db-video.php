@@ -151,6 +151,28 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * Get sharing image URL if the file exists in {upload basedir}/fv-player-video-sharing/.
+   *
+   * @return string
+   */
+  public function getSharingImage() {
+    if ( ! $this->sharing_image ) {
+      return false;
+    }
+
+    $upload_dir = wp_upload_dir();
+    if ( $upload_dir['error'] ) {
+      return false;
+    }
+
+    if ( ! file_exists( trailingslashit( $upload_dir['basedir'] ) . 'fv-player-video-sharing/' . $this->sharing_image ) ) {
+      return false;
+    }
+
+    return $upload_dir['baseurl'] . '/fv-player-video-sharing/' . $this->sharing_image;
+  }
+
+  /**
    * @return string
    */
   public function getSplash() {
@@ -1130,8 +1152,10 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
-    // TODO: This should only happen if there was a change in the splash image.
-    $this->sharing_image = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash() );
+    // Update the sharing image if the splash has changed or if the sharing image is not set.
+    if ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImage() ) {
+      $this->sharing_image = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash() );
+    }
 
     $this->save_do( true );
 
