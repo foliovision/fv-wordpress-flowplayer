@@ -334,12 +334,12 @@ class FV_Player_X_Cards {
 	}
 
 	/**
-	 * Prepare splash image: copy and resize to 1280px wide in fv-player-video-sharing folder
+	 * Prepare splash image: copy to {wp_uploads dir}/fv-player-video-sharing and resize to fit into the given size.
 	 *
 	 * @param string $file_path Source image file path.
 	 * @param array  $args      Arguments array.
 	 *                          'target_filename' => 'custom-filename-here.jpg' (optional),
-	 *                          'target_width'   => 1280,
+	 *                          'fit_to_size'   => 1280,
 	 * @return string|false Target file path on success, false on failure.
 	 */
 	private static function copy_and_resize_splash_image( $file_path, $args = array() ) {
@@ -349,11 +349,11 @@ class FV_Player_X_Cards {
 
 		$args = wp_parse_args( $args, array(
 			'target_filename' => false,
-			'target_width'   => 1280,
+			'fit_to_size'     => 1280,
 		) );
 
 		$target_filename = $args['target_filename'];
-		$target_width    = $args['target_width'];
+		$fit_to_size     = absint( $args['fit_to_size'] );
 
 		// Get upload directory
 		$upload_dir = wp_upload_dir();
@@ -400,16 +400,26 @@ class FV_Player_X_Cards {
 
 		$target_path = trailingslashit( $target_dir ) . $filename;
 
-		if ( $image_size['width'] <= $target_width ) {
-			// Image is already smaller or equal, just copy it
+		// Image is already smaller or equal, just copy it
+		if ( $image_size['width'] <= $fit_to_size && $image_size['height'] <= $fit_to_size ) {
 			if ( ! copy( $file_path, $target_path ) ) {
 				return false;
 			}
 
 		} else {
-			// Calculate proportional height
+			// Calculate proportional height or width, depending on the image aspect ratio.
 			$ratio = $image_size['height'] / $image_size['width'];
-			$target_height = round( $target_width * $ratio );
+
+			if ( $ratio > 1 ) {
+				$target_height = $fit_to_size;
+				$target_width = round( $target_height / $ratio );
+
+			} else {
+				$target_width = $fit_to_size;
+				$target_height = round( $fit_to_size * $ratio );	
+			}
+
+			$target_height = round( $fit_to_size * $ratio );
 
 			// Resize the image
 			$resized = $image_editor->resize( $target_width, $target_height, false );
