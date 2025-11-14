@@ -31,7 +31,7 @@ class FV_Player_Db_Video {
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
     $splash_attachment_id, // splash attachment id
-    $sharing_image, // URL to the sharing image
+    $sharing_image, // URL to the sharing image, relative to {WP uploads basedir}
     $src, // the main video source
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
@@ -151,7 +151,7 @@ class FV_Player_Db_Video {
   }
 
   /**
-   * Get sharing image URL if the file exists in {upload basedir}/fv-player-video-sharing/.
+   * Get sharing image URL if the file path exists in {upload basedir}.
    *
    * @return string
    */
@@ -165,11 +165,11 @@ class FV_Player_Db_Video {
       return false;
     }
 
-    if ( ! file_exists( trailingslashit( $upload_dir['basedir'] ) . 'fv-player-video-sharing/' . $this->sharing_image ) ) {
+    if ( ! file_exists( trailingslashit( $upload_dir['basedir'] ) . $this->sharing_image ) ) {
       return false;
     }
 
-    return $upload_dir['baseurl'] . '/fv-player-video-sharing/' . $this->sharing_image;
+    return trailingslashit( $upload_dir['baseurl'] ) . $this->sharing_image;
   }
 
   /**

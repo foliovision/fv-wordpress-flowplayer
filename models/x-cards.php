@@ -22,6 +22,8 @@ class FV_Player_X_Cards {
 	 * Process uploaded images: create a 1280px wide copy with play button overlay in fv-player-video-sharing folder
 	 *
 	 * @param int $attachment_id The attachment ID.
+	 *
+	 * @return string|false Path to the sharing image, relative to {WP uploads basedir}, or false on failure.
 	 */
 	public static function add_play_icon_to_splash_image( $attachment_id_or_url ) {
 
@@ -104,13 +106,13 @@ class FV_Player_X_Cards {
 		if ( class_exists( 'Imagick' ) ) {
 			$result = self::add_play_icon_to_splash_image_imagick( $target_path, $play_button_path );
 			if ( $result ) {
-				return $filename;
+				return 'fv-player-video-sharing/' . $filename;
 			}
 		}
 
 		// Fall back to GD
 		if ( self::add_play_icon_to_splash_image_gd( $target_path, $play_button_path ) ) {
-			return $filename;
+			return 'fv-player-video-sharing/' . $filename;
 		}
 
 		return false;
