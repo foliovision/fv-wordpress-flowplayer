@@ -23,7 +23,7 @@ class FV_Player_X_Cards {
 	 *
 	 * @param int $attachment_id The attachment ID.
 	 *
-	 * @return string|false Path to the sharing image, relative to {WP uploads basedir}, or false on failure.
+	 * @return int|false Attachment ID on success, false on failure.
 	 */
 	public static function add_play_icon_to_splash_image( $attachment_id_or_url ) {
 
@@ -105,17 +105,41 @@ class FV_Player_X_Cards {
 		// Try Imagick first, fall back to GD
 		if ( class_exists( 'Imagick' ) ) {
 			$result = self::add_play_icon_to_splash_image_imagick( $target_path, $play_button_path );
-			if ( $result ) {
-				return 'fv-player-video-sharing/' . $filename;
+			if ( ! $result ) {
+				return false;
 			}
 		}
 
 		// Fall back to GD
-		if ( self::add_play_icon_to_splash_image_gd( $target_path, $play_button_path ) ) {
-			return 'fv-player-video-sharing/' . $filename;
+		if ( ! self::add_play_icon_to_splash_image_gd( $target_path, $play_button_path ) ) {
+			return false;
 		}
 
-		return false;
+		/**
+		 * Insert the new image into the WP Media Library.
+		 */
+		$attachment_data = array(
+			'post_mime_type' => 'image/jpeg', // TODO: Get the correct MIME type from the image.
+			'post_title'     => sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+		);
+
+		// Create relative path from uploads directory
+		$relative_path = 'fv-player-video-sharing/' . $filename;
+
+		// Insert the attachment
+		$new_attachment_id = wp_insert_attachment( $attachment_data, $relative_path );
+
+		if ( is_wp_error( $new_attachment_id ) || ! $new_attachment_id ) {
+			return false;
+		}
+
+		// Generate attachment metadata
+		$attach_data = wp_generate_attachment_metadata( $new_attachment_id, $target_path );
+		wp_update_attachment_metadata( $new_attachment_id, $attach_data );
+
+		return $new_attachment_id;
 	}
 
 	/**

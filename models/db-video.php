@@ -31,7 +31,7 @@ class FV_Player_Db_Video {
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
     $splash_attachment_id, // splash attachment id
-    $sharing_image, // URL to the sharing image, relative to {WP uploads basedir}
+    $sharing_image_id, // URL to the sharing image, relative to {WP uploads basedir}
     $src, // the main video source
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
@@ -156,20 +156,7 @@ class FV_Player_Db_Video {
    * @return string
    */
   public function getSharingImage() {
-    if ( ! $this->sharing_image ) {
-      return false;
-    }
-
-    $upload_dir = wp_upload_dir();
-    if ( $upload_dir['error'] ) {
-      return false;
-    }
-
-    if ( ! file_exists( trailingslashit( $upload_dir['basedir'] ) . $this->sharing_image ) ) {
-      return false;
-    }
-
-    return trailingslashit( $upload_dir['baseurl'] ) . $this->sharing_image;
+    return absint( $this->sharing_image_id );
   }
 
   /**
@@ -313,7 +300,7 @@ CREATE TABLE " . self::$db_table_name . " (
   splash_attachment_id bigint(20) unsigned,
   splash varchar(1024) NOT NULL,
   splash_text varchar(512) NOT NULL,
-  sharing_image varchar(1024) NOT NULL,
+  sharing_image_id bigint(20) unsigned,
   title varchar(1024) NOT NULL,
   title_hide varchar(7) NOT NULL,
   end varchar(16) NOT NULL,
@@ -592,7 +579,7 @@ CREATE TABLE " . self::$db_table_name . " (
       'aspect_ratio',
       'duration',
       'last_check',
-      'sharing_image'
+      'sharing_image_id'
     );
 
     $missing_something = false;
@@ -1153,8 +1140,8 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     // Update the sharing image if the splash has changed or if the sharing image is not set.
-    if ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImage() ) {
-      $this->sharing_image = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash() );
+    if ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImage() || ! get_post( $this->getSharingImage() ) ) {
+      $this->sharing_image_id = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash() );
     }
 
     $this->save_do( true );
