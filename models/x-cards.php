@@ -16,6 +16,11 @@ class FV_Player_X_Cards {
 		add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
 
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
+
+		/**
+		 * Make sure we do not generate all the possible image sizes for sharing images.
+		 */
+		add_filter( 'intermediate_image_sizes_advanced', array( $this, 'limit_image_sizes_for_sharing_images' ), 999, 3 );
 	}
 
 	/**
@@ -581,6 +586,23 @@ class FV_Player_X_Cards {
 		}
 
 		return $splash;
+	}
+
+	/**
+	 * Only create the thumbnail size for FV Player X Card sharing images.
+	 *
+	 * Do not create all the possible image sizes for sharing images as they will never be used.
+	 */
+	public function limit_image_sizes_for_sharing_images( $sizes, $image_meta, $attachment_id ) {
+
+		// Is it one of the FV Player X Card sharing images?
+		if ( ! empty( $image_meta['file'] ) && stripos( $image_meta['file'], 'fv-player-video-sharing/' ) === 0 ) {
+			return array(
+				'thumbnail' => $sizes['thumbnail'],
+			);
+		}
+	
+		return $sizes;
 	}
 
 	public function wp_head() {
