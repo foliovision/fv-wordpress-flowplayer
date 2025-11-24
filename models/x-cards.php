@@ -13,13 +13,15 @@ class FV_Player_X_Cards {
 		// Only do this if Open Graph/X Cards setting is enabled.
 		global $fv_fp;
 		if ( ! empty( $fv_fp ) && $fv_fp->_get_option( array( 'integrations', 'open_graph' ) ) ) {
-		/**
-		 * Preparing the tags at wp action with priority 9, to make sure it's before
-		 * FV Simpler SEO Open Graph and RankMath\Frontend\Frontend::hooks().
-		 */
-		add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
+			/**
+			 * Preparing the tags at wp action with priority 9, to make sure it's before
+			 * FV Simpler SEO Open Graph and RankMath\Frontend\Frontend::hooks().
+			 */
+			add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
 
-		add_action( 'wp_head', array( $this, 'wp_head' ) );
+			add_action( 'wp_head', array( $this, 'wp_head' ) );
+
+			add_action( 'save_post', array( $this, 'save_post_generate_sharing_image' ) );
 		}
 
 		/**
@@ -35,10 +37,11 @@ class FV_Player_X_Cards {
 	 * Process uploaded images: create a 1280px wide copy with play button overlay in fv-player-video-sharing folder
 	 *
 	 * @param int $attachment_id The attachment ID.
+	 * @param int $video_id The FV Player video ID.
 	 *
 	 * @return int|false Attachment ID on success, false on failure.
 	 */
-	public static function add_play_icon_to_splash_image( $attachment_id_or_url ) {
+	public static function add_play_icon_to_splash_image( $attachment_id_or_url, $video_id ) {
 
 		// Get upload directory
 		$upload_dir = wp_upload_dir();
@@ -133,7 +136,8 @@ class FV_Player_X_Cards {
 		 */
 		$attachment_data = array(
 			'post_mime_type' => 'image/jpeg', // TODO: Get the correct MIME type from the image.
-			'post_title'     => sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ),
+			'post_title'     => 'FV Player Video Sharing Image #' . $video_id,
+			'post_name'      => sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ),
 			'post_content'   => '',
 			'post_status'    => 'inherit',
 		);
@@ -151,6 +155,9 @@ class FV_Player_X_Cards {
 		// Generate attachment metadata
 		$attach_data = wp_generate_attachment_metadata( $new_attachment_id, $target_path );
 		wp_update_attachment_metadata( $new_attachment_id, $attach_data );
+
+		// Store the FV Player video ID.
+		add_post_meta( $new_attachment_id, 'fv_player_sharing_video_d', $video_id );
 
 		return $new_attachment_id;
 	}
@@ -611,6 +618,63 @@ class FV_Player_X_Cards {
 		}
 	
 		return $sizes;
+	}
+
+	/**
+	 * Generate sharing image for the FV Player in the post when the post is saved.
+	 *
+	 * @param int $post_id The post ID.
+	 */
+	public function save_post_generate_sharing_image( $post_id ) {
+
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return;
+		}
+
+		$shortcodes = array();
+
+		// Get FV Player from post content.
+		if ( preg_match_all( '~\[fvplayer.*?\]~', $post->post_content, $shortcodes_post_content ) ) {
+			$shortcodes = array_merge( $shortcodes, $shortcodes_post_content[0] );
+		}
+
+		// Get FV Player from post meta.
+		if ( preg_match_all( '~\[fvplayer.*?\]~', implode( array_map( 'implode', get_post_custom( $post->ID)  ) ), $shortcodes_post_meta ) ) {
+			$shortcodes = array_merge( $shortcodes, $shortcodes_post_meta[0] );
+		}
+
+		foreach( $shortcodes as $shortcode ) {
+			$atts = shortcode_parse_atts( trim( $shortcode, ']' ) );
+			if ( ! empty( $atts['id'] ) ) {
+
+				$player = new FV_Player_Db_Player( $atts['id'] );
+				if ( $player->getIsValid() ) {
+					$videos = $player->getVideos();
+					foreach( $videos as $video ) {
+
+						// Create the sharing image if the splash has changed or if the sharing image is not set.
+						if ( ! $video->getSharingImageId() || ! get_post( $video->getSharingImageId() ) ) {
+
+							$splash_attachment_id = $video->getSplashAttachmentId();
+							$sharing_image_id = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $video->getSplash(), $video->getId() );
+
+							if ( $sharing_image_id ) {
+								$video->set( 'sharing_image_id', $sharing_image_id );
+								$video->save();
+							}
+
+							// Do not process other videos.
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public function wp_head() {
