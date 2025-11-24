@@ -575,9 +575,9 @@ class FV_Player_X_Cards {
 	private function get_splash( $video ) {
 		global $post;
 
-		$sharing_image = $video->getSharingImage();
-		if ( $sharing_image ) {
-			return $sharing_image;
+		$sharing_image_id = $video->getSharingImageId();
+		if ( $sharing_image_id ) {
+			return wp_get_attachment_image_url( $sharing_image_id, 'full' );
 		}
 
 		$splash = $video->getSplash();

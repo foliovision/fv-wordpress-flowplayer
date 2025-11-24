@@ -155,7 +155,7 @@ class FV_Player_Db_Video {
    *
    * @return string
    */
-  public function getSharingImage() {
+  public function getSharingImageId() {
     return absint( $this->sharing_image_id );
   }
 
@@ -1140,7 +1140,7 @@ CREATE TABLE " . self::$db_table_name . " (
     }
 
     // Update the sharing image if the splash has changed or if the sharing image is not set.
-    if ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImage() || ! get_post( $this->getSharingImage() ) ) {
+    if ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImageId() || ! get_post( $this->getSharingImageId() ) ) {
       $this->sharing_image_id = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash() );
     }
 
