@@ -9,6 +9,10 @@ class FV_Player_X_Cards {
 	private $tags = array();
 
 	public function __construct() {
+
+		// Only do this if Open Graph/X Cards setting is enabled.
+		global $fv_fp;
+		if ( ! empty( $fv_fp ) && $fv_fp->_get_option( array( 'integrations', 'open_graph' ) ) ) {
 		/**
 		 * Preparing the tags at wp action with priority 9, to make sure it's before
 		 * FV Simpler SEO Open Graph and RankMath\Frontend\Frontend::hooks().
@@ -16,9 +20,13 @@ class FV_Player_X_Cards {
 		add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
 
 		add_action( 'wp_head', array( $this, 'wp_head' ) );
+		}
 
 		/**
 		 * Make sure we do not generate all the possible image sizes for sharing images.
+		 *
+		 * We need to always do this, even if Open Graph/X Cards setting is disabled.
+		 * As some images might be already there before user disabled the setting.
 		 */
 		add_filter( 'intermediate_image_sizes_advanced', array( $this, 'limit_image_sizes_for_sharing_images' ), 999, 3 );
 	}

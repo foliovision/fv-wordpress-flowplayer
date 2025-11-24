@@ -9,13 +9,18 @@ class FV_Player_Open_Graph {
 	private $tags = array();
 
 	public function __construct() {
-		/**
-		 * Preparing the tags at wp action with priority 9, to make sure it's before
-		 * FV Simpler SEO Open Graph and RankMath\Frontend\Frontend::hooks().
-		 */
-		add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
 
-		add_action( 'wp_head', array( $this, 'wp_head' ) );
+		// Only do this if Open Graph/X Cards setting is enabled.
+		global $fv_fp;
+		if ( ! empty( $fv_fp ) && $fv_fp->_get_option( array( 'integrations', 'open_graph' ) ) ) {
+			/**
+			 * Preparing the tags at wp action with priority 9, to make sure it's before
+			 * FV Simpler SEO Open Graph and RankMath\Frontend\Frontend::hooks().
+			 */
+			add_action( 'wp', array( $this, 'find_suitable_video' ), 9 );
+
+			add_action( 'wp_head', array( $this, 'wp_head' ) );
+		}
 	}
 
 	public function find_suitable_video() {
