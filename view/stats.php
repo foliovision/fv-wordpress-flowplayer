@@ -36,7 +36,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
       $fv_post_stats_data = $FV_Player_Stats->get_top_video_post_stats( 'post', $date_range, $user_id);
 
-      $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( $date_range, $user_id );
+      $fv_video_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( 'video', $date_range, $user_id );
+
+      $fv_post_watch_time_stats_data = $FV_Player_Stats->get_top_video_watch_time_stats( 'post', $date_range, $user_id );
 
       if($user_id) $fv_player_interval_valid = $FV_Player_Stats->get_valid_interval($user_id);
     }
@@ -362,6 +364,31 @@ if ( ! defined( 'ABSPATH' ) ) {
         'seconds',
         {
           legend_containerID: 'chart-top-users-play-watchtime-legend',
+          scales_y_title: "Minutes"
+        }
+      )
+    );
+  });
+  </script>
+<?php endif; ?>
+
+<?php if( isset($fv_post_watch_time_stats_data) && !empty($fv_post_watch_time_stats_data) ): ?>
+
+  <div>
+    <h2>Top 10 Posts by Watch Time</h2>
+    <div id="chart-top-posts-watchtime-legend" class="fv-player-chartjs-html-legend"></div>
+    <canvas id="chart-top-posts-watchtime" style="max-height: 36vh"></canvas>
+  </div>
+  
+  <script>
+  jQuery( document ).ready(function() {
+    new Chart(
+      document.getElementById('chart-top-posts-watchtime').getContext('2d'),
+      fv_player_stats_chartjs_args(
+        <?php echo wp_json_encode( $fv_post_watch_time_stats_data ); ?>,
+        'seconds',
+        {
+          legend_containerID: 'chart-top-posts-watchtime-legend',
           scales_y_title: "Minutes"
         }
       )

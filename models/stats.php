@@ -548,8 +548,13 @@ class FV_Player_Stats {
     return $results;
   }
 
-  public function top_ten_videos_by_watch_time( $interval, $user_id ) {
+  public function top_ten_videos_by_watch_time( $type, $interval, $user_id ) {
     global $wpdb;
+
+    // Sanitize input for SQL
+    if ( ! in_array( $type, array( 'post', 'video' ) ) ) {
+      $type = 'video';
+    }
 
     $valid_interval = $this->check_watch_time_in_interval( $interval, $user_id );
 
@@ -565,7 +570,7 @@ class FV_Player_Stats {
         // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND user_id = %d GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10",
+          "SELECT id_" . esc_sql( $type ) . " FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) AND user_id = %d GROUP BY id_" . esc_sql( $type ) . " ORDER BY sum(seconds) DESC LIMIT 10",
           array_merge(
             array(
               $interval[0],
@@ -585,7 +590,7 @@ class FV_Player_Stats {
         // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
         $wpdb->prepare(
           // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-          "SELECT id_video FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY id_video ORDER BY sum(seconds) DESC LIMIT 10",
+          "SELECT id_" . esc_sql( $type ) . " FROM `{$wpdb->prefix}fv_player_stats` WHERE date BETWEEN %s AND %s AND id_post NOT IN ( {$excluded['placeholder']} ) GROUP BY id_" . esc_sql( $type ) . " ORDER BY sum(seconds) DESC LIMIT 10",
           array_merge(
             array(
               $interval[0],
@@ -841,16 +846,15 @@ class FV_Player_Stats {
     return $datasets;
   }
 
-  public function get_top_video_watch_time_stats( $range, $user_id ) {
+  public function get_top_video_watch_time_stats( $type, $range, $user_id ) {
     global $wpdb;
 
     // dynamic interval based on range
     $interval = self::get_interval_from_range( $range );
 
-    $type = 'video';
     $datasets = false;
 
-    $top_ids_results = $this->top_ten_videos_by_watch_time( $interval, $user_id ); // get top video ids
+    $top_ids_results = $this->top_ten_videos_by_watch_time( $type, $interval, $user_id ); // get top video ids
 
     if( !empty($top_ids_results) ) {
       $top_ids = array_map( 'intval', array_values( $top_ids_results ) );
@@ -861,6 +865,7 @@ class FV_Player_Stats {
     }
 
     if( is_numeric( $user_id ) ) {
+      if( $type == 'video' ) { // video stats
       $results = $wpdb->get_results(
         // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
         // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
@@ -880,8 +885,30 @@ class FV_Player_Stats {
         ),
         ARRAY_A
       );
+      } else if( $type == 'post' ) { // post stats
+        $results = $wpdb->get_results(
+          // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT date, id_post, post_title, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID WHERE date BETWEEN %s AND %s AND id_post IN( $placeholders ) AND user_id = %d GROUP BY id_post, date",
+            array_merge(
+              array(
+                $interval[0],
+                $interval[1]
+              ),
+              $top_ids,
+              array(
+                $user_id
+              )
+            )
+          ),
+          ARRAY_A
+        );
+      }
 
     } else {
+      if( $type == 'video' ) { // video stats
       $results = $wpdb->get_results(
         // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
         // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
@@ -898,6 +925,25 @@ class FV_Player_Stats {
         ),
         ARRAY_A
       );
+
+      } else if( $type == 'post' ) { // post stats
+        $results = $wpdb->get_results(
+          // Explanation: $placeholders is created above and is a string for $wpdb->prepare(), it uses variable number of placements
+          // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+          $wpdb->prepare(
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            "SELECT date, id_post, post_title, SUM(seconds) AS seconds FROM `{$wpdb->prefix}fv_player_stats` AS s JOIN `{$wpdb->posts}` AS p ON s.id_post = p.ID WHERE date BETWEEN %s AND %s AND id_post IN( $placeholders ) GROUP BY id_post, date",
+            array_merge(
+              array(
+                $interval[0],
+                $interval[1]
+              ),
+              $top_ids
+            )
+          ),
+          ARRAY_A
+        );
+      }
     }
 
     if( !empty($results) ) {
@@ -1235,7 +1281,7 @@ class FV_Player_Stats {
 
     // TODO: optimize performance, no need to use SUM or ORDER BY, limit 1 would be enough
     foreach( $intervals as $k => $interval ) {
-      $data = $this->get_top_video_watch_time_stats( $interval, $user_id );
+      $data = $this->get_top_video_watch_time_stats( 'video', $interval, $user_id );
 
       // if there is no data for this interval, remove it from the list
       if( empty($data) ) {
