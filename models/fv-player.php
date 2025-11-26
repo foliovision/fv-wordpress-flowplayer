@@ -107,13 +107,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     'top-right'    => "margin: 2% 2% auto auto",
   );
 
+  private $embed_id = false;
+
   private $help_html = array(
     'a'     => array( 'href' => array(), 'target' => array() ),
     'code'  => array(),
     'img'   => array( 'src' => array(), 'srcset' => array(), 'width' => array() ),
     'small' => array(),
   );
-
 
   public function __construct() {
     //load conf data into stack
@@ -159,8 +160,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     add_action( 'template_redirect', array( $this, 'template_preview' ), 0 );
 
-    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), PHP_INT_MAX);
-    add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
+    add_action( 'wp_head', array( $this, 'template_embed_buffer' ), PHP_INT_MAX );
 
     add_action( 'do_rocket_lazyload', array( $this, 'preview_no_lazy_load' ) );
 
@@ -2964,7 +2964,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
   function template_embed_buffer(){
-    if( get_query_var('fv_player_embed') ) {
+    if ( get_query_var('fv_player_embed') ) {
+      $this->embed_id = get_query_var('fv_player_embed');
+
       ob_start();
 
       global $fvseo;
@@ -2975,12 +2977,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         global $objTracker;
         if( isset($objTracker) ) remove_action( 'wp_footer', array( $objTracker, 'OutputFooter' ) );
       }
+
+      add_action( 'wp_footer', array( $this, 'template_embed' ), 0 );
     }
   }
 
   function template_embed() {
     // Generate embed html
-    if( $embed_id = get_query_var('fv_player_embed') ) {
+    if ( $this->embed_id ) {
       $content = ob_get_contents();
       ob_clean();
 
@@ -3003,9 +3007,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       $bFound = false;
       $rewrite = get_option('rewrite_rules');
       if( empty($rewrite) ) {
-        $sLink = 'fv_player_embed='.$embed_id;
+        $sLink = 'fv_player_embed=' . $this->embed_id;
       } else {
-        $sPostfix = $embed_id == 1 ? 'fvp' : 'fvp'.$embed_id;
+        $sPostfix = $this->embed_id == 1 ? 'fvp' : 'fvp' . $this->embed_id;
         $sLink = user_trailingslashit( trailingslashit( get_permalink() ).$sPostfix );
       }
 
@@ -3020,8 +3024,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         }
       }
 
-      if( !$bFound && is_numeric($embed_id) && !empty($aPlayers[$embed_id-1]) ) {
-        echo substr($aPlayers[$embed_id-1], stripos($aPlayers[$embed_id-1],'<div id="wpfp_') );
+      if ( ! $bFound && is_numeric( $this->embed_id ) && !empty( $aPlayers[ $this->embed_id - 1 ] ) ) {
+        echo substr( $aPlayers[ $this->embed_id - 1 ], stripos($aPlayers[ $this->embed_id - 1 ], '<div id="wpfp_' ) );
         $bFound = true;
       }
 

@@ -194,7 +194,7 @@ class FV_Player_JS_Loader {
 
 	static run() {
 		const browser = new FV_Player_JS_Loader_Compatibility_Checker( { passive: true } );
-		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','touchmove','touchstart', 'wheel' ], browser );
+		const instance = new FV_Player_JS_Loader( ['keydown','mouseover','mousedown','touchmove','touchstart', 'wheel' ], browser );
 		instance.init();
 
 		/* if using Video Link, load it all right away */

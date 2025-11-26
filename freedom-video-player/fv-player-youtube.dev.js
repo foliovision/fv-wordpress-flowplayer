@@ -80,25 +80,18 @@ if( fv_flowplayer_conf.youtube ) {
   ;
 
   /**
-   * Copy of https://www.youtube.com/s/player/f6a4f3bc/www-widgetapi.vflset/www-widgetapi.js with YT changed to FV_YT.
+   * Copy of https://www.youtube.com/s/player/c6d7bdc9/www-widgetapi.vflset/www-widgetapi.js with YT changed to FV_YT.
    *
    * Commented out parts where it runs onYTReady(), onYouTubeIframeAPIReady(), onYouTubePlayerAPIReady()
    */
   (function() {
     'use strict';
-    var n;
-    function ca(a) {
-        var b = 0;
-        return function() {
-            return b < a.length ? {
-                done: !1,
-                value: a[b++]
-            } : {
-                done: !0
-            }
-        }
+    var n, ca = typeof Object.create == "function" ? Object.create : function(a) {
+        function b() {}
+        b.prototype = a;
+        return new b
     }
-    var p = typeof Object.defineProperties == "function" ? Object.defineProperty : function(a, b, c) {
+    , p = typeof Object.defineProperties == "function" ? Object.defineProperty : function(a, b, c) {
         if (a == Array.prototype || a == Object.prototype)
             return a;
         a[b] = c.value;
@@ -136,74 +129,19 @@ if( fv_flowplayer_conf.youtube ) {
                 })
             }
     }
-    r("Symbol", function(a) {
-        function b(g) {
-            if (this instanceof b)
-                throw new TypeError("Symbol is not a constructor");
-            return new c(d + (g || "") + "_" + k++,g)
-        }
-        function c(g, f) {
-            this.g = g;
-            p(this, "description", {
-                configurable: !0,
-                writable: !0,
-                value: f
-            })
-        }
-        if (a)
-            return a;
-        c.prototype.toString = function() {
-            return this.g
-        }
-        ;
-        var d = "jscomp_symbol_" + (Math.random() * 1E9 >>> 0) + "_"
-          , k = 0;
-        return b
-    });
-    r("Symbol.iterator", function(a) {
-        if (a)
-            return a;
-        a = Symbol("Symbol.iterator");
-        for (var b = "Array Int8Array Uint8Array Uint8ClampedArray Int16Array Uint16Array Int32Array Uint32Array Float32Array Float64Array".split(" "), c = 0; c < b.length; c++) {
-            var d = q[b[c]];
-            typeof d === "function" && typeof d.prototype[a] != "function" && p(d.prototype, a, {
-                configurable: !0,
-                writable: !0,
-                value: function() {
-                    return ea(ca(this))
-                }
-            })
-        }
-        return a
-    });
-    function ea(a) {
-        a = {
-            next: a
-        };
-        a[Symbol.iterator] = function() {
-            return this
-        }
-        ;
-        return a
-    }
-    var fa = typeof Object.create == "function" ? Object.create : function(a) {
-        function b() {}
-        b.prototype = a;
-        return new b
-    }
-    , t;
+    var t;
     if (typeof Object.setPrototypeOf == "function")
         t = Object.setPrototypeOf;
     else {
         var v;
         a: {
-            var ha = {
+            var ea = {
                 a: !0
             }
-              , ia = {};
+              , fa = {};
             try {
-                ia.__proto__ = ha;
-                v = ia.a;
+                fa.__proto__ = ea;
+                v = fa.a;
                 break a
             } catch (a) {}
             v = !1
@@ -216,14 +154,25 @@ if( fv_flowplayer_conf.youtube ) {
         }
         : null
     }
-    var ja = t;
+    var ha = t;
+    function ia(a) {
+        var b = 0;
+        return function() {
+            return b < a.length ? {
+                done: !1,
+                value: a[b++]
+            } : {
+                done: !0
+            }
+        }
+    }
     function x(a) {
         var b = typeof Symbol != "undefined" && Symbol.iterator && a[Symbol.iterator];
         if (b)
             return b.call(a);
         if (typeof a.length == "number")
             return {
-                next: ca(a)
+                next: ia(a)
             };
         throw Error(String(a) + " is not an iterable or ArrayLike");
     }
@@ -264,11 +213,11 @@ if( fv_flowplayer_conf.youtube ) {
             value: b
         }
     }
-    function ka(a) {
+    function ja(a) {
         this.g = new y;
         this.h = a
     }
-    function la(a, b) {
+    function ka(a, b) {
         z(a.g);
         var c = a.g.h;
         if (c)
@@ -330,7 +279,7 @@ if( fv_flowplayer_conf.youtube ) {
             done: !0
         }
     }
-    function ma(a) {
+    function la(a) {
         this.next = function(b) {
             z(a.g);
             a.g.h ? b = D(a, a.g.h.next, b, a.g.o) : (a.g.o(b),
@@ -346,14 +295,14 @@ if( fv_flowplayer_conf.youtube ) {
         }
         ;
         this.return = function(b) {
-            return la(a, b)
+            return ka(a, b)
         }
         ;
         this[Symbol.iterator] = function() {
             return this
         }
     }
-    function na(a) {
+    function ma(a) {
         function b(d) {
             return a.next(d)
         }
@@ -369,7 +318,54 @@ if( fv_flowplayer_conf.youtube ) {
         )
     }
     function F(a) {
-        return na(new ma(new ka(a)))
+        return ma(new la(new ja(a)))
+    }
+    r("Symbol", function(a) {
+        function b(g) {
+            if (this instanceof b)
+                throw new TypeError("Symbol is not a constructor");
+            return new c(d + (g || "") + "_" + k++,g)
+        }
+        function c(g, f) {
+            this.g = g;
+            p(this, "description", {
+                configurable: !0,
+                writable: !0,
+                value: f
+            })
+        }
+        if (a)
+            return a;
+        c.prototype.toString = function() {
+            return this.g
+        }
+        ;
+        var d = "jscomp_symbol_" + (Math.random() * 1E9 >>> 0) + "_"
+          , k = 0;
+        return b
+    });
+    r("Symbol.iterator", function(a) {
+        if (a)
+            return a;
+        a = Symbol("Symbol.iterator");
+        p(Array.prototype, a, {
+            configurable: !0,
+            writable: !0,
+            value: function() {
+                return na(ia(this))
+            }
+        });
+        return a
+    });
+    function na(a) {
+        a = {
+            next: a
+        };
+        a[Symbol.iterator] = function() {
+            return this
+        }
+        ;
+        return a
     }
     r("Promise", function(a) {
         function b(f) {
@@ -740,7 +736,7 @@ if( fv_flowplayer_conf.youtube ) {
         }
         function c(e, h) {
             var l = e[1];
-            return ea(function() {
+            return na(function() {
                 if (l) {
                     for (; l.head != e[1]; )
                         l = l.previous;
@@ -1237,10 +1233,10 @@ if( fv_flowplayer_conf.youtube ) {
         this.name = "TypeCannotBeUsedWithIframeIntentError"
     }
     var O = Error;
-    N.prototype = fa(O.prototype);
+    N.prototype = ca(O.prototype);
     N.prototype.constructor = N;
-    if (ja)
-        ja(N, O);
+    if (ha)
+        ha(N, O);
     else
         for (var P in O)
             if (P != "prototype")

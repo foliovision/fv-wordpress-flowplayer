@@ -1457,8 +1457,7 @@ jQuery(function() {
                 var json_export_data = jQuery('<div/>').text(JSON.stringify(what_is_saving)).html();
 
                 var overlay = overlay_show('error_saving');
-                overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-                overlay.find('[data-error]').html( response.error );
+                overlay.find('textarea').val( response.error + '\n\nJSON data:\n\n' + $('<div/>').text(json_export_data).html() );
 
                 jQuery('#fv_player_copy_to_clipboard').select();
 
@@ -3449,8 +3448,7 @@ Please also contact FV Player support with the following debug information:\n\n\
               let json_export_data = jQuery('<div/>').text(JSON.stringify(ajax_data)).html();
 
               let overlay = overlay_show('error_saving');
-              overlay.find('textarea').val( $('<div/>').text(json_export_data).html() );
-              overlay.find('[data-error]').html( response.error );
+              overlay.find('textarea').val( response.error + '\n\nJSON data:\n\n' + $('<div/>').text(json_export_data).html() );
 
               jQuery('#fv_player_copy_to_clipboard').select();
 
