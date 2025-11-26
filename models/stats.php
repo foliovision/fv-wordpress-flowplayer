@@ -263,7 +263,7 @@ class FV_Player_Stats {
             }
           }
 
-          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}fv_player_stats` WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d' ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
+          $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}fv_player_stats` WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d', false, true ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
 
           if( $existing ) {
             $wpdb->update(
@@ -271,7 +271,7 @@ class FV_Player_Stats {
               array(
                 $type => $value + $existing->{$type}, // update plays in db
               ),
-              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d' ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id, 'guest_user_id' => $guest_user_id ), // update by video id, date, player id, post id, user ID and guest user ID
+              array( 'id_video' => $video_id , 'date' => date_i18n( 'Y-m-d', false, true ), 'id_player' => $player_id, 'id_post' => $post_id, 'user_id' => $user_id, 'guest_user_id' => $guest_user_id ), // update by video id, date, player id, post id, user ID and guest user ID
               array(
                 '%d'
               ),
@@ -292,7 +292,7 @@ class FV_Player_Stats {
                 'id_post'   => $post_id,
                 'user_id'   => $user_id,
                 'guest_user_id' => $guest_user_id,
-                'date' => date_i18n( 'Y-m-d' ),
+                'date' => date_i18n( 'Y-m-d', false, true ),
                 $type => $value
               ),
               array(
@@ -1585,7 +1585,7 @@ class FV_Player_Stats {
           $wpdb->prepare(
             "SELECT sum(play) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
             $user_id,
-            date_i18n( 'Y-m-d' )
+            date_i18n( 'Y-m-d', false, true )
           )
         );
       } else if ( 'seconds' === $field ) {
@@ -1593,7 +1593,7 @@ class FV_Player_Stats {
           $wpdb->prepare(
             "SELECT sum(seconds) FROM {$wpdb->prefix}fv_player_stats WHERE user_id = %d AND date = %s",
             $user_id,
-            date_i18n( 'Y-m-d' )
+            date_i18n( 'Y-m-d', false, true )
           )
         );
       }
@@ -1638,7 +1638,7 @@ class FV_Player_Stats {
     if ( $field ) {
       $userquery->query_fields .= ", sum(" . $field . ") AS " . $field . " ";
       $userquery->query_from .= " LEFT OUTER JOIN {$wpdb->prefix}fv_player_stats AS stats ON ($wpdb->users.ID = stats.user_id) ";
-      $userquery->query_where .= " AND stats.date = '" . date_i18n( 'Y-m-d' ) . "' ";
+      $userquery->query_where .= " AND stats.date = '" . date_i18n( 'Y-m-d', false, true ) . "' ";
       $userquery->query_orderby = " GROUP BY wp_users.ID ORDER BY " . $field . " ".($userquery->query_vars["order"] == "ASC" ? "ASC " : "DESC ");
     }
   }
