@@ -12,11 +12,18 @@
       last_time = 0,
       is_first_progress;
 
+    var skip_reason = root.data('fv_stats_skip');
+    if( skip_reason ) {
+      fv_player_log( 'FV Player: Stats: Skipping for instance ' + root.data('freedomplayer-instance-id') + ': ' + skip_reason );
+      return;
+    }
+
     if( !api.conf.fv_stats || !api.conf.fv_stats.enabled && ( !root.data('fv_stats') || root.data('fv_stats') == 'no' ) ) return;
 
     try {
       var data = root.data('fv_stats_data');
       if ( !data ) {
+        fv_player_log( 'FV Player: Stats: No data for instance ' + root.data('freedomplayer-instance-id') );
         return;
       }
     } catch(e) {

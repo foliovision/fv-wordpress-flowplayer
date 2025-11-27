@@ -168,11 +168,27 @@ class FV_Player_Stats {
 
       // Do not track if user can edit the post
       if ( ! empty( $post->ID ) ) {
-        if (
-          current_user_can( 'edit_others_posts' ) ||
-          ! empty( $post->post_author ) && absint( $post->post_author ) == get_current_user_id()
-          // TODO: Also check the FV Player player author
-        ) {
+
+        // Only check once for performance reasons
+        static $user_can_edit_posts;
+        if ( ! isset( $user_can_edit_posts ) ) {
+          $user_can_edit_posts = current_user_can( 'edit_others_posts' );
+        }
+
+        $current_user_is_post_author = ! empty( $post->post_author ) && absint( $post->post_author ) == get_current_user_id();
+
+        // TODO: Also check the FV Player player author
+        if ( $user_can_edit_posts || $current_user_is_post_author ) {
+          $skip_reason = $user_can_edit_posts ? 'User can edit all posts' : 'User is post author';
+
+          // Store reason for skipping to be able to show console warning if debug is enabled
+          if ( $fv_fp->_get_option( 'debug_log' ) ) {
+            $attributes['data-fv_stats_skip'] = $skip_reason;
+          }
+
+          // Query Monitor plugin integration
+          do_action( 'qm/debug', 'Skip for player ' . $fv_fp->hash . ': ' . $skip_reason );
+
           return $attributes;
         }
       }
