@@ -45,6 +45,8 @@
 
         last_tracked = get_index();
 
+        fv_player_log( 'FV Player: Stats: Tracked play for video ' + api.video.id + ' on post ' + data.post_id + ' by player ' + data.player_id + ' at time ' + time );
+
         $.post( api.conf.fv_stats.url, {
           'blog_id' : api.conf.fv_stats.blog_id,
           'video_id' : api.video.id ? api.video.id : 0,
@@ -135,9 +137,7 @@
 
     var conf = window.freedomplayer ? freedomplayer.conf : flowplayer.conf;
 
-    if ( conf.debug ) {
-      fv_player_stats_watched();
-    }
+    fv_player_log( 'FV Player: Stats: Tracked seconds played:\n' + fv_player_stats_watched() );
 
     var fd = new FormData();
     fd.append( 'tag', 'seconds' );
@@ -191,15 +191,19 @@
   // For debugging
   window.fv_player_stats_watched = function() {
 
+    var output = '';
+
     $.each( watched, function( k, v ) {
-      console.log( 'player id: ' + k );
+      output += 'player id: ' + k + '\n';
       $.each( v, function( i, j ) {
-        console.log( 'post id: ' + i );
+        output += 'post id: ' + i + '\n';
         $.each( j, function( k, l ) {
-          console.log( 'video id: ' +  k + ' seconds: '+l );
+          output += 'video id: ' +  k + ' seconds: '+l + '\n';
         });
       });
     });
+
+    return output;
   }
 
 })(jQuery);
