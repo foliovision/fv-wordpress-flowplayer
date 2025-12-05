@@ -604,7 +604,7 @@ function fv_wp_flowplayer_admin_key_update() {
 }
 
 function fv_wp_flowplayer_license_check( $aArgs ) {
-	global $fv_wp_flowplayer_ver;
+	global $fv_fp, $fv_wp_flowplayer_ver;
 
 	$args = array(
 		'body' => array( 'plugin' => 'fv-wordpress-flowplayer', 'version' => $fv_wp_flowplayer_ver, 'core_ver' => flowplayer::get_core_version(), 'type' => home_url(), 'action' => $aArgs['action'], 'admin-url' => admin_url() ),
@@ -613,17 +613,21 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 	);
 	$resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $args );
 
+  $fv_fp->log( "Apply Pro Upgrade HTTP: " . var_export( $resp, true ) );
+
   if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
     return $data;
 
   } else if( is_wp_error($resp) ) {
-    $args['sslverify'] = false;
-    $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $args );
+    $resp = wp_remote_post( 'https://api.foliovision.com/?fv_remote=true', $args );
+
+    $fv_fp->log( "Apply Pro Upgrade HTTP (fallback): " . var_export( $resp, true ) );
 
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
       return $data;
     }
 
+    $fv_fp->log( "Apply Pro Upgrade HTTP error: " . $resp->get_error_message() );
   }
 
   return false;

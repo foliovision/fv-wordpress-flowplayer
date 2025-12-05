@@ -213,31 +213,47 @@ class FV_Wordpress_Flowplayer_Plugin_Private
     );
     $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $post );
     if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\s]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\s]*?~', '$1', $resp['body'] ) ) ) {
+
+      $this->log( "License HTTP: " . var_export( $resp, true ) );
+
       return $data;
 
     } else if( is_wp_error($resp) ) {
-      $post['sslverify'] = false;
-      $resp = wp_remote_post( 'https://license.foliovision.com/?fv_remote=true', $post );
+      $resp = wp_remote_post( 'https://api.foliovision.com/license/?fv_remote=true', $post );
 
       if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
+
+        $this->log( "License HTTP (fallback): " . var_export( $resp, true ) );
+
         return $data;
       }
 
+      $this->log( "License HTTP error: " . $resp->get_error_message() );
     }
 
     return false;
   }
 
-  // set force = true to delete transient and recheck license
-  function setLicenseTransient( $force = false ){
+  /**
+   * Check domain license
+   * 
+   * @param bool $force Use to delete transient and recheck license.
+   * 
+   * @return object|bool False if the license information was already cached, otherwise fresh license information.
+   */
+  function setLicenseTransient( $force = false ) {
     $strTransient = $this->strPluginSlug . '_license';
 
-    if( $force )
+    if ( $force ) {
       delete_transient( $strTransient );
+    }
 
     //is transiet set?
-    if ( false !== ( $aCheck = get_transient( $strTransient ) ) )
-      return;
+    $aCheck = get_transient( $strTransient );
+
+    if ( false !== $aCheck ) {
+      return false;
+    }
 
     $aCheck = $this->check_license_remote( );
     if( $aCheck ) {
@@ -245,20 +261,30 @@ class FV_Wordpress_Flowplayer_Plugin_Private
     } else {
       set_transient( $strTransient, json_decode( wp_json_encode( array('error' => 'Error checking license') ), FALSE ), 60*10 );
     }
+
+    return $aCheck;
   }
 
 
-  function checkLicenseTransient(){
-    $aCheck = get_transient( $this->strPluginSlug . '_license' );
-    return isset($aCheck->valid) && $aCheck->valid;
+  function checkLicenseTransient() {
+    $strTransient = $this->strPluginSlug . '_license';
+
+    $aCheck = get_transient( $strTransient );
+    if( isset($aCheck->valid) && $aCheck->valid) {
+      return TRUE;
+    } else {
+      return FALSE;
+    }
   }
 
   function getUpgradeUrl(){
-    $aCheck = get_transient( $this->strPluginSlug . '_license' );
+    $strTransient = $this->strPluginSlug . '_license';
+
+    $aCheck = get_transient( $strTransient );
     if( isset($aCheck->upgrade) && !empty($aCheck->upgrade) ) {
       return $aCheck->upgrade;
     } else {
-      return false;
+      return FALSE;
     }
   }
 
