@@ -631,7 +631,20 @@ function fv_flowplayer_admin_integrations() {
 ?>
         <p><?php esc_html_e( 'Following options are suitable for web developers and programmers.', 'fv-player' ); ?></p>
         <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__( 'Debug', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
+          <?php $fv_fp->_get_checkbox(__( 'Debug Console', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
+
+          <?php
+          $fv_fp->_get_checkbox( __( 'Debug Log', 'fv-player' ), 'debug_file', __( 'Log important events into log file.', 'fv-player' ) );
+
+          if ( ! empty( $fv_fp->_get_option('debug_file') ) ) : ?>
+            <tr>
+              <td></td>
+              <td>
+                <?php $fv_fp->log_file_settings_field(); ?>
+              </td>
+            </tr>
+          <?php endif; ?>
+
           <?php $fv_fp->_get_checkbox(__( 'Disable database conversion', 'fv-player' ), 'disable_convert_db_save', __( 'Stop converting [fvplayer src="..."] shortcodes, [video] shortcodes, Vimeo and YouTube links to database-driven FV Player when post is saved.', 'fv-player' ) ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Disable saving skin CSS to a static file', 'fv-player' ), 'css_disable', __( 'Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css.', 'fv-player' ), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!', 'fv-player' )); ?>
 
@@ -698,7 +711,7 @@ function fv_flowplayer_admin_integrations() {
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
           <tr>
             <td colspan="4">
-              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/integrations-compatibility-options" target="_blank">Help</a>
             </td>
           </tr>

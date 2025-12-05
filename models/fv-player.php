@@ -107,6 +107,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     'top-right'    => "margin: 2% 2% auto auto",
   );
 
+  /**
+   * Used by the FolioPress base class.
+   */
+  public $strPluginSlug = 'fv-player';
+
   private $embed_id = false;
 
   private $help_html = array(
@@ -142,6 +147,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure') );
 
     add_action( 'init', array( $this, 'enable_cdn_rewrite_maybe') );
+
+    add_action( 'init', array( $this, 'maybe_log_file_setup' ) );
 
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure_long') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure_long') );
@@ -803,6 +810,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'css_writeout',
           'customCSS',
           'debug_log',
+          'debug_file',
           'digitalocean_spaces',
           'disable_convert_db_save',
           'disable_localstorage',
@@ -2890,6 +2898,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
   }
 
+  public function maybe_log_file_setup() {
+    if ( ! empty( $this->_get_option( 'debug_file' ) ) ) {
+      $this->log_file_setup();
+    }
+  }
 
   function popup_css( $css ){
     $aPopupData = get_option('fv_player_popups');

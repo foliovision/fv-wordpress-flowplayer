@@ -21,6 +21,10 @@ class FV_Wordpress_Flowplayer_Plugin_Private
 
   var $strPrivateAPI;
 
+  var $log_file = false;
+  var $log_file_url = false;
+  var $log_is_writable = false;
+
   function __construct(){
         $this->class_name = sanitize_title( get_class($this) );
 
@@ -57,6 +61,77 @@ class FV_Wordpress_Flowplayer_Plugin_Private
         add_action( 'deleted_transient_'.$this->strPluginSlug . '_license', array( $this, 'object_cache_disable' ) );
 
         //add_action('admin_head', array($this, 'welcome_screen_remove_menus'));
+  }
+
+  public function get_filesystem() {
+    if ( ! class_exists( 'WP_Filesystem_Direct' ) ) {
+      require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+      require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+    }
+
+    return new WP_Filesystem_Direct( new StdClass() );
+  }
+
+  public function log( $message = '' ) {
+    if ( $this->log_file && $this->log_is_writable ) {
+      $fs = $this->get_filesystem();
+
+      $message = gmdate( 'Y-n-d H:i:s' ) . ' - ' . $message . "\r\n";
+
+      $content = $this->log_file_get_content();
+      $content .= $message;
+      $fs->put_contents( $this->log_file, $content, FILE_APPEND );
+      $fs->chmod( $this->log_file, 0664 );
+    }
+  }
+
+  public function log_file_delete() {
+    $fs = $this->get_filesystem();
+
+    if ( $this->log_file && $this->log_is_writable ) {
+      return $fs->delete( $this->log_file );
+    }
+    return false;
+  }
+
+  public function log_file_get_content() {
+    $fs = $this->get_filesystem();
+
+    if ( $this->log_file && $this->log_is_writable ) {
+      return $fs->get_contents( $this->log_file );
+    }
+    return false;
+  }
+
+  public function log_file_settings_field() {
+    if ( ! empty( $this->log_file ) && $this->log_is_writable ) : ?>
+      Logging into <a href="<?php echo $this->log_file_url; ?>" target="_blank"><?php echo basename( $this->log_file ); ?></a>. Disabling Debug will delete the log file.
+    <?php elseif ( ! empty( $this->log_file ) && ! $this->log_is_writable ) : ?>
+      Unable to write the log file.
+    <?php else : ?>
+      Log file failed to create for unknown reasons.
+    <?php endif; 
+  }
+
+  public function log_file_setup() {
+    $fs = $this->get_filesystem();
+
+    if ( ! empty( $fs ) ) {
+      $upload_dir     = wp_upload_dir();
+      $filename       = $this->strPluginSlug . '-debug-' . wp_hash( home_url( '/' ) ) . '.log';
+      $this->log_file     = trailingslashit( $upload_dir['basedir'] ) . $filename;
+      $this->log_file_url = trailingslashit( $upload_dir['baseurl'] ) . $filename;
+
+      if ( $fs->is_writable( $upload_dir['basedir'] ) ) {
+        $this->log_is_writable = true;
+
+        $content = $this->log_file_get_content();
+        if ( empty( $content ) ) {
+          $this->log( "Log file created." );
+        }
+      }
+
+    }
   }
 
   function object_cache_disable($value=null){
