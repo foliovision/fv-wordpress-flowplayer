@@ -368,16 +368,18 @@ body.elementor-editor-active #fv-player-shortcode-editor .button-primary:hover {
 }
 
 
-/*
-New FV Player Editor modal box styling
-*/
+/**
+ * New FV Player Editor modal box styling
+ *
+ * z-index is set to 100000 to support Gutenberg modal showing over it, but still cover WP Admin bar.
+ */
 #fv-player-editor-modal {
   position: fixed;
   top: 30px;
   left: 30px;
   right: 30px;
   bottom: 30px;
-  z-index: 160000;
+  z-index: 100000;
 }
 #fv-player-editor-backdrop {
   position: fixed;
@@ -388,7 +390,7 @@ New FV Player Editor modal box styling
   min-height: 360px;
   background: #000;
   opacity: 0.7;
-  z-index: 159900;
+  z-index: 100000
 }
 body.is-fv-player-editor-modal-open {
   overflow: hidden;

@@ -997,45 +997,46 @@ jQuery(function() {
       $doc.on('click','.fv-player-tab-playlist .fv-player-editor-playlist-item .fvp_item_remove', function(e) {
         e.stopPropagation();
 
-        if( !confirm('Would you like to remove this video?') ) {
-          return false;
-        }
+        foliopress_confirm(
+          'Would you like to remove this video?',
+          function() {
+            var
+              playlist_row = $(e.target).parents('[data-index]'),
+              index = playlist_row.attr('data-index'),
+              id = get_tab(index,'video-files').attr('data-id_video');
 
-        var
-          playlist_row = $(e.target).parents('[data-index]'),
-          index = playlist_row.attr('data-index'),
-          id = get_tab(index,'video-files').attr('data-id_video');
+            deleted_videos.push(id);
 
-        deleted_videos.push(id);
+            playlist_row.remove();
 
-        playlist_row.remove();
+            get_tab(index,'video-files').remove();
+            get_tab(index,'subtitles').remove();
+            get_tab(index,'cues').remove();
 
-        get_tab(index,'video-files').remove();
-        get_tab(index,'subtitles').remove();
-        get_tab(index,'cues').remove();
+            // Keep data-index in order
+            playlist_index();
 
-        // Keep data-index in order
-        playlist_index();
+            // if no playlist item is left, add a new one
+            // TODO: Some better way? Like do it after the data is saved
+            if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
 
-        // if no playlist item is left, add a new one
-        // TODO: Some better way? Like do it after the data is saved
-        if( !jQuery('.fv-player-tab-subtitles [data-playlist-item][data-index]').length ){
+              // Required, with this it actually saves the change!
+              playlist_item_add();
 
-          // Required, with this it actually saves the change!
-          playlist_item_add();
+              if( fv_player_editor_conf.frontend ) {
+                reset_preview();
+                playlist_show();
 
-          if( fv_player_editor_conf.frontend ) {
-            reset_preview();
-            playlist_show();
+              } else {
+                playlist_item_show(0);
+              }
+            }
 
-          } else {
-            playlist_item_show(0);
+            $doc.trigger('fv_player_editor_item_delete');
+
+            return false;
           }
-        }
-
-        $doc.trigger('fv_player_editor_item_delete');
-
-        return false;
+        );
       });
 
       /*

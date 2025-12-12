@@ -23,8 +23,9 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
   $url = flowplayer::get_plugin_url();
 
   wp_enqueue_script('fv-player-editor-modal', $url.'/js/fv-player-editor-modal.js', array('jquery'), filemtime( dirname(__FILE__).'/../js/fv-player-editor-modal.js' ), true );
+  wp_enqueue_script('foliopress-confirm', $url.'/js/foliopress-confirm.js', array(), filemtime( dirname(__FILE__).'/../js/foliopress-confirm.js' ), true );
 
-  wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
+  wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable', 'foliopress-confirm' ), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
   wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js', array( 'fvwpflowplayer-shortcode-editor','flowplayer' ), filemtime( dirname(__FILE__).'/../js/editor-screenshots.js' ), true );
 
