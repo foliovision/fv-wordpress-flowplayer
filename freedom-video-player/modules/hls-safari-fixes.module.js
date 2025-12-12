@@ -159,11 +159,15 @@ flowplayer( function(api,root) {
     if ( video_tag.length ) {
       if ( parseInt( api.video.time ) === parseInt( video_tag[0].duration ) ) {
         if ( recorded_duration > api.video.time ) {
-          fv_player_log( 'FV Player Safari HLS: Suddenly the video is much shorter ( ' + recorded_duration + ' > ' + api.video.time + ' ), triggering error... ' );
+          fv_player_log( 'FV Player Safari HLS: Suddenly the video become shorter ( ' + api.video.time + ' instead of ' + recorded_duration + ' )' );
 
-          api.video.duration = recorded_duration;
+          if ( recorded_duration - api.video.time > 3 ) {
+            fv_player_log( 'FV Player Safari HLS: Since it\'s more than 3 seconds, we trigger error... ' );
 
-          api.trigger('error', [api, { code: 4, video: api.video }]);
+            api.video.duration = recorded_duration;
+
+            api.trigger('error', [api, { code: 4, video: api.video }]);
+          }
         }
       }
     }
