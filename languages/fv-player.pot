@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2025-12-05 14:30+0000\n"
+"POT-Creation-Date: 2025-12-12 15:44+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -776,7 +776,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3169
+#: models/fv-player.php:3170
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
