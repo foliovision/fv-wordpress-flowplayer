@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 abstract class FV_Player_Conversion_Base {
 
   /**
@@ -12,9 +16,7 @@ abstract class FV_Player_Conversion_Base {
   protected $title = 'Conversion';
   protected $slug = 'conversion-slug';
   protected $screen;
-  protected $help;
   protected $screen_fields = array();
-  protected $start_warning_text = 'This will convert your data to new format. Please make sure you have a backup of your database before continuing.';
   protected $conversion_done_details =false;
   protected $conversion_limit = 1;
   protected $make_chages_button = true;
@@ -30,9 +32,8 @@ abstract class FV_Player_Conversion_Base {
   abstract function build_output_html( $data , $percent_done);
 
   function __construct( $args ) {
-    $this->title = $args['title'];
-    $this->help = $args['help'];
-    $this->slug = $args['slug'];
+    $this->title  = $args['title'];
+    $this->slug   = $args['slug'];
     $this->screen = 'fv_player_conversion_' . $this->slug;
 
     add_action( 'admin_menu', array( $this, 'admin_page' ) );
@@ -150,12 +151,12 @@ abstract class FV_Player_Conversion_Base {
       <div class="wrap">
         <h1><?php echo esc_html( $this->title ); ?></h1>
 
-        <?php echo wpautop($this->help); ?>
+        <?php echo wpautop( $this->get_text( 'help' ) ); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
 
           <?php if( $this->make_chages_button ): // This checkbox shows the JS confirmation box when clicked to enable ?>
-            <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo esc_attr( $this->start_warning_text ); ?>') " /> <label for="make-changes">Make changes</label>
+            <input type="checkbox" name="make-changes" id="make-changes" value="1" onclick="if( this.checked ) return confirm('<?php echo esc_attr( $this->get_text( 'start_warning' ) ); ?>') " /> <label for="make-changes">Make changes</label>
           <?php endif; ?>
 
           <input class="button-primary" type="submit" name="convert" value="Start" />
@@ -172,9 +173,9 @@ abstract class FV_Player_Conversion_Base {
         <div class="conversion-done" style="display: none;" style="max-width: 30em; background: white; padding: .5em 1em; margin: 5em auto; box-shadow: 0px 0px 10px 5px rgba(0,0,0,.5)">
           <h1>Conversion done!</h1>
 
-          <?php if( $this->conversion_done_details ): ?>
+          <?php if( $this->get_text( 'conversion_done_details' ) ): ?>
             <p>
-              <?php echo esc_html( $this->conversion_done_details ); ?>
+              <?php echo esc_html( $this->get_text( 'conversion_done_details' ) ); ?>
             </p>
           <?php endif; ?>
         </div>
@@ -205,6 +206,18 @@ abstract class FV_Player_Conversion_Base {
         });
       </script>
     <?php
+  }
+
+  public function get_text( $type ) {
+    if ( 'conversion_done_details' === $type ) {
+
+    } else if ( 'help' === $type ) {
+
+    } else if ( 'start_warning' === $type ) {
+      return 'This will convert your data to new format. Please make sure you have a backup of your database before continuing.';
+    }
+
+    return false;
   }
 
   /**

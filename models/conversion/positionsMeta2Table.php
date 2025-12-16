@@ -1,26 +1,20 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Base {
 
   function __construct() {
-    global $wpdb;
-
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
 
     parent::__construct( array(
       'title' => 'FV Player PositionsMeta2Table Conversion',
       'slug' => 'positions_meta2table',
-      'help' => sprintf( __( "This converts position values from <code>%s</code> to <code>%s</code> table.", 'fv-player' ), $wpdb->usermeta, $wpdb->prefix . 'fv_player_user_video_positions' )
     ) );
 
     $this->conversion_limit = 2500;
     $this->make_chages_button = false; // disable make changes button
-
-    $this->start_warning_text = __( 'This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-player' );
-
-    $this->conversion_done_details = __( 'The conversion has finished. The usermeta table will be purged of the FV Player video position data in 4 weeks.', 'fv-player' );
 
     $this->screen_fields = array(
       'User ID',
@@ -180,6 +174,21 @@ class FV_Player_Positions_Meta2Table_Conversion extends FV_Player_Conversion_Bas
       'errors' => $errors
     );
 
+  }
+
+  public function get_text( $type ) {
+    if ( 'conversion_done_details' === $type ) {
+      return __( 'The conversion has finished. The usermeta table will be purged of the FV Player video position data in 4 weeks.', 'fv-player' );
+
+    } else if ( 'help' === $type ) {
+      global $wpdb;
+      return sprintf( __( "This converts position values from <code>%s</code> to <code>%s</code> table.", 'fv-player' ), $wpdb->usermeta, $wpdb->prefix . 'fv_player_user_video_positions' );
+
+    } else if ( 'start_warning' === $type ) {
+      return __( 'This will convert positions from usermeta to new tables. Please make sure you have a backup of your database before continuing.', 'fv-player' );
+    }
+
+    return parent::get_text( $type );
   }
 
   /**

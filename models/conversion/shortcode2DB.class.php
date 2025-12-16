@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base {
 
   var $supported_atts;
@@ -17,12 +21,9 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     parent::__construct( array(
       'title' => 'FV Player Shortcode2Database Conversion',
       'slug' => 'shortcode2db',
-      'help' => __( "This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.", 'fv-player' )
     ) );
 
     $this->conversion_limit = 1;
-
-    $this->start_warning_text = __( 'Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-player' );
 
     // atts for video that are supported
     $this->supported_video_atts = array(
@@ -63,6 +64,17 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     if( isset($_GET['fv-conversion-export']) && !empty($_GET['page']) && sanitize_key( $_GET['page'] ) === $this->screen ) {
       add_action('admin_init', array( $this, 'csv_export' ) );
     }
+  }
+
+  public function get_text( $type ) {
+    if ( 'help' === $type ) {
+      return __( "This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.", 'fv-player' );
+
+    } else if ( 'start_warning' === $type ) {
+      return __( 'Please make sure you backup your database before continuing. You can use post revisions to get back to previous version of your posts as well.', 'fv-player' );
+    }
+
+    return parent::get_text( $type );
   }
 
   /**
