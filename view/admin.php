@@ -762,7 +762,7 @@ function fv_flowplayer_admin_seo() {
 
 function fv_flowplayer_admin_select_popups($aArgs){
 
-  $aPopupData = apply_filters('fv_player_admin_popups_defaults', get_option('fv_player_popups'));
+  $aPopupData = apply_filters( 'fv_player_admin_popups_defaults', get_option( 'fv_player_popups', array() ) );
 
 
   $sId = (isset($aArgs['id'])?$aArgs['id']:'popups_default');
