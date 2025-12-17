@@ -64,6 +64,11 @@ HTML
 
     $expect = file_get_contents(dirname(__FILE__).'/video-sitemap.xml');
 
+    // Replace the plugin folder name with fv-player
+    $plugin_folder_name = basename( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) );
+    $output = str_replace( $plugin_folder_name . '/', 'fv-player/', $output );
+    // Also in JSON where / is escaped
+
     // Fix bad play button image path due to running these tests on server console
     $expect = preg_replace( '~wp-content/plugins/.*?/fv-player/css~', 'wp-content/plugins/fv-player/css', $expect );
     $actual = preg_replace( '~wp-content/plugins/.*?/fv-player/css~', 'wp-content/plugins/fv-player/css', $output );

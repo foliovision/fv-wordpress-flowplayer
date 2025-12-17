@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 5.7
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -209,6 +209,27 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 8.1.2 - 2025-12-17 =
+
+* Bugfix: HLS videos not finishing properly in Safari in rare cases, caused by the iOS video recovery routine
+* Bugfix: Splash screen at the end not replaying video on click
+* Bugfix: WordPress notice "Function _load_textdomain_just_in_time was called incorrectly"
+
+= 8.1.1 - 2025-12-05 =
+
+* Editor: Improve debug information for support
+* Security: Validate uploads for FV Player Coconut before uploading full file: Better error messages
+* Stats: Add Top 10 Posts by Watch Time, useful if you use [fvplayer src="..."] shortcodes
+* Stats: Fix for timezones
+* System Info: Aditional database tables added
+* Bugfix: Gutenberg block: Fix conversion of video block to FV Player for custom post types
+* Bugfix: Gutenberg block: Fix migration of empty FV Player 7 blocks
+* Bugfix: Iframe embed: Fix if global WP_Query is changed in theme
+* Bugfix: Increase video splash DB field length
+* Bugfix: Performance: Fixes for JavaScript loading speed and rendering
+* Bugfix: PHP warnings for the caption field
+* Bugfix: Stats: Top 10 users should also count if you use [fvplayer src="..."] shortcodes (no id_video)
 
 = 8.1 - 2025-10-14 =
 

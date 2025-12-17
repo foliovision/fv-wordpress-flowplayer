@@ -12,11 +12,18 @@
       last_time = 0,
       is_first_progress;
 
+    var skip_reason = root.data('fv_stats_skip');
+    if( skip_reason ) {
+      fv_player_log( 'FV Player: Stats: Skipping for instance ' + root.data('freedomplayer-instance-id') + ': ' + skip_reason );
+      return;
+    }
+
     if( !api.conf.fv_stats || !api.conf.fv_stats.enabled && ( !root.data('fv_stats') || root.data('fv_stats') == 'no' ) ) return;
 
     try {
       var data = root.data('fv_stats_data');
       if ( !data ) {
+        fv_player_log( 'FV Player: Stats: No data for instance ' + root.data('freedomplayer-instance-id') );
         return;
       }
     } catch(e) {
@@ -37,6 +44,8 @@
         ) return;
 
         last_tracked = get_index();
+
+        fv_player_log( 'FV Player: Stats: Tracked play for video ' + api.video.id + ' on post ' + data.post_id + ' by player ' + data.player_id + ' at time ' + time );
 
         $.post( api.conf.fv_stats.url, {
           'blog_id' : api.conf.fv_stats.blog_id,
@@ -128,9 +137,7 @@
 
     var conf = window.freedomplayer ? freedomplayer.conf : flowplayer.conf;
 
-    if ( conf.debug ) {
-      fv_player_stats_watched();
-    }
+    fv_player_log( 'FV Player: Stats: Tracked seconds played:\n' + fv_player_stats_watched() );
 
     var fd = new FormData();
     fd.append( 'tag', 'seconds' );
@@ -184,15 +191,19 @@
   // For debugging
   window.fv_player_stats_watched = function() {
 
+    var output = '';
+
     $.each( watched, function( k, v ) {
-      console.log( 'player id: ' + k );
+      output += 'player id: ' + k + '\n';
       $.each( v, function( i, j ) {
-        console.log( 'post id: ' + i );
+        output += 'post id: ' + i + '\n';
         $.each( j, function( k, l ) {
-          console.log( 'video id: ' +  k + ' seconds: '+l );
+          output += 'video id: ' +  k + ' seconds: '+l + '\n';
         });
       });
     });
+
+    return output;
   }
 
 })(jQuery);

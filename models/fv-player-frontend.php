@@ -495,7 +495,7 @@ class flowplayer_frontend extends flowplayer
           // compatibility fallback for classic (non-DB) shortcode
           (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash']))
         ) {
-          $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="background-image: url(\''.$splash_img.'\')"></div>';
+          $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="background-image: url(\''.$splash_img.'\')"><a class="fp-icon fp-playbtn"></a></div>';
         }
 
         // should the player appear as audio player?

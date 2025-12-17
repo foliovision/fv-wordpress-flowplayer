@@ -67,6 +67,12 @@ final class FV_Player_ShortcodeTestCase extends FV_Player_UnitTestCase {
     wp_footer();
     $output = ob_get_clean();
 
+    // Replace the plugin folder name with fv-player
+    $plugin_folder_name = basename( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) );
+    $output = str_replace( $plugin_folder_name . '/', 'fv-player/', $output );
+    // Also in JSON where / is escaped
+    $output = str_replace( $plugin_folder_name . '\/', 'fv-player\/', $output );
+
     // file_put_contents( dirname(__FILE__).'/testSimpleShortcode.html.new', $output );
 
     $regex = '~var fv_flowplayer_translations = {.*?};~';

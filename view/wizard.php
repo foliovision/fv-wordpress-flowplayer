@@ -529,8 +529,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     </div>
 
     <div id="fv-player-editor-error_saving-overlay" class="fv-player-editor-overlay">
-      <p data-error></p>
-      <p>An unexpected error has occurred. Please copy the player raw data below and <a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">submit a support ticket to Foliovision</a></p>
+      <p>An unexpected error has occurred. Please copy the debug information below and <a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">submit a support ticket to Foliovision</a></p>
       <textarea name="fv_player_copy_to_clipboard" rows="15"></textarea>
       <br />
       <br />
