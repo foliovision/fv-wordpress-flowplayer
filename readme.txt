@@ -210,6 +210,12 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.2 - 2025-12-17 =
+
+* Bugfix: HLS videos not finishing properly in Safari in rare cases, caused by the iOS video recovery routine
+* Bugfix: Splash screen at the end not replaying video on click
+* Bugfix: WordPress notice "Function _load_textdomain_just_in_time was called incorrectly"
+
 = 8.1.1 - 2025-12-05 =
 
 * Editor: Improve debug information for support
