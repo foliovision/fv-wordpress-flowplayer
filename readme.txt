@@ -210,6 +210,11 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.3 - 2026-01-09 =
+
+* Bugfix: LearnDash player saving for Topics
+* Bugfix: LearnDash video completion saving
+
 = 8.1.2 - 2025-12-17 =
 
 * Bugfix: HLS videos not finishing properly in Safari in rare cases, caused by the iOS video recovery routine
