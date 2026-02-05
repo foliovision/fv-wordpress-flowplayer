@@ -161,6 +161,11 @@ S3MultiUpload.prototype.validateFile = function() {
         // Check for HTTP status
         if (jqXHR.status) {
             errorMsg += ' (HTTP ' + jqXHR.status + ')';
+
+            // HTTP 413 Content Too Large
+            if ( 413 === parseInt( jqXHR.status ) ) {
+                errorMsg += ' - File size is too large.';
+            }
         }
 
         // Try to extract server response text
@@ -184,6 +189,12 @@ S3MultiUpload.prototype.validateFile = function() {
                     tempDiv.innerHTML = rawResponse;
                     rawResponse = tempDiv.textContent || tempDiv.innerText || "";
                 }
+
+                // If s3-ajax.php responded with "Error: action not set!", then it's likely because the entire request got broken due to running into the limit of upload size.
+                if ( 'Error: action not set!' === rawResponse ) {
+                    errorMsg = ' - File size is too large.';
+                }
+
                 errorMsg += ' - ' + rawResponse;
             }
         }
