@@ -2285,6 +2285,17 @@ if( typeof(flowplayer) != "undefined" ) {
     return vars;
   }
 
+  /**
+   * Avoid issue with Google Tag Manager trying to inspect the YouTube instance using new YT.Player()
+   * on top of existing FV Player YouTube engine.
+   */
+  function fv_player_yotube_avoid_google_tag_manager_inspect( wrapperTag ) {
+    if ( window.google_tag_manager && window.google_tag_manager.sequence ) {
+      for ( var i = 0; i < window.google_tag_manager.sequence; i++ ) {
+        wrapperTag.setAttribute( 'data-gtm-yt-inspected-' + i, true );
+      }
+    }
+  }
 
   function fv_player_pro_youtube_preload( that, api, is_lightbox ) {
     var root = jQuery(that);
@@ -2319,6 +2330,8 @@ if( typeof(flowplayer) != "undefined" ) {
        * ID attribute.
        */
       wrapperTag.id = 'fv-player-yt-wrapper-' + root.attr('id');
+
+      fv_player_yotube_avoid_google_tag_manager_inspect( wrapperTag );
 
       common.prepend(common.find(".fp-player", root)[0], wrapperTag);
 
@@ -2899,6 +2912,9 @@ if( typeof(flowplayer) != "undefined" ) {
                   common.removeNode(common.findDirect("video", root)[0] || common.find(".fp-player > video", root)[0]);
                   var wrapperTag = common.createElement("div");
                   wrapperTag.className = 'fp-engine fvyoutube-engine';
+
+                  fv_player_yotube_avoid_google_tag_manager_inspect( wrapperTag );
+
                   common.prepend(common.find(".fp-player", root)[0], wrapperTag);
 
                   var intLoad = setInterval( function() {
