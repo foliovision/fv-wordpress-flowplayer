@@ -8,7 +8,7 @@ class FV_Xml_Video_Sitemap {
 
     public function __construct() {
       // Add our custom rewrite rules
-      add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), 999 );
+      add_filter('init', array($this, 'fv_check_xml_sitemap_rewrite_rules_loader'), 0 );
       add_action('do_feed_video-sitemap', array($this, 'fv_generate_video_sitemap'), 10, 1);
       add_action('do_feed_video-sitemap-index', array($this, 'fv_generate_video_sitemap_index'), 10, 1);
 
@@ -396,6 +396,25 @@ class FV_Xml_Video_Sitemap {
         $rules[$aKeys[1]] == $aRules[$aKeys[1]] ) {
         $wp_rewrite->flush_rules();
       }
+    }
+
+    /**
+     * FV Player Video Sitemap XML Rewrite rules needs to load before SEOPress XML Sitemaps.
+     * Otherwise for FV Player video-sitemap.xml URL, SEOPress assumes it's the "video" post type sitemap.
+     * So we load our rules at priority 9, before SEOPress to make sure our rules are loaded first.
+     *
+     * If SEOPress is not there or it has XML Sitemaps disabled, load the rules at priority 999.
+     */
+    public function fv_check_xml_sitemap_rewrite_rules_loader() {
+      $have_seopress_xml_sitemaps = false;
+      if ( defined( 'SEOPRESS_VERSION' ) ) {
+        $seopress_xml_sitemap_option = get_option( 'seopress_xml_sitemap_option_name', array() );
+        if ( ! empty( $seopress_xml_sitemap_option['seopress_xml_sitemap_general_enable'] ) && $seopress_xml_sitemap_option['seopress_xml_sitemap_general_enable'] == '1' ) {
+          $have_seopress_xml_sitemaps = true;
+        }
+      }
+
+      add_action('init', array($this, 'fv_check_xml_sitemap_rewrite_rules'), $have_seopress_xml_sitemaps ? 9 : 999 );
     }
 
     function fv_generate_video_sitemap() {
