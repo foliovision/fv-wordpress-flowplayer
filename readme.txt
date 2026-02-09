@@ -212,6 +212,7 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 = 8.1.4 - 2026-02-09 =
 
+* XML sitemap: Loading speed fix
 * XML sitemap: Take priority over SEOPress XML sitemaps, these require manual entry for each video
 * Bugfix: YouTube: Compatibility fixes with Google Tag Manager -> Manage automatic event detection -> Video engagement
 * Bugfix: Validate uploads for FV Player Coconut before uploading full file: Better error messages: Warn about server upload limits
