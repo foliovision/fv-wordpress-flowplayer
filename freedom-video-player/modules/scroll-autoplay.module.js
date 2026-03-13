@@ -91,13 +91,6 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     } else {
       players = jQuery( '.freedomplayer:not(.is-disabled)' );
       jQuery( window ).on( 'scroll', debouncedScrollHandler );
-
-      jQuery(document).ajaxComplete(function () {
-        fv_player_log( 'FV Player Scroll autoplay: ajaxComplete, check for new players and trigger scroll handler' );
-
-        players = jQuery( '.freedomplayer:not(.is-disabled)' );
-        debouncedScrollHandler();
-      });
     }
 
     // Scroll handler function
