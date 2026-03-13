@@ -61,9 +61,8 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
      */
     var autoplay_type = fv_flowplayer_conf.autoplay_preload
 
-    window.fv_player_scroll_autoplay_last_winner = -1;
-
     var current_winner = -1,
+      previous_winner = -1;
       past_winner = -1,
       have_autoplay = false,
       first_run = true;
@@ -160,13 +159,13 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       }
 
       // No scroll happened
-      if ( current_winner === window.fv_player_scroll_autoplay_last_winner && ! first_run ) {
+      if ( current_winner === previous_winner && ! first_run ) {
         return;
       }
 
       first_run = false;
 
-      fv_player_log( 'FV Player Scroll autoplay: STATUS current_winner: ' + current_winner + ' previous_winner: ' + window.fv_player_scroll_autoplay_last_winner + ' past_winner: ' + past_winner );
+      fv_player_log( 'FV Player Scroll autoplay: STATUS current_winner: ' + current_winner + ' previous_winner: ' + previous_winner + ' past_winner: ' + past_winner );
 
       // Unload the video that went out of the viewport earlier
       if ( past_winner > -1 ) {
@@ -184,15 +183,15 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       }
 
       // Pause the video that just went out of viewport
-      if ( window.fv_player_scroll_autoplay_last_winner > -1 ) {
-        let previous_api = players.eq( window.fv_player_scroll_autoplay_last_winner ).data( 'freedomplayer' );
+      if ( previous_winner > -1 ) {
+        let previous_api = players.eq( previous_winner ).data( 'freedomplayer' );
         if ( previous_api.playing ) {
-          fv_player_log( 'FV Player Scroll autoplay: PREVIOUS pause', window.fv_player_scroll_autoplay_last_winner );
+          fv_player_log( 'FV Player Scroll autoplay: PREVIOUS pause', previous_winner );
 
           previous_api.pause();
         }
 
-        let root = players.eq( window.fv_player_scroll_autoplay_last_winner )[0];
+        let root = players.eq( previous_winner )[0];
         if (
           typeof root.fv_player_vast == 'object' &&
           root.fv_player_vast.adsManager_ &&
@@ -200,7 +199,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
           typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' &&
           root.fv_player_vast.adsManager_.getRemainingTime() > 0
         ) {
-          fv_player_log( 'FV Player Scroll autoplay: PREVIOUS pause VAST', window.fv_player_scroll_autoplay_last_winner );
+          fv_player_log( 'FV Player Scroll autoplay: PREVIOUS pause VAST', previous_winner );
 
           root.fv_player_vast.adsManager_.pause();
         }
@@ -220,7 +219,7 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
           typeof root.fv_player_vast.adsManager_.getRemainingTime == 'function' &&
           root.fv_player_vast.adsManager_.getRemainingTime() > 0
         ) {
-          fv_player_log( 'FV Player Scroll autoplay: WINNER resume VAST', window.fv_player_scroll_autoplay_last_winner );
+          fv_player_log( 'FV Player Scroll autoplay: WINNER resume VAST', previous_winner );
 
           root.fv_player_vast.adsManager_.resume();
 
@@ -299,12 +298,12 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
       }
 
       // Keep track of the previous and past winners
-      if ( past_winner !== window.fv_player_scroll_autoplay_last_winner ) {
-        past_winner = window.fv_player_scroll_autoplay_last_winner;
+      if ( past_winner !== previous_winner ) {
+        past_winner = previous_winner;
       }
 
-      if ( current_winner !== window.fv_player_scroll_autoplay_last_winner ) {
-        window.fv_player_scroll_autoplay_last_winner = current_winner;
+      if ( current_winner !== previous_winner ) {
+        previous_winner = current_winner;
       }
     }
   }
