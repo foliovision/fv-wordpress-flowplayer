@@ -1184,6 +1184,10 @@ CREATE TABLE " . self::$db_table_name . " (
             }
           }
 
+          if ( 'chapters' === $existing->getMetaKey() && ! empty( $video_data['chapters'] ) ) {
+            $should_skip = true;
+          }
+
           if ( $should_skip ) {
             continue;
           }

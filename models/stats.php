@@ -46,6 +46,7 @@ class FV_Player_Stats {
       add_action( 'wp_ajax_fv_player_stats_users_search', array( $this, 'user_stats_search' ) );
     }
 
+    add_action( 'wp_ajax_fv_player_stats_test', array( $this, 'stats_test' ) );
   }
 
   function stats_link() {
@@ -144,6 +145,7 @@ class FV_Player_Stats {
 
   function options_html() {
     global $fv_fp;
+    $video_stats_enabled = $fv_fp->_get_option('video_stats_enable');
     ?>
     <p><?php esc_html_e( 'Track user activity on your site. Users who can edit the post are excluded. You can see the stats in the FV Player menu.', 'fv-player' ); ?></p>
     <table class="form-table2">
@@ -154,11 +156,53 @@ class FV_Player_Stats {
       <tr>
         <td colspan="4">
           <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
-          <a class="button fv-help-link" href="https://foliovision.com/player/analytics/user-stats" target="_blank">Help</a>
+          <?php if ( $video_stats_enabled ) : ?>
+            <a class="button fv-help-link" href="https://foliovision.com/player/analytics/user-stats" target="_blank">Help</a>
+          <?php endif; ?>
+          <a class="button fv-player-stats-test" href="#" target="_blank">Test</a>
+          <div class="fv-player-stats-test-result" style="display: inline-block; margin-top: 16px; line-height: 2.15384615;"></div>
         </td>
       </tr>
     </table>
-    <?php
+
+    <?php if ( $video_stats_enabled ) : ?>
+      <script>
+      jQuery( function($) {
+        var button = $('.fv-player-stats-test'),
+          sending = false;
+
+        button.on('click', function(e) {
+          if ( sending ) {
+            return;
+          }
+
+          sending = true;
+          button.addClass( 'disabled' );
+
+          e.preventDefault();
+
+          if ( ! fv_flowplayer_conf || ! fv_flowplayer_conf.fv_stats || ! fv_flowplayer_conf.fv_stats.url ) {
+            $( '.fv-player-stats-test-result' ).html( 'FV Player Stats not enabled.' );
+            return;
+          }
+
+          $.post(
+            ajaxurl,
+            {
+              'action' : 'fv_player_stats_test',
+              '_wpnonce' : fv_flowplayer_conf.fv_stats.nonce,
+            },
+            function( response ) {
+              $( '.fv-player-stats-test-result' ).html( response.data || 'Unexpected error' );
+
+              sending = false;
+              button.removeClass( 'disabled' );
+            }
+          );
+        });
+      });
+      </script>
+    <?php endif;
   }
 
   function shortcode( $attributes, $media, $fv_fp ) {
@@ -1617,6 +1661,87 @@ class FV_Player_Stats {
     $name = flowplayer::get_title_from_src($src);
 
     return $name;
+  }
+
+  /**
+   * Test the stats tracking by sending the ping request to the tracking endpoint and then checking if it got recorded
+   * properly in the file.
+   */
+  public function stats_test() {
+    if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ), 'fv_player_track' ) ) {
+      wp_send_json_error( 'Invalid nonce' );
+    }
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+      wp_send_json_error( 'You are not allowed to do this' );
+    }
+
+    // Create nonce for non-logged in user as we want to test the tracking for non-logged in users
+    $action = 'fv_player_track';
+    $i      = wp_nonce_tick( $action );
+    $key    = $i . '|' . $action . '|0|';
+    $nonce  = substr( wp_hash( $key, 'nonce' ), -12, 10 );
+
+    // Send the ping request to the tracking endpoint
+    $response = wp_remote_post(
+      flowplayer::get_plugin_url() . '/controller/track.php',
+      array(
+        'body' => array(
+          'action'   => 'fv_player_track',
+          'blog_id'  => get_current_blog_id(),
+          'tag'      => 'ping',
+          'user_id'  => 0,
+          '_wpnonce' => $nonce,
+        ),
+      )
+    );
+
+    if ( is_wp_error( $response ) ) {
+      wp_send_json_error( 'HTTP Error: ' . $response->get_error_message() );
+    }
+
+    if ( $response['response']['code'] !== 200 ) {
+      wp_send_json_error( 'Unexpected HTTP response code: ' . $response['response']['code'] . ' ' . $response['response']['message'] );
+    }
+
+    $response_body = wp_remote_retrieve_body( $response );
+
+    if ( ! empty( $response_body ) ) {
+      wp_send_json_error( 'Unexpected response: ' . $response_body );
+    }
+
+    // Check the stored value in the cache file
+    $filename = "ping-" . absint( get_current_blog_id() ) . ".data";
+
+    $fp = fopen( $this->cache_directory . "/" . $filename, 'r+');
+
+    if ( ! $fp ) {
+      wp_send_json_error( 'Failed to open cache file: ' . $filename );
+    }
+
+    $encoded_data = fgets( $fp );
+
+    $data = json_decode( $encoded_data, true );
+
+    $json_error = json_last_error();
+    if( $json_error !== JSON_ERROR_NONE ) {
+      wp_send_json_error( 'JSON decode error: ' . json_last_error_msg() );
+    }
+
+    $current_time = time();
+    $tollerance   = $current_time - 10;
+
+    if ( ! isset( $data['pong'] ) ) {
+      wp_send_json_error( 'Bad tracking data found: ' . var_export( $data, true ) );
+    }
+
+    if ( $data['pong'] < $tollerance ) {
+      wp_send_json_error( 'Tracking data is too old: ' . date( 'Y-m-d H:i:s', $data['pong'] ) . ' < ' . date( 'Y-m-d H:i:s', $tollerance )  );
+    } else if ( $data['pong'] > $current_time ) {
+      wp_send_json_error( 'Tracking data is too new: ' . date( 'Y-m-d H:i:s', $data['pong'] ) . ' > ' . date( 'Y-m-d H:i:s', $current_time ) );
+    }
+
+    wp_send_json_success( 'Test successful' );
   }
 
   function users_column( $columns ) {
