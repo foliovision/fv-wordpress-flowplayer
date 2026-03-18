@@ -1741,7 +1741,47 @@ class FV_Player_Stats {
       wp_send_json_error( 'Tracking data is too new: ' . date( 'Y-m-d H:i:s', $data['pong'] ) . ' > ' . date( 'Y-m-d H:i:s', $current_time ) );
     }
 
-    wp_send_json_success( 'Test successful' );
+    $info             = array();
+    $info_message     = '';
+    $warnings         = array();
+    $warnings_message = '';
+
+    foreach( 
+      array(
+        "play-" . absint( get_current_blog_id() ) . ".data",
+        "seconds-" . absint( get_current_blog_id() ) . ".data"
+      ) as $filename
+    ) {
+      $fp = fopen( $this->cache_directory . "/" . $filename, 'r+');
+      if ( ! $fp ) {
+        wp_send_json_error( 'Failed to open cache file: ' . $filename );
+      }
+
+      $encoded_data = fgets( $fp );
+      if ( $encoded_data ) {
+        $data = json_decode( $encoded_data, true );
+        $json_error = json_last_error();
+        if( $json_error !== JSON_ERROR_NONE ) {
+          wp_send_json_error( 'JSON decode error for ' . $filename . ': ' . json_last_error_msg() );
+        }
+
+        $info[] = '<code>' . $filename . '</code> has data about ' . count( $data ) . ' videos';
+
+      } else {
+        $warnings[] = '<code>' . $filename . '</code> is empty';
+      }
+    }
+
+    if ( ! empty( $info ) ) {
+      $info_message = ' ' . implode( ', ', $info );
+    }
+
+
+    if ( ! empty( $warnings ) ) {
+      $warnings_message = ' Warning: ' . implode( ', ', $warnings ) . '. If you did not play any video as a guest in last 5 minutes, this is normal. Try to play a video and re-test.';
+    }
+
+    wp_send_json_success( 'Test successful' . $info_message . $warnings_message );
   }
 
   function users_column( $columns ) {
