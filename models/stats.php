@@ -27,7 +27,7 @@ class FV_Player_Stats {
       }
     }
 
-    add_action( 'fv_player_stats', array ( $this, 'parse_cached_files' ) );
+    add_action( 'fv_player_stats', array ( $this, 'parse_cached_files_cron' ) );
 
     add_action( 'fv_player_update', array( $this, 'db_init' ) );
 
@@ -357,7 +357,7 @@ class FV_Player_Stats {
               )
             );
           } else { // insert new row
-            $fv_fp->log( "Stats Cron: Inserting stats for video #" . $video_id );
+            $fv_fp->log( "Stats Parsing: Inserting stats for video #" . $video_id );
 
             $wpdb->insert(
               $table_name,
@@ -398,7 +398,7 @@ class FV_Player_Stats {
   function parse_cached_files() {
 
     global $fv_fp;
-    $fv_fp->log( "Stats Cron: Parsing cached files..." );
+    $fv_fp->log( "Stats Parsing: Starting..." );
 
     // just in case...
     $this->db_init( true );
@@ -414,7 +414,7 @@ class FV_Player_Stats {
 
         if( get_current_blog_id() != $blog_id ) continue;
 
-        $fv_fp->log( "Stats Cron: Processing file: " . $filename );
+        $fv_fp->log( "Stats Parsing: Processing file: " . $filename );
 
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
         $fp = fopen( $this->cache_directory."/".$filename, 'r+');
@@ -425,7 +425,15 @@ class FV_Player_Stats {
       }
     }
 
-    $fv_fp->log( "Stats Cron: Parsing cached files has finished." );
+    $fv_fp->log( "Stats Parsing: Finished." );
+  }
+
+  public function parse_cached_files_cron() {
+
+    global $fv_fp;
+    $fv_fp->log( "Stats Cron: Starting..." );
+
+    $this->parse_cached_files();
   }
 
   public function top_ten_users_by_plays( $interval, $user_type = 'user' ) {
