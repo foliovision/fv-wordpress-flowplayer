@@ -280,7 +280,7 @@ class FV_Player_Stats {
       $encoded_data = fgets( $fp );
 
       if ( ! $encoded_data ) {
-        $fv_fp->log( "Stats Cron: File empty." );
+        $fv_fp->log( "Stats Parsing: File empty." );
         return;
       }
 
@@ -294,12 +294,12 @@ class FV_Player_Stats {
       if( $json_error !== JSON_ERROR_NONE ) {
         //file_put_contents( ABSPATH . 'failed_json_decode.log', gmdate('r')."\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND );
 
-        $fv_fp->log( "Stats Cron: JSON error: " . json_last_error_msg() );
+        $fv_fp->log( "Stats Parsing: JSON error: " . json_last_error_msg() );
         return;
       }
 
       if( !is_array( $data ) || empty( $data ) ) {
-        $fv_fp->log( "Stats Cron: No data." );
+        $fv_fp->log( "Stats Parsing: No data." );
         return;
       }
 
@@ -337,7 +337,7 @@ class FV_Player_Stats {
 
           if( $existing ) {
 
-            $fv_fp->log( "Stats Cron: Updating stats for video #" . $video_id );
+            $fv_fp->log( "Stats Parsing: Updating stats for video #" . $video_id );
 
             $wpdb->update(
               $table_name,
@@ -387,7 +387,7 @@ class FV_Player_Stats {
     else {
       echo "Error: failed to obtain file lock.";
 
-      $fv_fp->log( "Stats Cron: Failed to obtain file lock." );
+      $fv_fp->log( "Stats Parsing: Failed to obtain file lock." );
     }
   }
 
