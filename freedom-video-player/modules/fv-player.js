@@ -335,6 +335,14 @@ function fv_player_preload() {
       }
     }
 
+    function playlist_item_active() {
+      if( api.video && api.video.index > -1 && playlist_external.length > 0 ) {
+        var playlist_item = jQuery( 'a', playlist_external ).eq( api.video.index );
+        fv_player_playlist_active( playlist_external, playlist_item );
+        playlist_progress = playlist_item.find('.fvp-progress');
+      }
+    }
+
     api.bind("load", function (e,api,video) {
       if ( !api.conf.playlist.length ) { // no need to run if not in playlist
         return;
@@ -353,15 +361,7 @@ function fv_player_preload() {
     });
 
     api.bind('ready', function(e,api,video) {
-      setTimeout( function() {
-        if( video.index > -1 ) {
-          if( playlist_external.length > 0 ) {
-            var playlist_item = jQuery('a',playlist_external).eq(video.index);
-            fv_player_playlist_active(playlist_external,playlist_item);
-            playlist_progress = playlist_item.find('.fvp-progress');
-          }
-        }
-      }, 100 );
+      setTimeout( playlist_item_active, 100 );
 
       splash_img = root.find('.fp-splash'); // must update, alt attr can change
 
@@ -380,6 +380,8 @@ function fv_player_preload() {
         }
       }
     } );
+
+    api.bind( 'resume', playlist_item_active );
 
     api.bind( 'unload', function() {
       root.find('.fp-playlist-external .now-playing').remove();
