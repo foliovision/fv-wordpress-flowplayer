@@ -382,8 +382,8 @@ function fv_player_preload() {
     } );
 
     api.bind( 'unload', function() {
-      jQuery('.fp-playlist-external .now-playing').remove();
-      jQuery('.fp-playlist-external a').removeClass('is-active');
+      root.find('.fp-playlist-external .now-playing').remove();
+      root.find('.fp-playlist-external a').removeClass('is-active');
 
       var iframe = fp_player.find('iframe.fp-engine');
       if( iframe.length ) {
