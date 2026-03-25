@@ -476,7 +476,7 @@ class FV_Player_lightbox {
     }
 
     // Look for any image links
-    $content = preg_replace_callback('~(<a[^>]*?>\s*?)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
+    $content = preg_replace_callback('~(<a[^>]*?href=[\'"][^\'"]*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"][^>]*?>\s*?)~', array($this, 'html_lightbox_images_callback'), $content, -1, $count );
 
     if( $count ) {
       $this->bLoad = true;
@@ -487,9 +487,6 @@ class FV_Player_lightbox {
 
   function html_lightbox_images_callback($matches) {
     if( stripos($matches[1],'data-fancybox') ) return $matches[0];
-
-    if (!preg_match('/href=[\'"][^\'"]*?(jpeg|jpg|jpe|gif|png)(?:\?.*?|\s*?)[\'"]/i', $matches[1]))
-      return $matches[0];
 
     $matches[1] = str_replace( '<a ', '<a data-fancybox="gallery" ', $matches[1] );
 
