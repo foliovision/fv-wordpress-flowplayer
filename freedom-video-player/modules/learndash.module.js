@@ -23,7 +23,7 @@ flowplayer( function(api,root) {
        */
       var ld_lms_cookie_key = jQuery( '.ld-video' ).data( 'video-cookie-key' );
       if ( ld_lms_cookie_key ) {
-        jQuery.cookie( ld_lms_cookie_key, JSON.stringify( { 'video_state': 'complete' } ) )
+        Cookies.set( ld_lms_cookie_key, JSON.stringify( { 'video_state': 'complete' } ) )
       }
 
       // Enable "Mark Complete" button

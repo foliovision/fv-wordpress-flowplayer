@@ -141,11 +141,16 @@ class FV_Player_Learndash_LMS {
   
   // https://developers.learndash.com/hook/learndash_settings_fields/
   function save_field( $post_id ) {
-    
-    if (
-      ! isset( $_POST['learndash-lesson-access-settings']['nonce'] ) ||
-      ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['learndash-lesson-access-settings']['nonce'] ) ), 'learndash-lesson-access-settings' )
-    ) {
+
+    $saving_lesson =
+      isset( $_POST['learndash-lesson-access-settings']['nonce'] ) &&
+      wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['learndash-lesson-access-settings']['nonce'] ) ), 'learndash-lesson-access-settings' );
+
+    $saving_topic =
+      isset( $_POST['learndash-topic-access-settings']['nonce'] ) &&
+      wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['learndash-topic-access-settings']['nonce'] ) ), 'learndash-topic-access-settings' );
+
+    if ( ! $saving_lesson && ! $saving_topic ) {
       return;
     }
 

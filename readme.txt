@@ -210,6 +210,24 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.4 - 2026-02-09 =
+
+* XML sitemap: Loading speed fix
+* XML sitemap: Take priority over SEOPress XML sitemaps, these require manual entry for each video
+* Bugfix: YouTube: Compatibility fixes with Google Tag Manager -> Manage automatic event detection -> Video engagement
+* Bugfix: Validate uploads for FV Player Coconut before uploading full file: Better error messages: Warn about server upload limits
+
+= 8.1.3 - 2026-01-09 =
+
+* Bugfix: LearnDash player saving for Topics
+* Bugfix: LearnDash video completion saving
+
+= 8.1.2 - 2025-12-17 =
+
+* Bugfix: HLS videos not finishing properly in Safari in rare cases, caused by the iOS video recovery routine
+* Bugfix: Splash screen at the end not replaying video on click
+* Bugfix: WordPress notice "Function _load_textdomain_just_in_time was called incorrectly"
+
 = 8.1.1 - 2025-12-05 =
 
 * Editor: Improve debug information for support

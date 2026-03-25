@@ -135,6 +135,7 @@ class flowplayer_frontend extends flowplayer
         'height',
         'lightbox',
         'liststyle',
+        'title',
         'width',
       ) as $key
     ) {

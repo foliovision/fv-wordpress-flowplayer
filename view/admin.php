@@ -631,7 +631,20 @@ function fv_flowplayer_admin_integrations() {
 ?>
         <p><?php esc_html_e( 'Following options are suitable for web developers and programmers.', 'fv-player' ); ?></p>
         <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__( 'Debug', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
+          <?php $fv_fp->_get_checkbox(__( 'Debug Console', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
+
+          <?php
+          $fv_fp->_get_checkbox( __( 'Debug Log', 'fv-player' ), 'debug_file', __( 'Log important events into log file.', 'fv-player' ) );
+
+          if ( ! empty( $fv_fp->_get_option('debug_file') ) ) : ?>
+            <tr>
+              <td></td>
+              <td>
+                <?php $fv_fp->log_file_settings_field(); ?>
+              </td>
+            </tr>
+          <?php endif; ?>
+
           <?php $fv_fp->_get_checkbox(__( 'Disable database conversion', 'fv-player' ), 'disable_convert_db_save', __( 'Stop converting [fvplayer src="..."] shortcodes, [video] shortcodes, Vimeo and YouTube links to database-driven FV Player when post is saved.', 'fv-player' ) ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Disable saving skin CSS to a static file', 'fv-player' ), 'css_disable', __( 'Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css.', 'fv-player' ), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!', 'fv-player' )); ?>
 
@@ -698,7 +711,7 @@ function fv_flowplayer_admin_integrations() {
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
           <tr>
             <td colspan="4">
-              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/integrations-compatibility-options" target="_blank">Help</a>
             </td>
           </tr>
@@ -1176,14 +1189,14 @@ function fv_flowplayer_admin_skin() {
     <?php
     global $fv_fp_admin_preview_player;
     $fv_fp_admin_preview_player = flowplayer_content_handle( array(
-      'src'       => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
-      'splash'    => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
+      'src'       => 'https://cdn.foliovision.com/videos/fv-player/Foliovision%20Promo%20Video-720p.mp4',
+      'splash'    => 'https://cdn.foliovision.com/videos/fv-player/Foliovision%20Promo%20Video.jpg',
       'autoplay'  => 'false',
       'preroll'   => 'no',
       'postroll'  => 'no',
       'subtitles' => plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
       'caption'   => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
-      'playlist'  => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130',
+      'playlist'  => 'https://cdn.foliovision.com/videos/fv-player/Lapinthrope%20Extras%20-%20Roy%20Thompson%20Hall%20Dance-536p.mp4,https://cdn.foliovision.com/videos/fv-player/Lapinthrope%20Extras%20-%20Roy%20Thompson%20Hall%20Dance.jpg;https://cdn.foliovision.com/videos/fv-player/Romeo%20and%20Juliet%20Ballet%20Schloss%20Kittsee-720p.mp4,https://cdn.foliovision.com/videos/fv-player/Romeo%20and%20Juliet%20Ballet%20Schloss%20Kittsee.jpg',
 			'liststyle' => 'horizontal',
       'vast'      => 'skip',
       'checker'   => 'no'
