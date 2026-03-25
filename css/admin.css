@@ -213,6 +213,9 @@ table.fv-player-popup-formats td:first-child { width: 72px }
   background-color: #ffffff;
   border-bottom: #ffffff;
 }
+#fv_flowplayer_admin_tabs .nav-tab:focus {
+  box-shadow: none;
+}
 
 .wp-admin .user-videos .fv-player-custom-video {
   margin-bottom: 10px;
