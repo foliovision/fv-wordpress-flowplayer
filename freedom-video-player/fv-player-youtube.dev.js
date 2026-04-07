@@ -80,13 +80,13 @@ if( fv_flowplayer_conf.youtube ) {
   ;
 
   /**
-   * Copy of https://www.youtube.com/s/player/c9168c90/www-widgetapi.vflset/www-widgetapi.js with YT changed to FV_YT.
+   * Copy of https://www.youtube.com/s/player/8c83ec2e/www-widgetapi.vflset/www-widgetapi.js with YT changed to FV_YT.
    *
    * Commented out parts where it runs onYTReady(), onYouTubeIframeAPIReady(), onYouTubePlayerAPIReady()
    */
   (function() {
     'use strict';
-    var m, ca = typeof Object.create == "function" ? Object.create : function(a) {
+    var n, ca = typeof Object.create == "function" ? Object.create : function(a) {
         function b() {}
         b.prototype = a;
         return new b
@@ -114,10 +114,10 @@ if( fv_flowplayer_conf.youtube ) {
                 var c = q;
                 a = a.split(".");
                 for (var d = 0; d < a.length - 1; d++) {
-                    var k = a[d];
-                    if (!(k in c))
+                    var h = a[d];
+                    if (!(h in c))
                         break a;
-                    c = c[k]
+                    c = c[h]
                 }
                 a = a[a.length - 1];
                 d = c[a];
@@ -204,16 +204,14 @@ if( fv_flowplayer_conf.youtube ) {
         };
         a.g = a.l || a.i
     }
-    y.prototype.T = function() {
+    y.prototype.getNextAddressJsc = function() {
         return this.g
     }
     ;
-    y.prototype.getNextAddress = y.prototype.T;
-    y.prototype.U = function() {
+    y.prototype.getYieldResultJsc = function() {
         return this.m
     }
     ;
-    y.prototype.getYieldResult = y.prototype.U;
     y.prototype.return = function(a) {
         this.h = {
             return: a
@@ -222,14 +220,14 @@ if( fv_flowplayer_conf.youtube ) {
     }
     ;
     y.prototype["return"] = y.prototype.return;
-    y.prototype.V = function(a) {
+    y.prototype.T = function(a) {
         this.h = {
             C: a
         };
         this.g = this.i
     }
     ;
-    y.prototype.jumpThroughFinallyBlocks = y.prototype.V;
+    y.prototype.jumpThroughFinallyBlocks = y.prototype.T;
     y.prototype.u = function(a, b) {
         this.g = b;
         return {
@@ -238,7 +236,7 @@ if( fv_flowplayer_conf.youtube ) {
     }
     ;
     y.prototype.yield = y.prototype.u;
-    y.prototype.Y = function(a, b) {
+    y.prototype.W = function(a, b) {
         a = v(a);
         var c = a.next();
         ja(c);
@@ -250,7 +248,7 @@ if( fv_flowplayer_conf.youtube ) {
             this.u(c.value, b)
     }
     ;
-    y.prototype.yieldAll = y.prototype.Y;
+    y.prototype.yieldAll = y.prototype.W;
     y.prototype.C = function(a) {
         this.g = a
     }
@@ -267,12 +265,12 @@ if( fv_flowplayer_conf.youtube ) {
     }
     ;
     y.prototype.setCatchFinallyBlocks = y.prototype.I;
-    y.prototype.X = function(a) {
+    y.prototype.V = function(a) {
         this.l = 0;
         this.i = a || 0
     }
     ;
-    y.prototype.setFinallyBlock = y.prototype.X;
+    y.prototype.setFinallyBlock = y.prototype.V;
     y.prototype.H = function(a, b) {
         this.g = a;
         this.l = b || 0
@@ -294,13 +292,13 @@ if( fv_flowplayer_conf.youtube ) {
     }
     ;
     y.prototype.enterFinallyBlock = y.prototype.K;
-    y.prototype.W = function(a, b) {
+    y.prototype.U = function(a, b) {
         b = this.D.splice(b || 0)[0];
         (b = this.h = this.h || b) ? b.O ? this.g = this.l || this.i : b.C != void 0 && this.i < b.C ? (this.g = b.C,
         this.h = null) : this.g = this.i : this.g = a
     }
     ;
-    y.prototype.leaveFinallyBlock = y.prototype.W;
+    y.prototype.leaveFinallyBlock = y.prototype.U;
     y.prototype.S = function(a) {
         return new C(a)
     }
@@ -343,19 +341,19 @@ if( fv_flowplayer_conf.youtube ) {
     }
     function D(a, b, c, d) {
         try {
-            var k = b.call(a.g.j, c);
-            ja(k);
-            if (!k.done)
+            var h = b.call(a.g.j, c);
+            ja(h);
+            if (!h.done)
                 return a.g.o = !1,
-                k;
-            var h = k.value
+                h;
+            var k = h.value
         } catch (f) {
             return a.g.j = null,
             A(a.g, f),
             E(a)
         }
         a.g.j = null;
-        d.call(a.g, h);
+        d.call(a.g, k);
         return E(a)
     }
     function E(a) {
@@ -418,11 +416,11 @@ if( fv_flowplayer_conf.youtube ) {
         function c(d) {
             return a.throw(d)
         }
-        return new Promise(function(d, k) {
-            function h(f) {
-                f.done ? d(f.value) : Promise.resolve(f.value).then(b, c).then(h, k)
+        return new Promise(function(d, h) {
+            function k(f) {
+                f.done ? d(f.value) : Promise.resolve(f.value).then(b, c).then(k, h)
             }
-            h(a.next())
+            k(a.next())
         }
         )
     }
@@ -430,13 +428,13 @@ if( fv_flowplayer_conf.youtube ) {
         return na(new ma(new ka(a)))
     }
     r("Symbol", function(a) {
-        function b(h) {
+        function b(k) {
             if (this instanceof b)
                 throw new TypeError("Symbol is not a constructor");
-            return new c(d + (h || "") + "_" + k++,h)
+            return new c(d + (k || "") + "_" + h++,k)
         }
-        function c(h, f) {
-            this.g = h;
+        function c(k, f) {
+            this.g = k;
             p(this, "description", {
                 configurable: !0,
                 writable: !0,
@@ -450,7 +448,7 @@ if( fv_flowplayer_conf.youtube ) {
         }
         ;
         var d = "jscomp_symbol_" + (Math.random() * 1E9 >>> 0) + "_"
-          , k = 0;
+          , h = 0;
         return b
     });
     r("Symbol.iterator", function(a) {
@@ -511,9 +509,9 @@ if( fv_flowplayer_conf.youtube ) {
             this.g.push(f)
         }
         ;
-        var k = q.setTimeout;
+        var h = q.setTimeout;
         c.prototype.i = function(f) {
-            k(f, 0)
+            h(f, 0)
         }
         ;
         c.prototype.l = function() {
@@ -541,9 +539,9 @@ if( fv_flowplayer_conf.youtube ) {
         ;
         b.prototype.j = function() {
             function f(l) {
-                return function(n) {
+                return function(m) {
                     g || (g = !0,
-                    l.call(e, n))
+                    l.call(e, m))
                 }
             }
             var e = this
@@ -604,7 +602,7 @@ if( fv_flowplayer_conf.youtube ) {
         ;
         b.prototype.H = function() {
             var f = this;
-            k(function() {
+            h(function() {
                 if (f.D()) {
                     var e = q.console;
                     typeof e !== "undefined" && e.error(f.i)
@@ -634,12 +632,12 @@ if( fv_flowplayer_conf.youtube ) {
         b.prototype.B = function() {
             if (this.g != null) {
                 for (var f = 0; f < this.g.length; ++f)
-                    h.h(this.g[f]);
+                    k.h(this.g[f]);
                 this.g = null
             }
         }
         ;
-        var h = new c;
+        var k = new c;
         b.prototype.I = function(f) {
             var e = this.j();
             f.J(e.resolve, e.reject)
@@ -660,17 +658,17 @@ if( fv_flowplayer_conf.youtube ) {
                     try {
                         l(x(aa))
                     } catch (ba) {
-                        n(ba)
+                        m(ba)
                     }
                 }
                 : B
             }
-            var l, n, w = new b(function(x, B) {
+            var l, m, w = new b(function(x, B) {
                 l = x;
-                n = B
+                m = B
             }
             );
-            this.J(g(f, l), g(e, n));
+            this.J(g(f, l), g(e, m));
             return w
         }
         ;
@@ -692,7 +690,7 @@ if( fv_flowplayer_conf.youtube ) {
                 }
             }
             var l = this;
-            this.g == null ? h.h(g) : this.g.push(g);
+            this.g == null ? k.h(g) : this.g.push(g);
             this.o = !0
         }
         ;
@@ -706,8 +704,8 @@ if( fv_flowplayer_conf.youtube ) {
         ;
         b.race = function(f) {
             return new b(function(e, g) {
-                for (var l = v(f), n = l.next(); !n.done; n = l.next())
-                    d(n.value).J(e, g)
+                for (var l = v(f), m = l.next(); !m.done; m = l.next())
+                    d(m.value).J(e, g)
             }
             )
         }
@@ -715,7 +713,7 @@ if( fv_flowplayer_conf.youtube ) {
         b.all = function(f) {
             var e = v(f)
               , g = e.next();
-            return g.done ? d([]) : new b(function(l, n) {
+            return g.done ? d([]) : new b(function(l, m) {
                 function w(aa) {
                     return function(ba) {
                         x[aa] = ba;
@@ -728,7 +726,7 @@ if( fv_flowplayer_conf.youtube ) {
                 do
                     x.push(void 0),
                     B++,
-                    d(g.value).J(w(x.length - 1), n),
+                    d(g.value).J(w(x.length - 1), m),
                     g = e.next();
                 while (!g.done)
             }
@@ -747,8 +745,8 @@ if( fv_flowplayer_conf.youtube ) {
         for (var c = 1; c < arguments.length; c++) {
             var d = arguments[c];
             if (d)
-                for (var k in d)
-                    G(d, k) && (a[k] = d[k])
+                for (var h in d)
+                    G(d, h) && (a[h] = d[h])
         }
         return a
     }
@@ -774,7 +772,7 @@ if( fv_flowplayer_conf.youtube ) {
             var l = typeof g;
             return l === "object" && g !== null || l === "function"
         }
-        function k(g) {
+        function h(g) {
             if (!G(g, f)) {
                 var l = new c;
                 p(g, f, {
@@ -782,13 +780,13 @@ if( fv_flowplayer_conf.youtube ) {
                 })
             }
         }
-        function h(g) {
+        function k(g) {
             var l = Object[g];
-            l && (Object[g] = function(n) {
-                if (n instanceof c)
-                    return n;
-                Object.isExtensible(n) && k(n);
-                return l(n)
+            l && (Object[g] = function(m) {
+                if (m instanceof c)
+                    return m;
+                Object.isExtensible(m) && h(m);
+                return l(m)
             }
             )
         }
@@ -798,26 +796,26 @@ if( fv_flowplayer_conf.youtube ) {
             try {
                 var g = Object.seal({})
                   , l = Object.seal({})
-                  , n = new a([[g, 2], [l, 3]]);
-                if (n.get(g) != 2 || n.get(l) != 3)
+                  , m = new a([[g, 2], [l, 3]]);
+                if (m.get(g) != 2 || m.get(l) != 3)
                     return !1;
-                n.delete(g);
-                n.set(l, 4);
-                return !n.has(g) && n.get(l) == 4
+                m.delete(g);
+                m.set(l, 4);
+                return !m.has(g) && m.get(l) == 4
             } catch (w) {
                 return !1
             }
         }())
             return a;
         var f = "$jscomp_hidden_" + Math.random();
-        h("freeze");
-        h("preventExtensions");
-        h("seal");
+        k("freeze");
+        k("preventExtensions");
+        k("seal");
         var e = 0;
         b.prototype.set = function(g, l) {
             if (!d(g))
                 throw Error("Invalid WeakMap key");
-            k(g);
+            h(g);
             if (!G(g, f))
                 throw Error("WeakMap key fail: " + g);
             g[f][this.g] = l;
@@ -865,28 +863,28 @@ if( fv_flowplayer_conf.youtube ) {
         }
         function d(e, g) {
             var l = g && typeof g;
-            l == "object" || l == "function" ? h.has(g) ? l = h.get(g) : (l = "" + ++f,
-            h.set(g, l)) : l = "p_" + g;
-            var n = e[0][l];
-            if (n && G(e[0], l))
-                for (e = 0; e < n.length; e++) {
-                    var w = n[e];
+            l == "object" || l == "function" ? k.has(g) ? l = k.get(g) : (l = "" + ++f,
+            k.set(g, l)) : l = "p_" + g;
+            var m = e[0][l];
+            if (m && G(e[0], l))
+                for (e = 0; e < m.length; e++) {
+                    var w = m[e];
                     if (g !== g && w.key !== w.key || g === w.key)
                         return {
                             id: l,
-                            list: n,
+                            list: m,
                             index: e,
                             entry: w
                         }
                 }
             return {
                 id: l,
-                list: n,
+                list: m,
                 index: -1,
                 entry: void 0
             }
         }
-        function k(e) {
+        function h(e) {
             this[0] = {};
             this[1] = b();
             this.size = 0;
@@ -912,18 +910,18 @@ if( fv_flowplayer_conf.youtube ) {
                 }, "t") != g || g.size != 2)
                     return !1;
                 var l = g.entries()
-                  , n = l.next();
-                if (n.done || n.value[0] != e || n.value[1] != "s")
+                  , m = l.next();
+                if (m.done || m.value[0] != e || m.value[1] != "s")
                     return !1;
-                n = l.next();
-                return n.done || n.value[0].x != 4 || n.value[1] != "t" || !l.next().done ? !1 : !0
+                m = l.next();
+                return m.done || m.value[0].x != 4 || m.value[1] != "t" || !l.next().done ? !1 : !0
             } catch (w) {
                 return !1
             }
         }())
             return a;
-        var h = new WeakMap;
-        k.prototype.set = function(e, g) {
+        var k = new WeakMap;
+        h.prototype.set = function(e, g) {
             e = e === 0 ? 0 : e;
             var l = d(this, e);
             l.list || (l.list = this[0][l.id] = []);
@@ -941,7 +939,7 @@ if( fv_flowplayer_conf.youtube ) {
             return this
         }
         ;
-        k.prototype.delete = function(e) {
+        h.prototype.delete = function(e) {
             e = d(this, e);
             return e.entry && e.list ? (e.list.splice(e.index, 1),
             e.list.length || delete this[0][e.id],
@@ -952,47 +950,47 @@ if( fv_flowplayer_conf.youtube ) {
             !0) : !1
         }
         ;
-        k.prototype.clear = function() {
+        h.prototype.clear = function() {
             this[0] = {};
             this[1] = this[1].previous = b();
             this.size = 0
         }
         ;
-        k.prototype.has = function(e) {
+        h.prototype.has = function(e) {
             return !!d(this, e).entry
         }
         ;
-        k.prototype.get = function(e) {
+        h.prototype.get = function(e) {
             return (e = d(this, e).entry) && e.value
         }
         ;
-        k.prototype.entries = function() {
+        h.prototype.entries = function() {
             return c(this, function(e) {
                 return [e.key, e.value]
             })
         }
         ;
-        k.prototype.keys = function() {
+        h.prototype.keys = function() {
             return c(this, function(e) {
                 return e.key
             })
         }
         ;
-        k.prototype.values = function() {
+        h.prototype.values = function() {
             return c(this, function(e) {
                 return e.value
             })
         }
         ;
-        k.prototype.forEach = function(e, g) {
-            for (var l = this.entries(), n; !(n = l.next()).done; )
-                n = n.value,
-                e.call(g, n[1], n[0], this)
+        h.prototype.forEach = function(e, g) {
+            for (var l = this.entries(), m; !(m = l.next()).done; )
+                m = m.value,
+                e.call(g, m[1], m[0], this)
         }
         ;
-        k.prototype[Symbol.iterator] = k.prototype.entries;
+        h.prototype[Symbol.iterator] = h.prototype.entries;
         var f = 0;
-        return k
+        return h
     });
     r("Set", function(a) {
         function b(c) {
@@ -1016,12 +1014,12 @@ if( fv_flowplayer_conf.youtube ) {
                     x: 4
                 }) != d || d.size != 2)
                     return !1;
-                var k = d.entries()
-                  , h = k.next();
-                if (h.done || h.value[0] != c || h.value[1] != c)
+                var h = d.entries()
+                  , k = h.next();
+                if (k.done || k.value[0] != c || k.value[1] != c)
                     return !1;
-                h = k.next();
-                return h.done || h.value[0] == c || h.value[0].x != 4 || h.value[1] != h.value[0] ? !1 : k.next().done
+                k = h.next();
+                return k.done || k.value[0] == c || k.value[0].x != 4 || k.value[1] != k.value[0] ? !1 : h.next().done
             } catch (f) {
                 return !1
             }
@@ -1060,9 +1058,9 @@ if( fv_flowplayer_conf.youtube ) {
         b.prototype.keys = b.prototype.values;
         b.prototype[Symbol.iterator] = b.prototype.values;
         b.prototype.forEach = function(c, d) {
-            var k = this;
-            this.g.forEach(function(h) {
-                return c.call(d, h, h, k)
+            var h = this;
+            this.g.forEach(function(k) {
+                return c.call(d, k, k, h)
             })
         }
         ;
@@ -1073,9 +1071,9 @@ if( fv_flowplayer_conf.youtube ) {
             a: {
                 var d = this;
                 d instanceof String && (d = String(d));
-                for (var k = d.length, h = 0; h < k; h++) {
-                    var f = d[h];
-                    if (b.call(c, f, h, d)) {
+                for (var h = d.length, k = 0; k < h; k++) {
+                    var f = d[k];
+                    if (b.call(c, f, k, d)) {
                         b = f;
                         break a
                     }
@@ -1091,17 +1089,17 @@ if( fv_flowplayer_conf.youtube ) {
                 return e
             }
             ;
-            var k = []
-              , h = typeof Symbol != "undefined" && Symbol.iterator && b[Symbol.iterator];
-            if (typeof h == "function") {
-                b = h.call(b);
-                for (var f = 0; !(h = b.next()).done; )
-                    k.push(c.call(d, h.value, f++))
+            var h = []
+              , k = typeof Symbol != "undefined" && Symbol.iterator && b[Symbol.iterator];
+            if (typeof k == "function") {
+                b = k.call(b);
+                for (var f = 0; !(k = b.next()).done; )
+                    h.push(c.call(d, k.value, f++))
             } else
-                for (h = b.length,
-                f = 0; f < h; f++)
-                    k.push(c.call(d, b[f], f));
-            return k
+                for (k = b.length,
+                f = 0; f < k; f++)
+                    h.push(c.call(d, b[f], f));
+            return h
         }
     });
     /*
@@ -1130,10 +1128,10 @@ if( fv_flowplayer_conf.youtube ) {
         a.R = b.prototype;
         a.prototype = new c;
         a.prototype.constructor = a;
-        a.ga = function(d, k, h) {
+        a.ea = function(d, h, k) {
             for (var f = Array(arguments.length - 2), e = 2; e < arguments.length; e++)
                 f[e - 2] = arguments[e];
-            return b.prototype[k].apply(d, f)
+            return b.prototype[h].apply(d, f)
         }
     }
     ;var ua = Array.prototype.indexOf ? function(a, b) {
@@ -1151,8 +1149,8 @@ if( fv_flowplayer_conf.youtube ) {
         Array.prototype.forEach.call(a, b, c)
     }
     : function(a, b, c) {
-        for (var d = a.length, k = typeof a === "string" ? a.split("") : a, h = 0; h < d; h++)
-            h in k && b.call(c, k[h], h, a)
+        for (var d = a.length, h = typeof a === "string" ? a.split("") : a, k = 0; k < d; k++)
+            k in h && b.call(c, h[k], k, a)
     }
     ;
     function wa(a, b) {
@@ -1313,7 +1311,7 @@ if( fv_flowplayer_conf.youtube ) {
     ;
     var Sa = new L("about:invalid#zClosurez");
     function Ta(a) {
-        this.aa = a
+        this.Y = a
     }
     function M(a) {
         return new Ta(function(b) {
@@ -1327,9 +1325,9 @@ if( fv_flowplayer_conf.youtube ) {
     )]
       , Va = /^\s*(?!javascript:)(?:[\w+.-]+:|[^:/?#]*(?:[/?#]|$))/i;
     var Wa = {
-        fa: 0,
-        da: 1,
-        ea: 2,
+        da: 0,
+        ba: 1,
+        ca: 2,
         0: "FORMATTED_HTML_CONTENT",
         1: "EMBEDDED_INTERNAL_CONTENT",
         2: "EMBEDDED_TRUSTED_EXTERNAL_CONTENT"
@@ -1440,29 +1438,31 @@ if( fv_flowplayer_conf.youtube ) {
         this.u = !!a
     }
     ta(U, K);
-    m = U.prototype;
-    m.subscribe = function(a, b, c) {
+    n = U.prototype;
+    n.subscribe = function(a, b, c) {
         var d = this.h[a];
         d || (d = this.h[a] = []);
-        var k = this.o;
-        this.g[k] = a;
-        this.g[k + 1] = b;
-        this.g[k + 2] = c;
-        this.o = k + 3;
-        d.push(k);
-        return k
+        var h = this.o;
+        this.g[h] = a;
+        this.g[h + 1] = b;
+        this.g[h + 2] = c;
+        this.o = h + 3;
+        d.push(h);
+        return h
     }
     ;
-    function hb(a, b, c) {
-        var d = V;
-        if (a = d.h[a]) {
-            var k = d.g;
-            (a = a.find(function(h) {
-                return k[h + 1] == b && k[h + 2] == c
-            })) && d.M(a)
+    n.unsubscribe = function(a, b, c) {
+        if (a = this.h[a]) {
+            var d = this.g;
+            if (a = a.find(function(h) {
+                return d[h + 1] == b && d[h + 2] == c
+            }))
+                return this.M(a)
         }
+        return !1
     }
-    m.M = function(a) {
+    ;
+    n.M = function(a) {
         var b = this.g[a];
         if (b) {
             var c = this.h[b];
@@ -1476,22 +1476,22 @@ if( fv_flowplayer_conf.youtube ) {
         return !!b
     }
     ;
-    m.P = function(a, b) {
+    n.P = function(a, b) {
         var c = this.h[a];
         if (c) {
-            var d = Array(arguments.length - 1), k = arguments.length, h;
-            for (h = 1; h < k; h++)
-                d[h - 1] = arguments[h];
+            var d = Array(arguments.length - 1), h = arguments.length, k;
+            for (k = 1; k < h; k++)
+                d[k - 1] = arguments[k];
             if (this.u)
-                for (h = 0; h < c.length; h++)
-                    k = c[h],
-                    ib(this.g[k + 1], this.g[k + 2], d);
+                for (k = 0; k < c.length; k++)
+                    h = c[k],
+                    hb(this.g[h + 1], this.g[h + 2], d);
             else {
                 this.m++;
                 try {
-                    for (h = 0,
-                    k = c.length; h < k && !this.i; h++) {
-                        var f = c[h];
+                    for (k = 0,
+                    h = c.length; k < h && !this.i; k++) {
+                        var f = c[k];
                         this.g[f + 1].apply(this.g[f + 2], d)
                     }
                 } finally {
@@ -1501,17 +1501,17 @@ if( fv_flowplayer_conf.youtube ) {
                             this.M(c)
                 }
             }
-            return h != 0
+            return k != 0
         }
         return !1
     }
     ;
-    function ib(a, b, c) {
+    function hb(a, b, c) {
         Ha(function() {
             a.apply(b, c)
         })
     }
-    m.clear = function(a) {
+    n.clear = function(a) {
         if (a) {
             var b = this.h[a];
             b && (b.forEach(this.M, this),
@@ -1521,37 +1521,37 @@ if( fv_flowplayer_conf.youtube ) {
             this.h = {}
     }
     ;
-    m.L = function() {
+    n.L = function() {
         U.R.L.call(this);
         this.clear();
         this.l.length = 0
     }
     ;
-    var jb = RegExp("^(?:([^:/?#.]+):)?(?://(?:([^\\\\/?#]*)@)?([^\\\\/?#]*?)(?::([0-9]+))?(?=[\\\\/?#]|$))?([^?#]+)?(?:\\?([^#]*))?(?:#([\\s\\S]*))?$");
-    function kb(a) {
-        var b = a.match(jb);
+    var ib = RegExp("^(?:([^:/?#.]+):)?(?://(?:([^\\\\/?#]*)@)?([^\\\\/?#]*?)(?::([0-9]+))?(?=[\\\\/?#]|$))?([^?#]+)?(?:\\?([^#]*))?(?:#([\\s\\S]*))?$");
+    function jb(a) {
+        var b = a.match(ib);
         a = b[1];
         var c = b[2]
           , d = b[3];
         b = b[4];
-        var k = "";
-        a && (k += a + ":");
-        d && (k += "//",
-        c && (k += c + "@"),
-        k += d,
-        b && (k += ":" + b));
-        return k
+        var h = "";
+        a && (h += a + ":");
+        d && (h += "//",
+        c && (h += c + "@"),
+        h += d,
+        b && (h += ":" + b));
+        return h
     }
-    function lb(a, b, c) {
+    function kb(a, b, c) {
         if (Array.isArray(b))
             for (var d = 0; d < b.length; d++)
-                lb(a, String(b[d]), c);
+                kb(a, String(b[d]), c);
         else
             b != null && c.push(a + (b === "" ? "" : "=" + encodeURIComponent(String(b))))
     }
-    var mb = /#|$/;
-    var nb = ["https://www.google.com"];
-    function ob() {
+    var lb = /#|$/;
+    var mb = ["https://www.google.com"];
+    function nb() {
         var a = this;
         this.g = [];
         this.h = function() {
@@ -1562,41 +1562,41 @@ if( fv_flowplayer_conf.youtube ) {
             })
         }
     }
-    function pb() {
+    function ob() {
         return F(function(a) {
             var b = a.return;
             var c = gb() >= 119;
             return b.call(a, c && !!navigator.permissions && !!navigator.permissions.query && "requestStorageAccessFor"in document)
         })
     }
-    function qb() {
-        var a = new ob
+    function pb() {
+        var a = new nb
           , b = ["https://www.youtube.com"];
-        b = b === void 0 ? nb : b;
+        b = b === void 0 ? mb : b;
         F(function(c) {
             switch (c.g) {
             case 1:
-                return c.u(pb(), 2);
+                return c.u(ob(), 2);
             case 2:
                 if (!c.m) {
                     c.C(3);
                     break
                 }
                 return c.u(Promise.all(b.map(function(d) {
-                    var k;
-                    return F(function(h) {
-                        if (h.g == 1)
-                            return h.I(2),
-                            h.u(navigator.permissions.query({
+                    var h;
+                    return F(function(k) {
+                        if (k.g == 1)
+                            return k.I(2),
+                            k.u(navigator.permissions.query({
                                 name: "top-level-storage-access",
                                 requestedOrigin: d
                             }), 4);
-                        if (h.g != 2)
-                            return k = h.m,
-                        k.state === "prompt" && a.g.push(d),
-                            h.H(0);
-                        h.F();
-                        h.G()
+                        if (k.g != 2)
+                            return h = k.m,
+                            h.state === "prompt" && a.g.push(d),
+                            k.H(0);
+                        k.F();
+                        k.G()
                     })
                 })), 4);
             case 4:
@@ -1606,28 +1606,28 @@ if( fv_flowplayer_conf.youtube ) {
             }
         })
     }
-    ;var W = {}
-      , rb = []
-      , V = new U
-      , sb = {};
-    function tb() {
-        for (var a = v(rb), b = a.next(); !b.done; b = a.next())
+    ;var V = {}
+      , qb = []
+      , W = new U
+      , rb = {};
+    function sb() {
+        for (var a = v(qb), b = a.next(); !b.done; b = a.next())
             b = b.value,
             b()
     }
-    function ub(a, b) {
+    function tb(a, b) {
         return a.tagName.toLowerCase().substring(0, 3) === "yt:" ? a.getAttribute(b) : a.dataset ? a.dataset[b] : a.getAttribute("data-" + b)
     }
-    function vb(a) {
-        V.P.apply(V, arguments)
+    function ub(a) {
+        W.P.apply(W, arguments)
     }
-    ;function wb(a) {
+    ;function vb(a) {
         return (a.search("cue") === 0 || a.search("load") === 0) && a !== "loadModule"
     }
-    function xb(a) {
+    function wb(a) {
         return a.search("get") === 0 || a.search("is") === 0
     }
-    ;var yb = window;
+    ;var xb = window;
     function X(a, b) {
         this.A = {};
         this.playerInfo = {};
@@ -1639,7 +1639,7 @@ if( fv_flowplayer_conf.youtube ) {
         this.i = null;
         this.B = {};
         this.options = null;
-        this.u = this.ba.bind(this);
+        this.u = this.Z.bind(this);
         if (!a)
             throw Error("YouTube player element ID required.");
         this.id = qa(this);
@@ -1651,9 +1651,9 @@ if( fv_flowplayer_conf.youtube ) {
         }, b || {});
         var c = document;
         if (a = typeof a === "string" ? c.getElementById(a) : a) {
-            yb.yt_embedsEnableRsaforFromIframeApi && qb();
+            xb.yt_embedsEnableRsaforFromIframeApi && pb();
             c = a.tagName.toLowerCase() === "iframe";
-            b.host || (b.host = c ? kb(a.src) : "https://www.youtube.com");
+            b.host || (b.host = c ? jb(a.src) : "https://www.youtube.com");
             this.options = b || {};
             b = [this.options, window.YTConfig || {}];
             for (var d = 0; d < b.length; d++)
@@ -1662,9 +1662,9 @@ if( fv_flowplayer_conf.youtube ) {
                 b = document.createElement("iframe");
                 c = a.attributes;
                 d = 0;
-                for (var k = c.length; d < k; d++) {
-                    var h = c[d].value;
-                    h != null && h !== "" && h !== "null" && b.setAttribute(c[d].name, h)
+                for (var h = c.length; d < h; d++) {
+                    var k = c[d].value;
+                    k != null && k !== "" && k !== "null" && b.setAttribute(c[d].name, k)
                 }
                 b.setAttribute("frameBorder", "0");
                 b.setAttribute("allowfullscreen", "");
@@ -1675,13 +1675,13 @@ if( fv_flowplayer_conf.youtube ) {
                 (c = Y(this, "height")) && b.setAttribute("height", c.toString());
                 this.j = a;
                 (c = a.parentNode) && c.replaceChild(b, a);
-                a = zb(this, b);
-                c = "" + Y(this, "host") + Ab(this) + "?";
+                a = yb(this, b);
+                c = "" + Y(this, "host") + zb(this) + "?";
                 d = [];
                 for (var f in a)
-                    lb(f, a[f], d);
+                    kb(f, a[f], d);
                 f = c + d.join("&");
-                if (yb.yt_embedsEnableIframeSrcWithIntent) {
+                if (xb.yt_embedsEnableIframeSrcWithIntent) {
                     var e = e === void 0 ? Ua : e;
                     a: if (e = e === void 0 ? Ua : e,
                     f instanceof L)
@@ -1689,7 +1689,7 @@ if( fv_flowplayer_conf.youtube ) {
                     else {
                         for (a = 0; a < e.length; ++a)
                             if (c = e[a],
-                            c instanceof Ta && c.aa(f)) {
+                            c instanceof Ta && c.Y(f)) {
                                 e = new L(f);
                                 break a
                             }
@@ -1716,30 +1716,30 @@ if( fv_flowplayer_conf.youtube ) {
             }
             this.g = a;
             this.g.id || (this.g.id = "widget" + qa(this.g));
-            W[this.g.id] = this;
+            V[this.g.id] = this;
             if (window.postMessage) {
                 this.i = new U;
-                Bb(this);
+                Ab(this);
                 b = Y(this, "events");
                 for (var g in b)
                     b.hasOwnProperty(g) && this.addEventListener(g, b[g]);
-                for (var l in sb)
-                    sb.hasOwnProperty(l) && Cb(this, l)
+                for (var l in rb)
+                    rb.hasOwnProperty(l) && Bb(this, l)
             }
         }
     }
-    m = X.prototype;
-    m.setSize = function(a, b) {
+    n = X.prototype;
+    n.setSize = function(a, b) {
         this.g.width = a.toString();
         this.g.height = b.toString();
         return this
     }
     ;
-    m.getIframe = function() {
+    n.getIframe = function() {
         return this.g
     }
     ;
-    m.addEventListener = function(a, b) {
+    n.addEventListener = function(a, b) {
         var c = b;
         typeof b === "string" && (c = function() {
             window[b].apply(window, arguments)
@@ -1748,19 +1748,19 @@ if( fv_flowplayer_conf.youtube ) {
         if (!c)
             return this;
         this.i.subscribe(a, c);
-        Db(this, a);
+        Cb(this, a);
         return this
     }
     ;
-    function Cb(a, b) {
+    function Bb(a, b) {
         b = b.split(".");
         if (b.length === 2) {
             var c = b[1];
-            "player" === b[0] && Db(a, c)
+            "player" === b[0] && Cb(a, c)
         }
     }
-    m.destroy = function() {
-        this.g && this.g.id && (W[this.g.id] = null);
+    n.destroy = function() {
+        this.g && this.g.id && (V[this.g.id] = null);
         var a = this.i;
         a && typeof a.dispose == "function" && a.dispose();
         if (this.j) {
@@ -1776,7 +1776,7 @@ if( fv_flowplayer_conf.youtube ) {
         this.j = this.g = null
     }
     ;
-    function Eb(a, b, c) {
+    function Db(a, b, c) {
         c = c || [];
         c = Array.prototype.slice.call(c);
         b = {
@@ -1786,11 +1786,11 @@ if( fv_flowplayer_conf.youtube ) {
         };
         a.m ? a.sendMessage(b) : a.l.push(b)
     }
-    m.ba = function() {
-        Fb(this) || clearInterval(this.h)
+    n.Z = function() {
+        Eb(this) || clearInterval(this.h)
     }
     ;
-    function Fb(a) {
+    function Eb(a) {
         if (!a.g || !a.g.contentWindow)
             return !1;
         a.sendMessage({
@@ -1798,9 +1798,9 @@ if( fv_flowplayer_conf.youtube ) {
         });
         return !0
     }
-    function Bb(a) {
-        Gb(a, a.id, String(Y(a, "host")));
-        var b = Number(yb.yt_embedsWidgetPollIntervalMs) || 250;
+    function Ab(a) {
+        Fb(a, a.id, String(Y(a, "host")));
+        var b = Number(xb.yt_embedsWidgetPollIntervalMs) || 250;
         a.h = setInterval(a.u, b);
         a.g && (a.o = function() {
             clearInterval(a.h);
@@ -1809,21 +1809,21 @@ if( fv_flowplayer_conf.youtube ) {
         ,
         a.g.addEventListener("load", a.o))
     }
-    function Hb(a) {
+    function Gb(a) {
         var b = a.getBoundingClientRect();
         a = Math.max(0, Math.min(b.bottom, window.innerHeight || document.documentElement.clientHeight) - Math.max(b.top, 0)) * Math.max(0, Math.min(b.right, window.innerWidth || document.documentElement.clientWidth) - Math.max(b.left, 0));
         a = (b = b.height * b.width) ? a / b : 0;
         return document.visibilityState === "hidden" || a < .5 ? 1 : a < .75 ? 2 : a < .85 ? 3 : a < .95 ? 4 : a < 1 ? 5 : 6
     }
-    function Db(a, b) {
+    function Cb(a, b) {
         a.B[b] || (a.B[b] = !0,
-        Eb(a, "addEventListener", [b]))
+        Db(a, "addEventListener", [b]))
     }
-    m.sendMessage = function(a) {
+    n.sendMessage = function(a) {
         a.id = this.id;
         a.channel = "widget";
         a = JSON.stringify(a);
-        var b = kb(this.g.src || "").replace("http:", "https:");
+        var b = jb(this.g.src || "").replace("http:", "https:");
         if (this.g.contentWindow)
             try {
                 this.g.contentWindow.postMessage(a, b)
@@ -1837,12 +1837,12 @@ if( fv_flowplayer_conf.youtube ) {
             console && console.warn && console.warn("The YouTube player is not attached to the DOM. API calls should be made after the onReady event. See more: https://developers.google.com/youtube/iframe_api_reference#Events")
     }
     ;
-    function Ab(a) {
+    function zb(a) {
         if ((a = String(Y(a, "videoId"))) && (a.length !== 11 || !a.match(/^[a-zA-Z0-9\-_]+$/)))
             throw Error("Invalid video id");
         return "/embed/" + a
     }
-    function zb(a, b) {
+    function yb(a, b) {
         var c = Y(a, "playerVars");
         c ? c = Ka(c) : c = {};
         window !== window.top && document.referrer && (c.widget_referrer = document.referrer.substring(0, 256));
@@ -1851,23 +1851,23 @@ if( fv_flowplayer_conf.youtube ) {
             if (I(d))
                 try {
                     d = JSON.stringify(d)
-                } catch (k) {
-                    console.error("Invalid embed config JSON", k)
+                } catch (h) {
+                    console.error("Invalid embed config JSON", h)
                 }
             c.embed_config = d
         }
         c.enablejsapi = window.postMessage ? 1 : 0;
         window.location.host && (c.origin = window.location.protocol + "//" + window.location.host);
         c.widgetid = a.id;
-        window.location.href && va(["debugjs", "debugcss"], function(k) {
-            var h = window.location.href;
-            var f = h.search(mb);
+        window.location.href && va(["debugjs", "debugcss"], function(h) {
+            var k = window.location.href;
+            var f = k.search(lb);
             b: {
                 var e = 0;
-                for (var g = k.length; (e = h.indexOf(k, e)) >= 0 && e < f; ) {
-                    var l = h.charCodeAt(e - 1);
+                for (var g = h.length; (e = k.indexOf(h, e)) >= 0 && e < f; ) {
+                    var l = k.charCodeAt(e - 1);
                     if (l == 38 || l == 63)
-                        if (l = h.charCodeAt(e + g),
+                        if (l = k.charCodeAt(e + g),
                         !l || l == 61 || l == 38 || l == 35)
                             break b;
                     e += g + 1
@@ -1875,25 +1875,25 @@ if( fv_flowplayer_conf.youtube ) {
                 e = -1
             }
             if (e < 0)
-                h = null;
+                k = null;
             else {
-                g = h.indexOf("&", e);
+                g = k.indexOf("&", e);
                 if (g < 0 || g > f)
                     g = f;
-                e += k.length + 1;
-                h = decodeURIComponent(h.slice(e, g !== -1 ? g : 0).replace(/\+/g, " "))
+                e += h.length + 1;
+                k = decodeURIComponent(k.slice(e, g !== -1 ? g : 0).replace(/\+/g, " "))
             }
-            h !== null && (c[k] = h)
+            k !== null && (c[h] = k)
         });
         window.location.href && (c.forigin = window.location.href);
         a = window.location.ancestorOrigins;
         c.aoriginsup = a === void 0 ? 0 : 1;
         a && a.length > 0 && (c.aorigins = Array.from(a).join(","));
         window.document.referrer && (c.gporigin = window.document.referrer);
-        b && (c.vf = Hb(b));
+        b && (c.vf = Gb(b));
         return c
     }
-    function Ib(a, b) {
+    function Hb(a, b) {
         if (I(b)) {
             for (var c in b)
                 b.hasOwnProperty(c) && (a.playerInfo[c] = b[c]);
@@ -1904,7 +1904,7 @@ if( fv_flowplayer_conf.youtube ) {
             a.g.setAttribute("title", "YouTube " + Y(a, "title"))))
         }
     }
-    function Jb(a, b) {
+    function Ib(a, b) {
         b = v(b);
         for (var c = b.next(), d = {}; !c.done; d = {
             v: void 0
@@ -1912,36 +1912,36 @@ if( fv_flowplayer_conf.youtube ) {
         c = b.next())
             d.v = c.value,
             a[d.v] || (d.v === "getCurrentTime" ? a[d.v] = function() {
-                var k = this.playerInfo.currentTime;
+                var h = this.playerInfo.currentTime;
                 if (this.playerInfo.playerState === 1) {
-                    var h = (Date.now() / 1E3 - this.playerInfo.currentTimeLastUpdated_) * this.playerInfo.playbackRate;
-                    h > 0 && (k += Math.min(h, 1))
+                    var k = (Date.now() / 1E3 - this.playerInfo.currentTimeLastUpdated_) * this.playerInfo.playbackRate;
+                    k > 0 && (h += Math.min(k, 1))
                 }
-                return k
+                return h
             }
-            : wb(d.v) ? a[d.v] = function(k) {
+            : vb(d.v) ? a[d.v] = function(h) {
                 return function() {
                     this.playerInfo = {};
                     this.A = {};
-                    Eb(this, k.v, arguments);
+                    Db(this, h.v, arguments);
                     return this
                 }
-            }(d) : xb(d.v) ? a[d.v] = function(k) {
+            }(d) : wb(d.v) ? a[d.v] = function(h) {
                 return function() {
-                    var h = k.v
+                    var k = h.v
                       , f = 0;
-                    h.search("get") === 0 ? f = 3 : h.search("is") === 0 && (f = 2);
-                    return this.playerInfo[h.charAt(f).toLowerCase() + h.substring(f + 1)]
+                    k.search("get") === 0 ? f = 3 : k.search("is") === 0 && (f = 2);
+                    return this.playerInfo[k.charAt(f).toLowerCase() + k.substring(f + 1)]
                 }
-            }(d) : a[d.v] = function(k) {
+            }(d) : a[d.v] = function(h) {
                 return function() {
-                    Eb(this, k.v, arguments);
+                    Db(this, h.v, arguments);
                     return this
                 }
             }(d))
     }
-    m.getVideoEmbedCode = function() {
-        var a = "" + Y(this, "host") + Ab(this)
+    n.getVideoEmbedCode = function() {
+        var a = "" + Y(this, "host") + zb(this)
           , b = Number(Y(this, "width"))
           , c = Number(Y(this, "height"));
         if (isNaN(b) || isNaN(c))
@@ -1954,11 +1954,11 @@ if( fv_flowplayer_conf.youtube ) {
         return '<iframe width="' + b + '" height="' + c + '" src="' + a + '" title="' + (d + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
     }
     ;
-    m.getOptions = function(a) {
+    n.getOptions = function(a) {
         return this.A.namespaces ? a ? this.A[a] ? this.A[a].options || [] : [] : this.A.namespaces || [] : []
     }
     ;
-    m.getOption = function(a, b) {
+    n.getOption = function(a, b) {
         if (this.A.namespaces && a && b && this.A[a])
             return this.A[a][b]
     }
@@ -1973,75 +1973,75 @@ if( fv_flowplayer_conf.youtube ) {
         return null
     }
     var Z = null
-      , Kb = null;
-    function Lb(a) {
+      , Jb = null;
+    function Kb(a) {
         if (a.tagName.toLowerCase() !== "iframe") {
-            var b = ub(a, "videoid");
+            var b = tb(a, "videoid");
             b && (b = {
                 videoId: b,
-                width: ub(a, "width"),
-                height: ub(a, "height")
+                width: tb(a, "width"),
+                height: tb(a, "height")
             },
             new X(a,b))
         }
     }
-    function Gb(a, b, c) {
+    function Fb(a, b, c) {
         Z || (Z = {},
-        Kb = new Set,
-        Mb.addEventListener("message", function(d) {
-            a: if (Kb.has(d.origin)) {
+        Jb = new Set,
+        Lb.addEventListener("message", function(d) {
+            a: if (Jb.has(d.origin)) {
                 try {
-                    var k = JSON.parse(d.data)
+                    var h = JSON.parse(d.data)
                 } catch (e) {
                     break a
                 }
-                var h = Z[k.id];
-                if (h && d.origin === h.Z)
-                    switch (d = h.ca,
+                var k = Z[h.id];
+                if (k && d.origin === k.X)
+                    switch (d = k.aa,
                     d.m = !0,
                     d.m && (va(d.l, d.sendMessage, d),
                     d.l.length = 0),
-                    h = k.event,
-                    k = k.info,
-                    h) {
+                    k = h.event,
+                    h = h.info,
+                    k) {
                     case "apiInfoDelivery":
-                        if (I(k))
-                            for (var f in k)
-                                k.hasOwnProperty(f) && (d.A[f] = k[f]);
+                        if (I(h))
+                            for (var f in h)
+                                h.hasOwnProperty(f) && (d.A[f] = h[f]);
                         break;
                     case "infoDelivery":
-                        Ib(d, k);
+                        Hb(d, h);
                         break;
                     case "initialDelivery":
-                        I(k) && (clearInterval(d.h),
+                        I(h) && (clearInterval(d.h),
                         d.playerInfo = {},
                         d.A = {},
-                        Jb(d, k.apiInterface),
-                        Ib(d, k));
+                        Ib(d, h.apiInterface),
+                        Hb(d, h));
                         break;
                     case "alreadyInitialized":
                         clearInterval(d.h);
                         break;
                     case "readyToListen":
-                        Fb(d);
+                        Eb(d);
                         break;
                     default:
                         d.i.i || (f = {
                             target: d,
-                            data: k
+                            data: h
                         },
-                        d.i.P(h, f),
-                        vb("player." + h, f))
+                        d.i.P(k, f),
+                        ub("player." + k, f))
                     }
             }
         }));
         Z[b] = {
-            ca: a,
-            Z: c
+            aa: a,
+            X: c
         };
-        Kb.add(c)
+        Jb.add(c)
     }
-    var Mb = window;
+    var Lb = window;
     J("FV_YT.PlayerState.UNSTARTED", -1);
     J("FV_YT.PlayerState.ENDED", 0);
     J("FV_YT.PlayerState.PLAYING", 1);
@@ -2049,17 +2049,17 @@ if( fv_flowplayer_conf.youtube ) {
     J("FV_YT.PlayerState.BUFFERING", 3);
     J("FV_YT.PlayerState.CUED", 5);
     J("FV_YT.get", function(a) {
-        return W[a]
+        return V[a]
     });
-    J("FV_YT.scan", tb);
+    J("FV_YT.scan", sb);
     J("FV_YT.subscribe", function(a, b, c) {
-        V.subscribe(a, b, c);
-        sb[a] = !0;
-        for (var d in W)
-            W.hasOwnProperty(d) && Cb(W[d], a)
+        W.subscribe(a, b, c);
+        rb[a] = !0;
+        for (var d in V)
+            V.hasOwnProperty(d) && Bb(V[d], a)
     });
     J("FV_YT.unsubscribe", function(a, b, c) {
-        hb(a, b, c)
+        W.unsubscribe(a, b, c)
     });
     J("FV_YT.Player", X);
     X.prototype.destroy = X.prototype.destroy;
@@ -2069,14 +2069,14 @@ if( fv_flowplayer_conf.youtube ) {
     X.prototype.getVideoEmbedCode = X.prototype.getVideoEmbedCode;
     X.prototype.getOptions = X.prototype.getOptions;
     X.prototype.getOption = X.prototype.getOption;
-    rb.push(function(a) {
+    qb.push(function(a) {
         var b = a;
         b || (b = document);
         a = ya(b.getElementsByTagName("yt:player"));
         b = ya((b || document).querySelectorAll(".yt-player"));
-        va(xa(a, b), Lb)
+        va(xa(a, b), Kb)
     });
-    typeof YTConfig !== "undefined" && YTConfig.parsetags && YTConfig.parsetags !== "onload" || tb();
+    typeof YTConfig !== "undefined" && YTConfig.parsetags && YTConfig.parsetags !== "onload" || sb();
     // var Mb = H.onYTReady;
     // Mb && Mb();
     // var Nb = H.onYouTubeIframeAPIReady;
