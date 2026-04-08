@@ -820,6 +820,10 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 .flowplayer.is-small .fp-volumebar, .flowplayer.is-tiny .fp-volumebar {
   display: none;
 }
+.flowplayer.is-small.fp-full .fp-volumebar,
+.flowplayer.is-tiny.fp-full .fp-volumebar {
+  display: block;
+}
 
 .flowplayer .fv-fp-no-picture.fp-color {
 	background-color: transparent !important;
