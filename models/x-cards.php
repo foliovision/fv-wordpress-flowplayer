@@ -516,7 +516,7 @@ class FV_Player_X_Cards {
 					$videos = $player->getVideos();
 					foreach( $videos as $video ) {
 						$video_for_x_card = $video;
-						break;
+						break 2;
 					}
 				}
 			}
