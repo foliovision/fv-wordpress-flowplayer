@@ -1051,11 +1051,11 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         if( !empty($video_data['name']) && (
-          !$this->getTitle() || $this->getMetaValue( 'auto_caption', true )
+          !$this->getTitle() /* || $this->getMetaValue( 'auto_caption', true ) */
         ) ) {
           $this->title = $video_data['name'];
 
-          $this->updateMetaValue( 'auto_caption', 1 );
+          // $this->updateMetaValue( 'auto_caption', 1 );
         }
 
         if( !empty($video_data['synopsis']) && !$this->getMetaValue( 'synopsis', true ) ) {
@@ -1065,11 +1065,11 @@ CREATE TABLE " . self::$db_table_name . " (
         }
 
         if( !empty($video_data['thumbnail']) && (
-          !$this->getSplash() || $this->getMetaValue( 'auto_splash', true )
+          !$this->getSplash() /* || $this->getMetaValue( 'auto_splash', true ) */
         ) ) {
           $this->splash = $video_data['thumbnail'];
 
-          $this->updateMetaValue( 'auto_splash', 1 );
+          // $this->updateMetaValue( 'auto_splash', 1 );
         }
 
         if( !empty($video_data['splash_attachment_id']) ) {
