@@ -1673,6 +1673,7 @@ class flowplayer_frontend extends flowplayer
       $tags['div']['data-fullscreen'] = true;
       $tags['div']['data-live'] = true;
       $tags['div']['data-logo'] = true;
+      $tags['div']['data-pitch_shifter'] = true;
       $tags['div']['data-ratio'] = true;
       $tags['div']['data-rtmp'] = true;
       $tags['div']['itemprop'] = true;
