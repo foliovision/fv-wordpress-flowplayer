@@ -465,26 +465,26 @@ body.is-fv-player-editor-modal-open {
   position: static;
 }
 
-#fv-player-shortcode-editor-left {
+#fv-player-shortcode-editor-left,
+#fv-player-shortcode-editor-right {
   float: left;
+  height: calc(100% - 60px);
+  position: relative;
+}
+#fv-player-shortcode-editor-left {
   width: 67%;
   margin-right: 0;
-  height: 100%;
-  position:relative;
   border-right: 1px solid #e9e9e9;
   display: flex;
   justify-content: center;
   box-sizing: border-box;
 }
 #fv-player-shortcode-editor-right {
-  float: left;
   width: 33%;
-  position: relative;
-  height: calc(100% - 60px);
 }
+  
 #fv-player-shortcode-editor-preview {
-   width:75%;
-
+  width:75%;
 }
 
 #fv-player-shortcode-editor.is-intro #fv-player-shortcode-editor-left,
