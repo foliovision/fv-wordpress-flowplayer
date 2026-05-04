@@ -655,39 +655,65 @@ add_filter( 'bbp_get_topic_content', 'fv_player_comment_text', 0 );
 add_filter( 'bbp_get_reply_content', 'fv_player_comment_text', 0 );
 
 function fv_player_comment_text( $comment_text ) {
-  if( is_admin() ) return $comment_text;
-  
+  if ( is_admin() ) {
+    return $comment_text;
+  }
+
   global $fv_fp;
-  if( isset($fv_fp->conf['parse_comments']) && $fv_fp->conf['parse_comments'] == 'true' ) {
-    add_filter('comment_text', 'do_shortcode');
-    add_filter('bbp_get_topic_content', 'do_shortcode', 11);
-    add_filter('bbp_get_reply_content', 'do_shortcode', 11);
+  if ( isset( $fv_fp->conf['parse_comments'] ) && 'true' === $fv_fp->conf['parse_comments'] ) {
+    add_filter( 'comment_text', 'do_shortcode' );
+    add_filter( 'bbp_get_topic_content', 'do_shortcode', 11 );
+    add_filter( 'bbp_get_reply_content', 'do_shortcode', 11 );
 
-    if( stripos($comment_text,'youtube.com') !== false || stripos($comment_text,'youtu.be') !== false ) {
-      $pattern = '#(?:<iframe[^>]*?src=[\'"])?((?:https?://|//)?' # Optional URL scheme. Either http, or https, or protocol-relative.
-               . '(?:www\.|m\.)?'      #  Optional www or m subdomain.
-               . '(?:'                 #  Group host alternatives:
-               .   'youtu\.be/'        #    Either youtu.be,
-               .   '|youtube\.com/'    #    or youtube.com
-               .     '(?:'             #    Group path alternatives:
-               .       'embed/'        #      Either /embed/,
-               .       '|v/'           #      or /v/,
-               .       '|watch\?v='    #      or /watch?v=,
-               .       '|watch\?.+&v=' #      or /watch?other_param&v=
-               .     ')'               #    End path alternatives.
-               . ')'                   #  End host alternatives.
-               . '([\w-]{11})'         # 11 characters (Length of Youtube video ids).
-               . '(?![\w-]))(?:.*?</iframe>)?#';         # Rejects if overlong id.
-      $comment_text = preg_replace( $pattern, '[fvplayer src="$1"]', $comment_text );
-    }
-
-    if( stripos($comment_text,'vimeo.com') !== false ) {
-      $pattern = '~(?:(?:https?:)?//)?(?:www\.)?(?:player\.)?vimeo\.com/(?:[a-z]+/)*(?:video/)?([0-9]{6,11})(?:[/?#][^\s<]*)?~i';
-      $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
-    }
+    $comment_text = fv_player_comment_text_replace_video_urls_outside_html_tags( $comment_text );
   }
   
   return $comment_text;
+}
+
+function fv_player_comment_text_replace_video_urls_outside_html_tags( $comment_text ) {
+
+  // Split comment content to the <a href="...">  and </a> parts and the actual text.
+  $parts = preg_split( '/(<[^>]+>)/', $comment_text, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+  if ( ! is_array( $parts ) ) {
+    return $comment_text;
+  }
+
+  foreach ( $parts as $index => $part ) {
+
+    // This skips processing for the HTML tags and thus HTML attributes
+    if ( '' === $part || '<' === $part[0] ) {
+      continue;
+    }
+
+    $parts[ $index ] = fv_player_comment_text_replace_video_urls_in_text( $part );
+  }
+
+  return implode( '', $parts );
+}
+
+function fv_player_comment_text_replace_video_urls_in_text( $text ) {
+  $youtube_pattern = '~(?:(?:https?:)?//)?(?:www\.|m\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|watch\?(?:[^#\s<]*&)?v=))([\w-]{11})(?![\w-])~i';
+  $vimeo_pattern   = '~(?:(?:https?:)?//)?(?:www\.)?(?:player\.)?vimeo\.com/(?:[a-z]+/)*(?:video/)?([0-9]{6,11})(?:[/?#][^\s<]*)?~i';
+
+  $text = preg_replace_callback(
+    $youtube_pattern,
+    static function( $matches ) {
+      return '[fvplayer src="https://www.youtube.com/watch?v=' . $matches[1] . '"]';
+    },
+    $text
+  );
+
+  $text = preg_replace_callback(
+    $vimeo_pattern,
+    static function( $matches ) {
+      return '[fvplayer src="https://vimeo.com/' . $matches[1] . '"]';
+    },
+    $text
+  );
+
+  return $text;
 }
 
 add_action( 'fv_player_extensions_admin_load_assets', 'fv_player_footer_svg_playlist' );
