@@ -714,7 +714,7 @@ function fv_player_comment_text( $comment_text ) {
     }
 
     if( stripos($comment_text,'vimeo.com') !== false ) {
-      $pattern = '#(?:https?://)?(?:www.)?(?:player.)?vimeo.com/(?:[/a-z]*/)*([0-9]{6,11})[?]?.*#';
+      $pattern = '~(?:(?:https?:)?//)?(?:www\.)?(?:player\.)?vimeo\.com/(?:[a-z]+/)*(?:video/)?([0-9]{6,11})(?:[/?#][^\s<]*)?~i';
       $comment_text = preg_replace( $pattern, '[fvplayer src="https://vimeo.com/$1"]', $comment_text );
     }
   }
