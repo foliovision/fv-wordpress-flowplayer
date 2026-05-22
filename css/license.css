@@ -220,6 +220,17 @@ table.thirds td {
 	clear: both;
 }
 
+#wpfp_options td .descriptions {
+	float: right;
+	position: relative;
+	width: 50%;
+}
+#wpfp_options td .description[data-describe] {
+	display: none;
+	position: absolute;
+	top: 0;
+}
+
 @media only screen and (max-width: 1680px) {
   .skin-tab-content input.small,
   .skin-tab-content select.small,

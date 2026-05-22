@@ -423,18 +423,6 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
   global $fv_fp;
   $value = $fv_fp->_get_option('autoplay_preload');
 ?>
-  <style>
-  #fv_flowplayer_autoplay_and_preloading .descriptions {
-    float: right;
-    position: relative;
-    width: 50%;
-  }
-  #fv_flowplayer_autoplay_and_preloading [data-describe] {
-    display: none;
-    position: absolute;
-    top: 0;
-  }
-  </style>
   <table class="form-table2">
   <tr>
     <td class="first"></td>
@@ -1664,26 +1652,31 @@ function fv_flowplayer_admin_skin_sticky() {
 	global $fv_fp;
 ?>
   <div class="column-right">
+    <div class="descriptions">
+      <p class="description" data-describe="off" style="display: none;">When enabled player will stick when scrolling and the video is playing.</p>
+      <p class="description" data-describe="desktop" style="display: none;">Player will stick if the screen width is greater than 1020 pixels.</p>
+      <p class="description" data-describe="all" style="display: none;">Player will stick on any screen size.</p>
+    </div>
   </div>
   <div class="column-left">
-  <table class="thirds">
+    <table class="thirds">
+        <?php
+        $fv_fp->_get_radio( array(
+          'key' => 'sticky_video',
+          'name' => __( '', 'fv-player' ),
+          'style' => 'columns',
+          'values' => array(
+            'off'     => 'Off',
+            'desktop' => 'Desktop',
+            'all'     => 'Desktop and Mobile'
+          ),
+        ) );
+        ?>
+    </table>
+    <table class="form-table2">
       <?php
-      $fv_fp->_get_radio( array(
-        'key' => 'sticky_video',
-        'name' => __( '', 'fv-player' ),
-        'style' => 'columns',
-        'values' => array(
-          'off'     => 'Off',
-          'desktop' => 'Desktop',
-          'all'     => 'Desktop and Mobile'
-        ),
-      ) );
-      ?>
-  </table>
-  <table class="form-table2">
-    <?php
-	  $fv_fp->_get_select(
-			array(
+      $fv_fp->_get_select(
+        array(
             'name' => __( 'Placement', 'fv-player' ),
             'key' => 'sticky_place',
             'options' => array(
@@ -1713,23 +1706,35 @@ function fv_flowplayer_admin_skin_sticky() {
             'name' => __(  'Mobile Player Width', 'fv-player' ),
             'key' => 'sticky_width_mobile',
             'options' => array(
-				'100' => '100%',
-				'75'  => '75%',
-				'50'  => '50%'
+              '100' => '100%',
+              '75'  => '75%',
+              '50'  => '50%'
             ),
             'help' => __(  'Limits the size when the device is in vertical (portrait) orientation.', 'fv-player' ),
-			)
+        )
         );
         ?>
-    <tr>
-      <td></td>
-      <td>
-        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
-      </td>
-    </tr>
-  </table>
+      <tr>
+        <td></td>
+        <td>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+        </td>
+      </tr>
+    </table>
   </div>
 
+  <script>
+  jQuery( function($) {
+    show_description_sticky_video();
+
+    $('[name=sticky_video]' ).on( 'change', show_description_sticky_video );
+
+    function show_description_sticky_video() {
+      $( '#fv_flowplayer_skin_sticky [data-describe]' ).hide();
+      $( '#fv_flowplayer_skin_sticky [data-describe='+$('[name=sticky_video]:checked').val()+']' ).show();
+    }
+  } );
+  </script>
 <?php
 }
 
