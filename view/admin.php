@@ -1426,15 +1426,15 @@ function fv_flowplayer_admin_skin() {
   <div id="skin-tab-logo" class="skin-tab-content">
     <table class="form-table2">
       <tr>
-        <td class="aligntop-input"><label for="logo">Logo:</label></td>
+        <td class="first aligntop-input"><label for="logo">Logo:</label></td>
         <td>
 
           <input type="text" name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste link or upload an image.', 'fv-player' ); ?>" data-fv-preview />
-          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Image', 'fv-player' ); ?>" alt="Select Logo" />
+          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload', 'fv-player' ); ?>" alt="Select Logo" />
         </td>
       </tr>
       <tr>
-        <td><label for="logoPosition">Position:</label></td>
+        <td class="first"><label for="logoPosition">Position:</label></td>
         <td>
           <?php
           $value = $fv_fp->_get_option('logoPosition');
@@ -1452,14 +1452,14 @@ function fv_flowplayer_admin_skin() {
           'name' => __( 'Align to video', 'fv-player' ),
           'key'  => 'logo_over_video',
           'help' => __( 'Logo stays on top of video if aspect ratio does not match.', 'fv-player' ),
-          'first_td_class' => 'aligntop',
+          'first_td_class' => 'first aligntop',
           'data' => array(
             'fv-preview' => ''
           )
         )
       ); ?>
       <tr>
-        <td></td>
+        <td class="first"></td>
         <td>
           <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
         </td>
