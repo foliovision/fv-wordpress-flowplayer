@@ -116,6 +116,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .meta-box-sortables input.small, .meta-box-sortables select.small { width: 27%; }
 .meta-box-sortables input.medium { width: 50%; }
 .meta-box-sortables input.large { width: 71% !important; }
+#fv_flowplayer_ads .small { width: 6em }
 td.second-column { margin-left: 20px }
 
 span.new { color: #e00; font-weight: bold }
