@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, flowplayer, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, RTMP, Cloudfront, HLS
 Requires at least: 3.5
-Tested up to: 6.7
+Tested up to: 6.9
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -358,6 +358,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 7.5.51.7212 - 2026-06-02 =
+
+* Security fix - with "Enable profile videos" setting logged in users can no longer change profile videos of other users
+* Security fix - with "Enable profile videos" setting logged in users can no longer store videos with ads and popups, avoiding stored XSS
 
 = 7.5.50.7212 - 2026-05-04 =
 
