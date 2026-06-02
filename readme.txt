@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.50.7212 - 2026-05-04 =
+
+* Security fix - avoid unauthenticated stored XSS via comment text if using the "Parse Vimeo and YouTube links" setting
+
 = 7.5.49.7212 - 2024-11-21 =
 
 * Bugfix - iOS 18: Playback failing if 'Use native fullscreen on mobile' setting is enabled and the video has subtitles
