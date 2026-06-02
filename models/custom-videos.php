@@ -653,6 +653,9 @@ class FV_Player_Custom_Videos_Master {
           // strip html tags to prevent XSS
           $video = sanitize_text_field( $video );
 
+          // Remove attributes that allow HTML
+          $video = preg_replace( '~\b(ad|popup)\s*?=\s*\\\?\s*?["\'][^"\']*["\']~', '', wp_unslash( $video ) );
+
           add_user_meta( $update_user_id, $meta, $video );
         }
       }
