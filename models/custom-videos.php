@@ -332,6 +332,7 @@ class FV_Player_Custom_Videos_Master {
     }
 
     foreach( $_POST['fv_player_videos'] AS $meta => $videos ) {
+      // While it's not ideal that we accept any $meta, we do check for a matching nonce below.
       $meta = sanitize_text_field( $meta );
 
       if( !wp_verify_nonce($_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ,'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
@@ -339,7 +340,15 @@ class FV_Player_Custom_Videos_Master {
       }
 
       if( $_POST['fv-player-custom-videos-entity-type'][$meta] == 'user' ) {
-        delete_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta );
+
+        $update_user_id = absint( $_POST['fv-player-custom-videos-entity-id'][$meta] );
+
+        // Do not process if the user is trying to update another user's videos without the edit_user capability
+        if ( $update_user_id != get_current_user_id() && ! current_user_can( 'edit_user', $update_user_id ) ) {
+          continue;
+        }
+
+        delete_user_meta( $update_user_id, $meta );
 
         foreach( $videos AS $video ) {
           if( strlen($video) == 0 ) continue;
@@ -347,7 +356,7 @@ class FV_Player_Custom_Videos_Master {
           // strip html tags to prevent XSS
           $video = sanitize_text_field( $video );
 
-          add_user_meta( $_POST['fv-player-custom-videos-entity-id'][$meta], $meta, $video );
+          add_user_meta( $update_user_id, $meta, $video );
         }
       }
     }
