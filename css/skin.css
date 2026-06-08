@@ -91,8 +91,8 @@
   content: '\e012';
 }
 
-.freedomplayer.is-mouseover .fp-captions,
-.freedomplayer.is-paused .fp-captions {
+.freedomplayer.is-mouseover:not(.fixed-controls) .fp-captions,
+.freedomplayer.is-paused:not(.fixed-controls) .fp-captions {
   bottom: 3em;
 }
 
