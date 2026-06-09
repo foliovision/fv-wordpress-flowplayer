@@ -75,11 +75,16 @@ Class FvPlayerTrackerWorker {
 
   function __construct() {
 
+    $blog_id  = ! empty( $_REQUEST['blog_id'] ) ? intval( $_REQUEST['blog_id'] ) : false;
+    $tag      = ! empty( $_REQUEST['tag'] ) ? sanitize_key( $_REQUEST['tag'] ) : false;
+    $video_id = ! empty( $_REQUEST['video_id'] ) ? intval( $_REQUEST['video_id'] ) : false;
+    $watched  = ! empty( $_REQUEST['watched'] ) ? sanitize_text_field( urldecode( $_REQUEST['watched'] ) ) : false;
+
     if(
-      !isset( $_REQUEST['blog_id'] ) ||
-      !isset( $_REQUEST['tag'] ) ||
-      !isset( $_REQUEST['video_id'] ) && !isset( $_REQUEST['watched'] )
-    ){
+      ! $blog_id ||
+      ! $tag ||
+      ( ! $video_id && ! $watched && 'ping' !== $tag )
+    ) {
       die( "Error: missing arguments!" );
     }
 
@@ -103,23 +108,21 @@ Class FvPlayerTrackerWorker {
       die( "Error: invalid nonce!" );
     }
 
-    if( sanitize_key( $_REQUEST['tag'] ) == 'click' ) {
-      $a = 1;
+    if ( ! in_array( $tag, array( 'play', 'click', 'seconds', 'ping' ) ) ) {
+      die( "Error: invalid tag!" );
     }
 
-    $blog_id = intval($_REQUEST['blog_id']);
-    $tag = preg_replace( '~[^a-z]~', '', substr( sanitize_key( $_REQUEST['tag'] ), 0, 16 ) );
     $this->tag = $tag;
 
     $this->wp_content = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
     $this->cache_path = $this->wp_content."/fv-player-tracking";
     $this->cache_filename = "{$tag}-{$blog_id}.data";
 
-    $this->video_id = !empty($_REQUEST['video_id']) ? intval($_REQUEST['video_id']) : false;
+    $this->video_id = $video_id;
     $this->player_id = !empty($_REQUEST['player_id']) ? intval($_REQUEST['player_id']) : false;
     $this->post_id = !empty($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : false;
     $this->user_id = intval($_REQUEST['user_id']);
-    $this->watched = !empty($_REQUEST['watched']) ? sanitize_text_field( urldecode( $_REQUEST['watched'] ) ) : false;
+    $this->watched = $watched;
 
     // TODO: Verify some kind of signature here
 
@@ -293,31 +296,53 @@ Class FvPlayerTrackerWorker {
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
     $this->file = fopen( $this->cache_path."/".$this->cache_filename, 'r+');
 
-    $options = get_option('fvwpflowplayer');
-    $guest_user_id = 0;
-
-    if( absint( $_REQUEST['user_id'] ) == 0 && ! empty( $options['video_stats_enable_guest'] ) && 'true' === $options['video_stats_enable_guest']) { // guest user
-
-      if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
-        $guest_user_id = intval( $_COOKIE['fv_player_stats_guest_user_id'] );
-      } else { // create new guest user id
-        $last_guest_id = get_option( 'fv_player_stats_last_guest_user_id', 0 );
-        $last_guest_id = $last_guest_id + 1;
-
-        $guest_user_id = $last_guest_id;
-
-        update_option( 'fv_player_stats_last_guest_user_id', $last_guest_id );
-
-        // save cookie fo 1 year
-        setcookie( 'fv_player_stats_guest_user_id', $last_guest_id, time() + 60 * 60 * 24 * 365, '/' );
-      }
+    if ( ! $this->file ) {
+      die( "Error: failed to open cache file!" );
     }
 
-    $this->guest_user_id = $guest_user_id;
+    if ( 'ping' === $this->tag ) {
+      $max_attempts = 3;
 
-    if( ! $this->incrementCacheCounter() ) {
-      // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
-      file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export( $this,true )."\n", FILE_APPEND ); // todo: remove
+      for( $i = 0; $i < $max_attempts; $i++ ){
+        if ( flock( $this->file, LOCK_EX | LOCK_NB ) ) {
+          ftruncate( $this->file, 0 );
+          rewind( $this->file );
+          fputs( $this->file, wp_json_encode( array( 'pong' => time() ) ) );
+          flock( $this->file, LOCK_UN );
+
+        } else{
+          //wait random interval from 50ms to 100ms
+          usleep( wp_rand(50,100) );
+        }
+      }
+
+    } else {
+      $options = get_option('fvwpflowplayer');
+      $guest_user_id = 0;
+
+      if( absint( $_REQUEST['user_id'] ) == 0 && ! empty( $options['video_stats_enable_guest'] ) && 'true' === $options['video_stats_enable_guest']) { // guest user
+
+        if( isset( $_COOKIE['fv_player_stats_guest_user_id'] ) ) { // check if cookie is set
+          $guest_user_id = intval( $_COOKIE['fv_player_stats_guest_user_id'] );
+        } else { // create new guest user id
+          $last_guest_id = get_option( 'fv_player_stats_last_guest_user_id', 0 );
+          $last_guest_id = $last_guest_id + 1;
+
+          $guest_user_id = $last_guest_id;
+
+          update_option( 'fv_player_stats_last_guest_user_id', $last_guest_id );
+
+          // save cookie fo 1 year
+          setcookie( 'fv_player_stats_guest_user_id', $last_guest_id, time() + 60 * 60 * 24 * 365, '/' );
+        }
+      }
+
+      $this->guest_user_id = $guest_user_id;
+
+      if( ! $this->incrementCacheCounter() ) {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_file_put_contents
+        file_put_contents( $this->wp_content.'/fv-player-track-error.log', gmdate('r') . " flock or other error:\n".var_export( $this,true )."\n", FILE_APPEND ); // todo: remove
+      }
     }
 
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose

@@ -5,6 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
   global $FV_Player_Stats;
+
+  // Parse stats now. This helps if WP Cron is having issues.
+  $FV_Player_Stats->parse_cached_files();
+
   global $fv_wp_flowplayer_ver;
 
   // This is filtering player stats by user ID, player ID and settings stats range

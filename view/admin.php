@@ -423,18 +423,6 @@ function fv_flowplayer_admin_autoplay_and_preloading() {
   global $fv_fp;
   $value = $fv_fp->_get_option('autoplay_preload');
 ?>
-  <style>
-  #fv_flowplayer_autoplay_and_preloading .descriptions {
-    float: right;
-    position: relative;
-    width: 50%;
-  }
-  #fv_flowplayer_autoplay_and_preloading [data-describe] {
-    display: none;
-    position: absolute;
-    top: 0;
-  }
-  </style>
   <table class="form-table2">
   <tr>
     <td class="first"></td>
@@ -631,7 +619,20 @@ function fv_flowplayer_admin_integrations() {
 ?>
         <p><?php esc_html_e( 'Following options are suitable for web developers and programmers.', 'fv-player' ); ?></p>
         <table class="form-table2">
-          <?php $fv_fp->_get_checkbox(__( 'Debug', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
+          <?php $fv_fp->_get_checkbox(__( 'Debug Console', 'fv-player' ), 'debug_log', __( 'Print debug messages to browser console.', 'fv-player' ) ); ?>
+
+          <?php
+          $fv_fp->_get_checkbox( __( 'Debug Log', 'fv-player' ), 'debug_file', __( 'Log important events into log file.', 'fv-player' ) );
+
+          if ( ! empty( $fv_fp->_get_option('debug_file') ) ) : ?>
+            <tr>
+              <td></td>
+              <td>
+                <?php $fv_fp->log_file_settings_field(); ?>
+              </td>
+            </tr>
+          <?php endif; ?>
+
           <?php $fv_fp->_get_checkbox(__( 'Disable database conversion', 'fv-player' ), 'disable_convert_db_save', __( 'Stop converting [fvplayer src="..."] shortcodes, [video] shortcodes, Vimeo and YouTube links to database-driven FV Player when post is saved.', 'fv-player' ) ); ?>
           <?php $fv_fp->_get_checkbox(__( 'Disable saving skin CSS to a static file', 'fv-player' ), 'css_disable', __( 'Normally the player CSS configuration is stored in wp-content/fv-flowplayer-custom/style-{blog_id}.css.', 'fv-player' ), __('We do this to avoid a big style tag in your site &lt;head&gt;. Don\'t edit this file though, as it will be overwritten by plugin update or saving its options!', 'fv-player' )); ?>
 
@@ -698,7 +699,7 @@ function fv_flowplayer_admin_integrations() {
           <?php do_action('fv_flowplayer_admin_integration_options_after'); ?>
           <tr>
             <td colspan="4">
-              <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+              <a class="fv-wordpress-flowplayer-save button button-primary" href="#" data-reload="true"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
               <a class="button fv-help-link" href="https://foliovision.com/player/settings/integrations-compatibility-options" target="_blank">Help</a>
             </td>
           </tr>
@@ -1132,7 +1133,7 @@ function fv_flowplayer_admin_skin_get_table($options) {
 
     $selected_skin = $fv_fp->_get_option( 'skin' );
 ?>
-    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-<?php echo esc_html( $options['skin_name'] ); ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
+    <table class="form-table2 flowplayer-settings" id="skin-<?php echo esc_html( $options['skin_name'] ); ?>-settings"<?php if (($selected_skin && $selected_skin != $options['skin_radio_button_value']) || (!$selected_skin && $options['default'] !== true)) { echo ' style="display: none"'; } ?>>
       <?php
       $options = apply_filters( 'fv_player_skin_settings', $options );
 
@@ -1144,6 +1145,7 @@ function fv_flowplayer_admin_skin_get_table($options) {
             $fv_fp->_get_checkbox($setup);
             break;
           case 'input_text':
+            $setup['type'] = 'text';
             $fv_fp->_get_input_text($setup);
             break;
           case 'input_hidden':
@@ -1172,18 +1174,18 @@ function fv_flowplayer_admin_skin() {
 	global $fv_fp;
 ?>
 <style id="fv-style-preview"></style>
-  <div class="flowplayer-wrapper">
+  <div class="column-right fv-player-settings-skin-preview">
     <?php
     global $fv_fp_admin_preview_player;
     $fv_fp_admin_preview_player = flowplayer_content_handle( array(
-      'src'       => 'https://player.vimeo.com/external/196881410.hd.mp4?s=24645ecff21ff60079fc5b7715a97c00f90c6a18&profile_id=174&oauth2_token_id=3501005',
-      'splash'    => 'https://i.vimeocdn.com/video/609485450-6fc3febe7ce2c2fda919a99c27a9cb904c645dcb944bc53ac7f3a228685305d8-d?mw=1280&mh=720',
+      'src'       => 'https://cdn.foliovision.com/videos/fv-player/Foliovision%20Promo%20Video-720p.mp4',
+      'splash'    => 'https://cdn.foliovision.com/videos/fv-player/Foliovision%20Promo%20Video.jpg',
       'autoplay'  => 'false',
       'preroll'   => 'no',
       'postroll'  => 'no',
       'subtitles' => plugins_url('images/test-subtitles.vtt',dirname(__FILE__)),
       'caption'   => "Foliovision Video;Lapinthrope Extras - Roy Thompson Hall Dance;Romeo and Juliet Ballet Schloss Kittsee",
-      'playlist'  => 'https://player.vimeo.com/external/224781088.sd.mp4?s=face4dbb990b462826c8e1e43a9c66c6a9bb5585&profile_id=165&oauth2_token_id=3501005,https://i.vimeocdn.com/video/643908843-984e68e66846a7a4b42bf5e854b65937217ed1b71759afa16afd4f81963900a6-d?mw=230&mh=130;https://player.vimeo.com/external/45864857.hd.mp4?s=94fddee594da3258c9e10355f5bad8173c4aee7b&profile_id=113&oauth2_token_id=3501005,https://i.vimeocdn.com/video/319116053-4745c7d678ba90ebabeadf58a65439b780c2ef26176176acc03eabbe87c8afda-d?mw=230&mh=130',
+      'playlist'  => 'https://cdn.foliovision.com/videos/fv-player/Lapinthrope%20Extras%20-%20Roy%20Thompson%20Hall%20Dance-536p.mp4,https://cdn.foliovision.com/videos/fv-player/Lapinthrope%20Extras%20-%20Roy%20Thompson%20Hall%20Dance.jpg;https://cdn.foliovision.com/videos/fv-player/Romeo%20and%20Juliet%20Ballet%20Schloss%20Kittsee-720p.mp4,https://cdn.foliovision.com/videos/fv-player/Romeo%20and%20Juliet%20Ballet%20Schloss%20Kittsee.jpg',
 			'liststyle' => 'horizontal',
       'vast'      => 'skip',
       'checker'   => 'no'
@@ -1209,7 +1211,7 @@ function fv_flowplayer_admin_skin() {
   </div>
 
   <div id="skin-tab-skin" class="skin-tab-content">
-    <table class="form-table2 flowplayer-settings fv-player-interface-form-group" id="skin-Skin-settings">
+    <table class="form-table2 flowplayer-settings" id="skin-Skin-settings">
       <?php
           // skin change radios
           $fv_fp->_get_radio(array(
@@ -1413,15 +1415,15 @@ function fv_flowplayer_admin_skin() {
   <div id="skin-tab-logo" class="skin-tab-content">
     <table class="form-table2">
       <tr>
-        <td class="aligntop-input"><label for="logo">Logo:</label></td>
+        <td class="first aligntop-input"><label for="logo">Logo:</label></td>
         <td>
 
           <input type="text" name="logo" id="logo" value="<?php echo esc_attr( $fv_fp->_get_option('logo') ); ?>" class="large" placeholder="<?php esc_attr_e( 'Paste link or upload an image.', 'fv-player' ); ?>" data-fv-preview />
-          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload Image', 'fv-player' ); ?>" alt="Select Logo" />
+          <input id="upload_image_button" class="upload_image_button button no-margin small" type="button" value="<?php esc_attr_e( 'Upload', 'fv-player' ); ?>" alt="Select Logo" />
         </td>
       </tr>
       <tr>
-        <td><label for="logoPosition">Position:</label></td>
+        <td class="first"><label for="logoPosition">Position:</label></td>
         <td>
           <?php
           $value = $fv_fp->_get_option('logoPosition');
@@ -1439,14 +1441,14 @@ function fv_flowplayer_admin_skin() {
           'name' => __( 'Align to video', 'fv-player' ),
           'key'  => 'logo_over_video',
           'help' => __( 'Logo stays on top of video if aspect ratio does not match.', 'fv-player' ),
-          'first_td_class' => 'aligntop',
+          'first_td_class' => 'first aligntop',
           'data' => array(
             'fv-preview' => ''
           )
         )
       ); ?>
       <tr>
-        <td></td>
+        <td class="first"></td>
         <td>
           <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
         </td>
@@ -1512,7 +1514,7 @@ function fv_flowplayer_admin_skin_safe_tags( $tags, $context ) {
 function fv_flowplayer_admin_skin_playlist() {
 	global $fv_fp;
 ?>
-  <div class="flowplayer-wrapper">
+  <div class="column-right">
     <?php
     global $fv_fp_admin_preview_player;
     if ( isset( $fv_fp_admin_preview_player[1] ) ) {
@@ -1521,21 +1523,23 @@ function fv_flowplayer_admin_skin_playlist() {
     }
     ?>
   </div>
-  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+  <table class="column-left form-table2 flowplayer-settings">
 	<?php
 	$fv_fp->_get_select(
-						__( 'Playlist Design', 'fv-player' ),
-						'playlist-design',
-						false,
-						false,
 						array(
+        'name' => __( 'Playlist Design', 'fv-player' ),
+        'key' => 'playlist-design',
+        'options' => array(
 							  '2017' => __( '2017' , 'fv-player' ),
 							  '2017 visible-captions' => __( '2017 with captions' , 'fv-player' ),
 							  '2014' => __( '2014' , 'fv-player' )
+        ),
+        'first_td_class' => 'first'
 							  )
-					   ); ?>
+    );
+    ?>
     <tr>
-      <td><label for="playlistBgColor"><?php esc_html_e( 'Background Color', 'fv-player' ); ?></label></td>
+      <td><label for="playlistBgColor"><?php esc_html_e( 'Background', 'fv-player' ); ?></label></td>
       <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistBgColor') ); ?>"
                  data-fv-preview=".fp-playlist-external > a > span { background-color:#%val%; }"/></td>
     </tr>
@@ -1612,7 +1616,7 @@ function fv_flowplayer_admin_skin_subtitles() {
       </div>
     </div>
   </div>
-  <table class="form-table2 flowplayer-settings fv-player-interface-form-group">
+  <table class="form-table2 flowplayer-settings">
     <tr>
       <td><label for="subtitle-font-face"><?php esc_html_e( 'Font Face', 'fv-player' ); ?></label></td>
       <td>
@@ -1630,7 +1634,7 @@ function fv_flowplayer_admin_skin_subtitles() {
                  data-fv-preview=".flowplayer .fp-player .fp-captions p { font-size: %val%px !important; }"/></td>
     </tr>
     <tr>
-      <td><label for="subtitleBgColor"><?php esc_html_e( 'Background Color', 'fv-player' ); ?></label></td>
+      <td><label for="subtitleBgColor"><?php esc_html_e( 'Background', 'fv-player' ); ?></label></td>
       <td><input class="color-opacity" id="subtitleBgColor" name="subtitleBgColor" type="text" value="<?php echo esc_attr($subtitleBgColor); ?>"
                  data-fv-preview=".flowplayer .fp-player .fp-captions p { background-color: %val% !important; }"/></td>
     </tr>
@@ -1647,62 +1651,90 @@ function fv_flowplayer_admin_skin_subtitles() {
 function fv_flowplayer_admin_skin_sticky() {
 	global $fv_fp;
 ?>
-  <p><?php esc_html_e('This feature lets your viewers continue watching the video as they scroll past it. For desktop computers we consider a display with minimal width of 1020 pixels.', 'fv-wordpres-flowplayer'); ?></p>
-  <table class="thirds">
-    <tr>
+  <div class="column-right">
+    <div class="descriptions">
+      <p class="description" data-describe="off" style="display: none;">When enabled player will stick when scrolling and the video is playing.</p>
+      <p class="description" data-describe="desktop" style="display: none;">Player will stick if the screen width is greater than 1020 pixels.</p>
+      <p class="description" data-describe="all" style="display: none;">Player will stick on any screen size.</p>
+    </div>
+  </div>
+  <div class="column-left">
+    <table class="thirds">
+        <?php
+        $fv_fp->_get_radio( array(
+          'key' => 'sticky_video',
+          'name' => __( '', 'fv-player' ),
+          'style' => 'columns',
+          'values' => array(
+            'off'     => 'Off',
+            'desktop' => 'Desktop',
+            'all'     => 'Desktop and Mobile'
+          ),
+        ) );
+        ?>
+    </table>
+    <table class="form-table2">
       <?php
-      $fv_fp->_get_radio( array(
-        'key' => 'sticky_video',
-        'name' => __( '', 'fv-player' ),
-        'style' => 'columns',
-        'values' => array(
-          'off'     => 'Off',
-          'desktop' => 'Desktop',
-          'all'     => 'Desktop and Mobile'
-        ),
-      ) );
-      ?>
-    </tr>
-  </table>
-  <table class="form-table2">
-    <tr>
-      <td class="first"><label for="sticky_place"><?php esc_html_e( 'Placement', 'fv-player' ); ?></label></td>
-      <td>
-        <select id="sticky_place" name="sticky_place">
-          <option value="right-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "right-bottom" ) echo ' selected="selected"'; ?>>Right, Bottom</option>
-          <option value="left-bottom"<?php if( $fv_fp->_get_option('sticky_place') == "left-bottom" ) echo ' selected="selected"'; ?>>Left, Bottom</option>
-          <option value="left-top"<?php if( $fv_fp->_get_option('sticky_place') == "left-top" ) echo ' selected="selected"'; ?>>Left, Top</option>
-          <option value="right-top"<?php if( $fv_fp->_get_option('sticky_place') == "right-top" ) echo ' selected="selected"'; ?>>Right, Top</option>
-        </select>
-      </td>
-    </tr>
-    <tr>
-      <td><label for="sticky_width"><?php esc_html_e( 'Desktop Player Width [px]', 'fv-player' ); ?></label></td>
-      <td>
-        <input id="sticky_width" name="sticky_width" title="<?php esc_attr_e( 'Enter value in pixels', 'fv-player' ); ?>" type="text" value="<?php echo ( $fv_fp->_get_option('sticky_width') ); ?>"/>
-        <?php esc_html_e(  'Used on desktop and (if enabled) also on mobile in landscape orientation and tablets.', 'fv-player' ); ?>
-      </td>
-    </tr>
-    <?php
-	  $fv_fp->_get_select(
-			__(  'Mobile Player Width', 'fv-player' ),
-			'sticky_width_mobile',
-			__(  'Used on mobile (device width lower than 480 pixels).', 'fv-player' ),
-			false,
-			array(
-				'100' => '100%',
-				'75'  => '75%',
-				'50'  => '50%'
-			)
-		); ?>
-    <tr>
-      <td></td>
-      <td>
-        <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
-      </td>
-    </tr>
-  </table>
-  <div style="clear: both"></div>
+      $fv_fp->_get_select(
+        array(
+            'name' => __( 'Placement', 'fv-player' ),
+            'key' => 'sticky_place',
+            'options' => array(
+              'right-bottom' => 'Right, Bottom',
+              'left-bottom' => 'Left, Bottom',
+              'left-top' => 'Left, Top',
+              'right-top' => 'Right, Top'
+            ),
+            'first_td_class' => 'first'
+          )
+        );
+
+        $fv_fp->_get_input_text(
+          array(
+            'name' => __( 'Player Width', 'fv-player' ),
+            'key'  => 'sticky_width',
+            'type' => 'number',
+            'help' => __( 'Enter value in pixels', 'fv-player' ),
+            'min'  => 200,
+            'max'  => 1920,
+            'step' => 10,
+          )
+        );
+
+        $fv_fp->_get_select(
+          array(
+            'name' => __(  'Mobile Player Width', 'fv-player' ),
+            'key' => 'sticky_width_mobile',
+            'options' => array(
+              '100' => '100%',
+              '75'  => '75%',
+              '50'  => '50%'
+            ),
+            'help' => __(  'Limits the size when the device is in vertical (portrait) orientation.', 'fv-player' ),
+        )
+        );
+        ?>
+      <tr>
+        <td></td>
+        <td>
+          <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+  jQuery( function($) {
+    show_description_sticky_video();
+
+    $('[name=sticky_video]' ).on( 'change', show_description_sticky_video );
+
+    function show_description_sticky_video() {
+      $( '#fv_flowplayer_skin_sticky [data-describe]' ).hide();
+      $( '#fv_flowplayer_skin_sticky [data-describe='+$('[name=sticky_video]:checked').val()+']' ).show();
+    }
+  } );
+  </script>
 <?php
 }
 

@@ -4,21 +4,8 @@
   "license": "GPL-3.0",
   "description": "FV Player - Wordpress's most reliable, easy to use and feature-rich video player.",
   "scripts": {
-    "wp-build": "wp-scripts build",
-    "wp-check-engines": "wp-scripts check-engines",
-    "wp-check-licenses": "wp-scripts check-licenses",
-    "wp-format": "wp-scripts format",
-    "wp-lint:css": "wp-scripts lint-style",
-    "wp-lint:js": "wp-scripts lint-js",
-    "wp-lint:md:docs": "wp-scripts lint-md-docs",
-    "wp-lint:md:js": "wp-scripts lint-md-js",
-    "wp-lint:pkg-json": "wp-scripts lint-pkg-json",
-    "wp-packages-update": "wp-scripts packages-update",
-    "wp-start": "wp-scripts start",
-    "wp-test:e2e": "wp-scripts test-e2e",
-    "wp-test:unit": "wp-scripts test-unit-js",
-    "wp-plugin-zip": "wp-scripts plugin-zip",
-    "preinstall": "npx npm-force-resolutions"
+    "wp-build": "webpack --mode=production",
+    "wp-start": "webpack --mode=development --watch"
   },
   "repository": {
     "type": "git",
@@ -30,9 +17,11 @@
   },
   "homepage": "https://github.com/foliovision/fv-wordpress-flowplayer#readme",
   "devDependencies": {
-    "@babel/core": "^7.17.9",
-    "@babel/preset-env": "^7.16.11",
-    "@wordpress/scripts": "^30.18.0",
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.0",
+    "@wordpress/dependency-extraction-webpack-plugin": "^6.43.0",
+    "babel-loader": "^9.2.1",
     "gulp": "^5.0.1",
     "gulp-autoprefixer": "^8.0.0",
     "gulp-babel": "^8.0.0",
@@ -40,20 +29,15 @@
     "gulp-concat": "^2.6.1",
     "gulp-rename": "^2.0.0",
     "gulp-sort": "^2.0.0",
-    "gulp-sourcemaps": "^3.0.0",
     "gulp-uglify": "^3.0.2",
     "gulp-wp-pot": "^2.5.0",
-    "gulp-zip": "^5.1.0"
+    "gulp-zip": "^5.1.0",
+    "webpack": "^5.97.0",
+    "webpack-cli": "^5.1.4"
   },
   "browserslist": [
     "last 2 versions",
     "> 5%",
     "Firefox ESR"
-  ],
-  "resolutions": {
-    "glob-parent": "6.0.1"
-  },
-  "dependencies": {
-    "@wordpress/server-side-render": "^4.15.0"
-  }
+  ]
 }

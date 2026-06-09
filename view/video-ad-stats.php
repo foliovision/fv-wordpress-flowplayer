@@ -6,6 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
   global $FV_Player_Stats;
+
+  // Parse stats now. This helps if WP Cron is having issues.
+  $FV_Player_Stats->parse_cached_files();
+
   global $fv_wp_flowplayer_ver;
 
   $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : false;

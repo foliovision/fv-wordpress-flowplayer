@@ -107,6 +107,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     'top-right'    => "margin: 2% 2% auto auto",
   );
 
+  /**
+   * Used by the FolioPress base class.
+   */
+  public $strPluginSlug = 'fv-player';
+
   private $embed_id = false;
 
   private $help_html = array(
@@ -142,6 +147,8 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     add_filter( 'fv_flowplayer_video_src', array( $this, 'get_amazon_secure') );
 
     add_action( 'init', array( $this, 'enable_cdn_rewrite_maybe') );
+
+    add_action( 'init', array( $this, 'maybe_log_file_setup' ) );
 
     add_filter( 'fv_flowplayer_splash', array( $this, 'get_amazon_secure_long') );
     add_filter( 'fv_flowplayer_playlist_splash', array( $this, 'get_amazon_secure_long') );
@@ -392,6 +399,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
     }
 
+    $type           = (!empty($options['type']) ? $options['type'] : 'text');
     $first_td_class = ! empty( $options['first_td_class'] ) ? $options['first_td_class'] : '';
     $class_name     = (!empty($options['class']) ? esc_attr($options['class']) : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
@@ -400,6 +408,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');
     $autocomplete   = ! empty( $options['autocomplete'] ) ? ' autocomplete="' . esc_attr( $options['autocomplete'] ) . '"' : '';
+
+    $min            = (!empty($options['min']) ? $options['min'] : '');
+    $max            = (!empty($options['max']) ? $options['max'] : '');
+    $step           = (!empty($options['step']) ? $options['step'] : '');
 
     // Only use fields with secret values obfuscated if FV Player Pro is not there or is ready for it
     if(
@@ -440,7 +452,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <tr>
         <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_kses( $name, $this->help_html ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input class="<?php echo esc_attr( $class_name ); ?>" <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo 'title="' . esc_attr( $title ) . '" '; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
+          <input class="<?php echo esc_attr( $class_name ); ?>" <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo 'title="' . esc_attr( $title ) . '" '; } ?>type="<?php echo esc_attr( $type ); ?>" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
@@ -448,6 +460,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             }
 
           echo $autocomplete;
+          if ($min) echo ' min="' . esc_attr( $min ) . '"';
+          if ($max) echo ' max="' . esc_attr( $max ) . '"';
+          if ($step) echo ' step="' . esc_attr( $step ) . '"';
           ?> />
           <?php if ( $help ) { ?>
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo wp_kses( $help, $this->help_html ); ?></span></p>
@@ -555,7 +570,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $key = esc_attr($key);
     ?>
       <tr>
-        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?></label></td>
+        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <select <?php echo $class_name ? 'class="' . esc_attr( $class_name ) . '"' : ''; ?>id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>"<?php
             if (!isset($options) || !isset($options['data']) || !isset($options['data']['fv-preview'])) { echo ' data-fv-preview=""'; }
@@ -571,9 +586,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             <?php endforeach; ?>
           </select>
 
-          <?php if ( $help ) {
-            echo wp_kses( $help, $this->help_html );
-          } ?>
+          <?php if ( $help ) { ?>
+            <p class="description fv-player-admin-tooltip"><span class="info"><?php echo wp_kses( $help, $this->help_html ); ?></span></p>
+          <?php } ?>
+
           <?php if ( $more ) { ?>
             <span class="more"><?php echo wp_kses( $more, $this->help_html ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
           <?php } ?>
@@ -803,6 +819,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
           'css_writeout',
           'customCSS',
           'debug_log',
+          'debug_file',
           'digitalocean_spaces',
           'disable_convert_db_save',
           'disable_localstorage',
@@ -2891,6 +2908,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     }
   }
 
+  public function maybe_log_file_setup() {
+    if ( ! empty( $this->_get_option( 'debug_file' ) ) ) {
+      $this->log_file_setup();
+    }
+  }
 
   function popup_css( $css ){
     $aPopupData = get_option('fv_player_popups');

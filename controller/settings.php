@@ -149,7 +149,17 @@ function fv_player_settings_save() {
     }
 
     global $fv_fp;
+
+    $old_debug_log = $fv_fp->_get_option( 'debug_file' );
+
     $fv_fp->_set_conf();
+ 
+    if ( ! $old_debug_log && $fv_fp->_get_option( 'debug_file') ) {
+      $fv_fp->log_file_setup();
+
+    } else if ( $old_debug_log && ! $fv_fp->_get_option( 'debug_file') ) {
+      $fv_fp->log_file_delete();
+    }
   }
 }
 

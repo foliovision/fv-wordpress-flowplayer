@@ -90,6 +90,14 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
     } else {
       players = jQuery( '.freedomplayer:not(.is-disabled)' );
       jQuery( window ).on( 'scroll', debouncedScrollHandler );
+
+      jQuery( document ).on( 'fv_player_scroll_autoplay_reload', function() {
+        fv_player_log( 'FV Player Scroll autoplay: Reload' );
+
+        previous_winner = -1;
+        players = jQuery( '.freedomplayer:not(.is-disabled)' );
+        debouncedScrollHandler();
+      } );
     }
 
     // Scroll handler function

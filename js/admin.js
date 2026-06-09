@@ -111,7 +111,7 @@
 
         } else if ( 'logoPosition' === $this.attr('name') ) {
           if ( fv_player_admin.css_logo_positions[ $this.val() ] ) {
-            style += "\n" + '.flowplayer-wrapper .freedomplayer .fp-logo img { ' + fv_player_admin.css_logo_positions[ $this.val() ] + ' }';
+            style += "\n" + '.fv-player-settings-skin-preview .freedomplayer .fp-logo img { ' + fv_player_admin.css_logo_positions[ $this.val() ] + ' }';
           }
         }
       });
@@ -137,7 +137,7 @@
         }
 
         if ( 'logo' === $this.attr('name') ) {
-          let player = $( '.flowplayer-wrapper .freedomplayer' ),
+          let player = $( '.fv-player-settings-skin-preview .freedomplayer' ),
             logo_url = $this.val();
 
           /**
@@ -160,7 +160,7 @@
             let logo = $( '<a class="fp-logo"></a>' );
             logo.append( img );
 
-            $( '.flowplayer-wrapper .freedomplayer .fp-ui' ).eq(0).after( logo );
+            $( '.fv-player-settings-skin-preview .freedomplayer .fp-ui' ).eq(0).after( logo );
 
             if ( api ) {
               api.setLogoPosition();

@@ -30,6 +30,7 @@
     button.on('click', function() {
       console.log('FV Player Editor Screenshots: Taking screenshot for ' + actual_index);
 
+      // Try to take a screenshot
       try {
         button.prop("disabled", true);
 
@@ -51,6 +52,8 @@
           'security': fv_player_editor_conf.splashscreen_nonce
         };
       }
+
+      // If the screenshot fails, try to set crossOrigin if it's a HTML5 video, then reload the video and try again
       catch(err) {
         var video_tag = root.find('video.fp-engine')[0];
 
@@ -63,6 +66,8 @@
 
           video_tag.crossOrigin = 'anonymous';
           reload_video();
+
+          // Note: The "Resume video after setting crossOrigin" will try to take the screenshot again
           return;
         }
 
@@ -166,14 +171,13 @@
     // Resume video after setting crossOrigin
     api.on('resume progress', function() {
       if( seek_recovery && api.video.seekable ) {
-        var time = seek_recovery;
-          seek_recovery = false;
-
-        api.seek( time, function() {
+        api.seek( seek_recovery, function() {
           api.pause();
 
           // ... and try to take the screenshot again
           button.click();
+
+          seek_recovery = false;
         });
       }
     });

@@ -77,7 +77,9 @@ final class frontendTest extends TestCase {
     global $testReturnValue;
     $testReturnValue = '';
 
-    define( 'ABSPATH', dirname( __FILE__ ) );
+    if( !defined( 'ABSPATH' ) ) {
+      define( 'ABSPATH', dirname( __FILE__ ) );
+    }
 
     include_once "../../models/fv-player.php";
     include_once "../../models/lightbox.php";
@@ -271,6 +273,108 @@ Localizing fv_player_lightbox with fv_player_lightbox = Array
 
     // Replace windows newlines with unix newlines, including any whitespace before newline
     $this->assertEquals( preg_replace( '~\s*?\r?\n~', "\n", $expected ), preg_replace( '~\s*?\r?\n~', "\n", $output) );
+  }
+
+  public function test_comment_text_parse_comments_disabled_keeps_text() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'false';
+
+    $input = 'Check this https://www.youtube.com/watch?v=1XiHhpGUmQg and docs https://example.com/docs';
+
+    $this->assertEquals( $input, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_in_admin_keeps_text_even_when_enabled() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => true
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = 'Check this https://www.youtube.com/watch?v=1XiHhpGUmQg and docs https://example.com/docs';
+
+    $this->assertEquals( $input, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_parse_comments_enabled_parses_youtube_watch_url() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = 'Video https://www.youtube.com/watch?v=1XiHhpGUmQg';
+    $expected = 'Video [fvplayer src="https://www.youtube.com/watch?v=1XiHhpGUmQg"]';
+
+    $this->assertEquals( $expected, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_parse_comments_enabled_parses_vimeo_url() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = 'Video https://vimeo.com/123456789';
+    $expected = 'Video [fvplayer src="https://vimeo.com/123456789"]';
+
+    $this->assertEquals( $expected, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_keeps_non_video_links_untouched_with_youtube() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = 'Video: https://www.youtube.com/watch?v=1XiHhpGUmQg More info: https://example.com/docs';
+    $expected = 'Video: [fvplayer src="https://www.youtube.com/watch?v=1XiHhpGUmQg"] More info: https://example.com/docs';
+
+    $this->assertEquals( $expected, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_keeps_non_video_links_untouched_with_vimeo() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = 'More info: https://example.com/docs Video: https://vimeo.com/123456789 Text after Vimeo link.';
+    $expected = 'More info: https://example.com/docs Video: [fvplayer src="https://vimeo.com/123456789"] Text after Vimeo link.';
+
+    $this->assertEquals( $expected, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_keeps_non_video_links_untouched_with_vimeo_and_newlines() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = "More info: https://example.com/docs\n\nVideo: https://vimeo.com/123456789\n\nText after Vimeo link.";
+    $expected = "More info: https://example.com/docs\n\nVideo: [fvplayer src=\"https://vimeo.com/123456789\"]\n\nText after Vimeo link.";
+
+    $this->assertEquals( $expected, fv_player_comment_text( $input ) );
+  }
+
+  public function test_comment_text_should_not_affect_attributes() {
+    global $fv_fp, $testReturnValue;
+    $testReturnValue = array(
+      'is_admin' => false
+    );
+    $fv_fp->conf['parse_comments'] = 'true';
+
+    $input = "<a href=\"vimeo.com/123456\" >\n 
+style=display:block;content-visibility:auto oncontentvisibilityautostatechange=\"alert(1337);\"</a>";
+
+    $this->assertEquals( $input, fv_player_comment_text( $input ) );
   }
 
 }

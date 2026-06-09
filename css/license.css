@@ -116,6 +116,7 @@ div.green { background-color: #e0ffe0; border-color: #88AA88; }
 .meta-box-sortables input.small, .meta-box-sortables select.small { width: 27%; }
 .meta-box-sortables input.medium { width: 50%; }
 .meta-box-sortables input.large { width: 71% !important; }
+#fv_flowplayer_ads .small { width: 6em }
 td.second-column { margin-left: 20px }
 
 span.new { color: #e00; font-weight: bold }
@@ -144,30 +145,23 @@ form#fv_flowplayer_admin_buttons { margin: 13px 0; }
   background: #ff6;
 }
 
-#flowplayer-wrapper label,
-#fv_flowplayer_skin_playlist label,
-#fv_flowplayer_skin_subtitles label {
-  display: block;
-  text-align: right;
-}
 td.aligntop, td.aligntop-input { vertical-align:top; }
 td.aligntop > label { margin-top: 4px; }
 td.aligntop-input > label { margin-top: 6px; }
 
-#flowplayer-wrapper input[type=text], #flowplayer-wrapper select,
-#fv_flowplayer_skin_playlist input[type=text], #fv_flowplayer_skin_playlist select,
-#fv_flowplayer_skin_subtitles input[type=text], #fv_flowplayer_skin_subtitles select {
+#flowplayer-wrapper input[type=text],
+#flowplayer-wrapper select {
   width: 95%;
 }
-
-#wpfp_options .flowplayer-wrapper + table,
+#wpfp_options .column-left,
 #fp-preview-wrapper + table {
-  width: 30%;
+  width: 29%;
 }
 
-
-#fv_flowplayer_skin_sticky input[type=text], #fv_flowplayer_skin_sticky select {
-	width: 10em;
+#postbox-container-tab_skin input[type=text],
+#postbox-container-tab_skin input[type=number],
+#postbox-container-tab_skin select {
+	width: 100%;
 }
 
 table.thirds {
@@ -181,9 +175,7 @@ table.thirds td {
   float: right;
 }
 
-#wpfp_options #flowplayer-wrapper .button-primary,
-#wpfp_options #fv_flowplayer_skin_playlist .button-primary,
-#wpfp_options #fv_flowplayer_skin_subtitles .button-primary {
+#postbox-container-tab_skin .button-primary {
   float: none;
 }
 
@@ -226,6 +218,17 @@ table.thirds td {
 }
 #fv_flowplayer_usage .usage-section:nth-child(2n+1) {
 	clear: both;
+}
+
+#wpfp_options td .descriptions {
+	float: right;
+	position: relative;
+	width: 50%;
+}
+#wpfp_options td .description[data-describe] {
+	display: none;
+	position: absolute;
+	top: 0;
 }
 
 @media only screen and (max-width: 1680px) {

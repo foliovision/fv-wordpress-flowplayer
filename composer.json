@@ -1,4 +1,8 @@
 {
+  "name": "foliovision/fv-wordpress-flowplayer",
+  "version": "8.1.4",
+	"description": "FV Player - Wordpress's most reliable, easy to use and feature-rich video player.",
+	"type": "wordpress-plugin",
   "config": {
     "platform": {
         "php": "8.1"

@@ -273,13 +273,14 @@ flowplayer( function(api,root) {
     var menu = root.find('.fp-qsel-menu');
     menu.children().each(function(i,a){menu.prepend(a)});
     menu.children().each(function(i,a){
-      if( /^NaNp/.test(jQuery(a).html()) ) { // could not parse quality so use bitrate, example : #EXT-X-STREAM-INF:BANDWIDTH=200000
-        var bitrate = jQuery(a).html().match(/\((.*?)\)/);
+      var label = jQuery(a).html();
+      if( /^NaNp/.test(label) || /^0p/.test(label) ) { // could not parse quality so use bitrate, example : #EXT-X-STREAM-INF:BANDWIDTH=200000
+        var bitrate = label.match(/\((.*?)\)/);
         if( bitrate && typeof(bitrate[1] ) !== 'undefined' ) {
           jQuery(a).html(bitrate[1]);
         }
       } else { // quality parsed, remove bitrate
-        jQuery(a).html(jQuery(a).html().replace(/\(.*?\)/,''));
+        jQuery(a).html(label.replace(/\(.*?\)/,''));
       }
     });
     menu.prepend(menu.find('a[data-quality=-1]'));
