@@ -42,22 +42,22 @@ flowplayer(function(player, root) {
       });
 
       if ( navigator.platform &&navigator.platform.indexOf("iPhone") !== -1 ) {
-      try {
-        video.webkitEnterFullScreen();
-      } catch( e ) {
-        // If the fullscreen was blocked, pause the video and show the play button
-        // Then tapping the video will try fullscreen again
-        player.pause();
-
-        common.find('.fp-play', root)[0].style.opacity = 1;
-
-        jQuery( root ).on( 'touchstart', function(e) {
-          common.find('.fp-play', root)[0].style.opacity = '';
-
-          player.resume();
+        try {
           video.webkitEnterFullScreen();
-          return false;
-        });
+        } catch( e ) {
+          // If the fullscreen was blocked, pause the video and show the play button
+          // Then tapping the video will try fullscreen again
+          player.pause();
+
+          common.find('.fp-play', root)[0].style.opacity = 1;
+
+          jQuery( root ).on( 'touchstart', function(e) {
+            common.find('.fp-play', root)[0].style.opacity = '';
+
+            player.resume();
+            video.webkitEnterFullScreen();
+            return false;
+          });
         }
       }
 
@@ -132,8 +132,6 @@ flowplayer(function(player, root) {
       common.toggleClass(root, 'fp-minimal-fullscreen', common.hasClass(root, 'fp-minimal'));
       common.removeClass(root, 'fp-minimal');
 
-      common.addClass( document.body, 'has-fv-player-fullscreen' );
-
       /**
        * If fullscreen is not supported we have add all the extra CSS which helps us to make
        * the player fullscreen.
@@ -141,6 +139,8 @@ flowplayer(function(player, root) {
        * Also do this if you support fullscreen but some other element is in fullscreen.
        */
       if (!FS_SUPPORT || document.fullscreenElement) {
+        common.addClass( document.body, 'has-fv-player-fullscreen' );
+
         common.css(root, 'position', 'fixed');
 
         sanitize_parent_elements(true);
