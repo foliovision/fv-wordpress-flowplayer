@@ -41,6 +41,7 @@ flowplayer(function(player, root) {
         });
       });
 
+      if ( navigator.platform &&navigator.platform.indexOf("iPhone") !== -1 ) {
       try {
         video.webkitEnterFullScreen();
       } catch( e ) {
@@ -57,6 +58,7 @@ flowplayer(function(player, root) {
           video.webkitEnterFullScreen();
           return false;
         });
+        }
       }
 
       bean.one(video, 'webkitendfullscreen', function() {
