@@ -145,6 +145,8 @@ final class FV_Player_EndActionsTest extends FV_Player_UnitTestCase {
   }
 
   protected function tearDown(): void {
+    parent::tearDown();
+
     delete_option('fv_player_popups');
   }
 

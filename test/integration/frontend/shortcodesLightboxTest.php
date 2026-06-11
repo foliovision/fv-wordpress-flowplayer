@@ -12,8 +12,6 @@ final class FV_Player_ShortcodeLightboxTestCase extends FV_Player_UnitTestCase {
 
   var $import_data = array();
 
-  var $import_ids = array();
-
   protected function setUp(): void {
     FV_Player_lightbox()->clear_lightboxed_players();
 
