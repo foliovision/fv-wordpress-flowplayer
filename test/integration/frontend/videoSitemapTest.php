@@ -8,9 +8,6 @@ require_once( dirname(__FILE__).'/../fv-player-unittest-case.php');
  */
 final class FV_Player_Video_SitemapTest extends FV_Player_UnitTestCase {
 
-  var $import_ids = array();
-  private $post_id_testEndActions;
-
   protected function setUp(): void {
     parent::setUp();
 
@@ -21,10 +18,7 @@ final class FV_Player_Video_SitemapTest extends FV_Player_UnitTestCase {
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data.json'), true) );
     $this->import_ids[] = $FV_Player_Db->import_player_data( false, false, json_decode( file_get_contents(dirname(__FILE__).'/player-data-youtube.json'), true) );
 
-    // create a post with playlist shortcode
-    $this->post_id_testEndActions= $this->factory->post->create( array(
-      'post_title' => 'Video Sitemap Test',
-      'post_content' => <<< HTML
+    $post_content = <<< HTML
 Here is the intro paragraph
 
 [fvplayer src="https://cdn.site.com/video.mp4"]
@@ -39,7 +33,7 @@ Let's try a YouTube video:
 
 Paragraph after first player
 
-[fvplayer id="1"]
+[fvplayer id="%first_player_id%"]
 
 Paragraph after second player
 
@@ -47,8 +41,16 @@ Paragraph after second player
 
 Paragraph after third player, this will not be in sitemap as it's YouTube and embedding is not enabled globally
 
-[fvplayer id="2"]
-HTML
+[fvplayer id="%second_player_id%"]
+HTML;
+
+    $post_content = str_replace( '%first_player_id%', $this->import_ids[0], $post_content );
+    $post_content = str_replace( '%second_player_id%', $this->import_ids[1], $post_content );
+
+    // create a post with playlist shortcode
+    $this->factory->post->create( array(
+      'post_title' => 'Video Sitemap Test',
+      'post_content' => $post_content
     ) );
 
   }
@@ -75,20 +77,4 @@ HTML
 
     $this->assertEquals($this->fix_newlines($expect), $this->fix_newlines($actual) );
   }
-
-  protected function tearDown(): void {
-    global $FV_Player_Db;
-
-    // when you delete a player loaded from cache it won't remove the player and player meta, so we do a hard cache purge here! The player ID is not passed in contructor when loading from cache.
-    $FV_Player_Db->setPlayersCache( array() );
-    $FV_Player_Db->setPlayerMetaCache( array() );
-    $FV_Player_Db->setVideosCache( array() );
-    $FV_Player_Db->setVideoMetaCache( array() );
-
-    foreach( $this->import_ids AS $id ) {
-      $player = new FV_Player_Db_Player( $id, array() );
-      $player->delete();
-    }
-  }
-
 }

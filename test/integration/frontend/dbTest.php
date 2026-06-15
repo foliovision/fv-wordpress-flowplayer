@@ -10,8 +10,6 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
 
   var $import_data = array();
 
-  var $import_ids = array();
-
   private $post_id_testEndActions;
   private $post_id_testStartEnd;
 
@@ -294,6 +292,8 @@ final class FV_Player_DBTest extends FV_Player_UnitTestCase {
   }
 
   protected function tearDown(): void {
+    parent::tearDown();
+
     delete_option('fv_player_popups');
   }
 
