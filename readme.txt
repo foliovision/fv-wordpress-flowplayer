@@ -210,6 +210,17 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.5 - 2026-06-18 =
+
+* HLS.js upgrade from 1.6.10 to 1.7.0-beta.1 to fix rare Google Chrome playback issues
+* Autoplay: Make it possible for Ajax to add player that autoplays
+* Bugfix: Rename unload event internally to avoid issues with certain Google Chrome configurations
+* Bugfix: Avoid captions moving up on hover or pause if using fixed controls
+* Bugfix: Block: Avoid inserting video URL into video splash screen field
+* Security: Avoid unauthenticated stored XSS via comment text if using the “Parse Vimeo and YouTube links” setting
+* Security: "Enable profile videos" setting allowed logged in users to change profile videos of other users
+* Security: "Enable profile videos" setting allowed logged in users to store videos with ads and popups to attempt stored XSS
+
 = 8.1.4 - 2026-02-09 =
 
 * XML sitemap: Loading speed fix
