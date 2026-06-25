@@ -257,7 +257,7 @@ Localizing fv_player_lightbox with fv_player_lightbox = Array
 
 ";
 
-    $output = preg_replace( '~\?ver=[0-9.mod-]+~', '?ver=1.2.3.4', $output );
+    $output = preg_replace( '~\?ver=[0-9.modbeta-]+~', '?ver=1.2.3.4', $output );
 
     // Replace the plugin folder name with fv-player
     $plugin_folder_name = basename( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) );
