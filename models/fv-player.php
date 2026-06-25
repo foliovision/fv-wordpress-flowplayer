@@ -1485,6 +1485,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if ( $remove_black_bars && $aArgs['toggle_advanced_settings'] ) {
           $aPlayer['remove_black_bars'] = true;
         }
+
+        $ratio = $this->current_video()->getAspectRatio();
+        if( $ratio ) {
+          $aPlayer['aspectRatio'] = $ratio;
+        }
       }
 
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
@@ -1580,6 +1585,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $remove_black_bars = $this->current_video()->getMetaValue( 'remove_black_bars', true );
             if ( $remove_black_bars && $aArgs['toggle_advanced_settings'] ) {
               $aPlayer['remove_black_bars'] = true;
+            }
+
+            $ratio = $this->current_video()->getAspectRatio();
+            if( $ratio ) {
+              $aPlayer['aspectRatio'] = $ratio;
             }
           }
 
