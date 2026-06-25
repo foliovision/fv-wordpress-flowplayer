@@ -496,25 +496,25 @@ class FV_Player_YouTube {
         return $aItem;
       }
 
-      $attachment_id = $video->getMetaValue('author_thumbnail', true);
-      $author_name = $video->getMetaValue('author_name', true);
-      $author_url = $video->getMetaValue('author_url', true);
+      if ( 'reduced' === $fv_fp->_get_option('youtube_browser_chrome') ) {
+        $attachment_id = $video->getMetaValue('author_thumbnail', true);
+        $author_name = $video->getMetaValue('author_name', true);
+        $author_url = $video->getMetaValue('author_url', true);
 
-      if( $attachment_id) {
-        // get attachment url from attachment id
-        $attachment_url = wp_get_attachment_url( $attachment_id );
-
-        if( $attachment_url ) {
-          $aItem['author_thumbnail'] = $attachment_url;
+        if( $attachment_id) {
+          $attachment_url = wp_get_attachment_url( $attachment_id );
+          if( $attachment_url ) {
+            $aItem['author_thumbnail'] = sanitize_url( $attachment_url );
+          }
         }
-      }
 
-      if( $author_name ) {
-        $aItem['author_name'] = $author_name;
-      }
+        if( $author_name ) {
+          $aItem['author_name'] = sanitize_text_field( $author_name );
+        }
 
-      if( $author_url ) {
-        $aItem['author_url'] = $author_url;
+        if( $author_url ) {
+          $aItem['author_url'] = sanitize_url( $author_url) ;
+        }
       }
 
     }
