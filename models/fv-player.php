@@ -55,9 +55,30 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   var $hash = false;
 
+  /**
+   * Stores current arguments for the player.
+   *
+   * @var array
+   */
+  var $aCurArgs = array();
+
   var $bCSSInline = false;
 
   var $bCSSPlaylists = false;
+
+  /**
+   * Stores instance of current player with data loaded from database, if any.
+   *
+   * @var FV_Player_Db_Player | null
+   */
+  var $currentPlayerObject = null;
+
+  /**
+   * Stores instance of current video with data loaded from database, if any.
+   *
+   * @var FV_Player_Db_Video | null
+   */
+  var $currentVideoObject = null;
 
   public $overlay_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
 
@@ -2040,6 +2061,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $match[0];
   }
 
+  /**
+   * Retrieves instance of current player with data loaded from database.
+   *
+   * @return FV_Player_Db_Player | null
+   */
+  function current_player() {
+    return $this->currentPlayerObject;
+  }
+
+  /**
+   * Retrieves instance of current video with data loaded from database.
+   *
+   * @return FV_Player_Db_Video | null
+   */
+  function current_video() {
+    return $this->currentVideoObject;
+  }
+
   public function enable_cdn_rewrite( $item ) {
     if( is_admin() ) {
       return $item;
@@ -2241,6 +2280,40 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     remove_filter( 'fv_flowplayer_amazon_expires', '__return_false' );
 
     return $signed_media;
+  }
+
+  /**
+   * Retrieves RTMP server and path from the current arguments or the player options.
+   *
+   * @param string $rtmp
+   *
+   * @return array
+   *   - string $rtmp_server
+   *   - string $rtmp
+   */
+  function get_rtmp_server( $rtmp ) {
+    $rtmp_server = false;
+    if( !empty($this->aCurArgs['rtmp']) ) {
+      $rtmp_server = trim( $this->aCurArgs['rtmp'] );
+    } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && stripos($this->_get_option('rtmp'), $rtmp ) === false  ) {
+      if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
+        $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+        $rtmp_server = $aTMP[0];
+      } else {
+        $rtmp_info = wp_parse_url($rtmp);
+        if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
+          $rtmp_server = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
+        }
+      }
+    } else if( $this->_get_option('rtmp') ) {
+      $rtmp_server = $this->_get_option('rtmp');
+      if( stripos( $rtmp_server, 'rtmp://' ) === 0 ) {
+        $rtmp = str_replace( $rtmp_server, '', $rtmp );
+      } else {
+        $rtmp_server = 'rtmp://' . $rtmp_server . '/cfx/st/';
+      }
+    }
+    return array( $rtmp_server, $rtmp );
   }
 
   public static function hms_to_seconds( $tDuration ) {
@@ -2860,6 +2933,43 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
 
+  /**
+   * Is it a audio track-only playlist with no splash screens?
+   */
+  function is_audio_playlist() {
+
+    // Are all the database player items audio tracks?
+    if( $player = $this->current_player() ) {
+
+      $items = $player->getVideos();
+      $count_audio_items = 0;
+
+      if( $items ) {
+        foreach( $items AS $item ) {
+          if( $item->getSplash() ) {
+            continue;
+          }
+
+          if(
+            $item->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
+          ) {
+            $count_audio_items++;
+          }
+        }
+      }
+
+      if ( count( $items ) === $count_audio_items ) {
+        return true;
+      }
+
+    // Does the legacy shortcode start with an audio track with no splash?
+    } else if( ! empty( $this->aCurArgs['src'] ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+      return true;
+    }
+
+    return false;
+  }
 
   public static function is_licensed() {
     global $fv_fp;
