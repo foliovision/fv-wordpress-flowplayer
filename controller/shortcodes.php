@@ -270,29 +270,28 @@ function fv_flowplayer_optimizepress_bridge( $input ) {
   $content = preg_replace( '~\[video_player.*?\](.*?)\[/video_player\]~', '$1', $video );
   $content = base64_decode($content);
   if(preg_match('|(https?://[^<"]+)|im',$content,$matches)){
-    $shortcode .= ' src="'.$matches[1].'"';
+    $shortcode .= ' src="' . esc_url( $matches[1] ) . '"';
   }
-  $url1 = base64_decode($atts['url1']);
+  $url1 = base64_decode( $vars['url1'] );
   if(preg_match('|(https?://[^<"]+)|im',$url1,$matches)){
-    $shortcode .= ' src1="'.$matches[1].'"';
+    $shortcode .= ' src1="' . esc_url( $matches[1] ) . '"';
   }
-  $url2 = base64_decode($atts['url2']);
+  $url2 = base64_decode( $vars['url2'] );
   if(preg_match('|(https?://[^<"]+)|im',$url2,$matches)){
-    $shortcode .= ' src2="'.$matches[1].'"';
+    $shortcode .= ' src2="' . esc_url( $matches[1] ) . '"';
   }
-  
+
   if( $vars['placeholder'] ) {
-    $shortcode .= ' splash="'.$vars['placeholder'].'"';
+    $shortcode .= ' splash="' . esc_url( $vars['placeholder'] ) . '"';
   }
-  
+
   if( $vars['auto_play'] == 'Y' ) {
     $shortcode .= ' autoplay="true"';
-  }  
+  }
 
-  
-  $shortcode .= ' width="'.$vars['width'].'"';
-  $shortcode .= ' height="'.$vars['height'].'"';
-  $shortcode .= ' align="'.$vars['align'].'"';
+  $shortcode .= ' width="' . sanitize_key( $vars['width'] ) . '"';
+  $shortcode .= ' height="' . sanitize_key( $vars['height'] ) . '"';
+  $shortcode .= ' align="' . sanitize_key( $vars['align'] ) . '"';
 
   if( current_user_can('manage_options') &&
     (
