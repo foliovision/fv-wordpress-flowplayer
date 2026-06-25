@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2026-06-18 15:21+0000\n"
+"POT-Creation-Date: 2026-06-25 09:18+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -772,11 +772,11 @@ msgstr ""
 msgid "<strong>Requirements</strong>: video has to be on https:// and splash screen has to be present. Videos with download protection are automatically excluded."
 msgstr ""
 
-#: models/fv-player.php:664, view/admin.php:339
+#: models/fv-player.php:685, view/admin.php:339
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3192
+#: models/fv-player.php:3312
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
