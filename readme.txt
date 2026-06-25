@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.52.7212 - 2026-06-25 =
+
+* Security fix - OptimizePress integration fix
+
 = 7.5.51.7212 - 2026-06-02 =
 
 * Security fix - with "Enable profile videos" setting logged in users can no longer change profile videos of other users
