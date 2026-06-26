@@ -2763,6 +2763,28 @@ if( typeof(flowplayer) != "undefined" ) {
                 root.addClass('is-youtube-nl');
               }
 
+              if( fv_flowplayer_conf.youtube_browser_chrome && fv_flowplayer_conf.youtube_browser_chrome != 'standard' ) {
+                var video_id = fv_player_pro_youtube_get_video_id( player.video.src );
+                if ( "undefined" === typeof player.video.aspectRatio && video_id && window.fetch ) {
+                    jQuery.get(
+                    'https://www.youtube.com/oembed?url=https://www.youtube.com/shorts/' + video_id + '&format=json',
+                    function( data ) {
+                        if ( parseInt( data.height ) > 0 && parseInt( data.width ) > 0 ) {
+                        player.video.aspectRatio = data.height / data.width;
+
+                        fv_player_log( 'FV Player Youtube video aspect ratio', player.video.aspectRatio );
+                        } else {
+                        player.video.aspectRatio = 0;
+
+                        fv_player_log( 'FV Player Youtube failed to get video aspect ratio' );
+                        }
+                    }
+                    ).fail( function() {
+                    fv_player_log( 'FV Player Youtube failed to get video aspect ratio' );
+                    } );
+                }
+              }
+
               break;
 
           }
