@@ -837,11 +837,19 @@ jQuery( function($) {
     var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
 
     if( clientId && fv_player_editor.get_current_video_index() < 1 ) {
-      var editor_splash = splash ? splash : '',
-        editor_timeline_previews = extra && extra.timeline_previews ? extra.timeline_previews : '';
-        editor_hlskey = extra && extra.hlskey ? extra.hlskey : '';
+      var data = {};
+      data.src = href;
+      if ( splash ) {
+        data.splash = splash;
+      }
+      if ( extra && extra.timeline_previews ) {
+        data.timeline_previews = extra.timeline_previews;
+      }
+      if (extra && extra.hlskey) {
+        data.hls_hlskey = extra.hlskey;
+      }
 
-      wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes(clientId, { src: href, splash: editor_splash, timeline_previews: editor_timeline_previews, hls_hlskey: editor_hlskey });
+      wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, data );
     }
 
     var are_we_picking_the_video = $url_input.attr('id') && $url_input.attr('id').match(/^fv_wp_flowplayer_field_src/);

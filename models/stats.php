@@ -27,7 +27,7 @@ class FV_Player_Stats {
       }
     }
 
-    add_action( 'fv_player_stats', array ( $this, 'parse_cached_files' ) );
+    add_action( 'fv_player_stats', array ( $this, 'parse_cached_files_cron' ) );
 
     add_action( 'fv_player_update', array( $this, 'db_init' ) );
 
@@ -270,7 +270,7 @@ class FV_Player_Stats {
    * @return void
    */
   function process_cached_data( &$fp, $type ) {
-    global $wpdb;
+    global $wpdb, $fv_fp;
 
     $table_name = $this->get_table_name();
 
@@ -278,6 +278,12 @@ class FV_Player_Stats {
 
     if( flock( $fp, LOCK_EX ) ) {
       $encoded_data = fgets( $fp );
+
+      if ( ! $encoded_data ) {
+        $fv_fp->log( "Stats Parsing: File empty." );
+        return;
+      }
+
       $data = json_decode( $encoded_data, true );
 
       ftruncate( $fp, 0 );
@@ -287,11 +293,15 @@ class FV_Player_Stats {
       $json_error = json_last_error();
       if( $json_error !== JSON_ERROR_NONE ) {
         //file_put_contents( ABSPATH . 'failed_json_decode.log', gmdate('r')."\n".var_export( array( 'err' => $json_error, 'data' => $encoded_data ), true )."\n", FILE_APPEND );
+
+        $fv_fp->log( "Stats Parsing: JSON error: " . json_last_error_msg() );
         return;
       }
 
-      if( !is_array( $data ) || empty( $data ) )
+      if( !is_array( $data ) || empty( $data ) ) {
+        $fv_fp->log( "Stats Parsing: No data." );
         return;
+      }
 
       if( is_array($data) ) {
         foreach( $data  AS $index => $item ) {
@@ -326,6 +336,9 @@ class FV_Player_Stats {
           $existing =  $wpdb->get_row( $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}fv_player_stats` WHERE date = %s AND id_video = %d AND id_post = %d AND id_player = %d AND user_id = %d AND guest_user_id = %d", date_i18n( 'Y-m-d', false, true ), $video_id, $post_id, $player_id, $user_id, $guest_user_id ) );
 
           if( $existing ) {
+
+            $fv_fp->log( "Stats Parsing: Updating stats for video #" . $video_id );
+
             $wpdb->update(
               $table_name,
               array(
@@ -344,6 +357,8 @@ class FV_Player_Stats {
               )
             );
           } else { // insert new row
+            $fv_fp->log( "Stats Parsing: Inserting stats for video #" . $video_id );
+
             $wpdb->insert(
               $table_name,
               array(
@@ -371,6 +386,8 @@ class FV_Player_Stats {
     }
     else {
       echo "Error: failed to obtain file lock.";
+
+      $fv_fp->log( "Stats Parsing: Failed to obtain file lock." );
     }
   }
 
@@ -379,6 +396,10 @@ class FV_Player_Stats {
    * @return void
    */
   function parse_cached_files() {
+
+    global $fv_fp;
+    $fv_fp->log( "Stats Parsing: Starting..." );
+
     // just in case...
     $this->db_init( true );
     $this->folder_init( true );
@@ -393,6 +414,8 @@ class FV_Player_Stats {
 
         if( get_current_blog_id() != $blog_id ) continue;
 
+        $fv_fp->log( "Stats Parsing: Processing file: " . $filename );
+
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fopen
         $fp = fopen( $this->cache_directory."/".$filename, 'r+');
         $this->process_cached_data( $fp, $type );
@@ -401,6 +424,16 @@ class FV_Player_Stats {
         fclose( $fp );
       }
     }
+
+    $fv_fp->log( "Stats Parsing: Finished." );
+  }
+
+  public function parse_cached_files_cron() {
+
+    global $fv_fp;
+    $fv_fp->log( "Stats Cron: Starting..." );
+
+    $this->parse_cached_files();
   }
 
   public function top_ten_users_by_plays( $interval, $user_type = 'user' ) {
@@ -1741,7 +1774,47 @@ class FV_Player_Stats {
       wp_send_json_error( 'Tracking data is too new: ' . date( 'Y-m-d H:i:s', $data['pong'] ) . ' > ' . date( 'Y-m-d H:i:s', $current_time ) );
     }
 
-    wp_send_json_success( 'Test successful' );
+    $info             = array();
+    $info_message     = '';
+    $warnings         = array();
+    $warnings_message = '';
+
+    foreach( 
+      array(
+        "play-" . absint( get_current_blog_id() ) . ".data",
+        "seconds-" . absint( get_current_blog_id() ) . ".data"
+      ) as $filename
+    ) {
+      $fp = fopen( $this->cache_directory . "/" . $filename, 'r+');
+      if ( ! $fp ) {
+        wp_send_json_error( 'Failed to open cache file: ' . $filename );
+      }
+
+      $encoded_data = fgets( $fp );
+      if ( $encoded_data ) {
+        $data = json_decode( $encoded_data, true );
+        $json_error = json_last_error();
+        if( $json_error !== JSON_ERROR_NONE ) {
+          wp_send_json_error( 'JSON decode error for ' . $filename . ': ' . json_last_error_msg() );
+        }
+
+        $info[] = '<code>' . $filename . '</code> has data about ' . count( $data ) . ' videos';
+
+      } else {
+        $warnings[] = '<code>' . $filename . '</code> is empty';
+      }
+    }
+
+    if ( ! empty( $info ) ) {
+      $info_message = ' ' . implode( ', ', $info );
+    }
+
+
+    if ( ! empty( $warnings ) ) {
+      $warnings_message = ' Warning: ' . implode( ', ', $warnings ) . '. If you did not play any video as a guest in last 5 minutes, this is normal. Try to play a video and re-test.';
+    }
+
+    wp_send_json_success( 'Test successful' . $info_message . $warnings_message );
   }
 
   function users_column( $columns ) {

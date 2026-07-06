@@ -325,9 +325,7 @@ abstract class FV_Player_Video_Encoder {
     }
 
     // if the extending Encoder supports a trailer, add it here
-    if ( isset( $_POST['trailer'] ) ) {
-      $trailer = sanitize_text_field( $_POST['trailer'] );
-    }
+    $trailer = ! empty( $_POST['trailer'] );
 
     $target = $this->util__sanitize_target($target);
 
@@ -393,9 +391,7 @@ abstract class FV_Player_Video_Encoder {
     }
 
     // support for trailers
-    if ( isset( $trailer ) ) {
       $job['trailer'] = $trailer;
-    }
 
     if( isset( $id_video ) ) {
       $job['id_video'] = $id_video;
@@ -676,7 +672,7 @@ abstract class FV_Player_Video_Encoder {
     $video_ids = explode( ',', strval($args['id_video']) );
 
     // first we instert the table row with basic data and remember the row ID
-    $wpdb->insert(  $this->table_name, array(
+    $wpdb->insert( $this->table_name, array(
       'date_created' => gmdate("Y-m-d H:i:s"),
       'id_video' => $args['id_video'],
       'source' => $args['source'],

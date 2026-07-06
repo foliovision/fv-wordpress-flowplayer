@@ -9,7 +9,9 @@ flowplayer(function(api, root) {
 
   function check_size() {
     var width = player.width() || root.width(),
-      video_index = api.video.index ? api.video.index : 0;
+      height = player.height() || root.height(),
+      video_index = api.video.index ? api.video.index : 0,
+      aspectRatio = api.video.aspectRatio && parseFloat( api.video.aspectRatio ) > 0 ? parseFloat( api.video.aspectRatio ) : false;
 
     if(width > 900) {
       jQuery('.fp-subtitle',root).addClass('is-wide');
@@ -58,6 +60,11 @@ flowplayer(function(api, root) {
     if ( controls_items_width > controls_width ) {
       controls_to_sacrifice.addClass( 'wont-fit' );
     }
+
+    root.css(
+      '--fv-player-video-aspect-ratio-width',
+      aspectRatio ? height / aspectRatio + 'px' : 'auto'
+    );
   }
 
   // This improves the performance about 2x, but what if we find a way of running them all at once?

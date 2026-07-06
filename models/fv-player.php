@@ -55,9 +55,30 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
   var $hash = false;
 
+  /**
+   * Stores current arguments for the player.
+   *
+   * @var array
+   */
+  var $aCurArgs = array();
+
   var $bCSSInline = false;
 
   var $bCSSPlaylists = false;
+
+  /**
+   * Stores instance of current player with data loaded from database, if any.
+   *
+   * @var FV_Player_Db_Player | null
+   */
+  var $currentPlayerObject = null;
+
+  /**
+   * Stores instance of current video with data loaded from database, if any.
+   *
+   * @var FV_Player_Db_Video | null
+   */
+  var $currentVideoObject = null;
 
   public $overlay_css_default = ".wpfp_custom_ad { position: absolute; bottom: 10%; z-index: 20; width: 100%; }\n.wpfp_custom_ad_content { background: white; margin: 0 auto; position: relative }";
 
@@ -399,6 +420,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       throw new Exception('Options parameter passed to the _get_input_text() method needs to be an array!');
     }
 
+    $type           = (!empty($options['type']) ? $options['type'] : 'text');
     $first_td_class = ! empty( $options['first_td_class'] ) ? $options['first_td_class'] : '';
     $class_name     = (!empty($options['class']) ? esc_attr($options['class']) : '');
     $key            = (!empty($options['key']) ? $options['key'] : '');
@@ -407,6 +429,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $default        = (!empty($options['default']) ? $options['default'] : '');
     $help           = (!empty($options['help']) ? $options['help'] : '');
     $autocomplete   = ! empty( $options['autocomplete'] ) ? ' autocomplete="' . esc_attr( $options['autocomplete'] ) . '"' : '';
+
+    $min            = (!empty($options['min']) ? $options['min'] : '');
+    $max            = (!empty($options['max']) ? $options['max'] : '');
+    $step           = (!empty($options['step']) ? $options['step'] : '');
 
     // Only use fields with secret values obfuscated if FV Player Pro is not there or is ready for it
     if(
@@ -447,7 +473,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       <tr>
         <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_kses( $name, $this->help_html ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
-          <input class="<?php echo esc_attr( $class_name ); ?>" <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo 'title="' . esc_attr( $title ) . '" '; } ?>type="text" value="<?php echo esc_attr($val); ?>"<?php
+          <input class="<?php echo esc_attr( $class_name ); ?>" <?php if($secret && !empty($censored_val)) echo 'style="display: none;"'; ?> id="<?php echo esc_attr($key); ?>" name="<?php echo esc_attr($key); ?>" <?php if ($title) { echo 'title="' . esc_attr( $title ) . '" '; } ?>type="<?php echo esc_attr( $type ); ?>" value="<?php echo esc_attr($val); ?>"<?php
             if (isset($options['data']) && is_array($options['data'])) {
               foreach ($options['data'] as $data_item => $data_value) {
                 echo ' data-' . esc_attr( $data_item ) . '="' . esc_attr( $data_value ) . '"';
@@ -455,6 +481,9 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             }
 
           echo $autocomplete;
+          if ($min) echo ' min="' . esc_attr( $min ) . '"';
+          if ($max) echo ' max="' . esc_attr( $max ) . '"';
+          if ($step) echo ' step="' . esc_attr( $step ) . '"';
           ?> />
           <?php if ( $help ) { ?>
             <p class="description fv-player-admin-tooltip"><span class="info"><?php echo wp_kses( $help, $this->help_html ); ?></span></p>
@@ -562,7 +591,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     $key = esc_attr($key);
     ?>
       <tr>
-        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?></label></td>
+        <td<?php echo $first_td_class ? ' class="' . esc_attr( $first_td_class ) . '"' : ''; ?>><label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_attr( $name ); ?><?php if( $help ) echo ' <a href="#" class="show-info"><span class="dashicons dashicons-info"></span></a>'; ?>:</label></td>
         <td>
           <select <?php echo $class_name ? 'class="' . esc_attr( $class_name ) . '"' : ''; ?>id="<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $key ); ?>"<?php
             if (!isset($options) || !isset($options['data']) || !isset($options['data']['fv-preview'])) { echo ' data-fv-preview=""'; }
@@ -578,9 +607,10 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             <?php endforeach; ?>
           </select>
 
-          <?php if ( $help ) {
-            echo wp_kses( $help, $this->help_html );
-          } ?>
+          <?php if ( $help ) { ?>
+            <p class="description fv-player-admin-tooltip"><span class="info"><?php echo wp_kses( $help, $this->help_html ); ?></span></p>
+          <?php } ?>
+
           <?php if ( $more ) { ?>
             <span class="more"><?php echo wp_kses( $more, $this->help_html ); ?></span> <a href="#" class="show-more">(&hellip;)</a>
           <?php } ?>
@@ -1455,6 +1485,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         if ( $remove_black_bars && $aArgs['toggle_advanced_settings'] ) {
           $aPlayer['remove_black_bars'] = true;
         }
+
+        $ratio = $this->current_video()->getAspectRatio();
+        if( $ratio ) {
+          $aPlayer['aspectRatio'] = $ratio;
+        }
       }
 
       $splash_img = apply_filters( 'fv_flowplayer_playlist_splash', $splash_img, !empty($aPlayer['sources'][0]['src']) ? $aPlayer['sources'][0]['src'] : false );
@@ -1550,6 +1585,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
             $remove_black_bars = $this->current_video()->getMetaValue( 'remove_black_bars', true );
             if ( $remove_black_bars && $aArgs['toggle_advanced_settings'] ) {
               $aPlayer['remove_black_bars'] = true;
+            }
+
+            $ratio = $this->current_video()->getAspectRatio();
+            if( $ratio ) {
+              $aPlayer['aspectRatio'] = $ratio;
             }
           }
 
@@ -2031,6 +2071,24 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $match[0];
   }
 
+  /**
+   * Retrieves instance of current player with data loaded from database.
+   *
+   * @return FV_Player_Db_Player | null
+   */
+  function current_player() {
+    return $this->currentPlayerObject;
+  }
+
+  /**
+   * Retrieves instance of current video with data loaded from database.
+   *
+   * @return FV_Player_Db_Video | null
+   */
+  function current_video() {
+    return $this->currentVideoObject;
+  }
+
   public function enable_cdn_rewrite( $item ) {
     if( is_admin() ) {
       return $item;
@@ -2232,6 +2290,40 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     remove_filter( 'fv_flowplayer_amazon_expires', '__return_false' );
 
     return $signed_media;
+  }
+
+  /**
+   * Retrieves RTMP server and path from the current arguments or the player options.
+   *
+   * @param string $rtmp
+   *
+   * @return array
+   *   - string $rtmp_server
+   *   - string $rtmp
+   */
+  function get_rtmp_server( $rtmp ) {
+    $rtmp_server = false;
+    if( !empty($this->aCurArgs['rtmp']) ) {
+      $rtmp_server = trim( $this->aCurArgs['rtmp'] );
+    } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && stripos($this->_get_option('rtmp'), $rtmp ) === false  ) {
+      if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
+        $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
+        $rtmp_server = $aTMP[0];
+      } else {
+        $rtmp_info = wp_parse_url($rtmp);
+        if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
+          $rtmp_server = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
+        }
+      }
+    } else if( $this->_get_option('rtmp') ) {
+      $rtmp_server = $this->_get_option('rtmp');
+      if( stripos( $rtmp_server, 'rtmp://' ) === 0 ) {
+        $rtmp = str_replace( $rtmp_server, '', $rtmp );
+      } else {
+        $rtmp_server = 'rtmp://' . $rtmp_server . '/cfx/st/';
+      }
+    }
+    return array( $rtmp_server, $rtmp );
   }
 
   public static function hms_to_seconds( $tDuration ) {
@@ -2851,6 +2943,43 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     return $media;
   }
 
+  /**
+   * Is it a audio track-only playlist with no splash screens?
+   */
+  function is_audio_playlist() {
+
+    // Are all the database player items audio tracks?
+    if( $player = $this->current_player() ) {
+
+      $items = $player->getVideos();
+      $count_audio_items = 0;
+
+      if( $items ) {
+        foreach( $items AS $item ) {
+          if( $item->getSplash() ) {
+            continue;
+          }
+
+          if(
+            $item->getMetaValue('audio',true) ||
+            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
+          ) {
+            $count_audio_items++;
+          }
+        }
+      }
+
+      if ( count( $items ) === $count_audio_items ) {
+        return true;
+      }
+
+    // Does the legacy shortcode start with an audio track with no splash?
+    } else if( ! empty( $this->aCurArgs['src'] ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
+      return true;
+    }
+
+    return false;
+  }
 
   public static function is_licensed() {
     global $fv_fp;

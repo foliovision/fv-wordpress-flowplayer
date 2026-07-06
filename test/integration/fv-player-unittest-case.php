@@ -2,6 +2,8 @@
 
 abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
 
+  public $import_ids = array();
+
   protected $backupGlobals = false;
   protected $restore;
 
@@ -129,6 +131,23 @@ abstract class FV_Player_UnitTestCase extends WP_UnitTestCase {
 
     global $fv_fp;
     $fv_fp->conf = $this->restore;
-  }
 
+    global $FV_Player_Db;
+
+    // when you delete a player loaded from cache it won't remove the player and player meta, so we do a hard cache purge here! The player ID is not passed in contructor when loading from cache.
+    $FV_Player_Db->setPlayersCache( array() );
+    $FV_Player_Db->setPlayerMetaCache( array() );
+    $FV_Player_Db->setVideosCache( array() );
+    $FV_Player_Db->setVideoMetaCache( array() );
+
+    // Delete all imported players
+    foreach( $this->import_ids AS $id ) {
+      $player = new FV_Player_Db_Player( $id, array() );
+
+      // We have to check if the player still exists in the database, as in some cases it's already deleted, not sure how that happens
+      if ( $player->getIsValid() ) {
+        $player->delete();
+      }
+    }
+  }
 }

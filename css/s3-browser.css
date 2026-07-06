@@ -374,3 +374,12 @@
     bottom: 0;
     z-index: 10;
 }
+
+.wp-core-ui .attachment .filename {
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+}
+.wp-core-ui .attachment:hover .filename {
+	-webkit-line-clamp: unset;
+}

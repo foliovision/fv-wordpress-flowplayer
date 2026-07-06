@@ -30,37 +30,11 @@ class flowplayer_frontend extends flowplayer
 
   var $aPlayers = array();
 
-  var $aCurArgs = array();
-
   var $sHTMLAfter = false;
 
   var $count_tabs = 0;
 
-  var $currentPlayerObject = null;
-
-  var $currentVideoObject = null;
-
   var $splash_count = 0;
-
-  /**
-   * Retrieves instance of current player
-   * with data loaded from database.
-   *
-   * @return FV_Player_Db_Player | null
-   */
-  function current_player() {
-    return $this->currentPlayerObject;
-  }
-
-  /**
-   * Retrieves instance of current video
-   * with data loaded from database.
-   *
-   * @return FV_Player_Db_Video | null
-   */
-  function current_video() {
-    return $this->currentVideoObject;
-  }
 
   /**
    * Retrieves list of player instances containing videos
@@ -1302,32 +1276,6 @@ class flowplayer_frontend extends flowplayer
     return $ratio;
   }
 
-  function get_rtmp_server($rtmp) {
-    $rtmp_server = false;
-    if( !empty($this->aCurArgs['rtmp']) ) {
-      $rtmp_server = trim( $this->aCurArgs['rtmp'] );
-    } else if( isset($rtmp) && stripos( $rtmp, 'rtmp://' ) === 0 && stripos($this->_get_option('rtmp'), $rtmp ) === false  ) {
-      if( preg_match( '~/([a-zA-Z0-9]+)?:~', $rtmp ) ) {
-        $aTMP = preg_split( '~/([a-zA-Z0-9]+)?:~', $rtmp, -1, PREG_SPLIT_DELIM_CAPTURE );
-        $rtmp_server = $aTMP[0];
-      } else {
-        $rtmp_info = wp_parse_url($rtmp);
-        if( isset($rtmp_info['host']) && strlen(trim($rtmp_info['host']) ) > 0 ) {
-          $rtmp_server = 'rtmp://'.$rtmp_info['host'].'/cfx/st';
-        }
-      }
-    } else if( $this->_get_option('rtmp') ) {
-      $rtmp_server = $this->_get_option('rtmp');
-      if( stripos( $rtmp_server, 'rtmp://' ) === 0 ) {
-        $rtmp = str_replace( $rtmp_server, '', $rtmp );
-      } else {
-        $rtmp_server = 'rtmp://' . $rtmp_server . '/cfx/st/';
-      }
-    }
-    return array( $rtmp_server, $rtmp );
-  }
-
-
   function get_speed_attribute( $attributes ) {
     $bShow = false;
     if( $this->_get_option('ui_speed') || isset($this->aCurArgs['speed']) && (
@@ -1596,44 +1544,6 @@ class flowplayer_frontend extends flowplayer
   }
 
 
-  /**
-   * Is it a audio track-only playlist with no splash screens?
-   */
-  function is_audio_playlist() {
-
-    // Are all the database player items audio tracks?
-    if( $player = $this->current_player() ) {
-
-      $items = $player->getVideos();
-      $count_audio_items = 0;
-
-      if( $items ) {
-        foreach( $items AS $item ) {
-          if( $item->getSplash() ) {
-            continue;
-          }
-
-          if(
-            $item->getMetaValue('audio',true) ||
-            preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $item->getSrc() )
-          ) {
-            $count_audio_items++;
-          }
-        }
-      }
-
-      if ( count( $items ) === $count_audio_items ) {
-        return true;
-      }
-
-    // Does the legacy shortcode start with an audio track with no splash?
-    } else if( ! empty( $this->aCurArgs['src'] ) && preg_match( '~\.(mp3|wav|ogg)([?#].*?)?$~', $this->aCurArgs['src'] ) && empty( $this->aCurArgs['splash'] ) ) {
-      return true;
-    }
-
-    return false;
-  }
-
   public function safe_style_css( $styles ) {
     $styles[] = 'display';
     return $styles;
@@ -1673,6 +1583,7 @@ class flowplayer_frontend extends flowplayer
       $tags['div']['data-fullscreen'] = true;
       $tags['div']['data-live'] = true;
       $tags['div']['data-logo'] = true;
+      $tags['div']['data-pitch_shifter'] = true;
       $tags['div']['data-ratio'] = true;
       $tags['div']['data-rtmp'] = true;
       $tags['div']['itemprop'] = true;
