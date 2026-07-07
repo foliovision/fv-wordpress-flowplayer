@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.53.7212 - 2026-07-07 =
+
+* Bugfix: Rename unload event internally to avoid issues with certain Google Chrome configurations
+
 = 7.5.52.7212 - 2026-06-25 =
 
 * Security fix - OptimizePress integration fix
