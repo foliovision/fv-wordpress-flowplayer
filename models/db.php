@@ -1043,7 +1043,7 @@ class FV_Player_Db {
 
       if( $json_error !== JSON_ERROR_NONE ) {
         wp_send_json( array(
-          'error' => 'Error saving: JSON error.',
+          'error' => 'Error saving: JSON error: ' . $json_error . ' - ' . json_last_error_msg(),
           'fatal_error' => true
         ) );
         exit;
