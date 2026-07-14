@@ -1014,6 +1014,46 @@ class FV_Player_Db {
 
 
   /**
+   * Parse JSON request body, tolerating garbage prepended or appended
+   * to application/json bodies by some hosts, plugins, or WAFs.
+   *
+   * We run into a case there the input looked like this:
+   *
+   * {"data":{....","editor_post_id":0},"nonce":"6d3fe1b4a9"}&_nonce=a688a5a94f
+   *
+   * So we remove everything before the first { and everything after the last }
+   *
+   * @param string $raw Raw php://input.
+   * @return array|null Decoded array or null on failure.
+   */
+  private function parse_json_request_body( $raw ) {
+    $raw = trim( $raw );
+
+    if ( empty( $raw ) ) {
+      return null;
+    }
+
+    $decoded = json_decode( $raw, true );
+
+    if ( JSON_ERROR_NONE === json_last_error() ) {
+      return $decoded;
+    }
+
+    $start = strpos( $raw, '{' );
+    $end   = strrpos( $raw, '}' );
+
+    if ( false !== $start && false !== $end && $end > $start ) {
+      $decoded = json_decode( substr( $raw, $start, $end - $start + 1 ), true );
+
+      if ( JSON_ERROR_NONE === json_last_error() ) {
+        return $decoded;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Stored player data in a database from the POST data sent via AJAX
    * from the shortcode editor.
    *
@@ -1030,20 +1070,18 @@ class FV_Player_Db {
     $player_options        = array();
     $video_ids             = array();
 
-    $json_post = file_get_contents( 'php://input' );
+    $raw_input = file_get_contents( 'php://input' );
 
     $post_data = null;
     if( is_array($data) ) {
       $post_data = $data;
 
-    } else if( !empty($json_post) ) {
-      $json_post = json_decode( $json_post, true );
+    } else if( !empty($raw_input) ) {
+      $json_post = $this->parse_json_request_body( $raw_input );
 
-      $json_error = json_last_error();
-
-      if( $json_error !== JSON_ERROR_NONE ) {
+      if ( null === $json_post ) {
         wp_send_json( array(
-          'error' => 'Error saving: JSON error: ' . $json_error . ' - ' . json_last_error_msg(),
+          'error' => 'Error saving: JSON error: ' . json_last_error() . ' - ' . json_last_error_msg(),
           'fatal_error' => true
         ) );
         exit;
