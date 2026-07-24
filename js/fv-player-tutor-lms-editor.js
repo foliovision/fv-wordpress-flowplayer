@@ -12,12 +12,12 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			'value'
 		).set;
 		setter.call( el, shortcode );
-		el.dispatchEvent(new Event('input', { bubbles: true }));
+		el.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 	};
 
 	fv_player_editor_conf.on_close = function () {
 		// Just click to accept the shortcode.
-		jQuery('[data-cy="submit-url"]').trigger( 'click' );
+		jQuery( '[data-cy="submit-url"]' ).trigger( 'click' );
 	};
 
 	/**
@@ -55,59 +55,47 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		return intervalId;
 	}
 
-	function fv_player_tutor_lms_hooks() {
-		console.log( 'FV_Player_TutorLMS: fv_player_tutor_lms_hooks...' );
+	/**
+	 * Find uninitialized "Add from URL" buttons and wire them up as FV Player triggers.
+	 */
+	function initAddFromUrlButtons() {
+		jQuery( '#tutor-course-builder [data-cy="add-from-url"]:not([data-fv-player-ready])' ).each( function () {
+			var $button = jQuery( this );
 
-		/**
-		 * Find the "Add from URL" button of Tutor LMS and change it to "Add FV Player".
-		 */
-		waitForElement(
-			'#tutor-course-builder [data-cy="add-from-url"]',
-			function ( $button ) {
-				$button.html( $button.html().replace( /Add from URL/, 'Add FV Player' ) );
+			$button.attr( 'data-fv-player-ready', '1' );
+			$button.html( $button.html().replace( /Add from URL/, 'Add FV Player' ) );
 
-				if ( ! jQuery.fv_player_box ) {
-					console.error( 'FV_Player_TutorLMS: jQuery.fv_player_box not found' );
-				}
-
-				// Add the FV Player Editor trigger
-				$button.addClass( 'fv-player-editor-button' );
-
-				/**
-				 * Once clicked we set the video type to "Shortcode", find the textarea and open the FV Player modal.
-				 */
-				$button.on( 'click', function () {
-					waitForElement(
-						'.tutor-portal-popover [name=videoSource]',
-						function ( $source ) {
-							$source.val( 'shortcode' );
-							$source.attr( 'title', 'Shortcode' );
-						}
-					);
-
-					waitForElement(
-						'.tutor-portal-popover [name=videoUrl]',
-						function ( $url ) {
-							$url.val( 'FV Player!' );
-						}
-					);
-
-					// The FV Player Editor opens thanks to the fv-player-editor-button class added above.
-					// It even sets the value properly with fv_player_editor_conf.lazy_field_selector set above.
-					// TODO: Submit with jQuery('[data-cy="submit-url"]').trigger( 'click' );
-				} );
+			if ( ! jQuery.fv_player_box ) {
+				console.error( 'FV_Player_TutorLMS: jQuery.fv_player_box not found' );
 			}
-		);
+
+			// Add the FV Player Editor trigger
+			$button.addClass( 'fv-player-editor-button' );
+
+			/**
+			 * Once clicked we set the video type to "Shortcode", find the textarea and open the FV Player modal.
+			 */
+			$button.on( 'click.fvPlayerTutor', function () {
+				waitForElement(
+					'.tutor-portal-popover [name=videoSource]',
+					function ( $source ) {
+						$source.val( 'shortcode' );
+						$source.attr( 'title', 'Shortcode' );
+					}
+				);
+
+				waitForElement(
+					'.tutor-portal-popover [name=videoUrl]',
+					function ( $url ) {
+						$url.val( 'FV Player!' );
+					}
+				);
+
+				// The FV Player Editor opens thanks to the fv-player-editor-button class added above.
+			} );
+		} );
 	}
 
-	fv_player_tutor_lms_hooks();
-
-	// We check if the lesson editing was open and if so, we add the hooks.
-	// We could check for clicks on [data-cy="add-lesson"] and [data-cy="edit-lesson"], but you can also just click the lesson title which has no class.
-	setInterval( function () {
-		if ( jQuery( '[data-cy="tutor-modal"]').length ) {
-			fv_player_tutor_lms_hooks();
-		}
-
-	}, 1000 );
+	initAddFromUrlButtons();
+	setInterval( initAddFromUrlButtons, 500 );
 } );
