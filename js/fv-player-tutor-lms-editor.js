@@ -9,6 +9,17 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		return ( value || '' ).indexOf( '[fvplayer ' ) !== -1;
 	}
 
+	/**
+	 * Pull the first [fvplayer ...] shortcode out of mixed preview text.
+	 *
+	 * @param {string} value
+	 * @return {string}
+	 */
+	function extractFvPlayerShortcode( value ) {
+		var match = ( value || '' ).match( /\[fvplayer [^\]]*\]/i );
+		return match ? match[0] : '';
+	}
+
 	fv_player_editor_conf.on_insert = function ( shortcode ) {
 
 		// Set the value in a way which works with React:
@@ -174,9 +185,79 @@ document.addEventListener( 'DOMContentLoaded', function () {
 		} );
 	}
 
+	/**
+	 * Load an FV Player preview after each Tutor media preview that holds a shortcode.
+	 * Uses the same fv_player_preview GET endpoint as the Custom Videos editor.
+	 */
+	function initFvPlayerPreviews() {
+		jQuery( '#tutor-course-builder [data-cy="media-preview"]' ).each( function () {
+			var $preview = jQuery( this );
+			var $field_wrapper = $preview.closest( '[data-cy="form-field-wrapper"]' );
+			var shortcode = extractFvPlayerShortcode( $preview.text() );
+
+			if ( ! $field_wrapper.length ) {
+				return;
+			}
+
+			var $container = $field_wrapper.next( '.fv-player-tutor-lms-preview' );
+
+			if ( ! shortcode ) {
+				$container.remove();
+				return;
+			}
+
+			// Already showing this shortcode — skip.
+			if ( $container.length && $container.data( 'shortcode' ) === shortcode ) {
+				return;
+			}
+
+			if ( ! $container.length ) {
+				$container = jQuery( '<div class="fv-player-tutor-lms-preview"></div>' ).insertAfter( $field_wrapper );
+			}
+
+			$container.data( 'shortcode', shortcode );
+			$container.html( '<span class="fv-player-tutor-lms-preview-loading">Loading preview…</span>' );
+
+			var preview_shortcode = shortcode
+				.replace( /(width=[\'"])\d*([\'"])/, '$1320$2' )
+				.replace( /(height=[\'"])\d*([\'"])/, '$1240$2' );
+
+			var url = fv_player_editor_conf.home_url
+				+ '?fv_player_preview_nonce=' + fv_player_editor_conf.preview_nonce
+				+ '&fv_player_preview=' + fv_player_editor.b64EncodeUnicode( preview_shortcode );
+
+			jQuery.get( url, function ( response ) {
+				if ( $container.data( 'shortcode' ) !== shortcode ) {
+					return;
+				}
+
+				var $wrapper = jQuery( '#wrapper', response );
+				if ( $wrapper.length ) {
+					$container.html( $wrapper );
+					jQuery( document ).trigger( 'fvp-preview-complete', [ shortcode, null, $container ] );
+				} else {
+					$container.html( '<span class="fv-player-tutor-lms-preview-error">Preview unavailable</span>' );
+				}
+			} ).fail( function () {
+				if ( $container.data( 'shortcode' ) !== shortcode ) {
+					return;
+				}
+
+				$container.html( '<span class="fv-player-tutor-lms-preview-error">Preview failed</span>' );
+			} );
+		} );
+	}
+
+	// Remove the FV Player preview when Tutor's remove-video control is used, click event would not work.
+	jQuery( document ).on( 'mouseup', '#tutor-course-builder [data-cy="remove-video"]', function () {
+		var $field_wrapper = jQuery( this ).closest( '[data-cy="form-field-wrapper"]' );
+		$field_wrapper.next( '.fv-player-tutor-lms-preview' ).remove();
+	} );
+
 	function initTutorLmsButtons() {
 		initAddFromUrlButtons();
 		initMediaPreviewEditButtons();
+		initFvPlayerPreviews();
 	}
 
 	initTutorLmsButtons();
