@@ -1,42 +1,80 @@
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) {
-  exit;
+	exit;
 }
 
 class FV_Player_Tutor_LMS {
 
-  function __construct() {
-    add_action( 'plugins_loaded', array( $this, 'loader' ), 11 );
-  }
+	function __construct() {
+		add_action( 'plugins_loaded', array( $this, 'loader' ), 11 );
 
-  function loader() {
-    // Capture the shortcode output and setup capture for the end of the shortcode
-    add_action( 'tutor_lesson/single/before/video/shortcode', array( $this, 'shortcode_before' ), 0 );
-  }
+		add_action( 'tutor_after_course_builder_load', array( $this, 'load_editor' ) );
 
-  public function shortcode_before() {
-    ob_start();
+		add_filter( 'tutor_preferred_video_sources', array( $this, 'preferred_video_sources' ) );
 
-    // Capture the end of the shortcode output and remove the classes
-    add_action( 'tutor_lesson/single/after/video/shortcode', array( $this, 'shortcode_after' ), 1000 );
-  }
+		add_action( 'tutor_after_course_builder_load', array( $this, 'load_editor' ) );
+	}
 
-  public function shortcode_after() {
+	/**
+	 * We put the "Shortcode" option at the top of the video type select box.
+	 *
+	 * That keeps our integration JavaScript simpler as it does not have to change the React-based video source selector.
+	 *
+	 * Simply removing the video types which we do not like would break the editing of the existing lessons if they use them.
+	 */
+	function preferred_video_sources( $video_sources ) {
+		$shortcode = array(
+			'shortcode' => $video_sources['shortcode']
+		);
 
-    $html = ob_get_clean();
+		unset( $video_sources['shortcode'] );
 
-    /**
-     * We remove the classes tutor-ratio tutor-ratio-16x9 as they force their children elements to be 16:9.
-     * That way FV Player with playlist items does not appear properly.
-     */
-    if ( stripos( $html, 'freedomplayer' ) !== false ) {
-      $html = str_replace( '<div class="tutor-ratio tutor-ratio-16x9">', '<div class="fv-player-tutor-lms" data-original-class="tutor-ratio tutor-ratio-16x9">', $html );
-    }
+		$video_sources = array_merge( $shortcode, $video_sources );
 
-    // Output the modified HTML
-    echo $html;
-  }
+		return $video_sources;
+	}
+
+	function load_editor() {
+		wp_enqueue_script(
+			'fv-player-tutor-lms-editor',
+			plugins_url( 'js/fv-player-tutor-lms-editor.js', dirname(__FILE__) ),
+			array( 'tutor-course-builder' ),
+			filemtime( plugin_dir_path( __FILE__ ) . '../js/fv-player-tutor-lms-editor.js' ),
+			true
+		);
+
+		fv_wp_flowplayer_edit_form_after_editor();
+		fv_player_shortcode_editor_scripts_enqueue();
+	}
+
+	function loader() {
+		// Capture the shortcode output and setup capture for the end of the shortcode
+		add_action( 'tutor_lesson/single/before/video/shortcode', array( $this, 'shortcode_before' ), 0 );
+	}
+
+	public function shortcode_before() {
+		ob_start();
+
+		// Capture the end of the shortcode output and remove the classes
+		add_action( 'tutor_lesson/single/after/video/shortcode', array( $this, 'shortcode_after' ), 1000 );
+	}
+
+	public function shortcode_after() {
+
+		$html = ob_get_clean();
+
+		/**
+		 * We remove the classes tutor-ratio tutor-ratio-16x9 as they force their children elements to be 16:9.
+		 * That way FV Player with playlist items does not appear properly.
+		 */
+		if ( stripos( $html, 'freedomplayer' ) !== false ) {
+			$html = str_replace( '<div class="tutor-ratio tutor-ratio-16x9">', '<div class="fv-player-tutor-lms" data-original-class="tutor-ratio tutor-ratio-16x9">', $html );
+		}
+
+		// Output the modified HTML
+		echo $html;
+	}
 
 }
 

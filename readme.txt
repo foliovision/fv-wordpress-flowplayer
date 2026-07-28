@@ -210,6 +210,13 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.6 - 2026-07-28 =
+
+* Tutor LMS: Use proper FV Player Editor when posting new videos into courses or lessons
+* Bugfix: Editor: Sanitize JSON input to fix player saving in rare cases
+* Bugfix: Screenshot: Fix CORS with new Freeom Video Player conf property
+* Bugfix: YouTube: Fix apperance for non-standard aspect ratio videos
+
 = 8.1.5 - 2026-06-18 =
 
 * HLS.js upgrade from 1.6.10 to 1.7.0-beta.1 to fix rare Google Chrome playback issues

@@ -2479,6 +2479,10 @@ jQuery(function() {
         debug_log( 'editor_close current_player_db_id = 0' );
       }
 
+      if ( fv_player_editor_conf.on_close ) {
+        fv_player_editor_conf.on_close();
+      }
+
       editor_init();
 
     }
@@ -3624,6 +3628,10 @@ Please also contact FV Player support with the following debug information:\n\n\
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
         custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
+      if ( fv_player_editor_conf.on_insert ) {
+        fv_player_editor_conf.on_insert( shortcode );
+        return;
+      }
 
       // Field set by the [fvplayer_editor field="{selector}"]
       if( custom_field_selector.length ){
