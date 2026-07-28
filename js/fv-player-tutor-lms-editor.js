@@ -117,27 +117,15 @@ document.addEventListener( 'DOMContentLoaded', function () {
 			// Add the FV Player Editor trigger
 			$button.addClass( 'fv-player-editor-button' );
 
+			// Hide "Upload Video" button and its "MP4, and WebM formats, up to XY MB" label.
+			$button.siblings( '[data-cy="upload-media"], p' ).hide();
+
 			/**
 			 * Once clicked we set the video type to "Shortcode", find the textarea and open the FV Player modal.
 			 */
 			$button.on( 'click.fvPlayerTutor', function () {
 				// New player insert — do not try to load from a field.
 				fv_player_editor_conf.field_selector = false;
-
-				waitForElement(
-					'.tutor-portal-popover [name=videoSource]',
-					function ( $source ) {
-						$source.val( 'shortcode' );
-						$source.attr( 'title', 'Shortcode' );
-					}
-				);
-
-				waitForElement(
-					video_url_selector,
-					function ( $url ) {
-						$url.val( 'FV Player!' );
-					}
-				);
 
 				// The FV Player Editor opens thanks to the fv-player-editor-button class added above.
 			} );

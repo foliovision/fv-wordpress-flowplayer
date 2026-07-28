@@ -10,6 +10,29 @@ class FV_Player_Tutor_LMS {
 		add_action( 'plugins_loaded', array( $this, 'loader' ), 11 );
 
 		add_action( 'tutor_after_course_builder_load', array( $this, 'load_editor' ) );
+
+		add_filter( 'tutor_preferred_video_sources', array( $this, 'preferred_video_sources' ) );
+
+		add_action( 'tutor_after_course_builder_load', array( $this, 'load_editor' ) );
+	}
+
+	/**
+	 * We put the "Shortcode" option at the top of the video type select box.
+	 *
+	 * That keeps our integration JavaScript simpler as it does not have to change the React-based video source selector.
+	 *
+	 * Simply removing the video types which we do not like would break the editing of the existing lessons if they use them.
+	 */
+	function preferred_video_sources( $video_sources ) {
+		$shortcode = array(
+			'shortcode' => $video_sources['shortcode']
+		);
+
+		unset( $video_sources['shortcode'] );
+
+		$video_sources = array_merge( $shortcode, $video_sources );
+
+		return $video_sources;
 	}
 
 	function load_editor() {
