@@ -285,6 +285,7 @@
 
 .attachments-browser .s3-media-toolbar {
     height: 50px !important;
+	padding: 0 16px;
 }
 
 #__assets_browser .attachments-browser .attachment .thumbnail img {
