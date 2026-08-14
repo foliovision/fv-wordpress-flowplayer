@@ -432,7 +432,7 @@ class FV_Player_Email_Subscription {
   private function  mailchimp_signup($list_id){
 
     if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_email_signup' ) ) {
-      wp_json_encode(
+      wp_send_json(
         array(
           'status' => 'ERROR',
           'text' => __( 'Nonce verification error.', 'fv-player' ),
@@ -498,7 +498,7 @@ class FV_Player_Email_Subscription {
   public function email_signup() {
 
     if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_email_signup' ) ) {
-      wp_json_encode(
+      wp_send_json(
         array(
           'status' => 'ERROR',
           'text' => __( 'Nonce verification error.', 'fv-player' ),
