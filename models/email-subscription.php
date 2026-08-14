@@ -679,7 +679,7 @@ class FV_Player_Email_Subscription {
         </tbody>
       </table>
       <p>
-        <a class='fv-player-list-export button' href='<?php echo admin_url('admin.php?page=fvplayer&fv-email-export='.intval($list_id));?>' target="_blank" ><?php esc_attr_e( 'Download CSV', 'fv-player' ); ?></a>
+        <a class='fv-player-list-export button' href='<?php echo wp_nonce_url( admin_url('admin.php?page=fvplayer&fv-email-export=' . intval( $key ) ), 'fv-email-export', 'nonce' ); ?>' target="_blank" ><?php esc_attr_e( 'Download CSV', 'fv-player' ); ?></a>
       </p>
 
     <?php
