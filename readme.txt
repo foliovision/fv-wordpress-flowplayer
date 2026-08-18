@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.54.7212 - 2026-08-18 =
+
+* Security: Email Popups: Avoid storing and exporting CSV values that would get interpreted by old Microsoft Excel when opening such CSV export
+
 = 7.5.53.7212 - 2026-07-07 =
 
 * Bugfix: Rename unload event internally to avoid issues with certain Google Chrome configurations
