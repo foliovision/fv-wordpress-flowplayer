@@ -29,7 +29,6 @@ class FV_Player_Email_Subscription {
     add_action( 'admin_notices', array($this,'admin_export_screen') );
 
     add_filter( 'fv_flowplayer_attributes', array( $this, 'popup_preview' ), 10, 3 );
-
   }
 
   /*
@@ -70,10 +69,10 @@ class FV_Player_Email_Subscription {
 
       foreach( $_POST['email_lists'] AS $key => $value ) {
         $key = intval($key);
-        $aOptions[$key]['first_name'] = sanitize_text_field( $value['first_name'] );
-        $aOptions[$key]['last_name'] = sanitize_text_field( $value['last_name'] );
+        $aOptions[$key]['first_name']  = sanitize_text_field( $value['first_name'] );
+        $aOptions[$key]['last_name']   = sanitize_text_field( $value['last_name'] );
         $aOptions[$key]['integration'] = isset($value['integration']) ? sanitize_text_field( $value['integration'] ) : false;
-        $aOptions[$key]['title'] = sanitize_text_field( $value['title'] );
+        $aOptions[$key]['title']       = sanitize_text_field( $value['title'] );
         $aOptions[$key]['description'] = sanitize_text_field( $value['description'] );
 
       }
@@ -429,7 +428,14 @@ class FV_Player_Email_Subscription {
     return array('error' => false, 'result' => $aLists);
   }
 
-  private function  mailchimp_signup($list_id){
+  /**
+   * Mailchimp signup
+   *
+   * @param int $list_id List ID.
+   * @param array $data Already sanitized data by sanitize_subscriber_data() method.
+   * @return array Result.
+   */
+  private function mailchimp_signup( $list_id, $data ){
 
     if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_email_signup' ) ) {
       wp_send_json(
@@ -448,15 +454,15 @@ class FV_Player_Email_Subscription {
 
     $merge_fields = array();
 
-    if(isset( $_POST['first_name'] )){
-      $merge_fields['FNAME'] = sanitize_text_field( $_POST['first_name'] );
+    if ( isset( $data['first_name'] ) ) {
+      $merge_fields['FNAME'] = $data['first_name'];
     }
 
-    if(isset( $_POST['last_name'] )){
-      $merge_fields['LNAME'] = sanitize_text_field( $_POST['last_name'] );
+    if ( isset( $data['last_name'] ) ) {
+      $merge_fields['LNAME'] = $data['last_name'];
     }
 
-    $result_data = fv_player_mailchimp_post($list_id, sanitize_text_field( $_POST['email'] ), $merge_fields);
+    $result_data = fv_player_mailchimp_post( $list_id, sanitize_email( $data['email'] ), $merge_fields );
 
     $result = array(
       'status' => 'OK',
@@ -495,6 +501,39 @@ class FV_Player_Email_Subscription {
     return $result;
   }
 
+  /**
+   * Sanitize subscriber request data and neutralize spreadsheet formula triggers.
+   *
+   * @param mixed $data Raw field value or array of values.
+   * @return mixed Sanitized field value or array of values.
+   */
+  private function sanitize_subscriber_data( $data ) {
+    if ( is_array( $data ) ) {
+      foreach ( $data as $key => $value ) {
+        $data[ $key ] = $this->sanitize_subscriber_data( $value );
+      }
+      return $data;
+    }
+
+    $data = sanitize_text_field( wp_unslash( $data ) );
+    $data = preg_replace( '/^[\s]*[=+\-@\t\r]+/', '', $data );
+    return $data;
+  }
+
+  /**
+   * Escape a CSV cell value to prevent formula injection in spreadsheet apps.
+   *
+   * @param string $value Field value.
+   * @return string Escaped field value.
+   */
+  private function escape_csv_field( $value ) {
+    $value = str_replace( '"', '', (string) $value );
+    if ( preg_match( '/^[\s]*[=+\-@\t\r]/', $value ) ) {
+      $value = "'" . $value;
+    }
+    return $value;
+  }
+
   public function email_signup() {
 
     if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_email_signup' ) ) {
@@ -509,9 +548,11 @@ class FV_Player_Email_Subscription {
 
     $list_id = isset( $_POST['list'] ) ? absint( $_POST['list'] ) : 0;
 
+    $data = $this->sanitize_subscriber_data( $_POST );
+
     $aLists = get_option('fv_player_email_lists');
 
-    $list = isset($aLists[$list_id]) ? $aLists[$list_id] : array();
+    $list = isset($aLists[ $list_id ]) ? $aLists[ $list_id ] : array();
 
     global $wpdb;
     $table_name = $wpdb->prefix . 'fv_player_emails';
@@ -536,35 +577,37 @@ class FV_Player_Email_Subscription {
 
     $result = array(
       'status' => 'OK',
-      'text' => __( 'Thank You for subscribing.', 'fv-player' ));
+      'text' => __( 'Thank You for subscribing.', 'fv-player' )
+    );
 
     $integration_nice = '';
 
     if(!empty($list['integration'])){
       $aLists = get_option('fv_player_mailchimp_lists', array());
       $integration_nice = $aLists[str_replace('mailchimp-','',$list['integration'])]['name'];
-      $result = $this->mailchimp_signup(str_replace('mailchimp-','',$list['integration']));
+      $result = $this->mailchimp_signup( str_replace('mailchimp-', '', $list['integration'] ), $data );
     }
-    if(empty( $_POST['email'] ) || filter_var(trim( sanitize_text_field( $_POST['email'] ) ), FILTER_VALIDATE_EMAIL)===false){
+
+    if ( empty($data['email']) || filter_var( sanitize_text_field( $data['email'] ), FILTER_VALIDATE_EMAIL) === false ){
       $result['status'] = 'ERROR';
       $result['text'] = __( 'Malformed Email Address.', 'fv-player' );
-      die(wp_json_encode($result));
+      die( wp_json_encode( $result ) );
     };
 
-    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", sanitize_email( $_POST['email'] ), intval($list_id) ) );
+    $count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(*) FROM ".$wpdb->prefix."fv_player_emails WHERE email = %s AND id_list = %s", $data['email'], intval( $list_id ) ) );
 
     if(intval($count) === 0){
-      $wpdb->insert($table_name, array(
-        'email' => sanitize_email( $_POST['email'] ),
-        'data' => '',
-        'id_list'=> intval($list_id),
-        'date' => gmdate("Y-m-d H:i:s"),
-        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['first_name'] ) ) : '',
-        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['last_name'] ) ) : '',
-        'integration' => $list['integration'],
+      $wpdb->insert( $table_name, array(
+        'email'            => sanitize_email( $data['email'] ),
+        'data'             => '',
+        'id_list'          => intval( $list_id ),
+        'date'             => gmdate("Y-m-d H:i:s"),
+        'first_name'       => isset( $data['first_name'] ) ? $data['first_name'] : '',
+        'last_name'        => isset( $data['last_name'] ) ? $data['last_name'] : '',
+        'integration'      => $list['integration'],
         'integration_nice' => $integration_nice,
-        'status' => $result['status'],
-        'error' => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
+        'status'           => $result['status'],
+        'error'            => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
       ));
 
     }elseif($result['status'] === 'OK'){
@@ -573,23 +616,24 @@ class FV_Player_Email_Subscription {
         'text' => __( 'Email Address already subscribed.', 'fv-player' ),
       );
 
-    }else{
-      $wpdb->insert($table_name, array(
-        'email' => sanitize_email( $_POST['email'] ),
-        'data' => '',
-        'id_list' => intval($list_id),
-        'date' => gmdate("Y-m-d H:i:s"),
-        'first_name' => isset( $_POST['first_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['first_name'] ) ) : '',
-        'last_name' => isset( $_POST['last_name'] ) ? wp_strip_all_tags( sanitize_text_field( $_POST['last_name'] ) ) : '',
-        'integration' => $list['integration'],
+    // TODO: Does this ever run?
+    } else {
+      $wpdb->insert( $table_name, array(
+        'email'            => sanitize_email( $data['email'] ),
+        'data'             => '',
+        'id_list'          => intval( $list_id ),
+        'date'             => gmdate("Y-m-d H:i:s"),
+        'first_name'       => isset( $data['first_name'] ) ? $data['first_name'] : '',
+        'last_name'        => isset( $data['last_name'] ) ? $data['last_name'] : '',
+        'integration'      => $list['integration'],
         'integration_nice' => $integration_nice,
-        'status' => $result['status'],
-        'error' => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
+        'status'           => $result['status'],
+        'error'            => $result['status'] === 'ERROR' ? serialize( $result['error_log'] ) : '',
       ));
     }
 
     unset($result['error_log']);
-    die(wp_json_encode($result));
+    die( wp_json_encode( $result ) );
   }
 
   function csv_export() {
@@ -621,7 +665,8 @@ class FV_Player_Email_Subscription {
           }
 
 
-          echo '"' . implode('","',str_replace('"','',(array)$row)) . "\"\n";
+          $row_values = array_map( array( $this, 'escape_csv_field' ), array_values( (array) $row ) );
+          echo '"' . implode( '","', $row_values ) . "\"\n";
         }
       }
       die;
@@ -671,7 +716,7 @@ class FV_Player_Email_Subscription {
               $item = $tmp['title'];
             }
           }
-          echo '<td>' . wp_strip_all_tags($item) . '</td>';
+          echo '<td>' . wp_strip_all_tags( $item ) . '</td>';
         }
         echo '</tr>';
       }
