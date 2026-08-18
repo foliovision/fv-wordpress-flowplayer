@@ -2117,26 +2117,37 @@ add_meta_box( 'fv_flowplayer_usage', __('Usage', 'fv-wordpress-flowplayer'), 'fv
     <div id="fv_flowplayer_admin_notices">
     </div> 
     
-    <?php if( preg_match( '!^\$\d+!', $fv_fp->_get_option('key') ) || apply_filters('fv_player_skip_ads',false) ) : ?>    
-    <?php else : ?>
+    <?php
+    $aCheck = false;
+    if( flowplayer::is_licensed() ) {
+      $aCheck = get_transient( 'fv_flowplayer_license' );
+      $aInstalled = get_option('fv_flowplayer_extension_install');
+    }
+
+    $install_url = admin_url( 'plugin-install.php?s=fv%2520player%25208&tab=search&type=term' );
+    ?>
+
+    <?php if (
+      ! flowplayer::is_licensed() ||
+      flowplayer::is_licensed() && $aCheck && ! empty( $aCheck->valid )
+    ) : ?>
       <div id="fv_flowplayer_ad">
-        <div class="text-part">
-          <h2>FV Wordpress<strong>Flowplayer</strong></h2>
-          <span class="red-text"><?php _e('with your own branding', 'fv-wordpress-flowplayer'); ?></span>
-            <ul>
-            <li><?php _e('Put up your own logo', 'fv-wordpress-flowplayer'); ?></li>
-            <li><?php _e('Or remove the logo completely', 'fv-wordpress-flowplayer'); ?></li>
-            <li><?php _e('The best video plugin for Wordpress', 'fv-wordpress-flowplayer'); ?></li>
-            </ul>
-              <a href="https://foliovision.com/player/download" class="red-button"><strong><?php _e('Easter sale!', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('All Licenses 20% Off', 'fv-wordpress-flowplayer'); ?></a></p>
-          </div>
-          <div class="graphic-part">
-            <a href="http://foliovision.com/wordpress/plugins/fv-wordpress-flowplayer/buy">
-            <img width="297" height="239" border="0" src="<?php echo flowplayer::get_plugin_url().'/images/fv-wp-flowplayer-led-monitor.png' ?>"> </a>
-          </div>
+        <a href="<?php echo esc_url( $install_url ); ?>" class="red-button alignright"><strong><?php _e('Upgrade', 'fv-wordpress-flowplayer'); ?></strong><br /><?php _e('Get latest features and improvements', 'fv-wordpress-flowplayer'); ?></a></p>
+        <h2>FV Player 8</h2>
+        <ul>
+          <li><?php _e('New mobile controls', 'fv-wordpress-flowplayer'); ?></li>
+          <li><?php _e('Improved autoplay', 'fv-wordpress-flowplayer'); ?></li>
+          <li><?php _e('New playlist styles', 'fv-wordpress-flowplayer'); ?></li>
+          <li><?php _e('New editor interface and a proper editor block', 'fv-wordpress-flowplayer'); ?></li>
+          <li><?php _e('Improved compatibility and performance', 'fv-wordpress-flowplayer'); ?></li>
+          <li><?php _e('Security improvements', 'fv-wordpress-flowplayer'); ?></li>
+          <li><?php _e('Better database structure', 'fv-wordpress-flowplayer'); ?></li>
+          <?php if ( flowplayer::is_licensed() ) : ?>
+            <li><?php _e('Your existing license keeps working!', 'fv-wordpress-flowplayer'); ?></li>  
+          <?php endif; ?>
+        </ul>
       </div>
     <?php endif; ?>
-    
     <div id="fv_flowplayer_admin_tabs">
       <h2 class="fv-nav-tab-wrapper nav-tab-wrapper">
         <?php foreach($fv_player_aSettingsTabs as $key => $val):?>

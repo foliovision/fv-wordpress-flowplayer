@@ -2,7 +2,6 @@
 
 #fv_flowplayer_ad {
 	width: 690px;
-	height: 238px;
 	display: block;
 	margin: 20px 10px;
 	padding: 15px 10px 0 20px;
@@ -32,6 +31,8 @@
 	width: 320px;
 }
 #fv_flowplayer_ad h2 {
+	font-size: 2em;
+	margin: 0;
 	text-shadow: 1px 1px 1px #fff;
 	padding: 0 0 9px 0;
 }
@@ -44,13 +45,16 @@ a.red-button {
 	height: 40px;
 	display: block;
 	color: #fff;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 400;
 	text-decoration: none;
 	line-height: 1.3;
 	padding: 10px 0;
 	width: 260px;
 	text-align: center;
+}
+a.red-button strong {
+	font-size: 18px;
 }
 .red-button:hover {
 	color: #fff;
@@ -63,13 +67,6 @@ a.red-button {
 	margin: 12px 0 15px;
 	font-size: 16px;
 }
-#fv_flowplayer_ad ul li {
-/*	background: url("../images/list-bullet.png") no-repeat 0 center;
-	padding-left: 30px; */
-	margin-bottom: 2px;
-}
-
-
 
 #wpbody-content #wpfp_options #postbox-container-1 { width: 100% }
 #wpfp_options .postbox h3 { cursor: default; }

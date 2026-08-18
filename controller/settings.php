@@ -427,7 +427,7 @@ function fv_flowplayer_admin_scripts() {
 
 
 
-add_action('admin_head', 'flowplayer_admin_head');
+add_action( 'admin_enqueue_scripts', 'flowplayer_admin_head' );
 
 function flowplayer_admin_head() {  
   if( !fv_player_is_admin_screen() ) return;
