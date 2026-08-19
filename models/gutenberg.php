@@ -13,6 +13,7 @@ function fv_player_gutenberg() {
 
   if( function_exists('register_block_type') ) {
     register_block_type( 'fv-player-gutenberg/basic', array(
+      'api_version'   => 3,
       'editor_script' => 'fv-player-gutenberg',
       'render_callback' => 'fv_player_block_render',
       'attributes' => array(
