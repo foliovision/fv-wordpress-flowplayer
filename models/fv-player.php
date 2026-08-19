@@ -1938,8 +1938,18 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       }
 
       if( $this->bCSSInline ) {
-        add_action( did_action('wp_footer') ? 'wp_footer' : 'wp_head', array( $this, 'css_generate' ), 999 );
-        add_action( 'admin_head', array( $this, 'css_generate' ) );
+        if ( doing_action( 'enqueue_block_assets' ) ) {
+          ob_start();
+          $this->css_generate( true );
+          $inline_css = ob_get_clean();
+          if ( $inline_css ) {
+            wp_add_inline_style( 'fv_flowplayer', $inline_css );
+          }
+
+        } else {
+          add_action( did_action('wp_footer') ? 'wp_footer' : 'wp_head', array( $this, 'css_generate' ), 999 );
+          add_action( 'admin_head', array( $this, 'css_generate' ) );
+        }
       }
 
     }

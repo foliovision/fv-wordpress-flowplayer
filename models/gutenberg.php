@@ -210,9 +210,11 @@ function fv_player_handle_rest_content_register() {
 add_action( 'enqueue_block_assets', 'fv_player_enqueue_block_assets_for_site_editor' );
 
 function fv_player_enqueue_block_assets_for_site_editor() {
-
-  // Do not force load if it's not the Site Editor
-  if ( ! did_action( 'load-site-editor.php' ) ) {
+  if (
+    ! did_action( 'load-site-editor.php' ) &&
+    ! did_action( 'load-post.php' ) &&
+    ! did_action( 'load-post-new.php' )
+  ) {
     return;
   }
 

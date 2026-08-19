@@ -650,12 +650,16 @@ jQuery(function() {
         }
 
         /**
-         * Look for buttons in Site Editor iframe
+         * Look for buttons in the block editor canvas iframe (post editor and Site Editor).
          */
+        function getEditorCanvasIframe() {
+          return jQuery('iframe[name="editor-canvas"], iframe.editor-canvas__iframe, iframe.edit-site-visual-editor__editor-canvas');
+        }
+
         function setupSiteEditorHandlers() {
-          var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
+          var site_editor_iframe = getEditorCanvasIframe().contents();
           if( site_editor_iframe.length ) {
-            debug_log( 'Site editor found!' );
+            debug_log( 'Editor canvas iframe found!' );
 
             // FV Player Editor
             site_editor_iframe.off( 'click', '.fv-wordpress-flowplayer-button, .fv-player-editor-button, .fv-player-edit' );
@@ -689,13 +693,14 @@ jQuery(function() {
 
         // Initial setup with interval
         var site_editor_load = setInterval( function() {
-          if( jQuery('.edit-site-visual-editor__editor-canvas').length ) {
+          var canvas = getEditorCanvasIframe();
+          if( canvas.length ) {
             clearInterval(site_editor_load);
             setupSiteEditorHandlers();
 
             // Watch for iframe load events (fires when iframe reloads)
-            jQuery('.edit-site-visual-editor__editor-canvas').on('load', function() {
-              debug_log( 'Site editor iframe loaded, reattaching handlers' );
+            canvas.on('load', function() {
+              debug_log( 'Editor canvas iframe loaded, reattaching handlers' );
               setTimeout( setupSiteEditorHandlers, 100 );
             });
           }
@@ -1207,13 +1212,18 @@ jQuery(function() {
 
           // Did we open the media library from within the block?
           if ( fv_flowplayer_uploader_button.hasClass( 'fv-player-gutenberg-media' ) ) {
-            // Look for block ID in the current document
-            var clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+            var clientId = null;
 
-            // Look for block ID in the Site Editor iframe
-            var site_editor_iframe = jQuery('.edit-site-visual-editor__editor-canvas').contents();
-            if( site_editor_iframe.length ) {
-              clientId = site_editor_iframe.find('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+            if ( typeof wp !== 'undefined' && wp.data && wp.data.select( 'core/block-editor' ) ) {
+              clientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId();
+            }
+
+            if ( ! clientId ) {
+              clientId = jQuery('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
+            }
+
+            if ( ! clientId ) {
+              clientId = jQuery('iframe[name="editor-canvas"], iframe.editor-canvas__iframe, iframe.edit-site-visual-editor__editor-canvas').contents().find('.is-selected[data-type="fv-player-gutenberg/basic"]').data('block');
             }
 
             if ( clientId ) {
