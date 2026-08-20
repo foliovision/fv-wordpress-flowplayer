@@ -1105,3 +1105,11 @@ body.has-fv-player-fullscreen #chat-widget-container {
     object-fit: cover;
   }
 }
+
+@media (orientation: landscape) {
+  .freedomplayer.is-vertical {
+    max-height: 80vh;
+    min-height: 480px;
+    width: unset;
+  }
+}
