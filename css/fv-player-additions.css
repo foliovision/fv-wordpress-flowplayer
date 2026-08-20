@@ -960,8 +960,11 @@ iframe#youtube.fp-engine {
 .flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-ui {
   height: calc( 100% - 2.8em);
 }
-.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-ui {
-  height: calc( 100% - 2.8em);
+.flowplayer.is-ready.is-youtube-nl.fixed-controls:not(.is-fullscreen):not(.has-abloop) .fp-captions {
+  bottom: 3.5em;
+}
+.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-captions {
+  bottom: 4.4em;
 }
 .flowplayer.is-youtube-nl .fp-pause {
   display: block;
