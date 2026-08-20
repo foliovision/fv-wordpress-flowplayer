@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2026-08-18 15:24+0000\n"
+"POT-Creation-Date: 2026-08-20 11:32+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -183,223 +183,223 @@ msgstr ""
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
-#: controller/frontend.php:50
+#: controller/frontend.php:64
 msgid "Video loading aborted"
 msgstr ""
 
-#: controller/frontend.php:51
+#: controller/frontend.php:65
 msgid "Network error"
 msgstr ""
 
-#: controller/frontend.php:52
+#: controller/frontend.php:66
 msgid "Video not properly encoded"
 msgstr ""
 
-#: controller/frontend.php:53
+#: controller/frontend.php:67
 msgid "Video file not found"
 msgstr ""
 
-#: controller/frontend.php:54
+#: controller/frontend.php:68
 msgid "Unsupported video"
 msgstr ""
 
-#: controller/frontend.php:55
+#: controller/frontend.php:69
 msgid "Skin not found"
 msgstr ""
 
-#: controller/frontend.php:56
+#: controller/frontend.php:70
 msgid "SWF file not found"
 msgstr ""
 
-#: controller/frontend.php:57
+#: controller/frontend.php:71
 msgid "Subtitles not found"
 msgstr ""
 
-#: controller/frontend.php:58
+#: controller/frontend.php:72
 msgid "Unsupported video format."
 msgstr ""
 
-#: controller/frontend.php:59
+#: controller/frontend.php:73
 msgid "Click to watch the video"
 msgstr ""
 
-#: controller/frontend.php:60
+#: controller/frontend.php:74
 msgid "[This post contains video, click to play]"
 msgstr ""
 
-#: controller/frontend.php:61
+#: controller/frontend.php:75
 msgid "<h2>Video file expired.<br />Please reload the page and play it again.</h2>"
 msgstr ""
 
-#: controller/frontend.php:62
+#: controller/frontend.php:76
 msgid "<h2>Unsupported video format.<br />Please use a Flash compatible device.</h2>"
 msgstr ""
 
-#: controller/frontend.php:63
+#: controller/frontend.php:77
 msgid "Mobile browser detected, serving low bandwidth video."
 msgstr ""
 
-#: controller/frontend.php:64
+#: controller/frontend.php:78
 msgid "Click here for full quality"
 msgstr ""
 
-#: controller/frontend.php:65, controller/frontend.php:66
+#: controller/frontend.php:79, controller/frontend.php:80
 msgid "<h2>Live stream load failed.</h2><h3>Please try again later, perhaps the stream is currently offline.</h3>"
 msgstr ""
 
-#: controller/frontend.php:67
+#: controller/frontend.php:81
 msgid "Please tell us what is wrong :"
 msgstr ""
 
-#: controller/frontend.php:68
+#: controller/frontend.php:82
 msgid "Please give us more information (a full sentence) so we can help you better"
 msgstr ""
 
-#: controller/frontend.php:69
+#: controller/frontend.php:83
 msgid "Admin: Error parsing JSON"
 msgstr ""
 
-#: controller/frontend.php:70
+#: controller/frontend.php:84
 msgid "Admin: Video checker doesn't support IE 9."
 msgstr ""
 
-#: controller/frontend.php:71
+#: controller/frontend.php:85
 msgid "Admin: Check failed."
 msgstr ""
 
-#: controller/frontend.php:72
+#: controller/frontend.php:86
 msgid "Now Playing"
 msgstr ""
 
-#: controller/frontend.php:73
+#: controller/frontend.php:87
 msgid "Item %d."
 msgstr ""
 
-#: controller/frontend.php:74
+#: controller/frontend.php:88
 msgid "Play All"
 msgstr ""
 
-#: controller/frontend.php:75
+#: controller/frontend.php:89
 msgid "All"
 msgstr ""
 
-#: controller/frontend.php:76
+#: controller/frontend.php:90
 msgid "Replay Playlist"
 msgstr ""
 
-#: controller/frontend.php:77
+#: controller/frontend.php:91
 msgid "Repeat Track"
 msgstr ""
 
-#: controller/frontend.php:78
+#: controller/frontend.php:92
 msgid "Shuffle Playlist"
 msgstr ""
 
-#: controller/frontend.php:79
+#: controller/frontend.php:93
 msgid "Video Issues"
 msgstr ""
 
-#: controller/frontend.php:80
+#: controller/frontend.php:94
 msgid "Video loading has stalled, click to reload"
 msgstr ""
 
-#: controller/frontend.php:81
+#: controller/frontend.php:95
 msgid "Video Link Copied to Clipboard"
 msgstr ""
 
-#: controller/frontend.php:82
+#: controller/frontend.php:96
 msgid "<h2>Live stream scheduled</h2><p>Starting in <span>%d</span>.</p>"
 msgstr ""
 
-#: controller/frontend.php:83
+#: controller/frontend.php:97
 msgid "<h2>We are sorry, currently no live stream available.</h2><p>Retrying in <span>%d</span> ...</p>"
 msgstr ""
 
-#: controller/frontend.php:84
+#: controller/frontend.php:98
 msgid "<h2>It appears the stream went down.</h2><p>Retrying in <span>%d</span> ...</p>"
 msgstr ""
 
-#: controller/frontend.php:85
+#: controller/frontend.php:99
 msgid "Embed Code Copied to Clipboard"
 msgstr ""
 
-#: controller/frontend.php:86
+#: controller/frontend.php:100
 msgid "Error copying text into clipboard!"
 msgstr ""
 
-#: controller/frontend.php:87
+#: controller/frontend.php:101
 msgid "Subtitles disabled"
 msgstr ""
 
-#: controller/frontend.php:88
+#: controller/frontend.php:102
 msgid "Subtitles switched to "
 msgstr ""
 
-#: controller/frontend.php:89
+#: controller/frontend.php:103
 msgid "This video has subtitles, that are not supported on your device."
 msgstr ""
 
-#: controller/frontend.php:90
+#: controller/frontend.php:104
 msgid "You are using an old Android device. If you experience issues with the video please use <a href=\"https://play.google.com/store/apps/details?id=org.mozilla.firefox\">Firefox</a>."
 msgstr ""
 
-#: controller/frontend.php:91
+#: controller/frontend.php:105
 msgid "You are using the Samsung Browser which is an older and buggy version of Google Chrome. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser."
 msgstr ""
 
-#: controller/frontend.php:92
+#: controller/frontend.php:106
 msgid "You are using an old Safari browser. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser."
 msgstr ""
 
-#: controller/frontend.php:93
+#: controller/frontend.php:107
 msgid "You are using an old Chrome browser. Please make sure you use the latest version."
 msgstr ""
 
-#: controller/frontend.php:94
+#: controller/frontend.php:108
 msgid "You are using an old Firefox browser. Please make sure you use the latest version."
 msgstr ""
 
-#: controller/frontend.php:95
+#: controller/frontend.php:109
 msgid "You are using a deprecated browser. If you experience issues with the video please use <a href=\"https://www.mozilla.org/en-US/firefox/new/\">Firefox</a> or other modern browser."
 msgstr ""
 
-#: controller/frontend.php:96
+#: controller/frontend.php:110
 msgid "Quality"
 msgstr ""
 
-#: controller/frontend.php:97
+#: controller/frontend.php:111
 msgid "Closed Captions"
 msgstr ""
 
-#: controller/frontend.php:98
+#: controller/frontend.php:112
 msgid "No subtitles"
 msgstr ""
 
-#: controller/frontend.php:99, view/admin.php:1470
+#: controller/frontend.php:113, view/admin.php:1470
 msgid "Speed"
 msgstr ""
 
-#: controller/frontend.php:109
+#: controller/frontend.php:123
 msgid "It appears you are using the Disable HTML5 Autoplay Chrome extension, disable it to play videos"
 msgstr ""
 
-#: controller/frontend.php:110
+#: controller/frontend.php:124
 msgid "AUD"
 msgstr ""
 
-#: controller/frontend.php:111
+#: controller/frontend.php:125
 msgid "Audio"
 msgstr ""
 
-#: controller/frontend.php:112
+#: controller/frontend.php:126
 msgid "To enjoy fullscreen swipe up to hide location bar."
 msgstr ""
 
-#: controller/frontend.php:113
+#: controller/frontend.php:127
 msgid "Invalid Youtube video ID."
 msgstr ""
 
-#: controller/frontend.php:114
+#: controller/frontend.php:128
 msgid ""
 "Admin note:\n"
 "\n"
@@ -412,19 +412,19 @@ msgid ""
 "This note only shows to logged in Administrators and Editors for security reasons, other users are redirected without any popup or confirmation."
 msgstr ""
 
-#: controller/frontend.php:115
+#: controller/frontend.php:129
 msgid "Video loaded, click to play."
 msgstr ""
 
-#: controller/frontend.php:116
+#: controller/frontend.php:130
 msgid "Skipping is not allowed."
 msgstr ""
 
-#: controller/frontend.php:117
+#: controller/frontend.php:131
 msgid "Please watch the video carefully."
 msgstr ""
 
-#: controller/frontend.php:544
+#: controller/frontend.php:558
 msgid "Click to unmute"
 msgstr ""
 
@@ -776,7 +776,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3312
+#: models/fv-player.php:3322
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
