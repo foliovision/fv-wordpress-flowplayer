@@ -127,6 +127,10 @@ function did_action( $action ) {
   return false;
 }
 
+function doing_action( $action ) {
+  return false;
+}
+
 function get_option() {
   return checkAndReturnRequestedValue();
 }
