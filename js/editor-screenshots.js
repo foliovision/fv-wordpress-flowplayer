@@ -63,6 +63,7 @@
 
           // without this Flowplayer will remove that crossOrigin="anonymous" automatically!
           api.conf.nativesubtitles = true;
+          api.conf.video_cross_origin = true;
 
           video_tag.crossOrigin = 'anonymous';
           reload_video();

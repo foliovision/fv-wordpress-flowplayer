@@ -77,11 +77,46 @@ abstract class FV_Player_Media_Browser {
   function include_aws_sdk() {
     if ( ! class_exists( 'Aws\S3\S3Client' ) ) {
       if ( file_exists( dirname( __FILE__ ) . "/../vendor/autoload.php" ) ) {
-        require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
+
+        // Setup a custom handler for (fatal) errors that might be thrown by the AWS SDK.
+        set_error_handler(
+          function( $errno, $errstr ) {
+            throw new Exception( $errstr );
+          },
+          E_USER_ERROR
+        );
+  
+        // Avoid any output from the AWS SDK autoloading.
+        ob_start();
+        try {
+          require_once( dirname( __FILE__ ) . "/../vendor/autoload.php" );
+
+        } catch ( Exception $e ) {
+          // Throw away any output from the AWS SDK autoloading.
+          if ( ob_get_level() ) {
+            ob_end_clean();
+          }
+
+          // The composer might want to send HTTP 500, so we send HTTP 200 instead to be able to handle it in JavaScript.
+          http_response_code( 200 );
+
+          // Send the error message to the JavaScript.
+          wp_send_json( array( 'err' => $e->getMessage() ) );
+          exit;
+
+        } finally {
+          // Throw away any output from the AWS SDK autoloading.
+          if ( ob_get_level() ) {
+            ob_end_clean();
+          }
+
+          // Restore the original PHP error handler.
+          restore_error_handler();
+        }
 
       } else {
         wp_send_json( array( 'err' => 'AWS SDK not found. please make sure you run <code>composer install --no-dev</code> in FV Player plugin folder or install plugin from WordPress.org.' ) );
-        die();
+        exit;
       }
     }
   }

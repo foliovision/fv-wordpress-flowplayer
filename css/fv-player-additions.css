@@ -99,6 +99,8 @@
 .flowplayer.fixed-controls .fp-controls, .flowplayer.fixed-controls.is-loading .fp-ui .fp-controls { opacity: 1; filter: alpha(opacity=100); }
 .flowplayer.fixed-controls {margin-bottom: 4em}
 .flowplayer.fixed-controls .fp-controls {bottom: -2.4em}
+.flowplayer.fixed-controls .fp-captions {bottom: 1em}
+.flowplayer.fixed-controls.fp-full .fp-captions {bottom: 1.5em}
 .flowplayer.fixed-controls.fp-full .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.fp-full.fp-slim .fp-controls {bottom: -2.8em}
 .flowplayer.fixed-controls.fp-full.is-tiny .fp-controls {bottom: -3.2em}
@@ -138,7 +140,7 @@
 /*this might be needed some day: .flowplayer .fp-tooltip{z-index:22;padding:4px 6px 6px;line-height:1} */
 
 .flowplayer.is-mouseout .fp-captions{-webkit-transition:bottom 0.15s ease 0.3s;-moz-transition:bottom 0.15s ease 0.3s;transition:bottom 0.15s ease 0.3s}
-.flowplayer .fp-captions p{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px; margin: 0}
+.flowplayer .fp-captions p{display:inline-block;background-color:#000;color:#eee;padding:0 .4em;font-size:16px;border-radius: 5px; margin: 0 2vw}
 .flowplayer.is-fullscreen .fp-captions p{font-size:125%;line-height:1.2}
 .flowplayer .fp-captions.is-wide br{display:none}
 .flowplayer .fp-captions p:after{content:'';clear:both}
@@ -958,8 +960,11 @@ iframe#youtube.fp-engine {
 .flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-ui {
   height: calc( 100% - 2.8em);
 }
-.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-ui {
-  height: calc( 100% - 2.8em);
+.flowplayer.is-ready.is-youtube-nl.fixed-controls:not(.is-fullscreen):not(.has-abloop) .fp-captions {
+  bottom: 3.5em;
+}
+.flowplayer.is-ready.is-youtube-nl.fixed-controls.fp-full:not(.is-fullscreen):not(.has-abloop) .fp-captions {
+  bottom: 4.4em;
 }
 .flowplayer.is-youtube-nl .fp-pause {
   display: block;
@@ -1070,7 +1075,9 @@ body.has-fv-player-fullscreen #chat-widget-container {
 	position: relative;
 }
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
-.fp-playlist-external > div > a > .fvp-playlist-thumb-img > img {
+.fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,
+.fp-playlist-external > a > .fvp-playlist-thumb-img > picture,
+.fp-playlist-external > div > a > .fvp-playlist-thumb-img > picture {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -1096,5 +1103,13 @@ body.has-fv-player-fullscreen #chat-widget-container {
 @media (min-aspect-ratio: 16/9) {
   .freedomplayer.remove-black-bars.is-fullscreen .fp-engine {
     object-fit: cover;
+  }
+}
+
+@media (orientation: landscape) {
+  .freedomplayer.is-vertical {
+    max-height: 80vh;
+    min-height: 480px;
+    width: unset;
   }
 }

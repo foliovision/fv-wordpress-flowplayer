@@ -3,9 +3,9 @@ if ( typeof( flowplayer ) !== 'undefined' ) {
   // Only autoplay if...
   if (
     // ...not in wp-admin, meaning in editor
-    ! document.body.classList.contains( 'wp-admin' ) &&
+    document.body && ! document.body.classList.contains( 'wp-admin' ) &&
     // ...not in Elementor editor
-    ! document.body.classList.contains( 'elementor-editor-active' ) &&
+    document.body && ! document.body.classList.contains( 'elementor-editor-active' ) &&
     // Video Link feature must not be passed via URL
     ! location.href.match(/fvp_/)
   ) {

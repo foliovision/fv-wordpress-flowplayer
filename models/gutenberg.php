@@ -13,6 +13,7 @@ function fv_player_gutenberg() {
 
   if( function_exists('register_block_type') ) {
     register_block_type( 'fv-player-gutenberg/basic', array(
+      'api_version'   => 3,
       'editor_script' => 'fv-player-gutenberg',
       'render_callback' => 'fv_player_block_render',
       'attributes' => array(
@@ -210,9 +211,11 @@ function fv_player_handle_rest_content_register() {
 add_action( 'enqueue_block_assets', 'fv_player_enqueue_block_assets_for_site_editor' );
 
 function fv_player_enqueue_block_assets_for_site_editor() {
-
-  // Do not force load if it's not the Site Editor
-  if ( ! did_action( 'load-site-editor.php' ) ) {
+  if (
+    ! did_action( 'load-site-editor.php' ) &&
+    ! did_action( 'load-post.php' ) &&
+    ! did_action( 'load-post-new.php' )
+  ) {
     return;
   }
 

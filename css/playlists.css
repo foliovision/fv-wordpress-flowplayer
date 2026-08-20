@@ -150,7 +150,9 @@
 	position: relative;
 }
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
-.fp-playlist-external > div > a > .fvp-playlist-thumb-img > img {
+.fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,
+.fp-playlist-external > a > .fvp-playlist-thumb-img > picture,
+.fp-playlist-external > div > a > .fvp-playlist-thumb-img > picture {
 	position: absolute;
 	top: 0;
 	left: 0;

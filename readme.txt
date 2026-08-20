@@ -3,7 +3,7 @@ Contributors: FolioVision
 Donate link: https://foliovision.com/donate
 Tags: video player, mobile video, html5 video, Vimeo, html5 player, youtube player, youtube playlist, video playlist, Cloudfront, HLS
 Requires at least: 5.7
-Tested up to: 7.0
+Tested up to: 7.1
 Stable tag: trunk
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -209,6 +209,21 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 5. Video checker helps you find issues with your video encoding
 
 == Changelog ==
+
+= 8.1.7 - 2026-08-20 =
+
+* WordPress 7.1 support
+* Security: Email subscription: Avoid calculations for MS Excel in CSV export
+* Vertical videos: Do not lower subtitle size based on player width
+* Vertical videos: Limit height for desktop
+* Bugifx: CSS: Fix position of <picture> tags when used for playlist thumbnails
+
+= 8.1.6 - 2026-07-28 =
+
+* Tutor LMS: Use proper FV Player Editor when posting new videos into courses or lessons
+* Bugfix: Editor: Sanitize JSON input to fix player saving in rare cases
+* Bugfix: Screenshot: Fix CORS with new Freeom Video Player conf property
+* Bugfix: YouTube: Fix apperance for non-standard aspect ratio videos
 
 = 8.1.5 - 2026-06-18 =
 

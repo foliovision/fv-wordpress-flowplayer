@@ -585,6 +585,9 @@ class flowplayer_frontend extends flowplayer
           $attributes['data-logo'] = ( strcmp($this->aCurArgs['logo'],'none') == 0 ) ? '' : $this->aCurArgs['logo'];
         }
 
+        $ratio       = $this->get_ratio();
+        $is_vertical = $ratio > 1.2;
+
         $attributes['style'] = '';
 
         // If FV Player CSS was not yet enqueue (in header) make sure to use minimal styling to avoid CLS
@@ -592,16 +595,21 @@ class flowplayer_frontend extends flowplayer
           $attributes['style'] = 'position:relative; ';
         }
 
-        if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext','version-one','version-two') ) ) {
+        if ( $is_vertical ) {
+          $attributes['style'] .= 'aspect-ratio: ' . floatval( 1 / $ratio) . '; ';
+          $attributes['class'] .= ' is-vertical';
+
+        } else if( !empty($this->aCurArgs['playlist']) && in_array( $this->aCurArgs['liststyle'], array('horizontal','slider','vertical','prevnext','version-one','version-two') ) ) {
           $attributes['style'] .= 'max-width: 100%; ';
+
         } else if( !$bIsAudio ) {
           if( intval($width) == 0 ) $width = '100%';
           if( intval($height) == 0 ) $height = '100%';
           $cssWidth = stripos($width,'%') !== false ? $width : $width . 'px';
           $cssHeight = stripos($height,'%') !== false ? $height : $height. 'px';
 
-            $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
-          }
+          $attributes['style'] .= 'max-width: ' . $cssWidth . '; max-height: ' . $cssHeight . '; ';
+        }
 
         list( $rtmp_server, $rtmp ) = $this->get_rtmp_server($rtmp);
         if( /*count($aPlaylistItems) == 0 &&*/ $rtmp_server) {
@@ -616,7 +624,7 @@ class flowplayer_frontend extends flowplayer
 
         // Calculate player aspect ratio
         if( !$bIsAudio ) {
-          $attributes['data-ratio'] = str_replace(',','.', $this->get_ratio() );
+          $attributes['data-ratio'] = str_replace(',','.', $ratio );
         }
 
         if( isset($this->aCurArgs['live']) && $this->aCurArgs['live'] == 'true' ) {

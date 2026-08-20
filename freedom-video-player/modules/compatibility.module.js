@@ -162,12 +162,18 @@ if( location.href.match(/elementor-preview=/) ) {
   setInterval( fv_player_load, 1000 );
 
 } else if( 'blob:' === location.protocol ) {
-  setTimeout( function() {
+  // Scripts print in the canvas <head> before React adds this body class.
+  var fv_player_block_editor_attempts = 0;
+  var fv_player_block_editor_boot = setInterval( function() {
+    fv_player_block_editor_attempts++;
     if ( jQuery( 'body.block-editor-iframe__body' ).length ) {
-      console.log('FV Player: Site Editor is active');
+      clearInterval( fv_player_block_editor_boot );
+      console.log('FV Player: Block editor iframe is active');
       setInterval( fv_player_load, 1000 );
+    } else if ( fv_player_block_editor_attempts > 10 ) {
+      clearInterval( fv_player_block_editor_boot );
     }
-  }, 0 );
+  }, 100 );
 }
 
 

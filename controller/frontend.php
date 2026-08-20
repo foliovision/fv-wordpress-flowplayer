@@ -26,11 +26,25 @@ add_action('widget_text','do_shortcode');
 
 add_filter( 'run_ngg_resource_manager', '__return_false' );
 
-
+/**
+ * Remove any other "flowplayer" script.
+ *
+ * Verify that it's not in our plugin folder, or the old plugin folder first.
+ * We mainly need this when loading FV Player for the block editor,
+ * which is an iframe blob without wp_footer, so we load the scripts in the
+ * head.
+ */
 function fv_flowplayer_remove_bad_scripts() {
   global $wp_scripts;
-  if( isset($wp_scripts->registered['flowplayer']) && isset($wp_scripts->registered['flowplayer']->src) && stripos($wp_scripts->registered['flowplayer']->src, 'fv-player') === false ) {
-    wp_deregister_script( 'flowplayer' );
+  if( isset( $wp_scripts->registered['flowplayer'], $wp_scripts->registered['flowplayer']->src ) ) {
+    $src = $wp_scripts->registered['flowplayer']->src;
+
+    if (
+      stripos( $src, 'fv-player/') === false &&
+      stripos( $src, 'fv-wordpress-flowplayer/') === false
+    ) {
+      wp_deregister_script( 'flowplayer' );
+    }
   }
 }
 add_action( 'wp_print_scripts', 'fv_flowplayer_remove_bad_scripts', 100 );
