@@ -91,16 +91,6 @@
   content: '\e012';
 }
 
-.freedomplayer.is-mouseover:not(.fixed-controls) .fp-captions,
-.freedomplayer.is-paused:not(.fixed-controls) .fp-captions {
-  bottom: 3em;
-}
-
-.freedomplayer.is-mouseover:not(.fixed-controls).fp-full .fp-captions,
-.freedomplayer.is-paused:not(.fixed-controls).fp-full .fp-captions {
-  bottom: 3.4em;
-}
-
 .freedomplayer.is-loading .fp-engine,
 .freedomplayer.is-loading .fp-ui .fp-controls,
 .freedomplayer.is-loading .fp-ui .fp-header {
@@ -299,6 +289,10 @@
 
 .freedomplayer.no-controlbar .fp-controls {
   visibility: hidden;
+}
+
+.freedomplayer.no-controlbar .fp-captions {
+  bottom: 1em;
 }
 
 .freedomplayer.no-controlbar.is-muted .fp-controls .fp-volume {
@@ -904,7 +898,7 @@
 
 .freedomplayer .fp-captions {
   display: none;
-  bottom: 1.2em;
+  bottom: 3em;
   color: #fff;
   text-align: center;
 }
@@ -916,6 +910,10 @@
   border-radius: 0.2em;
   background-color: #000000a6;
   font-size: 110%;
+}
+
+.freedomplayer.fp-full .fp-captions {
+  bottom: 4.4em;
 }
 
 .freedomplayer.has-subtitles video::-webkit-media-text-track-container {
