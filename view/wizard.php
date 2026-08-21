@@ -867,6 +867,17 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             );
           }
 
+          if ( ! current_user_can( 'edit_others_posts' ) ) {
+            $actions['actions']['items'] = array(
+              array(
+                'name'    => 'actions_info',
+                'type'    => 'notice_info',
+                'content' => '<ul><li>' . __( 'You do not have permission to edit video actions.', 'fv-player' ) . '</li></ul>',
+                'visible' => true,
+              ),
+            );
+          }
+
           $actions = apply_filters('fv_player_editor_actions', $actions );
 
           fv_player_editor_input_group( $actions );

@@ -1031,6 +1031,10 @@ CREATE TABLE " . self::$db_table_name . " (
           }
         }
 
+        if ( ! current_user_can( 'edit_others_posts' ) && in_array( $property, array( 'overlay', 'overlay_height', 'overlay_width', 'end_actions', 'end_action_value' ) ) ) {
+          continue;
+        }
+
         $value = FV_Player_Db::strip_tags( $value, $property );
 
         if ( in_array( $property, array( 'author', 'changed_by' ) ) ) {
