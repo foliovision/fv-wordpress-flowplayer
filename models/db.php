@@ -1956,8 +1956,8 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
       $data = $alternative_data;
 
     } else if( isset( $_POST['data'] ) ) {
-      if ( ! empty( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), "fv-player-db-import" ) ) {
-        die('Security check failed: ' . sanitize_text_field( wp_unslash( $_POST['nonce'] ) ));
+      if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), "fv-player-db-import" ) ) {
+        die( 'Security check failed.' );
       }
 
       if ( ! current_user_can( 'edit_others_posts' ) ) {
