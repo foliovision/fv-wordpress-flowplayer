@@ -31,7 +31,7 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
   $fv_player_editor_conf = array(
     'admin_url' => admin_url('admin.php?page=fv_player'),
     'home_url' => home_url('/'),
-    'db_import_nonce' => wp_create_nonce( "fv-player-db-import" ),
+    'db_import_nonce' => current_user_can( 'edit_others_posts' ) ? wp_create_nonce( "fv-player-db-import" ) : null,
     'db_load_nonce' => wp_create_nonce( "fv-player-db-load" ),
     'edit_nonce' => wp_create_nonce( "fv-player-edit" ),
     'edit_posts_cell_nonce' => wp_create_nonce( "fv-player-edit_posts_cell_nonce" ),

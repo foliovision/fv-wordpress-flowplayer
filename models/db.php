@@ -1955,7 +1955,14 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     if ( $alternative_data !== null ) {
       $data = $alternative_data;
 
-    } else if( isset( $_POST['data'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ),"fv-player-db-import" ) ) {
+    } else if( isset( $_POST['data'] ) ) {
+      if ( ! empty( $_POST['nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), "fv-player-db-import" ) ) {
+        die('Security check failed: ' . sanitize_text_field( wp_unslash( $_POST['nonce'] ) ));
+      }
+
+      if ( ! current_user_can( 'edit_others_posts' ) ) {
+        die('You don\'t have permission to import players.');
+      }
 
       // TODO: How to better sanitize this?
       $data = json_decode( stripslashes( $_POST['data'] ), true );
