@@ -2,10 +2,11 @@ import { __ } from '@wordpress/i18n';
 import ServerSideRender from '@wordpress/server-side-render';
 import { createElement, RawHTML, useEffect, useState } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
-import { InspectorControls, MediaUpload, MediaUploadCheck, URLPopover } from '@wordpress/block-editor';
+import { InspectorControls, MediaUpload, MediaUploadCheck, URLPopover, useBlockProps } from '@wordpress/block-editor';
 import { SVG, Path, Panel, PanelBody, TextControl, Button, PanelRow } from '@wordpress/components';
 
 registerBlockType( 'fv-player-gutenberg/basic', {
+  apiVersion: 3,
   icon: {
     foreground: '#C20B33',
     src: createElement(
@@ -64,6 +65,17 @@ registerBlockType( 'fv-player-gutenberg/basic', {
   },
   edit: ({ isSelected ,attributes, setAttributes, context, clientId}) => {
     const { src, splash, title, shortcodeContent, player_id, splash_attachment_id, timeline_previews, hls_hlskey } = attributes;
+    const isEmpty = player_id == 'undefined' || player_id == 0;
+
+    // Required for apiVersion 3: mark the outermost edit element so selection works.
+    const blockProps = useBlockProps(
+      isEmpty
+        ? {
+            className:
+              'components-placeholder block-editor-media-placeholder is-large fv-player-editor-wrapper fv-player-gutenberg',
+          }
+        : {}
+    );
 
     // interval
     const [count, setCount] = useState(0);
@@ -207,9 +219,9 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     }
 
     // show initial state when no player
-    if( player_id == 'undefined' || player_id == 0 ) {
+    if ( isEmpty ) {
       return(
-        <div className="components-placeholder block-editor-media-placeholder is-large fv-player-editor-wrapper fv-player-gutenberg">
+        <div { ...blockProps }>
           <div className="components-placeholder__label">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
               <path d="M21.8 8s-.195-1.377-.795-1.984c-.76-.797-1.613-.8-2.004-.847-2.798-.203-6.996-.203-6.996-.203h-.01s-4.197 0-6.996.202c-.39.046-1.242.05-2.003.846C2.395 6.623 2.2 8 2.2 8S2 9.62 2 11.24v1.517c0 1.618.2 3.237.2 3.237s.195 1.378.795 1.985c.76.797 1.76.77 2.205.855 1.6.153 6.8.2 6.8.2s4.203-.005 7-.208c.392-.047 1.244-.05 2.005-.847.6-.607.795-1.985.795-1.985s.2-1.618.2-3.237v-1.517C22 9.62 21.8 8 21.8 8zM9.935 14.595v-5.62l5.403 2.82-5.403 2.8z"></path>
@@ -284,7 +296,7 @@ registerBlockType( 'fv-player-gutenberg/basic', {
     }
 
     return (
-      <>
+      <div { ...blockProps }>
         <InspectorControls>
           <Panel>
             <PanelBody title="Video Settings" initialOpen={true}>
@@ -385,14 +397,14 @@ registerBlockType( 'fv-player-gutenberg/basic', {
           attributes={ attributes }
         />
 
-      </>
+      </div>
     );
   },
+  // Keep RawHTML save markup unchanged so existing posts do not fail block validation.
+  // Frontend output comes from render_callback.
   save: (props) => {
     return (
-      <>
-        <RawHTML>{props.attributes.shortcodeContent}</RawHTML>
-      </>
+      <RawHTML>{props.attributes.shortcodeContent}</RawHTML>
     );
   }
 });

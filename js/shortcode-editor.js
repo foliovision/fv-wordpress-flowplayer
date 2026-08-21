@@ -4681,13 +4681,11 @@ Please also contact FV Player support with the following debug information:\n\n\
           });
 
         } else {
-          // TODO: Fix, it won't show!
           fv_player_editor.overlay_notice( button, response, 'error' );
 
         }
       }).fail(function() {
         fv_player_editor.overlay_notice( button, 'Unknown error!', 'error' );
-
       });
 
       return false;
@@ -5201,6 +5199,8 @@ Please also contact FV Player support with the following debug information:\n\n\
           .removeClass('notice-success')
           .addClass('notice-'+type)
           .css('visibility', 'visible');
+
+        overlay.show();
 
         if( close_after ) {
           setTimeout(function() {
