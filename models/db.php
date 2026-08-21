@@ -1684,12 +1684,18 @@ class FV_Player_Db {
     global $FV_Player_Db;
 
     if (($alternative_data !== null && $data = $alternative_data) || (isset($_POST['data']) && $data = json_decode(stripslashes($_POST['data']), true))) {
-      if( defined('DOING_AJAX') && DOING_AJAX && !$alternative_data &&
-        ( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'],"fv-player-db-import-".get_current_user_id() ) )
-      ) {
-        die('Security check failed');
-      }      
-      
+      // AJAX imports require edit_posts (same capability as the FV Player admin Import UI).
+      // Internal callers pass $alternative_data and keep their own authorization (e.g. clone_player).
+      if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! $alternative_data ) {
+        if (
+          ! current_user_can( 'edit_others_posts' ) ||
+          empty( $_POST['nonce'] ) ||
+          ! wp_verify_nonce( $_POST['nonce'], 'fv-player-db-import-' . get_current_user_id() )
+        ) {
+          die( 'Security check failed' );
+        }
+      }
+
       try {
         // first, create the player
         $player_keys = $data;

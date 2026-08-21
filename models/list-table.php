@@ -132,7 +132,9 @@ class FV_Player_List_Table_View {
     <div class="wrap">
       <h1 class="wp-heading-inline">FV Player</h1>
       <a href="#" class="page-title-action fv-player-edit" data-add_new="1">Add New</a>
-      <a href="#" class="page-title-action fv-player-import">Import</a>
+      <?php if ( current_user_can( 'edit_others_posts' ) ) { ?>
+        <a href="#" class="page-title-action fv-player-import">Import</a>
+      <?php } ?>
 
       <div id="fv_player_players_table">
           <form id="fv-player-filter" method="get" action="<?php echo admin_url( 'admin.php?page=fv_player' ); ?>">
