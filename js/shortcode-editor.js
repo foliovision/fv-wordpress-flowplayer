@@ -310,7 +310,7 @@
 
                 debug_log('Running fv_player_db_export Ajax.');
 
-                $.post(ajaxurl, {
+                $.post( fv_player_editor_conf.ajax_url, {
                   action: 'fv_player_db_export',
                   playerID : $element.data('player_id'),
                   nonce : $element.data('nonce'),
@@ -379,7 +379,7 @@
 
             debug_log('Running fv_player_db_remove Ajax.');
 
-            jQuery.post(ajaxurl, {
+            jQuery.post( fv_player_editor_conf.ajax_url, {
               action: "fv_player_db_remove",
               nonce: $element.data('nonce'),
               playerID: $element.data('player_id')
@@ -417,7 +417,7 @@
 
             debug_log('Running fv_player_db_clone Ajax.');
 
-            $.post(ajaxurl, {
+            $.post( fv_player_editor_conf.ajax_url, {
               action: "fv_player_db_clone",
               nonce: $element.data('nonce'),
               playerID: $element.data('player_id')
@@ -662,7 +662,7 @@
 
                 debug_log('Running set-post-thumbnail Ajax.');
 
-                jQuery.post(ajaxurl, {
+                jQuery.post( fv_player_editor_conf.ajax_url, {
                   action:"set-post-thumbnail",
                   post_id: fv_flowplayer_set_post_thumbnail_id,
                   thumbnail_id: attachment.id,
@@ -840,7 +840,7 @@
 
           debug_log('Running fv_player_db_save Ajax.');
 
-          $.post(ajaxurl+'?fv_player_db_save=1', {
+          $.post( fv_player_editor_conf.ajax_url+'?fv_player_db_save=1', {
             action: 'fv_player_db_save',
             data: JSON.stringify(ajax_save_this_please),
             nonce: fv_player_editor_conf.preview_nonce,
@@ -1085,7 +1085,7 @@
                 
                 var video_url = $element.val();
 
-                $element.data('fv_player_video_data_ajax', jQuery.post(ajaxurl, {
+                $element.data('fv_player_video_data_ajax', jQuery.post( fv_player_editor_conf.ajax_url, {
                     action: 'fv_wp_flowplayer_retrieve_video_data',
                     nonce:  fv_player_editor_conf.retrieve_video_data_nonce,
                     video_url: video_url
@@ -1485,7 +1485,7 @@
 
           debug_log('Running fv_player_db_retrieve_all_players_for_dropdown Ajax.');
 
-          $.post(ajaxurl, {
+          $.post( fv_player_editor_conf.ajax_url, {
             // TODO: Nonce
             action: 'fv_player_db_retrieve_all_players_for_dropdown',
             cookie: encodeURIComponent(document.cookie),
@@ -2234,7 +2234,7 @@
             // load video data via an AJAX call
             debug_log('Running fv_player_db_load Ajax.');
 
-            fv_player_shortcode_editor_ajax = jQuery.post(ajaxurl+'?fv_player_db_load', {
+            fv_player_shortcode_editor_ajax = jQuery.post( fv_player_editor_conf.ajax_url+'?fv_player_db_load', {
               action : 'fv_player_db_load',
               nonce : fv_player_editor_conf.db_load_nonce,
               playerID :  result[1]
@@ -2921,7 +2921,7 @@
         debug_log('Running fv_player_db_save Ajax.');
 
         // save data
-        jQuery.post(ajaxurl, {
+        jQuery.post( fv_player_editor_conf.ajax_url, {
           action: 'fv_player_db_save',
           data: JSON.stringify(ajax_data),
           nonce: fv_player_editor_conf.preview_nonce
@@ -3667,7 +3667,7 @@
 
         debug_log('Running fv_player_db_import Ajax.');
 
-        jQuery.post(ajaxurl, {
+        jQuery.post( fv_player_editor_conf.ajax_url, {
           action: 'fv_player_db_import',
           nonce: fv_player_editor_conf.db_import_nonce,
           data: data,
