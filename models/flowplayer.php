@@ -2631,8 +2631,28 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
     $embed_id = get_query_var('fv_player_embed');
 
-    if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) : 
-      if( !is_user_logged_in() || !current_user_can('edit_posts') || !wp_verify_nonce( $embed_id,"fv-player-preview-".get_current_user_id() ) ){
+    if( isset($_GET['fv_player_preview']) && !empty($_GET['fv_player_preview']) ) :
+      $dataInPost  = $_GET['fv_player_preview'] === 'POST';
+      if ( $dataInPost ) {
+        $shortcode = json_decode( stripslashes($_POST['fv_player_preview_json']), true );
+      } else {
+        $shortcode = base64_decode( $_GET['fv_player_preview'] );
+      }
+
+      $shortcode              = apply_filters('fv_player_preview_data', $shortcode);
+      $shortcode_atts         = shortcode_parse_atts( trim( $shortcode, '[]' ) );
+      $player_belongs_to_user = current_user_can( 'edit_others_posts' );
+
+      $player = false;
+
+      if ( ! empty( $shortcode_atts['id'] ) ) {
+        $player = new FV_Player_Db_Player( $shortcode_atts['id'] );
+        if ( $player->getIsValid() && $player->getAuthor() == get_current_user_id() ) {
+          $player_belongs_to_user = true;
+        }
+      }
+
+      if ( ! is_user_logged_in() || ! $player_belongs_to_user || ! wp_verify_nonce( $embed_id,"fv-player-preview-" . get_current_user_id() ) ) {
         ?><script>window.parent.jQuery(window.parent.document).trigger('fvp-preview-complete');</script>
         <div style="background:white;">
           <div id="wrapper" style="background:white; overflow:hidden">
@@ -2642,10 +2662,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
         <?php
         die();
       }
-
-      $dataInPost = ($_GET['fv_player_preview'] === 'POST');
-      $shortcode = (!$dataInPost ? base64_decode($_GET['fv_player_preview']) : json_decode( stripslashes($_POST['fv_player_preview_json']), true ) );
-      $shortcode = apply_filters('fv_player_preview_data', $shortcode);
   
       $matches = null;
       $width ='';
