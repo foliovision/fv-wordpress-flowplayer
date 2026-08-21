@@ -270,6 +270,13 @@ class FV_Player_Custom_Videos_Master {
   }
   
   function bbpress_edit() {
+    global $fv_fp;
+
+    // Match bbpress_profile() / user_profile() — do not expose the editor (or its nonces) unless profile videos are enabled.
+    if ( ! isset( $fv_fp->conf['profile_videos_enable_bio'] ) || $fv_fp->conf['profile_videos_enable_bio'] !== 'true' ) {
+      return;
+    }
+
     ?>
     </fieldset>
     
