@@ -39,6 +39,18 @@ function S3MultiUpload( file, options ) {
     this.retryBackoffTimeout = 15000; // ms
     this.completeErrors = 1;
     this.validationChunkSize = 5 * 1024 * 1024;
+
+    // Limit parallel part PUTs. Firing every part at once stalls or drops
+    // transfers on high-latency routes and used to finalize a truncated object.
+    this.MAX_CONCURRENT_PARTS = 4;
+    if ( options && options.max_concurrent_parts ) {
+      this.MAX_CONCURRENT_PARTS = parseInt( options.max_concurrent_parts, 10 ) || 4;
+    }
+    this.partSignedData = [];
+    this.nextPartToStart = 0;
+    this.partsInFlight = 0;
+    this.successfulParts = 0;
+    this.uploadStopped = false;
     
     // Nonces - will be set after validation
     this.create_multiupload_nonce = null;
@@ -281,15 +293,43 @@ S3MultiUpload.prototype.uploadParts = function() {
 };
 
 /**
- * Sends all the created upload parts in a loop
+ * Queue signed part URLs and start a limited number of PUTs.
  */
 S3MultiUpload.prototype.sendAll = function() {
     var blobs = this.blobs;
     var length = blobs.length;
-    if (length==1)
-        this.sendToS3(arguments[0], blobs[0], 0);
-    else for (var i = 0; i < length; i++) {
-        this.sendToS3(arguments[i][0], blobs[i], i);
+    var i;
+
+    this.partSignedData = [];
+    if ( length === 1 ) {
+        this.partSignedData[0] = arguments[0];
+    } else {
+        for ( i = 0; i < length; i++ ) {
+            this.partSignedData[i] = arguments[i][0];
+        }
+    }
+
+    this.nextPartToStart = 0;
+    this.partsInFlight = 0;
+    this.successfulParts = 0;
+    this.uploadStopped = false;
+    this.fillUploadSlots();
+};
+
+/**
+ * Start more part PUTs until the concurrency cap is reached.
+ */
+S3MultiUpload.prototype.fillUploadSlots = function() {
+    var index;
+
+    if ( this.uploadStopped ) {
+        return;
+    }
+
+    while ( this.partsInFlight < this.MAX_CONCURRENT_PARTS && this.nextPartToStart < this.blobs.length ) {
+        index = this.nextPartToStart++;
+        this.partsInFlight++;
+        this.sendToS3( this.partSignedData[index], this.blobs[index], index );
     }
 };
 /**
@@ -302,36 +342,55 @@ S3MultiUpload.prototype.sendToS3 = function(data, blob, index) {
     var self = this;
     var url = data['url'];
     var size = blob.size;
-    var request = self.uploadXHR[index] = new XMLHttpRequest();
-    request.onreadystatechange = function() {
-        if (request.readyState === 4) { // 4 is DONE
-            // on abort, don't count that as an error - aborted is a manually added field, since status would be 0 whether
-            // we aborted manually or an Internet connection interrupt occured, so that's no use to us
-            if ( !request.aborted ) {
-                // self.uploadXHR[index] = null;
-                if (request.status !== 200) {
-                    // check if we should retry this transfer of fail
-                    if (!self.chunkRetries[url] || self.chunkRetries[url] < self.maxRetries) {
-                        if (!self.chunkRetries[url]) {
-                            self.chunkRetries[url] = 1;
-                        } else {
-                            self.chunkRetries[url]++;
-                        }
+    var request;
 
-                        //console.log('will retry ' + url + ' due to invalid request status: ' + request.status + ' (' + request.responseText + ')');
-                        setTimeout(function () {
-                            //console.log('starting retry #' + self.chunkRetries[ url ] + ' for ' + url );
-                            self.sendToS3(data, blob, index);
-                        }, self.retryBackoffTimeout * self.chunkRetries[url]);
-                    } else {
-                        self.updateProgress();
-                        self.onS3UploadError(request);
-                    }
-                    return;
-                }
-            }
-            self.updateProgress();
+    if ( this.uploadStopped ) {
+        return;
+    }
+
+    request = self.uploadXHR[index] = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (request.readyState !== 4) { // 4 is DONE
+            return;
         }
+
+        // on abort, don't count that as an error - aborted is a manually added field, since status would be 0 whether
+        // we aborted manually or an Internet connection interrupt occured, so that's no use to us
+        if ( request.aborted || self.uploadStopped ) {
+            return;
+        }
+
+        if (request.status !== 200) {
+            // check if we should retry this transfer of fail
+            if (!self.chunkRetries[url] || self.chunkRetries[url] < self.maxRetries) {
+                if (!self.chunkRetries[url]) {
+                    self.chunkRetries[url] = 1;
+                } else {
+                    self.chunkRetries[url]++;
+                }
+
+                // Keep this slot occupied while retrying the same part.
+                setTimeout(function () {
+                    if ( self.uploadStopped ) {
+                        return;
+                    }
+                    self.sendToS3(data, blob, index);
+                }, self.retryBackoffTimeout * self.chunkRetries[url]);
+            } else {
+                self.uploadStopped = true;
+                self.partsInFlight--;
+                self.updateProgress();
+                self.onS3UploadError(request);
+            }
+            return;
+        }
+
+        self.total[index] = size;
+        self.loaded[index] = size;
+        self.partsInFlight--;
+        self.successfulParts++;
+        self.updateProgress();
+        self.fillUploadSlots();
     };
 
     request.upload.onprogress = function(e) {
@@ -370,7 +429,11 @@ S3MultiUpload.prototype.sendToS3 = function(data, blob, index) {
  */
 S3MultiUpload.prototype.cancel = function() {
     var self = this;
+    this.uploadStopped = true;
     for (var i=0; i<this.uploadXHR.length; ++i) {
+        if ( ! this.uploadXHR[i] ) {
+            continue;
+        }
         this.uploadXHR[i].aborted = true;
         this.uploadXHR[i].abort();
     }
@@ -423,7 +486,6 @@ S3MultiUpload.prototype.updateProgress = function() {
     var total=0;
     var loaded=0;
     var byterate=0.0;
-    var complete=1;
     for (var i=0; i<this.total.length; ++i) {
         loaded += +this.loaded[i] || 0;
         total += this.total[i];
@@ -431,11 +493,13 @@ S3MultiUpload.prototype.updateProgress = function() {
         {
             // Only count byterate for active transfers
             byterate += +this.byterate[i] || 0;
-            complete=0;
         }
     }
-    if (complete)
-    this.completeMultipartUpload();
+    // Finalize only after every part has returned HTTP 200, not when the
+    // in-flight subset looks complete (that produced truncated objects).
+    if ( this.blobs && this.successfulParts === this.blobs.length ) {
+        this.completeMultipartUpload();
+    }
     total=this.fileInfo.size;
     this.onProgressChanged(loaded, total, byterate);
 };
