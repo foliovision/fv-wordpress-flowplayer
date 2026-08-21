@@ -75,7 +75,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                           'playlist_label' => false,
                          ) );
     extract($args);
-    
+
+    if ( ! current_user_can( 'edit_others_posts' ) ) {
+      if ( ! isset( $fv_flowplayer_conf["interface"] ) ) {
+        $fv_flowplayer_conf["interface"] = array();
+      }
+  
+      $fv_flowplayer_conf["interface"]["ads"] = 'false';
+      $fv_flowplayer_conf["interface"]["end_actions"] = 'false';
+    }
+
     if( $id ) {
       $id = ' id="'.$id.'"';
     }    
@@ -507,13 +516,13 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
                   'live' => false ) );
             }
             ?>
-            <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+            <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' || ! current_user_can( 'edit_others_posts' ) ) echo ' class="fv_player_interface_hide"'; ?>>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_ad" class="alignright"><?php _e('Ad code', 'fv_flowplayer'); ?></label></th>
               <td>
                 <textarea id="fv_wp_flowplayer_field_ad" name="fv_wp_flowplayer_field_ad" style="width: 93%" dir="ltr" ></textarea>
               </td>
             </tr> 
-            <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' class="fv_player_interface_hide"'; ?>>
+            <tr <?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' || ! current_user_can( 'edit_others_posts' ) ) echo ' class="fv_player_interface_hide"'; ?>>
               <th scope="row" class="label"><label for="fv_wp_flowplayer_field_liststyle" class="alignright"><?php _e('Ad Size', 'fv_flowplayer'); ?></label></th>
               <td class="field<?php if( !isset($fv_flowplayer_conf["interface"]["ads"]) || $fv_flowplayer_conf["interface"]["ads"] !== 'true' ) echo ' fv_player_interface_hide'; ?>">
                 <input type="text" id="fv_wp_flowplayer_field_ad_width" name="fv_wp_flowplayer_field_ad_width" style="width: 19%; margin-right: 25px;"  value="" placeholder="<?php _e('Width', 'fv_flowplayer'); ?>"/>

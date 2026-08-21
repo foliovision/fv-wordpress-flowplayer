@@ -948,7 +948,11 @@ CREATE TABLE " . self::$db_table_name . " (
 
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
-        
+
+        if ( ! current_user_can( 'edit_posts' ) && in_array( $property, array( 'ad', 'end_actions', 'end_action_value' ) ) ) {
+          continue;
+        }
+
         if( $property != 'ad' ) {
           $value = strip_tags($value);
         }
