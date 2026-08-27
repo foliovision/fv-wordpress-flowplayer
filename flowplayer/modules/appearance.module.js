@@ -40,15 +40,6 @@ flowplayer(function(api, root) {
     else if( width < 600 && width >= 400 ) size = 'is-small';
     root.trigger('fv-player-size', [ size ] );
 
-    var el = player;
-    if( root.parent().hasClass('fp-playlist-vertical-wrapper') || root.parent().hasClass('fp-playlist-text-wrapper') ) el = root.parent(); // in some cases we use the wrapper
-
-    if(el.width() <= 560) {
-      el.addClass('is-fv-narrow');
-    } else {
-      el.removeClass('is-fv-narrow');
-    }
-    
     if(width <= 320) { // remove volue bar on narrow players
       root.addClass('no-volume fp-mute');
     } else {
