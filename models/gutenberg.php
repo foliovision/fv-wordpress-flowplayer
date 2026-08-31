@@ -115,7 +115,7 @@ function fv_player_block_add_missing_attributes_callback($matches) {
 
   // bail out if no player id
   if ( ! $player_id ) {
-    return '<!-- wp:fv-player-gutenberg/basic --><!-- /wp:fv-player-gutenberg/basic -->';
+    return $matches[0];
   }
 
   $player = new FV_Player_Db_Player( $player_id );
