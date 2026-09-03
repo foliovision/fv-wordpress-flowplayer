@@ -154,7 +154,7 @@ class FV_Player_Checker {
         global $wp_filesystem;
 
         if ( is_null( $wp_filesystem ) ) {
-          require_once ABSPATH . '/wp-admin/includes/file.php';
+          require_once ABSPATH . 'wp-admin/includes/file.php';
           WP_Filesystem();
         }
 
@@ -204,9 +204,19 @@ class FV_Player_Checker {
             }
   
             if( $bValidFile ) {
-              $ThisFileInfo = $getID3->analyze( $localtempfilename );
+              if ( $localtempfilename ) {
+                register_shutdown_function( array( $this, 'delete_temp_file' ), $localtempfilename );
+  
+                if ( $wp_filesystem->put_contents( $localtempfilename, wp_remote_retrieve_body( $res ) ) ) {
+                  $ThisFileInfo = $getID3->analyze( $localtempfilename, null, $remotefilename );
+                }
+  
+                $this->delete_temp_file( $localtempfilename );
+              }
             }                        
-          } 
+          } else {
+            $bValidFile = false;
+          }
           
           foreach( glob( trailingslashit($upload_dir['basedir']).'fv_flowlayer_tmp_*' ) AS $file ) {
             @unlink($file);
@@ -355,10 +365,32 @@ class FV_Player_Checker {
       }	//	end isset($media) 
     }
   }
-  
-  
-  
-  
+
+  /**
+   * Deletes a checker temp file via WP_Filesystem.
+   *
+   * Registered as a shutdown callback so the file is still removed if getID3
+   * fatals after the remote body was written.
+   *
+   * @param string $filename Absolute path to the temp file.
+   */
+  public function delete_temp_file( $filename ) {
+    if ( empty( $filename ) ) {
+      return;
+    }
+
+    global $wp_filesystem;
+
+    if ( is_null( $wp_filesystem ) ) {
+      require_once ABSPATH . 'wp-admin/includes/file.php';
+      WP_Filesystem();
+    }
+
+    if ( $wp_filesystem && $wp_filesystem->exists( $filename ) ) {
+      $wp_filesystem->delete( $filename );
+    }
+  }
+
   function checker_cron() {
     global $fv_fp;
     if( $fv_fp->_get_option('video_model_db_checked') && $fv_fp->_get_option('video_meta_model_db_checked') ) {
