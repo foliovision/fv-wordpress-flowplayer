@@ -144,8 +144,9 @@ class FV_Player_Checker {
         }
         $getID3 = new getID3;
 
-        $upload_dir = wp_upload_dir();
-        $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(wp_rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
+        // Write outside the web root with a non-executable .tmp name. Pass the
+        // remote URL as original_filename so getID3 can still fall back to .mp3.
+        $localtempfilename = wp_tempnam( 'fv-player-mime' );
 
         global $wp_filesystem;
 
