@@ -150,7 +150,7 @@ class FV_Player_Checker {
         global $wp_filesystem;
 
         if ( is_null( $wp_filesystem ) ) {
-          require_once ABSPATH . '/wp-admin/includes/file.php';
+          require_once ABSPATH . 'wp-admin/includes/file.php';
           WP_Filesystem();
         }
 
@@ -181,35 +181,39 @@ class FV_Player_Checker {
             }
           }
 
-          $wp_filesystem->put_contents( $localtempfilename, wp_remote_retrieve_body( $res ) );
-
-          if( !empty($res['response']['code']) ) {
-            $code = intval($res['response']['code']);
-            if( $code == 404 ) {
+          if ( ! empty( $res['response']['code'] ) ) {
+            $code = intval( $res['response']['code'] );
+            if ( 404 === $code ) {
               $error = 'Video not found';
 
-            } else if( $code == 403 ) {
+            } else if ( 403 === $code ) {
               $error = 'Access denied';
 
-            } else if( $code > 399 ) {
-              $error = 'HTTP '.$code;
-              if( !empty($res['response']['message']) ) {
-                $error .= ': '.$res['response']['message'];
+            } else if ( $code > 399 ) {
+              $error = 'HTTP ' . $code;
+              if ( ! empty( $res['response']['message'] ) ) {
+                $error .= ': ' . $res['response']['message'];
               }
             }
           }
 
           list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $res, $remotefilename, $random );
-          if( $bFatal ) {
+          if ( $bFatal ) {
             $bValidFile = false;
           }
 
-          if( $bValidFile ) {
-            $ThisFileInfo = $getID3->analyze( $localtempfilename );
+          if ( $bValidFile ) {
+
+            if ( $localtempfilename ) {
+              register_shutdown_function( array( $this, 'delete_temp_file' ), $localtempfilename );
+
+              if ( $wp_filesystem->put_contents( $localtempfilename, wp_remote_retrieve_body( $res ) ) ) {
+                $ThisFileInfo = $getID3->analyze( $localtempfilename, null, $remotefilename );
+              }
+
+              $this->delete_temp_file( $localtempfilename );
+            }
           }
-
-          $wp_filesystem->delete( $localtempfilename );
-
         } else {
           $bValidFile = false;
         }
@@ -394,8 +398,30 @@ class FV_Player_Checker {
     }
   }
 
+  /**
+   * Deletes a checker temp file via WP_Filesystem.
+   *
+   * Registered as a shutdown callback so the file is still removed if getID3
+   * fatals after the remote body was written.
+   *
+   * @param string $filename Absolute path to the temp file.
+   */
+  public function delete_temp_file( $filename ) {
+    if ( empty( $filename ) ) {
+      return;
+    }
 
+    global $wp_filesystem;
 
+    if ( is_null( $wp_filesystem ) ) {
+      require_once ABSPATH . 'wp-admin/includes/file.php';
+      WP_Filesystem();
+    }
+
+    if ( $wp_filesystem && $wp_filesystem->exists( $filename ) ) {
+      $wp_filesystem->delete( $filename );
+    }
+  }
 
   function checker_cron() {
     global $fv_fp;
