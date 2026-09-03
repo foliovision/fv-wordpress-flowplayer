@@ -364,6 +364,13 @@ class FV_Player_Custom_Videos_Master {
           $video = sanitize_text_field( $video );
 
           // Remove attributes that allow HTML
+          /**
+           * TODO: The CVE-2026-49773 mitigation in models/custom-videos.php (~line 360) removes the dangerous ad/popup attributes with:
+            $value = preg_replace( '~\b(ad|popup)\s*?=\s*\\\?\s*?["\'][^"\']*["\']~', '', $value );
+            The pattern requires a quote (["\']) immediately after =. WordPress shortcode attributes may legally be unquoted, so popup=<payload> is not matched and survives. The stored value then passes through sanitize_text_field() (which strips raw </> and %-octets but not HTML entities) and wp_kses( $video, 'post' ) (which also passes entities), so an entity-encoded payload is preserved verbatim.
+
+            Link: https://www.wordfence.com/threat-intel/vendor/vulnerability-report/6fc6246e-0a39-431f-a5b1-c1a84c48817b
+          */
           $video = preg_replace( '~\b(ad|popup)\s*?=\s*\\\?\s*?["\'][^"\']*["\']~', '', wp_unslash( $video ) );
 
           add_user_meta( $update_user_id, $meta, $video );

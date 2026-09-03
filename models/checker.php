@@ -103,11 +103,14 @@ class FV_Player_Checker {
   
   
   
-  
-  public function check_mimetype( $URLs = false, $meta = false, $force_is_cron = false ) {
 
-    add_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
-  
+  public function check_mimetype( $URLs = false, $meta = array(), $force_is_cron = false ) {
+
+    // If we create new player in FV Player Coconut in coconut-ajax.php, there will be no wp_safe_remote_get function or WP_Http class, so we cannot check the video.
+    if ( ! function_exists( 'wp_safe_remote_get' ) || ! class_exists( 'WP_Http' ) ) {
+      return false;
+    }
+
     $error = false;
     $tStart = microtime(true);
   
@@ -142,22 +145,43 @@ class FV_Player_Checker {
         
         if ( ! class_exists( 'getID3' ) ) {
           require( ABSPATH . WPINC . '/ID3/getid3.php' );
-        }    
-        $getID3 = new getID3;     
-        
-        if( function_exists('curl_init') ) {
-          $message = '<p>Analysis of <a class="bluelink" target="_blank" href="'.esc_attr($remotefilename_encoded).'">'.$remotefilename_encoded.'</a></p>';
-  
-          //	taken from: http://www.getid3.org/phpBB3/viewtopic.php?f=3&t=1141
-          $upload_dir = wp_upload_dir();      
-          $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
-  
-          $out = @fopen( $localtempfilename,'wb' );
-       
-          if( $out ) {
-            $aArgs = array( 'file' => $out );
-            if( !$this->is_cron && !$force_is_cron ) {
-              $aArgs['quick_check'] = apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 );
+        }
+        $getID3 = new getID3;
+
+        $upload_dir = wp_upload_dir();
+        $localtempfilename = trailingslashit( $upload_dir['basedir'] ).'fv_flowlayer_tmp_'.md5(wp_rand(1,999)).'_'.basename( substr($remotefilename_encoded,0,32) );
+
+        global $wp_filesystem;
+
+        if ( is_null( $wp_filesystem ) ) {
+          require_once ABSPATH . '/wp-admin/includes/file.php';
+          WP_Filesystem();
+        }
+
+        $real_file_size = 0;
+        $analysis_size  = 8 * 1024 * 1024;
+
+        $remotefilename_encoded = $fv_fp->get_video_src( $remotefilename_encoded, array( 'dynamic' => true ) );
+
+        $res = wp_safe_remote_get(
+          $remotefilename_encoded,
+          array(
+            'headers'    => array(
+              'range'   => 'bytes=0-' . $analysis_size,
+              'referer' => home_url(),
+            ),
+            'timeout'    => ! $this->is_cron && ! $force_is_cron ? apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 ) : 20,
+            'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver,
+          )
+        );
+
+        if ( ! is_wp_error( $res ) ) {
+
+          // Get the real file size out of Content-length: 0-8388608/{full file size here}
+          if ( $content_range = wp_remote_retrieve_header( $res, 'content-range' ) ) {
+            $content_range_parts = explode( '/', $content_range );
+            if ( 2 === count( $content_range_parts ) ) {
+              $real_file_size = intval( $content_range_parts[1] );
             }
             list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
 
@@ -208,14 +232,14 @@ class FV_Player_Checker {
             
             remove_action( 'http_api_curl', array( 'FV_Player_Checker', 'http_api_curl' ) );
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
-
-            $request = wp_remote_get(
+            $request = wp_safe_remote_get(
               $remotefilename_encoded,
               array(
-                'headers' => array(
-                  'Referer' => home_url(),
+                'headers'    => array(
+                  'referer' => home_url(),
                 ),
-                'timeout' => 15
+                'timeout'    => 15,
+                'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver,
               )
             );
 
@@ -269,7 +293,21 @@ class FV_Player_Checker {
                 if( $secured_url = $fv_fp->get_video_src( $item_url, array( 'dynamic' => true ) ) ) {
                   $item_url = $secured_url;
                 }
-                $request = wp_remote_get( $item_url, array( 'headers' => array( 'Referer' => home_url() ) ) );
+
+                $request = wp_safe_remote_get(
+                  $item_url,
+                  array(
+                    'headers'    => array(
+                      'referer' => home_url(),
+                    ),
+                    'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver,
+                  )
+                );
+
+                if( is_wp_error($request) ) {
+                  return array( 'error' => $request->get_error_message() );
+                }
+
                 $playlist_item = wp_remote_retrieve_body( $request );
 
                 if(preg_match_all('/^#EXTINF:([0-9]+\.?[0-9]*)/im', $playlist_item,$segments)){
