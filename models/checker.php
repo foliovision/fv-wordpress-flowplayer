@@ -104,8 +104,8 @@ class FV_Player_Checker {
 
   public function check_mimetype( $URLs = false, $meta = array(), $force_is_cron = false ) {
 
-    // If we create new player in FV Player Coconut in coconut-ajax.php, there will be no wp_remote_get function or WP_Http class, so we cannot check the video.
-    if ( ! function_exists( 'wp_remote_get' ) || ! class_exists( 'WP_Http' ) ) {
+    // If we create new player in FV Player Coconut in coconut-ajax.php, there will be no wp_safe_remote_get function or WP_Http class, so we cannot check the video.
+    if ( ! function_exists( 'wp_safe_remote_get' ) || ! class_exists( 'WP_Http' ) ) {
       return false;
     }
 
@@ -159,14 +159,17 @@ class FV_Player_Checker {
 
         $remotefilename_encoded = $fv_fp->get_video_src( $remotefilename_encoded, array( 'dynamic' => true ) );
 
-        $res = wp_remote_get( $remotefilename_encoded, array(
-          'headers'    => array(
-            'range'    => 'bytes=0-' . $analysis_size,
-            'referer'  => home_url()
-          ),
-          'timeout'    => !$this->is_cron && !$force_is_cron ? apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 ) : 20,
-          'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver
-        ) );
+        $res = wp_safe_remote_get(
+          $remotefilename_encoded,
+          array(
+            'headers'    => array(
+              'range'   => 'bytes=0-' . $analysis_size,
+              'referer' => home_url(),
+            ),
+            'timeout'    => ! $this->is_cron && ! $force_is_cron ? apply_filters( 'fv_flowplayer_checker_timeout_quick', 2 ) : 20,
+            'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver,
+          )
+        );
 
         if ( ! is_wp_error( $res ) ) {
 
@@ -246,14 +249,14 @@ class FV_Player_Checker {
 
           if(preg_match('/.m3u8(\?.*)?$/i', $remotefilename_encoded)){
             $remotefilename_encoded = apply_filters( 'fv_flowplayer_video_src', $remotefilename_encoded , array('dynamic'=>true) );
-            $request = wp_remote_get(
+            $request = wp_safe_remote_get(
               $remotefilename_encoded,
               array(
-                'headers' => array(
+                'headers'    => array(
                   'referer' => home_url(),
                 ),
-                'timeout' => 15,
-                'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver
+                'timeout'    => 15,
+                'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver,
               )
             );
 
@@ -326,13 +329,13 @@ class FV_Player_Checker {
                   $item_url = $secured_url;
                 }
 
-                $request = wp_remote_get(
+                $request = wp_safe_remote_get(
                   $item_url,
                   array(
-                    'headers' => array(
-                      'referer' => home_url()
+                    'headers'    => array(
+                      'referer' => home_url(),
                     ),
-                    'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver
+                    'user-agent' => 'FV Player video checker/' . $fv_wp_flowplayer_ver,
                   )
                 );
 
