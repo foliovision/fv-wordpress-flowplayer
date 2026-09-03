@@ -146,7 +146,7 @@ class FV_Player_Checker {
 
         // Write outside the web root with a non-executable .tmp name. Pass the
         // remote URL as original_filename so getID3 can still fall back to .mp3.
-        $localtempfilename = wp_tempnam( 'fv-player-mime' );
+        $localtempfilename = wp_tempname( 'fv-player-mime' );
 
         global $wp_filesystem;
 
