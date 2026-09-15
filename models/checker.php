@@ -146,6 +146,10 @@ class FV_Player_Checker {
 
         // Write outside the web root with a non-executable .tmp name. Pass the
         // remote URL as original_filename so getID3 can still fall back to .mp3.
+        if ( ! function_exists( 'wp_tempnam' ) ) {
+          // We need to include the file.php file to get the wp_tempnam function for cron.
+          require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
         $localtempfilename = wp_tempnam( 'fv-player-mime' );
 
         global $wp_filesystem;
