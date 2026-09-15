@@ -957,6 +957,36 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Removes player meta rows matching the key, optionally also the value.
+   *
+   * @param string $key   The meta key.
+   * @param string $value Optional meta value to remove.
+   *
+   * @throws Exception When the underlying Meta object throws.
+   *
+   * @return int Returns number of removed meta rows.
+   */
+  public function deleteMetaValue( $key, $value = false ) {
+    $deleted = 0;
+    $data = $this->getMetaData();
+
+    if( count($data) ) {
+      foreach( $data as $meta_object ) {
+        if(
+          $meta_object->getMetaKey() == $key &&
+          ( !$value || $meta_object->getMetaValue() == $value )
+        ) {
+          if( $meta_object->delete() ) {
+            $deleted++;
+          }
+        }
+      }
+    }
+
+    return $deleted;
+  }
+
+  /**
    * Returns all video objects for this player.
    *
    * @return FV_Player_Db_Video[] Returns all video objects for this player.
