@@ -45,6 +45,42 @@ flowplayer(function(api, root) {
       el.removeClass('is-fv-narrow');
     }
 
+    // Tall video vertical playlist: add a transparent toggle overlay when narrow
+    if ( el.hasClass('fp-playlist-vertical-wrapper') && el.hasClass('is-vertical') ) {
+      var playlist = el.children('.fp-playlist-vertical'),
+        playlist_id = playlist.attr('id'),
+        toggle = playlist.children('.fp-playlist-dropdown-toggle');
+
+      if ( el.hasClass('is-fv-narrow') ) {
+        playlist.css({ 'max-height': '', 'height': '' });
+
+        if ( ! toggle.length ) {
+          toggle = jQuery('<div class="fp-playlist-dropdown-toggle" />');
+          playlist.append(toggle);
+
+          toggle.on('click', function(e) {
+            e.stopPropagation();
+            playlist.addClass('is-open');
+          });
+
+          playlist.on('click.fvDropdown', 'a', function() {
+            playlist.removeClass('is-open');
+          });
+
+          jQuery(document).on('click.fvDropdown' + playlist_id, function(e) {
+            if ( ! jQuery(e.target).closest(playlist).length ) {
+              playlist.removeClass('is-open');
+            }
+          });
+        }
+      } else {
+        playlist.removeClass('is-open');
+        toggle.remove();
+        playlist.off('click.fvDropdown');
+        jQuery(document).off('click.fvDropdown' + playlist_id);
+      }
+    }
+
     // check if there are too many items in .fp-controls and they don't fit
     var controls = root.find('.fp-controls'),
       controls_width = controls.parent().width(),

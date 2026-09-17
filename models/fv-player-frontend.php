@@ -958,7 +958,7 @@ class flowplayer_frontend extends flowplayer
       $ratio         = $this->get_ratio();
       if ( $ratio > 1.2 ) {
         $wrapper_class .= ' is-vertical';
-        $wrapper_style  = ' style="--fvp-playlist-thumb-ratio: ' . floatval( $ratio * 100 ) . '%;"';
+        $wrapper_style  = ' style="--fvp-playlist-thumb-ratio: ' . floatval( $ratio * 100 ) . '%; --fvp-playlist-ratio: ' . floatval( $ratio ) . ';"';
       }
       $this->ret['html'] = '<div class="' . $wrapper_class . '"' . $wrapper_style . '>' . $this->ret['html'] . '</div>';
 
@@ -974,6 +974,11 @@ class flowplayer_frontend extends flowplayer
 
   if ( el.offsetHeight && el.offsetWidth <= 560 ) {
     el.classList.add('is-fv-narrow');
+  }
+
+  // Tall videos on narrow screens: playlist becomes a dropdown (see appearance.module.js), do not lock height
+  if ( el.classList.contains('is-vertical') && el.classList.contains('is-fv-narrow') ) {
+    return;
   }
 
   playlist.style[property] = height + 'px';
