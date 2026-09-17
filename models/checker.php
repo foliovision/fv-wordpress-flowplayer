@@ -159,6 +159,10 @@ class FV_Player_Checker {
           WP_Filesystem();
         }
 
+        if ( $wp_filesystem->method !== 'direct' ) {
+          return false;
+        }
+
         $real_file_size = 0;
         $analysis_size  = 8 * 1024 * 1024;
 
@@ -385,6 +389,10 @@ class FV_Player_Checker {
     if ( is_null( $wp_filesystem ) ) {
       require_once ABSPATH . 'wp-admin/includes/file.php';
       WP_Filesystem();
+    }
+
+    if ( $wp_filesystem->method !== 'direct' ) {
+      return;
     }
 
     if ( $wp_filesystem && $wp_filesystem->exists( $filename ) ) {
