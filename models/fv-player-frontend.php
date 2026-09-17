@@ -953,7 +953,14 @@ class flowplayer_frontend extends flowplayer
 
 
     if( isset($this->aCurArgs['liststyle']) && in_array($this->aCurArgs['liststyle'], array('vertical','text') ) && count($aPlaylistItems) > 1 && ! did_action( 'et_before_main_content' ) ) {
-      $this->ret['html'] = '<div class="fp-playlist-'.$this->aCurArgs['liststyle'].'-wrapper">'.$this->ret['html'].'</div>';
+      $wrapper_class = 'fp-playlist-' . $this->aCurArgs['liststyle'] . '-wrapper';
+      $wrapper_style = '';
+      $ratio         = $this->get_ratio();
+      if ( $ratio > 1.2 ) {
+        $wrapper_class .= ' is-vertical';
+        $wrapper_style  = ' style="--fvp-playlist-thumb-ratio: ' . floatval( $ratio * 100 ) . '%;"';
+      }
+      $this->ret['html'] = '<div class="' . $wrapper_class . '"' . $wrapper_style . '>' . $this->ret['html'] . '</div>';
 
       // These script need to run right away to ensure nothing moves during the page loading
       $script = "
