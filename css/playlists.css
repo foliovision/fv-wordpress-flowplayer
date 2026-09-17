@@ -149,6 +149,9 @@
 	padding-top: 56.25%;
 	position: relative;
 }
+.is-vertical .fvp-playlist-thumb-img {
+	padding-top: var(--fvp-playlist-thumb-ratio, 177.78%);
+}
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > a > .fvp-playlist-thumb-img > picture,
