@@ -54,7 +54,7 @@ final class FV_Player_ProfileVideosTestCase extends FV_Player_UnitTestCase {
       'Profile screen should contain 3 hidden "Add Video" buttons'
     );
 
-    preg_match_all( "~<input.*?name='fv_player_videos\[_fv_player_user_video\]\[\]' type='hidden' value='\[fvplayer src=~", $output, $matches );
+    preg_match_all( "~<input.*?name='fv_player_videos\[_fv_player_user_video\]\[\d+\]\[\]' type='hidden' value='\[fvplayer src=~", $output, $matches );
 
     $this->assertTrue(
       count( $matches[0] ) === 3,
