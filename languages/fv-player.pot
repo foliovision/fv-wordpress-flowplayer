@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2026-08-20 12:10+0000\n"
+"POT-Creation-Date: 2026-09-18 13:52+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -83,103 +83,103 @@ msgstr ""
 msgid "Add FV Player"
 msgstr ""
 
-#: controller/editor.php:771, models/list-table.php:72, view/admin.php:2170, view/wizard.php:569
+#: controller/editor.php:779, models/list-table.php:72, view/admin.php:2170, view/wizard.php:569
 msgid "Subtitles"
 msgstr ""
 
-#: controller/editor.php:772
+#: controller/editor.php:780
 msgid "Subtitle"
 msgstr ""
 
-#: controller/editor.php:824
+#: controller/editor.php:832
 msgid "Video Link"
 msgstr ""
 
-#: controller/editor.php:848
+#: controller/editor.php:856
 msgid "Live Stream"
 msgstr ""
 
-#: controller/editor.php:852
+#: controller/editor.php:860
 msgid "DVR Stream"
 msgstr ""
 
-#: controller/editor.php:860
+#: controller/editor.php:868
 msgid "Audio Stream"
 msgstr ""
 
-#: controller/editor.php:865
+#: controller/editor.php:873
 msgid "Advanced Settings"
 msgstr ""
 
-#: controller/editor.php:870, view/admin.php:917
+#: controller/editor.php:878, view/admin.php:917
 msgid "Mobile Video"
 msgstr ""
 
-#: controller/editor.php:877
+#: controller/editor.php:885
 msgid "Alternative Format 1"
 msgstr ""
 
-#: controller/editor.php:884
+#: controller/editor.php:892
 msgid "Alternative Format 2"
 msgstr ""
 
-#: controller/editor.php:891
+#: controller/editor.php:899
 msgid "Remove Top and Bottom Black Bars"
 msgstr ""
 
-#: controller/editor.php:893
+#: controller/editor.php:901
 msgid "Fixes video fit in mobile fullscreen when in landscape."
 msgstr ""
 
-#: controller/editor.php:898
+#: controller/editor.php:906
 msgid "RTMP"
 msgstr ""
 
-#: controller/editor.php:904
+#: controller/editor.php:912
 msgid "Path"
 msgstr ""
 
-#: controller/editor.php:910
+#: controller/editor.php:918
 msgid "Server"
 msgstr ""
 
-#: controller/editor.php:920
+#: controller/editor.php:928
 msgid "Splash Screen"
 msgstr ""
 
-#: controller/editor.php:925
+#: controller/editor.php:933
 msgid "Will appear in place of the video before it plays."
 msgstr ""
 
-#: controller/editor.php:932
+#: controller/editor.php:940
 msgid "Title"
 msgstr ""
 
-#: controller/editor.php:936
+#: controller/editor.php:944
 msgid "Will appear below the player and on playlist thumbnails. Also used for tracking."
 msgstr ""
 
-#: controller/editor.php:939
+#: controller/editor.php:947
 msgid "Hide Title"
 msgstr ""
 
-#: controller/editor.php:944
+#: controller/editor.php:952
 msgid "Use if you only want the title for tracking."
 msgstr ""
 
-#: controller/editor.php:949, view/admin.php:923
+#: controller/editor.php:957, view/admin.php:923
 msgid "Splash Text"
 msgstr ""
 
-#: controller/editor.php:953
+#: controller/editor.php:961
 msgid "Will appear over the video before it plays."
 msgstr ""
 
-#: controller/editor.php:956, view/admin.php:925
+#: controller/editor.php:964, view/admin.php:925
 msgid "Synopsis"
 msgstr ""
 
-#: controller/editor.php:960
+#: controller/editor.php:968
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
@@ -620,19 +620,19 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: models/custom-videos.php:316, models/custom-videos.php:735, models/list-table.php:71
+#: models/custom-videos.php:439, models/custom-videos.php:905, models/list-table.php:71
 msgid "Videos"
 msgstr ""
 
-#: models/custom-videos.php:750
+#: models/custom-videos.php:920
 msgid "You can put your Vimeo or YouTube links here."
 msgstr ""
 
-#: models/custom-videos.php:750
+#: models/custom-videos.php:920
 msgid "These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up."
 msgstr ""
 
-#: models/custom-videos.php:769
+#: models/custom-videos.php:939
 msgid "Profile Videos"
 msgstr ""
 
@@ -2286,6 +2286,10 @@ msgstr ""
 
 #: view/wizard.php:871
 msgid "Use to disable overlay set in <a href=\"%s\" target=\"_blank\">Actions -> Overlays</a>"
+msgstr ""
+
+#: view/wizard.php:882
+msgid "You do not have permission to edit video actions."
 msgstr ""
 
 #: models/conversion/positionsMeta2Table.php:188
