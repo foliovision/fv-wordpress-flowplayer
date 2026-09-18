@@ -1119,4 +1119,10 @@ body.has-fv-player-fullscreen #chat-widget-container {
     min-height: 480px;
     width: unset;
   }
+
+  /* Playlist grid in playlists.css sizes the player column; do not force 480px. */
+  .fp-playlist-vertical-wrapper.is-vertical .freedomplayer.is-vertical {
+    width: 100%;
+    min-height: 0;
+  }
 }

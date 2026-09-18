@@ -977,9 +977,7 @@ class flowplayer_frontend extends flowplayer
   }
 
   if ( el.classList.contains('is-vertical') ) {
-    if ( el.classList.contains('is-fv-narrow') ) {
-      return;
-    }
+    return;
   }
 
   playlist.style[property] = height + 'px';
