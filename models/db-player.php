@@ -975,6 +975,79 @@ CREATE TABLE " . self::$db_table_name . " (
   }
 
   /**
+   * Updates or insert a player meta row.
+   *
+   * @param string $key   The meta key.
+   * @param string $value The meta value.
+   * @param int    $id    ID of the existing player meta row.
+   *                      If it's left empty only one $key is allowed for this player.
+   *
+   * @throws Exception When the underlying Meta object throws.
+   *
+   * @return bool|int Returns record ID if successful, false otherwise.
+   */
+  public function updateMetaValue( $key, $value, $id = false ) {
+    $to_update = false;
+    $data = $this->getMetaData();
+
+    if (count($data)) {
+      foreach ($data as $meta_object) {
+        // find the matching player meta row and if id is provided as well, match on that too
+        if( ( !$id || $id == $meta_object->getId() ) && $meta_object->getMetaKey() == $key) {
+          $to_update = $meta_object->getId();
+
+          // if there is no change, then do not run any update and instead return the row ID
+          if(
+            is_string($value) && strcmp($meta_object->getMetaValue(), $value) == 0 ||
+            !is_string($value) && $meta_object->getMetaValue() == $value
+          ) {
+            return $to_update;
+          }
+        }
+      }
+    }
+
+    // if matching row has been found or if it was not found and no row id is provided (insert)
+    if( $to_update || !$to_update && !$id ) {
+      $meta = new FV_Player_Db_Player_Meta( null, array( 'id_player' => $this->getId(), 'meta_key' => $key, 'meta_value' => $value ), self::$DB_Instance );
+      if( $to_update ) $meta->link2db($to_update);
+      return $meta->save();
+    }
+
+    return false;
+  }
+
+  /**
+   * Removes player meta rows matching the key, optionally also the value.
+   *
+   * @param string $key   The meta key.
+   * @param string $value Optional meta value to remove.
+   *
+   * @throws Exception When the underlying Meta object throws.
+   *
+   * @return int Returns number of removed meta rows.
+   */
+  public function deleteMetaValue( $key, $value = false ) {
+    $deleted = 0;
+    $data = $this->getMetaData();
+
+    if( count($data) ) {
+      foreach( $data as $meta_object ) {
+        if(
+          $meta_object->getMetaKey() == $key &&
+          ( !$value || $meta_object->getMetaValue() == $value )
+        ) {
+          if( $meta_object->delete() ) {
+            $deleted++;
+          }
+        }
+      }
+    }
+
+    return $deleted;
+  }
+
+  /**
    * Returns all video objects for this player.
    *
    * @return FV_Player_Db_Video[] Returns all video objects for this player.

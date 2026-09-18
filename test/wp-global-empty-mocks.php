@@ -183,6 +183,10 @@ function wp_remote_get() {
   return checkAndReturnRequestedValue();
 }
 
+function wp_safe_remote_get() {
+  return wp_remote_get();
+}
+
 function is_wp_error() {
   return checkAndReturnRequestedValue();
 }

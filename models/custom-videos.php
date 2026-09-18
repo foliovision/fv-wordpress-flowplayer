@@ -14,18 +14,112 @@ class FV_Player_Custom_Videos {
 
   private $type;
 
+  private $labels;
+
+  private $multiple;
+
+  private $post_type;
+
   public function __construct( $args ) {
     global $post;
 
     $args = wp_parse_args( $args, array(
                                         'id' => isset($post) && isset($post->ID) ? $post->ID : false,
                                         'meta' => '_fv_player_user_video',
-                                        'type' => isset($post->ID) ? 'post' : 'user'
+                                        'type' => isset($post->ID) ? 'post' : 'user',
+                                        'labels' => null,
+                                        'multiple' => null,
+                                        'post_type' => null,
                                         ) );
 
     $this->id = $args['id'];
     $this->meta = $args['meta'];
     $this->type = $args['type'];
+    $this->labels = $args['labels'];
+    $this->multiple = $args['multiple'];
+    $this->post_type = $args['post_type'];
+  }
+
+  /**
+   * Labels and multiple flag for this field instance.
+   *
+   * @return array
+   */
+  private function get_field_config() {
+    $defaults = array(
+      'labels' => array(
+        'edit' => 'Edit Video',
+        'remove' => 'Remove Video',
+      ),
+      'multiple' => true,
+    );
+
+    $post_type = $this->post_type;
+    if ( empty( $post_type ) ) {
+      global $post;
+      if ( ! empty( $post->post_type ) ) {
+        $post_type = $post->post_type;
+      }
+    }
+
+    if ( ! empty( $post_type ) && ! empty( FV_Player_Custom_Videos_Master()->aMetaBoxes[ $post_type ][ $this->meta ] ) ) {
+      $defaults = wp_parse_args( FV_Player_Custom_Videos_Master()->aMetaBoxes[ $post_type ][ $this->meta ], $defaults );
+    }
+
+    if ( is_array( $this->labels ) ) {
+      $defaults['labels'] = wp_parse_args( $this->labels, $defaults['labels'] );
+    }
+
+    if ( null !== $this->multiple ) {
+      $defaults['multiple'] = (bool) $this->multiple;
+    }
+
+    return $defaults;
+  }
+
+  /**
+   * Sanitize and persist videos for a post or user.
+   *
+   * @param int          $entity_id Entity ID.
+   * @param string       $meta      Meta key.
+   * @param string|array $videos    One shortcode or a list of shortcodes.
+   * @param string       $type      post|user
+   */
+  public static function save_videos_meta( $entity_id, $meta, $videos, $type = 'post' ) {
+    $entity_id = absint( $entity_id );
+    $meta      = sanitize_text_field( $meta );
+    $type      = sanitize_key( $type );
+
+    if ( ! $entity_id || ! $meta ) {
+      return;
+    }
+
+    if ( ! is_array( $videos ) ) {
+      $videos = array( $videos );
+    }
+
+    if ( 'user' === $type ) {
+      delete_user_meta( $entity_id, $meta );
+    } else {
+      delete_post_meta( $entity_id, $meta );
+    }
+
+    foreach ( $videos as $video ) {
+      if ( ! is_string( $video ) || strlen( $video ) === 0 ) {
+        continue;
+      }
+
+      $video = sanitize_text_field( $video );
+
+      // Remove attributes that allow HTML
+      $video = preg_replace( '~\b(ad|popup)\s*?=\s*\\\?\s*?["\'][^"\']*["\']~', '', wp_unslash( $video ) );
+
+      if ( 'user' === $type ) {
+        add_user_meta( $entity_id, $meta, $video );
+      } else {
+        add_post_meta( $entity_id, $meta, $video );
+      }
+    }
   }
 
   private function esc_shortcode( $arg ) {
@@ -35,7 +129,13 @@ class FV_Player_Custom_Videos {
 
   public function get_form( $args = array() ) {
 
-    $args = wp_parse_args( $args, array( 'wrapper' => 'div', 'edit' => true, 'limit' => 1000, 'no_form' => false ) );
+    $args = wp_parse_args( $args, array(
+      'wrapper' => 'div',
+      'edit' => true,
+      'limit' => 1000,
+      'no_form' => false,
+      'include_save_fields' => true,
+    ) );
 
     $html = '';
 
@@ -77,7 +177,9 @@ class FV_Player_Custom_Videos {
 
     $html .= $this->get_html( $args );
 
-    $html .= wp_nonce_field( 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), true, false );
+    if ( $args['include_save_fields'] ) {
+      $html .= wp_nonce_field( 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), 'fv-player-custom-videos-'.$this->meta.'-'.get_current_user_id(), true, false );
+    }
 
     if( !is_admin() && !$args['no_form'] ) {
       $html .= "<input type='hidden' name='action' value='fv-player-custom-videos-save' />";
@@ -93,10 +195,7 @@ class FV_Player_Custom_Videos {
   }
 
   public function get_html_part( $video, $edit = false ) {
-    global $post;
-
-    $defaults = array( 'labels' => array( 'edit' => 'Edit Video', 'remove' => 'Remove Video' ), 'multiple' => true );
-    $args = !empty($post) && !empty( FV_Player_Custom_Videos_Master()->aMetaBoxes[$post->post_type]) ? FV_Player_Custom_Videos_Master()->aMetaBoxes[$post->post_type][$this->meta] : $defaults;
+    $args = $this->get_field_config();
 
     if( $video ) {
       $video = wp_kses( $video, 'post' );
@@ -122,10 +221,10 @@ class FV_Player_Custom_Videos {
         $video = str_replace( 'autoplay="false"', '', $video );
       }
 
-      $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-".$this->meta."'>
+      $html = "<div class='fv-player-editor-wrapper' data-key='fv-player-editor-field-" . $this->meta . '-' . $this->id . "'>
           <div class='fv-player-editor-preview'>".$preview."</div>
-          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][]' type='hidden' value='".esc_attr($video)."' />
-          <input name='fv_player_videos_before[".$this->meta."][]' type='hidden' value='".$before."' />
+          <input class='attachement-shortcode fv-player-editor-field' name='fv_player_videos[".$this->meta."][".$this->id."][]' type='hidden' value='".esc_attr($video)."' />
+          <input name='fv_player_videos_before[".$this->meta."][".$this->id."][]' type='hidden' value='".$before."' />
           <div class='edit-video' ".(!$video ? 'style="display:none"' : '').">
             <button class='button fv-player-editor-button'>".$args['labels']['edit']."</button>
             <button class='button fv-player-editor-remove'>".$args['labels']['remove']."</button>
@@ -144,7 +243,13 @@ class FV_Player_Custom_Videos {
 
   public function get_html( $args = array() ) {
 
-    $args = wp_parse_args( $args, array( 'wrapper' => 'div', 'edit' => false, 'limit' => 1000, 'shortcode' => false ) );
+    $args = wp_parse_args( $args, array(
+      'wrapper' => 'div',
+      'edit' => false,
+      'limit' => 1000,
+      'shortcode' => false,
+      'include_save_fields' => true,
+    ) );
 
     $html = '';
     $count = 0;
@@ -168,8 +273,10 @@ class FV_Player_Custom_Videos {
       $html .= '</'.$args['wrapper'].'>';
     }
 
-    $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."]' value='".esc_attr($this->id)."' />";
-    $html .= "<input type='hidden' name='fv-player-custom-videos-entity-type[".$this->meta."]' value='".esc_attr($this->type)."' />";
+    if ( $args['include_save_fields'] ) {
+      $html .= "<input type='hidden' name='fv-player-custom-videos-entity-id[".$this->meta."][".$this->id."]' value='".esc_attr($this->id)."' />";
+      $html .= "<input type='hidden' name='fv-player-custom-videos-entity-type[".$this->meta."][".$this->id."]' value='".esc_attr($this->type)."' />";
+    }
 
     return $html;
   }
@@ -229,6 +336,9 @@ class FV_Player_Custom_Videos_Master {
     add_action( 'init', array( $this, 'save' ) ); //  saving of user profile, both front and back end
     add_action( 'save_post', array( $this, 'save_post' ) );
 
+    // WooCommerce variation AJAX (woocommerce_save_variations) often skips save_post.
+    add_action( 'woocommerce_save_product_variation', array( $this, 'save_woocommerce_variation' ), 10, 2 );
+
     add_filter( 'show_password_fields', array( $this, 'user_profile' ), 10, 2 );
     add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 
@@ -272,7 +382,14 @@ class FV_Player_Custom_Videos_Master {
       foreach( $this->aMetaBoxes[$post->post_type] AS $meta_key => $args ) {
         global $FV_Player_Custom_Videos_form_instances;
         $id = 'fv_player_custom_videos-field_'.$meta_key;
-        $FV_Player_Custom_Videos_form_instances[$id] = new FV_Player_Custom_Videos( array('id' => $post->ID, 'meta' => $args['meta_key'], 'type' => 'post' ) );
+        $FV_Player_Custom_Videos_form_instances[$id] = new FV_Player_Custom_Videos(
+          array(
+            'id'        => $post->ID,
+            'meta'      => $args['meta_key'],
+            'type'      => 'post',
+            'post_type' => $post->post_type,
+          )
+        );
         add_meta_box( $id,
                     $args['name'],
                     array( $this, 'meta_box' ),
@@ -629,6 +746,46 @@ class FV_Player_Custom_Videos_Master {
     $this->aMetaBoxes[$args['post_type']][$args['meta_key']] = $args;
   }
 
+  /**
+   * Save posted custom video fields for one entity.
+   *
+   * @param string $meta      Meta key.
+   * @param int    $entity_id Entity ID.
+   * @param array  $videos    Posted shortcodes.
+   * @param string $type      post|user
+   */
+  private function save_posted_entity_videos( $meta, $entity_id, $videos, $type ) {
+    if ( 'user' === $type ) {
+      if ( $entity_id != get_current_user_id() && ! current_user_can( 'edit_user', $entity_id ) ) {
+        return;
+      }
+    } else if ( 'post' === $type && ! current_user_can( 'edit_post', $entity_id ) ) {
+      return;
+    }
+
+    FV_Player_Custom_Videos::save_videos_meta( $entity_id, $meta, $videos, $type );
+  }
+
+  /**
+   * Read entity type and ID from posted custom video field data.
+   *
+   * @param string $meta      Meta key.
+   * @param int    $entity_id Entity ID.
+   * @return array|false Array with type and id, or false if missing.
+   */
+  private function get_posted_entity( $meta, $entity_id ) {
+    if ( empty( $_POST['fv-player-custom-videos-entity-type'][ $meta ] ) ) {
+      return false;
+    }
+
+    $entity_types = wp_unslash( $_POST['fv-player-custom-videos-entity-type'][ $meta ] );
+    $entity_ids   = isset( $_POST['fv-player-custom-videos-entity-id'][ $meta ] ) ? wp_unslash( $_POST['fv-player-custom-videos-entity-id'][ $meta ] ) : array();
+
+    return array(
+      'type' => sanitize_key( $entity_types[ $entity_id ] ),
+      'id'   => absint( $entity_ids[ $entity_id ] ),
+    );
+  }
 
   function save() {
     if( !isset($_POST['fv_player_videos']) || !isset($_POST['fv-player-custom-videos-entity-type']) || !isset($_POST['fv-player-custom-videos-entity-id']) ) {
@@ -643,60 +800,67 @@ class FV_Player_Custom_Videos_Master {
         continue;
       }
 
-      if( sanitize_key( $_POST['fv-player-custom-videos-entity-type'][$meta] ) == 'user' ) {
-        $update_user_id = absint( $_POST['fv-player-custom-videos-entity-id'][$meta] );
-
-        // Do not process if the user is trying to update another user's videos without the edit_user capability
-        if ( $update_user_id != get_current_user_id() && ! current_user_can( 'edit_user', $update_user_id ) ) {
+      foreach ( $videos as $entity_id => $entity_videos ) {
+        $entity = $this->get_posted_entity( $meta, $entity_id );
+        if ( ! $entity || 'user' !== $entity['type'] || $entity['id'] !== absint( $entity_id ) ) {
           continue;
         }
 
-        delete_user_meta( $update_user_id, $meta );
-
-        foreach( $videos AS $video ) {
-          if( strlen($video) == 0 ) continue;
-
-          // strip html tags to prevent XSS
-          $video = sanitize_text_field( $video );
-
-          // Remove attributes that allow HTML
-          $video = preg_replace( '~\b(ad|popup)\s*?=\s*\\\?\s*?["\'][^"\']*["\']~', '', wp_unslash( $video ) );
-
-          add_user_meta( $update_user_id, $meta, $video );
-        }
+        $this->save_posted_entity_videos( $meta, $entity_id, $entity_videos, 'user' );
       }
     }
   }
 
   function save_post( $post_id ) {
-    if( !isset($_POST['fv_player_videos']) || !isset($_POST['fv-player-custom-videos-entity-type']) || !isset($_POST['fv-player-custom-videos-entity-id']) ) {
+    $this->save_posted_videos_for_post( $post_id );
+  }
+
+  /**
+   * Persist custom videos after WooCommerce saves a variation.
+   *
+   * Variation AJAX uses $variation->save() and often never fires save_post when
+   * only custom meta changed.
+   *
+   * @param int $variation_id Variation post ID.
+   * @param int $i            Loop index.
+   */
+  function save_woocommerce_variation( $variation_id, $i ) {
+    $this->save_posted_videos_for_post( $variation_id );
+  }
+
+  /**
+   * Save posted fv_player_videos for a post (or product variation).
+   *
+   * @param int $post_id Post ID.
+   */
+  function save_posted_videos_for_post( $post_id ) {
+    $post_id = absint( $post_id );
+
+    if ( ! $post_id || ! isset( $_POST['fv_player_videos'] ) || ! isset( $_POST['fv-player-custom-videos-entity-type'] ) || ! isset( $_POST['fv-player-custom-videos-entity-id'] ) ) {
       return;
     }
 
-    foreach( $_POST['fv_player_videos'] AS $meta => $value ) {
+    foreach ( $_POST['fv_player_videos'] as $meta => $value ) {
       $meta = sanitize_text_field( $meta );
+      $key  = 'fv-player-custom-videos-' . $meta . '-' . get_current_user_id();
 
-      if( !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv-player-custom-videos-'.$meta.'-'.get_current_user_id()] ) ),'fv-player-custom-videos-'.$meta.'-'.get_current_user_id() ) ) {
+      if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $key ] ) ), $key ) ) {
         continue;
       }
 
-      if( sanitize_key( $_POST['fv-player-custom-videos-entity-type'][$meta] ) == 'post' && absint( $_POST['fv-player-custom-videos-entity-id'][$meta] ) == $post_id ) {
-        delete_post_meta( $post_id, $meta );
-
-        if( is_array($value) && count($value) > 0 ) {
-          foreach( $value AS $k => $v ) {
-            if( strlen($v) == 0 ) continue;
-
-            // strip html tags to prevent XSS
-            $v = sanitize_text_field( $v );
-
-            add_post_meta( $post_id, $meta, $v );
-          }
+      foreach ( $value as $entity_id => $entity_videos ) {
+        if ( absint( $entity_id ) !== $post_id ) {
+          continue;
         }
+
+        $entity = $this->get_posted_entity( $meta, $entity_id );
+        if ( ! $entity || 'post' !== $entity['type'] || $entity['id'] !== $post_id ) {
+          continue;
+        }
+
+        $this->save_posted_entity_videos( $meta, $post_id, $entity_videos, 'post' );
       }
-
     }
-
   }
 
   function show( $content ) {

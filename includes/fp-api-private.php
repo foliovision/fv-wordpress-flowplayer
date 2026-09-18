@@ -541,8 +541,6 @@ $this->strPrivateAPI - also
     } else {
       $data = $this->get_readme_url_remote();
     }
-    if( !$data )
-      return $res;
 
     /**
      * Some users run into issue that the function was not defined.
@@ -553,15 +551,9 @@ $this->strPrivateAPI - also
       return $res;
     }
 
-    $plugin_data = get_plugin_data($this->strPluginPath);
-
-    $pluginReq = preg_match( '~Requires at least:\s*([0-9.]*)~', $data, $reqMatch ) ? $reqMatch[1] : false;
-    $pluginUpto = preg_match( '~Tested up to:\s*([0-9.]*)~', $data, $uptoMatch ) ? $uptoMatch[1] : false;
-
     $changelogOut = '';
     if( preg_match('~==\s*Changelog\s*==(.*)~si', $data, $match) ){
       $changelogPart = preg_replace('~==.*~','',$match[1]);
-      $version = preg_match('~=\s*([0-9.]+).*=~', $changelogPart, $verMatch ) ? $verMatch[1] : false;
 
         $changelog = (array) preg_split('~[\r\n]+~', trim($changelogPart));
         $ul = false;
@@ -608,23 +600,12 @@ $this->strPrivateAPI - also
             $changelogOut .= '</ul><div style="clear: left;"></div>';
         }
         $changelogOut .= '</div>';
-    }
 
-    $res = (object) array(
-       'name' => $plugin_data['Name'],
-       'slug' => false,
-       'version' => $version,
-       'author' => $plugin_data['Author'],
-       'requires' => $pluginReq,
-       'tested' => $pluginUpto,
-       'homepage' => $plugin_data['PluginURI'],
-       'sections' =>
-      array (
-        'support' => 'Use support forum at <a href="https://foliovision.com/support/">foliovison.com/support</a>',
-        'changelog' => $changelogOut,
-      ),
-       'donate_link' => NULL
-    );
+      $res->sections['changelog'] = $changelogOut;
+    }
+    
+    $res->sections['support'] = 'Use support forum at <a href="https://foliovision.com/support/">foliovison.com/support</a>';
+
 
     return $res;
 

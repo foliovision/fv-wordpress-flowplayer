@@ -839,7 +839,11 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
   width: 100%;
 }
 
-.flowplayer.is-small .fv-fp-list, .flowplayer.is-tiny .fv-fp-list {display: none}
+.flowplayer.is-small .fv-fp-list,
+.flowplayer.is-tiny .fv-fp-list,
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fv-fp-list {
+  display: none
+}
 .flowplayer .fv-fp-list-menu {width: auto; top:auto}
 .flowplayer .fv-fp-list-menu a {text-align:left}
 .flowplayer .fv-fp-list-name {display: none}
@@ -1074,6 +1078,9 @@ body.has-fv-player-fullscreen #chat-widget-container {
 	padding-top: 56.25%;
 	position: relative;
 }
+.is-vertical .fvp-playlist-thumb-img {
+	padding-top: var(--fvp-playlist-thumb-ratio, 177.78%);
+}
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > a > .fvp-playlist-thumb-img > picture,
@@ -1111,5 +1118,11 @@ body.has-fv-player-fullscreen #chat-widget-container {
     max-height: 80vh;
     min-height: 480px;
     width: unset;
+  }
+
+  /* Playlist grid in playlists.css sizes the player column; do not force 480px. */
+  .fp-playlist-vertical-wrapper.is-vertical .freedomplayer.is-vertical {
+    width: 100%;
+    min-height: 0;
   }
 }

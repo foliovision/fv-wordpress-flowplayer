@@ -189,7 +189,10 @@ table.fv-player-popup-formats td:first-child { width: 72px }
 .wp-admin .user-videos .fv-player-custom-video {
   margin-bottom: 10px;
 }
-.wp-admin .user-videos .flowplayer, .postbox-container .fv-player-custom-video .flowplayer, .usersultra-dahsboard-center .fv-player-custom-video .flowplayer {
+.wp-admin .user-videos .flowplayer,
+.postbox-container .fv-player-custom-video .flowplayer,
+.postbox-container .fv-player-custom-video .fp-title,
+.usersultra-dahsboard-center .fv-player-custom-video .flowplayer {
   max-width: 432px !important;
   margin-top: 2px;
   margin-left: 2px;
