@@ -152,6 +152,56 @@
 .is-vertical .fvp-playlist-thumb-img {
 	padding-top: var(--fvp-playlist-thumb-ratio, 177.78%);
 }
+/* Tall video + side playlist: size columns from the player so 80vh
+   height capping shrinks both together, and 3 thumbs fill the player height. */
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow)::before,
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow)::after {
+	content: none;
+	display: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) {
+	display: grid;
+	grid-template-columns:
+		minmax(0, min(75%, calc(80vh / var(--fvp-playlist-ratio, 1.7778))))
+		minmax(0, min(25%, calc(80vh / var(--fvp-playlist-ratio, 1.7778) / 3)));
+	justify-content: center;
+	align-items: stretch;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .freedomplayer {
+	width: 100%;
+	max-width: none;
+	float: none;
+	margin-bottom: 0;
+	max-height: 80vh;
+	min-height: 0;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical {
+	width: auto;
+	max-width: none;
+	height: auto;
+	max-height: none;
+	min-height: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	align-self: stretch;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical a {
+	display: block;
+	width: auto;
+	float: none;
+	margin: 0;
+	flex: 0 0 calc(100% / 3);
+	max-height: calc(100% / 3);
+	box-sizing: border-box;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fvp-playlist-thumb-img {
+	height: 100%;
+	padding-top: 0;
+}
+
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > a > .fvp-playlist-thumb-img > picture,
