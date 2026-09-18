@@ -976,9 +976,10 @@ class flowplayer_frontend extends flowplayer
     el.classList.add('is-fv-narrow');
   }
 
-  // Tall videos on narrow screens: playlist becomes a dropdown (see appearance.module.js), do not lock height
-  if ( el.classList.contains('is-vertical') && el.classList.contains('is-fv-narrow') ) {
-    return;
+  if ( el.classList.contains('is-vertical') ) {
+    if ( el.classList.contains('is-fv-narrow') ) {
+      return;
+    }
   }
 
   playlist.style[property] = height + 'px';

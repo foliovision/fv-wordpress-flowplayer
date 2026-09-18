@@ -52,29 +52,39 @@ flowplayer(function(api, root) {
         toggle = playlist.children('.fp-playlist-dropdown-toggle');
 
       if ( el.hasClass('is-fv-narrow') ) {
-        playlist.css({ 'max-height': '', 'height': '' });
-
+        // Overlay catches clicks when closed so the visible row does not switch video.
+        // When open it shrinks to the chevron, so closing also does not count as an item click.
         if ( ! toggle.length ) {
           toggle = jQuery('<div class="fp-playlist-dropdown-toggle" />');
           playlist.append(toggle);
 
           toggle.on('click', function(e) {
-            e.stopPropagation();
-            playlist.addClass('is-open');
+            if ( playlist.hasClass('is-open') ) {
+              playlist.removeClass('is-open');
+              toggle.css('height', '');
+            } else {
+              toggle.css('height', playlist.children('a:visible').outerHeight());
+              playlist.addClass('is-open');
+            }
+
+            return false
           });
 
           playlist.on('click.fvDropdown', 'a', function() {
             playlist.removeClass('is-open');
+            toggle.css('height', '');
           });
 
           jQuery(document).on('click.fvDropdown' + playlist_id, function(e) {
             if ( ! jQuery(e.target).closest(playlist).length ) {
               playlist.removeClass('is-open');
+              toggle.css('height', '');
             }
           });
         }
       } else {
         playlist.removeClass('is-open');
+        toggle.css('height', '');
         toggle.remove();
         playlist.off('click.fvDropdown');
         jQuery(document).off('click.fvDropdown' + playlist_id);
