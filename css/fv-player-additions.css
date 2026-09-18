@@ -841,7 +841,7 @@ body.fv_flowplayer_tabs_hide .fv_flowplayer_tabs_content > div.fv_flowplayer_tab
 
 .flowplayer.is-small .fv-fp-list,
 .flowplayer.is-tiny .fv-fp-list,
-.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fv-fp-list {
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .freedomplayer:not(.is-fullscreen) .fv-fp-list {
   display: none
 }
 .flowplayer .fv-fp-list-menu {width: auto; top:auto}
