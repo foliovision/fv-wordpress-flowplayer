@@ -1798,6 +1798,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .fp-playlist-external.fp-playlist-only-captions a.is-active,
     .fp-playlist-external.fp-playlist-only-captions a.is-active h4,
     .fp-playlist-external.fp-playlist-only-captions a.is-active:hover h4 { color:<?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
+    .fp-playlist-external, .fv-playlist-slider-wrapper { --fvp-progress-color: <?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
 
     <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
     <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo esc_html( $this->_get_option('subtitleFontFace') ); ?>; }<?php endif; ?>

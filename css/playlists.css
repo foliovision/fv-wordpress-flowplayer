@@ -178,24 +178,23 @@
 	background-color: #000;
 }
 @supports ( -moz-appearance: none ) {
-	.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical {
-		scrollbar-color: #12784a rgb(34 34 34 / 13%);
+	.fp-playlist-vertical {
+		scrollbar-color: var(--fvp-progress-color, currentColor) rgb(34 34 34 / 13%);
 		scrollbar-width: thin;
 	}
 }
-.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical::-webkit-scrollbar {
+.fp-playlist-vertical::-webkit-scrollbar {
 	width: 6px;
 }
-.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical::-webkit-scrollbar-track {
+.fp-playlist-vertical::-webkit-scrollbar-track {
 	background: #808080;
+	cursor: ns-resize;
 }
-.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical::-webkit-scrollbar-thumb {
-	background: #000;
+.fp-playlist-vertical::-webkit-scrollbar-thumb {
+	background: var(--fvp-progress-color, currentColor);
+	cursor: ns-resize;
 }
-.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical::-webkit-scrollbar-thumb:hover {
-	background: #333;
-}
-.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical::-webkit-scrollbar-button {
+.fp-playlist-vertical::-webkit-scrollbar-button {
 	display: none;
 	width: 0;
 	height: 0;
@@ -573,9 +572,13 @@
 .fp-playlist-version-two .fv-playlist-draggable {
 	--fp-playlist-items-gap: 4px;
 	touch-action: pan-x;
-	scrollbar-color: #12784a #2222;
-	scrollbar-width: thin;
 	cursor: pointer;
+}
+@supports ( -moz-appearance: none ) {
+	.fp-playlist-version-two .fv-playlist-draggable {
+		scrollbar-color: var(--fvp-progress-color, currentColor) #2222;
+		scrollbar-width: thin;
+	}
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -584,17 +587,20 @@
 	}
 }
 
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar {
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar,
+.fv-playlist-slider-wrapper::-webkit-scrollbar {
 	height: 30px;
-	background: linear-gradient(to bottom, transparent 18px, rgb(34 34 34 / 13%) 18px 22px, transparent 22px);
+	background: linear-gradient(to bottom, transparent 18px, rgb(128 128 128 / 50%) 18px 22px, transparent 22px);
+	cursor: ew-resize;
 }
-
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb {
-	background: linear-gradient(to bottom, transparent 18px, #12784a 18px 22px, transparent 22px);
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb,
+.fv-playlist-slider-wrapper::-webkit-scrollbar-thumb {
+	background: linear-gradient(to bottom, transparent 18px, var(--fvp-progress-color, currentColor) 18px 22px, transparent 22px);
+	cursor: ew-resize;
 }
-
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover {
-	background: linear-gradient(to bottom, transparent 17px, #12784a 17px 23px, transparent 23px);
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover,
+.fv-playlist-slider-wrapper::-webkit-scrollbar-thumb:horizontal:hover {
+	background: linear-gradient(to bottom, transparent 17px, var(--fvp-progress-color, currentColor) 17px 23px, transparent 23px);
 }
 
 .fp-playlist-version-two .fv-playlist-draggable > a:hover .fvp-playlist-thumb-img > img {
