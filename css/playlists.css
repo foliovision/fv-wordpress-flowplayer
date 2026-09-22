@@ -258,21 +258,21 @@
 .fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px;text-align:left }
 .fv-playlist-slider-wrapper .fp-playlist-horizontal a, .fv-playlist-slider-wrapper .fp-playlist-horizontal.is-wide a { width: 200px }
 
-.fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
+.fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%}
 .fp-playlist-vertical-player {float:left!important;max-width:calc( 100% - 156px)!important}
 .fp-playlist-vertical-wrapper {margin-bottom:24px;overflow:hidden;display:block}
 .fp-playlist-vertical-wrapper:before,.fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:before,.fp-playlist-text-wrapper:after {content:"";display:table}
 .fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:after {clear:both}
 .fp-playlist-vertical.fp-playlist-only-captions a h4 span {line-height:1}
 .fp-playlist-vertical a .fvp-playlist-thumb {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
-.fp-playlist-vertical a h4 {margin:0;font-size:13px;color:#000}
+.fp-playlist-vertical a h4 {margin:0;font-size:13px;color:inherit}
 	.fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 0 0 1px}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a {display:block;margin-bottom:2px}
 	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video {min-height:0 !important;height:100% !important}
 .fp-playlist-external.fp-playlist-vertical a:hover .now-playing {opacity:0}
 .fp-playlist-only-captions.fp-playlist-vertical a h4 {position:relative;top:auto;background-color:transparent;opacity:1;text-shadow:none}
-.fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
+.fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:inherit}
 
 /* Playlist 2014 - classic */
 .fv-playlist-design-2014.fp-playlist-external a h4 {opacity:1;position:relative;margin-bottom:7px;padding:0 10px 4px;color:#000;background-color:transparent;text-shadow:none}

@@ -1090,7 +1090,7 @@ body.has-fv-player-fullscreen #chat-widget-container {
 	border: 0;
 }
 
-.fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
+.fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:rgba(128,128,128,.25)}
 .fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left;margin-bottom:0}
 .fp-playlist-vertical-wrapper .flowplayer.fixed-controls {margin-bottom:2.4em}
 .fp-playlist-vertical-wrapper .flowplayer.fixed-controls.fp-full {margin-bottom:2.8em}

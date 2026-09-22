@@ -1539,11 +1539,6 @@ function fv_flowplayer_admin_skin_playlist() {
     );
     ?>
     <tr>
-      <td><label for="playlistBgColor"><?php esc_html_e( 'Background', 'fv-player' ); ?></label></td>
-      <td><input class="color" id="playlistBgColor" name="playlistBgColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistBgColor') ); ?>"
-                 data-fv-preview=".fp-playlist-external > a > span { background-color:#%val%; }"/></td>
-    </tr>
-    <tr>
       <td></td>
       <td>
         <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
