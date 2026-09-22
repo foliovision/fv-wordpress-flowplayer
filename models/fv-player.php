@@ -1792,21 +1792,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_ad a { color: <?php echo esc_html( $this->_get_option('overlayLinksColor') ); ?> }
 
     .fp-playlist-external > a > span { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }
-    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
-      .fp-playlist-external a h4,
-      .fp-playlist-external a:hover h4,
-      .fp-playlist-external a.is-active:hover h4,
-      .visible-captions.fp-playlist-external a h4 span,
-      .fv-playlist-design-2014.fp-playlist-external a h4,
-      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo esc_html( $this->_get_option('playlistFontColor') ); ?>; }
-    <?php endif; ?>
-    .fp-playlist-external > a.is-active > span { border-color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,
     .fp-playlist-external.fv-playlist-design-2014 a.is-active h4,
     .fp-playlist-external.fv-playlist-design-2014 a.is-active:hover h4,
     .fp-playlist-external.fp-playlist-only-captions a.is-active,
     .fp-playlist-external.fp-playlist-only-captions a.is-active h4,
-    .fp-playlist-external.fp-playlist-only-captions a.is-active:hover h4 { color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    .fp-playlist-external.fp-playlist-only-captions a.is-active:hover h4 { color:<?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
     <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }<?php endif; ?>
 
     <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>

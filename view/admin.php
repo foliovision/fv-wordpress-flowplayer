@@ -1544,21 +1544,6 @@ function fv_flowplayer_admin_skin_playlist() {
                  data-fv-preview=".fp-playlist-external > a > span { background-color:#%val%; }"/></td>
     </tr>
     <tr>
-      <td><label for="playlistSelectedColor"><?php esc_html_e( 'Active Item', 'fv-player' ); ?></label></td>
-      <td><input class="color" id="playlistSelectedColor" name="playlistSelectedColor" type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistSelectedColor') ); ?>"
-                 data-fv-preview=".fp-playlist-external.fv-playlist-design-2014 a.is-active, .fp-playlist-external.fv-playlist-design-2014 a.is-active h4, .fp-playlist-external.fv-playlist-design-2014 a.is-active h4 span, .fp-playlist-external.fp-playlist-only-captions a.is-active, .fp-playlist-external.fp-playlist-only-captions a.is-active h4 span { color:#%val% !important; }"/></td>
-    </tr>
-    <tr>
-      <td><label for="playlistFontColor-proxy"><?php esc_html_e( 'Font Color', 'fv-player' ); ?></label></td>
-        <?php $bShowPlaylistFontColor = ( $fv_fp->_get_option('playlistFontColor') && $fv_fp->_get_option('playlistFontColor') !== '#' ); ?>
-      <td>
-        <input class="color" id="playlistFontColor-proxy" name="playlistFontColor-proxy" data-previous="" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?> type="text" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" data-fv-preview=".fp-playlist-external a h4 span { color:#%val% !important; }, .fp-playlist-external > a { color:#%val% !important; }, #dashboard-widgets .flowplayer-wrapper .fp-playlist-external h4{color: #%val% !important;}" />
-        <input id="playlistFontColor" name="playlistFontColor" type="hidden" value="<?php echo esc_attr( $fv_fp->_get_option('playlistFontColor') ); ?>" />
-        <a class="playlistFontColor-show" <?php echo $bShowPlaylistFontColor ? 'style="display:none;"' : ''; ?>><?php esc_html_e( 'Use custom color', 'fv-player' ); ?><?php esc_html_e( '', 'fv-player' ); ?></a>
-        <a class="playlistFontColor-hide" <?php echo $bShowPlaylistFontColor ? '' : 'style="display:none;"'; ?>><?php esc_html_e( 'Inherit from theme', 'fv-player' ); ?><?php esc_html_e( '', 'fv-player' ); ?></a>
-      </td>
-    </tr>
-    <tr>
       <td></td>
       <td>
         <a class="fv-wordpress-flowplayer-save button button-primary" href="#"><?php esc_html_e( 'Save', 'fv-player' ); ?></a>
