@@ -1075,7 +1075,7 @@ body.has-fv-player-fullscreen #chat-widget-container {
 	position: relative;
 }
 .is-vertical .fvp-playlist-thumb-img {
-	padding-top: var(--fvp-playlist-thumb-ratio, 177.78%);
+	padding-top: var(--fvp-playlist-ratio, 1.7778) * 100%;
 }
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,

@@ -150,7 +150,7 @@
 	position: relative;
 }
 .is-vertical .fvp-playlist-thumb-img {
-	padding-top: var(--fvp-playlist-thumb-ratio, 177.78%);
+	padding-top: var(--fvp-playlist-ratio, 1.7778) * 100%;
 }
 /* Tall video + side playlist: size columns from the player so 80vh
    height capping shrinks both together, and 3 thumbs fill the player height. */

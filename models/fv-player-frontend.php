@@ -958,7 +958,7 @@ class flowplayer_frontend extends flowplayer
       $ratio         = $this->get_ratio();
       if ( $ratio > 1.2 ) {
         $wrapper_class .= ' is-vertical';
-        $wrapper_style  = ' style="--fvp-playlist-thumb-ratio: ' . floatval( $ratio * 100 ) . '%;"';
+        $wrapper_style  = ' style="--fvp-playlist-ratio: ' . floatval( $ratio ) . ';"';
       }
       $this->ret['html'] = '<div class="' . $wrapper_class . '"' . $wrapper_style . '>' . $this->ret['html'] . '</div>';
 
