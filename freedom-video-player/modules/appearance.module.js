@@ -45,6 +45,10 @@ flowplayer(function(api, root) {
       el.removeClass('is-fv-narrow');
     }
 
+    if ( el.hasClass('fp-playlist-vertical-wrapper') && el.hasClass('is-vertical') ) {
+      freedomplayer_vertical_playlist_scrollbar( el );
+    }
+
     // check if there are too many items in .fp-controls and they don't fit
     var controls = root.find('.fp-controls'),
       controls_width = controls.parent().width(),
@@ -136,7 +140,77 @@ function freedomplayer_playlist_size_check(){
   })
 }
 
-jQuery( document ).ready( freedomplayer_playlist_size_check );
+jQuery( document ).ready( function() {
+  freedomplayer_playlist_size_check();
+  freedomplayer_vertical_playlist_scrollbar();
+} );
+
+function freedomplayer_vertical_playlist_scrollbar( wrapper ) {
+  wrapper = wrapper ? jQuery( wrapper ) : jQuery('.fp-playlist-vertical-wrapper.is-vertical');
+
+  wrapper.each( function() {
+    var $wrapper = jQuery( this ),
+      playlist = $wrapper.children('.fp-playlist-vertical').get(0),
+      track = playlist ? playlist.querySelector('.fp-playlist-scrollbar') : null;
+
+    if ( ! playlist ) {
+      return;
+    }
+
+    if ( ! $wrapper.hasClass('is-fv-narrow') ) {
+      if ( track ) {
+        track.classList.add('is-hidden');
+      }
+      return;
+    }
+
+    if ( ! track ) {
+      track = document.createElement('div');
+      track.className = 'fp-playlist-scrollbar';
+      track.setAttribute( 'aria-hidden', 'true' );
+      track.innerHTML = '<div class="fp-playlist-scrollbar-thumb"></div>';
+      playlist.appendChild( track );
+      playlist.addEventListener( 'scroll', function() {
+        freedomplayer_vertical_playlist_scrollbar_update( playlist, track );
+      }, { passive: true } );
+
+      // if ( typeof ResizeObserver === 'function' ) {
+      //   new ResizeObserver( function() {
+      //     freedomplayer_vertical_playlist_scrollbar_update( playlist, track );
+      //   } ).observe( playlist );
+      // }
+    }
+
+    freedomplayer_vertical_playlist_scrollbar_update( playlist, track );
+  } );
+}
+
+function freedomplayer_vertical_playlist_scrollbar_update( playlist, track ) {
+  var thumb = track.querySelector('.fp-playlist-scrollbar-thumb'),
+    overflow = playlist.scrollHeight - playlist.clientHeight,
+    trackHeight = playlist.clientHeight,
+    thumbHeight,
+    top;
+
+  if ( ! thumb ) {
+    return;
+  }
+
+  if ( overflow <= 1 || trackHeight <= 0 ) {
+    track.classList.add('is-hidden');
+    return;
+  }
+
+console.log( 'trackHeight', trackHeight );
+
+  track.classList.remove('is-hidden');
+  track.style.top = playlist.scrollTop + 'px';
+  track.style.height = trackHeight + 'px';
+  thumbHeight = Math.max( trackHeight * playlist.clientHeight / playlist.scrollHeight, 24 );
+  top = playlist.scrollTop / overflow * ( trackHeight - thumbHeight );
+  thumb.style.height = thumbHeight + 'px';
+  thumb.style.transform = 'translateY(' + top + 'px)';
+}
 
 flowplayer(function(api, root) {
   root = jQuery(root);
