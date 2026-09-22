@@ -1120,5 +1120,6 @@ body.has-fv-player-fullscreen #chat-widget-container {
   .fp-playlist-vertical-wrapper.is-vertical .freedomplayer.is-vertical {
     width: 100%;
     min-height: 0;
+    max-height: none;
   }
 }

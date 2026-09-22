@@ -162,8 +162,8 @@
 .fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) {
 	display: grid;
 	grid-template-columns:
-		minmax(0, min(75%, calc(80vh / var(--fvp-playlist-ratio))))
-		minmax(0, min(25%, calc(80vh / var(--fvp-playlist-ratio) / 3)));
+		min( 75%, calc( max(480px, 80vh) / var(--fvp-playlist-ratio, 1.7778) ) )
+  	min( 25%, calc( max(480px, 80vh) / var(--fvp-playlist-ratio, 1.7778) / 3) );
 	justify-content: center;
 }
 .fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .freedomplayer {
