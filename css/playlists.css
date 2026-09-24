@@ -152,6 +152,82 @@
 .is-vertical .fvp-playlist-thumb-img {
 	padding-top: var(--fvp-playlist-ratio, 1.7778) * 100%;
 }
+
+/* Tall video + narrow screen: restyle vertical playlist as a dropdown */
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow {
+	overflow: visible;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical {
+	width: 100%;
+	background: #fff;
+	z-index: 5;
+	display: flex;
+	flex-direction: column;
+	box-shadow: 0 8px 24px rgba(0,0,0,.15);
+	max-height: calc( 24em / var(--fvp-playlist-ratio) );
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+.fp-playlist-vertical.has-custom-scrollbar {
+	scrollbar-width: none;	
+}
+.fp-playlist-vertical.has-custom-scrollbar::-webkit-scrollbar {
+	display: none;
+	width: 0;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a {
+	display: flex;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
+	box-sizing: border-box;
+	align-items: center;
+	gap: 10px;
+	border: 0;
+	border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active {
+	background: #f0f0f0;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fvp-playlist-thumb-img {
+	width: 40px;
+	height: auto;
+	padding-top: 0;
+	aspect-ratio: 1 / var(--fvp-playlist-ratio, 1.7778);
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4,
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a:hover h4,
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 .dur {
+	display: flex;
+	transition: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 {
+	align-items: center;
+	justify-content: space-between;
+	position: static;
+	padding: 0;
+	text-align: left;
+	text-decoration: none;	
+	font-size: 1em;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 span {
+	position: static;
+	padding: 0;
+	background-color: transparent;
+	color: #000;
+	transform: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a .now-playing {
+	display: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a .dur {
+	opacity: 1;
+	font-size: .85em;
+	color: #000;
+	text-shadow: none;
+	position: static;
+}
+
 /* Tall video + side playlist: size columns from the player so 80vh
    height capping shrinks both together, and 3 thumbs fill the player height. */
 .fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow)::before,
