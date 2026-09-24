@@ -94,6 +94,11 @@ HTML;
   if ( el.offsetHeight && el.offsetWidth <= 560 ) {
     el.classList.add('is-fv-narrow');
   }
+
+  if ( el.classList.contains('is-vertical') ) {
+    return;
+  }
+
   playlist.style[property] = height + 'px';
   if (property === 'max-height') {
     playlist.style['height'] = 'auto';

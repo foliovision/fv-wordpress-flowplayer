@@ -146,6 +146,10 @@ class FV_Player_Checker {
 
         // Write outside the web root with a non-executable .tmp name. Pass the
         // remote URL as original_filename so getID3 can still fall back to .mp3.
+        if ( ! function_exists( 'wp_tempnam' ) ) {
+          // We need to include the file.php file to get the wp_tempnam function for cron.
+          require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
         $localtempfilename = wp_tempnam( 'fv-player-mime' );
 
         global $wp_filesystem;
@@ -153,6 +157,10 @@ class FV_Player_Checker {
         if ( is_null( $wp_filesystem ) ) {
           require_once ABSPATH . 'wp-admin/includes/file.php';
           WP_Filesystem();
+        }
+
+        if ( $wp_filesystem->method !== 'direct' ) {
+          return false;
         }
 
         $real_file_size = 0;
@@ -417,6 +425,10 @@ class FV_Player_Checker {
     if ( is_null( $wp_filesystem ) ) {
       require_once ABSPATH . 'wp-admin/includes/file.php';
       WP_Filesystem();
+    }
+
+    if ( $wp_filesystem->method !== 'direct' ) {
+      return;
     }
 
     if ( $wp_filesystem && $wp_filesystem->exists( $filename ) ) {

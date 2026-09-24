@@ -216,7 +216,7 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 * Security: Email subscription: Avoid calculations for MS Excel in CSV export
 * Vertical videos: Do not lower subtitle size based on player width
 * Vertical videos: Limit height for desktop
-* Bugifx: CSS: Fix position of <picture> tags when used for playlist thumbnails
+* Bugfix: CSS: Fix position of <picture> tags when used for playlist thumbnails
 
 = 8.1.6 - 2026-07-28 =
 

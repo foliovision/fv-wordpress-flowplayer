@@ -149,6 +149,66 @@
 	padding-top: 56.25%;
 	position: relative;
 }
+.is-vertical .fvp-playlist-thumb-img {
+	padding-top: var(--fvp-playlist-ratio, 1.7778) * 100%;
+}
+/* Tall video + side playlist: size columns from the player so 80vh
+   height capping shrinks both together, and 3 thumbs fill the player height. */
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow)::before,
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow)::after {
+	content: none;
+	display: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) {
+	display: grid;
+	grid-template-columns:
+		min( 75%, calc( max(480px, 80vh) / var(--fvp-playlist-ratio, 1.7778) ) )
+  	min( 25%, calc( max(480px, 80vh) / var(--fvp-playlist-ratio, 1.7778) / 3) );
+	justify-content: center;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .freedomplayer {
+	width: 100%;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical {
+	width: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	background-color: #000;
+}
+@supports ( -moz-appearance: none ) {
+	.fp-playlist-vertical {
+		scrollbar-color: var(--fvp-progress-color, currentColor) rgb(34 34 34 / 13%);
+		scrollbar-width: thin;
+	}
+}
+.fp-playlist-vertical::-webkit-scrollbar {
+	width: 6px;
+}
+.fp-playlist-vertical::-webkit-scrollbar-track {
+	background: #808080;
+	cursor: ns-resize;
+}
+.fp-playlist-vertical::-webkit-scrollbar-thumb {
+	background: var(--fvp-progress-color, currentColor);
+	cursor: ns-resize;
+}
+.fp-playlist-vertical::-webkit-scrollbar-button {
+	display: none;
+	width: 0;
+	height: 0;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical a {
+	margin: 0;
+	flex: 0 0 calc(100% / 3);
+	border-bottom: 1px solid black;
+}
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fvp-playlist-thumb-img {
+	height: 100%;
+	padding-top: 0;
+}
+
 .fp-playlist-external > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > div > a > .fvp-playlist-thumb-img > img,
 .fp-playlist-external > a > .fvp-playlist-thumb-img > picture,
@@ -197,21 +257,21 @@
 .fv-playlist-slider-wrapper .fp-playlist-horizontal { margin-bottom: 8px; width: 2500px;text-align:left }
 .fv-playlist-slider-wrapper .fp-playlist-horizontal a, .fv-playlist-slider-wrapper .fp-playlist-horizontal.is-wide a { width: 200px }
 
-.fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%;background-color:#fff}
+.fp-playlist-vertical {text-align:left;overflow-x:hidden;max-width:100%}
 .fp-playlist-vertical-player {float:left!important;max-width:calc( 100% - 156px)!important}
 .fp-playlist-vertical-wrapper {margin-bottom:24px;overflow:hidden;display:block}
 .fp-playlist-vertical-wrapper:before,.fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:before,.fp-playlist-text-wrapper:after {content:"";display:table}
 .fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:after {clear:both}
 .fp-playlist-vertical.fp-playlist-only-captions a h4 span {line-height:1}
 .fp-playlist-vertical a .fvp-playlist-thumb {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
-.fp-playlist-vertical a h4 {margin:0;font-size:13px;color:#000}
+.fp-playlist-vertical a h4 {margin:0;font-size:13px;color:inherit}
 	.fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left}
-	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 2px}
+	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 0 0 1px}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a {display:block;margin-bottom:2px}
 	.css-videos .fp-playlist-vertical-wrapper video, .fp-playlist-vertical-wrapper video {min-height:0 !important;height:100% !important}
 .fp-playlist-external.fp-playlist-vertical a:hover .now-playing {opacity:0}
 .fp-playlist-only-captions.fp-playlist-vertical a h4 {position:relative;top:auto;background-color:transparent;opacity:1;text-shadow:none}
-.fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:#000}
+.fp-playlist-only-captions.fp-playlist-vertical a,.fp-playlist-only-captions.fp-playlist-vertical a:hover h4 {color:inherit}
 
 /* Playlist 2014 - classic */
 .fv-playlist-design-2014.fp-playlist-external a h4 {opacity:1;position:relative;margin-bottom:7px;padding:0 10px 4px;color:#000;background-color:transparent;text-shadow:none}
@@ -512,9 +572,13 @@
 .fp-playlist-version-two .fv-playlist-draggable {
 	--fp-playlist-items-gap: 4px;
 	touch-action: pan-x;
-	scrollbar-color: #12784a #2222;
-	scrollbar-width: thin;
 	cursor: pointer;
+}
+@supports ( -moz-appearance: none ) {
+	.fp-playlist-version-two .fv-playlist-draggable {
+		scrollbar-color: var(--fvp-progress-color, currentColor) #2222;
+		scrollbar-width: thin;
+	}
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -523,17 +587,20 @@
 	}
 }
 
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar {
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar,
+.fv-playlist-slider-wrapper::-webkit-scrollbar {
 	height: 30px;
-	background: linear-gradient(to bottom, transparent 18px, rgb(34 34 34 / 13%) 18px 22px, transparent 22px);
+	background: linear-gradient(to bottom, transparent 18px, rgb(128 128 128 / 50%) 18px 22px, transparent 22px);
+	cursor: ew-resize;
 }
-
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb {
-	background: linear-gradient(to bottom, transparent 18px, #12784a 18px 22px, transparent 22px);
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb,
+.fv-playlist-slider-wrapper::-webkit-scrollbar-thumb {
+	background: linear-gradient(to bottom, transparent 18px, var(--fvp-progress-color, currentColor) 18px 22px, transparent 22px);
+	cursor: ew-resize;
 }
-
-.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover {
-	background: linear-gradient(to bottom, transparent 17px, #12784a 17px 23px, transparent 23px);
+.fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover,
+.fv-playlist-slider-wrapper::-webkit-scrollbar-thumb:horizontal:hover {
+	background: linear-gradient(to bottom, transparent 17px, var(--fvp-progress-color, currentColor) 17px 23px, transparent 23px);
 }
 
 .fp-playlist-version-two .fv-playlist-draggable > a:hover .fvp-playlist-thumb-img > img {

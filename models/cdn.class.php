@@ -39,7 +39,7 @@ abstract class FV_Player_CDN {
 
             if( stripos($aVideo['src'],$sDomain) !== false ) {
               $bFound = true;
-              $aVideo['src'] = $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]);
+              $aVideo['src'] = sanitize_url( $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]) );
               $_POST['sources'][$key] = $aVideo;
             }
           }
@@ -47,8 +47,11 @@ abstract class FV_Player_CDN {
       }
 
       if( $bFound ) {
+        foreach( $_POST['sources'] AS $key => $aVideo ) {
+          $_POST['sources'][ $key ] = array_map( 'sanitize_text_field', $aVideo );
+        }
+
         echo '<FVFLOWPLAYER>';
-        // TODO: Sanitize
         echo wp_json_encode($_POST['sources']);
         echo '</FVFLOWPLAYER>';
         die();

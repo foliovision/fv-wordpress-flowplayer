@@ -413,6 +413,9 @@ function fv_player_preload() {
     playlist = jQuery(root).parent().find('div.fp-playlist-vertical[rel='+jQuery(root).attr('id')+']');
     if( playlist.length ){
       function check_size_and_all() {
+        if ( playlist.closest('.fp-playlist-vertical-wrapper').hasClass('is-vertical') ) {
+          return;
+        }
         var property = playlist.hasClass('fp-playlist-only-captions') ? 'height' : 'max-height';
         if( playlist.parents('.fp-playlist-text-wrapper').hasClass('is-fv-narrow') ){
           property = 'max-height';
