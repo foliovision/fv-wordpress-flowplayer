@@ -456,8 +456,10 @@
 	clear: both;
 }
 
-/*  Playlist Duration */
 .fp-playlist-external .dur { font-style:normal;font-size:13px;position:absolute;top:6px;right:6px;color:#fff;line-height:1;text-shadow:0 0 3px #333;opacity:0;-webkit-transition:all 0.3s ease-in-out 0.1s;-moz-transition:all 0.3s ease-in-out 0.1s;transition:all 0.3s ease-in-out 0.1s }
+.fp-playlist-external .sub { 
+	display: none;
+}
 
 /* Vertical Season Style */
 .fvp-progress-wrap {
