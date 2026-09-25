@@ -172,7 +172,8 @@
 	z-index: 5;
 	display: flex;
 	flex-direction: column;
-	box-shadow: 0 8px 24px rgba(0,0,0,.15);
+	gap: 2px;
+	padding: 0 12px 0 6px;
 	max-height: calc( 24em / var(--fvp-playlist-ratio) );
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -187,54 +188,74 @@
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a {
 	display: flex;
 	width: 100%;
-	margin: 0;
-	padding: 8px;
+	margin: 6px 0 0;
+	padding: 8px 10px;
 	box-sizing: border-box;
 	align-items: center;
-	gap: 10px;
+	gap: 12px;
 	border: 0;
-	border-bottom: 1px solid rgba(0,0,0,.06);
 }
-.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active {
-	background: #f0f0f0;
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active,
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active:hover {
+	background: #f1f3f4;
+	border-radius: 16px;
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fvp-playlist-thumb-img {
-	width: 40px;
-	height: auto;
+	width: 3em;
+	height: 3em;
+	flex: 0 0 3em;
 	padding-top: 0;
-	aspect-ratio: 1 / var(--fvp-playlist-ratio, 1.7778);
-}
-.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4,
-.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a:hover h4,
-.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 .dur {
-	display: flex;
-	transition: none;
+	border-radius: 8px;
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 {
-	align-items: center;
-	justify-content: space-between;
-	position: static;
+	display: flex;
+	flex-flow: row wrap;
+	row-gap: 2px;
+	flex: 1;
 	padding: 0;
+	position: static;
+	background: transparent;
+	color: #202124;
 	text-align: left;
-	text-decoration: none;	
-	font-size: 1em;
+	font-size: 15px;
+	text-decoration: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active:hover h4 {
+	display: flex;
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 span {
 	position: static;
+	width: 100%;
 	padding: 0;
 	background-color: transparent;
-	color: #000;
+	color: #202124;
+	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	transform: none;
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a .now-playing {
 	display: none;
 }
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a .sub,
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a .dur {
-	opacity: 1;
-	font-size: .85em;
-	color: #000;
-	text-shadow: none;
+	display: inline;
 	position: static;
+	opacity: 1;
+	font-style: normal;
+	font-size: 13px;
+	line-height: 1.3;
+	color: #5f6368;
+	text-shadow: none;
+	transition: none;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 .sub + .sub::before,
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 .sub + .dur::before,
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a h4 .dur + .sub::before {
+	content: "·";
+	margin: 0 4px;
+}
 }
 
 /* Tall video + side playlist: size columns from the player so 80vh
@@ -349,7 +370,12 @@
 .fp-playlist-vertical-wrapper:after,.fp-playlist-text-wrapper:after {clear:both}
 .fp-playlist-vertical.fp-playlist-only-captions a h4 span {line-height:1}
 .fp-playlist-vertical a .fvp-playlist-thumb {display:block;position:relative;width:100%;height:auto;margin:0 0 1px;padding-top:55%;border:0;background-color:#fff;background-size:cover;background-position:center center;background-repeat:no-repeat}
-.fp-playlist-vertical a h4 {margin:0;font-size:13px;color:inherit}
+.fp-playlist-vertical a h4 {
+	color: inherit;
+	font-size: 13px;
+	margin: 0;
+	transition: none;
+}
 	.fp-playlist-vertical-wrapper .flowplayer {width:75%;float:left}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical {width:25%;margin-bottom:0;padding:0 0 0 1px}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a {display:block;margin-bottom:2px}
