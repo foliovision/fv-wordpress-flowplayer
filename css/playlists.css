@@ -137,7 +137,16 @@
 }
 
 /*  Other playlist styles */
-.fp-playlist-external a,.entry-content .fp-playlist-external a {position:relative;text-decoration:none;border-bottom:0;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;text-align:center;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+.fp-playlist-external a,
+.entry-content .fp-playlist-external a {
+	position: relative;
+	border-bottom: 0;
+	box-shadow: none;
+	box-sizing: border-box;
+	text-align: center;
+	text-decoration: none;
+	-webkit-touch-callout: none;
+}
 .fp-playlist-external a:focus,.entry-content .fp-playlist-external a:focus {outline:0;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;}
 .fp-playlist-external a:hover,.entry-content .fp-playlist-external a:hover {-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;text-decoration:none;border-bottom:0}
 .fp-playlist-external a,.fp-playlist-external a h4,.fp-playlist-vertical-wrapper .fp-playlist-external {-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
