@@ -182,25 +182,15 @@ class FV_Player_Checker {
 
         if ( ! is_wp_error( $res ) ) {
 
-          // Get the real file size out of Content-length: 0-8388608/{full file size here}
-          if ( $content_range = wp_remote_retrieve_header( $res, 'content-range' ) ) {
+
+          $code = wp_remote_retrieve_response_code( $res );
+          if ( intval( $code ) > 399 ) {
+            return array( 'error' => 'HTTP ' . $code );
+
+          } else if ( $content_range = wp_remote_retrieve_header( $res, 'content-range' ) ) {
             $content_range_parts = explode( '/', $content_range );
             if ( 2 === count( $content_range_parts ) ) {
               $real_file_size = intval( $content_range_parts[1] );
-            }
-            list( $header, $sHTTPError ) = $this->http_request( $remotefilename_encoded, $aArgs );
-
-            if( $sHTTPError ) {
-              $bValidFile = false;
-            }
-            fclose($out);
-
-            $headers = WP_Http::processHeaders( $header );
-            if( !empty($headers['response']['code']) && intval($headers['response']['code']) > 399 ) {
-              $error = 'HTTP '.$headers['response']['code'];
-              if( !empty($headers['response']['message']) ) {
-                $error .= ': '.$headers['response']['message'];
-              }
             }
 
             list( $aVideoErrors, $sContentType, $bFatal ) = $this->check_headers( $headers, $remotefilename, $random );
@@ -226,8 +216,9 @@ class FV_Player_Checker {
           foreach( glob( trailingslashit($upload_dir['basedir']).'fv_flowlayer_tmp_*' ) AS $file ) {
             @unlink($file);
           }
+        } else {
+          return array( 'error' => $res->get_error_message() );
         }
-  
         
         /*
         Only check file length
@@ -590,7 +581,7 @@ class FV_Player_Checker {
   
   
   
-  public static function http_request( $sURL, $args ) {
+  public static function http_request( $sURL, $args = array() ) {
 
     $parsed_home = wp_parse_url( home_url() );
     $parsed_url  = wp_parse_url( $sURL );
@@ -653,15 +644,6 @@ class FV_Player_Checker {
     $header = substr($data, 0, $header_size);
     $body = substr($data, $header_size);
   
-    if ($file) {
-      $size = strlen($body);
-      for ($written = 0; $written < $size; $written += $fwrite) {
-        $fwrite = fwrite($file, substr($body, $written ,1024*512));
-        if ($fwrite == 0) {
-          break;
-        }
-      }
-    }
     $sError = ($ch == false) ? 'CURL Error: '.curl_error ( $ch) : false;
     if( curl_errno($ch) == 28 ) {
       $sError .= "Connection timeout, can't check the video.";
