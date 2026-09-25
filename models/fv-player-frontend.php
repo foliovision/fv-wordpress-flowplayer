@@ -974,6 +974,7 @@ class flowplayer_frontend extends flowplayer
 
   if ( el.offsetHeight && el.offsetWidth <= 560 ) {
     el.classList.add('is-fv-narrow');
+    height = player.offsetHeight;
   }
 
   if ( el.classList.contains('is-vertical') ) {
