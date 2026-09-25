@@ -45,6 +45,10 @@ flowplayer(function(api, root) {
       el.removeClass('is-fv-narrow');
     }
 
+    if ( el.hasClass('fp-playlist-vertical-wrapper') && window.freedomplayer_ios_playlist_scrollbar ) {
+      freedomplayer_ios_playlist_scrollbar( el.find( '.fp-playlist-vertical' ) );
+    }
+
     // check if there are too many items in .fp-controls and they don't fit
     var controls = root.find('.fp-controls'),
       controls_width = controls.parent().width(),

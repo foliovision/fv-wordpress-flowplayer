@@ -256,7 +256,6 @@
 	content: "·";
 	margin: 0 4px;
 }
-}
 
 /* Tall video + side playlist: size columns from the player so 80vh
    height capping shrinks both together, and 3 thumbs fill the player height. */
@@ -487,7 +486,7 @@
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: 700;
 }
-.fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
+.fp-playlist-external.fp-playlist-polaroid a:nth-of-type(odd) {
 	clear: both;
 }
 
@@ -656,7 +655,6 @@
 	padding-top: 0;
 }
 
-/* WIP: Playlist 2022 */
 .fp-playlist-version-one,
 .fp-playlist-version-two {
 	max-width: 100% !important;
@@ -687,6 +685,9 @@
 	touch-action: pan-x;
 	cursor: pointer;
 }
+.fp-playlist-version-two.has-custom-scrollbar .fv-playlist-draggable {
+	scrollbar-width: none;
+}
 @supports ( -moz-appearance: none ) {
 	.fp-playlist-version-two .fv-playlist-draggable {
 		scrollbar-color: var(--fvp-progress-color, currentColor) #2222;
@@ -714,6 +715,11 @@
 .fp-playlist-version-two .fv-playlist-draggable::-webkit-scrollbar-thumb:horizontal:hover,
 .fv-playlist-slider-wrapper::-webkit-scrollbar-thumb:horizontal:hover {
 	background: linear-gradient(to bottom, transparent 17px, var(--fvp-progress-color, currentColor) 17px 23px, transparent 23px);
+}
+.fp-playlist-version-two .fv-playlist-draggable.has-custom-scrollbar::-webkit-scrollbar,
+.fv-playlist-slider-wrapper.has-custom-scrollbar::-webkit-scrollbar {
+	display: none;
+	height: 0;	
 }
 
 .fp-playlist-version-two .fv-playlist-draggable > a:hover .fvp-playlist-thumb-img > img {
@@ -828,7 +834,7 @@
 	.fp-playlist-horizontal {margin-left:-1px;margin-right:-1px}
 	.fp-playlist-horizontal a,.entry-content .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fp-playlist-horizontal a {width: 50%}
 	.fp-playlist-horizontal a:nth-child(3n+1) {clear:none}
-	.fp-playlist-horizontal a:nth-child(2n+1) {clear:both}
+	.fp-playlist-horizontal a:nth-of-type(odd) {clear:both}
 	.fv-playlist-slider-wrapper .fp-playlist-horizontal a,.entry-content .fv-playlist-slider-wrapper .fp-playlist-horizontal a, .flowplayer.is-fv-narrow + .fv-playlist-slider-wrapper .fp-playlist-horizontal a {width: 200px}
 }
 
@@ -837,7 +843,7 @@
 	.fp-playlist-horizontal a h4, .fp-playlist-external a h4 {font-size:12px}
 	.fp-playlist-vertical-wrapper .fp-playlist-vertical a,.fp-playlist-vertical a {width:49.5%;float:left;margin: .75% 0 0 1%}
 	.fp-playlist-only-captions.fp-playlist-vertical a {width:100%;float:none;margin:8px 0}
-	.fp-playlist-vertical a:nth-child(2n+1) {clear:both;margin-left:0}
+	.fp-playlist-vertical a:nth-of-type(odd) {clear:both;margin-left:0}
 }
 
 @media only screen and (max-width: 29.9375em) {
@@ -853,7 +859,7 @@
 	.entry-content .fp-playlist-external.fp-playlist-polaroid a {
 		width: 30.333333333333%;
 	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
+	.fp-playlist-external.fp-playlist-polaroid a:nth-of-type(odd) {
 		clear: none;
 	}
 	.fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
@@ -866,7 +872,7 @@
 	.entry-content .fp-playlist-external.fp-playlist-polaroid a {
 		width: 22%;
 	}
-	.fp-playlist-external.fp-playlist-polaroid a:nth-child(2n+1) {
+	.fp-playlist-external.fp-playlist-polaroid a:nth-of-type(odd) {
 		clear: none;
 	}
 	.fp-playlist-external.fp-playlist-polaroid a:nth-child(3n+1) {
@@ -875,4 +881,58 @@
 	.fp-playlist-external.fp-playlist-polaroid a:nth-child(4n+1) {
 		clear: both;
 	}
+}
+
+/**
+ * iOS does not show scrollbars, so we put in our own.
+ * Sticky track stays in the scrollport. Negative margin keeps it from growing the scroll range.
+ */
+ .fp-ios-playlist-scrollbar {
+	position: sticky;
+	top: 0;
+	height: var( --fvp-playlist-viewport );
+	width: 6px;
+	margin-left: auto;
+	margin-bottom: calc( -1 * var( --fvp-playlist-viewport ) );
+	background: #bbb;
+	pointer-events: none;
+	z-index: 6;
+	
+}
+.fp-ios-playlist-scrollbar.is-horizontal {
+	top: auto;
+	bottom: 0;
+	height: 4px;
+	left: 0;
+	width: var( --fvp-playlist-viewport );
+	margin: 4px 0 0;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-ios-playlist-scrollbar {
+	flex: 0 0 auto;
+	margin-right: -12px;
+}
+.fv-playlist-slider-wrapper .fp-playlist-horizontal .fp-ios-playlist-scrollbar.is-horizontal {
+	margin-top: 26px;
+	margin-bottom: 0;
+}
+.fp-playlist-version-two.has-custom-scrollbar {
+	flex-wrap: wrap;
+}
+.fp-playlist-version-two .fp-ios-playlist-scrollbar {
+	position: static;
+	flex: 0 0 100%;
+	width: 100%;
+	margin-top: 18px;
+}
+.fp-ios-playlist-scrollbar.is-hidden {
+	display: none;
+}
+.fp-ios-playlist-scrollbar-thumb {
+	height: var( --fvp-playlist-scrollbar-thumb-size );
+	width: 100%;
+	background: var(--fvp-progress-color, currentColor);
+}
+.fp-ios-playlist-scrollbar.is-horizontal .fp-ios-playlist-scrollbar-thumb {
+	height: 4px;
+	width: var( --fvp-playlist-scrollbar-thumb-size );
 }
