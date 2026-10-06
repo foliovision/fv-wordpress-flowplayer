@@ -359,6 +359,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.55.7212 - 2026-10-06 =
+
+* Security: Enable profile videos setting: Authenticated (Subscriber+) arbitrary file upload, if using "Enable profile videos" setting
+* Security: Enable profile videos setting: Authenticated (Subscriber+) stored XSS via unquoted 'popup' shortcode attribute, if using "Enable profile videos" setting
+* Security: Enable profile videos setting: Unauthenticated stored XSS via 'synopsis' shortcode attribute, if using "Parse Vimeo and YouTube links" setting
+
 = 7.5.54.7212 - 2026-08-18 =
 
 * Security: Email Popups: Avoid storing and exporting CSV values that would get interpreted by old Microsoft Excel when opening such CSV export
