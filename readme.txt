@@ -210,6 +210,10 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.9 - 2026-10-07 =
+
+* Security: An unauthenticated attacker might execute JavaScript in the site's origin in the browser of a victim who opens the attacker web page
+
 = 8.1.8 - 2026-10-05 =
 
 * CSS: Improve all playlist scrollbars to use main skin color
