@@ -2764,7 +2764,67 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       
     exit;
   }
-  
+
+  function wp_kses_permit_scripts( $tags, $context = false ) {
+    if( $context != 'post' ) return $tags;
+
+    if ( empty($tags['ins']) ) {
+      $tags['ins'] = array();
+    }
+
+    $tags['ins']['class'] = true;
+    $tags['ins']['data-zoneid'] = true;
+
+    if ( empty($tags['script']) ) {
+      $tags['script'] = array();
+    }
+
+    $tags['script']['src'] = true;
+    $tags['script']['type'] = true;
+    $tags['script']['async'] = true;
+
+    return $tags;
+  }
+
+  function wp_kses_permit_settings( $tags, $context = false ) {
+    if( $context != 'post' ) return $tags;
+
+    if ( empty($tags['form']) ) {
+      $tags['form'] = array();
+    }
+
+    $tags['form']['action'] = true;
+    $tags['form']['class'] = true;
+    $tags['form']['id'] = true;
+    $tags['form']['method'] = true;
+
+    if ( empty($tags['iframe']) ) {
+      $tags['iframe'] = array();
+    }
+
+    $tags['iframe']['class'] = true;
+    $tags['iframe']['frameborder'] = true;
+    $tags['iframe']['data-*'] = true;
+    $tags['iframe']['height'] = true;
+    $tags['iframe']['id'] = true;
+    $tags['iframe']['src'] = true;
+    $tags['iframe']['style'] = true;
+    $tags['iframe']['width'] = true;
+
+    if ( empty($tags['input']) ) {
+      $tags['input'] = array();
+    }
+
+    $tags['input']['class'] = true;
+    $tags['input']['id'] = true;
+    $tags['input']['name'] = true;
+    $tags['input']['onclick'] = true;
+    $tags['input']['placeholder'] = true;
+    $tags['input']['type'] = true;
+    $tags['input']['value'] = true;
+
+    return $tags;
+  }
 }
 
 function fv_wp_flowplayer_save_post( $post_id ) {

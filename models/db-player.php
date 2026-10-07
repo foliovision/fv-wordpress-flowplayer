@@ -483,9 +483,9 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach ($options as $key => $value) {
       if (!in_array($key, $this->ignored_input_fields)) {
         if (property_exists($this, $key)) {
-          if( $key != 'ad' ) {
-            $value = strip_tags($value);
-          }
+
+          $value = FV_Player_Db::strip_tags( $value, $key );
+
           $this->$key = FV_Player_Db::sanitize( $value );
           
         } else if ( in_array($key, array('subtitles_count', 'chapters_count', 'transcript_count', 'cues_count'))) {
@@ -953,9 +953,7 @@ CREATE TABLE " . self::$db_table_name . " (
         $numeric_value = in_array( $property, $this->numeric_properties );
         $data_keys[]   = $property . ' = ' . ($numeric_value  ? (int) $value : '%s' );
 
-        if( $property != 'ad' ) {
-          $value = strip_tags($value);
-        }
+        $value = FV_Player_Db::strip_tags( $value, $property );
 
         if (!$numeric_value) {
           $data_values[] = $value;
