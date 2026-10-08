@@ -164,7 +164,7 @@ HTML;
   public function testPlaylistText() {
     $output = apply_filters( 'the_content', '[fvplayer '.$this->shortcode_body.' lightbox="true;text"]' );
     $sample = <<< HTML
-<ul class="fv-player-lightbox-text-playlist" rel="wpfp_338ee74dbab365544f456c8327b33616_container"><li><a data-fancybox='gallery' data-options='{"touch":false}' href="#wpfp_338ee74dbab365544f456c8327b33616_container" class="fv-player-lightbox-link" title="Video 1">Video 1</li><li><a href="#" class="fv-player-lightbox-link" title="Video 2">Video 2</li><li><a href="#" class="fv-player-lightbox-link" title="Video 3">Video 3</li></ul>
+<ul class="fv-player-lightbox-text-playlist" rel="wpfp_338ee74dbab365544f456c8327b33616_container"><li><a data-fancybox='gallery' data-options='{"touch":false}' href="#wpfp_338ee74dbab365544f456c8327b33616_container" class="fv-player-lightbox-link" title="Video 1">Video 1</a></li><li><a href="#" class="fv-player-lightbox-link" title="Video 2">Video 2</a></li><li><a href="#" class="fv-player-lightbox-link" title="Video 3">Video 3</a></li></ul>
 HTML;
     $this->assertEquals( $this->fix_newlines($sample), $this->fix_newlines($output) );
 
@@ -356,5 +356,42 @@ HTML;
     $this->assertTrue( count( $matches[1] ) === 1 );
 
     $this->assertTrue( preg_match( '~^<img [^>]*?src="' . $img_src . '"~', $matches[1][0] ) === 1 );
+  }
+
+  /*
+   * CVE-2026-85347: caption_html is base64-decoded after KSES ran on post save,
+   * so the decoded HTML must be sanitized before it is printed.
+   */
+  public function testTextCaptionHtmlXss() {
+    $payload = base64_encode( '<img src=x onerror=alert(document.cookie)>' );
+    $output = apply_filters( 'the_content', '[fvplayer src="https://example.com/video.mp4" lightbox="true;text" caption_html="'.$payload.'"]' );
+
+    $this->assertStringNotContainsStringIgnoringCase( 'onerror', $output );
+    $this->assertMatchesRegularExpression( '~class="fv-player-lightbox-link"[^>]*><img [^>]*src="x"[^>]*></a>~', $output );
+  }
+
+  public function testTextCaptionHtmlImage() {
+    $caption = '<img src="https://cdn.site.com/thumb.jpg" alt="Thumb" width="120" height="68" />';
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" lightbox="true;text" caption_html="'.base64_encode( $caption ).'"]' );
+
+    $this->assertMatchesRegularExpression( '~class="fv-player-lightbox-link"[^>]*><img [^>]*src="https://cdn.site.com/thumb.jpg"[^>]*alt="Thumb"[^>]*></a>~', $output );
+  }
+
+  public function testTextCaptionHtmlInvalidBase64() {
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" lightbox="true;text" caption_html="not*valid*base64"]' );
+
+    $this->assertStringContainsString( 'class="fv-player-lightbox-link"', $output );
+    $this->assertStringNotContainsString( 'not*valid*base64', $output );
+  }
+
+  public function testPlaylistTextCaptionHtmlXss() {
+    $payload = base64_encode( '<img src=x onerror=alert(1)>;<svg onload=alert(2)>;Video 3' );
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" playlist="https://cdn.site.com/video2.mp4;https://cdn.site.com/video3.mp4" lightbox="true;text" caption_html="'.$payload.'"]' );
+
+    $this->assertStringContainsString( 'fv-player-lightbox-text-playlist', $output );
+    $this->assertStringNotContainsStringIgnoringCase( 'onerror', $output );
+    $this->assertStringNotContainsStringIgnoringCase( 'onload', $output );
+    $this->assertStringNotContainsStringIgnoringCase( '<svg', $output );
+    $this->assertStringContainsString( '>Video 3</a></li>', $output );
   }
 }
