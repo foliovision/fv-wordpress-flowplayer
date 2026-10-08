@@ -1186,7 +1186,7 @@ class flowplayer_frontend extends flowplayer
     $output->ret['html'] .= '<ul>';
     foreach( $aPlaylistItems AS $key => $aSrc ) {
       $sCaption = !empty($aCaptions[$key]) ? $aCaptions[$key] : $key;
-      $output->ret['html'] .= '<li><a href="#tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.$sCaption.'</a></li>';
+      $output->ret['html'] .= '<li><a href="#tabs-'.$post->ID.'-'.$this->count_tabs.'-'.$key.'">'.flowplayer::filter_possible_html( $sCaption ).'</a></li>';
     }
     $output->ret['html'] .= '</ul><div class="fv_flowplayer_tabs_cl"></div>';
 

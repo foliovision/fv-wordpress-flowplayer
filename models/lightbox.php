@@ -253,12 +253,12 @@ class FV_Player_lightbox {
                 } else {
                   $html .= ' href="#"';
                 }
-                $html .= ' class="fv-player-lightbox-link" title="'.esc_attr($caption).'">'.$caption.'</li>';
+                $html .= ' class="fv-player-lightbox-link" title="'.esc_attr($caption).'">'.flowplayer::filter_possible_html( $caption ).'</a></li>';
               }
               $html .= '</ul>';
             }
           } else {
-            $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.$args['caption'].'</a>';
+            $html = '<a'.$this->fancybox_opts().' id="'.$button.'"'.$sTitle.' class="fv-player-lightbox-link" href="#" data-src="#'.$container.'">'.flowplayer::filter_possible_html( $args['caption'] ).'</a>';
           }
 
           // in this case we put the lightboxed player into footer as putting it behind the anchor might break the parent block element
@@ -450,7 +450,11 @@ class FV_Player_lightbox {
 
   function parse_html_caption( $aArgs ) {
     if( isset($aArgs['caption_html']) && $aArgs['caption_html'] ) {
-      $aArgs['caption'] = base64_decode($aArgs['caption_html']);
+      // The decoded HTML was never seen by KSES when the post was saved, so it must be sanitized here
+      $caption = base64_decode( $aArgs['caption_html'], true );
+      if( false !== $caption ) {
+        $aArgs['caption'] = flowplayer::filter_possible_html( $caption );
+      }
       unset($aArgs['caption_html']);
     }
     return $aArgs;

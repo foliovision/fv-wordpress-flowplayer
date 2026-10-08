@@ -170,4 +170,19 @@ HTML;
     parent::tearDown();
   }
 
+  /*
+   * Tab labels are printed as HTML so they must be passed through KSES.
+   * Related to CVE-2026-85347.
+   */
+  public function testPlaylistTabsCaptionXss() {
+    global $post;
+
+    $post = get_post( $this->playlist_tabs );
+    $output = apply_filters( 'the_content', '[fvplayer src="https://cdn.site.com/video1.mp4" playlist="https://cdn.site.com/video2.mp4" caption="<img src=x onerror=alert(1)>;Video 2" liststyle="tabs" share="no" embed="false"]' );
+
+    $this->assertStringContainsString( 'fv_flowplayer_tabs', $output );
+    $this->assertStringNotContainsStringIgnoringCase( 'onerror', $output );
+    $this->assertStringContainsString( '>Video 2</a></li>', $output );
+  }
+
 }

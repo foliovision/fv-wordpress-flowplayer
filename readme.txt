@@ -359,6 +359,10 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.56.7212 - 2026-10-08 =
+
+* Security: Avoid Contributor+ Stored XSS via the text-lightbox caption(CVE-2026-85347), reported by Karthik Ramakrishnan
+
 = 7.5.55.7212 - 2026-10-06 =
 
 * Security: Enable profile videos setting: Authenticated (Subscriber+) arbitrary file upload, if using "Enable profile videos" setting
