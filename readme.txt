@@ -361,6 +361,7 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 = 7.5.56.7212 - 2026-10-08 =
 
+* Security: Avoid Subscriber+ cloud storage file listing disclosure via the media browser AJAX handlers (CVE-2026-85346), reported by Karthik Ramakrishnan
 * Security: Avoid Contributor+ Stored XSS via the text-lightbox caption(CVE-2026-85347), reported by Karthik Ramakrishnan
 * Security: Remove legacy [flowplayer] to [fvplayer] shortcode conversion which Subscriber+ users could run, although no damage would be done (CVE-2026-85344), reported by Karthik Ramakrishnan
 

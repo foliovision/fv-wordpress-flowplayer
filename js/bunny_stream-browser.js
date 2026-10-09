@@ -12,6 +12,7 @@ jQuery( function($) {
       page = 1,
       ajax_data = {
         action: "load_bunny_stream_jobs",
+        nonce: fv_player_media_browser_ajax.nonce,
         cookie: encodeURIComponent(document.cookie),
         page: page
       },

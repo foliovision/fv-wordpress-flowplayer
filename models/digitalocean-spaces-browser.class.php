@@ -102,13 +102,6 @@ class FV_Player_DigitalOcean_Spaces_Browser extends FV_Player_Media_Browser {
     return $json_final;
   }
 
-  function load_assets() {
-    $json_final = $this->get_formatted_assets_data();
-
-    wp_send_json( $json_final );
-    wp_die();
-  }
-
   // checks whether options for DOS are set
   // ... used to determine whether to actually include the DOS JS or not
   public function isSetUpCorrectly() {

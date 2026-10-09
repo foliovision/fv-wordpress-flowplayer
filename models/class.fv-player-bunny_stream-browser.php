@@ -24,7 +24,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
   }
 
   function register() {
-    add_action( $this->ajax_action_name, array($this, 'load_assets') );
+    add_action( $this->ajax_action_name, array($this, 'ajax_load_assets') );
     add_action( $this->ajax_action_name_add_new_folder, array($this, 'add_new_folder_ajax' ) );
   }
 
@@ -204,13 +204,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     }
 
     return $json_final;
-  }
-
-  function load_assets() {
-    $json_final = $this->get_formatted_assets_data();
-
-    wp_send_json( $json_final );
-    wp_die();
   }
 
 }

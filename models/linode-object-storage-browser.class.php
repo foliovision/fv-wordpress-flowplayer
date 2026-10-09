@@ -98,13 +98,6 @@ class FV_Player_Linode_Object_Storage_Browser extends FV_Player_Media_Browser {
     return $json_final;
   }
 
-  function load_assets() {
-    $json_final = $this->get_formatted_assets_data();
-
-    wp_send_json( $json_final );
-    wp_die();
-  }
-
   public function isSetUpCorrectly() {
     global $fv_fp;
 

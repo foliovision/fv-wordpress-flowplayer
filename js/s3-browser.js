@@ -9,6 +9,7 @@ jQuery( function($) {
       }),
       ajax_data = {
         action: "load_s3_assets",
+        nonce: fv_player_media_browser_ajax.nonce,
       };
 
     $this.addClass('active').siblings().removeClass('active');

@@ -6,6 +6,13 @@ abstract class FV_Player_Media_Browser {
   public $ajax_action_name_add_new_folder = false;
   private $s3_assets_loaded = false;
 
+  /*
+   * init_base() runs once for each media browser instance (S3, DigitalOcean Spaces, Linode, Bunny Stream...)
+   * and wp_localize_script() appends the variable again on each call rather than replacing it.
+   * This flag is shared by all the child classes, so the nonce is only printed once.
+   */
+  private static $ajax_nonce_localized = false;
+
   public function __construct($args) {
 
     if ( ! defined( 'ABSPATH' ) ) {
@@ -56,6 +63,16 @@ abstract class FV_Player_Media_Browser {
     global $fv_wp_flowplayer_ver;
     wp_enqueue_media();
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), $fv_wp_flowplayer_ver, true );
+
+    // Nonce for the media browser AJAX listing calls, see check_ajax_permissions()
+    // Only once per page, see $ajax_nonce_localized
+    if ( ! self::$ajax_nonce_localized ) {
+      wp_localize_script( 'flowplayer-browser-base', 'fv_player_media_browser_ajax', array(
+        'nonce' => wp_create_nonce( 'fv_player_media_browser' ),
+      ) );
+      self::$ajax_nonce_localized = true;
+    }
+
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
     $this->init();
   }
@@ -65,7 +82,33 @@ abstract class FV_Player_Media_Browser {
   }
 
   function register() {
-    add_action( $this->ajax_action_name, array($this, 'load_assets') );
+    add_action( $this->ajax_action_name, array($this, 'ajax_load_assets') );
+  }
+
+  /**
+   * Only users who can edit others' posts may list the cloud storage configuration and files.
+   * Also checks the nonce.
+   *
+   * Sends a JSON error and dies if the check fails.
+   */
+  function check_ajax_permissions() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) {
+      wp_send_json( array( 'err' => 'You are not allowed to browse the media library.' ), 403 );
+    }
+
+    if ( ! check_ajax_referer( 'fv_player_media_browser', 'nonce', false ) ) {
+      wp_send_json( array( 'err' => 'Invalid security token, please reload the page and try again.' ), 403 );
+    }
+  }
+
+  /**
+   * The AJAX entry point for all the media browser listing actions.
+   * Child classes should not hook load_assets() directly, so that the permission check cannot be skipped.
+   */
+  function ajax_load_assets() {
+    $this->check_ajax_permissions();
+
+    $this->load_assets();
   }
 
   function include_aws_sdk() {
