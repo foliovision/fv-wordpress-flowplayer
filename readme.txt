@@ -213,6 +213,7 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 = 8.1.10 - 2026-10-08 =
 
 * Security: Avoid Contributor+ Stored XSS via the text-lightbox caption(CVE-2026-85347), reported by Karthik Ramakrishnan
+* Security: Remove legacy [flowplayer] to [fvplayer] shortcode conversion which Subscriber+ users could run, although no damage would be done (CVE-2026-85344), reported by Karthik Ramakrishnan
 
 = 8.1.9 - 2026-10-07 =
 

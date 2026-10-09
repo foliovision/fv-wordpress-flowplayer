@@ -2284,21 +2284,6 @@ add_meta_box( 'fv_flowplayer_usage', __( 'Usage', 'fv-player' ), 'fv_flowplayer_
 
 </div>
 <script type="text/javascript" >
-  function flowplayer_conversion_script() {
-    jQuery('#fv-flowplayer-loader').show();
-
-  	var data = {
-  		action: 'flowplayer_conversion_script',
-  		run: true
-  	};
-
-  	jQuery.post(ajaxurl, data, function(response) {
-      jQuery('#fv-flowplayer-loader').hide();
-      jQuery('#conversion-results').html(response);
-      jQuery('#fvwpflowplayer_conversion_notice').hide();
-  	});
-  }
-
   function fv_flowplayer_ajax_check( type, nonce ) {
     jQuery('.'+type+'-spin').show();
     var ajaxurl = '<?php echo esc_attr( site_url() ); ?>/wp-admin/admin-ajax.php';
