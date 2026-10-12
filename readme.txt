@@ -212,6 +212,7 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 = 8.1.10 - 2026-10-08 =
 
+* Security: Avoid Contributor+ SSRF via the splash image download for the post featured image, only public addresses are fetched and only real images are stored
 * Security: Avoid Subscriber+ AWS S3 file listing if using [fvplayer_editor] or "Enable profile videos" setting
 * Security: Avoid Contributor+ Stored XSS via the text-lightbox caption
 * Security: Remove legacy [flowplayer] to [fvplayer] shortcode conversion which Subscriber+ users could run, although no damage would be done
