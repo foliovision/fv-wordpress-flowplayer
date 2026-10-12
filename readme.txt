@@ -210,6 +210,30 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.1.10 - 2026-10-08 =
+
+* Security: Avoid Subscriber+ AWS S3 file listing if using [fvplayer_editor] or "Enable profile videos" setting
+* Security: Avoid Contributor+ Stored XSS via the text-lightbox caption
+* Security: Remove legacy [flowplayer] to [fvplayer] shortcode conversion which Subscriber+ users could run, although no damage would be done
+
+= 8.1.9 - 2026-10-07 =
+
+* Security: An unauthenticated attacker might execute JavaScript in the site's origin in the browser of a victim who opens the attacker web page
+
+= 8.1.8 - 2026-10-05 =
+
+* CSS: Improve all playlist scrollbars to use main skin color
+* Custom video fields: Support saving for multiple posts on a single screen
+* Security: Fix issue with FV Player data import
+* Security: Fix issue with HTML fields
+* Security: Fix issue with the synopsis field
+* Security: Fix issue with video duration checking
+* Settings: Removed the deprecated "Active Item", "Background" and "Font Color" settings for playlists
+* Vertical videos: Improve playlist appearance for desktop computers
+* Video upload: Add plugin hooks
+* Video upload: Improved reliability when uploading large videos through an unreliable internet connection
+* Bugfix: CSS: Fix FV Player block selection
+
 = 8.1.7 - 2026-08-20 =
 
 * WordPress 7.1 support

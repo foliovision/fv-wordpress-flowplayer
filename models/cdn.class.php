@@ -30,29 +30,38 @@ abstract class FV_Player_CDN {
    */
   function ajax() {
     if( isset($_POST['action']) && sanitize_key( $_POST['action'] ) == 'fv_fp_get_video_url' ) {
+
+      $safe_sources = array();
+      foreach( $_POST['sources'] AS $key => $aVideo ) {
+        $safe_sources[ sanitize_key( $key ) ] = array_map( 'sanitize_text_field', $aVideo );
+      }
+
       $bFound = false;
       foreach( $this->aDomains AS $i => $sDomains ) {
         $aDomains = explode(',',$sDomains);
         foreach( $aDomains AS $sDomain ) {
-          foreach( $_POST['sources'] AS $key => $aVideo ) {
+          foreach( $safe_sources AS $key => $aVideo ) {
             if( !isset($aVideo['src']) || !isset($aVideo['type']) ) continue;
 
             if( stripos($aVideo['src'],$sDomain) !== false ) {
               $bFound = true;
-              $aVideo['src'] = sanitize_url( $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]) );
-              $_POST['sources'][$key] = $aVideo;
+
+              $aNewVideo = array();
+              $aNewVideo['src'] = sanitize_url( $this->secure_link($aVideo['src'],$this->aSecureTokens[$i]) );
+              $aNewVideo['type'] = $aVideo['type'];
+              $safe_sources[ sanitize_key( $key ) ] = $aNewVideo;
             }
           }
         }
       }
 
       if( $bFound ) {
-        foreach( $_POST['sources'] AS $key => $aVideo ) {
-          $_POST['sources'][ $key ] = array_map( 'sanitize_text_field', $aVideo );
+        foreach( $safe_sources AS $key => $aVideo ) {
+          $safe_sources[ sanitize_key( $key ) ] = array_map( 'sanitize_text_field', $aVideo );
         }
 
         echo '<FVFLOWPLAYER>';
-        echo wp_json_encode($_POST['sources']);
+        echo wp_json_encode( $safe_sources, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT );
         echo '</FVFLOWPLAYER>';
         die();
       }

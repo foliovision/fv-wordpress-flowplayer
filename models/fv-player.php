@@ -1344,13 +1344,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if ($this->current_video()) {
         $sSynopsis = $this->current_video()->getMetaValue('synopsis',true);
         if( $sSynopsis ) {
-          $sHTML .= wpautop($sSynopsis);
+          $sHTML .= wpautop( wp_strip_all_tags( $sSynopsis ) );
         }
       }
 
       if( !empty($aArgs['synopsis']) ) {
         // preserver semicolons
-        $synopsis_items = str_replace( '\;', '{fv-player-semicolon}', $aArgs['synopsis'] );
+        $synopsis_items = str_replace( '\;', '{fv-player-semicolon}', wp_strip_all_tags( $aArgs['synopsis'] ) );
 
         $synopsis_items = explode( ';', $synopsis_items );
         if( !empty($synopsis_items[$index]) ) {

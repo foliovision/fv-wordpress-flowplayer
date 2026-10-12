@@ -109,18 +109,18 @@ if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
   require_once(dirname( __FILE__ ). '/../models/digitalocean-spaces-browser.class.php');
 
   global $FV_Player_DigitalOcean_Spaces_Browser;
-  $json_final = $FV_Player_DigitalOcean_Spaces_Browser->get_formatted_assets_data();
+  $FV_Player_DigitalOcean_Spaces_Browser->ajax_load_assets(); // Checks permissions, sends JSON and dies
+  exit;
 
-  wp_send_json($json_final);
 } else if(strcmp($action,'load_s3_assets') == 0) { // Amazon S3
   require_once(dirname( __FILE__ ) . '/settings.php');
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ) . '/../models/media-browser-s3.php');
 
   global $FV_Player_Media_Browser_S3;
-  $json_final = $FV_Player_Media_Browser_S3->get_formatted_assets_data();
+  $FV_Player_Media_Browser_S3->ajax_load_assets(); // Checks permissions, sends JSON and dies
+  exit;
 
-  wp_send_json($json_final);
 } else if (strcmp($action,'load_linode_object_storage_assets') == 0) { // Linode Object Storage
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ). '/../models/cdn.class.php');
@@ -128,9 +128,8 @@ if(strcmp($action, 'load_dos_assets') == 0) { // DigitalOcean Spaces
   require_once(dirname( __FILE__ ). '/../models/linode-object-storage-browser.class.php');
 
   global $FV_Player_Linode_Object_Storage_Browser;
-  $json_final = $FV_Player_Linode_Object_Storage_Browser->get_formatted_assets_data();
-
-  wp_send_json($json_final);
+  $FV_Player_Linode_Object_Storage_Browser->ajax_load_assets(); // Checks permissions, sends JSON and dies
+  exit;
 } else if( strpos($action, 'multiupload') !== false || strcmp($action, 'validate_file_upload') == 0 ) { // S3 Multiupload
   require_once(dirname( __FILE__ ) . '/../models/media-browser.php');
   require_once(dirname( __FILE__ ). '/../models/cdn.class.php');

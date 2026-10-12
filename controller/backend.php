@@ -655,37 +655,6 @@ function fv_wordpress_flowplayer_expired_license_update_plugin_row($plugin_file,
 }
 
 
-add_action('wp_ajax_flowplayer_conversion_script', 'flowplayer_conversion_script');
-
-function flowplayer_conversion_script() {
-  global $wpdb;
-
-  $posts = $wpdb->get_results("SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type != 'revision'");
-
-  $old_shorttag = '[flowplayer';
-  $new_shorttag = '[fvplayer';
-  $counter = 0;
-
-  echo '<ol>';
-  foreach($posts as $fv_post) {
-    if ( stripos( $fv_post->post_content, $old_shorttag ) !== false ) {
-      $update_post = array();
-      $update_post['ID'] = $fv_post->ID;
-      $update_post['post_content'] = str_replace( $old_shorttag, $new_shorttag, $fv_post->post_content );
-      wp_update_post( $update_post );
-      echo '<li><a href="' . get_permalink($fv_post->ID) . '">' . get_the_title($fv_post->ID) . '</a> updated</li>';
-      $counter++;
-    }
-  }
-  echo '</ol>';
-
-  echo '<strong>Conversion was succesful. Total number of converted posts: ' . intval( $counter ) . '</strong>';
-
-  delete_option('fvwpflowplayer_conversion');
-
-  die();
-}
-
 
 
 
@@ -697,15 +666,6 @@ function fv_wp_flowplayer_admin_notice() {
        			<p>'.$notices.'</p>
     			</div>';
     delete_option('fv_wordpress_flowplayer_deferred_notices');
-  }
-
-  $conversion = false; //(bool)get_option('fvwpflowplayer_conversion');
-  if ($conversion ) {
-    echo '<div class="updated" id="fvwpflowplayer_conversion_notice"><p>';
-    printf(
-      wp_kses( __( 'FV Player has found old shortcodes in the content of your posts. <a href="%1$s">Run the conversion script.</a>', 'fv-player' ), array( 'a' => array( 'href' => array() ) ) ),
-      get_admin_url() . 'admin.php?page=fvplayer');
-    echo "</p></div>";
   }
 }
 
