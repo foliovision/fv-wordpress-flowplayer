@@ -71,7 +71,33 @@ abstract class FV_Player_Media_Browser {
   }
 
   function register() {
-    add_action( $this->ajax_action_name, array($this, 'load_assets') );
+    add_action( $this->ajax_action_name, array($this, 'ajax_load_assets') );
+  }
+
+  /**
+   * Only users who can edit others' posts may list the cloud storage configuration and files.
+   * Also checks the nonce, which is created for the AJAX action name in init() of each child class.
+   *
+   * Sends a JSON error and dies if the check fails.
+   */
+  function check_ajax_permissions() {
+    if ( ! current_user_can( 'edit_others_posts' ) ) {
+      wp_send_json( array( 'err' => 'You are not allowed to browse the media library.' ), 403 );
+    }
+
+    if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), $this->ajax_action_name ) ) {
+      wp_send_json( array( 'err' => 'Invalid security token, please reload the page and try again.' ), 403 );
+    }
+  }
+
+  /**
+   * The entry point for all the media browser listing actions, both wp-admin/admin-ajax.php and controller/s3-ajax.php.
+   * Do not call load_assets() or get_formatted_assets_data() directly, so that the permission check cannot be skipped.
+   */
+  function ajax_load_assets() {
+    $this->check_ajax_permissions();
+
+    $this->load_assets();
   }
 
   function include_aws_sdk() {
