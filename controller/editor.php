@@ -349,76 +349,95 @@ function fv_wp_flowplayer_save_to_media_library( $image_url, $post_id, $title = 
 
   $image_url = apply_filters( 'fv_flowplayer_splash', $image_url );
 
-  $error = '';
-  $response = wp_remote_get( $image_url );
-  if( is_wp_error( $response ) ) {
-    $error = new WP_Error( 'thumbnail_retrieval', sprintf( __( 'Error retrieving a thumbnail from the URL <a href="%1$s">%1$s</a> using <code>wp_remote_get()</code><br />If opening that URL in your web browser returns anything else than an error page, the problem may be related to your web server and might be something your host administrator can solve.', 'video-thumbnails' ), $image_url ) . '<br>' . __( 'Error Details:', 'video-thumbnails' ) . ' ' . $response->get_error_message() );
-  } else {
-    $image_contents = $response['body'];
-    $image_type = wp_remote_retrieve_header( $response, 'content-type' );
-  }
-  
-  if ( $error != '' || $image_contents == '' ) {
+  $max_size = 10 * MB_IN_BYTES;
+
+  /**
+   * Use the safe HTTP API, it refuses loopback, private and reserved IP ranges
+   * and unusual ports. It checks every redirect target too.
+   */
+  $response = wp_safe_remote_get(
+    $image_url,
+    array(
+      'timeout'             => 20,
+      'redirection'         => 3,
+      'limit_response_size' => $max_size,
+    )
+  );
+
+  if ( is_wp_error( $response ) || 200 !== intval( wp_remote_retrieve_response_code( $response ) ) ) {
     return false;
-  } else {
-
-    // Translate MIME type into an extension
-    if ( $image_type == 'image/jpeg' ) {
-      $image_extension = '.jpg';
-    } elseif ( $image_type == 'image/png' ) {
-      $image_extension = '.png';
-    } elseif ( $image_type == 'image/gif' ) {
-      $image_extension = '.gif';
-    } else {
-      return new WP_Error( 'thumbnail_upload', __( 'Unsupported MIME type:', 'video-thumbnails' ) . ' ' . $image_type );
-    }
-
-    // Construct a file name with extension
-    if( $title ) {
-      $new_filename = sanitize_file_name($title);
-    } else {
-      $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
-    }
-
-    // Save the image bits using the new filename    
-    $upload = wp_upload_bits( $new_filename, null, $image_contents );    
-
-    // Stop for any errors while saving the data or else continue adding the image to the media library
-    if ( $upload['error'] ) {
-      $error = new WP_Error( 'thumbnail_upload', __( 'Error uploading image data:', 'video-thumbnails' ) . ' ' . $upload['error'] );
-      return $error;
-    } else {
-
-      $wp_filetype = wp_check_filetype( basename( $upload['file'] ), null );
-
-      $upload = apply_filters( 'wp_handle_upload', array(
-        'file' => $upload['file'],
-        'url'  => $upload['url'],
-        'type' => $wp_filetype['type']
-      ), 'sideload' );
-
-      // Contstruct the attachment array
-      $attachment = array(
-        'post_mime_type'	=> $upload['type'],
-        'post_title'		=> get_the_title( $post_id ),
-        'post_content'		=> '',
-        'post_status'		=> 'inherit'
-      );
-      // Insert the attachment
-      $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
-      
-      // Define attachment metadata
-      $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
-      
-      // Assign metadata to attachment
-      wp_update_attachment_metadata( $attach_id,  $attach_data );
-
-    }
-
   }
+
+  $image_contents = wp_remote_retrieve_body( $response );
+
+  // Empty or truncated response
+  if ( empty( $image_contents ) || strlen( $image_contents ) >= $max_size ) {
+    return false;
+  }
+
+  // Do not trust the Content-Type header, check what the data really is
+  $image_info = @getimagesizefromstring( $image_contents );
+  $image_type = ! empty( $image_info['mime'] ) ? $image_info['mime'] : false;
+
+  $allowed_types = array(
+    'image/jpeg' => '.jpg',
+    'image/png'  => '.png',
+    'image/gif'  => '.gif',
+  );
+
+  if ( ! $image_type || empty( $allowed_types[ $image_type ] ) ) {
+    return false;
+  }
+
+  $image_extension = $allowed_types[ $image_type ];
+
+  // Construct a file name with extension
+  if ( $title ) {
+    $new_filename = sanitize_file_name( $title . $image_extension );
+  } else {
+    $new_filename = fv_wp_flowplayer_construct_filename( $post_id ) . $image_extension;
+  }
+
+  // Save the image bits using the new filename
+  $upload = wp_upload_bits( $new_filename, null, $image_contents );
+
+  if ( ! empty( $upload['error'] ) ) {
+    return false;
+  }
+
+  $wp_filetype = wp_check_filetype( basename( $upload['file'] ), null );
+
+  $upload = apply_filters( 'wp_handle_upload', array(
+    'file' => $upload['file'],
+    'url'  => $upload['url'],
+    'type' => $wp_filetype['type']
+  ), 'sideload' );
+
+  // Contstruct the attachment array
+  $attachment = array(
+    'post_mime_type' => $upload['type'],
+    'post_title'     => get_the_title( $post_id ),
+    'post_content'   => '',
+    'post_status'    => 'inherit'
+  );
+
+  // Insert the attachment
+  $attach_id = wp_insert_attachment( $attachment, $upload['file'], $post_id );
+
+  if ( ! $attach_id || is_wp_error( $attach_id ) ) {
+    return false;
+  }
+
+  // Not loaded when saving the post using the REST API
+  require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+  // Define attachment metadata
+  $attach_data = wp_generate_attachment_metadata( $attach_id, $upload['file'] );
+
+  // Assign metadata to attachment
+  wp_update_attachment_metadata( $attach_id, $attach_data );
 
   return $attach_id;
-
 }
 
 add_action( 'wp_ajax_fv_player_splashcreen_action', 'fv_player_splashcreen_action' );
