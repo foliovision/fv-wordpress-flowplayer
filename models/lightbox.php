@@ -272,7 +272,7 @@ class FV_Player_lightbox {
           $add_classes = array( 'lightbox-starter' );
 
           // use the align for the lightbox button
-          if( isset($args['lightbox_align']) ) {
+          if( isset($args['lightbox_align']) && in_array( $args['lightbox_align'], array( 'left', 'right', 'center' ), true ) ) {
             $add_classes[] = 'align' . $args['lightbox_align'];
           }
 
