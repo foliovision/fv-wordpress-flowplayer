@@ -1,0 +1,20 @@
+{
+  "name": "fv-player-tests",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Playwright browser tests for the FV Player WordPress plugin.",
+  "scripts": {
+    "wp:up": "./scripts/compose.sh up -d && ./scripts/install-wp.sh",
+    "wp:down": "./scripts/compose.sh down",
+    "wp:reset": "./scripts/compose.sh down -v && ./scripts/compose.sh up -d && ./scripts/install-wp.sh",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report playwright-report",
+    "test:trace": "playwright show-trace"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}
