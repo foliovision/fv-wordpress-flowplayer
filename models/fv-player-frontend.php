@@ -470,7 +470,24 @@ class flowplayer_frontend extends flowplayer
           // compatibility fallback for classic (non-DB) shortcode
           (isset($this->aCurArgs['splashend']) && $this->aCurArgs['splashend'] == 'show' && isset($this->aCurArgs['splash']) && !empty($this->aCurArgs['splash']))
         ) {
-          $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="background-image: url(\''.$splash_img.'\')"><a class="fp-icon fp-playbtn"></a></div>';
+          /**
+           * The splash value is only run through wp_strip_all_tags() on save, which keeps quotes,
+           * so it could potentially break out of the style attribute. esc_url() avoids that.
+           */
+          $splash_url   = esc_url( $splash_img );
+
+          /**
+           * But esc_url() leaves the single-quote as the &#039; entity, which the HTML parser decodes
+           * back to ' before the CSS parser sees it - still enough to close url('...') and inject CSS.
+           *
+           * So we encode &#039; to %27 so the whole value stays part of the URL (this also preserves
+           * legitimate filenames that contain a quote, which %27 resolves back to).           
+           */
+          $splash_url   = str_replace( '&#039;', '%27', $splash_img );
+          $splash_style = 'background-image: url(\'' . $splash_url . '\')';
+
+          // esc_attr() on the finished style value is a final guard so nothing can escape the attribute.
+          $splashend_contents = '<div id="wpfp_'.$this->hash.'_custom_background" class="wpfp_custom_background" style="' . esc_attr( $splash_style ) . '"><a class="fp-icon fp-playbtn"></a></div>';
         }
 
         // should the player appear as audio player?
