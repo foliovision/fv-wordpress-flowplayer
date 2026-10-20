@@ -4,7 +4,7 @@ Playwright end-to-end tests for the **FV Player Editor**: the player editor
 modal on the wp-admin → FV Player screen. They run against a disposable
 WordPress 6.9 site in Docker.
 
-The PHPUnit tests are in `../test/` and are separate from these.
+The PHPUnit tests are in `../unit/` and `../integration/` and are separate from these.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ On macOS you have to run `colima start` first.
 ## One-time setup
 
 ```bash
-cd tests
+cd test/editor
 npm install
 npx playwright install --with-deps chromium
 ```
@@ -69,7 +69,7 @@ npm run test:trace -- path/to/trace.zip
 ## Sample videos
 
 The tests use the real videos from
-`../test/integration/backend/player-data.json`, the fixture the PHPUnit
+`../integration/backend/player-data.json`, the fixture the PHPUnit
 integration tests also use. When a video is saved, the server checks the
 file (`models/checker.php`), so the WordPress **container** must be able to
 reach foliovision.com. `global-setup.ts` checks this before any test runs.

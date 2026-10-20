@@ -20,7 +20,7 @@ const TEST_KEY = { 'X-FV-Player-Test-Key': 'fv-player-test' };
  */
 export const PLAYER_FIXTURE_PATH = path.resolve(
   __dirname,
-  '../../test/integration/backend/player-data.json',
+  '../../integration/backend/player-data.json',
 );
 
 export function playerFixture(): PlayerJson {
