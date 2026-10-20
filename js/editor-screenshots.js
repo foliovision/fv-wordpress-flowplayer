@@ -1,7 +1,7 @@
 /*
  *  Take screenshot from preview
  */
-( function() {
+jQuery( function() {
   var index = 0;
 
   flowplayer( function(api,root) {
@@ -239,4 +239,4 @@
     index = i;
   });
 
-})(jQuery);
+});
