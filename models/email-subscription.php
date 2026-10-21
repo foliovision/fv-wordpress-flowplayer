@@ -725,7 +725,8 @@ class FV_Player_Email_Subscription {
   public function popup_preview( $aAttributes ) {
     global $fv_fp;
     $aArgs = func_get_args();
-    if( isset($aArgs[2]->aCurArgs['end_popup_preview']) && $aArgs[2]->aCurArgs['end_popup_preview'] ) {
+    // Only used for the popup preview in plugin settings, so it must not be usable by anybody else to show the popup on page load
+    if( isset($aArgs[2]->aCurArgs['end_popup_preview']) && $aArgs[2]->aCurArgs['end_popup_preview'] && current_user_can( 'manage_options' ) ) {
       $aAttributes['data-end_popup_preview'] = true;
     }
     return $aAttributes;

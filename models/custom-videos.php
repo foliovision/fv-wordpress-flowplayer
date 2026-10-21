@@ -173,6 +173,10 @@ class FV_Player_Custom_Videos {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) {
           $aVideos[] = '[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]';
         } else if( is_string($aVideo) && stripos($aVideo,'[fvplayer ') === 0 ) {
+          // User profile videos are written by any logged in user, including the previously stored ones
+          if( $this->type == 'user' ) {
+            $aVideo = fv_player_comment_text_strip_html_attributes( $aVideo );
+          }
           $aVideos[] = $aVideo;
         }
       }
@@ -364,10 +368,7 @@ class FV_Player_Custom_Videos_Master {
           $video = sanitize_text_field( $video );
 
           // Remove attributes that allow HTML
-          $video = preg_replace( '~\b(ad|popup)\s*?=\s*\\\?\s*?["\'][^"\']*["\']~', '', wp_unslash( $video ) );
-
-          // Remove attributes even if the quotes are missing
-          $video = preg_replace( '~\s*?\b(ad|popup)\s*?=\s*?\S*?([\s\]])~', '$2', $video );
+          $video = fv_player_comment_text_strip_html_attributes( wp_unslash( $video ) );
 
           add_user_meta( $update_user_id, $meta, $video );
         }
