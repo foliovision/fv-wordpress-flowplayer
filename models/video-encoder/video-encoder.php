@@ -29,6 +29,16 @@ abstract class FV_Player_Video_Encoder {
     return $this->version;
   }
 
+  /**
+   * Can the current user see and change the encoder settings, including the API keys?
+   *
+   * @return bool
+   */
+  public function can_manage_settings() {
+    return current_user_can( 'manage_options' );
+  }
+
+
   public function get_table_name() {
     return $this->table_name;
   }
@@ -777,7 +787,11 @@ abstract class FV_Player_Video_Encoder {
    */
   function tools_panel() {
     if ( !$this->is_configured() ) {
+      if ( $this->can_manage_settings() ) {
       $this->tools_panel_settings();
+      } else {
+        echo "<div class='error'><p>FV Player " . esc_html( $this->encoder_name ) . " is not set up yet. Please ask the site administrator to set it up.</p></div>";
+      }
       return;
     }
 
@@ -786,12 +800,18 @@ abstract class FV_Player_Video_Encoder {
       <h1 class="wp-heading-inline">FV Player <?php echo esc_html( $this->encoder_name ); ?> Video Encoding Jobs</h1>
       <h2 class="nav-tab-wrapper">
         <a href="<?php echo add_query_arg( 'page', $this->encoder_wp_url_slug, admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('jobs') ) echo ' nav-tab-active'; ?>">Jobs</a>
+        <?php if ( $this->can_manage_settings() ) : ?>
         <a href="<?php echo add_query_arg( array('page' => $this->encoder_wp_url_slug ,'panel' => 'settings'), admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('settings') ) echo ' nav-tab-active'; ?>">Settings</a>
+        <?php endif; ?>
       </h2>
       <?php
-      if( $this->tools_panel_is('settings') ) {
+      if( $this->tools_panel_is('settings') && $this->can_manage_settings() ) {
         $this->tools_panel_settings();
       } else {
+        if ( $this->tools_panel_is('settings') ) {
+          echo "<div class='error'><p>You are not allowed to change the " . esc_html( $this->encoder_name ) . " settings.</p></div>";
+        }
+
         $this->tools_panel_jobs();
       }
       ?>

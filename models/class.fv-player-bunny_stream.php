@@ -400,6 +400,11 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
    */
   function tools_panel_settings() {
 
+    if ( ! $this->can_manage_settings() ) {
+      echo "<div class='error'><p>You are not allowed to change the Bunny Stream settings.</p></div>";
+      return;
+    }
+
     if( isset($_POST['fv_player_bunny_stream_settings_nonce']) && !empty($_POST['bunny_stream']) ) {
 
       if( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['fv_player_bunny_stream_settings_nonce'] ) ),'fv_player_bunny_stream_settings_nonce') ) {
