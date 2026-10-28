@@ -2616,6 +2616,10 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
   private function process_deleted_entries( $post_data, $editable_video_ids, $restrict_to_player_videos ) {
     if ( ! empty( $post_data['deleted_videos'] ) ) {
       $deleted_videos = explode(',', $post_data['deleted_videos']);
+
+      $deleted_videos = array_filter( $deleted_videos, 'is_numeric' );
+      $deleted_videos = array_map( 'absint', $deleted_videos );
+
       foreach ($deleted_videos as $d_id) {
 
         // Only delete a video that belongs to the player being edited; skip others.
@@ -2635,6 +2639,10 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
     if ( ! empty( $post_data['deleted_video_meta'] ) ) {
       $deleted_meta = explode(',', $post_data['deleted_video_meta']);
+
+      $deleted_meta = array_filter( $deleted_meta, 'is_numeric' );
+      $deleted_meta = array_map( 'absint', $deleted_meta );
+
       foreach ($deleted_meta as $d_id) {
 
         // Only delete video meta whose video belongs to the player being edited; skip others.
@@ -2658,6 +2666,10 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
     // parse and resolve deleted meta data
     if ( ! empty( $post_data['deleted_player_meta'] ) ) {
       $deleted_meta = explode(',', $post_data['deleted_player_meta']);
+
+      $deleted_meta = array_filter( $deleted_meta, 'is_numeric' );
+      $deleted_meta = array_map( 'absint', $deleted_meta );
+
       foreach ($deleted_meta as $d_id) {
 
         // Only delete player meta that belongs to the player being edited; skip others.
