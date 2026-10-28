@@ -1344,13 +1344,13 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
       if ($this->current_video()) {
         $sSynopsis = $this->current_video()->getMetaValue('synopsis',true);
         if( $sSynopsis ) {
-          $sHTML .= wpautop($sSynopsis);
+          $sHTML .= wpautop( wp_strip_all_tags( $sSynopsis ) );
         }
       }
 
       if( !empty($aArgs['synopsis']) ) {
         // preserver semicolons
-        $synopsis_items = str_replace( '\;', '{fv-player-semicolon}', $aArgs['synopsis'] );
+        $synopsis_items = str_replace( '\;', '{fv-player-semicolon}', wp_strip_all_tags( $aArgs['synopsis'] ) );
 
         $synopsis_items = explode( ';', $synopsis_items );
         if( !empty($synopsis_items[$index]) ) {
@@ -1791,23 +1791,14 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     .wpfp_custom_ad { color: <?php echo esc_html( $this->_get_option('overlayTextColor') ); ?>; z-index: 20 !important; }
     .wpfp_custom_ad a { color: <?php echo esc_html( $this->_get_option('overlayLinksColor') ); ?> }
 
-    .fp-playlist-external > a > span { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }
-    <?php if ( $this->_get_option('playlistFontColor') && $this->_get_option('playlistFontColor') !=='#') : ?>
-      .fp-playlist-external a h4,
-      .fp-playlist-external a:hover h4,
-      .fp-playlist-external a.is-active:hover h4,
-      .visible-captions.fp-playlist-external a h4 span,
-      .fv-playlist-design-2014.fp-playlist-external a h4,
-      .fv-playlist-design-2014.fp-playlist-external a:hover h4 { color:<?php echo esc_html( $this->_get_option('playlistFontColor') ); ?>; }
-    <?php endif; ?>
-    .fp-playlist-external > a.is-active > span { border-color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
+    .fp-playlist-external > a.is-active > span { border-color:<?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
     .fp-playlist-external.fv-playlist-design-2014 a.is-active,
     .fp-playlist-external.fv-playlist-design-2014 a.is-active h4,
     .fp-playlist-external.fv-playlist-design-2014 a.is-active:hover h4,
     .fp-playlist-external.fp-playlist-only-captions a.is-active,
     .fp-playlist-external.fp-playlist-only-captions a.is-active h4,
-    .fp-playlist-external.fp-playlist-only-captions a.is-active:hover h4 { color:<?php echo esc_html( $this->_get_option('playlistSelectedColor') ); ?>; }
-    <?php if ( $this->_get_option('playlistBgColor') !=='#') : ?>.fp-playlist-vertical { background-color:<?php echo esc_html( $this->_get_option('playlistBgColor') ); ?>; }<?php endif; ?>
+    .fp-playlist-external.fp-playlist-only-captions a.is-active:hover h4 { color:<?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
+    .fp-playlist-external, .fv-playlist-slider-wrapper { --fvp-progress-color: <?php echo esc_html( $this->_get_option( array( $skin, 'progressColor' ) ) ); ?>; }
 
     <?php if( $this->_get_option('subtitleSize') ) : ?>.flowplayer .fp-player .fp-captions p { font-size: <?php echo intval($this->_get_option('subtitleSize')); ?>px; }<?php endif; ?>
     <?php if( $this->_get_option('subtitleFontFace') ) : ?>.flowplayer .fp-player .fp-captions p { font-family: <?php echo esc_html( $this->_get_option('subtitleFontFace') ); ?>; }<?php endif; ?>
@@ -3434,6 +3425,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 }
 
+/**
+ * Run video duration checks on players using the legacy shortcode like:
+ *
+ * [fvplayer src="..."]
+ */
 function fv_wp_flowplayer_save_post( $post_id ) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
     $post_id = $parent_id;

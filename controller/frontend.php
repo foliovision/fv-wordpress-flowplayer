@@ -711,10 +711,72 @@ function fv_player_comment_text( $comment_text ) {
     add_filter( 'bbp_get_topic_content', 'do_shortcode', 11 );
     add_filter( 'bbp_get_reply_content', 'do_shortcode', 11 );
 
+    // Comments are an unauthenticated input surface, so strip any shortcode
+    // attributes whose value is later decoded and output as raw HTML (ad code,
+    // popups). Otherwise a guest commenter could inject arbitrary markup that
+    // runs when a visitor interacts with the player.
+    $comment_text = fv_player_comment_text_strip_html_attributes( $comment_text );
+
     $comment_text = fv_player_comment_text_replace_video_urls_outside_html_tags( $comment_text );
   }
 
   return $comment_text;
+}
+
+/**
+ * Remove HTML-capable attributes (ad code, popups) from FV Player shortcodes
+ * found in untrusted content such as comments or forum posts.
+ *
+ * These attribute values are decoded with html_entity_decode() and embedded
+ * raw into the player output, so they must never originate from untrusted
+ * input. Legitimate ad/popup HTML is configured by administrators in the
+ * player settings and is unaffected by this filtering.
+ *
+ * @param string $text Untrusted content that may contain FV Player shortcodes.
+ * @return string The content with the dangerous attributes removed.
+ */
+function fv_player_comment_text_strip_html_attributes( $text ) {
+  if ( false === stripos( $text, '[fvplayer' ) && false === stripos( $text, '[flowplayer' ) ) {
+    return $text;
+  }
+
+  // Only touch the FV Player shortcodes, leaving any other content untouched.
+  $shortcode_regex = get_shortcode_regex( array( 'fvplayer', 'flowplayer' ) );
+
+  return preg_replace_callback(
+    '/' . $shortcode_regex . '/s',
+    'fv_player_comment_text_strip_html_attributes_worker',
+    $text
+  );
+}
+
+function fv_player_comment_text_strip_html_attributes_worker( $m ) {
+  // Attributes whose values are output as raw HTML by the player, or which
+  // show such HTML right on page load (end_popup_preview).
+  $dangerous = array( 'ad', 'popup', 'end_action_value', 'end_popup_preview' );
+
+  // $m[3] holds the attribute string of the matched shortcode.
+  if ( empty( $m[3] ) ) {
+    return $m[0];
+  }
+
+  $clean_atts = $m[3];
+  foreach ( $dangerous as $att ) {
+    // Remove attr="...", attr='...' and attr=unquoted (the attack smuggles
+    // spaces as HTML entities, so an unquoted value has no real whitespace).
+    $clean_atts = preg_replace(
+      '/\s+' . preg_quote( $att, '/' ) . '\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s\]]+)/i',
+      '',
+      $clean_atts
+    );
+  }
+
+  if ( $clean_atts === $m[3] ) {
+    return $m[0];
+  }
+
+  // Rebuild the shortcode with the cleaned attribute string.
+  return str_replace( $m[3], $clean_atts, $m[0] );
 }
 
 function fv_player_comment_text_replace_video_urls_outside_html_tags( $comment_text ) {

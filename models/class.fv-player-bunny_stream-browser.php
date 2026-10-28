@@ -25,7 +25,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       wp_localize_script( 'fv-player-bunny_stream-upload', 'fv_player_bunny_stream_upload_settings', array(
         'upload_button_text' => __('Upload to Bunny Stream', 'fv-player-bunny_stream'),
         'lib_id' => $fv_fp->_get_option( array('bunny_stream','lib_id') ),
-        'api_key' => $fv_fp->_get_option( array('bunny_stream','api_key') ),
         'job_submit_nonce' => wp_create_nonce('fv_player_bunny_stream'),
         'nonce_add_new_folder' => wp_create_nonce('fv_player_bunny_stream_add_new_folder')
       ));
@@ -33,7 +32,7 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
   }
 
   function register() {
-    add_action( $this->ajax_action_name, array($this, 'load_assets') );
+    add_action( $this->ajax_action_name, array($this, 'ajax_load_assets') );
     add_action( $this->ajax_action_name_add_new_folder, array($this, 'add_new_folder_ajax' ) );
   }
 
@@ -224,13 +223,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
     }
 
     return $json_final;
-  }
-
-  function load_assets() {
-    $json_final = $this->get_formatted_assets_data();
-
-    wp_send_json( $json_final );
-    wp_die();
   }
 
 }

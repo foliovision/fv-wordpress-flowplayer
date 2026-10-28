@@ -8,6 +8,8 @@ require_once( dirname(__FILE__).'/../fv-player-ajax-unittest-case.php');
  */
 final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase {
 
+  private static $s3_browser;
+
   //  we need to make sure FV Player loads as if it's wp-admin
   public static function wpSetUpBeforeClass() {
     global $fv_fp;
@@ -28,7 +30,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     include_once "../../models/media-browser.php";
     include_once "../../models/media-browser-s3.php";
 
-    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
+    self::$s3_browser = new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
 
     parent::wpSetUpBeforeClass();
 
@@ -39,6 +41,13 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
 
   protected function setUp(): void {
     parent::setUp();
+
+    /**
+     * WP_UnitTestCase backs up the hooks only once per run (in the very first test) and restores
+     * that backup after each test. So when running all the tests, the AJAX hook added in
+     * wpSetUpBeforeClass() would be gone after the first test of this class. Add it for each test.
+     */
+    self::$s3_browser->register();
   }
 
   public function testMediaBrowserS3() {
@@ -52,7 +61,10 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     // is anybody listening out there?
     $this->assertTrue( has_action('wp_ajax_load_s3_assets') );
 
-    // Spoof the nonce in the POST superglobal
+    // Only users who can edit others' posts can browse the media library
+    $this->_setRole( 'editor' );
+
+    // Spoof the nonce in the POST superglobal, it's user-specific so it must be created after setting the role
     $_POST['nonce'] = wp_create_nonce( 'wp_ajax_load_s3_assets' );
 
     // set up POST data for video resume times
@@ -78,6 +90,61 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
 
     $this->assertTrue( property_exists( $response, 'items' ) );
     $this->assertTrue( property_exists( $response->items, 'items' ) );
+  }
+
+  /**
+   * CVE-2026-85346: Subscriber must not get the cloud storage configuration or file listing,
+   * even with a valid nonce, as the [fvplayer_editor] shortcode can give them one.
+   */
+  public function testMediaBrowserS3Subscriber() {
+    $this->_setRole( 'subscriber' );
+
+    $_POST['bucket'] = 0;
+    $_POST['nonce'] = wp_create_nonce( 'wp_ajax_load_s3_assets' );
+
+    $response = $this->get_s3_ajax_response();
+
+    $this->assertTrue( property_exists( $response, 'err' ) );
+    $this->assertFalse( property_exists( $response, 'buckets' ) );
+    $this->assertFalse( property_exists( $response, 'region_names' ) );
+    $this->assertFalse( property_exists( $response, 'items' ) );
+  }
+
+  public function testMediaBrowserS3Author() {
+    $this->_setRole( 'author' );
+
+    $_POST['bucket'] = 0;
+    $_POST['nonce'] = wp_create_nonce( 'wp_ajax_load_s3_assets' );
+
+    $response = $this->get_s3_ajax_response();
+
+    $this->assertTrue( property_exists( $response, 'err' ) );
+    $this->assertFalse( property_exists( $response, 'buckets' ) );
+  }
+
+  public function testMediaBrowserS3BadNonce() {
+    $this->_setRole( 'editor' );
+
+    $_POST['bucket'] = 0;
+    $_POST['nonce'] = 'bad-nonce';
+
+    $response = $this->get_s3_ajax_response();
+
+    $this->assertTrue( property_exists( $response, 'err' ) );
+    $this->assertFalse( property_exists( $response, 'buckets' ) );
+  }
+
+  private function get_s3_ajax_response() {
+    try {
+      $this->_handleAjax( 'load_s3_assets' );
+    } catch ( WPAjaxDieContinueException $e ) {
+      unset( $e );
+    }
+
+    $response = json_decode( $this->_last_response );
+    $this->assertIsObject( $response );
+
+    return $response;
   }
 
 }

@@ -321,7 +321,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     $wpdb->update( $this->table_name, array(
       'job_id' => $job_id,
-      'result' => $result,
+      'result' => wp_json_encode( $result ), // job_check() expects JSON, an object would be stored as an empty string
       'status' => $status,
       'progress' => $progress,
     ), array(
@@ -335,10 +335,19 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       '%d'  // id
     ) );
 
-    return array(
+    $ret = array(
       'status' => $status,
       'result' => $result,
     );
+
+    // Give the browser the signature to upload the file into this one video, so it never gets the API key
+    if ( 'processing' === $status ) {
+      $expiration = time() + absint( apply_filters( 'fv_player_bunny_stream_upload_expiration', 6 * HOUR_IN_SECONDS ) );
+
+      $ret['tus'] = $api->get_tus_upload_authorization( $job_id, $expiration );
+    }
+
+    return $ret;
   }
 
   /**
@@ -390,6 +399,11 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
    * Displays the Encoder's settings page contents.
    */
   function tools_panel_settings() {
+
+    if ( ! $this->can_manage_settings() ) {
+      echo "<div class='error'><p>You are not allowed to change the Bunny Stream settings.</p></div>";
+      return;
+    }
 
     if( isset($_POST['fv_player_bunny_stream_settings_nonce']) && !empty($_POST['bunny_stream']) ) {
 

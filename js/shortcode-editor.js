@@ -34,6 +34,9 @@ jQuery(function() {
     deleted_video_meta = [],
     deleted_player_meta = [],
 
+    // The playlist items which build_ajax_data() saved as data.videos, keyed by the data object
+    ajax_data_video_items = new WeakMap(),
+
     prevent_reload_for_current_save = false,
 
     // stores the button which was clicked to open the editor
@@ -1012,6 +1015,11 @@ jQuery(function() {
 
             deleted_videos.push(id);
 
+            // A new video has no ID until its save finishes, the save response handler deletes it then
+            if( id ) {
+              deleted_videos.push(id);
+            }
+
             playlist_row.remove();
 
             get_tab(index,'video-files').remove();
@@ -1432,7 +1440,8 @@ jQuery(function() {
           return;
         }
 
-        var what_is_saving = ajax_save_this_please;
+        var what_is_saving = ajax_save_this_please,
+          what_is_saving_video_items = ajax_data_video_items.get( what_is_saving ) || {};
 
         is_saving = true;
         insert_button_toggle_disabled(true);
@@ -1494,12 +1503,31 @@ jQuery(function() {
 
             try {
               $(response.videos).each( function(k,v) {
-                var item = $('.fv-player-playlist-item').eq(k);
-                if( !item.data('id_video') ) {
+                /*
+                 * The playlist item which was saved as video k. Do not look it up by its position
+                 * as videos might have been added, removed or moved while saving.
+                 */
+                var item = what_is_saving_video_items[k] ? $( what_is_saving_video_items[k] ) : $('.fv-player-playlist-item').eq(k);
+
+                // The playlist item was removed while saving
+                if( !item.length || !document.contains( item[0] ) ) {
+                  // The removal did not know the ID of a new video, so delete it with the next save
+                  if( item.length && !item.attr('data-id_video') && v.id ) {
+                    debug_log('Video removed while saving, deleting it: '+v.id);
+                    deleted_videos.push(v.id);
+                    next = true;
+                  }
+                  return;
+                }
+
+                if( !item.attr('data-id_video') ) {
                   item.attr('data-id_video',v.id);
                 }
 
-                if( k == current_video_to_edit ) {
+                // The current position of the playlist item
+                var index = parseInt( item.attr('data-index') );
+
+                if( index == current_video_to_edit ) {
                   debug_log('current_video_db_id after save: '+v.id);
                   current_video_db_id = v.id;
                 }
@@ -1509,8 +1537,8 @@ jQuery(function() {
                 * So we fill that in
                 */
                 // TODO: Populate chapters, error, is_live, is_audio, encryption key
-                var video_tab = get_tab( k, 'video-files' ),
-                  subtitles_tab = get_tab( k, 'subtitles' ),
+                var video_tab = get_tab( index, 'video-files' ),
+                  subtitles_tab = get_tab( index, 'subtitles' ),
                   splash_field = get_field( 'splash', video_tab ),
                   splash_attachment_id_field = get_field( 'splash_attachment_id', video_tab ),
                   title_field = get_field( 'title', video_tab ),
@@ -1564,7 +1592,9 @@ jQuery(function() {
                 }
 
                 // The Ajax save can give us some video details and it detects stream type so we refresh that information here if we are editing that video
-                if( current_video_to_edit == k ) {
+                // These functions take the video details from the save response by the playlist position,
+                // so if the playlist changed while saving, leave it to the next save
+                if( current_video_to_edit == index && index == k ) {
                   show_video_details(k);
                   show_stream_fields_worker(k);
                   show_playlist_not_supported(k);
@@ -2152,6 +2182,7 @@ jQuery(function() {
         $tabs                  = $el_editor.find('.fv-player-tab'),
         regex                  = /((fv_wp_flowplayer_field_|fv_wp_flowplayer_hlskey|fv_player_field_ppv_)[^ ]*)/g,
         data                   = {'video_meta' : {}, 'player_meta' : {}},
+        video_items            = {},
         end_of_playlist_action = jQuery('#fv_wp_flowplayer_field_end_actions').val(),
         single_video_showing   = !give_it_all && editing_video_details;
 
@@ -2209,6 +2240,10 @@ jQuery(function() {
             $inputs = ((is_videos_tab || is_subtitles_tab) ? jQuery(this).find('input, select, textarea').not('.no-data') : jQuery(this).not('.no-data') ),
             table_index = jQuery(this).data('index');
           save_index++;
+
+          if (is_videos_tab) {
+            video_items[save_index] = this;
+          }
 
           $inputs.each(function() {
             var
@@ -2325,6 +2360,7 @@ jQuery(function() {
       if (data['videos']) {
         var
           data_videos_new = {},
+          video_items_new = {},
           x = 0;
 
         for (var i in data['videos']) {
@@ -2332,6 +2368,7 @@ jQuery(function() {
             // if we should show preview of a single video only, add that video here,
             // otherwise add all videos here
             if (!single_video_showing || x == current_video_to_edit) {
+              video_items_new[x] = video_items[i];
               data_videos_new[x++] = data['videos'][i];
             } else {
               x++;
@@ -2340,6 +2377,7 @@ jQuery(function() {
         }
 
         data['videos'] = data_videos_new;
+        video_items = video_items_new;
       }
 
       // add player ID and deleted elements for a DB update
@@ -2347,6 +2385,8 @@ jQuery(function() {
       data['deleted_videos'] = deleted_videos.join(',');
       data['deleted_video_meta'] = deleted_video_meta.join(',');
       data['deleted_player_meta'] = deleted_player_meta.join(',');
+
+      ajax_data_video_items.set( data, video_items );
 
       return data;
     }
