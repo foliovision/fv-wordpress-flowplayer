@@ -26,8 +26,8 @@ import {
  * Video IDs while adding and removing playlist items.
  *
  * The editor only learns the ID of a new video from the save response, and
- * it looks up the IDs to send by the playlist item's data-index. Both can go
- * wrong when the playlist changes, which leaves orphan video rows or saves
+ * it looks up the IDs to send by the playlist item's data-index. Both used to
+ * go wrong when the playlist changed, which left orphan video rows or saved
  * one video over another.
  */
 
@@ -55,6 +55,24 @@ async function addPlaylistItem(page: Page, index: number): Promise<void> {
   await page.locator('#fv-player-shortcode-editor .playlist_add').click();
   await expect(playlistItem(page, index).locator('.fvp_item_video-filename')).toHaveText(`Video ${index + 1}`);
   await configureVideo(page, index);
+}
+
+/**
+ * Holds the response of the next fv_player_db_save request until the
+ * returned function is called. Later saves are not held.
+ */
+async function holdFirstSave(page: Page): Promise<() => void> {
+  let releaseSave!: () => void;
+  const saveHeld = new Promise<void>((resolve) => (releaseSave = resolve));
+  let held = false;
+  await page.route((url) => isSaveRequest(url.toString()), async (route) => {
+    if (!held) {
+      held = true;
+      await saveHeld;
+    }
+    await route.continue();
+  });
+  return releaseSave;
 }
 
 test.describe('FV Player Editor — playlist saving', () => {
@@ -96,27 +114,14 @@ test.describe('FV Player Editor — playlist saving', () => {
     await expectPlayerVideos(request, playerId, [VIDEOS.fire.src, VIDEOS.paypal.src, NEW_SRC_1, NEW_SRC_2]);
   });
 
-  // TODO: This currently fails, fix the underlying issue.
+  /*
+   * The editor used to give the IDs from the save response to the playlist
+   * items by position ($(".fv-player-playlist-item").eq(k)). With a video
+   * removed while the save was running, the new video got the ID of Carly
+   * Simon, was saved over it and its own new video row was left orphaned.
+   */
   test('removing a video while a new video is being saved keeps the video IDs', async ({ page, request }) => {
-    test.fail(
-      true,
-      'After a save the editor gives the returned video IDs to the playlist items by position ' +
-      '($(".fv-player-playlist-item").eq(k) in the fv_player_db_save success handler). ' +
-      'If a video was removed while the save was running, the next video gets the wrong ID: ' +
-      'here the new video is saved over Carly Simon and the new video row is left orphaned.',
-    );
-
-    // Hold the first save, the one with the new video, until the removal is done.
-    let releaseSave!: () => void;
-    const saveHeld = new Promise<void>((resolve) => (releaseSave = resolve));
-    let held = false;
-    await page.route((url) => isSaveRequest(url.toString()), async (route) => {
-      if (!held) {
-        held = true;
-        await saveHeld;
-      }
-      await route.continue();
-    });
+    const releaseSave = await holdFirstSave(page);
 
     const removedId = (await getPlayer(request, playerId)).video_objects[1].id;
 
@@ -140,5 +145,32 @@ test.describe('FV Player Editor — playlist saving', () => {
     await waitForSaveQueue(page);
 
     await expectPlayerVideos(request, playerId, [VIDEOS.fire.src, VIDEOS.carly.src, NEW_SRC_1]);
+  });
+
+  /*
+   * The removed video had no ID yet, so the removal could not delete it.
+   * The editor has to delete it once the save returns its ID, otherwise
+   * the video row is left orphaned.
+   */
+  test('removing a new video while it is being saved does not leave an orphan video', async ({ page, request }) => {
+    const releaseSave = await holdFirstSave(page);
+
+    await addPlaylistItem(page, 3);
+    const saveStarted = page.waitForRequest((r) => isSaveRequest(r.url()));
+    await setField(field(page, 'src', 3), NEW_SRC_1);
+    const firstSave = await saveStarted;
+
+    await backToPlaylist(page);
+
+    const dialog = acceptNextDialog(page);
+    await clickPlaylistItemControl(page, 3, '.fvp_item_remove');
+    await dialog;
+
+    const followUpSave = page.waitForResponse((r) => isSaveRequest(r.url()) && r.request() !== firstSave);
+    releaseSave();
+    await followUpSave;
+    await waitForSaveQueue(page);
+
+    await expectPlayerVideos(request, playerId, [VIDEOS.fire.src, VIDEOS.paypal.src, VIDEOS.carly.src]);
   });
 });
