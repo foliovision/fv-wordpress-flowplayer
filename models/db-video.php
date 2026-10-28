@@ -679,7 +679,7 @@ CREATE TABLE " . self::$db_table_name . " (
     foreach (get_object_vars($this) as $property => $value) {
       if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
         $data_keys[] = $property . ' = %s';
-        $data_values[] = strip_tags($value);
+        $data_values[] = is_string( $value ) ? strip_tags( $value ) : false;
       }
     }
 
