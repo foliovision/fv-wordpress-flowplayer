@@ -8,6 +8,8 @@ require_once( dirname(__FILE__).'/../fv-player-ajax-unittest-case.php');
  */
 final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase {
 
+  private static $s3_browser;
+
   //  we need to make sure FV Player loads as if it's wp-admin
   public static function wpSetUpBeforeClass() {
     global $fv_fp;
@@ -28,7 +30,7 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
     include_once "../../models/media-browser.php";
     include_once "../../models/media-browser-s3.php";
 
-    new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
+    self::$s3_browser = new FV_Player_Media_Browser_S3( 'wp_ajax_load_s3_assets' );
 
     parent::wpSetUpBeforeClass();
 
@@ -39,6 +41,13 @@ final class FV_Player_S3BrowserAjaxTestCase extends FV_Player_Ajax_UnitTestCase 
 
   protected function setUp(): void {
     parent::setUp();
+
+    /**
+     * WP_UnitTestCase backs up the hooks only once per run (in the very first test) and restores
+     * that backup after each test. So when running all the tests, the AJAX hook added in
+     * wpSetUpBeforeClass() would be gone after the first test of this class. Add it for each test.
+     */
+    self::$s3_browser->register();
   }
 
   public function testMediaBrowserS3() {
