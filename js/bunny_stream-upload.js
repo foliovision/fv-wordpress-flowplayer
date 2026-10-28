@@ -49,7 +49,34 @@ jQuery( function($) {
     $progressBarNumber.html( getReadableFileSizeString(uploadedSize) + " / "+getReadableFileSizeString(totalSize) ).css({'margin-left' : -$progressBarNumber.width()/2});
   }
 
-  function ajax_file_upload( file, video_guid ) {
+  /**
+   * Base64 encoding for the TUS Upload-Metadata header values, they can have UTF-8 characters.
+   */
+  function tus_metadata_value( value ) {
+    var bytes = new TextEncoder().encode( String( value ) ),
+      binary = '';
+
+    for ( var i = 0; i < bytes.length; i++ ) {
+      binary += String.fromCharCode( bytes[i] );
+    }
+
+    return btoa( binary );
+  }
+
+  /**
+   * Upload the file to Bunny Stream using the TUS resumable upload endpoint.
+   *
+   * The server creates the video and gives us a signature which only allows uploading into that video
+   * and only for a limited time, so the Bunny Stream API key never gets to the browser.
+   *
+   * @see https://bunny.net/docs/stream/tus-resumable-uploads
+   *
+   * @param {File}   file  The file to upload
+   * @param {object} tus   Upload authorization from the fv_player_bunny_stream_submit AJAX call:
+   *                       endpoint, library_id, video_id, expire, signature
+   * @param {string} title Video title
+   */
+  function ajax_file_upload( file, tus, title ) {
     $progressDiv.text("Uploading...");
     fv_player_media_browser.set_upload_status(true);
 
@@ -57,56 +84,87 @@ jQuery( function($) {
 
     $progressBarDiv.show();
 
-    file_upload_xhr = $.ajax({
-      "async": true,
-      "crossDomain": true,
-      "url": "https://video.bunnycdn.com/library/" + fv_player_bunny_stream_upload_settings.lib_id + "/videos/" + video_guid,
-      "method": "PUT",
-      "headers": {
-        "AccessKey": fv_player_bunny_stream_upload_settings.api_key,
-      },
-      data: file,
-      cache: false,
-      contentType: false,
-      processData: false,
-      // Custom XMLHttpRequest
-      xhr: function () {
-        var myXhr = $.ajaxSettings.xhr();
-        if ( myXhr.upload ) {
-          // For handling the progress of the upload
-          myXhr.upload.addEventListener('progress', function (e) {
-            if ( e.lengthComputable ) {
-              calculate_progress( e.total, e.loaded );
-            }
-          }, false);
-        }
+    var auth_headers = {
+      'AuthorizationSignature': tus.signature,
+      'AuthorizationExpire': tus.expire,
+      'VideoId': tus.video_id,
+      'LibraryId': tus.library_id,
+      'Tus-Resumable': '1.0.0'
+    };
 
-        return myXhr;
-      },
-    })
-    .fail(function( jqXHR, textStatus, errorThrown ) {
-      fv_player_media_browser.set_upload_status(false);
-      window.removeEventListener('beforeunload', closeWarning);
-      $progressDiv.text("Upload failed with server error.");
-      $progressBarDiv.hide();
-      console.log( jqXHR, textStatus, errorThrown );
-    })
-    .done(  function( response ) {
-      if ( response && typeof( response ) == 'object' && response.success ) {
-        // everything worked out fine, file is uploaded
-        // reload Bunny Stream tab
-        fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
-        $progressDiv.text( upload_success_message );
-      } else {
-        $progressDiv.text( "Upload failed with server error: " + ( response && typeof( response ) == 'object' && response.message ? response.message : response ) );
-        $progressBarDiv.hide();
-        console.log( response );
-      }
+    function upload_done() {
       window.removeEventListener('beforeunload', closeWarning);
       fv_player_media_browser.set_upload_status(false);
       file_upload_xhr = null;
       $uploadButton.add( $cancelButton ).toggle();
       recreate_file_input( file_select_input_name, file_select_input_class );
+    }
+
+    function upload_failed( jqXHR, textStatus, errorThrown ) {
+      window.removeEventListener('beforeunload', closeWarning);
+      fv_player_media_browser.set_upload_status(false);
+      $progressDiv.text( "Upload failed with server error" + ( jqXHR && jqXHR.status ? ": " + jqXHR.status : "." ) );
+      $progressBarDiv.hide();
+      console.log( jqXHR, textStatus, errorThrown );
+    }
+
+    // 1. Create the upload, Bunny Stream gives us its URL in the Location header
+    file_upload_xhr = $.ajax({
+      "url": tus.endpoint,
+      "method": "POST",
+      "headers": $.extend( {}, auth_headers, {
+        'Upload-Length': file.size,
+        'Upload-Metadata': 'filetype ' + tus_metadata_value( file.type || 'application/octet-stream' ) + ',title ' + tus_metadata_value( title || file.name )
+      })
+    })
+    .fail( upload_failed )
+    .done( function( response, textStatus, jqXHR ) {
+      var location = jqXHR.getResponseHeader( 'Location' );
+      if ( !location ) {
+        upload_failed( jqXHR, 'error', 'Missing Location header in the TUS upload creation response' );
+        return;
+      }
+
+      // 2. Upload the file, the Location is relative, like /tusupload/{id}
+      file_upload_xhr = $.ajax({
+        "url": new URL( location, tus.endpoint ).href,
+        "method": "PATCH",
+        "headers": $.extend( {}, auth_headers, {
+          'Upload-Offset': 0
+        }),
+        data: file,
+        contentType: 'application/offset+octet-stream',
+        processData: false,
+        // Custom XMLHttpRequest
+        xhr: function () {
+          var myXhr = $.ajaxSettings.xhr();
+          if ( myXhr.upload ) {
+            // For handling the progress of the upload
+            myXhr.upload.addEventListener('progress', function (e) {
+              if ( e.lengthComputable ) {
+                calculate_progress( e.total, e.loaded );
+              }
+            }, false);
+          }
+
+          return myXhr;
+        },
+      })
+      .fail( upload_failed )
+      .done( function( response, textStatus, jqXHR ) {
+        if ( parseInt( jqXHR.getResponseHeader( 'Upload-Offset' ), 10 ) === file.size ) {
+          // everything worked out fine, file is uploaded
+          // reload Bunny Stream tab
+          fv_flowplayer_browser_assets_loaders[ fv_player_media_browser.get_active_tab().attr('id') ]( fv_player_media_browser.get_current_bucket() ,fv_player_media_browser.get_current_folder() );
+          $progressDiv.text( upload_success_message );
+        } else {
+          $progressDiv.text( "Upload failed with server error: incomplete upload." );
+          $progressBarDiv.hide();
+          console.log( jqXHR );
+        }
+
+        upload_done();
+      });
     });
   }
 
@@ -129,13 +187,13 @@ jQuery( function($) {
       ignore_duplicates: 1,
     }).done( function( data ) {
       // check that we have the correct output
-      if ( data.result && !data.error && data.result.status != 'error' ) {
+      if ( data.result && !data.error && data.result.status != 'error' && data.result.tus ) {
         // start the upload process
-        ajax_file_upload( file, data.result.result.guid );
+        ajax_file_upload( file, data.result.tus, data.result.result.title );
       } else {
-        $progressDiv.text( "Upload failed with server error: " + (data.error ? data.error : data.result.result.exception ) );
+        $progressDiv.text( "Upload failed with server error: " + (data.error ? data.error : ( data.result && data.result.result && data.result.result.exception ? data.result.result.exception : 'missing upload authorization' ) ) );
         $progressBarDiv.hide();
-        console.log( data.error ? data.error : data.result.result.exception );
+        console.log( data.error ? data.error : ( data.result && data.result.result && data.result.result.exception ? data.result.result.exception : 'missing upload authorization' ) );
       }
     }).fail( function( jqXHR, textStatus, errorThrown ) {
       $progressDiv.text( "Upload failed with server error: " + textStatus );

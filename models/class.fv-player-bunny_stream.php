@@ -321,7 +321,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
 
     $wpdb->update( $this->table_name, array(
       'job_id' => $job_id,
-      'result' => $result,
+      'result' => wp_json_encode( $result ), // job_check() expects JSON, an object would be stored as an empty string
       'status' => $status,
       'progress' => $progress,
     ), array(
@@ -335,10 +335,19 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       '%d'  // id
     ) );
 
-    return array(
+    $ret = array(
       'status' => $status,
       'result' => $result,
     );
+
+    // Give the browser the signature to upload the file into this one video, so it never gets the API key
+    if ( 'processing' === $status ) {
+      $expiration = time() + absint( apply_filters( 'fv_player_bunny_stream_upload_expiration', 6 * HOUR_IN_SECONDS ) );
+
+      $ret['tus'] = $api->get_tus_upload_authorization( $job_id, $expiration );
+    }
+
+    return $ret;
   }
 
   /**
