@@ -483,7 +483,7 @@ class flowplayer_frontend extends flowplayer
            * So we encode &#039; to %27 so the whole value stays part of the URL (this also preserves
            * legitimate filenames that contain a quote, which %27 resolves back to).           
            */
-          $splash_url   = str_replace( '&#039;', '%27', $splash_img );
+          $splash_url   = str_replace( '&#039;', '%27', $splash_url );
           $splash_style = 'background-image: url(\'' . $splash_url . '\')';
 
           // esc_attr() on the finished style value is a final guard so nothing can escape the attribute.
