@@ -4,6 +4,9 @@ abstract class FV_Player_Wizard_Base_Class {
 
   private $args = array();
 
+  // the user capability required to see the wizard and to run its steps
+  private $capability = 'manage_options';
+
   private $id = false;
 
   private $page;
@@ -23,6 +26,7 @@ abstract class FV_Player_Wizard_Base_Class {
    *                  page        string  the ?page=NAME of the wp-admin page with the Wizard for CSS loadign
    *                  steps_path  string  Path to folder with all the step_*.php Wizard step files
    *                  title       string  Wizard title to display
+   *                  capability  string  User capability required to see the Wizard and run its steps, defaults to manage_options
    * }
    *
    */
@@ -37,6 +41,10 @@ abstract class FV_Player_Wizard_Base_Class {
     $this->page = $this->args['page'];
 
     $this->set_title($this->args['title']);
+
+    if( !empty($this->args['capability']) ) {
+      $this->capability = $this->args['capability'];
+    }
 
     // TODO: Somehow make these work even if self is only loadedd
     // on the wizard screen
@@ -53,7 +61,11 @@ abstract class FV_Player_Wizard_Base_Class {
   }
 
   function ajax() {
-    if( !wp_verify_nonce( $_POST['nonce'], $this->get_id() ) ) {
+    if( !current_user_can( $this->get_capability() ) ) {
+      wp_send_json( array( 'error' => 'You are not allowed to use this wizard.' ) );
+    }
+
+    if( empty($_POST['nonce']) || !wp_verify_nonce( $_POST['nonce'], $this->get_id() ) ) {
       wp_send_json( array( 'error' => 'Invalid nonce' ) );
     }
 
@@ -62,6 +74,10 @@ abstract class FV_Player_Wizard_Base_Class {
 
     $result = call_user_func( array($step,'process') );
     wp_send_json( $result );
+  }
+
+  function get_capability() {
+    return $this->capability;
   }
 
   function get_id() {
@@ -157,6 +173,11 @@ abstract class FV_Player_Wizard_Base_Class {
   }
 
   function show() {
+    if( !current_user_can( $this->get_capability() ) ) {
+      echo "<div class='error'><p>You are not allowed to use the ".esc_html( $this->get_title() ).".</p></div>";
+      return;
+    }
+
     ?>
     <style>
     .regular-text {

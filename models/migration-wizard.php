@@ -13,7 +13,7 @@ class FV_Player_Migration {
   }
 
   function admin_page() {
-    add_submenu_page(  'fv_player', 'FV Player Migration', 'FV Player Migration', 'edit_posts', 'fv_player_migration', array($this, 'tools_panel') );
+    add_submenu_page(  'fv_player', 'FV Player Migration', 'FV Player Migration', 'manage_options', 'fv_player_migration', array($this, 'tools_panel') );
     remove_submenu_page( 'fv_player', 'fv_player_migration' );
   }
 
