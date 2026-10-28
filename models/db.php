@@ -917,6 +917,89 @@ class FV_Player_Db {
 
 
   /**
+   * Returns the video IDs that belong to a given player.
+   *
+   * Used to authorize existing video records in db_store_player_data():
+   * a reused video ID is only accepted if it already belongs to the player 
+   * being edited.
+   *
+   * @param int $player_id Player DB ID.
+   *
+   * @return int[] Video IDs from the player's comma-separated `videos` column,
+   *               or an empty array when the player does not exist or
+   *               references no videos.
+   */
+  public function get_player_video_ids( $player_id ) {
+    global $wpdb;
+
+    $player_id = intval( $player_id );
+    if ( $player_id < 1 ) {
+      return array();
+    }
+
+    $videos = $wpdb->get_var( $wpdb->prepare(
+      "SELECT videos FROM `{$wpdb->prefix}fv_player_players` WHERE id = %d",
+      $player_id
+    ) );
+
+    if ( empty( $videos ) ) {
+      return array();
+    }
+
+    return array_map( 'absint', array_filter( explode( ',', $videos ), 'strlen' ) );
+  }
+
+  /**
+   * Returns the video ID that a given video meta record belongs to.
+   *
+   * Used to authorize deletion of video meta in db_store_player_data():
+   * a meta record may only be removed when the video it belongs to belongs
+   * to the player being edited.
+   *
+   * @param int $meta_id Video meta DB ID.
+   *
+   * @return int The id_video the meta record belongs to, or 0 when it does
+   *             not exist.
+   */
+  public function get_video_meta_video_id( $meta_id ) {
+    global $wpdb;
+
+    $meta_id = intval( $meta_id );
+    if ( $meta_id < 1 ) {
+      return 0;
+    }
+
+    return (int) $wpdb->get_var( $wpdb->prepare(
+      "SELECT id_video FROM `{$wpdb->prefix}fv_player_videometa` WHERE id = %d",
+      $meta_id
+    ) );
+  }
+
+  /**
+   * Returns the player ID that a given player meta record belongs to.
+   *
+   * Used to authorize deletion of player meta in db_store_player_data(): a meta record may only
+   * be removed when it belongs to the player being edited.
+   *
+   * @param int $meta_id Player meta DB ID.
+   *
+   * @return int The id_player the meta record belongs to, or 0 when it does not exist.
+   */
+  public function get_player_meta_player_id( $meta_id ) {
+    global $wpdb;
+
+    $meta_id = intval( $meta_id );
+    if ( $meta_id < 1 ) {
+      return 0;
+    }
+
+    return (int) $wpdb->get_var( $wpdb->prepare(
+      "SELECT id_player FROM `{$wpdb->prefix}fv_player_playermeta` WHERE id = %d",
+      $meta_id
+    ) );
+  }
+
+  /**
    * Stored player data in a database from the POST data sent via AJAX
    * from the shortcode editor.
    *
@@ -963,46 +1046,24 @@ class FV_Player_Db {
     );
 
     if ($post_data) {
-      // parse and resolve deleted videos
-      if (!$data && !empty($post_data['deleted_videos'])) { // todo: ajax!
-        $deleted_videos = explode(',', $post_data['deleted_videos']);
-        foreach ($deleted_videos as $d_id) {
-          // we don't need to load this video data, just link it to a database
-          // and then delete it
-          // ... although we'll need at least 1 item in the data array to consider this
-          //     video data valid for object creation
-          $d_vid = new FV_Player_Db_Video(null, array('caption' => '1'), $this);
-          $d_vid->link2db($d_id);
-          $d_vid->delete();
-        }
+      $restrict_to_player_videos = ! current_user_can( 'edit_others_posts' );
+
+      $editable_video_ids        = ! empty( $post_data['update'] )
+        ? $this->get_player_video_ids( $post_data['update'] )
+        : array();
+
+      /**
+       * For now, users with edit_others_posts may edit anyone's videos and
+       * are exempt. TODO: Test further and remove this exemption.
+       */
+      if ( $restrict_to_player_videos ) {
+        $post_data = $this->sanitize_video_ids( $post_data, $editable_video_ids );
+        $post_data = $this->sanitize_video_meta_ids( $post_data, $editable_video_ids );
       }
 
-      // parse and resolve deleted meta data
-      if (!$data && !empty($post_data['deleted_video_meta'])) { // todo: probably not needed with Ajax saving
-        $deleted_meta = explode(',', $post_data['deleted_video_meta']);
-        foreach ($deleted_meta as $d_id) {
-          // we don't need to load this meta data, just link it to a database
-          // and then delete it
-          // ... although we'll need at least 1 item in the data array to consider this
-          //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Video_Meta(null, array('meta_key' => '1'), $this);
-          $d_meta->link2db($d_id);
-          $d_meta->delete();
-        }
-      }
-
-      // parse and resolve deleted meta data
-      if (!$data && !empty($post_data['deleted_player_meta'])) { // todo: probably not needed with Ajax saving
-        $deleted_meta = explode(',', $post_data['deleted_player_meta']);
-        foreach ($deleted_meta as $d_id) {
-          // we don't need to load this meta data, just link it to a database
-          // and then delete it
-          // ... although we'll need at least 1 item in the data array to consider this
-          //     meta data valid for object creation
-          $d_meta = new FV_Player_Db_Player_Meta(null, array('meta_key' => '1'), $this);
-          $d_meta->link2db($d_id);
-          $d_meta->delete();
-        }
+      // parse and resolve deleted videos, videometa or player meta
+      if ( ! $data ) {
+        $this->process_deleted_entries( $post_data, $editable_video_ids, $restrict_to_player_videos );
       }
 
       foreach ($post_data as $field_name => $field_value) {
@@ -2258,6 +2319,88 @@ class FV_Player_Db {
   }
 
   /**
+   * Processes deleted videos, video meta and player meta.
+   *
+   * @param array $post_data The POST data sent via AJAX from the shortcode
+   *                         editor.
+   * @param int[] $editable_video_ids The video IDs that the current user is
+   *                                  allowed to edit.
+   * @param bool $restrict_to_player_videos Whether the current user is
+   *                                        restricted to editing only their 
+   *                                        own player's videos.
+   *
+   * @return void
+   */
+  private function process_deleted_entries( $post_data, $editable_video_ids, $restrict_to_player_videos ) {
+    if ( ! empty( $post_data['deleted_videos'] ) ) {
+      $deleted_videos = explode(',', $post_data['deleted_videos']);
+      foreach ($deleted_videos as $d_id) {
+
+        // Only delete a video that belongs to the player being edited; skip others.
+        if ( $restrict_to_player_videos && ! in_array( intval( $d_id ), $editable_video_ids, true ) ) {
+          continue;
+        }
+
+        // we don't need to load this video data, just link it to a database
+        // and then delete it
+        // ... although we'll need at least 1 item in the data array to consider this
+        //     video data valid for object creation
+        $d_vid = new FV_Player_Db_Video(null, array('caption' => '1'), $this);
+        $d_vid->link2db($d_id);
+        $d_vid->delete();
+      }
+    }
+
+    if ( ! empty( $post_data['deleted_video_meta'] ) ) {
+      $deleted_meta = explode(',', $post_data['deleted_video_meta']);
+      foreach ($deleted_meta as $d_id) {
+
+        // Only delete video meta whose video belongs to the player being edited; skip others.
+        if (
+          $restrict_to_player_videos
+          && ! in_array( $this->get_video_meta_video_id( $d_id ), $editable_video_ids, true )
+        ) {
+          continue;
+        }
+
+        // we don't need to load this meta data, just link it to a database
+        // and then delete it
+        // ... although we'll need at least 1 item in the data array to consider this
+        //     meta data valid for object creation
+        $d_meta = new FV_Player_Db_Video_Meta(null, array('meta_key' => '1'), $this);
+        $d_meta->link2db($d_id);
+        $d_meta->delete();
+      }
+    }
+
+    // parse and resolve deleted meta data
+    if ( ! empty( $post_data['deleted_player_meta'] ) ) {
+      $deleted_meta = explode(',', $post_data['deleted_player_meta']);
+      foreach ($deleted_meta as $d_id) {
+
+        // Only delete player meta that belongs to the player being edited; skip others.
+        if (
+          $restrict_to_player_videos
+          && (
+            empty( $post_data['update'] )
+            || $this->get_player_meta_player_id( $d_id ) !== intval( $post_data['update'] )
+          )
+        ) {
+          continue;
+        }
+
+        // we don't need to load this meta data, just link it to a database
+        // and then delete it
+        // ... although we'll need at least 1 item in the data array to consider this
+        //     meta data valid for object creation
+        $d_meta = new FV_Player_Db_Player_Meta(null, array('meta_key' => '1'), $this);
+        $d_meta->link2db($d_id);
+        $d_meta->delete();
+      }
+    }
+  }
+
+  /**
    * Sanitizes the value for DB class attributes.
    * 
    * TODO: We got a report of PHP warning where the $value was an object in FV_Player_Db_Player_Meta.
@@ -2272,6 +2415,109 @@ class FV_Player_Db {
     } else {
       return $value;
     }
+  }
+
+  /**
+   * Authorize every existing video record this request would mutate or
+   * delete.
+   *
+   * Without this check a user who can only edit their own posts could
+   * point a save at a video ID disclosed in another user's public player
+   * markup and overwrite its src/title, or delete it.
+   *
+   * So an existing video ID is only honoured when it already belongs to the
+   * player being edited ('update'). When creating a new player there is no
+   * such player, so no existing ID qualifies.
+   *
+   * In the videos[] list, an ID that does not belong to the edited
+   * player is dropped and the item is saved as a brand new video: the
+   * caller keeps the player they are building, but the existing video is
+   * neither loaded nor overwritten.
+   *
+   * @param array $post_data The POST data sent via AJAX from the shortcode
+   *                         editor.
+   * @param int[] $editable_video_ids The video IDs that the current user is
+   *                                  allowed to edit.
+   *
+   * @return array The sanitized POST data where video IDs that do not belong to
+   *               the player being edited are removed.
+   */
+  private function sanitize_video_ids( $post_data, $editable_video_ids ) {
+    if ( ! empty( $post_data['videos'] ) && is_array( $post_data['videos'] ) ) {
+      foreach ( $post_data['videos'] as $video_index => $video_item ) {
+        if ( ! is_array( $video_item ) || empty( $video_item['id'] ) ) {
+          continue;
+        }
+
+        if ( ! in_array( intval( $video_item['id'] ), $editable_video_ids, true ) ) {
+          // Not part of the player being edited: ignore the supplied ID and save a new video.
+          unset( $post_data['videos'][ $video_index ]['id'] );
+        }
+      }
+    }
+
+    return $post_data;
+  }
+
+  /**
+   * Drops video meta IDs that do not belong to the player being edited.
+   *
+   * A video meta item can carry an existing meta 'id' which, on save, would be
+   * linked and overwritten. For a less privileged user we only honour a meta 
+   * ID whose video belongs to the player being edited ($editable_video_ids);
+   * ($editable_video_ids); any other ID is removed so the item is saved as a
+   * brand new meta record, leaving the original (potentially another user's)
+   * meta untouched.
+   *
+   * Meta IDs appear at several depths of the video_meta structure (video sections, chapters /
+   * transcript files, the per-language subtitles / transcript_src lists, and anything added by
+   * the fv_player_db_video_meta_save filter), so the payload is walked recursively.
+   *
+   * @param array $post_data          The POST data sent via AJAX from the shortcode editor.
+   * @param int[] $editable_video_ids The video IDs the current user is allowed to edit.
+   *
+   * @return array The POST data with unauthorized video meta IDs removed.
+   */
+  private function sanitize_video_meta_ids( $post_data, $editable_video_ids ) {
+    if ( ! empty( $post_data['video_meta'] ) && is_array( $post_data['video_meta'] ) ) {
+      $this->drop_unauthorized_video_meta_ids( $post_data['video_meta'], $editable_video_ids );
+    }
+
+    return $post_data;
+  }
+
+  /**
+   * Recursively removes any video meta 'id' whose video ID is not in 
+   * $editable_video_ids.
+   *
+   * Within the video_meta payload every 'id' is a video meta record ID, so 
+   * each leaf 'id' is resolved to its video via get_video_meta_video_id() and
+   * dropped unless that video belongs to the player being edited.
+   *
+   * @param array $node               A node of the video_meta payload, passed by reference.
+   * @param int[] $editable_video_ids The video IDs the current user is allowed to edit.
+   *
+   * @return void
+   */
+  private function drop_unauthorized_video_meta_ids( &$node, $editable_video_ids ) {
+    if ( ! is_array( $node ) ) {
+      return;
+    }
+
+    if (
+      ! empty( $node['id'] )
+      && ! in_array( $this->get_video_meta_video_id( $node['id'] ), $editable_video_ids, true )
+    ) {
+      // Meta belongs to a video outside the edited player: drop the ID so a new meta is saved.
+      unset( $node['id'] );
+    }
+
+    foreach ( $node as &$child ) {
+      if ( is_array( $child ) ) {
+        $this->drop_unauthorized_video_meta_ids( $child, $editable_video_ids );
+      }
+    }
+    unset( $child );
   }
 
   /**
