@@ -38,6 +38,15 @@ abstract class FV_Player_Video_Encoder {
     return current_user_can( 'manage_options' );
   }
 
+  /**
+   * Can the current user see and delete encoding jobs of other users?
+   * Otherwise only the user's own jobs are listed and can be deleted.
+   *
+   * @return bool
+   */
+  public static function can_manage_all_jobs() {
+    return current_user_can( 'edit_others_posts' );
+  }
 
   public function get_table_name() {
     return $this->table_name;
@@ -295,8 +304,22 @@ abstract class FV_Player_Video_Encoder {
 
     $id = absint( $_POST['id_row'] );
 
-    if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv-player-encoder-delete-job-' . $id ) ) {
+    if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv-player-encoder-delete-job-' . $id ) ) {
       wp_send_json( array('error' => 'Bad nonce') );
+    }
+
+    if ( ! current_user_can( 'edit_posts' ) ) {
+      wp_send_json( array( 'error' => 'You are not allowed to delete this job.' ) );
+    }
+
+    $job_author = $wpdb->get_var( $wpdb->prepare( "SELECT author FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE id = %d", $id ) );
+
+    if ( null === $job_author ) {
+      wp_send_json( array( 'error' => 'Job not found' ) );
+    }
+
+    if ( ! self::can_manage_all_jobs() && absint( $job_author ) !== get_current_user_id() ) {
+      wp_send_json( array( 'error' => 'You are not allowed to delete this job.' ) );
     }
 
     if ( $wpdb->query( $wpdb->prepare("DELETE FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE id = %d  ", $id) ) ) {
@@ -491,7 +514,10 @@ abstract class FV_Player_Video_Encoder {
         $html = ob_get_clean();
         preg_match( '/<tbody[\s\S]*?(<tr>[\s\S]*?<\/tr>)[\s\S]*?<\/tbody>/', $html, $matches ); // match row
 
-        $rows[$id] = $matches[1];
+        // The job might not be listed for the current user
+        if ( ! empty( $matches[1] ) ) {
+          $rows[$id] = $matches[1];
+        }
       }
     }
 
@@ -788,7 +814,7 @@ abstract class FV_Player_Video_Encoder {
   function tools_panel() {
     if ( !$this->is_configured() ) {
       if ( $this->can_manage_settings() ) {
-      $this->tools_panel_settings();
+        $this->tools_panel_settings();
       } else {
         echo "<div class='error'><p>FV Player " . esc_html( $this->encoder_name ) . " is not set up yet. Please ask the site administrator to set it up.</p></div>";
       }
@@ -801,7 +827,7 @@ abstract class FV_Player_Video_Encoder {
       <h2 class="nav-tab-wrapper">
         <a href="<?php echo add_query_arg( 'page', $this->encoder_wp_url_slug, admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('jobs') ) echo ' nav-tab-active'; ?>">Jobs</a>
         <?php if ( $this->can_manage_settings() ) : ?>
-        <a href="<?php echo add_query_arg( array('page' => $this->encoder_wp_url_slug ,'panel' => 'settings'), admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('settings') ) echo ' nav-tab-active'; ?>">Settings</a>
+          <a href="<?php echo add_query_arg( array('page' => $this->encoder_wp_url_slug ,'panel' => 'settings'), admin_url('admin.php') ) ?>" class="nav-tab<?php if( $this->tools_panel_is('settings') ) echo ' nav-tab-active'; ?>">Settings</a>
         <?php endif; ?>
       </h2>
       <?php
