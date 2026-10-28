@@ -3417,6 +3417,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 }
 
+/**
+ * Run video duration checks on players using the legacy shortcode like:
+ *
+ * [fvplayer src="..."]
+ */
 function fv_wp_flowplayer_save_post( $post_id ) {
   if( $parent_id = wp_is_post_revision($post_id) ) {
     $post_id = $parent_id;
