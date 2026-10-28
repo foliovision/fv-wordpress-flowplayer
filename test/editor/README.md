@@ -49,6 +49,29 @@ WP_PORT=12345 npm run wp:up
 WP_PORT=12345 npm test
 ```
 
+### Running a single spec or test
+
+Pass a part of the spec file name after `--`. Playwright matches it against
+the file paths:
+
+```bash
+npm test -- playlist-saving
+```
+
+Add `-g` to run only the tests whose title contains the text:
+
+```bash
+npm test -- playlist-saving -g "while a new video is being saved"
+```
+
+The same works with the other scripts, e.g. to watch it in a browser window
+or step through it:
+
+```bash
+npm run test:headed -- playlist-saving
+npm run test:debug -- playlist-saving
+```
+
 The plugin source is mounted live from the repo root into
 `wp-content/plugins/fv-player`, so PHP/JS changes are picked up on the next
 page load. JS is loaded unminified from `js/`, so there is no build step.
@@ -120,6 +143,8 @@ serves the same folder (`/var/www/html/...`) would lose access to it.
   Clone, Delete on the Players screen.
 - **`close-editor.spec.ts`**: closing while a save is running, a closed
   new player stays a draft.
+- **`playlist-saving.spec.ts`**: video IDs stay right when adding and
+  removing videos, also while a save is running.
 
 Tests that document known plugin bugs use `test.fail()` with the reason.
 They pass while the bug exists and fail once it is fixed, which is the cue
