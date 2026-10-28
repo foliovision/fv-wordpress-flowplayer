@@ -16,7 +16,6 @@ class FV_Player_Bunny_Stream_Browser extends FV_Player_Media_Browser {
       wp_localize_script( 'fv-player-bunny_stream-upload', 'fv_player_bunny_stream_upload_settings', array(
         'upload_button_text' => __('Upload to Bunny Stream', 'fv-player-bunny_stream'),
         'lib_id' => $fv_fp->_get_option( array('bunny_stream','lib_id') ),
-        'api_key' => $fv_fp->_get_option( array('bunny_stream','api_key') ),
         'job_submit_nonce' => wp_create_nonce('fv_player_bunny_stream'),
         'nonce_add_new_folder' => wp_create_nonce('fv_player_bunny_stream_add_new_folder')
       ));
