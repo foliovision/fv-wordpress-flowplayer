@@ -359,12 +359,15 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
-= 7.5.56.7212 - 2026-10-08 =
+= 7.5.56.7212 - 2026-10-28 =
 
+* Security: Avoid Subscriber-level attacker to overwrite any existing video record using an enumerable video ID, if using "Enable profile videos" (CVE-2026-108067)
 * Security: Avoid Contributor+ SSRF via the splash image download for the post featured image, only public addresses are fetched and only real images are stored (CVE-2026-85351)
 * Security: Avoid Subscriber+ cloud storage file listing disclosure via the media browser AJAX handlers (CVE-2026-85346), reported by Karthik Ramakrishnan
 * Security: Avoid Contributor+ Stored XSS via the text-lightbox caption(CVE-2026-85347), reported by Karthik Ramakrishnan
+* Security: Bunny Stream upload improvements
 * Security: Remove legacy [flowplayer] to [fvplayer] shortcode conversion which Subscriber+ users could run, although no damage would be done (CVE-2026-85344), reported by Karthik Ramakrishnan
+* Security: Restrict access to migration wizard as Contributors were able to load it (CVE-2026-108068)
 
 = 7.5.55.7212 - 2026-10-06 =
 
