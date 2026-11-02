@@ -705,9 +705,9 @@ function fv_player_comment_text_strip_html_attributes( $text ) {
 }
 
 function fv_player_comment_text_strip_html_attributes_worker( $m ) {
-  // Attributes whose values are output as raw HTML by the player, or which
-  // show such HTML right on page load (end_popup_preview).
-  $dangerous = array( 'ad', 'popup', 'end_action_value', 'end_popup_preview' );
+  // Attributes whose values are output as HTML by the player, or which
+  // show such HTML right on page load (end_popup_preview, error, admin_warning).
+  $dangerous = array( 'ad', 'popup', 'end_action_value', 'end_popup_preview', 'error', 'admin_warning' );
 
   // $m[3] holds the attribute string of the matched shortcode.
   if ( empty( $m[3] ) ) {
