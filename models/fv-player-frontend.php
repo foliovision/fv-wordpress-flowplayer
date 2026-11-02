@@ -732,7 +732,8 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( isset($this->aCurArgs['admin_warning']) ) {
-          $this->sHTMLAfter .= wpautop($this->aCurArgs['admin_warning']);
+          // Untrusted shortcode attribute, see the error message below.
+          $this->sHTMLAfter .= wpautop( wp_kses_post( $this->aCurArgs['admin_warning'] ) );
         }
 
         if( isset($this->aCurArgs['playlist_start']) ) {
@@ -869,7 +870,9 @@ class flowplayer_frontend extends flowplayer
         }
 
         if( !empty($fv_fp->aCurArgs['error']) ) {
-          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.$fv_fp->aCurArgs['error'].'</div>'.$this->get_play_button().$preload.'</div>'."\n";
+          // The error message may come from the shortcode attribute, so it is untrusted input.
+          // Shortcode attributes are decoded with stripcslashes() so \x3c...\x3e turns into HTML.
+          $this->ret['html'] .= "\t".'<div class="fp-ui"><div class="fp-message fp-shown">'.wp_kses_post( $fv_fp->aCurArgs['error'] ).'</div>'.$this->get_play_button().$preload.'</div>'."\n";
 
         } else {
           $fp_ui_style = !wp_style_is('fv_flowplayer') && !defined('PHPUnitTestMode') ? ' style="position:absolute"' : '';
