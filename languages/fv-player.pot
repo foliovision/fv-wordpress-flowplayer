@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2026-09-22 15:13+0000\n"
+"POT-Creation-Date: 2026-11-02 11:38+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -51,19 +51,15 @@ msgstr ""
 msgid "To update FV Player please either renew your license or disable FV Player Pro."
 msgstr ""
 
-#: controller/backend.php:706
-msgid "FV Player has found old shortcodes in the content of your posts. <a href=\"%1$s\">Run the conversion script.</a>"
-msgstr ""
-
-#: controller/backend.php:940
+#: controller/backend.php:900
 msgid "FV Player: Please upgrade to FV Player Pro version %s or above!"
 msgstr ""
 
-#: controller/backend.php:956
+#: controller/backend.php:916
 msgid "FV Player: Please upgrade to FV Player Pay Per View version %s or above!"
 msgstr ""
 
-#: controller/backend.php:972
+#: controller/backend.php:932
 msgid "FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!"
 msgstr ""
 
@@ -83,103 +79,103 @@ msgstr ""
 msgid "Add FV Player"
 msgstr ""
 
-#: controller/editor.php:776, models/list-table.php:72, view/admin.php:2149, view/wizard.php:569
+#: controller/editor.php:790, models/list-table.php:72, view/admin.php:2149, view/wizard.php:569
 msgid "Subtitles"
 msgstr ""
 
-#: controller/editor.php:777
+#: controller/editor.php:791
 msgid "Subtitle"
 msgstr ""
 
-#: controller/editor.php:803
+#: controller/editor.php:817
 msgid "Video Link"
 msgstr ""
 
-#: controller/editor.php:827
+#: controller/editor.php:841
 msgid "Live Stream"
 msgstr ""
 
-#: controller/editor.php:831
+#: controller/editor.php:845
 msgid "DVR Stream"
 msgstr ""
 
-#: controller/editor.php:839
+#: controller/editor.php:853
 msgid "Audio Stream"
 msgstr ""
 
-#: controller/editor.php:844
+#: controller/editor.php:858
 msgid "Advanced Settings"
 msgstr ""
 
-#: controller/editor.php:849, view/admin.php:916
+#: controller/editor.php:863, view/admin.php:916
 msgid "Mobile Video"
 msgstr ""
 
-#: controller/editor.php:856
+#: controller/editor.php:870
 msgid "Alternative Format 1"
 msgstr ""
 
-#: controller/editor.php:863
+#: controller/editor.php:877
 msgid "Alternative Format 2"
 msgstr ""
 
-#: controller/editor.php:870
+#: controller/editor.php:884
 msgid "Remove Top and Bottom Black Bars"
 msgstr ""
 
-#: controller/editor.php:872
+#: controller/editor.php:886
 msgid "Fixes video fit in mobile fullscreen when in landscape."
 msgstr ""
 
-#: controller/editor.php:877
+#: controller/editor.php:891
 msgid "RTMP"
 msgstr ""
 
-#: controller/editor.php:883
+#: controller/editor.php:897
 msgid "Path"
 msgstr ""
 
-#: controller/editor.php:889
+#: controller/editor.php:903
 msgid "Server"
 msgstr ""
 
-#: controller/editor.php:899
+#: controller/editor.php:913
 msgid "Splash Screen"
 msgstr ""
 
-#: controller/editor.php:904
+#: controller/editor.php:918
 msgid "Will appear in place of the video before it plays."
 msgstr ""
 
-#: controller/editor.php:911
+#: controller/editor.php:925
 msgid "Title"
 msgstr ""
 
-#: controller/editor.php:915
+#: controller/editor.php:929
 msgid "Will appear below the player and on playlist thumbnails. Also used for tracking."
 msgstr ""
 
-#: controller/editor.php:918
+#: controller/editor.php:932
 msgid "Hide Title"
 msgstr ""
 
-#: controller/editor.php:923
+#: controller/editor.php:937
 msgid "Use if you only want the title for tracking."
 msgstr ""
 
-#: controller/editor.php:928, view/admin.php:922
+#: controller/editor.php:942, view/admin.php:922
 msgid "Splash Text"
 msgstr ""
 
-#: controller/editor.php:932
+#: controller/editor.php:946
 msgid "Will appear over the video before it plays."
 msgstr ""
 
-#: controller/editor.php:935, view/admin.php:924
+#: controller/editor.php:949, view/admin.php:924
 msgid "Synopsis"
 msgstr ""
 
-#: controller/editor.php:939
+#: controller/editor.php:953
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
@@ -604,35 +600,35 @@ msgstr ""
 msgid "US West (Oregon)"
 msgstr ""
 
-#: models/cdn.class.php:170
+#: models/cdn.class.php:179
 msgid "Domain"
 msgstr ""
 
-#: models/cdn.class.php:173
+#: models/cdn.class.php:182
 msgid "You can enter multiple domains separated by <code>,</code>."
 msgstr ""
 
-#: models/cdn.class.php:177
+#: models/cdn.class.php:186
 msgid "Secure Token"
 msgstr ""
 
-#: models/cdn.class.php:184, models/digitalocean-spaces.class.php:160, models/email-subscription.php:115, models/linode-object-storage.class.php:91, models/stats.php:158, models/youtube.php:391, view/admin.php:91, view/admin.php:220, view/admin.php:357, view/admin.php:481, view/admin.php:702, view/admin.php:722, view/admin.php:738, view/admin.php:755, view/admin.php:807, view/admin.php:878, view/admin.php:930, view/admin.php:1164, view/admin.php:1453, view/admin.php:1491, view/admin.php:1544, view/admin.php:1574, view/admin.php:1624, view/admin.php:1700, view/admin.php:2100
+#: models/cdn.class.php:193, models/digitalocean-spaces.class.php:160, models/email-subscription.php:115, models/linode-object-storage.class.php:91, models/stats.php:158, models/youtube.php:391, view/admin.php:91, view/admin.php:220, view/admin.php:357, view/admin.php:481, view/admin.php:702, view/admin.php:722, view/admin.php:738, view/admin.php:755, view/admin.php:807, view/admin.php:878, view/admin.php:930, view/admin.php:1164, view/admin.php:1453, view/admin.php:1491, view/admin.php:1544, view/admin.php:1574, view/admin.php:1624, view/admin.php:1700, view/admin.php:2100
 msgid "Save"
 msgstr ""
 
-#: models/custom-videos.php:439, models/custom-videos.php:905, models/list-table.php:71
+#: models/custom-videos.php:443, models/custom-videos.php:909, models/list-table.php:71
 msgid "Videos"
 msgstr ""
 
-#: models/custom-videos.php:920
+#: models/custom-videos.php:924
 msgid "You can put your Vimeo or YouTube links here."
 msgstr ""
 
-#: models/custom-videos.php:920
+#: models/custom-videos.php:924
 msgid "These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up."
 msgstr ""
 
-#: models/custom-videos.php:939
+#: models/custom-videos.php:943
 msgid "Profile Videos"
 msgstr ""
 
@@ -776,7 +772,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3313
+#: models/fv-player.php:3322
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
@@ -796,35 +792,35 @@ msgstr ""
 msgid "Shows when the lightbox is open."
 msgstr ""
 
-#: models/lightbox.php:596
+#: models/lightbox.php:600
 msgid "Remove fancyBox"
 msgstr ""
 
-#: models/lightbox.php:596
+#: models/lightbox.php:600
 msgid "Use if FV Player lightbox is not working and you see a \"fancyBox already initialized\" message on JavaScript console."
 msgstr ""
 
-#: models/lightbox.php:601, view/admin.php:980
+#: models/lightbox.php:605, view/admin.php:980
 msgid "Enable video lightbox"
 msgstr ""
 
-#: models/lightbox.php:601
+#: models/lightbox.php:605
 msgid "You can also put in <code>&lt;a href=\"http://path.to.your/video.mp4\" class=\"colorbox\"&gt;Your link title&lt;/a&gt;</code> for a quick lightboxed video."
 msgstr ""
 
-#: models/lightbox.php:608
+#: models/lightbox.php:612
 msgid "Use video lightbox for images as well"
 msgstr ""
 
-#: models/lightbox.php:613
+#: models/lightbox.php:617
 msgid "Will group images as well as videos into the same lightbox gallery. Turn <strong>off</strong> your lightbox plugin when using this."
 msgstr ""
 
-#: models/lightbox.php:618
+#: models/lightbox.php:622
 msgid "Use video lightbox for WP Galleries"
 msgstr ""
 
-#: models/lightbox.php:623
+#: models/lightbox.php:627
 msgid "Your gallery items will link to image files directly to allow this."
 msgstr ""
 
