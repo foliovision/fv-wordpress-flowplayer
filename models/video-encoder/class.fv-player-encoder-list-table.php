@@ -156,7 +156,12 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
     switch ( $column_name ) {
       case 'id' :
         $value = '<a href="#"">'.$job->id.'</a>';
-        if( isset($job->delete_confirmation_message) && !isset( $job->player_id ) ) { // show delete only id not in player
+        $can_delete = FV_Player_Video_Encoder::can_manage_all_jobs() || absint( $job->author ) === get_current_user_id();
+
+        if( ! $can_delete ) {
+          // no delete link for jobs of other users
+
+        } else if( isset($job->delete_confirmation_message) && !isset( $job->player_id ) ) { // show delete only id not in player
           $value .='<div class="row-actions"><span class="trash"><a href="#" class="job-delete delete-hover" data-message="'. $job->delete_confirmation_message .'" data-nonce="'.wp_create_nonce( 'fv-player-encoder-delete-job-'.$job->id ).'" data-id="'.$job->id.'">Delete</a></span></div>';
         } else {
           $value .= '<div class="row-actions"><span class="cannot-trash"><a class="delete-hover">Delete</a><span class="tooltiptext">Cannot delete the job because video is embeded in player</span></div>';
@@ -281,12 +286,27 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
   private function get_result_counts() {
     global $wpdb;
 
+    $where_author = $this->get_author_where();
+
     if( !empty($_GET['s']) ) {
-      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s AND source LIKE %s", $this->encoder_id, '%' . $wpdb->esc_like( sanitize_text_field( $_GET['s'] ) ) . '%' ) );
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s AND source LIKE %s" . $where_author, $this->encoder_id, '%' . $wpdb->esc_like( sanitize_text_field( $_GET['s'] ) ) . '%' ) );
 
     } else {
-      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s", $this->encoder_id ) );
+      $this->total_items = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$wpdb->prefix}fv_player_encoding_jobs` WHERE type = %s" . $where_author, $this->encoder_id ) );
     }
+  }
+
+  /**
+   * Users who cannot manage all jobs only get to see their own jobs.
+   *
+   * @return string SQL condition starting with " AND " or empty string
+   */
+  private function get_author_where() {
+    if ( FV_Player_Video_Encoder::can_manage_all_jobs() ) {
+      return '';
+    }
+
+    return ' AND author = ' . absint( get_current_user_id() );
   }
 
   public function get_columns() {
@@ -324,6 +344,10 @@ class FV_Player_Encoder_List_Table extends WP_List_Table {
 
     $aWhere = array();
     $aWhere[] = "type = '{$this->encoder_id}'";
+
+    if ( ! FV_Player_Video_Encoder::can_manage_all_jobs() ) {
+      $aWhere[] = 'author = ' . absint( get_current_user_id() );
+    }
 
     if( is_array($id) ) {
       $id = array_map('intval', $id);

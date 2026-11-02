@@ -475,7 +475,11 @@ class FV_Player_Checker {
       }
     }
 
-    // legacy
+    /**
+     * Run video duration checks on players using the legacy shortcode like:
+     *
+     * [fvplayer src="..."]
+     */
     if( !$aQueue = self::queue_get() ) return;
     $tStart = microtime(true);
     $this->is_cron = true;
@@ -515,9 +519,11 @@ class FV_Player_Checker {
     return $schedules;
   }
 
-
-
-
+  /**
+   * Get videos from a post using the legacy shortcode like:
+   *
+   * [fvplayer src="..."]
+   */
   public static function get_videos( $post_id ) {
     global $fv_fp;
 
