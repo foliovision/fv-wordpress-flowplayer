@@ -86,6 +86,9 @@ class FV_Player_Custom_Videos {
     
     if( $video ) {
       $video = wp_kses( $video, 'post' );
+
+      // Post and profile videos are saved by users who might not be trusted
+      $video = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( $video, array( 'id' ) );
     }
 
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
@@ -173,11 +176,10 @@ class FV_Player_Custom_Videos {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) {
           $aVideos[] = '[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" caption="'.$this->esc_shortcode($aVideo['title']).'"]';
         } else if( is_string($aVideo) && stripos($aVideo,'[fvplayer ') === 0 ) {
-          // User profile videos are written by any logged in user, including the previously stored ones
-          if( $this->type == 'user' ) {
-            $aVideo = fv_player_comment_text_strip_html_attributes( $aVideo );
-          }
-          $aVideos[] = $aVideo;
+          // Post and profile videos are saved by users who might not be trusted and
+          // these can be shown with just do_shortcode(), including the previously
+          // stored ones, see https://foliovision.com/player/developers/video-custom-fields
+          $aVideos[] = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( $aVideo, array( 'id' ) );
         }
       }
     }
@@ -367,10 +369,11 @@ class FV_Player_Custom_Videos_Master {
           // strip html tags to prevent XSS
           $video = sanitize_text_field( $video );
 
-          // Remove attributes that allow HTML
-          $video = fv_player_comment_text_strip_html_attributes( wp_unslash( $video ) );
+          // Only allow the safe shortcode attributes
+          $video = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( wp_unslash( $video ), array( 'id' ) );
 
-          add_user_meta( $update_user_id, $meta, $video );
+          // add_user_meta() expects slashed data
+          add_user_meta( $update_user_id, $meta, wp_slash( $video ) );
         }
       }
     }
@@ -398,7 +401,11 @@ class FV_Player_Custom_Videos_Master {
             // strip html tags to prevent XSS
             $v = sanitize_text_field( $v );
 
-            add_post_meta( $post_id, $meta, $v );
+            // Only allow the safe shortcode attributes
+            $v = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( wp_unslash( $v ), array( 'id' ) );
+
+            // add_post_meta() expects slashed data
+            add_post_meta( $post_id, $meta, wp_slash( $v ) );
           }
         }
       } 
