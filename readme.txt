@@ -359,6 +359,12 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.57.7212 - 2026-11-03 =
+
+* Security: Conversion: Avoid PHP Object Injection via C-Format Conversion Meta by Shop manager user role (CVE-2026-118079), reported by Ananda Dhakal (Patchstack)
+* Security: Enable profile videos setting: Sanitize user input shortcodes
+* Security: Parse Vimeo and YouTube links: Sanitize user input shortcodes
+
 = 7.5.56.7212 - 2026-10-28 =
 
 * Security: Avoid Subscriber-level attacker to overwrite any existing video record using an enumerable video ID, if using "Enable profile videos" (CVE-2026-108067)
