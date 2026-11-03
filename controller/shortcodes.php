@@ -34,6 +34,14 @@ function flowplayer_content_handle( $atts, $content = null, $tag = false ) {
 	global $fv_fp;
   if( !$fv_fp ) return false;
 
+  // Shortcodes in comments, bbPress or BuddyPress come from untrusted users.
+  // Only keep the allowed attributes, see FV_Player_Sanitize_User_Input()->untrusted_content_start().
+  // This also drops the positional (unnamed) attributes which the
+  // parse_commas fallback below would turn into popup or ad HTML.
+  if ( FV_Player_Sanitize_User_Input()->is_untrusted_content() ) {
+    $atts = array_intersect_key( (array) $atts, array_flip( FV_Player_Sanitize_User_Input()->get_untrusted_shortcode_attributes() ) );
+  }
+
   if( $fv_fp->_get_option('parse_commas') && strcmp($tag,'flowplayer') == 0 ) {
 
     if( !isset( $atts['src'] ) ) {

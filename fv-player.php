@@ -212,6 +212,7 @@ if (
 include_once( dirname( __FILE__ ) . '/controller/elementor.php' );
 include_once( dirname( __FILE__ ) . '/controller/frontend.php' );
 include_once( dirname( __FILE__ ) . '/controller/shortcodes.php');
+include_once( dirname( __FILE__ ) . '/controller/class.fv-player-sanitize-user-input.php');
 
 include_once( dirname( __FILE__ ) . '/models/avada-builder-bridge.php' );
 include_once( dirname( __FILE__ ) . '/models/gutenberg.php' );

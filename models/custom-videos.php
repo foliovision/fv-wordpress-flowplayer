@@ -111,8 +111,11 @@ class FV_Player_Custom_Videos {
 
       $video = sanitize_text_field( $video );
 
-      // Remove attributes that allow HTML (ad code, popups, end action value, end popup preview)
-      $video = fv_player_comment_text_strip_html_attributes( wp_unslash( $video ) );
+      // Post and profile videos are saved by users who might not be trusted
+      $video = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( wp_unslash( $video ), array( 'id' ) );
+
+      // add_user_meta() and add_post_meta() expect slashed data
+      $video = wp_slash( $video );
 
       if ( 'user' === $type ) {
         add_user_meta( $entity_id, $meta, $video );
@@ -199,6 +202,9 @@ class FV_Player_Custom_Videos {
 
     if( $video ) {
       $video = wp_kses( $video, 'post' );
+
+      // Post and profile videos are saved by users who might not be trusted
+      $video = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( $video, array( 'id' ) );
     }
 
     //  exp: what matters here is .fv-player-editor-field and .fv-player-editor-button wrapped in  .fv-player-editor-wrapper and .fv-player-editor-preview
@@ -294,11 +300,10 @@ class FV_Player_Custom_Videos {
         if( is_array($aVideo) && isset($aVideo['url']) && isset($aVideo['title']) ) {
           $aVideos[] = '[fvplayer src="'.$this->esc_shortcode($aVideo['url']).'" title="'.$this->esc_shortcode($aVideo['title']).'"]';
         } else if( is_string($aVideo) && stripos($aVideo,'[fvplayer ') === 0 ) {
-          // User profile videos are written by any logged in user, including the previously stored ones
-          if( $this->type == 'user' ) {
-            $aVideo = fv_player_comment_text_strip_html_attributes( $aVideo );
-          }
-          $aVideos[] = $aVideo;
+          // Post and profile videos are saved by users who might not be trusted and
+          // these can be shown with just do_shortcode(), including the previously
+          // stored ones, see https://foliovision.com/player/developers/video-custom-fields
+          $aVideos[] = FV_Player_Sanitize_User_Input()->sanitize_untrusted_shortcodes( $aVideo, array( 'id' ) );
         }
       }
     }
