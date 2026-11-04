@@ -164,7 +164,11 @@
 
 /* Tall video + narrow screen: restyle vertical playlist as a dropdown */
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow {
-	overflow: visible;
+	background: #fff;
+	border-radius: 8px;
+}
+.fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .freedomplayer {
+	outline: 0;
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical {
 	width: 100%;
@@ -172,9 +176,8 @@
 	z-index: 5;
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
-	padding: 0 12px 0 6px;
-	max-height: calc( 24em / var(--fvp-playlist-ratio) );
+	padding: 0 6px 0 0;
+	max-height: calc( 21em / var(--fvp-playlist-ratio) );
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -188,8 +191,8 @@
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a {
 	display: flex;
 	width: 100%;
-	margin: 6px 0 0;
-	padding: 8px 10px;
+	margin: 0;
+	padding: 8px;
 	box-sizing: border-box;
 	align-items: center;
 	gap: 12px;
@@ -198,7 +201,6 @@
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active,
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-playlist-vertical a.is-active:hover {
 	background: #f1f3f4;
-	border-radius: 16px;
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fvp-playlist-thumb-img {
 	width: 3em;
@@ -910,7 +912,7 @@
 }
 .fp-playlist-vertical-wrapper.is-vertical.is-fv-narrow .fp-ios-playlist-scrollbar {
 	flex: 0 0 auto;
-	margin-right: -12px;
+	margin-right: -6px;
 }
 .fv-playlist-slider-wrapper .fp-playlist-horizontal .fp-ios-playlist-scrollbar.is-horizontal {
 	margin-top: 26px;
