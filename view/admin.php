@@ -748,7 +748,7 @@ function fv_flowplayer_admin_seo() {
   global $fv_fp;
 ?>
   <table class="form-table2">
-    <?php $fv_fp->_get_checkbox(__( 'Use Open Graph and X Cards', 'fv-player' ), array( 'integrations', 'open_graph' ), __( 'Accepts MP4 videos with no URL signature. Takes priority over FV Simpler SEO, Rank Math and SEOPress tags.', 'fv-player' ) ); ?>
+    <?php $fv_fp->_get_checkbox(__( 'Use Open Graph and X Cards', 'fv-player' ), array( 'integrations', 'open_graph' ), __( 'Accepts MP4 videos with no URL signature. Takes priority over FV Simpler SEO, Rank Math and SEOPress tags. Will store an image with play icon and store it in Media Library.', 'fv-player' ), __( 'The new images are created when a video or a post with a video is saved. These images are added to the Media Library and stored in the <code>fv-player-video-sharing</code> folder in WordPress uploads.', 'fv-player' ) ); ?>
     <?php $fv_fp->_get_checkbox(__( 'Use Schema.org markup', 'fv-player' ), array( 'integrations', 'schema_org' ), __( 'Adds the video meta data information for search engines.', 'fv-player' ) ); ?>
     <?php do_action( 'fv_flowplayer_admin_seo_after'); ?>
     <tr>

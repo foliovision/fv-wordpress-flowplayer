@@ -1134,13 +1134,23 @@ CREATE TABLE " . self::$db_table_name . " (
           if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
             delete_post_meta( $splash_attachment_id, 'fv_player_video_id', $this->getId() );
             $this->splash_attachment_id = '';
+
+            // Do not use the old attachment for the sharing image or link it back to this video below.
+            $splash_attachment_id = 0;
           }
         }
       }
     }
 
-    // Update the sharing image if the splash has changed or if the sharing image is not set.
-    if ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImageId() || ! get_post( $this->getSharingImageId() ) ) {
+    /**
+     * Update the sharing image if the splash has changed or if the sharing image is not set.
+     * Only if the Open Graph and X Cards setting is enabled.
+     */
+    global $fv_fp;
+    if (
+      ! empty( $fv_fp ) && $fv_fp->_get_option( array( 'integrations', 'open_graph' ) ) &&
+      ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImageId() || ! get_post( $this->getSharingImageId() ) )
+    ) {
       $this->sharing_image_id = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash(), $this->getId() );
     }
 
