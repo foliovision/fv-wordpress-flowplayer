@@ -822,6 +822,23 @@
   opacity: 1;
 }
 
+.freedomplayer.is-fullscreen-hint-out:not(.is-mouseover) .fp-controls,
+.freedomplayer.is-fullscreen-hint:not(.is-mouseover) .fp-controls {
+  visibility: hidden;
+  opacity: 1;
+}
+
+.freedomplayer.is-fullscreen-hint-out:not(.is-mouseover) .fp-fullscreen,
+.freedomplayer.is-fullscreen-hint:not(.is-mouseover) .fp-fullscreen {
+  visibility: visible;
+  opacity: 1;
+}
+
+.freedomplayer.is-fullscreen-hint-out:not(.is-mouseover) .fp-fullscreen {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
 .freedomplayer .fp-header {
   z-index: 2;
   top: 0;
