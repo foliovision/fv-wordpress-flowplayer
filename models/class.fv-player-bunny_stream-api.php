@@ -73,6 +73,33 @@ class FV_Player_Bunny_Stream_API {
     return false;
   }
 
+  /**
+   * Authorization for uploading a single video from the browser using the TUS resumable upload endpoint.
+   * The signature only works for this one video and only until it expires, so the browser never needs the API key.
+   *
+   * @see https://bunny.net/docs/stream/tus-resumable-uploads
+   *
+   * @param string $video_id   GUID of the video created with the Create Video API call.
+   * @param int    $expiration UNIX timestamp, the upload must start before then.
+   *
+   * @return array Values for the AuthorizationSignature, AuthorizationExpire, VideoId and LibraryId headers and the endpoint URL.
+   */
+  public function get_tus_upload_authorization( $video_id, $expiration ) {
+    global $fv_fp;
+
+    $library_id = (string) $fv_fp->_get_option( array('bunny_stream','lib_id') );
+    $video_id   = (string) $video_id;
+    $expiration = (int) $expiration;
+
+    return array(
+      'endpoint'   => 'https://video.bunnycdn.com/tusupload',
+      'library_id' => $library_id,
+      'video_id'   => $video_id,
+      'expire'     => $expiration,
+      'signature'  => hash( 'sha256', $library_id . $this->access_key . $expiration . $video_id ),
+    );
+  }
+
   public function api_call( $endpoint, $args = array(), $method = 'GET' ) {
     if( $method == 'POST' ) {
       $response = wp_remote_post( $endpoint, array(

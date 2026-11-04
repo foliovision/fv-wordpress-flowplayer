@@ -140,8 +140,26 @@ final class FV_Player_EndActionsTest extends FV_Player_UnitTestCase {
     // Exactly one video
     $this->assertTrue( substr_count( $output, "data-item" ) == 1 );
 
-    // Splash to show at the end should be present
-    $this->assertTrue( substr_count( $output, ' class="wpfp_custom_background" style="background-image: url(\'https://cdn.site.com/video.jpg\')' ) == 1 );
+    // Splash to show at the end should be present, the style attribute value is escaped with esc_attr()
+    $this->assertTrue( substr_count( $output, ' class="wpfp_custom_background" style="background-image: url(&#039;https://cdn.site.com/video.jpg&#039;)' ) == 1 );
+  }
+
+  /**
+   * A quote in the splash URL must not be able to close the CSS url('...') and inject CSS.
+   * The HTML parser decodes &#039; back to ' before the CSS parser sees it, so it must be %27.
+   */
+  public function testEndActionsSplashEndQuoteEscaped() {
+
+    $output = do_shortcode( '[fvplayer src="https://cdn.site.com/video.mp4" splash="https://cdn.site.com/video\'); background: red; (\'.jpg" share="no" embed="false" splashend="show"]' );
+
+    $this->assertTrue( 1 === preg_match( '~class="wpfp_custom_background" style="([^"]*)"~', $output, $style ) );
+
+    $style = html_entity_decode( $style[1], ENT_QUOTES );
+
+    // Exactly the 2 quotes around the URL, nothing else
+    $this->assertSame( 2, substr_count( $style, "'" ) );
+    $this->assertStringStartsWith( "background-image: url('https://cdn.site.com/video%27", $style );
+    $this->assertStringEndsWith( "')", $style );
   }
 
   protected function tearDown(): void {

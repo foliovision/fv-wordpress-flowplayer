@@ -24,6 +24,10 @@ final class FV_Player_SettingsTestCase extends FV_Player_UnitTestCase {
 
     do_action( 'admin_init' );
   }  
+
+  public function testSettingsScreen() {
+    $this->markTestSkipped( 'Settings screen snapshot test needs updating, see the commented out test below.' );
+  }
   
   /*
   public function testSettingsScreen() {

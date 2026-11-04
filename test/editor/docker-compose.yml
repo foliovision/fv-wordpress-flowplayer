@@ -1,0 +1,74 @@
+# Explicit project name: the default would be the folder name "tests", which
+# clashes with the fv-polls and other plugin test stacks.
+name: fv-player-tests
+
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  wordpress:
+    image: wordpress:6.9-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${WP_PORT:-8891}:80"
+    # The plugin source is bind-mounted from the host. On SELinux hosts
+    # (Fedora) the container can't read it unless it's relabelled with `:z`,
+    # which would break a local Apache serving the same folder. Disabling
+    # SELinux separation for this container avoids touching host labels.
+    security_opt:
+      - label=disable
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - wp_data:/var/www/html
+      # Mount the plugin source directly from the repo
+      - ../../:/var/www/html/wp-content/plugins/fv-player
+      # MU-plugins: test helper REST endpoints (reset, import, DB state, locks)
+      - ./wp-mu-plugins:/var/www/html/wp-content/mu-plugins
+
+  # Used by the install script to install WordPress and activate the plugin.
+  wp-cli:
+    image: wordpress:cli-php8.2
+    depends_on:
+      wordpress:
+        condition: service_started
+      db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wp_data:/var/www/html
+      - ../../:/var/www/html/wp-content/plugins/fv-player
+      - ./wp-mu-plugins:/var/www/html/wp-content/mu-plugins
+    # Keep the container alive so we can exec into it from the install script.
+    entrypoint: ["sh", "-c", "sleep infinity"]
+    security_opt:
+      - label=disable
+    user: "33:33" # www-data
+
+volumes:
+  db_data:
+  wp_data:
