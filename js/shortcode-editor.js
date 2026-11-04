@@ -1013,8 +1013,6 @@ jQuery(function() {
               index = playlist_row.attr('data-index'),
               id = get_tab(index,'video-files').attr('data-id_video');
 
-            deleted_videos.push(id);
-
             // A new video has no ID until its save finishes, the save response handler deletes it then
             if( id ) {
               deleted_videos.push(id);
