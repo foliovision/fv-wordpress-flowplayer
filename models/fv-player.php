@@ -1368,6 +1368,15 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     } else {
       if( $sItemCaption ) $sItemCaption = "<span>".$sItemCaption."</span>";
 
+      if ( $this->current_video() && $this->current_video()->getMetaData() ) {
+        foreach ( $this->current_video()->getMetaData() as $meta_object) {
+          if (strpos($meta_object->getMetaKey(), 'subtitles') !== false) {
+            $language = str_replace( 'subtitles_', '', $meta_object->getMetaKey() );
+            $sItemCaption .= '<i class="sub">' . strtoupper($language) . '</i>';
+          }
+        }
+      }
+
       if( $tDuration ) {
         $sDuration = '<i class="dur">'.flowplayer::format_hms($tDuration).'</i>';
         if( !empty($this->aCurArgs['listdesign']) && $this->aCurArgs['listdesign'] == '2014' || empty($this->aCurArgs['listdesign']) && $this->_get_option('playlist-design') == 2014 ) {
