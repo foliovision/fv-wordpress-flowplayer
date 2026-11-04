@@ -1101,6 +1101,31 @@ class FV_Player_Db {
   }
 
   /**
+   * Returns the trailer video ID of a given player.
+   *
+   * Used to authorize the trailer video ID in db_store_player_data():
+   * an existing trailer video ID is only accepted if it already is the trailer
+   * of the player being edited.
+   *
+   * @param int $player_id Player DB ID.
+   *
+   * @return int Trailer video ID or 0 when the player does not exist or has no trailer.
+   */
+  public function get_player_trailer_video_id( $player_id ) {
+    global $wpdb;
+
+    $player_id = intval( $player_id );
+    if ( $player_id < 1 ) {
+      return 0;
+    }
+
+    return absint( $wpdb->get_var( $wpdb->prepare(
+      "SELECT trailer_video FROM `{$wpdb->prefix}fv_player_players` WHERE id = %d",
+      $player_id
+    ) ) );
+  }
+
+  /**
    * Returns the video ID that a given video meta record belongs to.
    *
    * Used to authorize deletion of video meta in db_store_player_data():
@@ -1403,6 +1428,23 @@ class FV_Player_Db {
               $video_ids[] = $video;
             }
           }
+        }
+      }
+
+      /**
+       * Only accept an existing trailer video ID if it already is the trailer of the player being edited.
+       * Otherwise the user could overwrite any video by passing its ID as the trailer video ID.
+       * If it's not accepted and the trailer source is set, the trailer is saved as a new video.
+       *
+       * Users with edit_others_posts are exempt, same as for the player videos above.
+       */
+      if ( $trailer_video_id && $restrict_to_player_videos ) {
+        $editable_trailer_video_id = ! empty( $post_data['update'] )
+          ? $this->get_player_trailer_video_id( $post_data['update'] )
+          : 0;
+
+        if ( ! $editable_trailer_video_id || absint( $trailer_video_id ) !== $editable_trailer_video_id ) {
+          $trailer_video_id = false;
         }
       }
 
