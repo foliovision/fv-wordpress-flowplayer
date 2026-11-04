@@ -502,8 +502,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
   function csv_export() {
     if( !current_user_can('install_plugins') ) return;
 
-    global $wpdb;
-
     $filename = $this->slug . '-export-' . gmdate('Y-m-d') . '.csv';
 
     header('Content-type: text/csv');
@@ -511,25 +509,17 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     header("Pragma: no-cache");
     header("Expires: 0");
 
-    $meta_key = '_fv_player_' . $this->slug . '_failed';
+    $rows = $this->get_csv_export_rows();
 
-    $results = $wpdb->get_col( $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = %s ORDER BY {$wpdb->posts}.post_date_gmt DESC ", $meta_key ) );
-
-    if( !empty( $results ) ) {
+    if( !empty( $rows ) ) {
       $fp = fopen('php://output', 'wb');
 
       $header = array('ID','Title','Post-Link','Edit-Link','Shortcode','Message');
 
       fputcsv($fp, $header);
 
-      foreach( $results as $result ) {
-        $unserialized = unserialize( $result );
-
-        foreach( $unserialized as $row ) {
-          $row['post_link'] = htmlspecialchars_decode( $row['post_link'] );
-          $row['post_edit'] = htmlspecialchars_decode( $row['post_edit'] );
-          fputcsv($fp, $row);
-        }
+      foreach( $rows as $row ) {
+        fputcsv($fp, $row);
       }
 
       // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_read_fclose
@@ -537,6 +527,66 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     }
 
     die();
+  }
+
+  /**
+   * Get the conversion errors stored in post meta as CSV rows.
+   *
+   * @return array[] Each row has the ID, post_title, post_link, post_edit, shortcode and message values.
+   */
+  function get_csv_export_rows() {
+    global $wpdb;
+
+    $meta_key = '_fv_player_' . $this->slug . '_failed';
+
+    $results = $wpdb->get_col( $wpdb->prepare( "SELECT {$wpdb->postmeta}.meta_value FROM {$wpdb->postmeta} JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->postmeta}.meta_key = %s ORDER BY {$wpdb->posts}.post_date_gmt DESC ", $meta_key ) );
+
+    $columns = array( 'ID', 'post_title', 'post_link', 'post_edit', 'shortcode', 'message' );
+
+    $rows = array();
+
+    foreach( $results as $result ) {
+      // Only arrays of strings are ever stored here, never unserialize objects
+      $unserialized = is_string( $result ) ? @unserialize( $result, array( 'allowed_classes' => false ) ) : false;
+
+      if( !is_array( $unserialized ) ) {
+        continue;
+      }
+
+      foreach( $unserialized as $row ) {
+        if( !is_array( $row ) ) {
+          continue;
+        }
+
+        $line = array();
+        foreach( $columns as $column ) {
+          $value = isset( $row[ $column ] ) && is_scalar( $row[ $column ] ) ? (string) $row[ $column ] : '';
+
+          if( 'post_link' === $column || 'post_edit' === $column ) {
+            $value = htmlspecialchars_decode( $value );
+          }
+
+          $line[] = $this->escape_csv_field( $value );
+        }
+
+        $rows[] = $line;
+      }
+    }
+
+    return $rows;
+  }
+
+  /**
+   * Avoid formula injection when the CSV is opened in a spreadsheet app.
+   *
+   * @param string $value Field value.
+   * @return string Escaped field value.
+   */
+  function escape_csv_field( $value ) {
+    if( preg_match( '/^[\s]*[=+\-@\t\r]/', $value ) ) {
+      $value = "'" . $value;
+    }
+    return $value;
   }
 
 }
