@@ -665,7 +665,7 @@ class FV_Player_X_Cards {
 
 							if ( $sharing_image_id ) {
 								$video->set( 'sharing_image_id', $sharing_image_id );
-								$video->save();
+								$video->save( array(), true );
 							}
 
 							// Do not process other videos.
