@@ -623,11 +623,15 @@ function fv_wp_flowplayer_license_check( $aArgs ) {
 
     $fv_fp->log( "Apply Pro Upgrade HTTP (fallback): " . var_export( $resp, true ) );
 
-    if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
-      return $data;
-    }
+    if ( is_wp_error( $resp ) ) {
+      $fv_fp->log( "Apply Pro Upgrade HTTP error: " . $resp->get_error_message() );
 
-    $fv_fp->log( "Apply Pro Upgrade HTTP error: " . $resp->get_error_message() );
+    } else if( isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
+      return $data;
+
+    } else {
+      $fv_fp->log( "Apply Pro Upgrade HTTP unknown error." );
+    }
   }
 
   return false;

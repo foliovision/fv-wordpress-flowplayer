@@ -221,11 +221,16 @@ class FV_Wordpress_Flowplayer_Plugin_Private
     } else if( is_wp_error($resp) ) {
       $resp = wp_remote_post( 'https://api.foliovision.com/license/?fv_remote=true', $post );
 
-      if( !is_wp_error($resp) && isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
+      if ( is_wp_error( $resp ) ) {
+        $this->log( "License HTTP error: " . $resp->get_error_message() );
 
+      } else if( isset($resp['body']) && $resp['body'] && $data = json_decode( preg_replace( '~[\s\S]*?<FVFLOWPLAYER>(.*?)</FVFLOWPLAYER>[\s\S]*?~', '$1', $resp['body'] ) ) ) {
         $this->log( "License HTTP (fallback): " . var_export( $resp, true ) );
 
         return $data;
+
+      } else {
+        $this->log( "License HTTP unknown error." );
       }
 
       $this->log( "License HTTP error: " . $resp->get_error_message() );
