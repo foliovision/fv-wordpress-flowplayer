@@ -43,6 +43,10 @@ class FV_Player_X_Cards {
 	 */
 	public static function add_play_icon_to_splash_image( $attachment_id_or_url, $video_id ) {
 
+		if ( ! $attachment_id_or_url ) {
+			return false;
+		}
+
 		// Get upload directory
 		$upload_dir = wp_upload_dir();
 		if ( $upload_dir['error'] ) {
@@ -118,6 +122,8 @@ class FV_Player_X_Cards {
 			return false;
 		}
 
+		$result = false;
+
 		// Try Imagick first, fall back to GD
 		if ( class_exists( 'Imagick' ) ) {
 			$result = self::add_play_icon_to_splash_image_imagick( $target_path, $play_button_path );
@@ -127,7 +133,7 @@ class FV_Player_X_Cards {
 		}
 
 		// Fall back to GD
-		if ( ! self::add_play_icon_to_splash_image_gd( $target_path, $play_button_path ) ) {
+		if ( ! $result && ! self::add_play_icon_to_splash_image_gd( $target_path, $play_button_path ) ) {
 			return false;
 		}
 
@@ -157,7 +163,7 @@ class FV_Player_X_Cards {
 		wp_update_attachment_metadata( $new_attachment_id, $attach_data );
 
 		// Store the FV Player video ID.
-		add_post_meta( $new_attachment_id, 'fv_player_sharing_video_d', $video_id );
+		add_post_meta( $new_attachment_id, 'fv_player_sharing_video_id', $video_id );
 
 		return $new_attachment_id;
 	}
