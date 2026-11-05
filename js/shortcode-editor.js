@@ -2671,6 +2671,19 @@ jQuery(function() {
       return lines.join( '\n' );
     }
 
+    /**
+     * Is the JavaScript error coming from FV Player or its extensions?
+     * Errors of other plugins are only logged, these also show the Copy debug info notice.
+     *
+     * @param {string} filename
+     * @param {string} stack
+     *
+     * @return {bool}
+     */
+    function debug_is_fv_player_error( filename, stack ) {
+      return /fv-player|fv-wordpress-flowplayer/i.test( ( filename || '' ) + ' ' + ( stack || '' ) );
+    }
+
     function debug_editor_is_open() {
       return fv_player_editor_conf.frontend || $( '#fv-player-shortcode-editor' ).is( ':visible' );
     }
@@ -2681,10 +2694,17 @@ jQuery(function() {
         return;
       }
 
+      let stack = e.error && e.error.stack ? e.error.stack : false;
+
       debug_store(
         'JS error: ' + e.message + ( e.filename ? ' at ' + e.filename + ':' + e.lineno + ':' + e.colno : '' ),
-        e.error && e.error.stack ? e.error.stack : false
+        stack
       );
+
+      // The error might prevent the saving from even starting, so show the notice right away
+      if ( debug_is_fv_player_error( e.filename, stack ) ) {
+        debug_notice_show( 'editor', 'error' );
+      }
     } );
 
     window.addEventListener( 'unhandledrejection', function( e ) {
@@ -2692,10 +2712,16 @@ jQuery(function() {
         return;
       }
 
+      let stack = e.reason && e.reason.stack ? e.reason.stack : false;
+
       debug_store(
         'Unhandled promise rejection: ' + ( e.reason && e.reason.message ? e.reason.message : String( e.reason ) ),
-        e.reason && e.reason.stack ? e.reason.stack : false
+        stack
       );
+
+      if ( debug_is_fv_player_error( '', stack ) ) {
+        debug_notice_show( 'editor', 'error' );
+      }
     } );
 
     $doc.on( 'click', '[data-fv-player-editor-debug-copy]', function() {

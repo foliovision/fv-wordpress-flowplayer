@@ -940,6 +940,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       data-save-failed="<?php esc_attr_e( 'Saving failed.', 'fv_flowplayer' ); ?>"
       data-load-slow="<?php esc_attr_e( 'Loading the player is taking longer than expected.', 'fv_flowplayer' ); ?>"
       data-load-failed="<?php esc_attr_e( 'Loading the player failed.', 'fv_flowplayer' ); ?>"
+      data-editor-error="<?php esc_attr_e( 'An error occurred in the FV Player editor.', 'fv_flowplayer' ); ?>"
       data-copied="<?php esc_attr_e( 'Copied! Please paste it into your support ticket.', 'fv_flowplayer' ); ?>"
     >
       <p>
