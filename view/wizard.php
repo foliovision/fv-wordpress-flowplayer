@@ -934,6 +934,29 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     <div style="clear: both"></div>
 
     <div id="fv-player-editor-notices"></div>
+
+    <div id="fv-player-editor-debug-notice" style="display: none"
+      data-save-slow="<?php esc_attr_e( 'Saving is taking longer than expected.', 'fv_flowplayer' ); ?>"
+      data-save-failed="<?php esc_attr_e( 'Saving failed.', 'fv_flowplayer' ); ?>"
+      data-load-slow="<?php esc_attr_e( 'Loading the player is taking longer than expected.', 'fv_flowplayer' ); ?>"
+      data-load-failed="<?php esc_attr_e( 'Loading the player failed.', 'fv_flowplayer' ); ?>"
+      data-copied="<?php esc_attr_e( 'Copied! Please paste it into your support ticket.', 'fv_flowplayer' ); ?>"
+    >
+      <p>
+        <strong class="fv-player-editor-debug-notice-message"></strong>
+        <?php
+        printf(
+          /* translators: %s is the link to FV Player support */
+          esc_html__( 'Please copy the debug information and send it to %s.', 'fv_flowplayer' ),
+          '<a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">' . esc_html__( 'FV Player support', 'fv_flowplayer' ) . '</a>'
+        );
+        ?>
+      </p>
+      <p>
+        <a data-fv-player-editor-debug-copy href="#" class="button"><?php esc_html_e( 'Copy debug info', 'fv_flowplayer' ); ?></a>
+        <span class="fv-player-editor-debug-notice-status"></span>
+      </p>
+    </div>
   </div>
 </div>
 
