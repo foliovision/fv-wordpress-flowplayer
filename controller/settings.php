@@ -213,16 +213,10 @@ function fv_player_admin_pointer_boxes() {
     $fv_fp->pointer_boxes['fv_player_upgrade'] = array(
       'id' => '#wp-admin-bar-new-content',
       'pointerClass' => 'fv_player_upgrade',
-      'heading' => 'FV Player',
+      'heading' => 'FV Player upgrade',
       'content' =>
-        sprintf( __('You just upgraded to version %s with the following improvements:', 'fv-player'), $fv_wp_flowplayer_ver ) .
-        "<ul class='ul-disc'>
-          <li>Autoplay: Preload the video even before it comes to the viewport for faster playback start</li>
-          <li>LMS | Teaching - support for non-logged in users</li>
-          <li>Performance: Fixes for JavaScript loading speed and rendering</li>
-          <li>Remember audio track: Stored in localStorage and in database for logged in users</li>
-          <li>Security: Improved security for video uploads</li>
-        </ul>",
+        sprintf( __('You just upgraded to version %s. Here are the improvements since your last upgrade:', 'fv-player'), $fv_wp_flowplayer_ver ) .
+        fv_player_upgrade_changelog_html( $nag_fv_player_upgrade, $fv_wp_flowplayer_ver ),
       'position' => array( 'edge' => 'top', 'align' => 'center' ),
       'button1'  => __('Thanks for letting me know!', 'fv-player'),
       'value1'   => $fv_wp_flowplayer_ver,

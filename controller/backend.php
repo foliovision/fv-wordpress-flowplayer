@@ -1126,3 +1126,48 @@ function fv_player_license_checks_base_plugin_version( $parsed_args, $url ) {
 
   return $parsed_args;
 }
+
+function fv_player_upgrade_changelog_html( $from_version, $to_version ) {
+  $readme = file_get_contents( __DIR__ . '/../readme.txt' );
+  if ( ! is_string( $readme ) || ! preg_match( '~==\s*Upgrade popups\s*==(.*?)(?:\n==\s|\z)~si', $readme, $match ) ) {
+    return '';
+  }
+
+  if ( ! preg_match_all( '~^=\s*([0-9][0-9.]*)\b[^\n]*=\s*\n(.*?)(?=^=\s*[0-9]|\z)~ms', $match[1], $sections, PREG_SET_ORDER ) ) {
+    return '';
+  }
+
+  $items           = array();
+  $versions_shown  = 0;
+
+  foreach ( $sections as $section ) {
+    $version = $section[1];
+
+    // readme.txt can list a release before fv-player.php is bumped.
+    if ( version_compare( $version, $to_version, '>' ) ) {
+      continue;
+    }
+
+    // Headings are newest first, so the first older heading ends the scan.
+    if ( $from_version && version_compare( $version, $from_version, '<=' ) ) {
+      break;
+    }
+
+    foreach ( preg_split( '~\r\n|\r|\n~', trim( $section[2] ) ) as $line ) {
+      if ( preg_match( '~^\s*\*\s*(.+)$~', $line, $line_match ) ) {
+        $items[] .= '<li>' . esc_html( $line_match[1] ) . '</li>' . "\n";
+      }
+    }
+
+    if ( ++$versions_shown > 5 ) {
+      break;
+    }
+  }
+
+  if ( ! empty( $items ) ) {
+    sort( $items );
+    return "<ul class='ul-disc'>" . implode( '', $items ) . '</ul>';
+  }
+
+  return false;
+}
