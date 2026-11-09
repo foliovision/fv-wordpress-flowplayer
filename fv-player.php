@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $fv_wp_flowplayer_ver;
 
-$fv_wp_flowplayer_ver = '8.1.9.1';
+$fv_wp_flowplayer_ver = '8.1.9.2';
 $fv_wp_flowplayer_core_ver = '8.2.0';
 
 function fv_player_8_activate() {
@@ -230,6 +230,9 @@ include_once(dirname( __FILE__ ) . '/models/youtube.php');
 include_once(dirname( __FILE__ ) . '/models/lms-teaching.class.php');
 
 include_once(dirname( __FILE__ ) . '/models/tutor-lms.class.php');
+
+include_once(dirname( __FILE__ ) . '/models/open-graph.php');
+include_once(dirname( __FILE__ ) . '/models/x-cards.php');
 
 add_action('plugins_loaded', 'fv_player_bunny_stream_include' );
 

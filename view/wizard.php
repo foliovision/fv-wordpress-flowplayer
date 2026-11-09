@@ -567,6 +567,7 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
           <a href="#" class="nav-tab hide-if-singular hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-playlist"><?php esc_html_e( 'Playlist', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab nav-tab-active hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-video-files"><?php esc_html_e( 'Video', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab hide-if-playlist-active" style="outline: 0;" data-tab="fv-player-tab-subtitles"><?php esc_html_e( 'Subtitles', 'fv-player' ); ?></a>
+          <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-trailer"><?php esc_html_e( 'Trailer', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-options"><?php esc_html_e( 'Options', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab hide-if-playlist" style="outline: 0;" data-tab="fv-player-tab-actions"><?php esc_html_e( 'Actions', 'fv-player' ); ?></a>
           <a href="#" class="nav-tab" style="outline: 0;" data-tab="fv-player-tab-embeds"><?php esc_html_e( 'Embeds', 'fv-player' ); ?></a>
@@ -638,6 +639,12 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
             echo "</div>\n";
             ?>
 
+          </div>
+        </div>
+
+        <div class="fv-player-tab fv-player-tab-trailer" style="display: none"">
+          <div class="fv-player-playlist-item">
+            <?php fv_player_editor_input_group( fv_player_editor_trailer_fields() ); ?>
           </div>
         </div>
 
@@ -927,6 +934,30 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
     <div style="clear: both"></div>
 
     <div id="fv-player-editor-notices"></div>
+
+    <div id="fv-player-editor-debug-notice" style="display: none"
+      data-save-slow="<?php esc_attr_e( 'Saving is taking longer than expected.', 'fv_flowplayer' ); ?>"
+      data-save-failed="<?php esc_attr_e( 'Saving failed.', 'fv_flowplayer' ); ?>"
+      data-load-slow="<?php esc_attr_e( 'Loading the player is taking longer than expected.', 'fv_flowplayer' ); ?>"
+      data-load-failed="<?php esc_attr_e( 'Loading the player failed.', 'fv_flowplayer' ); ?>"
+      data-editor-error="<?php esc_attr_e( 'An error occurred in the FV Player editor.', 'fv_flowplayer' ); ?>"
+      data-copied="<?php esc_attr_e( 'Copied! Please paste it into your support ticket.', 'fv_flowplayer' ); ?>"
+    >
+      <p>
+        <strong class="fv-player-editor-debug-notice-message"></strong>
+        <?php
+        printf(
+          /* translators: %s is the link to FV Player support */
+          esc_html__( 'Please copy the debug information and send it to %s.', 'fv_flowplayer' ),
+          '<a href="https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post" target="_blank">' . esc_html__( 'FV Player support', 'fv_flowplayer' ) . '</a>'
+        );
+        ?>
+      </p>
+      <p>
+        <a data-fv-player-editor-debug-copy href="#" class="button"><?php esc_html_e( 'Copy debug info', 'fv_flowplayer' ); ?></a>
+        <span class="fv-player-editor-debug-notice-status"></span>
+      </p>
+    </div>
   </div>
 </div>
 
