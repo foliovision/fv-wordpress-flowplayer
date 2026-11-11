@@ -1599,7 +1599,6 @@ class flowplayer_frontend extends flowplayer
       $tags['a']['itemprop'] = true;
       $tags['a']['itemscope'] = true;
       $tags['a']['itemtype'] = true;
-      $tags['a']['onclick'] = true;
     }
 
     if ( empty($tags['defs']) ) {
@@ -1629,7 +1628,6 @@ class flowplayer_frontend extends flowplayer
       $tags['div']['itemprop'] = true;
       $tags['div']['itemscope'] = true;
       $tags['div']['itemtype'] = true;
-      $tags['div']['onclick'] = true;
       $tags['div']['rel'] = true;
     }
 
