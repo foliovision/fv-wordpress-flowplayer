@@ -41,7 +41,7 @@ class FV_Player_Bunny_Stream extends FV_Player_Video_Encoder {
       exit;
     }
 
-    $this->version = '7.5.15.727';
+    $this->version = '8.2.0';
 
     parent::__construct( $encoder_id, $encoder_name, $encoder_wp_url_slug, $browser_inc_file );
   }

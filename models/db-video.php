@@ -31,6 +31,7 @@ class FV_Player_Db_Video {
     $splash, // URL to the splash screen picture
     $splash_text, // an optional splash screen text
     $splash_attachment_id, // splash attachment id
+    $sharing_image_id, // URL to the sharing image, relative to {WP uploads basedir}
     $src, // the main video source
     $src1, // alternative source path #1 for the video
     $src2, // alternative source path #2 for the video
@@ -42,6 +43,7 @@ class FV_Player_Db_Video {
     $live,
     $toggle_advanced_settings,
     $last_check,
+    $updated_fields = array(), // keep track of which fields have been updated in save()
     $meta_data = null; // object of this video's meta data
 
   private static
@@ -149,6 +151,15 @@ class FV_Player_Db_Video {
   }
 
   /**
+   * Get sharing image URL if the file path exists in {upload basedir}.
+   *
+   * @return string
+   */
+  public function getSharingImageId() {
+    return absint( $this->sharing_image_id );
+  }
+
+  /**
    * @return string
    */
   public function getSplash() {
@@ -237,6 +248,10 @@ class FV_Player_Db_Video {
     return $this->is_valid;
   }
 
+  public function getUtilityFields() {
+    return array( 'is_valid', 'db_table_name', 'DB_Instance', 'meta_data', 'updated_fields' );
+  }
+
   /**
    * Initializes database name, including WP prefix
    * once WPDB class is initialized.
@@ -285,6 +300,7 @@ CREATE TABLE " . self::$db_table_name . " (
   splash_attachment_id bigint(20) unsigned,
   splash varchar(1024) NOT NULL,
   splash_text varchar(512) NOT NULL,
+  sharing_image_id bigint(20) unsigned,
   title varchar(1024) NOT NULL,
   title_hide varchar(7) NOT NULL,
   end varchar(16) NOT NULL,
@@ -562,7 +578,8 @@ CREATE TABLE " . self::$db_table_name . " (
       'height',
       'aspect_ratio',
       'duration',
-      'last_check'
+      'last_check',
+      'sharing_image_id'
     );
 
     $missing_something = false;
@@ -573,12 +590,27 @@ CREATE TABLE " . self::$db_table_name . " (
       }
     }
 
+    $objVideo = new FV_Player_Db_Video( $id, array(), self::$DB_Instance );
+
     if( $missing_something ) {
-      $objVideo = new FV_Player_Db_Video( $id, array(), self::$DB_Instance );
       foreach( $fields AS $field ) {
         if( empty($this->$field) ) {
           $this->$field = $objVideo->$field;
         }
+      }
+    }
+
+    // Check which fields were updated.
+    foreach( $objVideo->getAllDataValues() as $key => $value ) {
+
+      // Compare only non-empty values, using numeric comparison for numbers.
+      if (
+        ! empty( $value ) && ! empty( $this->$key ) && (
+          ! is_numeric( $value ) && ! is_numeric( $this->$key ) && $value !== $this->$key ||
+          is_numeric( $value ) && is_numeric( $this->$key ) && intval( $value ) !== intval( $this->$key )
+        )
+      ) {
+        $this->updated_fields[] = $key;
       }
     }
 
@@ -695,7 +727,7 @@ CREATE TABLE " . self::$db_table_name . " (
   public function getAllDataValues() {
     $data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ( ! in_array( $property, $this->getUtilityFields(), true ) ) {
         if ( 'live' === $property ) {
           $value = $value ? true : false;
         }
@@ -1102,9 +1134,24 @@ CREATE TABLE " . self::$db_table_name . " (
           if( !$current_parse || (strcmp( $saved_parse['path'], $current_parse['path'] ) !== 0) ) {
             delete_post_meta( $splash_attachment_id, 'fv_player_video_id', $this->getId() );
             $this->splash_attachment_id = '';
+
+            // Do not use the old attachment for the sharing image or link it back to this video below.
+            $splash_attachment_id = 0;
           }
         }
       }
+    }
+
+    /**
+     * Update the sharing image if the splash has changed or if the sharing image is not set.
+     * Only if the Open Graph and X Cards setting is enabled.
+     */
+    global $fv_fp;
+    if (
+      ! empty( $fv_fp ) && $fv_fp->_get_option( array( 'integrations', 'open_graph' ) ) &&
+      ( in_array( 'splash', $this->updated_fields ) || ! $this->getSharingImageId() || ! get_post( $this->getSharingImageId() ) )
+    ) {
+      $this->sharing_image_id = FV_Player_X_Cards::add_play_icon_to_splash_image( $splash_attachment_id ? $splash_attachment_id : $this->getSplash(), $this->getId() );
     }
 
     $this->save_do( true );
@@ -1250,7 +1297,12 @@ CREATE TABLE " . self::$db_table_name . " (
     $data_values = array();
 
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ( ! in_array( $property, $this->getUtilityFields(), true ) ) {
+
+        // Also skip the ID field.
+        if ( 'id' === $property ) {
+          continue;
+        }
 
         if ( 'live' === $property ) {
           $value = $value ? true : false;
@@ -1311,7 +1363,13 @@ CREATE TABLE " . self::$db_table_name . " (
   public function export() {
     $export_data = array();
     foreach (get_object_vars($this) as $property => $value) {
-      if ($property != 'id' && $property != 'is_valid' && $property != 'db_table_name' && $property != 'DB_Instance' && $property != 'meta_data') {
+      if ( ! in_array( $property, $this->getUtilityFields(), true ) ) {
+
+        // Also skip the ID field.
+        if ( 'id' === $property ) {
+          continue;
+        }
+
         $export_data[$property] = $value;
       }
     }

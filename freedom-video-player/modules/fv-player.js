@@ -200,9 +200,11 @@ function fv_player_preload() {
 
   flowplayer( function(api,root) {
     // remove the temporary localStorage test item
-    if( localStorage.flowplayerTestStorage ) {
-      delete( localStorage.flowplayerTestStorage );
-    }
+    try {
+      if( localStorage.flowplayerTestStorage ) {
+        delete( localStorage.flowplayerTestStorage );
+      }
+    } catch(e) {}
 
     root = jQuery(root);
     var fp_player = root.find('.fp-player');

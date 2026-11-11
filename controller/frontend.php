@@ -1084,62 +1084,50 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
 
   global $wpdb;
 
-  static $user_meta;
-  if( !isset($user_meta) ) {
-    $user_meta = array();
+  $user_id = absint( $args['user_id'] );
+
+  // One row per video in fv_player_user_video_positions. Cache the raw rows so
+  // later calls in the same request can apply different include/post_type/count args.
+  static $user_positions;
+  if ( ! isset( $user_positions ) ) {
+    $user_positions = array();
   }
-  if( !isset($user_meta[ $args['user_id'] ]) ) {
-    $user_meta[ $args['user_id'] ] = $wpdb->get_results(
+  if ( ! isset( $user_positions[ $user_id ] ) ) {
+    $user_positions[ $user_id ] = $wpdb->get_results(
       $wpdb->prepare(
-        "SELECT meta_key, meta_value FROM $wpdb->usermeta WHERE user_id = %d AND ( meta_key LIKE %s OR meta_key LIKE %s OR meta_key LIKE %s ) ORDER BY umeta_id DESC",
-        $args['user_id'],
-        $wpdb->esc_like( 'fv_wp_flowplayer_position_' ) . '%',
-        $wpdb->esc_like( 'fv_wp_flowplayer_top_position_' ) . '%',
-        $wpdb->esc_like( 'fv_wp_flowplayer_saw_' ) . '%'
+        "SELECT video_id, last_position, top_position, finished FROM {$wpdb->prefix}fv_player_user_video_positions WHERE user_id = %d AND video_id > 0 ORDER BY last_updated DESC",
+        $user_id
       )
     );
   }
 
-  if( $user_meta[ $args['user_id'] ] ) {
-    $metas = $user_meta[ $args['user_id'] ];
+  if ( $user_positions[ $user_id ] ) {
+    foreach ( $user_positions[ $user_id ] as $row ) {
+      $video_id = (int) $row->video_id;
 
-    $output = array();
-
-    foreach( $metas AS $meta ) {
-      if( stripos( $meta->meta_key, 'fv_wp_flowplayer_top_position_') === 0 ) {
-        $video_id = str_replace( 'fv_wp_flowplayer_top_position_', '', $meta->meta_key );
-        if( !is_numeric($video_id) ) continue;
-
-        $output[$video_id] = array(
-          'type' => 'unfinished',
-          'message' => 'Watched until '.flowplayer::format_hms($meta->meta_value),
-          'time' => $meta->meta_value
+      // finished replaces any stored playback position, same as the old saw meta.
+      if ( (int) $row->finished === 1 ) {
+        $output[ $video_id ] = array(
+          'type'    => 'finished',
+          'message' => 'Saw whole video',
         );
-
-      } else if( stripos( $meta->meta_key, 'fv_wp_flowplayer_position_') === 0 ) {
-        $video_id = str_replace( 'fv_wp_flowplayer_position_', '', $meta->meta_key );
-        if( !is_numeric($video_id) ) continue;
-
-        if( empty($output[$video_id]) ) {
-          $output[$video_id] = array(
-            'type' => 'unfinished',
-            'message' => 'Watched until '.flowplayer::format_hms($meta->meta_value),
-            'time' => $meta->meta_value
-          );
-        }
-
+        continue;
       }
 
-    // No "else if" as we want the full video watch to take priority over the stored position
-	  if( stripos( $meta->meta_key, 'fv_wp_flowplayer_saw_') === 0 ) {
-        $video_id = str_replace( 'fv_wp_flowplayer_saw_', '', $meta->meta_key );
-        if( !is_numeric($video_id) ) continue;
-
-        $output[$video_id] = array(
-          'type' => 'finished',
-          'message' => 'Saw whole video'
-        );
+      // top_position is the furthest point reached; last_position is the resume point.
+      $time = (int) $row->top_position;
+      if ( $time <= 0 ) {
+        $time = (int) $row->last_position;
       }
+      if ( $time <= 0 ) {
+        continue;
+      }
+
+      $output[ $video_id ] = array(
+        'type'    => 'unfinished',
+        'message' => 'Watched until ' . flowplayer::format_hms( $time ),
+        'time'    => $time,
+      );
     }
   }
 
@@ -1189,6 +1177,12 @@ function fv_player_get_user_watched_video_ids( $args = array() ) {
         unset($output[$video_id]);
       }
     }
+  }
+
+  // Limit after the post filter so videos that are not on a published post do not consume the count.
+  $count = absint( $args['count'] );
+  if ( $count > 0 && count( $output ) > $count ) {
+    $output = array_slice( $output, 0, $count, true );
   }
 
   if( !$args['full_details'] ) {

@@ -958,7 +958,7 @@ class FV_Player_Db {
       $out['meta'][] = $meta_object->getAllDataValues();
     }
 
-    unset($out['video_objects'], $out['videos']);
+    unset( $out['video_objects'], $out['videos'], $out['trailer_video'] );
 
     // fill the $out variable with video data
     $out['videos'] = array();
@@ -975,6 +975,20 @@ class FV_Player_Db {
       }
 
       $out['videos'][] = $vid;
+    }
+
+    // fill the $out variable with trailer video data
+    $out['trailer_video'] = array();
+    if ( $fv_fp->current_player()->getTrailerVideo() ) {
+      $trailer_obj           = $fv_fp->current_player()->getTrailerVideo(); 
+      $trailer_video         = $trailer_obj->getAllDataValues();
+      $trailer_video['meta'] = array();
+
+      foreach ( $trailer_obj->getMetaData() as $meta_object ) {
+        $trailer_video['meta'][] = $meta_object->getAllDataValues();
+      }
+
+      $out['trailer_video'] = $trailer_video;
     }
 
     // load posts where this player is embedded
@@ -1084,6 +1098,31 @@ class FV_Player_Db {
     }
 
     return array_map( 'absint', array_filter( explode( ',', $videos ), 'strlen' ) );
+  }
+
+  /**
+   * Returns the trailer video ID of a given player.
+   *
+   * Used to authorize the trailer video ID in db_store_player_data():
+   * an existing trailer video ID is only accepted if it already is the trailer
+   * of the player being edited.
+   *
+   * @param int $player_id Player DB ID.
+   *
+   * @return int Trailer video ID or 0 when the player does not exist or has no trailer.
+   */
+  public function get_player_trailer_video_id( $player_id ) {
+    global $wpdb;
+
+    $player_id = intval( $player_id );
+    if ( $player_id < 1 ) {
+      return 0;
+    }
+
+    return absint( $wpdb->get_var( $wpdb->prepare(
+      "SELECT trailer_video FROM `{$wpdb->prefix}fv_player_players` WHERE id = %d",
+      $player_id
+    ) ) );
   }
 
   /**
@@ -1231,13 +1270,41 @@ class FV_Player_Db {
         $this->process_deleted_entries( $post_data, $editable_video_ids, $restrict_to_player_videos );
       }
 
+      $trailer_video_id     = false;
+      $trailer_has_src      = false;
+      $trailer_video        = array();
+      $trailer_video_meta   = array();
+
       foreach ($post_data as $field_name => $field_value) {
+        if ( strpos( $field_name, 'fv_wp_flowplayer_field_trailer_video_id' ) === 0 ) {
+          $trailer_video_id = $field_value;
+          continue;
+
+        } else if ( strpos( $field_name, 'fv_wp_flowplayer_field_trailer_src' ) === 0 ) {
+          $trailer_has_src = true;
+        }
+
         // global player or local video setting field
         if (strpos($field_name, 'fv_wp_flowplayer_field_') !== false) {
           if (!in_array($field_name, $ignored_player_fields)) {
             $option_name = str_replace( 'fv_wp_flowplayer_field_', '', $field_name );
-            // global player option
-            $player_options[ $option_name ] = $field_value;
+
+            if ( stripos( $option_name, 'trailer_' ) === 0 ) {
+              $option_name = str_replace( 'trailer_', '', $option_name );
+              if ( in_array( $option_name, array( 'encoding_job_id' ) ) ) {
+                $trailer_video_meta[] = array(
+                  'meta_key' => $option_name,
+                  'meta_value' => $field_value
+                );
+
+              } else {
+                $trailer_video[ $option_name ] = $field_value;
+              }
+
+            } else {
+              // global player option
+              $player_options[ $option_name ] = $field_value;
+            }
           }
         } else if ($field_name == 'videos' && is_array($field_value)) {
           // iterate over all videos for the player
@@ -1362,6 +1429,42 @@ class FV_Player_Db {
             }
           }
         }
+      }
+
+      /**
+       * Only accept an existing trailer video ID if it already is the trailer of the player being edited.
+       * Otherwise the user could overwrite any video by passing its ID as the trailer video ID.
+       * If it's not accepted and the trailer source is set, the trailer is saved as a new video.
+       *
+       * Users with edit_others_posts are exempt, same as for the player videos above.
+       */
+      if ( $trailer_video_id && $restrict_to_player_videos ) {
+        $editable_trailer_video_id = ! empty( $post_data['update'] )
+          ? $this->get_player_trailer_video_id( $post_data['update'] )
+          : 0;
+
+        if ( ! $editable_trailer_video_id || absint( $trailer_video_id ) !== $editable_trailer_video_id ) {
+          $trailer_video_id = false;
+        }
+      }
+
+      /**
+       * Only save the trailer if the fields are present and either
+       * - the trailer video exists ($trailer_video_id is set)
+       * - or the video source is set
+       */
+      if ( $trailer_has_src && ( $trailer_video_id || ! empty( $trailer_video['src'] ) ) ) {
+        $trailer_obj = new FV_Player_Db_Video( null, $trailer_video, $this );
+
+        if ( $trailer_video_id ) {
+          $trailer_obj->link2db( $trailer_video_id );
+        }
+
+        $player_options['trailer_video'] = $trailer_obj->save( $trailer_video_meta );
+
+      // Keep the trailer video ID if it was set
+      } else if ( $trailer_video_id ) {
+        $player_options['trailer_video'] = $trailer_video_id;
       }
 
       // add all videos into this player
@@ -1968,6 +2071,15 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
             $export_data['videos'][] = $video_export_data;
           }
         }
+
+        $trailer_video_id = $player->getTrailerVideoId();
+        if ( $trailer_video_id ) {
+          $trailer_video = new FV_Player_Db_Video( $trailer_video_id );
+          if ( $trailer_video->getIsValid() ) {
+            $export_data['trailer_video'] = $trailer_video->export();
+          }
+        }
+
       } else {
         if ($output_result) {
           die( 'invalid player ID, export unsuccessful - please use the close button and try again' );
@@ -2036,7 +2148,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
         // first, create the player
         $player_keys = $data;
-        unset($player_keys['meta'], $player_keys['videos']);
+        unset( $player_keys['meta'], $player_keys['videos'], $player_keys['trailer_video'] );
 
         foreach( $player_keys AS $k => $v ) {
           if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
@@ -2060,6 +2172,7 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
               unset($video_data['caption']);
             }
 
+            // Sanitize input keys in case we are exporting the player saving error message.
             foreach( $video_data AS $k => $v ) {
               if( stripos($k,'fv_wp_flowplayer_field_') === 0 ) {
                 $new = str_replace( 'fv_wp_flowplayer_field_', '', $k );
@@ -2122,6 +2235,29 @@ INNER JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id";
 
             $player_video_ids[] = $id_video;
           }
+        }
+
+        // Import trailer video.
+        if ( ! empty( $data['trailer_video'] ) && is_array( $data['trailer_video'] ) ) {
+          $trailer_video_data = $data['trailer_video'];
+
+          // Sanitize input keys in case we are exporting the player saving error message.
+          foreach( $trailer_video_data AS $k => $v ) {
+            if ( stripos( $k, 'fv_wp_flowplayer_field_' ) === 0 ) {
+              $new = str_replace( 'fv_wp_flowplayer_field_', '', $k );
+              $trailer_video_data[ $new ] = $v;
+              unset( $trailer_video_data[ $k ] );
+            }
+          }
+
+          // Skip video meta check if the import is taking more than 10 seconds.
+          // We could also rely on the PHP max_execution_time/2 or so.
+          $skip_video_meta_check = ( microtime(true) - $time_import_start ) > 10;            
+
+          $video_object = new FV_Player_Db_Video( null, $trailer_video_data, $FV_Player_Db );
+          $id_video = $video_object->save( $trailer_video_data['meta'], false, $skip_video_meta_check );
+
+          $player->setTrailerVideoId( $id_video );
         }
 
         // set video IDs for the player

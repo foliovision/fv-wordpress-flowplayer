@@ -210,11 +210,15 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
-= 8.1.10 - 2026-10-08 =
+= 8.2.0 - 2026-11-09 =
 
+* Create video sharing splash screen for Open Graph and X Cards
+* CSS: Improved playlist appearance for vertical videos on mobile
+* Mobile users get a fullscreen button in the corner of each video when it starts
 * Security: Avoid Contributor+ SSRF via the splash image download for the post featured image, only public addresses are fetched and only real images are stored
 * Security: Avoid Subscriber+ AWS S3 file listing if using [fvplayer_editor] or "Enable profile videos" setting
 * Security: Avoid Contributor+ Stored XSS via the text-lightbox caption
+* Security: Improve Bunny Stream video upload security
 * Security: Remove legacy [flowplayer] to [fvplayer] shortcode conversion which Subscriber+ users could run, although no damage would be done
 
 = 8.1.9 - 2026-10-07 =
@@ -561,3 +565,25 @@ FV Player uses the following external services all of which are optional:
 * Bunny Stream API via video.bunnycdn.com - only if you setup Bunny Stream
 * FV Video Checker on video-checker.foliovision.com - when you install the plugin you are prompted if you allow access to your video files to check for video encoding issues. This can also be disabled using the "Disable Admin Video Checker" setting later.
 * Wistia embed codes if you use post Wistia videos
+
+== Upgrade popups ==
+
+= 8.2.0 =
+
+* Create video sharing splash screen for Open Graph and X Cards
+* Improved playlist appearance for vertical videos on mobile
+* Mobile users get a fullscreen button in the corner of each video when it starts
+* Security fixes for Bunny Stream video uploads
+* Security fixes for "Enable profile videos" setting
+* Security fixes for "Parse Vimeo and YouTube links" settings
+
+= 8.1.9 =
+
+* Improved playlist appearance for vertical videos on desktop
+* Security fixes for CDN class
+
+= 8.1.8 =
+
+* Playlist scrollbars now use then main player color
+* Improved video upload reliability for FV Coconut
+* Security fixes for HTML fields

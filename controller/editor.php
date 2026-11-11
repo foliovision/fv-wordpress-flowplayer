@@ -24,7 +24,10 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
 
   wp_enqueue_script('fv-player-editor-modal', $url.'/js/fv-player-editor-modal.js', array('jquery'), filemtime( dirname(__FILE__).'/../js/fv-player-editor-modal.js' ), true );
 
-  wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable'), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
+  wp_enqueue_style('wp-components');
+  wp_enqueue_script('foliopress-confirm', $url.'/js/foliopress-confirm.js', array(), filemtime( dirname(__FILE__).'/../js/foliopress-confirm.js' ), true );
+
+  wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable', 'foliopress-confirm' ), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
   wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js', array( 'fvwpflowplayer-shortcode-editor' ), filemtime( dirname(__FILE__).'/../js/editor-screenshots.js' ), true );
 
@@ -74,7 +77,13 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     'have_fv_player_vimeo_live' => class_exists('FV_Player_Vimeo_Live_Stream'),
     'is_fv_player_screen' => !empty($current_screen->id) && $current_screen->id == 'toplevel_page_fv_player',
     'is_edit_posts_screen' => !empty($current_screen->base) && $current_screen->base == 'edit' && !empty($current_screen->post_type),
-    'keyup_throttle'       => 500
+    'keyup_throttle'       => 500,
+    // Used by the Copy debug info button
+    'debug_versions'       => array(
+      'fv_player' => $fv_wp_flowplayer_ver,
+      'wp'        => get_bloginfo( 'version' ),
+      'php'       => PHP_VERSION,
+    ),
   );
 
   // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
@@ -804,8 +813,34 @@ function fv_player_editor_subtitle_fields() {
   return $subtitle_fields;
 }
 
+function fv_player_editor_trailer_fields() {
 
+  $notice = 'Upgrade to <a href="https://foliovision.com/store/fv-player-license" target="_blank">FV Player Pro</a> to add a trailer video.';
 
+  if ( class_exists( 'FV_Player_Pro' ) && ! class_exists( 'FV_Player_Pro_Trailer' ) ) {
+    $notice = 'Please upgrade your FV Player Pro to add a trailer video.';
+  }
+
+  $trailer_fields = apply_filters('fv_player_editor_trailer_fields', array(
+    'trailer' => array(
+      'items' => array(
+        array(
+          'name' => 'trailer_video_id',
+          'type' => 'hidden'
+        ),
+        array(
+          'name'    => 'trailer_upsell',
+          'type'    => 'notice_info',
+          'content' => $notice,
+          'visible' => true
+        ),
+      ),
+      'sort' => false
+    )
+  ) );
+
+  return $trailer_fields;
+}
 
 function fv_player_editor_video_fields() {
   $fv_flowplayer_conf = get_option( 'fvwpflowplayer' );

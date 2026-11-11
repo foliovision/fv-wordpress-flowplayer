@@ -4,17 +4,20 @@
 flowplayer( function(api,root) {
   root = jQuery(root);
 
-  var ls = window.localStorage;
+  var ls = false;
+  try {
+    ls = window.localStorage;
+  } catch(e) {}
 
   // restore subtitle on ready event
   api.on('ready', function(e,api,video) {
     if( video.subtitles && video.subtitles.length ) {
-      if( ls.fv_player_subtitle && api.video.subtitles && api.video.subtitles.length ) { // check if we have subtitles to restore
-        if ( ls.fv_player_subtitle === 'none' ) { // none is saved, disable subtitles
+      if( ls && ls.fv_player_subtitle && api.video.subtitles && api.video.subtitles.length ) { // check if we have subtitles to restore
+        if ( ls && ls.fv_player_subtitle === 'none' ) { // none is saved, disable subtitles
           api.disableSubtitles();
         } else {
           api.video.subtitles.forEach(function (item, index) {
-            if( item.srclang === ls.fv_player_subtitle) {
+            if( ls && item.srclang === ls.fv_player_subtitle) {
               api.loadSubtitles(index); // restore saved subtitle
             }
           });
