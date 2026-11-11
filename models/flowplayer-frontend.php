@@ -1408,7 +1408,6 @@ HTML;
       $tags['a']['itemprop'] = true;
       $tags['a']['itemscope'] = true;
       $tags['a']['itemtype'] = true;
-      $tags['a']['onclick'] = true;
     }
     
     if( !empty($tags['div']) && is_array($tags['div']) ) {
@@ -1433,7 +1432,6 @@ HTML;
       $tags['div']['itemprop'] = true;
       $tags['div']['itemscope'] = true;
       $tags['div']['itemtype'] = true;
-      $tags['div']['onclick'] = true;
       $tags['div']['rel'] = true;
     }
     
