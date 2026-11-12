@@ -231,24 +231,144 @@ class FV_Player_S3_Upload {
     return apply_filters( 'fv_player_s3_upload_storage_label', $label );
   }
 
+  /**
+   * Is FV Player -> Settings -> Debug Log (debug_file) enabled?
+   */
+  function is_debug_log_enabled() {
+    global $fv_fp;
+    return ! empty( $fv_fp ) && method_exists( $fv_fp, 'log' ) && $fv_fp->_get_option( 'debug_file' );
+  }
+
+  /**
+   * Write into the FV Player Debug Log, if enabled.
+   *
+   * controller/s3-ajax.php loads WordPress with SHORTINIT, so the init action
+   * which normally sets up the log file never runs. We set it up here.
+   *
+   * @param string $message
+   */
+  function debug_log( $message ) {
+    if ( ! $this->is_debug_log_enabled() ) {
+      return;
+    }
+
+    global $fv_fp;
+    if ( empty( $fv_fp->log_file ) ) {
+      $fv_fp->maybe_log_file_setup();
+    }
+
+    $fv_fp->log( $message );
+  }
+
+  /**
+   * Log the validation error and send it to the browser.
+   *
+   * @param string $message Error message for the user.
+   * @param mixed  $details Extra information only for the log.
+   */
+  private function validate_file_upload_error( $message, $details = false ) {
+    $log = 'validate_file_upload: FAILED: ' . $message;
+    if ( $details ) {
+      $log .= ' Details: ' . ( is_string( $details ) ? $details : wp_json_encode( $details ) );
+    }
+    $this->debug_log( $log );
+
+    wp_send_json( array( 'error' => $message ) );
+    exit;
+  }
+
+  /**
+   * Human readable meaning of the PHP file upload error codes.
+   *
+   * @param int $code
+   */
+  private function get_upload_error_message( $code ) {
+    $messages = array(
+      UPLOAD_ERR_OK         => 'No error',
+      UPLOAD_ERR_INI_SIZE   => 'File exceeds upload_max_filesize in php.ini',
+      UPLOAD_ERR_FORM_SIZE  => 'File exceeds MAX_FILE_SIZE of the form',
+      UPLOAD_ERR_PARTIAL    => 'File was only partially uploaded',
+      UPLOAD_ERR_NO_FILE    => 'No file was uploaded',
+      UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+      UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+      UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload',
+    );
+
+    return isset( $messages[ $code ] ) ? $messages[ $code ] : 'Unknown upload error';
+  }
+
   function validate_file_upload() {
+
+    if ( $this->is_debug_log_enabled() ) {
+      $files_summary = array();
+      if ( ! empty( $_FILES ) ) {
+        foreach ( $_FILES as $key => $file ) {
+          $files_summary[ $key ] = array(
+            'name'         => isset( $file['name'] ) ? $file['name'] : null,
+            'type'         => isset( $file['type'] ) ? $file['type'] : null,
+            'size'         => isset( $file['size'] ) ? $file['size'] : null,
+            'error'        => isset( $file['error'] ) ? $file['error'] . ' (' . $this->get_upload_error_message( $file['error'] ) . ')' : null,
+            'tmp_exists'   => ! empty( $file['tmp_name'] ) && file_exists( $file['tmp_name'] ),
+          );
+        }
+      }
+
+      $this->debug_log( 'validate_file_upload: Request received: ' . wp_json_encode( array(
+        'user_id'             => get_current_user_id(),
+        'request_method'      => isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : null,
+        'content_length'      => isset( $_SERVER['CONTENT_LENGTH'] ) ? $_SERVER['CONTENT_LENGTH'] : null,
+        'content_type'        => isset( $_SERVER['CONTENT_TYPE'] ) ? $_SERVER['CONTENT_TYPE'] : null,
+        'https'               => is_ssl(),
+        'http_host'           => isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : null,
+        'origin'              => isset( $_SERVER['HTTP_ORIGIN'] ) ? $_SERVER['HTTP_ORIGIN'] : null,
+        'referer'             => isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : null,
+        'user_agent'          => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : null,
+        'php_version'         => PHP_VERSION,
+        'upload_max_filesize' => ini_get( 'upload_max_filesize' ),
+        'post_max_size'       => ini_get( 'post_max_size' ),
+        'memory_limit'        => ini_get( 'memory_limit' ),
+        'max_execution_time'  => ini_get( 'max_execution_time' ),
+        'upload_tmp_dir'      => ini_get( 'upload_tmp_dir' ) ? ini_get( 'upload_tmp_dir' ) : sys_get_temp_dir(),
+        'post_keys'           => array_keys( $_POST ),
+        'files'               => $files_summary,
+        'file_info'           => isset( $_POST['file_info'] ) ? json_decode( stripslashes( $_POST['file_info'] ), true ) : null,
+      ) ) );
+
+      // Catch fatal errors, like getID3 running out of memory
+      register_shutdown_function( function() {
+        $error = error_get_last();
+        if ( $error && in_array( $error['type'], array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ), true ) ) {
+          $this->debug_log( 'validate_file_upload: PHP fatal error: ' . $error['message'] . ' in ' . $error['file'] . ':' . $error['line'] );
+        }
+      } );
+    }
+
     if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_flowplayer_validate_file' ) ) {
-      wp_send_json( array( 'error' => 'Access denied, please reload the page and try again.' ) );
+      $this->validate_file_upload_error(
+        'Access denied, please reload the page and try again.',
+        isset( $_POST['nonce'] ) ? 'Nonce verification failed for user ID ' . get_current_user_id() : 'Nonce missing'
+      );
     }
 
     // Check if file chunk was uploaded
     if (! isset( $_FILES['file_chunk']) || $_FILES['file_chunk']['error'] !== UPLOAD_ERR_OK ) {
       $error_msg = 'File upload failed or no file received.';
+      $details   = 'No file_chunk in $_FILES';
       if ( isset( $_FILES['file_chunk'] ) ) {
         $error_msg .= ' Upload error code: ' . $_FILES['file_chunk']['error'];
+        $details    = $this->get_upload_error_message( $_FILES['file_chunk']['error'] );
       }
-      wp_send_json(array('error' => $error_msg));
+      $this->validate_file_upload_error( $error_msg, $details );
     }
 
     // Get file info
     $file_info = json_decode( stripslashes( $_POST['file_info'] ), true );
     if ( ! $file_info ) {
-      wp_send_json(array('error' => 'Invalid file information.'));
+      $this->validate_file_upload_error(
+        'Invalid file information.',
+        'JSON error: ' . json_last_error_msg() . ', raw: ' . ( isset( $_POST['file_info'] ) ? substr( $_POST['file_info'], 0, 500 ) : 'missing' )
+      );
+      exit;
     }
 
     // Basic file validation
@@ -258,29 +378,46 @@ class FV_Player_S3_Upload {
 
     // Check file size (5MB chunk should be reasonable)
     if ( $file_size > 5 * 1024 * 1024 ) {
-      wp_send_json(array('error' => 'File chunk too large: ' . $file_size . ' bytes (max: ' . ( 5 * 1024 * 1024 ) . ' bytes)'));
+      $this->validate_file_upload_error( 'File chunk too large: ' . $file_size . ' bytes (max: ' . ( 5 * 1024 * 1024 ) . ' bytes)' );
+      exit;
     }
 
     // Check if file is empty
     if ( $file_size === 0 ) {
-      wp_send_json( array( 'error' => 'File appears to be empty.' ) );
+      $this->validate_file_upload_error( 'File appears to be empty.' );
+      exit;
     }
 
     // Check for malicious file extensions
     $dangerous_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'pl', 'py', 'cgi', 'asp', 'aspx', 'jsp', 'so', 'dll', 'exe', 'bat', 'cmd', 'sh', 'com');
     $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
     if ( in_array( $file_extension, $dangerous_extensions ) ) {
-      wp_send_json( array( 'error' => 'File type not allowed for security reasons: ' . $file_extension ) );
+      $this->validate_file_upload_error( 'File type not allowed for security reasons: ' . $file_extension );
+      exit;
     }
+
+    // Read the start of the file for the executable checks below
+    $file_content = '';
+    $handle = @fopen( $uploaded_file['tmp_name'], 'rb' );
+    if ( $handle ) {
+      $file_content = fread( $handle, 16 );
+      fclose( $handle );
+    } else {
+      $this->debug_log( 'validate_file_upload: Unable to open the uploaded file for reading: ' . $uploaded_file['tmp_name'] );
+    }
+
+    $this->debug_log( 'validate_file_upload: File "' . $file_name . '", chunk size ' . $file_size . ' bytes, first bytes (hex): ' . bin2hex( $file_content ) );
 
     // Check for ELF headers (Linux executables)
     if ( substr( $file_content, 0, 4 ) === "\x7fELF" ) {
-      wp_send_json(array('error' => 'File appears to be a Linux executable and is not allowed.'));
+      $this->validate_file_upload_error( 'File appears to be a Linux executable and is not allowed.' );
+      exit;
     }
 
     // Check for PE headers (Windows executables)
     if ( substr( $file_content, 0, 2 ) === "MZ" ) {
-      wp_send_json(array('error' => 'File appears to be a Windows executable and is not allowed.'));
+      $this->validate_file_upload_error( 'File appears to be a Windows executable and is not allowed.' );
+      exit;
     }
 
     // Use getID3 to analyze the actual file content
@@ -296,9 +433,24 @@ class FV_Player_S3_Upload {
      * at the start of the file (in first 5MB). That's why we also run the check in browser,
      * see s3-upload-base.js file where is runs document.createElement('video').
      */
+    $this->debug_log( 'validate_file_upload: Running getID3 analysis...' );
+
     $ThisFileInfo = $getID3->analyze($uploaded_file['tmp_name']);
-    
-    error_log('validate_file_upload: getID3 analysis: ' . print_r($ThisFileInfo, true));
+
+    if ( $this->is_debug_log_enabled() ) {
+      $this->debug_log( 'validate_file_upload: getID3 analysis: ' . wp_json_encode( array(
+        'fileformat'       => isset( $ThisFileInfo['fileformat'] ) ? $ThisFileInfo['fileformat'] : null,
+        'mime_type'        => isset( $ThisFileInfo['mime_type'] ) ? $ThisFileInfo['mime_type'] : null,
+        'playtime_seconds' => isset( $ThisFileInfo['playtime_seconds'] ) ? $ThisFileInfo['playtime_seconds'] : null,
+        'video_format'     => isset( $ThisFileInfo['video']['dataformat'] ) ? $ThisFileInfo['video']['dataformat'] : null,
+        'resolution_x'     => isset( $ThisFileInfo['video']['resolution_x'] ) ? $ThisFileInfo['video']['resolution_x'] : null,
+        'resolution_y'     => isset( $ThisFileInfo['video']['resolution_y'] ) ? $ThisFileInfo['video']['resolution_y'] : null,
+        'rotate'           => isset( $ThisFileInfo['video']['rotate'] ) ? $ThisFileInfo['video']['rotate'] : null,
+        'audio_format'     => isset( $ThisFileInfo['audio']['dataformat'] ) ? $ThisFileInfo['audio']['dataformat'] : null,
+        'errors'           => isset( $ThisFileInfo['error'] ) ? $ThisFileInfo['error'] : array(),
+        'warnings'         => isset( $ThisFileInfo['warning'] ) ? $ThisFileInfo['warning'] : array(),
+      ) ) );
+    }
     
     // Check if getID3 detected a valid file type
     $detected_mime_type = '';
@@ -329,9 +481,14 @@ class FV_Player_S3_Upload {
 
     // If getID3 couldn't detect the type, fall back to browser MIME type
     if ( empty( $detected_mime_type ) ) {
-      wp_send_json( array( 'error' => 'File type not supported.' ) );
+      $this->validate_file_upload_error(
+        'File type not supported.',
+        'getID3 did not detect the MIME type. fileformat: ' . ( isset( $ThisFileInfo['fileformat'] ) ? $ThisFileInfo['fileformat'] : 'none' ) . ', browser MIME type: ' . ( isset( $uploaded_file['type'] ) ? $uploaded_file['type'] : 'none' )
+      );
       exit;
     }
+
+    $this->debug_log( 'validate_file_upload: Detected MIME type: ' . $detected_mime_type );
 
     /**
      * Ensure video resolution is at least the minimal resolution
@@ -405,7 +562,10 @@ class FV_Player_S3_Upload {
           // Video dimensions are good for one of the aspect ratios
 
         } else {
-          wp_send_json( array( 'error' => "I'm sorry, your video is only " . absint( $ThisFileInfo['video']['resolution_x'] ) . "x" . absint( $ThisFileInfo['video']['resolution_y'] ) . ". Please re-render it as " . $minimal_video_resolution . " or higher and upload again." ) );
+          $this->validate_file_upload_error(
+            "I'm sorry, your video is only " . absint( $ThisFileInfo['video']['resolution_x'] ) . "x" . absint( $ThisFileInfo['video']['resolution_y'] ) . ". Please re-render it as " . $minimal_video_resolution . " or higher and upload again.",
+            'Minimal resolution: ' . $minimal_video_resolution . ' (' . $minimal_width . 'x' . $minimal_height . ')'
+          );
           exit;
         }
 
@@ -431,11 +591,14 @@ class FV_Player_S3_Upload {
     );
 
     if ( ! in_array( $detected_mime_type, $allowed_types ) ) {
-      wp_send_json( array( 'error' => 'File type not allowed: ' . $detected_mime_type ) );
+      $this->validate_file_upload_error( 'File type not allowed: ' . $detected_mime_type );
+      exit;
     }
 
     // Clean up the uploaded file
     unlink( $uploaded_file['tmp_name'] );
+
+    $this->debug_log( 'validate_file_upload: PASSED: ' . $detected_mime_type . ', ' . $video_width . 'x' . $video_height . ', duration: ' . ( isset( $ThisFileInfo['playtime_seconds'] ) ? $ThisFileInfo['playtime_seconds'] : 'unknown' ) );
 
     // Generate a new nonce for the create_multiupload action
     $create_multiupload_nonce = wp_create_nonce( 'fv_flowplayer_create_multiupload' );

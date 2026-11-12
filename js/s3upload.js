@@ -219,6 +219,38 @@ S3MultiUpload.prototype.validateFile = function() {
             errorMsg += ' (' + errorThrown + ')';
         }
 
+        // Resolve the full request URL to be able to compare it with the page URL
+        var requestUrl = self.SERVER_LOC;
+        try {
+            requestUrl = new URL( self.SERVER_LOC, window.location.href ).href;
+        } catch (e) {}
+
+        var isMixedContent = 'https:' === window.location.protocol && 0 === requestUrl.indexOf( 'http:' );
+
+        // HTTP status 0 means the request did not complete at all, so PHP likely never received it
+        if ( ! jqXHR.status && 'abort' !== textStatus ) {
+            if ( isMixedContent ) {
+                errorMsg += ' - The upload URL ' + requestUrl + ' uses http:// while this page uses https://, so the browser blocked it. Please check the WordPress Address (URL) and Site Address (URL) in Settings -> General.';
+            } else {
+                errorMsg += ' - Unable to reach ' + requestUrl + '. The connection was blocked or dropped, please check your server firewall or security plugin.';
+            }
+        }
+
+        console.error( 'FV Player S3 Upload: Validation request failed', {
+            requestUrl: requestUrl,
+            pageUrl: window.location.href,
+            isMixedContent: isMixedContent,
+            textStatus: textStatus,
+            errorThrown: errorThrown,
+            status: jqXHR.status,
+            statusText: jqXHR.statusText,
+            readyState: jqXHR.readyState,
+            responseHeaders: jqXHR.getAllResponseHeaders ? jqXHR.getAllResponseHeaders() : '',
+            responseText: jqXHR.responseText ? jqXHR.responseText.substring( 0, 2000 ) : '',
+            validationChunkSize: self.validationChunkSize,
+            fileInfo: self.fileInfo
+        } );
+
         self.onValidationError(errorMsg);
     });
 };
