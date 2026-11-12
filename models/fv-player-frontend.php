@@ -1559,8 +1559,8 @@ class flowplayer_frontend extends flowplayer
     <div class="mail-content-notice">
     </div>
     <div class="support-%hash%">
-      <textarea style="width: 98%; height: 150px" onclick="if( this.value == \'Enter your comment\' ) this.value = \'\'" class="wpfp_message_field" id="wpfp_support_%hash%">Enter your comment</textarea>
-      <p><a class="techinfo" href="#" onclick="jQuery(\'.more-%hash%\').toggle(); return false">Technical info</a> <img style="display: none; " src="%spinner%" id="wpfp_spin_%hash%" /> <input type="button" value="Send report to Foliovision" onclick="fv_wp_flowplayer_admin_support_mail(\'%hash%\', this); return false" /></p></div>
+      <textarea style="width: 98%; height: 150px" placeholder="Enter your comment" class="wpfp_message_field" id="wpfp_support_%hash%"></textarea>
+      <p><a class="techinfo" href="#">Technical info</a> <img style="display: none; " src="%spinner%" id="wpfp_spin_%hash%" /> <input type="button" class="fv-player-video-checker-send" value="Send report to Foliovision" /></p></div>
     <div class="more-%hash% mail-content-details" style="display: none; ">
       <p>Plugin version: %ver%</p>
       <div class="fv-wp-flowplayer-notice-parsed level-0"></div></div>
@@ -1599,7 +1599,6 @@ class flowplayer_frontend extends flowplayer
       $tags['a']['itemprop'] = true;
       $tags['a']['itemscope'] = true;
       $tags['a']['itemtype'] = true;
-      $tags['a']['onclick'] = true;
     }
 
     if ( empty($tags['defs']) ) {
@@ -1629,7 +1628,6 @@ class flowplayer_frontend extends flowplayer
       $tags['div']['itemprop'] = true;
       $tags['div']['itemscope'] = true;
       $tags['div']['itemtype'] = true;
-      $tags['div']['onclick'] = true;
       $tags['div']['rel'] = true;
     }
 
@@ -1668,6 +1666,12 @@ class flowplayer_frontend extends flowplayer
     $tags['svg']['class'] = true;
     $tags['svg']['viewbox'] = true;
     $tags['svg']['xmlns'] = true;
+
+    if ( empty($tags['textarea']) ) {
+      $tags['textarea'] = array();
+    }
+
+    $tags['textarea']['placeholder'] = true;
 
     return $tags;
   }

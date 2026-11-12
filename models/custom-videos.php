@@ -1002,7 +1002,6 @@ class FV_Player_Custom_Videos_Master {
     $tags['input']['class'] = true;
     $tags['input']['id'] = true;
     $tags['input']['name'] = true;
-    $tags['input']['onclick'] = true;
     $tags['input']['type'] = true;
     $tags['input']['value'] = true;
 
@@ -1034,12 +1033,6 @@ class FV_Player_Custom_Videos_Master {
     $tags['svg']['class'] = true;
     $tags['svg']['viewbox'] = true;
     $tags['svg']['xmlns'] = true;
-
-    if ( empty($tags['textarea']) ) {
-      $tags['textarea'] = array();
-    }
-
-    $tags['textarea']['onclick'] = true;
 
     return $tags;
   }

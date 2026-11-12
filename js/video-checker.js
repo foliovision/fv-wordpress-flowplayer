@@ -192,6 +192,17 @@
     return false;
   });
 
+  jQuery(document).on('click','.fv-player-video-checker .techinfo', function() {
+    jQuery(this).closest('.fv-player-video-checker').find('.mail-content-details').toggle();
+    return false;
+  });
+
+  jQuery(document).on('click','.fv-player-video-checker .fv-player-video-checker-send', function() {
+    var hash = jQuery(this).closest('.fv-player-video-checker').attr('id').replace(/wpfp_notice_/,'');
+    fv_wp_flowplayer_admin_support_mail( hash, this );
+    return false;
+  });
+
 })(jQuery);
 
 function fv_wp_flowplayer_admin_show_notice( id ) {
@@ -232,8 +243,8 @@ function fv_wp_flowplayer_admin_support_mail( hash, button ) {
 
   var comment_text = jQuery('#wpfp_support_'+hash).val();
   var status_text = jQuery('#wpfp_notice_'+hash+'.fv-player-video-checker .video-checker-result').text();
-  var comment_words = comment_text.split(/\s/);
-  if( comment_words.length == 0 || comment_text.match(/Enter your comment/) ) {
+  var comment_words = comment_text.trim().split(/\s+/);
+  if( comment_text.trim().length == 0 || comment_text.match(/Enter your comment/) ) {
     jQuery('#wpfp_support_'+hash).before('<p class="fv_flowplayer_submit_error" style="display:none; "><strong>'+fv_flowplayer_translations.what_is_wrong+'</strong></p>');
     jQuery('.fv_flowplayer_submit_error').fadeIn();
     return false;
