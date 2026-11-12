@@ -210,17 +210,22 @@ function fv_player_admin_pointer_boxes() {
   $nag_fv_player_upgrade = $fv_fp->_get_option( 'nag_fv_player_upgrade' );
 
   if( ! $nag_fv_player_upgrade || version_compare( $nag_fv_player_upgrade , $fv_wp_flowplayer_ver ) !== 0 ) {
-    $fv_fp->pointer_boxes['fv_player_upgrade'] = array(
-      'id' => '#wp-admin-bar-new-content',
-      'pointerClass' => 'fv_player_upgrade',
-      'heading' => 'FV Player upgrade',
-      'content' =>
-        sprintf( __('You just upgraded to version %s. Here are the improvements since your last upgrade:', 'fv-player'), $fv_wp_flowplayer_ver ) .
-        fv_player_upgrade_changelog_html( $nag_fv_player_upgrade, $fv_wp_flowplayer_ver ),
-      'position' => array( 'edge' => 'top', 'align' => 'center' ),
-      'button1'  => __('Thanks for letting me know!', 'fv-player'),
-      'value1'   => $fv_wp_flowplayer_ver,
-    );
+
+    $changes = fv_player_upgrade_changelog_html( $nag_fv_player_upgrade, $fv_wp_flowplayer_ver );
+
+    if ( $changes ) {
+      $fv_fp->pointer_boxes['fv_player_upgrade'] = array(
+        'id' => '#wp-admin-bar-new-content',
+        'pointerClass' => 'fv_player_upgrade',
+        'heading' => 'FV Player upgrade',
+        'content' =>
+          sprintf( __('You just upgraded to version %s. Here are the improvements since your last upgrade:', 'fv-player'), $fv_wp_flowplayer_ver ) .
+          $changes,
+        'position' => array( 'edge' => 'top', 'align' => 'center' ),
+        'button1'  => __('Thanks for letting me know!', 'fv-player'),
+        'value1'   => $fv_wp_flowplayer_ver,
+      );
+    }
   }
 
   if(
