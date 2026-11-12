@@ -1170,3 +1170,79 @@ jQuery( function($) {
   });
 
 });
+
+/*
+ * Compatibility with older FV Player Pro versions which do not send the nonce for their media browsers
+ *
+ * fv_flowplayer_browser.nonces is printed by FV_Player_Media_Browser::init_base(),
+ * keyed by the AJAX action, like { load_vimeo_assets: '...', load_s3_assets: '...' }
+ */
+( function( $ ) {
+
+  function get_browser_action( data ) {
+    if ( typeof data !== 'string' || ! window.fv_flowplayer_browser || ! window.fv_flowplayer_browser.nonces ) {
+      return false;
+    }
+
+    var action = new URLSearchParams( data ).get( 'action' );
+    if ( action && Object.prototype.hasOwnProperty.call( window.fv_flowplayer_browser.nonces, action ) ) {
+      return action;
+    }
+
+    return false;
+  }
+
+  /*
+   * Only add the nonce to POST requests going to the WordPress AJAX handler
+   * or to controller/s3-ajax.php, so that it never goes to another host or into the URL.
+   */
+  function is_allowed_request( options ) {
+    // jQuery only uppercases the type after running the prefilters, jQuery.post() gives 'post'
+    if ( String( options.type ).toUpperCase() !== 'POST' ) {
+      return false;
+    }
+
+    var request_url;
+    try {
+      request_url = new URL( options.url, document.baseURI );
+    } catch ( e ) {
+      return false;
+    }
+
+    var allowed_urls = [ window.ajaxurl, window.fv_flowplayer_browser.ajaxurl ];
+
+    for ( var i = 0; i < allowed_urls.length; i++ ) {
+      if ( typeof allowed_urls[ i ] !== 'string' || ! allowed_urls[ i ] ) {
+        continue;
+      }
+
+      var allowed_url = new URL( allowed_urls[ i ], document.baseURI );
+      if ( request_url.origin === allowed_url.origin && request_url.pathname === allowed_url.pathname ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /*
+   * Older FV Player Pro versions do not send the nonce for their media browsers
+   * (Vimeo, DigitalOcean Spaces, PeerTube Private), add it.
+   * jQuery has already serialized the data into a string at this point.
+   */
+  $.ajaxPrefilter( function( options ) {
+    var action = get_browser_action( options.data );
+    if ( ! action || ! is_allowed_request( options ) ) {
+      return;
+    }
+
+    var params = new URLSearchParams( options.data );
+    if ( ! params.get( 'nonce' ) ) {
+      console.log( 'FV Player: Media browser: Adding nonce for action: ' + action );
+
+      params.set( 'nonce', window.fv_flowplayer_browser.nonces[ action ] );
+      options.data = params.toString();
+    }
+  } );
+
+} )( jQuery );

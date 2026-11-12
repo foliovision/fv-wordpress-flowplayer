@@ -210,6 +210,10 @@ The problem is probably in AdBlock. If it's active, the overlay ads will be bloc
 
 == Changelog ==
 
+= 8.2.1 - 2026-11-12 =
+
+* Security: Media Library: Fix for out-dated FV Player Pro and Coconut
+
 = 8.2.0 - 2026-11-09 =
 
 * Create video sharing splash screen for Open Graph and X Cards

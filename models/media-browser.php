@@ -6,6 +6,12 @@ abstract class FV_Player_Media_Browser {
   public $ajax_action_name_add_new_folder = false;
   private $s3_assets_loaded = false;
 
+  /**
+   * Nonces of all the media browsers, keyed by the AJAX action, like 'load_vimeo_assets'.
+   * Shared by all the media browser objects, so that they can be printed only once.
+   */
+  private static $nonces = array();
+
   public function __construct($args) {
 
     if ( ! defined( 'ABSPATH' ) ) {
@@ -59,10 +65,27 @@ abstract class FV_Player_Media_Browser {
     wp_enqueue_media();
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname( __FILE__ ) . '/../js/media-library-browser-base.js' ), true );
     wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
-    wp_localize_script('flowplayer-browser-base', 'fv_flowplayer_browser', array(
+
+    /**
+     * Older FV Player Pro versions (Vimeo, DigitalOcean Spaces, PeerTube Private browsers)
+     * do not send the nonce, so media-library-browser-base.js adds it to their requests.
+     */
+    if ( is_string( $this->ajax_action_name ) && current_user_can( 'edit_others_posts' ) ) {
+      $action = preg_replace( '~^wp_ajax_~', '', $this->ajax_action_name );
+      if ( is_string( $action ) ) {
+        self::$nonces[ $action ] = wp_create_nonce( $this->ajax_action_name );
+      }
+    }
+
+    // init_base() runs once for each media browser, replace the localized data instead of appending it again
+    wp_scripts()->add_data( 'flowplayer-browser-base', 'data', '' );
+
+    wp_localize_script( 'flowplayer-browser-base', 'fv_flowplayer_browser', array(
         'ajaxurl' => flowplayer::get_plugin_url().'/controller/s3-ajax.php',
+        'nonces'  => self::$nonces,
       )
     );
+
     $this->init();
   }
 

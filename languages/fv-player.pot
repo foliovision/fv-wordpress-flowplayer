@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2026-10-28 14:13+0000\n"
+"POT-Creation-Date: 2026-11-12 10:13+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -47,135 +47,135 @@ msgstr ""
 msgid "License key acquired successfully. <a href=\"\">Reload</a>"
 msgstr ""
 
-#: controller/backend.php:649, controller/backend.php:657
+#: controller/backend.php:653, controller/backend.php:661
 msgid "To update FV Player please either renew your support and updates or disable FV Player Pro."
 msgstr ""
 
-#: controller/backend.php:904
+#: controller/backend.php:908
 msgid "FV Player: Please upgrade to FV Player Pro version %s or above!"
 msgstr ""
 
-#: controller/backend.php:920
+#: controller/backend.php:924
 msgid "FV Player: Please upgrade to FV Player Pay Per View version %s or above!"
 msgstr ""
 
-#: controller/backend.php:936
+#: controller/backend.php:940
 msgid "FV Player: Please upgrade to FV Player Pay Per View for WooCommerce version %s or above!"
 msgstr ""
 
-#: controller/editor.php:103
+#: controller/editor.php:109
 msgid "Embed feature not supported in editor preview"
 msgstr ""
 
-#: controller/editor.php:104
+#: controller/editor.php:110
 msgid "Link feature not supported in editor preview"
 msgstr ""
 
-#: controller/editor.php:105
+#: controller/editor.php:111
 msgid "Cannot obtain video screenshot, please make sure the video is served with <a href=\"https://foliovision.com/player/video-hosting/hls#hls-js\">CORS headers</a>."
 msgstr ""
 
-#: controller/editor.php:128
+#: controller/editor.php:134
 msgid "Add FV Player"
 msgstr ""
 
-#: controller/editor.php:793, models/list-table.php:72, view/admin.php:2150, view/wizard.php:569
+#: controller/editor.php:799, models/list-table.php:72, view/admin.php:2150, view/wizard.php:569
 msgid "Subtitles"
 msgstr ""
 
-#: controller/editor.php:794
+#: controller/editor.php:800
 msgid "Subtitle"
 msgstr ""
 
-#: controller/editor.php:846
+#: controller/editor.php:852
 msgid "Video Link"
 msgstr ""
 
-#: controller/editor.php:870
+#: controller/editor.php:876
 msgid "Live Stream"
 msgstr ""
 
-#: controller/editor.php:874
+#: controller/editor.php:880
 msgid "DVR Stream"
 msgstr ""
 
-#: controller/editor.php:882
+#: controller/editor.php:888
 msgid "Audio Stream"
 msgstr ""
 
-#: controller/editor.php:887
+#: controller/editor.php:893
 msgid "Advanced Settings"
 msgstr ""
 
-#: controller/editor.php:892, view/admin.php:917
+#: controller/editor.php:898, view/admin.php:917
 msgid "Mobile Video"
 msgstr ""
 
-#: controller/editor.php:899
+#: controller/editor.php:905
 msgid "Alternative Format 1"
 msgstr ""
 
-#: controller/editor.php:906
+#: controller/editor.php:912
 msgid "Alternative Format 2"
 msgstr ""
 
-#: controller/editor.php:913
+#: controller/editor.php:919
 msgid "Remove Top and Bottom Black Bars"
 msgstr ""
 
-#: controller/editor.php:915
+#: controller/editor.php:921
 msgid "Fixes video fit in mobile fullscreen when in landscape."
 msgstr ""
 
-#: controller/editor.php:920
+#: controller/editor.php:926
 msgid "RTMP"
 msgstr ""
 
-#: controller/editor.php:926
+#: controller/editor.php:932
 msgid "Path"
 msgstr ""
 
-#: controller/editor.php:932
+#: controller/editor.php:938
 msgid "Server"
 msgstr ""
 
-#: controller/editor.php:942
+#: controller/editor.php:948
 msgid "Splash Screen"
 msgstr ""
 
-#: controller/editor.php:947
+#: controller/editor.php:953
 msgid "Will appear in place of the video before it plays."
 msgstr ""
 
-#: controller/editor.php:954
+#: controller/editor.php:960
 msgid "Title"
 msgstr ""
 
-#: controller/editor.php:958
+#: controller/editor.php:964
 msgid "Will appear below the player and on playlist thumbnails. Also used for tracking."
 msgstr ""
 
-#: controller/editor.php:961
+#: controller/editor.php:967
 msgid "Hide Title"
 msgstr ""
 
-#: controller/editor.php:966
+#: controller/editor.php:972
 msgid "Use if you only want the title for tracking."
 msgstr ""
 
-#: controller/editor.php:971, view/admin.php:923
+#: controller/editor.php:977, view/admin.php:923
 msgid "Splash Text"
 msgstr ""
 
-#: controller/editor.php:975
+#: controller/editor.php:981
 msgid "Will appear over the video before it plays."
 msgstr ""
 
-#: controller/editor.php:978, view/admin.php:925
+#: controller/editor.php:984, view/admin.php:925
 msgid "Synopsis"
 msgstr ""
 
-#: controller/editor.php:982
+#: controller/editor.php:988
 msgid "Shows for the Vertical Season playlist style."
 msgstr ""
 
@@ -425,178 +425,178 @@ msgid "Click to unmute"
 msgstr ""
 
 #: controller/settings.php:218
-msgid "You just upgraded to version %s with the following improvements:"
+msgid "You just upgraded to version %s. Here are the improvements since your last upgrade:"
 msgstr ""
 
-#: controller/settings.php:227, controller/settings.php:270, controller/settings.php:295
+#: controller/settings.php:221, controller/settings.php:264, controller/settings.php:289
 msgid "Thanks for letting me know!"
 msgstr ""
 
-#: controller/settings.php:240
+#: controller/settings.php:234
 msgid "FV Player Video Position Conversion"
 msgstr ""
 
-#: controller/settings.php:243
+#: controller/settings.php:237
 msgid "Migrate"
 msgstr ""
 
-#: controller/settings.php:255
+#: controller/settings.php:249
 msgid "FV Player Video Checker"
 msgstr ""
 
-#: controller/settings.php:256
+#: controller/settings.php:250
 msgid "<p>FV Player includes a <a href='https://foliovision.com/player/basic-setup/how-to-use-video-checker' target='_blank'>free video checker</a> which will check your videos for any encoding errors and helps ensure smooth playback of all your videos. To work its magic, our video checker must contact our server.</p><p>Would you like to enable the video encoding checker?</p>"
 msgstr ""
 
-#: controller/settings.php:258
+#: controller/settings.php:252
 msgid "Allow"
 msgstr ""
 
-#: controller/settings.php:259
+#: controller/settings.php:253
 msgid "Disable the video checker"
 msgstr ""
 
-#: controller/settings.php:267
+#: controller/settings.php:261
 msgid "FV Player Video Sitemap coverage"
 msgstr ""
 
-#: controller/settings.php:268
+#: controller/settings.php:262
 msgid "<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>"
 msgstr ""
 
-#: controller/settings.php:271
+#: controller/settings.php:265
 msgid "Go to setting"
 msgstr ""
 
-#: controller/settings.php:280
+#: controller/settings.php:274
 msgid "FV Player 8"
 msgstr ""
 
-#: controller/settings.php:408
+#: controller/settings.php:402
 msgid "Africa (Cape Town)"
 msgstr ""
 
-#: controller/settings.php:409
+#: controller/settings.php:403
 msgid "Asia Pacific (Hong Kong)"
 msgstr ""
 
-#: controller/settings.php:410
+#: controller/settings.php:404
 msgid "Asia Pacific (Hyderabad)"
 msgstr ""
 
-#: controller/settings.php:411
+#: controller/settings.php:405
 msgid "Asia Pacific (Jakarta)"
 msgstr ""
 
-#: controller/settings.php:412
+#: controller/settings.php:406
 msgid "Asia Pacific (Malaysia)"
 msgstr ""
 
-#: controller/settings.php:413
+#: controller/settings.php:407
 msgid "Asia Pacific (Melbourne)"
 msgstr ""
 
-#: controller/settings.php:414
+#: controller/settings.php:408
 msgid "Asia Pacific (Mumbai)"
 msgstr ""
 
-#: controller/settings.php:415
+#: controller/settings.php:409
 msgid "Asia Pacific (Osaka)"
 msgstr ""
 
-#: controller/settings.php:416
+#: controller/settings.php:410
 msgid "Asia Pacific (Seoul)"
 msgstr ""
 
-#: controller/settings.php:417
+#: controller/settings.php:411
 msgid "Asia Pacific (Singapore)"
 msgstr ""
 
-#: controller/settings.php:418
+#: controller/settings.php:412
 msgid "Asia Pacific (Sydney)"
 msgstr ""
 
-#: controller/settings.php:419
+#: controller/settings.php:413
 msgid "Asia Pacific (Tokyo)"
 msgstr ""
 
-#: controller/settings.php:421
+#: controller/settings.php:415
 msgid "Canada (Central)"
 msgstr ""
 
-#: controller/settings.php:422
+#: controller/settings.php:416
 msgid "Canada West (Calgary)"
 msgstr ""
 
-#: controller/settings.php:424
+#: controller/settings.php:418
 msgid "China (Beijing)"
 msgstr ""
 
-#: controller/settings.php:425
+#: controller/settings.php:419
 msgid "China (Ningxia)"
 msgstr ""
 
-#: controller/settings.php:427
+#: controller/settings.php:421
 msgid "Europe (Frankfurt)"
 msgstr ""
 
-#: controller/settings.php:428
+#: controller/settings.php:422
 msgid "Europe (Ireland)"
 msgstr ""
 
-#: controller/settings.php:429
+#: controller/settings.php:423
 msgid "Europe (London)"
 msgstr ""
 
-#: controller/settings.php:430
+#: controller/settings.php:424
 msgid "Europe (Milan)"
 msgstr ""
 
-#: controller/settings.php:431
+#: controller/settings.php:425
 msgid "Europe (Paris)"
 msgstr ""
 
-#: controller/settings.php:432
+#: controller/settings.php:426
 msgid "Europe (Spain)"
 msgstr ""
 
-#: controller/settings.php:433
+#: controller/settings.php:427
 msgid "Europe (Stockholm)"
 msgstr ""
 
-#: controller/settings.php:434
+#: controller/settings.php:428
 msgid "Europe (Zurich)"
 msgstr ""
 
-#: controller/settings.php:436
+#: controller/settings.php:430
 msgid "Israel (Tel Aviv)"
 msgstr ""
 
-#: controller/settings.php:438
+#: controller/settings.php:432
 msgid "Middle East (Bahrain)"
 msgstr ""
 
-#: controller/settings.php:439
+#: controller/settings.php:433
 msgid "Middle East (UAE)"
 msgstr ""
 
-#: controller/settings.php:441
+#: controller/settings.php:435
 msgid "South America (S&atilde;o Paulo)"
 msgstr ""
 
-#: controller/settings.php:443
+#: controller/settings.php:437
 msgid "US West (N. California)"
 msgstr ""
 
-#: controller/settings.php:444
+#: controller/settings.php:438
 msgid "US East (N. Virginia)"
 msgstr ""
 
-#: controller/settings.php:445
+#: controller/settings.php:439
 msgid "US East (Ohio)"
 msgstr ""
 
-#: controller/settings.php:446
+#: controller/settings.php:440
 msgid "US West (Oregon)"
 msgstr ""
 
@@ -616,19 +616,19 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: models/custom-videos.php:443, models/custom-videos.php:909, models/list-table.php:71
+#: models/custom-videos.php:448, models/custom-videos.php:914, models/list-table.php:71
 msgid "Videos"
 msgstr ""
 
-#: models/custom-videos.php:924
+#: models/custom-videos.php:929
 msgid "You can put your Vimeo or YouTube links here."
 msgstr ""
 
-#: models/custom-videos.php:924
+#: models/custom-videos.php:929
 msgid "These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up."
 msgstr ""
 
-#: models/custom-videos.php:943
+#: models/custom-videos.php:948
 msgid "Profile Videos"
 msgstr ""
 
@@ -712,7 +712,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: models/email-subscription.php:208, models/email-subscription.php:727
+#: models/email-subscription.php:208, models/email-subscription.php:742
 msgid "Download CSV"
 msgstr ""
 
@@ -740,11 +740,11 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
-#: models/email-subscription.php:444, models/email-subscription.php:543
+#: models/email-subscription.php:444, models/email-subscription.php:560
 msgid "Nonce verification error."
 msgstr ""
 
-#: models/email-subscription.php:469, models/email-subscription.php:580
+#: models/email-subscription.php:469, models/email-subscription.php:597
 msgid "Thank You for subscribing."
 msgstr ""
 
@@ -752,11 +752,11 @@ msgstr ""
 msgid "Email Address not valid"
 msgstr ""
 
-#: models/email-subscription.php:478, models/email-subscription.php:616
+#: models/email-subscription.php:478, models/email-subscription.php:633
 msgid "Email Address already subscribed."
 msgstr ""
 
-#: models/email-subscription.php:593
+#: models/email-subscription.php:610
 msgid "Malformed Email Address."
 msgstr ""
 
@@ -772,7 +772,7 @@ msgstr ""
 msgid "Check out the amazing video here"
 msgstr ""
 
-#: models/fv-player.php:3321
+#: models/fv-player.php:3330
 msgid "The preview is too narrow, vertical playlist will shift below the player as it would on mobile."
 msgstr ""
 
@@ -1349,7 +1349,11 @@ msgid "Use Open Graph and X Cards"
 msgstr ""
 
 #: view/admin.php:751
-msgid "Accepts MP4 videos with no URL signature. Takes priority over FV Simpler SEO, Rank Math and SEOPress tags."
+msgid "Accepts MP4 videos with no URL signature. Takes priority over FV Simpler SEO, Rank Math and SEOPress tags. Will store an image with play icon and store it in Media Library."
+msgstr ""
+
+#: view/admin.php:751
+msgid "The new images are created when a video or a post with a video is saved. These images are added to the Media Library and stored in the <code>fv-player-video-sharing</code> folder in WordPress uploads."
 msgstr ""
 
 #: view/admin.php:752
