@@ -60,6 +60,12 @@ Thumbs.db
 *.key
 *.pem
 
+# Python venv
+pyvenv.cfg
+/bin/
+/lib/
+*.py
+
 # -------------------------
 # BEGIN Whitelisted Files
 # -------------------------
