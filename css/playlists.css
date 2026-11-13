@@ -277,6 +277,10 @@
 	margin: 0;
 	width: 100%;
 }
+.fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .freedomplayer .fp-controls {
+	overflow-x: clip;
+	overflow-y: visible;
+}
 .fp-playlist-vertical-wrapper.is-vertical:not(.is-fv-narrow) .fp-playlist-vertical {
 	width: auto;
 	overflow-x: hidden;
