@@ -7,7 +7,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: foliovision\n"
-"POT-Creation-Date: 2026-11-12 10:13+0000\n"
+"POT-Creation-Date: 2026-11-13 12:51+0000\n"
 "Report-Msgid-Bugs-To: https://foliovision.com/support\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -424,179 +424,179 @@ msgstr ""
 msgid "Click to unmute"
 msgstr ""
 
-#: controller/settings.php:218
+#: controller/settings.php:222
 msgid "You just upgraded to version %s. Here are the improvements since your last upgrade:"
 msgstr ""
 
-#: controller/settings.php:221, controller/settings.php:264, controller/settings.php:289
+#: controller/settings.php:225, controller/settings.php:269, controller/settings.php:294
 msgid "Thanks for letting me know!"
 msgstr ""
 
-#: controller/settings.php:234
+#: controller/settings.php:239
 msgid "FV Player Video Position Conversion"
 msgstr ""
 
-#: controller/settings.php:237
+#: controller/settings.php:242
 msgid "Migrate"
 msgstr ""
 
-#: controller/settings.php:249
+#: controller/settings.php:254
 msgid "FV Player Video Checker"
 msgstr ""
 
-#: controller/settings.php:250
+#: controller/settings.php:255
 msgid "<p>FV Player includes a <a href='https://foliovision.com/player/basic-setup/how-to-use-video-checker' target='_blank'>free video checker</a> which will check your videos for any encoding errors and helps ensure smooth playback of all your videos. To work its magic, our video checker must contact our server.</p><p>Would you like to enable the video encoding checker?</p>"
 msgstr ""
 
-#: controller/settings.php:252
+#: controller/settings.php:257
 msgid "Allow"
 msgstr ""
 
-#: controller/settings.php:253
+#: controller/settings.php:258
 msgid "Disable the video checker"
 msgstr ""
 
-#: controller/settings.php:261
+#: controller/settings.php:266
 msgid "FV Player Video Sitemap coverage"
 msgstr ""
 
-#: controller/settings.php:262
+#: controller/settings.php:267
 msgid "<p>The XML Video Sitemap now includes a lot more videos as it uses the individual player iframe embed links. Until now it was only possible to put in videos using MP4 format without any kind of download protection.</p><p>Please <a href='https://foliovision.com/support/fv-wordpress-flowplayer/bug-reports#new-post' target='_blank'>let us know</a> in case you notice any issues. Your members only videos stay protected and won't open, but let us know if they appear in sitemap.</p>"
 msgstr ""
 
-#: controller/settings.php:265
+#: controller/settings.php:270
 msgid "Go to setting"
 msgstr ""
 
-#: controller/settings.php:274
+#: controller/settings.php:279
 msgid "FV Player 8"
 msgstr ""
 
-#: controller/settings.php:402
+#: controller/settings.php:407
 msgid "Africa (Cape Town)"
 msgstr ""
 
-#: controller/settings.php:403
+#: controller/settings.php:408
 msgid "Asia Pacific (Hong Kong)"
 msgstr ""
 
-#: controller/settings.php:404
+#: controller/settings.php:409
 msgid "Asia Pacific (Hyderabad)"
 msgstr ""
 
-#: controller/settings.php:405
+#: controller/settings.php:410
 msgid "Asia Pacific (Jakarta)"
 msgstr ""
 
-#: controller/settings.php:406
+#: controller/settings.php:411
 msgid "Asia Pacific (Malaysia)"
 msgstr ""
 
-#: controller/settings.php:407
+#: controller/settings.php:412
 msgid "Asia Pacific (Melbourne)"
 msgstr ""
 
-#: controller/settings.php:408
+#: controller/settings.php:413
 msgid "Asia Pacific (Mumbai)"
 msgstr ""
 
-#: controller/settings.php:409
+#: controller/settings.php:414
 msgid "Asia Pacific (Osaka)"
 msgstr ""
 
-#: controller/settings.php:410
+#: controller/settings.php:415
 msgid "Asia Pacific (Seoul)"
 msgstr ""
 
-#: controller/settings.php:411
+#: controller/settings.php:416
 msgid "Asia Pacific (Singapore)"
 msgstr ""
 
-#: controller/settings.php:412
+#: controller/settings.php:417
 msgid "Asia Pacific (Sydney)"
 msgstr ""
 
-#: controller/settings.php:413
+#: controller/settings.php:418
 msgid "Asia Pacific (Tokyo)"
 msgstr ""
 
-#: controller/settings.php:415
+#: controller/settings.php:420
 msgid "Canada (Central)"
 msgstr ""
 
-#: controller/settings.php:416
+#: controller/settings.php:421
 msgid "Canada West (Calgary)"
 msgstr ""
 
-#: controller/settings.php:418
+#: controller/settings.php:423
 msgid "China (Beijing)"
 msgstr ""
 
-#: controller/settings.php:419
+#: controller/settings.php:424
 msgid "China (Ningxia)"
 msgstr ""
 
-#: controller/settings.php:421
+#: controller/settings.php:426
 msgid "Europe (Frankfurt)"
 msgstr ""
 
-#: controller/settings.php:422
+#: controller/settings.php:427
 msgid "Europe (Ireland)"
 msgstr ""
 
-#: controller/settings.php:423
+#: controller/settings.php:428
 msgid "Europe (London)"
 msgstr ""
 
-#: controller/settings.php:424
+#: controller/settings.php:429
 msgid "Europe (Milan)"
 msgstr ""
 
-#: controller/settings.php:425
+#: controller/settings.php:430
 msgid "Europe (Paris)"
 msgstr ""
 
-#: controller/settings.php:426
+#: controller/settings.php:431
 msgid "Europe (Spain)"
 msgstr ""
 
-#: controller/settings.php:427
+#: controller/settings.php:432
 msgid "Europe (Stockholm)"
 msgstr ""
 
-#: controller/settings.php:428
+#: controller/settings.php:433
 msgid "Europe (Zurich)"
 msgstr ""
 
-#: controller/settings.php:430
+#: controller/settings.php:435
 msgid "Israel (Tel Aviv)"
 msgstr ""
 
-#: controller/settings.php:432
+#: controller/settings.php:437
 msgid "Middle East (Bahrain)"
 msgstr ""
 
-#: controller/settings.php:433
+#: controller/settings.php:438
 msgid "Middle East (UAE)"
 msgstr ""
 
-#: controller/settings.php:435
+#: controller/settings.php:440
 msgid "South America (S&atilde;o Paulo)"
 msgstr ""
 
-#: controller/settings.php:437
+#: controller/settings.php:442
 msgid "US West (N. California)"
 msgstr ""
 
-#: controller/settings.php:438
+#: controller/settings.php:443
 msgid "US East (N. Virginia)"
 msgstr ""
 
-#: controller/settings.php:439
+#: controller/settings.php:444
 msgid "US East (Ohio)"
 msgstr ""
 
-#: controller/settings.php:440
+#: controller/settings.php:445
 msgid "US West (Oregon)"
 msgstr ""
 
