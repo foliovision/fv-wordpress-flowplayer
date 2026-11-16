@@ -231,7 +231,8 @@ class FV_Player_Db_Video {
     $title = apply_filters( 'fv_flowplayer_caption_src', $title , $this->getSrc(), $this );
     $title = apply_filters( 'fv_flowplayer_title_src', $title , $this->getSrc(), $this );
 
-    return urldecode($title);
+    // The URL-decoded file name must be plain text, URL-encoded HTML tags would otherwise come back to life
+    return wp_strip_all_tags( urldecode( $title ) );
   }
 
   /**

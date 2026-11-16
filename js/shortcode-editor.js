@@ -1841,7 +1841,11 @@ jQuery(function() {
         attachment_details.find('.filename').text( '#' + details.id + '. '+ details.player_name );
         attachment_details.find('.uploaded').text( details.date_created );
 
-        attachment_details.find('.videos-list').html( '<ul><li>' + details.video_titles.join('</li><li>' ) + '</li></ul>' );
+        let videos_list = $('<ul></ul>');
+        $.each( details.video_titles, function( k, video_title ) {
+          videos_list.append( $('<li></li>').text( video_title ) );
+        });
+        attachment_details.find('.videos-list').empty().append( videos_list );
 
         let ul = $('<ul></ul>');
         $.each( details.embeds, function( k, v ) {
@@ -2050,7 +2054,7 @@ jQuery(function() {
 
           item.find('.thumbnail').append( image );
 
-          item.find('.thumbnail .filename > div').html( player_name );
+          item.find('.thumbnail .filename > div').text( player_name );
           if( image.length == 0 ) {
             item.find('.thumbnail .filename').removeClass('hidden');
           }

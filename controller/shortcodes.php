@@ -627,14 +627,14 @@ function fvplayer_watched( $args = array() ) {
     global $FV_Player_Db;
     $objVideo = new FV_Player_Db_Video( $video_id, array(), $FV_Player_Db );
     if( $objVideo->getTitle() ) {
-      $line = $objVideo->getTitle();
+      $line = esc_html( $objVideo->getTitle() );
     } else {
-      $line = $objVideo->getTitleFromSrc();
+      $line = esc_html( $objVideo->getTitleFromSrc() );
     }
 
     $post = get_post( $data['post_id'] );
     if( $post ) {
-      $line .= " in <a href='".get_permalink($post)."'>".$post->post_title."</a>";
+      $line .= " in <a href='" . esc_url( get_permalink( $post ) ) . "'>" . esc_html( $post->post_title ) . "</a>";
     }
 
     if( !empty($data['time']) ) {

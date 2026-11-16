@@ -509,10 +509,10 @@ class FV_Player_Db {
             if (isset($videos[ $video_id ]) && $videos[ $video_id ]->getSplash()) {
               // use splash with title / filename in a span
               $splash = apply_filters( 'fv_flowplayer_playlist_splash', $videos[ $video_id ]->getSplash() );
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($title).'" title="'.esc_attr($title).'" loading="lazy" /><span>' . $title . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview"><img src="'.esc_attr($splash).'" width="100" alt="'.esc_attr($title).'" title="'.esc_attr($title).'" loading="lazy" /><span>' . esc_html( $title ) . '</span></div>';
             } else if ( isset($videos[ $video_id ]) && $title ) {
               // use title
-              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($title) . '"><span>' . $title . '</span></div>';
+              $result_row->thumbs[] = '<div class="fv_player_splash_list_preview fv_player_list_preview_no_splash" title="' . esc_attr($title) . '"><span>' . esc_html( $title ) . '</span></div>';
             }
 
             if( $stats_enabled ) {
