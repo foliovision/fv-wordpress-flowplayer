@@ -49,20 +49,21 @@ flowplayer(function(api, root) {
       freedomplayer_ios_playlist_scrollbar( el.find( '.fp-playlist-vertical' ) );
     }
 
-    // check if there are too many items in .fp-controls and they don't fit
+    // Hide buttons until they fit inside .fp-controls
+    // Fullscreen is not in the list, so it stays the rightmost button.
     var controls = root.find('.fp-controls'),
-      controls_width = controls.parent().width(),
-      // here are the items that we can hide
-      controls_to_sacrifice = controls.find('.fp-duration, .fp-playbtn'),
-      controls_items_width = 0;
+      bar = controls[0],
+      sacrifice = [ '.fv-fp-prevbtn', '.fv-fp-nextbtn', '.fp-duration', '.fp-playbtn', '.fv-fp-list', '.fp-elapsed', '.fp-volume', '.fp-cc', ];
 
-    controls_to_sacrifice.removeClass( 'wont-fit' );
-    root.find('.fp-controls').children(':visible:not(.fp-timeline)').each( function() {
-      controls_items_width += jQuery(this).outerWidth(true);
-    } );
+    if ( bar && bar.clientWidth ) {
+      controls.find( sacrifice.join( ',' ) ).removeClass( 'wont-fit' );
 
-    if ( controls_items_width > controls_width ) {
-      controls_to_sacrifice.addClass( 'wont-fit' );
+      jQuery.each( sacrifice, function( index, selector ) {
+        if ( bar.scrollWidth <= bar.clientWidth + 1 ) {
+          return false;
+        }
+        controls.find( selector ).addClass( 'wont-fit' );
+      } );
     }
 
     root.css(
