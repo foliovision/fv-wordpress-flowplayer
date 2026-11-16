@@ -1495,7 +1495,12 @@
             // build the dropdown
             var dropdown = [];
             for (var i in json_data) {
-              dropdown.push('<option value="' + json_data[i].id + '">' + (json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id) + '</option>');
+              // Player name might come from video src or caption, so it must be treated as text
+              dropdown.push(
+                jQuery('<option>')
+                  .val( json_data[i].id )
+                  .text( json_data[i].name ? json_data[i].name : 'Player #' + json_data[i].id )
+              );
             }
 
             // prepend the "Choose a player" option
@@ -1503,7 +1508,7 @@
               dropdown.unshift('<option hidden disabled selected value>Choose a Player...</option>');
             }
 
-            overlay.find('select').html( dropdown.join('') );
+            overlay.find('select').empty().append( dropdown );
 
           }).fail(function () {
             overlay_show('message', 'An unexpected error has occurred. Please try again.');

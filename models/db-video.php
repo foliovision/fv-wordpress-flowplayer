@@ -55,7 +55,12 @@ class FV_Player_Db_Video {
   }
   
   /**
-   * @return string
+   * Video file name to use as caption when the video has no caption.
+   *
+   * The file name is URL-decoded so it reads well, which could rebuild HTML
+   * tags from an URL-encoded src, so tags are stripped.
+   *
+   * @return string Plain text, escape it when outputting HTML.
    */
   public function getCaptionFromSrc() {
     $src = $this->getSrc();
@@ -69,7 +74,7 @@ class FV_Player_Db_Video {
 
     $caption = apply_filters( 'fv_flowplayer_caption_src', $caption , $src, $this );
 
-    return urldecode($caption);
+    return wp_strip_all_tags( urldecode( $caption ) );
   }
   
   /**

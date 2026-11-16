@@ -638,16 +638,18 @@ function fvplayer_watched( $args = array() ) {
       $line = $objVideo->getCaptionFromSrc();
     }
 
+    $line = esc_html( $line );
+
     if( isset($_GET['fvplayer_watched_debug']) ) {
-      $line .= ' (player #'.$data['player_id'].', video #'.$video_id.')';
+      $line .= ' (player #' . absint( $data['player_id'] ).', video #'. absint( $video_id ) . ')';
     }
 
     $post = get_post( $data['post_id'] );
     if( $post ) {
-      $line .= " in <a href='".get_permalink($post)."'>".$post->post_title."</a>";
+      $line .= " in <a href='" . esc_url( get_permalink( $post ) ) . "'>" . esc_html( $post->post_title ) . "</a>";
     }
     if( isset($_GET['fvplayer_watched_debug']) ) {
-      $line .= ' (post #'.$data['post_id'].')';
+      $line .= ' (post #' . absint( $data['post_id'] ) . ')';
     }
 
     if( !empty($data['time']) ) {
