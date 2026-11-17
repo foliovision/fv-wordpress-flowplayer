@@ -622,7 +622,7 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
 
 
   /**
-   * Loads the default settings for the player.
+   * Loads the settings for the player.
    *
    * Note that the translation hooks cannot be used here, as they are not available yet.
    */
