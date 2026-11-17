@@ -1,12 +1,15 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 abstract class FV_Player_Conversion_Base {
 
   protected $matchers = array();
   protected $title = 'Conversion';
   protected $slug = 'conversion-slug';
   protected $screen;
-  protected $help;
 
   abstract function convert_one($post);
 
@@ -18,7 +21,6 @@ abstract class FV_Player_Conversion_Base {
 
   function __construct( $args ) {
     $this->title = $args['title'];
-    $this->help = $args['help'];
     $this->slug = $args['slug'];
     $this->matchers = $args['matchers'];
     $this->screen = 'fv_player_conversion_' . $this->slug;
@@ -226,7 +228,7 @@ abstract class FV_Player_Conversion_Base {
       </style>
       <div class="wrap">
         <h1><?php echo $this->title; ?></h1>
-        <?php echo wpautop($this->help); ?>
+        <?php echo wpautop( $this->get_text( 'help' ) ); ?>
         <p>
           <input type="hidden" name="action" value="rebuild" />
           
@@ -274,6 +276,17 @@ abstract class FV_Player_Conversion_Base {
     <?php
   }
   
+  /**
+   * Get translated texts for the conversion screen.
+   * Translations must not be loaded in the constructor as it runs before the init action.
+   *
+   * @param string $type Text type, like 'help'.
+   * @return string|false
+   */
+  public function get_text( $type ) {
+    return false;
+  }
+
   function is_live() {
     return !empty($_POST['make-changes']) && $_POST['make-changes'] == 'true';
   }

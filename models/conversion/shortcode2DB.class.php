@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
 class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base {
 
   var $supported_atts;
@@ -10,10 +14,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
 
   function __construct() {
 
-    if ( ! defined( 'ABSPATH' ) ) {
-      exit;
-    }
-
     parent::__construct( array(
       'title' => 'FV Player Shortcode2Database Conversion',
       'slug' => 'shortcode2db',
@@ -21,7 +21,6 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
         "'%[fvplayer src=%'",
         "'%[flowplayer src=%'",
       ),
-      'help' => __("This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.", 'fv-wordpress-flowplayer')
     ) );
 
     // atts for video that are supported
@@ -48,6 +47,14 @@ class FV_Player_Shortcode2Database_Conversion extends FV_Player_Conversion_Base 
     );
 
     $this->supported_atts = array_merge( $this->supported_video_atts, $this->supported_player_atts );
+  }
+
+  public function get_text( $type ) {
+    if ( 'help' === $type ) {
+      return __( "This converts the <code>[fvplayer src=...]</code> and <code>[flowplayer src=...]</code> shortcodes into database <code>[fvplayer id=...]</code> shortcodes.", 'fv-wordpress-flowplayer' );
+    }
+
+    return parent::get_text( $type );
   }
 
   /**
