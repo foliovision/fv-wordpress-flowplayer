@@ -621,6 +621,11 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
   }
 
 
+  /**
+   * Loads the default settings for the player.
+   *
+   * Note that the translation hooks cannot be used here, as they are not available yet.
+   */
   public function _get_conf() {
     $conf = get_option( 'fvwpflowplayer' );
     if( !is_array($conf) ) {
@@ -682,7 +687,6 @@ class flowplayer extends FV_Wordpress_Flowplayer_Plugin_Private {
     if( !isset( $conf['js-everywhere'] ) ) $conf['js-everywhere'] = 'false';
     if( !isset( $conf['volume'] ) ) $conf['volume'] = '0.7';
     if( !isset( $conf['playlist_advance'] ) ) $conf['playlist_advance'] = '';
-    if( empty( $conf['sharing_email_text'] ) ) $conf['sharing_email_text'] = __( 'Check out the amazing video here', 'fv-player' );
 
 
     if( !isset( $conf['liststyle'] ) ) $conf['liststyle'] = 'horizontal';

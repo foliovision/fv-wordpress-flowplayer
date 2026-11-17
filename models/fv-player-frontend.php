@@ -1449,6 +1449,10 @@ class flowplayer_frontend extends flowplayer
     global $post;
 
     $sSharingText = $this->_get_option('sharing_email_text' );
+    if ( empty( $sSharingText ) ) {
+      $sSharingText = __( 'Check out the amazing video here', 'fv-player' );
+    }
+
     $bVideoLink = empty($this->aCurArgs['linking']) ? $this->_get_option( 'ui_video_links' ) : $this->aCurArgs['linking'] === 'true';
 
     if( isset($this->aCurArgs['share']) && $this->aCurArgs['share'] ) {
