@@ -359,6 +359,11 @@ Thank you for being part of the HMTL 5 mobile video revolution!
 
 == Changelog ==
 
+= 7.5.58.7212 - 2026-11-18 =
+
+* Security: Avoid unauthenticated XSS via inline onclick handlers (CVE-2026-121985), if using "Parse Vimeo and YouTube links" setting
+* Security: Avoid Stored XSS via URL-encoded video source used as the fallback video caption in the FV Player list, [fvplayer_watched] shortcode and editor player dropdown (CVE-2026-126005)
+
 = 7.5.57.7212 - 2026-11-03 =
 
 * Security: Conversion: Avoid PHP Object Injection via C-Format Conversion Meta by Shop manager user role (CVE-2026-118079), reported by Ananda Dhakal (Patchstack)
