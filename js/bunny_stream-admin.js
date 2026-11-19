@@ -161,7 +161,8 @@ jQuery( function($) {
     });
     
     fv_player_uploader.on('open', function() {
-      $( document ).trigger( "mediaBrowserOpen" );
+      // Pass the frame, so that the media browser tabs are added into its router, see media-library-browser-base.js
+      $( document ).trigger( "mediaBrowserOpen", [ fv_player_uploader ] );
       jQuery('.media-router .media-menu-item').eq(0).click();
       //jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
     });

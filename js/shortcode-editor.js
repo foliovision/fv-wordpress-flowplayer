@@ -1180,7 +1180,8 @@ jQuery(function() {
         });
 
         fv_flowplayer_uploader.on('open', function() {
-          $( document ).trigger( "mediaBrowserOpen" );
+          // Pass the frame, so that the media browser tabs are added into its router, see media-library-browser-base.js
+          $( document ).trigger( "mediaBrowserOpen", [ fv_flowplayer_uploader ] );
           jQuery('.media-router .media-menu-item').eq(0).trigger('click');
           jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
 

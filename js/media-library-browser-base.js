@@ -71,7 +71,19 @@ jQuery(function() {
       },
 
       get_active_tab() {
-        return jQuery('.media-menu-item.active:visible');
+        return fv_flowplayer_media_browser_tabs.get_active_tab();
+      },
+
+      get_frame() {
+        return fv_flowplayer_media_browser_tabs.get_frame();
+      },
+
+      is_fv_tab_active() {
+        return fv_flowplayer_media_browser_tabs.is_fv_tab_active();
+      },
+
+      set_choose_button_disabled( disabled ) {
+        return fv_flowplayer_media_browser_tabs.set_choose_button_disabled( disabled );
       },
 
     }
@@ -410,149 +422,475 @@ function fv_flowplayer_browser_browse(data, options) {
 
 }
 
-// adds new tab on top of the Media Library popup
-function fv_flowplayer_media_browser_add_tab(tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback) {
-  var $tab = jQuery('#' + tabId),
-    input_name = jQuery('.fv_flowplayer_target').attr('name');
+/*
+ * Media Library tabs of the FV Player media browsers (Coconut, Cloudflare R2, Vimeo...)
+ *
+ * The tabs are added into the router of the WordPress Media Library frame (wp.media.view.Router)
+ * and each tab uses its own content mode of the frame. So WordPress takes care of switching
+ * the active tab and of removing the content of the previous tab.
+ *
+ * The loader function of the media browser runs when its content mode gets activated.
+ */
+var fv_flowplayer_media_browser_tabs = ( function( $ ) {
+  var
+    // tabId => { text, loader, click_callback, priority, $el }
+    tabs = {},
+    tabs_count = 0,
+    current_frame = false,
+    RouterItem = false,
+    suppress_last_tab_save = false,
+    restore_timer = null;
 
-  // Bail if it's a tab which provides video files only (Bunny Stream, Cloudflare Stream etc.) and it's not the video src field
-  if (
-    // input_name must be set, it's not set when clicking on the "Select Media" button in the block and we don't want to remove the tab in that case
-    input_name && input_name.length &&
-    [
+  /**
+   * Media browsers which only provide video files (Bunny Stream, Coconut, Vimeo...)
+   * only show for the video source fields.
+   */
+  function is_tab_allowed( tabId ) {
+    var input_name = $( '.fv_flowplayer_target' ).attr( 'name' );
+
+    // input_name is not set when clicking on the "Select Media" button in the block, show all the tabs in that case
+    if ( ! input_name || ! input_name.length ) {
+      return true;
+    }
+
+    var video_only_tabs = [
       'fv_player_bunny_stream_browser_media_tab',
       'fv_flowplayer_cloudflare_stream_browser_media_tab',
       'fv_player_coconut_browser_media_tab',
       'fv_flowplayer_peertube_private_browser_media_tab',
       'fv_flowplayer_vimeo_browser_media_tab',
       'fv_player_cloudflare_stream_browser_media_tab'
-    ].indexOf( tabId ) > -1
-     &&
-    [
+    ];
+
+    if ( video_only_tabs.indexOf( tabId ) == -1 ) {
+      return true;
+    }
+
+    return [
       'fv_wp_flowplayer_field_src',
       'fv_wp_flowplayer_field_src1',
       'fv_wp_flowplayer_field_src2',
       'fv-player-gutenberg-media',
       'fv_wp_flowplayer_field_ppv_preview'
-    ].indexOf( input_name ) == -1
-  ) {
+    ].indexOf( input_name ) > -1;
+  }
 
-    if ( $tab.length ) {
-      $tab.remove();
+  function is_tab_allowed_by_library_conf( tabId, itemView ) {
+    if ( ! window.fv_player_editor_conf || ! fv_player_editor_conf.library ) {
+      return true;
     }
 
+    var elId = ( itemView && itemView.$el && itemView.$el.attr( 'id' ) ) ? itemView.$el.attr( 'id' ) : tabId,
+      libraries = fv_player_editor_conf.library.split( /,/ );
+
+    for ( var i = 0; i < libraries.length; i++ ) {
+      if ( libraries[ i ] && elId.match( libraries[ i ] ) ) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function is_frame( frame ) {
+    return !! ( frame && frame.router && frame.content && frame.$el && typeof frame.on == 'function' );
+  }
+
+  /**
+   * @return {wp.media.view.MediaFrame|false} The Media Library frame which is open.
+   */
+  function get_frame() {
+    if ( is_frame( current_frame ) && current_frame.$el.is( ':visible' ) ) {
+      return current_frame;
+    }
+
+    // Fallback for the code which does not pass the frame with the mediaBrowserOpen event, wp.media() stores the last frame there
+    if ( window.wp && wp.media && is_frame( wp.media.frame ) && wp.media.frame.$el.is( ':visible' ) ) {
+      return wp.media.frame;
+    }
+
+    return false;
+  }
+
+  function get_router_view( frame ) {
+    var view = is_frame( frame ) && frame.router.get();
+
+    if ( view && wp.media.view.Router && view instanceof wp.media.view.Router ) {
+      return view;
+    }
+
+    return false;
+  }
+
+  function get_active_tab() {
+    var frame = get_frame(),
+      routerView = get_router_view( frame );
+
+    if ( routerView && frame.content ) {
+      var activeMode = frame.content.mode(),
+        itemView = activeMode ? routerView.get( activeMode ) : null;
+
+      if ( itemView && itemView.$el && itemView.$el.length ) {
+        return itemView.$el;
+      }
+    }
+
+    if ( frame ) {
+      return frame.$el.find( '.media-router .media-menu-item.active' );
+    }
+
+    return $( '.media-menu-item.active:visible' );
+  }
+
+  function is_fv_tab_active() {
+    var frame = get_frame();
+    if ( frame && frame.content ) {
+      var mode = frame.content.mode();
+      return !! ( mode && tabs[ mode ] );
+    }
+    return get_active_tab().hasClass( 'fv-player-media-tab' );
+  }
+
+  function set_choose_button_disabled( disabled ) {
+    // Keep WordPress's Backbone Toolbar.Select button model disabled on FV tabs
+    // (since native WP selection has 0 attachments) so WP doesn't prematurely
+    // close/reset the modal before our .media-button-select handler reads #__assets_browser.
+    if ( is_fv_tab_active() ) {
+      var frame = get_frame(),
+        toolbar = frame && frame.toolbar && frame.toolbar.get(),
+        selectBtn = toolbar && toolbar.get( 'select' );
+
+      if ( selectBtn && selectBtn.model ) {
+        selectBtn.model.set( 'disabled', true );
+      }
+    }
+
+    $( '.media-button-select' ).prop( 'disabled', !! disabled );
+  }
+
+  function clear_pending_refresh() {
+    if ( window.fv_player_media_browser ) {
+      var pending = fv_player_media_browser.get_current_pending_refresh();
+      if ( pending ) {
+        clearTimeout( pending );
+        fv_player_media_browser.set_current_pending_refresh( false );
+      }
+    }
+  }
+
+  function get_router_item_class() {
+    if ( ! RouterItem ) {
+      RouterItem = wp.media.view.RouterItem.extend( {
+        render: function() {
+          wp.media.view.RouterItem.prototype.render.apply( this, arguments );
+
+          // WordPress would use menu-item-{contentMode} as the ID, but FV Player and its extensions identify the tabs by the tab ID
+          this.$el.attr( 'id', this.options.contentMode ).addClass( 'fv-player-media-tab' );
+
+          return this;
+        },
+
+        click: function() {
+          // Clicking the active tab reloads it, WordPress would not do anything as the content mode does not change
+          if ( this.controller.content.mode() === this.options.contentMode ) {
+            activate_tab( this.controller, this.options.contentMode );
+          } else {
+            wp.media.view.RouterItem.prototype.click.apply( this, arguments );
+          }
+        }
+      } );
+    }
+
+    return RouterItem;
+  }
+
+  /**
+   * Adds the tab into the router or removes it if it's not allowed for the current field.
+   *
+   * @return {wp.media.view.RouterItem|false} The router item or false if the tab is not allowed.
+   */
+  function add_tab_to_router( frame, routerView, tabId ) {
+    var
+      tab = tabs[ tabId ],
+      item = routerView.get( tabId );
+
+    if ( ! is_tab_allowed( tabId ) ) {
+      if ( item ) {
+        routerView.unset( tabId );
+      }
+
+      if ( frame.content && frame.content.mode() === tabId ) {
+        suppress_last_tab_save = true;
+        try {
+          frame.content.mode( 'browse' );
+        } finally {
+          suppress_last_tab_save = false;
+        }
+      }
+
+      return false;
+    }
+
+    if ( ! item ) {
+      var Item = get_router_item_class(),
+        // Keep the classes added by the media browser, like upload_supported, if the router was re-created
+        classes = tab.$el ? ( tab.$el.attr( 'class' ) || '' ).replace( /\bactive\b/g, '' ) : '';
+
+      item = new Item( {
+        controller: frame,
+        contentMode: tabId,
+        text: tab.text,
+        // WordPress uses 20 for Upload files and 40 for Media Library
+        priority: tab.priority
+      } );
+
+      routerView.set( tabId, item );
+
+      item.$el.addClass( classes );
+    }
+
+    tab.$el = item.$el;
+
+    return item;
+  }
+
+  /**
+   * Runs when the tab content mode gets activated or when the active tab is clicked again.
+   */
+  function activate_tab( frame, tabId ) {
+    var tab = tabs[ tabId ],
+      routerView = get_router_view( frame );
+
+    if ( ! tab ) {
+      return;
+    }
+
+    if ( routerView && routerView.get( tabId ) ) {
+      routerView.select( tabId );
+    }
+
+    frame.$el.find( '.media-frame-content' ).attr( 'aria-labelledby', tabId );
+
+    // Clear WP's native attachment selection so a previously selected Media Library item
+    // cannot fire WP's native select handler when clicking Choose on an FV tab.
+    var state = frame.state && frame.state();
+    if ( state && state.get && state.get( 'selection' ) ) {
+      state.get( 'selection' ).reset();
+    }
+
+    set_choose_button_disabled( true );
+
+    fv_flowplayer_media_browser_disable_drag_drop( true );
+    fv_flowplayer_media_browser_show_upload( tabId );
+
+    if ( typeof( tab.click_callback ) == 'function' ) {
+      tab.click_callback();
+    }
+
+    if ( ! suppress_last_tab_save ) {
+      // store last clicked tab ID
+      try {
+        if ( typeof( window.localStorage ) == 'object' ) {
+          localStorage.setItem( 'fv_player_last_tab_selected', tabId );
+        }
+      } catch ( e ) {}
+    }
+
+    $( '#media-search-input' ).val( '' );
+
+    // hide the Drop files to upload modal initially
+    frame.$el.find( '.uploader-window' ).css( {
+      'display' : 'none',
+      'opacity' : 0,
+    } );
+
+    return tab.loader.call( tab.$el ? tab.$el[0] : null );
+  }
+
+  function hook_frame( frame ) {
+    if ( frame.fv_player_media_browser_tabs ) {
+      return;
+    }
+
+    frame.fv_player_media_browser_tabs = true;
+
+    // WordPress re-creates the router when the frame state changes, add the tabs back
+    frame.on( 'router:render:browse', function( routerView ) {
+      Object.keys( tabs ).forEach( function( tabId ) {
+        add_tab_to_router( frame, routerView, tabId );
+      } );
+
+      if ( typeof( routerView.update ) == 'function' ) {
+        routerView.update();
+      }
+    } );
+
+    frame.on( 'close', function() {
+      clear_pending_refresh();
+    } );
+
+    frame.on( 'all', function( event_name, arg ) {
+      var match = typeof( event_name ) == 'string' && event_name.match( /^content:(create|activate|deactivate|render)(?::(.+))?$/ );
+      if ( ! match ) {
+        return;
+      }
+
+      var
+        action = match[1],
+        mode = match[2];
+
+      // Generic content:render event, runs after WordPress set the tab panel ARIA attributes
+      if ( ! mode ) {
+        var tabPanelEl = frame.$el.find( '.media-frame-content' ),
+          currentMode = frame.content.mode();
+
+        if ( 'render' == action && currentMode && tabPanelEl.attr( 'aria-labelledby' ) ) {
+          tabPanelEl.attr( 'aria-labelledby', tabs[ currentMode ] ? currentMode : 'menu-item-' + currentMode );
+        }
+        return;
+      }
+
+      if ( tabs[ mode ] ) {
+        if ( 'create' == action ) {
+          // Placeholder view, so that WordPress removes the view of the previous tab
+          // The media browser loader replaces it with its own HTML
+          arg.view = new wp.media.View( { className: 'fv-player-media-browser-tab-content' } );
+
+        } else if ( 'activate' == action ) {
+          activate_tab( frame, mode );
+
+        } else if ( 'deactivate' == action ) {
+          clear_pending_refresh();
+        }
+
+      // One of the WordPress tabs, like Upload files or Media Library
+      } else if ( 'activate' == action ) {
+        fv_flowplayer_media_browser_disable_drag_drop( false );
+        fv_flowplayer_media_browser_show_upload( '' );
+      }
+    } );
+  }
+
+  function restore_last_tab() {
+    var frame = get_frame(),
+      last_tab = false;
+
+    try {
+      if ( typeof( window.localStorage ) == 'object' ) {
+        last_tab = localStorage.getItem( 'fv_player_last_tab_selected' );
+      }
+    } catch ( e ) {}
+
+    if ( ! frame || ! last_tab || ! tabs[ last_tab ] ) {
+      return;
+    }
+
+    var routerView = get_router_view( frame ),
+      item = routerView && routerView.get( last_tab );
+
+    if ( item && is_tab_allowed_by_library_conf( last_tab, item ) ) {
+      if ( frame.content.mode() !== last_tab ) {
+        frame.content.mode( last_tab );
+      } else {
+        activate_tab( frame, last_tab );
+      }
+    }
+  }
+
+  function schedule_restore_last_tab( frame ) {
+    hook_frame( frame );
+
+    // Prevent synchronous open-time clicks (e.g. shortcode-editor.js clicking tab 0 or library tabs)
+    // from overwriting localStorage.fv_player_last_tab_selected before restore_last_tab runs.
+    suppress_last_tab_save = true;
+
+    if ( restore_timer ) {
+      clearTimeout( restore_timer );
+    }
+
+    restore_timer = setTimeout( function() {
+      restore_timer = null;
+      suppress_last_tab_save = false;
+      restore_last_tab();
+    }, 0 );
+  }
+
+  // This is bound before the media browsers bind their mediaBrowserOpen listeners in which they add their tabs
+  $( document ).on( 'mediaBrowserOpen', function( e, frame ) {
+    current_frame = is_frame( frame ) ? frame : false;
+
+    var open_frame = get_frame();
+    if ( open_frame ) {
+      schedule_restore_last_tab( open_frame );
+    }
+  } );
+
+  return {
+    /**
+     * @return {jQuery|false} The tab element, empty jQuery object if the tab is not allowed for the current field
+     *                        or false if there is no open Media Library frame with router.
+     */
+    add_tab: function( tabId, tabText, loader, added_callback, click_callback ) {
+      var frame = get_frame(),
+        routerView = get_router_view( frame );
+
+      if ( ! routerView ) {
+        return false;
+      }
+
+      schedule_restore_last_tab( frame );
+
+      if ( ! tabs[ tabId ] ) {
+        tabs[ tabId ] = {
+          priority: 100 + 10 * tabs_count++
+        };
+      }
+
+      tabs[ tabId ].text = tabText;
+      tabs[ tabId ].loader = loader;
+      tabs[ tabId ].click_callback = click_callback;
+
+      // save assets loading function
+      fv_flowplayer_browser_assets_loaders[ tabId ] = loader;
+
+      var is_new = ! routerView.get( tabId ),
+        item = add_tab_to_router( frame, routerView, tabId );
+
+      if ( ! item ) {
+        return $();
+      }
+
+      if ( is_new && typeof( added_callback ) == 'function' ) {
+        added_callback( item.$el );
+      }
+
+      return item.$el;
+    },
+
+    get_frame: get_frame,
+    get_active_tab: get_active_tab,
+    is_fv_tab_active: is_fv_tab_active,
+    set_choose_button_disabled: set_choose_button_disabled,
+
+  };
+
+} )( jQuery );
+
+// adds new tab on top of the Media Library popup
+function fv_flowplayer_media_browser_add_tab( tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback ) {
+  var $tab = fv_flowplayer_media_browser_tabs.add_tab( tabId, tabText, tabOnClickCallback, tabAddedCallback, tabClickEventCallback );
+
+  if ( $tab ) {
     return $tab;
   }
 
-  if (!$tab.length) {
-    var
-      $router = jQuery('.media-router:visible'),
-      $nativeTabs = $router.find('.media-menu-item:not(.artificial)'),
-      $item = jQuery($nativeTabs[$nativeTabs.length - 1]).clone(),
-      switchClicking = false;
+  /*
+   * No open Media Library frame with router found. The frame should be passed with the mediaBrowserOpen event
+   * like this: $( document ).trigger( "mediaBrowserOpen", [ frame ] ), otherwise the frame created by wp.media() is used.
+   */
+  console.warn( 'FV Player: Media browser: Unable to add tab ' + tabId + ', no open WordPress Media Library frame with router found.' );
 
-    // remove active class
-    $item.removeClass('active');
-
-    // save assets loading function
-    fv_flowplayer_browser_assets_loaders[tabId] = tabOnClickCallback;
-
-    // this is a super-ugly hack to circumvent heavily complicated Backbone WP programming...
-    // on our browser tab click, WP still thinks the last tab is actually still the active tab
-    // and won't allow us to click on that same tab again to show it, so we'll have to programmatically
-    // click another Backbone-created tab to update its internal pointers
-    // TODO: study up on Backbone WP functionality and fix this hack by at least showing the correct Backbonw view!
-    $nativeTabs.each(function() {
-      var
-        $e = jQuery(this),
-        $prev = $e.prev(),
-        $next = $e.next();
-
-      // clickbaited is class name determining whether we've already
-      // applied this hackish logic to tab clicks
-      if (!$e.hasClass('clickbaited')) {
-        $e.addClass('clickbaited');
-        $e.on('click', function() {
-          fv_flowplayer_media_browser_disable_drag_drop(false);
-
-          fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
-
-          if (!switchClicking) {
-            switchClicking = true;
-            // find a tab that is native and is not our clicked tab and click on it
-            if ($prev.length && !$prev.hasClass('artificial')) {
-              $prev.trigger('click');
-            } else {
-              $next.trigger('click');
-            }
-
-            // then click back on our tab to activate it
-            $e.trigger('click');
-            switchClicking = false;
-          }
-        });
-      }
-    });
-
-    $item
-      .attr('id', tabId)
-      .text(tabText)
-      .addClass('artificial')
-      .on('click', function() {
-        // disable Choose button
-        jQuery('.media-button-select').prop('disabled', 'disabled');
-        $router.find('.media-menu-item.active').removeClass('active');
-        jQuery(this).addClass('active');
-
-        fv_flowplayer_media_browser_disable_drag_drop(true);
-        fv_flowplayer_media_browser_show_upload( jQuery(this).attr('id') );
-
-        // execute tab click function
-        if (typeof(tabClickEventCallback) == 'function' && !switchClicking) {
-          tabClickEventCallback();
-        }
-
-        // store last clicked tab ID
-        try {
-          if (typeof(window.localStorage) == 'object') {
-            localStorage.setItem('fv_player_last_tab_selected', tabId);
-          }
-        } catch(e) {}
-
-        jQuery('#media-search-input').val('');
-
-        // hide the Drop files to upload modal initially
-        jQuery('.media-modal .uploader-window').css({
-          'display' : 'none',
-          'opacity' : 0,
-        });
-
-        return tabOnClickCallback();
-      });
-
-    $router.append($item);
-
-    // if we have a callback function to call once the tab has been added,
-    // do it here
-    if (typeof(tabAddedCallback) == 'function') {
-      tabAddedCallback($item);
-    }
-
-    $tab = $item;
-  }
-
-  // if this tab was the last active, make it active again
-  try {
-    if ( typeof window.localStorage == "object" && window.localStorage.fv_player_last_tab_selected && window.localStorage.fv_player_last_tab_selected == tabId ) {
-      // do this async, so the browser has time to paint the UI
-      // and change class of this tab to active on click
-      setTimeout(function() {
-        jQuery('#' + tabId).trigger( 'click' );
-      }, 500);
-    }
-  } catch(e) {}
-
-  return $tab;
+  return jQuery();
 }
 
 /*
@@ -563,8 +901,9 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
     overlay = jQuery('.media-frame-uploader'),
     overlay_content = jQuery('.media-modal .uploader-window'),
     overlay_title = overlay_content.find('.uploader-editor-title'),
-    drop_targets = jQuery('[id^=__wp-uploader-id-'),
-    upload_supported = fv_player_media_browser.get_active_tab().hasClass( 'upload_supported' );
+    drop_targets = jQuery('[id^=__wp-uploader-id-]'),
+    $active_tab = fv_player_media_browser.get_active_tab(),
+    upload_supported = $active_tab.hasClass( 'upload_supported' );
 
   var original_title = overlay_title.data('original-overlay-title');
   if( !original_title ) {
@@ -581,7 +920,7 @@ function fv_flowplayer_media_browser_disable_drag_drop( disable ) {
       overlay.css('opacity', 1 );
     }
 
-    overlay_title.html( original_title + ' to ' + jQuery('.media-router:visible button.active').text() );
+    overlay_title.html( original_title + ' to ' + $active_tab.text() );
 
   } else {
     drop_targets.off('drop', fv_flowplayer_media_browser_disable_drag_drop_worker );
@@ -615,7 +954,9 @@ function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
 
 function fv_flowplayer_media_browser_show_upload( id ) {
   jQuery('.media-toolbar-secondary > .fv-player-upload_buttons').hide();
-  jQuery('.media-toolbar-secondary > .fv-player-upload_buttons[data-tab-id='+id+']').show();
+  if ( id ) {
+    jQuery('.media-toolbar-secondary > .fv-player-upload_buttons[data-tab-id="' + id + '"]').show();
+  }
 }
 
 function renderBrowserPlaceholderHTML(options) {
@@ -714,7 +1055,7 @@ jQuery( function($) {
 
     var
       splash = false,
-      activeTabId = jQuery( '.media-router:visible .media-menu-item.active' ).attr('id');
+      activeTabId = fv_player_media_browser.get_active_tab().attr('id');
 
     for( var i in find ) {
       for( var j in fv_flowplayer_scannedFiles ) {
@@ -919,7 +1260,7 @@ jQuery( function($) {
 
   $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
     var
-      activeTabId = jQuery('.media-modal:visible .media-router .media-menu-item.active').attr('id'), // TODO: API to get back to actual tab
+      activeTabId = fv_player_media_browser.get_active_tab().attr('id'),
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
 
     $('#media-search-input').val(''); // remove search when clicked on folder
@@ -935,7 +1276,7 @@ jQuery( function($) {
     // coming directly from a link
     if (this.tagName == 'A') {
       // disable Choose button
-      jQuery('.media-button-select').prop('disabled', 'disabled');
+      fv_player_media_browser.set_choose_button_disabled(true);
       // load folder contents
       assetsLoadingFunction(jQuery('#browser-dropdown').val(), jQuery(this).attr('href'));
     } else {
@@ -946,7 +1287,7 @@ jQuery( function($) {
 
       if (typeof (href) != 'undefined') {
         // disable Choose button
-        jQuery('.media-button-select').prop('disabled', 'disabled');
+        fv_player_media_browser.set_choose_button_disabled(true);
         // load folder conents
         assetsLoadingFunction(jQuery('#browser-dropdown').val(), href);
       } else {
@@ -1071,14 +1412,14 @@ jQuery( function($) {
 
           // if this item is unselectable (i.e. a Coconut job that errored-out or encoding job that's still being processed externally), disable the Choose button
           if ( $filenameDiv.data('extra') && $filenameDiv.data('extra').disabled ) {
-            jQuery('.media-button-select').prop('disabled', 'disabled');
+            fv_player_media_browser.set_choose_button_disabled(true);
           } else {
             // enable Choose button
-            jQuery('.media-button-select').removeAttr('disabled');
+            fv_player_media_browser.set_choose_button_disabled(false);
           }
         } else {
           // disable Choose button if nothing is selected
-          if(jQuery('.wp-core-ui .attachment.selected').length === 0) jQuery('.media-button-select').prop('disabled', 'disabled');
+          if(jQuery('.wp-core-ui .attachment.selected').length === 0) fv_player_media_browser.set_choose_button_disabled(true);
         }
 
         $lastElementSelected = $e;
@@ -1098,12 +1439,16 @@ jQuery( function($) {
     $lastElementSelected = null;
 
     // disable Choose button
-    jQuery('.media-button-select').prop('disabled', 'disabled');
+    fv_player_media_browser.set_choose_button_disabled(true);
 
     return false;
   });
 
   $( document ).on( "click", ".media-button-select", function() {
+    if ( !fv_player_media_browser.is_fv_tab_active() ) {
+      return;
+    }
+
     let selected_media_items = jQuery('#__assets_browser li.selected');
 
     selected_media_items.each(function (index, $e) {
