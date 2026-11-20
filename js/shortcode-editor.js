@@ -1182,15 +1182,15 @@ jQuery(function() {
         fv_flowplayer_uploader.on('open', function() {
           // Pass the frame, so that the media browser tabs are added into its router, see media-library-browser-base.js
           $( document ).trigger( "mediaBrowserOpen", [ fv_flowplayer_uploader ] );
-          jQuery('.media-router .media-menu-item').eq(0).trigger('click');
-          jQuery('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
+          fv_flowplayer_uploader.$el.find('.media-router .media-menu-item').eq(0).trigger('click');
+          fv_flowplayer_uploader.$el.find('.media-frame-title h1').text(fv_flowplayer_uploader_button.text());
 
           // Hide Media Library tabs which are not allowed
           if( fv_player_editor_conf.library ) {
             let libraries = fv_player_editor_conf.library.split(/,/),
               library_found = false;
 
-            $( '.media-router .media-menu-item' ).each( function( i, el ) {
+            fv_flowplayer_uploader.$el.find( '.media-router .media-menu-item' ).each( function( i, el ) {
               let found = false;
               $( libraries ).each( function( v, library ) {
                 if( $(el).attr('id').match(library) ) {
