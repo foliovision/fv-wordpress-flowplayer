@@ -2523,8 +2523,53 @@ jQuery(function() {
     }
 
     /**
-     * Is the JavaScript error coming from FV Player or its extensions?
-     * Errors of other plugins are only logged, these also show the Copy debug info notice.
+     * Normalize a script URL (from an error event, stack trace, or WP_Scripts)
+     * to its pathname without :line:col or query string.
+     *
+     * @param {string} url
+     *
+     * @return {string}
+     */
+    function debug_normalize_script_url( url ) {
+      let clean = ( url || '' ).replace( /:\d+(?::\d+)?$/, '' ).replace( /[?#].*$/, '' );
+
+      try {
+        return new URL( clean, location.origin ).pathname;
+      } catch( e ) {
+        return clean;
+      }
+    }
+
+    /**
+     * Is the script URL a front-end FV Player script (used for video playback /
+     * preview) rather than an editor script?
+     *
+     * @param {string} url
+     *
+     * @return {bool}
+     */
+    function debug_is_frontend_script( url ) {
+      let normalized = debug_normalize_script_url( url );
+
+      // Core front-end player scripts (including ones lazy-loaded by JS like HLS.js / Dash.js)
+      if ( /\/freedom-video-player\//i.test( normalized ) ) {
+        return true;
+      }
+
+      let frontend_scripts = fv_player_editor_conf.frontend_scripts || [];
+      for ( let i = 0; i < frontend_scripts.length; i++ ) {
+        if ( debug_normalize_script_url( frontend_scripts[ i ] ) === normalized ) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    /**
+     * Is the JavaScript error coming from the FV Player editor or its editor extensions?
+     * Front-end player errors (e.g. from the live video preview) and errors of other
+     * plugins are only logged; editor errors also show the Copy debug info notice.
      *
      * @param {string} filename
      * @param {string} stack
@@ -2532,7 +2577,27 @@ jQuery(function() {
      * @return {bool}
      */
     function debug_is_fv_player_error( filename, stack ) {
-      return /fv-player|fv-wordpress-flowplayer/i.test( ( filename || '' ) + ' ' + ( stack || '' ) );
+      let urls = [];
+
+      if ( filename ) {
+        urls.push( filename );
+      }
+
+      if ( stack ) {
+        let matches = stack.match( /https?:\/\/[^\s)]+/g );
+        if ( matches ) {
+          urls = urls.concat( matches );
+        }
+      }
+
+      // Decide based on the first FV Player script in the call stack (closest to the throw site)
+      for ( let i = 0; i < urls.length; i++ ) {
+        if ( /fv-player|fv-wordpress-flowplayer/i.test( urls[ i ] ) ) {
+          return !debug_is_frontend_script( urls[ i ] );
+        }
+      }
+
+      return false;
     }
 
     function debug_editor_is_open() {

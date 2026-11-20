@@ -121,6 +121,106 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
   // TODO: Eliminate, keep the close button
   wp_enqueue_style('fvwpflowplayer-domwindow-css', flowplayer::get_plugin_url().'/css/colorbox.css', '', $fv_wp_flowplayer_ver, 'screen');
   wp_enqueue_style('fvwpflowplayer-shortcode-editor', flowplayer::get_plugin_url().'/css/shortcode-editor.css', '', filemtime( dirname(__FILE__).'/../css/shortcode-editor.css' ), 'screen');
+
+  // Run at priority 5 so this fires after flowplayer_prepare_scripts() and extension
+  // footer hooks have registered front-end player scripts, but before WordPress's
+  // _wp_footer_scripts() (priority 10) prints fvwpflowplayer-shortcode-editor.
+  add_action( 'admin_print_footer_scripts', 'fv_player_editor_frontend_scripts', 5 );
+  add_action( 'wp_print_footer_scripts', 'fv_player_editor_frontend_scripts', 5 );
+}
+
+/**
+ * Collect URLs of front-end FV Player scripts registered in WordPress so the
+ * editor's JS error detector can ignore front-end playback/preview errors.
+ *
+ * Any script whose handle is 'flowplayer' (or one of the standalone front-end
+ * handles) or transitively depends on one of them is treated as a front-end
+ * player script.
+ *
+ * @param WP_Scripts|null $wp_scripts Optional WP_Scripts instance (for testing).
+ *
+ * @return array List of script URLs without query strings.
+ */
+function fv_player_editor_get_frontend_scripts( $wp_scripts = null ) {
+  if ( ! $wp_scripts ) {
+    $wp_scripts = wp_scripts();
+  }
+
+  if ( empty( $wp_scripts->registered ) || ! is_array( $wp_scripts->registered ) ) {
+    return array();
+  }
+
+  $frontend_handles = array(
+    'flowplayer'           => true,
+    'fv_player_lightbox'   => true,
+    'fvplayer-pro-mark-js' => true,
+    'interact-js'          => true,
+  );
+
+  // Propagate to every script that transitively depends on a front-end handle.
+  do {
+    $added = false;
+    foreach ( $wp_scripts->registered as $handle => $script ) {
+      if ( isset( $frontend_handles[ $handle ] ) || empty( $script->deps ) || ! is_array( $script->deps ) ) {
+        continue;
+      }
+
+      foreach ( $script->deps as $dep ) {
+        if ( isset( $frontend_handles[ $dep ] ) ) {
+          $frontend_handles[ $handle ] = true;
+          $added = true;
+          break;
+        }
+      }
+    }
+  } while ( $added );
+
+  $scripts = array();
+
+  foreach ( $frontend_handles as $handle => $unused ) {
+    if ( empty( $wp_scripts->registered[ $handle ] ) ) {
+      continue;
+    }
+
+    $src = $wp_scripts->registered[ $handle ]->src;
+    if ( empty( $src ) || ! is_string( $src ) ) {
+      continue;
+    }
+
+    $src = preg_replace( '/[?#].*$/', '', $src );
+    if ( $src ) {
+      $scripts[ $src ] = true;
+    }
+  }
+
+  return array_values( array_unique( apply_filters( 'fv_player_editor_debug_frontend_scripts', array_keys( $scripts ) ) ) );
+}
+
+/**
+ * Expose registered front-end player script URLs to fv_player_editor_conf
+ * right before footer scripts are printed (after flowplayer_prepare_scripts
+ * and extensions have enqueued their front-end assets).
+ */
+function fv_player_editor_frontend_scripts() {
+  remove_action( 'admin_print_footer_scripts', 'fv_player_editor_frontend_scripts', 5 );
+  remove_action( 'wp_print_footer_scripts', 'fv_player_editor_frontend_scripts', 5 );
+
+  if ( ! wp_script_is( 'fvwpflowplayer-shortcode-editor', 'enqueued' ) && ! wp_script_is( 'fvwpflowplayer-shortcode-editor', 'done' ) ) {
+    return;
+  }
+
+  $scripts = fv_player_editor_get_frontend_scripts();
+  if ( empty( $scripts ) ) {
+    return;
+  }
+
+  $js = 'if ( typeof fv_player_editor_conf !== "undefined" ) { fv_player_editor_conf.frontend_scripts = ' . wp_json_encode( $scripts ) . '; }';
+
+  if ( wp_script_is( 'fvwpflowplayer-shortcode-editor', 'done' ) ) {
+    wp_print_inline_script_tag( $js );
+  } else {
+    wp_add_inline_script( 'fvwpflowplayer-shortcode-editor', $js, 'before' );
+  }
 }
 
 
