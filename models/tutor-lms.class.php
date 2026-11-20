@@ -12,8 +12,6 @@ class FV_Player_Tutor_LMS {
 		add_action( 'tutor_after_course_builder_load', array( $this, 'load_editor' ) );
 
 		add_filter( 'tutor_preferred_video_sources', array( $this, 'preferred_video_sources' ) );
-
-		add_action( 'tutor_after_course_builder_load', array( $this, 'load_editor' ) );
 	}
 
 	/**
@@ -46,6 +44,8 @@ class FV_Player_Tutor_LMS {
 
 		fv_wp_flowplayer_edit_form_after_editor();
 		fv_player_shortcode_editor_scripts_enqueue();
+
+		do_action( 'fvplayer_editor_load' );
 	}
 
 	function loader() {
