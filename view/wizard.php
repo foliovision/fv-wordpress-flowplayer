@@ -473,45 +473,6 @@ var fv_Player_site_base = '<?php echo home_url('/') ?>';
       <p></p>
     </div>
 
-    <div id="fv-player-editor-copy_player-overlay" class="fv-player-editor-overlay media-frame hide-menu">
-      <div class="wp-core-ui media-frame-content attachments-browser">
-        <div class="media-toolbar">
-          <div class="media-toolbar-primary search-form">
-            <input type="search" placeholder="Search videos or playlists" class="search" name="players_selector" >
-          </div>
-        </div>
-
-        <ul class="attachments"></ul>
-
-        <div class="media-sidebar">
-          <div class="attachment-details" style="display: none">
-            <h2>Player Details</h2>
-            <div class="attachment-info">
-              <div class="details">
-                <div class="filename"></div>
-                <div class="uploaded"></div>
-              </div>
-            </div>
-
-            <h2>Videos</h2>
-            <div class="videos-list"></div>
-
-            <h2>Embedded on</h2>
-            <div class="posts-list"></div>
-
-          </div>
-        </div>
-      </div>
-      <div class="media-frame-toolbar">
-        <div class="media-toolbar">
-          <div class="media-toolbar-secondary"></div>
-          <div class="media-toolbar-primary search-form">
-            <button type="button" class="button media-button button-primary button-large media-button-select" disabled>Choose</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div id="fv-player-editor-import-overlay" class="fv-player-editor-overlay">
       <textarea name="fv_player_import_data" id="fv_player_import_data" rows="13" placeholder="Paste your FV Player Export JSON data here"></textarea>
       <br />

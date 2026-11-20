@@ -1193,23 +1193,27 @@ a.fvp_item_video-filename {
 }
 
 /*
- * We use the WP Media Library HTML and CSS, here's what's necessary to make it work
+ * "Pick existing player" standalone Backbone wp.media browser styling
  */
-#fv-player-editor-copy_player-overlay {
-  padding: 0;
-  text-align: unset;
+.fv-player-picker-frame .attachments-browser.no-breadcrumbs #__assets_browser {
+  top: 50px;
 }
-
-#fv-player-editor-copy_player-overlay.media-frame .attachments-browser {
-  height: auto;
-  position: absolute;
+.fv-player-picker-frame .media-toolbar-primary.search-form {
+  max-width: 50%;
 }
-#fv-player-editor-copy_player-overlay .media-frame-content {
-  top: -1px;
+.fv-player-picker-frame .media-toolbar-primary.search-form input.search {
+  min-width: 240px;
 }
-#fv-player-editor-copy_player-overlay .attachment-details .setting input {
-  width: 65%;
+.fv-player-picker-frame #__assets_browser .attachment-preview.fullsize .thumbnail img {
+  margin: 0 auto !important;
+  display: block;
 }
-#fv-player-editor-copy_player-overlay .posts-list ul ul {
-  margin: .5em 1em;
+.fv-player-picker-frame .media-sidebar .videos-list ul,
+.fv-player-picker-frame .media-sidebar .posts-list ul {
+  margin: 0.5em 0 1em 1.2em;
+  list-style: disc;
+}
+.fv-player-picker-frame .media-sidebar .posts-list ul ul {
+  margin: 0.5em 1em;
+  list-style: circle;
 }

@@ -74,6 +74,14 @@ jQuery(function() {
         return fv_flowplayer_media_browser_tabs.get_active_tab();
       },
 
+      get_active_tab_id() {
+        return fv_flowplayer_media_browser_tabs.get_active_tab_id();
+      },
+
+      get_active_tab_config() {
+        return fv_flowplayer_media_browser_tabs.get_active_tab_config();
+      },
+
       get_frame() {
         return fv_flowplayer_media_browser_tabs.get_frame();
       },
@@ -88,6 +96,10 @@ jQuery(function() {
 
       set_choose_button_disabled( disabled ) {
         return fv_flowplayer_media_browser_tabs.set_choose_button_disabled( disabled );
+      },
+
+      open_standalone( options ) {
+        return fv_flowplayer_media_browser_tabs.open_standalone( options );
       },
 
     }
@@ -486,8 +498,9 @@ function fv_flowplayer_browser_browse(data, options) {
  */
 var fv_flowplayer_media_browser_tabs = ( function( $ ) {
   var
-    // tabId => { text, loader, click_callback, priority, $el }
+    // tabId => { text, loader, click_callback, priority, $el, standalone, render_sidebar, on_select, on_close, multiple }
     tabs = {},
+    standalone_frames = {},
     tabs_count = 0,
     current_frame = false,
     RouterItem = false,
@@ -546,14 +559,14 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
   }
 
   function is_frame( frame ) {
-    return !! ( frame && frame.router && frame.content && frame.$el && typeof frame.on == 'function' );
+    return !! ( frame && frame.content && frame.$el && typeof frame.on == 'function' );
   }
 
   /**
    * @return {wp.media.view.MediaFrame|false} The Media Library frame which is open.
    */
   function get_frame() {
-    if ( is_frame( current_frame ) && current_frame.$el.is( ':visible' ) ) {
+    if ( is_frame( current_frame ) && ( current_frame._fv_opening || current_frame.$el.is( ':visible' ) ) ) {
       return current_frame;
     }
 
@@ -574,13 +587,29 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
   }
 
   function get_router_view( frame ) {
-    var view = is_frame( frame ) && frame.router.get();
+    var view = is_frame( frame ) && frame.router && frame.router.get();
 
     if ( view && wp.media.view.Router && view instanceof wp.media.view.Router ) {
       return view;
     }
 
     return false;
+  }
+
+  function get_active_tab_id() {
+    var frame = get_frame();
+    if ( frame && frame.content ) {
+      var mode = frame.content.mode();
+      if ( mode ) {
+        return mode;
+      }
+    }
+    return get_active_tab().attr( 'id' );
+  }
+
+  function get_active_tab_config() {
+    var activeTabId = get_active_tab_id();
+    return ( activeTabId && tabs[ activeTabId ] ) ? tabs[ activeTabId ] : null;
   }
 
   function get_active_tab() {
@@ -754,14 +783,16 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
 
     set_choose_button_disabled( true );
 
-    fv_flowplayer_media_browser_disable_drag_drop( true );
-    fv_flowplayer_media_browser_show_upload( tabId );
+    if ( ! tab.standalone ) {
+      fv_flowplayer_media_browser_disable_drag_drop( true );
+      fv_flowplayer_media_browser_show_upload( tabId );
+    }
 
     if ( typeof( tab.click_callback ) == 'function' ) {
       tab.click_callback();
     }
 
-    if ( ! suppress_last_tab_save ) {
+    if ( ! suppress_last_tab_save && ! tab.standalone ) {
       // store last clicked tab ID
       try {
         if ( typeof( window.localStorage ) == 'object' ) {
@@ -791,7 +822,9 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
     // WordPress re-creates the router when the frame state changes, add the tabs back
     frame.on( 'router:render:browse', function( routerView ) {
       Object.keys( tabs ).forEach( function( tabId ) {
-        add_tab_to_router( frame, routerView, tabId );
+        if ( ! tabs[ tabId ].standalone ) {
+          add_tab_to_router( frame, routerView, tabId );
+        }
       } );
 
       if ( typeof( routerView.update ) == 'function' ) {
@@ -804,6 +837,9 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
 
       var activeMode = frame.content && frame.content.mode(),
         tab = activeMode && tabs[ activeMode ];
+      if ( tab && typeof( tab.on_close ) == 'function' ) {
+        tab.on_close();
+      }
 
       // Remove rendered FV tab elements on close so hidden frames never leave duplicate global IDs
       // (#__assets_browser, #media-search-input, #browser-dropdown) that legacy FV Player Pro,
@@ -845,7 +881,10 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
           arg.view = new wp.media.View( { className: 'fv-player-media-browser-tab-content' } );
 
         } else if ( 'activate' == action ) {
-          activate_tab( frame, mode );
+          // Standalone frames activate inside their 'open' event after WordPress renders the content region
+          if ( ! tabs[ mode ].standalone ) {
+            activate_tab( frame, mode );
+          }
 
         } else if ( 'deactivate' == action ) {
           clear_pending_refresh();
@@ -872,7 +911,7 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
       }
     } catch ( e ) {}
 
-    if ( ! frame || ! last_tab || ! tabs[ last_tab ] ) {
+    if ( ! frame || ! last_tab || ! tabs[ last_tab ] || tabs[ last_tab ].standalone ) {
       return;
     }
 
@@ -958,9 +997,99 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
       return item.$el;
     },
 
+    /**
+     * Opens a standalone WordPress Media Library Backbone frame managed by this wrapper,
+     * without router tabs (Upload/Media Library/S3/Coconut...) and without overwriting
+     * localStorage.fv_player_last_tab_selected.
+     *
+     * @return {wp.media.view.MediaFrame|false}
+     */
+    open_standalone: function( options ) {
+      if ( ! options || ! options.tabId || typeof( options.loader ) !== 'function' || ! window.wp || ! wp.media || ! window.Backbone ) {
+        return false;
+      }
+
+      var tabId = options.tabId,
+        title = options.title || 'Choose',
+        buttonText = options.buttonText || 'Choose';
+
+      tabs[ tabId ] = {
+        text: title,
+        loader: options.loader,
+        click_callback: options.click_callback || null,
+        standalone: true,
+        render_sidebar: options.renderSidebar || null,
+        on_select: options.onSelect || null,
+        on_close: options.onClose || null,
+        multiple: !! options.multiple
+      };
+
+      fv_flowplayer_browser_assets_loaders[ tabId ] = options.loader;
+
+      var frame = standalone_frames[ tabId ];
+      if ( ! frame ) {
+        var state = new wp.media.controller.State( {
+          id: tabId,
+          title: title,
+          content: tabId,
+          menu: false,
+          router: false,
+          toolbar: 'select',
+          multiple: !! options.multiple,
+          selection: new window.Backbone.Collection()
+        } );
+
+        frame = new wp.media.view.MediaFrame.Select( {
+          title: title,
+          button: {
+            text: buttonText
+          },
+          state: tabId,
+          states: [ state ],
+          multiple: !! options.multiple,
+          uploader: false
+        } );
+
+        hook_frame( frame );
+
+        frame.on( 'open', function() {
+          current_frame = frame;
+          frame.$el.addClass( 'hide-menu hide-router' );
+          if ( options.frameClass ) {
+            frame.$el.addClass( options.frameClass );
+          }
+
+          if ( tabs[ tabId ] && tabs[ tabId ].text ) {
+            frame.$el.find( '.media-frame-title h1' ).text( tabs[ tabId ].text );
+          }
+
+          activate_tab( frame, tabId );
+        } );
+
+        standalone_frames[ tabId ] = frame;
+      }
+
+      var existingState = frame.state( tabId );
+      if ( existingState && title ) {
+        existingState.set( 'title', title );
+      }
+
+      current_frame = frame;
+      frame._fv_opening = true;
+      try {
+        frame.open();
+      } finally {
+        frame._fv_opening = false;
+      }
+
+      return frame;
+    },
+
     get_frame: get_frame,
     get_frame_el: get_frame_el,
     get_active_tab: get_active_tab,
+    get_active_tab_id: get_active_tab_id,
+    get_active_tab_config: get_active_tab_config,
     is_fv_tab_active: is_fv_tab_active,
     set_choose_button_disabled: set_choose_button_disabled,
 
@@ -1052,9 +1181,10 @@ function fv_flowplayer_media_browser_show_upload( id ) {
 }
 
 function renderBrowserPlaceholderHTML(options) {
-  var html = '<div class="attachments-browser fv-player-media-browser-content"><div class="media-toolbar s3-media-toolbar">';
+  options = options || {};
+  var html = '<div class="attachments-browser fv-player-media-browser-content' + (options.noBreadcrumbs ? ' no-breadcrumbs' : '') + '"><div class="media-toolbar s3-media-toolbar">';
 
-  if (options && options.dropdownItems) {
+  if (options.dropdownItems) {
     html += '<div class="media-toolbar-secondary">';
 
     // prepare dropdown HTML
@@ -1092,7 +1222,7 @@ function renderBrowserPlaceholderHTML(options) {
     '<input type="search" placeholder="'+ (options.searchMsg ? options.searchMsg : 'Search media items...') +'" id="media-search-input" class="search">' +
     '</div>' +
     '</div>' +
-    '\t\t<div class="breadcrumbs"></div>\n' +
+    (options.noBreadcrumbs ? '' : '\t\t<div class="breadcrumbs"></div>\n') +
     '\n';
 
   if (options.errorMsg) {
@@ -1103,7 +1233,7 @@ function renderBrowserPlaceholderHTML(options) {
     '<div class="media-sidebar"></div>' +
     '\t\t<div class="nothingfound">\n' +
     '\t\t\t<div class="nofiles"></div>\n' +
-    '\t\t\t<p>No files here.</p>\n' +
+    '\t\t\t<p>' + (options.nothingFoundMsg ? options.nothingFoundMsg : 'No files here.') + '</p>\n' +
     '\t\t</div>\n' +
     '\n' +
     '\t</div>';
@@ -1353,7 +1483,9 @@ jQuery( function($) {
   $( document ).on( "click", ".folders:not(#overlay-loader-li), .breadcrumbs a", function(event) {
     var
       $frame = fv_player_media_browser.get_frame_el(),
-      activeTabId = fv_player_media_browser.get_active_tab().attr('id'),
+      activeTabId = fv_player_media_browser.get_active_tab_id(),
+      activeTab = fv_player_media_browser.get_active_tab_config(),
+      allowMultiple = ! activeTab || activeTab.multiple !== false,
       assetsLoadingFunction = (activeTabId && fv_flowplayer_browser_assets_loaders[activeTabId] ? fv_flowplayer_browser_assets_loaders[activeTabId] : function() {});
 
     // wp adds on click .details, we need to remove it if element doesnt have class .selected
@@ -1380,16 +1512,17 @@ jQuery( function($) {
         assetsLoadingFunction($frame.find('#browser-dropdown').val(), href);
       } else {
         // we clicked on a file, not a folder... add a confirmation tick icon to it
-        var wasSelected = $e.hasClass('selected');
+        var wasSelected = $e.hasClass('selected'),
+          isMultiSelect = allowMultiple && fv_flowplayer_browser_holding_meta_key;
 
-        if (!fv_flowplayer_browser_holding_meta_key) {
+        if (!isMultiSelect) {
           $frame.find('#__assets_browser li.selected')
             .attr('aria-checked', 'false')
             .removeClass('selected details');
         }
 
         // if we click on same selected LI while holding meta key, deselect it
-        if (wasSelected && fv_flowplayer_browser_holding_meta_key) {
+        if (wasSelected && isMultiSelect) {
           $e
             .attr('aria-checked', 'false')
             .removeClass('selected details');
@@ -1404,101 +1537,110 @@ jQuery( function($) {
           var
             $filenameDiv = $e.find('.filename div'),
             extra = $filenameDiv.data('extra') || {},
-            $sidebar = $frame.find('.media-sidebar'),
-            fSize = parseInt($filenameDiv.data('size')),
-            fSizeTextual = fSize != $filenameDiv.data('size'),
-            fDuration = parseInt($filenameDiv.data('duration')),
-            sizeSuffix = 'bytes',
-            fExtraDisplayData = extra.displayData;
+            $sidebar = $frame.find('.media-sidebar');
 
-          if (!fSizeTextual) {
-            // if filesize is too small, show it in KBytes
-            if (fSize > -1) {
-              if (fSize > 10000) {
-                if (fSize <= 999999) {
-                  fSize /= 100000;
-                  sizeSuffix = 'KB';
-                } else if (fSize <= 999999999) {
-                  fSize /= 1000000;
-                  sizeSuffix = 'MB';
-                } else {
-                  fSize /= 1000000000;
-                  sizeSuffix = 'GB';
+          if ( activeTab && typeof activeTab.render_sidebar === 'function' ) {
+            var sidebarContent = activeTab.render_sidebar( $e, $filenameDiv, extra );
+            if ( sidebarContent !== false ) {
+              $sidebar.empty().append( sidebarContent );
+            }
+          } else {
+            var
+              fSize = parseInt($filenameDiv.data('size')),
+              fSizeTextual = fSize != $filenameDiv.data('size'),
+              fDuration = parseInt($filenameDiv.data('duration')),
+              sizeSuffix = 'bytes',
+              fExtraDisplayData = extra.displayData;
+
+            if (!fSizeTextual) {
+              // if filesize is too small, show it in KBytes
+              if (fSize > -1) {
+                if (fSize > 10000) {
+                  if (fSize <= 999999) {
+                    fSize /= 100000;
+                    sizeSuffix = 'KB';
+                  } else if (fSize <= 999999999) {
+                    fSize /= 1000000;
+                    sizeSuffix = 'MB';
+                  } else {
+                    fSize /= 1000000000;
+                    sizeSuffix = 'GB';
+                  }
+                }
+
+                // "round" to 2 decimals
+                if (parseFloat(fSize) != parseInt(fSize)) {
+                  fSize += '';
+                  fSize = fSize.substring(0, fSize.indexOf('.') + 3);
                 }
               }
+            } else {
+              // if there's a non-numeric filesize, just display that
+              fSize = $filenameDiv.data('size');
+            }
 
-              // "round" to 2 decimals
-              if (parseFloat(fSize) != parseInt(fSize)) {
-                fSize += '';
-                fSize = fSize.substring(0, fSize.indexOf('.') + 3);
+            if (fDuration && fDuration > 0) {
+              var sec_num = parseInt(fDuration, 10); // don't forget the second param
+              var hours = Math.floor(sec_num / 3600);
+              var minutes = Math.floor((sec_num % 3600) / 60);
+              var seconds = Math.floor(sec_num % 60);
+
+              if (hours < 10) {
+                hours = "0" + hours;
               }
+              if (minutes < 10) {
+                minutes = "0" + minutes;
+              }
+              if (seconds < 10) {
+                seconds = "0" + seconds;
+              }
+
+              fDuration = hours + ':' + minutes + ':' + seconds;
+            } else {
+              fDuration = 'Processing Media...';
             }
-          } else {
-            // if there's a non-numeric filesize, just display that
-            fSize = $filenameDiv.data('size');
+
+            // load splash image
+            var
+              linkStr = String($filenameDiv.data('link') || ''),
+              isPicture = linkStr.match(/\.(jpg|jpeg|png|gif)$/),
+              splashValue = getFileSplashImage( locateSplashFileObjectForMediaFileHref( linkStr ) ),
+              splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" loading="lazy" />');
+
+            // if we didn't find a splash image for a media file,
+            // use its icon
+            if (!splashValue) {
+              splash = $e.find('.icon').get(0).outerHTML;
+            }
+
+            // show info about the file in right sidebar
+            $sidebar.html('<div tabindex="0" class="attachment-details save-ready" style="overflow: visible">\n' +
+              '\t\t<h2>Media Details</h2>\n' +
+              '\t\t<div class="attachment-info">\n' +
+              '\t\t\t<div class="thumbnail thumbnail-image">\n' +
+              '\t\t\t\t\n' +
+              '\t\t\t\t\t' + splash + '\n' +
+              '\t\t\t\t\n' +
+              '\t\t\t</div>\n' +
+              '\t\t\t<div class="details">\n' +
+              '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
+              '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
+              '\n' +
+              '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
+              (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
+              '\t\t\t</div>\n' +
+              ( ( splashValue && isPicture ) ? '<div><i>Found matching splash screen image</i></div>' : '') +
+              '\t\t</div>\n' +
+              '\n' +
+              '\t\t\n' +
+              '\t\t\n' +
+              '\t\t\t<label class="setting" data-setting="url">\n' +
+              '\t\t\t<span class="name">Copy Link</span>\n' +
+              '\t\t\t<input type="text" value="' + linkStr + '" readonly="">\n' +
+              '\t\t</label>\n' +
+              '\t\t' + ( (extra && extra.trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
+              '\t</div>');
           }
-
-          if (fDuration && fDuration > 0) {
-            var sec_num = parseInt(fDuration, 10); // don't forget the second param
-            var hours = Math.floor(sec_num / 3600);
-            var minutes = Math.floor((sec_num % 3600) / 60);
-            var seconds = Math.floor(sec_num % 60);
-
-            if (hours < 10) {
-              hours = "0" + hours;
-            }
-            if (minutes < 10) {
-              minutes = "0" + minutes;
-            }
-            if (seconds < 10) {
-              seconds = "0" + seconds;
-            }
-
-            fDuration = hours + ':' + minutes + ':' + seconds;
-          } else {
-            fDuration = 'Processing Media...';
-          }
-
-          // load splash image
-          var
-            linkStr = String($filenameDiv.data('link') || ''),
-            isPicture = linkStr.match(/\.(jpg|jpeg|png|gif)$/),
-            splashValue = getFileSplashImage( locateSplashFileObjectForMediaFileHref( linkStr ) ),
-            splash = (isPicture ? $e.find('.icon').get(0).outerHTML : '<img src="' + splashValue + '" draggable="false" class="icon thumb" loading="lazy" />');
-
-          // if we didn't find a splash image for a media file,
-          // use its icon
-          if (!splashValue) {
-            splash = $e.find('.icon').get(0).outerHTML;
-          }
-
-          // show info about the file in right sidebar
-          $sidebar.html('<div tabindex="0" class="attachment-details save-ready" style="overflow: visible">\n' +
-            '\t\t<h2>Media Details</h2>\n' +
-            '\t\t<div class="attachment-info">\n' +
-            '\t\t\t<div class="thumbnail thumbnail-image">\n' +
-            '\t\t\t\t\n' +
-            '\t\t\t\t\t' + splash + '\n' +
-            '\t\t\t\t\n' +
-            '\t\t\t</div>\n' +
-            '\t\t\t<div class="details">\n' +
-            '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
-            '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
-            '\n' +
-            '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
-            (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
-            '\t\t\t</div>\n' +
-            ( ( splashValue && isPicture ) ? '<div><i>Found matching splash screen image</i></div>' : '') +
-            '\t\t</div>\n' +
-            '\n' +
-            '\t\t\n' +
-            '\t\t\n' +
-            '\t\t\t<label class="setting" data-setting="url">\n' +
-            '\t\t\t<span class="name">Copy Link</span>\n' +
-            '\t\t\t<input type="text" value="' + linkStr + '" readonly="">\n' +
-            '\t\t</label>\n' +
-            '\t\t' + ( (extra && extra.trailer_src != undefined ) ? '<button type="button" class="button media-button trailer-button-select">Select Trailer</button>' : '' ) +
-            '\t</div>');
 
           // if this item is unselectable (i.e. a Coconut job that errored-out or encoding job that's still being processed externally), disable the Choose button
           if ( extra && extra.disabled ) {
@@ -1552,6 +1694,7 @@ jQuery( function($) {
 
     var frame = fv_player_media_browser.get_frame(),
       $frame = fv_player_media_browser.get_frame_el(),
+      activeTab = fv_player_media_browser.get_active_tab_config(),
       selected_media_items = $frame.find('#__assets_browser li.selected');
 
     function close_active_frame() {
@@ -1560,6 +1703,12 @@ jQuery( function($) {
       } else {
         jQuery('.media-modal-close:visible').trigger( 'click' );
       }
+    }
+
+    if ( activeTab && typeof activeTab.on_select === 'function' ) {
+      activeTab.on_select( selected_media_items, frame );
+      close_active_frame();
+      return false;
     }
 
     selected_media_items.each(function (index, $e) {
