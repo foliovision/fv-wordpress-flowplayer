@@ -707,9 +707,11 @@ function fv_player_comment_text( $comment_text ) {
 
   global $fv_fp;
   if ( isset( $fv_fp->conf['parse_comments'] ) && 'true' === $fv_fp->conf['parse_comments'] ) {
-    add_filter( 'comment_text', 'do_shortcode' );
-    add_filter( 'bbp_get_topic_content', 'do_shortcode', 11 );
-    add_filter( 'bbp_get_reply_content', 'do_shortcode', 11 );
+    // Only run the FV Player shortcodes, not do_shortcode() which would run
+    // every shortcode of every plugin for the untrusted comment authors.
+    add_filter( 'comment_text', 'fv_player_do_shortcode_untrusted' );
+    add_filter( 'bbp_get_topic_content', 'fv_player_do_shortcode_untrusted', 11 );
+    add_filter( 'bbp_get_reply_content', 'fv_player_do_shortcode_untrusted', 11 );
 
     // The shortcode attributes allowed in this content are restricted in
     // flowplayer_content_handle(), see FV_Player_Sanitize_User_Input()->is_untrusted_content().
@@ -718,6 +720,41 @@ function fv_player_comment_text( $comment_text ) {
   }
 
   return $comment_text;
+}
+
+/**
+ * Run only the [fvplayer] and [flowplayer] shortcodes in untrusted content
+ * like comments, bbPress topics and replies.
+ *
+ * Any other shortcode is left as plain text. Shortcodes like [fvplayer_editor]
+ * or the ones of the other plugins are not meant for the untrusted users.
+ *
+ * do_shortcode() only runs the shortcodes in the global $shortcode_tags, so we
+ * limit it to the FV Player ones for the time of the call. This also applies
+ * to any do_shortcode() calls done while processing these shortcodes.
+ *
+ * @param string $content The content.
+ *
+ * @return string The content with the FV Player shortcodes processed.
+ */
+function fv_player_do_shortcode_untrusted( $content ) {
+  global $shortcode_tags;
+
+  if ( ! is_string( $content ) || false === strpos( $content, '[' ) || ! is_array( $shortcode_tags ) ) {
+    return $content;
+  }
+
+  $original_shortcode_tags = $shortcode_tags;
+
+  $shortcode_tags = array_intersect_key( $original_shortcode_tags, array_flip( array( 'fvplayer', 'flowplayer' ) ) );
+
+  try {
+    $content = do_shortcode( $content );
+  } finally {
+    $shortcode_tags = $original_shortcode_tags;
+  }
+
+  return $content;
 }
 
 function fv_player_comment_text_replace_video_urls_outside_html_tags( $comment_text ) {

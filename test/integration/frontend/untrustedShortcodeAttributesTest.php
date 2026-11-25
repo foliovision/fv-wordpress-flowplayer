@@ -37,7 +37,8 @@ final class FV_Player_UntrustedShortcodeAttributesTest extends FV_Player_UnitTes
 
   protected function tearDown(): void {
     remove_filter( 'fv_flowplayer_shortcode', array( $this, 'capture_arguments' ) );
-    remove_filter( 'comment_text', 'do_shortcode' );
+    remove_filter( 'comment_text', 'fv_player_do_shortcode_untrusted' );
+    remove_shortcode( 'fv_player_test_shortcode' );
 
     parent::tearDown();
   }
@@ -133,6 +134,45 @@ final class FV_Player_UntrustedShortcodeAttributesTest extends FV_Player_UnitTes
     $arguments = $this->get_captured_arguments();
     $this->assertSame( 'https://www.youtube.com/watch?v=1XiHhpGUmQg', $arguments['src'] );
     $this->assertStringContainsString( 'flowplayer', $output );
+  }
+
+  /**
+   * Only [fvplayer] and [flowplayer] run in comments, see fv_player_do_shortcode_untrusted().
+   */
+  public function testCommentOnlyRunsFVPlayerShortcodes() {
+    add_shortcode( 'fv_player_test_shortcode', function() {
+      return 'TEST SHORTCODE RAN';
+    } );
+
+    $output = apply_filters( 'comment_text', 'Before [fv_player_test_shortcode] [fvplayer src="https://cdn.site.com/video.mp4"] after' );
+
+    $this->assertStringContainsString( '[fv_player_test_shortcode]', $output );
+    $this->assertStringNotContainsString( 'TEST SHORTCODE RAN', $output );
+
+    // [fvplayer] still works in the same comment
+    $this->get_captured_arguments();
+    $this->assertStringContainsString( 'flowplayer', $output );
+
+    // The shortcodes are back for the post content
+    global $shortcode_tags;
+    $this->assertArrayHasKey( 'fv_player_test_shortcode', $shortcode_tags );
+    $this->assertArrayHasKey( 'fvplayer_editor', $shortcode_tags );
+    $this->assertSame( 'TEST SHORTCODE RAN', do_shortcode( '[fv_player_test_shortcode]' ) );
+  }
+
+  /**
+   * [fvplayer_editor] in a comment must not run, it would put the field
+   * attribute into fv_player_editor_conf.field_selector which jQuery parses.
+   */
+  public function testCommentDoesNotRunEditorShortcode() {
+    $comment = '[fvplayer_editor field="\x3cimg src=x onerror=alert(document.domain)\x3e"]';
+
+    $output = apply_filters( 'comment_text', $comment );
+
+    $this->assertStringContainsString( '[fvplayer_editor', $output );
+    $this->assertStringNotContainsString( '<img', $output );
+    $this->assertStringNotContainsString( 'editor_open', $output );
+    $this->assertFalse( wp_script_is( 'fvwpflowplayer-shortcode-editor', 'enqueued' ) );
   }
 
   public function testPostContentIsNotRestricted() {
