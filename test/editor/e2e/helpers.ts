@@ -303,17 +303,30 @@ export async function expectEditorClosed(page: Page): Promise<void> {
 }
 
 /**
- * Accepts the next native dialog (confirm/alert) and returns its message.
- * The editor uses confirm() when removing videos or subtitles.
+ * Accepts the next confirmation dialog and returns its message.
+ * Video removal uses foliopress_confirm (a custom HTML overlay introduced in
+ * commit 432d5c48); subtitle/meta removal still uses native window.confirm().
+ * Races both handlers and returns whichever fires first.
  */
 export function acceptNextDialog(page: Page): Promise<string> {
-  return new Promise((resolve) => {
-    page.once('dialog', async (dialog) => {
-      const message = dialog.message();
-      await dialog.accept();
-      resolve(message);
-    });
+  const nativeP = new Promise<string>((resolve) => {
+    page.once('dialog', async (d) => { resolve(d.message()); await d.accept(); });
   });
+
+  const customP = (async (): Promise<string> => {
+    try {
+      const modal = page.locator('.foliopress-confirm-modal');
+      await modal.waitFor({ state: 'visible', timeout: 15_000 });
+      const msg = (await modal.locator('.components-text').innerText()).trim();
+      await modal.locator('.is-primary').click();
+      return msg;
+    } catch {
+      // Native dialog won the race; park this branch so it never settles.
+      return new Promise<string>(() => {});
+    }
+  })();
+
+  return Promise.race([nativeP, customP]);
 }
 
 /** Row of the editor's Playlist tab. */
