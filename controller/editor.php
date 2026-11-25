@@ -89,10 +89,8 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
     ),
   );
 
-  // TODO: Ideally these inputs would not only be hidden, but they wouldn't save
-  if( !empty($extra_args['hide']) ) {
-    $extra_args['hide'] = explode( ',', $extra_args['hide'] );
-  }
+  // These come from the [fvplayer_editor] shortcode attributes, so they are untrusted
+  $extra_args = fv_player_editor_sanitize_shortcode_args( $extra_args );
 
   foreach( array(
     'field'    => 'field_selector',
@@ -127,6 +125,69 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
   // _wp_footer_scripts() (priority 10) prints fvwpflowplayer-shortcode-editor.
   add_action( 'admin_print_footer_scripts', 'fv_player_editor_frontend_scripts', 5 );
   add_action( 'wp_print_footer_scripts', 'fv_player_editor_frontend_scripts', 5 );
+}
+
+/**
+ * Sanitize the [fvplayer_editor] shortcode attributes before they go into
+ * fv_player_editor_conf.
+ *
+ * Any user who can write posts can use the shortcode, like a Contributor, and
+ * KSES does not see the HTML in the shortcode attributes as these are decoded
+ * with stripcslashes(), so \x3c becomes <.
+ *
+ * @param array $extra_args {
+ *   @type string $field    jQuery selector of the field with the shortcode
+ *   @type string $frontend Is it the front-end editor?
+ *   @type string $hide     Comma separated list of fields to hide
+ *   @type string $library  Comma separated list of libraries to show in Media Library
+ *   @type string $tabs     Use "none" to only show Playlist and Videos tabs
+ * }
+ *
+ * @return array Only the known and valid arguments, with "hide" as an array.
+ */
+function fv_player_editor_sanitize_shortcode_args( $extra_args ) {
+  $sanitized = array();
+
+  if ( ! is_array( $extra_args ) ) {
+    return $sanitized;
+  }
+
+  // jQuery( '<img ...>' ) would create the HTML element rather than find it,
+  // so "<" is never allowed. CSS selectors do not need it, while ">" is fine.
+  if ( ! empty( $extra_args['field'] ) && is_string( $extra_args['field'] ) && false === strpos( $extra_args['field'], '<' ) ) {
+    $sanitized['field'] = trim( $extra_args['field'] );
+  }
+
+  if ( ! empty( $extra_args['frontend'] ) ) {
+    $sanitized['frontend'] = true;
+  }
+
+  // Lists of field and Media Library tab names, these are used in jQuery selectors
+  // and regular expressions in JavaScript
+  foreach ( array( 'hide', 'library' ) as $key ) {
+    if ( empty( $extra_args[ $key ] ) || ! is_string( $extra_args[ $key ] ) ) {
+      continue;
+    }
+
+    $items = array();
+    foreach ( explode( ',', $extra_args[ $key ] ) as $item ) {
+      $item = preg_replace( '~[^A-Za-z0-9_-]~', '', $item );
+      if ( '' !== $item ) {
+        $items[] = $item;
+      }
+    }
+
+    if ( $items ) {
+      // TODO: Ideally the hidden inputs would not only be hidden, but they wouldn't save
+      $sanitized[ $key ] = 'hide' === $key ? $items : implode( ',', $items );
+    }
+  }
+
+  if ( ! empty( $extra_args['tabs'] ) && 'none' === $extra_args['tabs'] ) {
+    $sanitized['tabs'] = 'none';
+  }
+
+  return $sanitized;
 }
 
 /**

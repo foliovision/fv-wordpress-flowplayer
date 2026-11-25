@@ -1950,7 +1950,7 @@ jQuery(function() {
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text');
 
       if( fv_player_editor_conf.field_selector ){
-        var custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+        var custom_field_selector = get_custom_field();
 
         // If the pre-configured field was not failed it's a big deal!
         if( !custom_field_selector.length ){
@@ -2907,7 +2907,7 @@ jQuery(function() {
          */
 
         if( fv_player_editor_conf.field_selector ){
-          let custom_field_selector = jQuery(fv_player_editor_conf.field_selector)
+          let custom_field_selector = get_custom_field();
 
           // If the pre-configured field was not failed it's a big deal!
           if( !custom_field_selector.length ){
@@ -3969,6 +3969,28 @@ Please also contact FV Player support with the following debug information:\n\n\
       }
     }
 
+    /**
+     * Get the field set by the [fvplayer_editor field="{selector}"] shortcode.
+     *
+     * Uses .find() as jQuery( string ) would create the HTML elements if the
+     * selector was HTML like "<img src=x onerror=...>". The shortcode can be
+     * used by Contributors, so the selector is not trusted.
+     *
+     * @return {jQuery} The field or empty jQuery object.
+     */
+    function get_custom_field() {
+      if ( ! fv_player_editor_conf.field_selector || 'string' !== typeof( fv_player_editor_conf.field_selector ) ) {
+        return $();
+      }
+
+      try {
+        return $( document ).find( fv_player_editor_conf.field_selector );
+      } catch( e ) {
+        debug_log( 'Invalid field selector: ' + fv_player_editor_conf.field_selector );
+        return $();
+      }
+    }
+
     function insert_button_toggle( show ) {
 
       // Do not show Insert button if player is configured for a set field
@@ -4002,7 +4024,7 @@ Please also contact FV Player support with the following debug information:\n\n\
         elementor_field = $(editor_button_clicked).closest( '#elementor-controls' ).find( '[data-setting="shortcode"]' ),
         gutenberg = $(editor_button_clicked).parents('.fv-player-gutenberg').find('.fv-player-editor-field'),
         widget = jQuery('#widget-widget_fvplayer-'+widget_id+'-text'),
-        custom_field_selector = jQuery(fv_player_editor_conf.field_selector);
+        custom_field_selector = get_custom_field();
       if ( fv_player_editor_conf.on_insert ) {
         fv_player_editor_conf.on_insert( shortcode );
         return;

@@ -1258,6 +1258,11 @@ function fvplayer_editor( $args ) {
 
   wp_enqueue_media();
 
+  // Shortcode without attributes gives an empty string
+  if ( ! is_array( $args ) ) {
+    $args = array();
+  }
+
   $args['frontend'] = true;
 
   fv_player_shortcode_editor_scripts_enqueue( $args );
