@@ -29,7 +29,10 @@ function fv_player_shortcode_editor_scripts_enqueue( $extra_args = array() ) {
 
   wp_enqueue_script('fvwpflowplayer-shortcode-editor', $url.'/js/shortcode-editor.js',array('jquery','jquery-ui-sortable', 'foliopress-confirm' ), filemtime( dirname(__FILE__).'/../js/shortcode-editor.js' ), true );
   wp_enqueue_script('flowplayer-browser-base', $url.'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname(__FILE__).'/../js/media-library-browser-base.js' ), true );
-  wp_enqueue_style('fvwpflowplayer-s3-browser', $url.'/css/s3-browser.css', '', $fv_wp_flowplayer_ver);
+  wp_enqueue_style('fvwpflowplayer-s3-browser', $url.'/css/s3-browser.css', '', filemtime( dirname(__FILE__).'/../css/s3-browser.css' ) );
+  if ( class_exists( 'FV_Player_Media_Browser' ) ) {
+    FV_Player_Media_Browser::localize_base();
+  }
   wp_enqueue_script('fv-player-editor-player-picker', $url.'/js/editor-player-picker.js', array('fvwpflowplayer-shortcode-editor', 'flowplayer-browser-base'), filemtime( dirname(__FILE__).'/../js/editor-player-picker.js' ), true );
   wp_enqueue_script('fv-player-editor-extras', $url.'/js/editor-extras.js',array('fvwpflowplayer-shortcode-editor'), filemtime( dirname(__FILE__).'/../js/editor-extras.js' ), true );
   wp_enqueue_script('fvwpflowplayer-editor-screenshots', $url.'/js/editor-screenshots.js', array( 'fvwpflowplayer-shortcode-editor' ), filemtime( dirname(__FILE__).'/../js/editor-screenshots.js' ), true );

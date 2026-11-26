@@ -21,7 +21,7 @@ jQuery( function($) {
 
     $uploadButton.after('<input type="file" accept=".mp4,.mov,.web,.flv,.avi,.vmw,.avchd,.swf,.mkv,.webm.,mpeg,.mpg" class="fv-player-bunny_stream-upload-file-input ' + input_class_name + '" name="' + input_name + '" />');
 
-    $uploadInput = $('.media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
+    $uploadInput = $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap .' + input_class_name);
         $uploadInput.on('change', function() {
             upload( $uploadInput[0].files[0] );
     });
@@ -220,11 +220,11 @@ jQuery( function($) {
 
     // add the upload button to the media library modal
     if ( !$('.' + upload_button_class).length ) {
-      if ( !$('.media-toolbar-secondary > #' + upload_button_class + '-wrap').length ) {
-        $('.media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="fv-player-upload_buttons" style="display: none" data-tab-id="fv_player_bunny_stream_browser_media_tab"></div>');
+      if ( !$('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').length ) {
+        $('.media-frame-toolbar .media-toolbar-secondary').append('<div id="' + upload_button_class + '-wrap" class="fv-player-upload_buttons" style="display: none" data-tab-id="fv_player_bunny_stream_browser_media_tab"></div>');
       }
 
-      var $uploadDiv = $('.media-toolbar-secondary > #' + upload_button_class + '-wrap');
+      var $uploadDiv = $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap');
 
       var upload_interface = '<div class="fv-player-bunny_stream-upload-buttons fv-player-upload-buttons">'
       upload_interface += '<button type="button" class="button media-button button-primary button-large ' + upload_button_class + '">' + upload_button_text + '</button>';
@@ -236,7 +236,7 @@ jQuery( function($) {
       upload_interface += '<div class="fv-player-bunny_stream-upload-progress-enclosure ' + upload_progress_bar_enclosure_class + ' fv-player-upload-progress-enclosure"><div class="fv-player-bunny_stream-upload-progress-bar ' + upload_progress_bar_class + ' fv-player-upload-progress-bar"></div><div class="fv-player-bunny_stream-upload-progress-number ' + upload_progress_bar_number_class + ' fv-player-upload-progress-number"></div></div>';
       upload_interface += '</div>';
 
-      $('.media-toolbar-secondary > #' + upload_button_class + '-wrap').append( upload_interface);
+      $('.media-frame-toolbar .media-toolbar-secondary > #' + upload_button_class + '-wrap').append( upload_interface);
 
       $uploadButton = $uploadDiv.find('.' + upload_button_class);
       $uploadInput = $uploadDiv.find('.' + file_select_input_class);

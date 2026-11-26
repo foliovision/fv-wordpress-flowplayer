@@ -6,6 +6,8 @@ abstract class FV_Player_Media_Browser {
   public $ajax_action_name_add_new_folder = false;
   private $s3_assets_loaded = false;
 
+  const VIEW_MODE_META_KEY = 'fv_player_media_browser_view';
+
   /**
    * Nonces of all the media browsers, keyed by the AJAX action, like 'load_vimeo_assets'.
    * Shared by all the media browser objects, so that they can be printed only once.
@@ -60,11 +62,60 @@ abstract class FV_Player_Media_Browser {
   // TOTO: should be abstract
   function get_custom_domain_url( $link, $bucket, $custom_domain ) {}
 
+  public static function register_shared_hooks() {
+    if ( ! has_action( 'wp_ajax_fv_player_media_browser_save_view_mode', array( __CLASS__, 'ajax_save_view_mode' ) ) ) {
+      add_action( 'wp_ajax_fv_player_media_browser_save_view_mode', array( __CLASS__, 'ajax_save_view_mode' ) );
+    }
+  }
+
+  public static function get_view_mode() {
+    $user_id = get_current_user_id();
+    if ( ! $user_id ) {
+      return 'grid';
+    }
+
+    $view_mode = get_user_meta( $user_id, self::VIEW_MODE_META_KEY, true );
+    return 'list' === $view_mode ? 'list' : 'grid';
+  }
+
+  public static function ajax_save_view_mode() {
+    if ( ! is_user_logged_in() ) {
+      wp_send_json_error( 'You must be logged in to save this preference.', 403 );
+    }
+
+    if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'fv_player_media_browser_view_mode' ) ) {
+      wp_send_json_error( 'Invalid security token, please reload the page and try again.', 403 );
+    }
+
+    $view_mode = isset( $_POST['view_mode'] ) ? sanitize_key( wp_unslash( $_POST['view_mode'] ) ) : '';
+    if ( ! in_array( $view_mode, array( 'grid', 'list' ), true ) ) {
+      wp_send_json_error( 'Invalid view mode.', 400 );
+    }
+
+    update_user_meta( get_current_user_id(), self::VIEW_MODE_META_KEY, $view_mode );
+
+    wp_send_json_success( array( 'view_mode' => $view_mode ) );
+  }
+
+  public static function localize_base() {
+    // init_base() runs once for each media browser (and editor.php may enqueue the base script too),
+    // replace the localized data instead of appending it again
+    wp_scripts()->add_data( 'flowplayer-browser-base', 'data', '' );
+
+    wp_localize_script( 'flowplayer-browser-base', 'fv_flowplayer_browser', array(
+        'ajaxurl'         => flowplayer::get_plugin_url().'/controller/s3-ajax.php',
+        'wp_ajaxurl'      => admin_url( 'admin-ajax.php' ),
+        'nonces'          => self::$nonces,
+        'view_mode'       => self::get_view_mode(),
+        'view_mode_nonce' => is_user_logged_in() ? wp_create_nonce( 'fv_player_media_browser_view_mode' ) : '',
+      )
+    );
+  }
+
   function init_base() {
-    global $fv_wp_flowplayer_ver;
     wp_enqueue_media();
     wp_enqueue_script( 'flowplayer-browser-base', flowplayer::get_plugin_url().'/js/media-library-browser-base.js', array('jquery'), filemtime( dirname( __FILE__ ) . '/../js/media-library-browser-base.js' ), true );
-    wp_enqueue_style('fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css','',$fv_wp_flowplayer_ver);
+    wp_enqueue_style( 'fvwpflowplayer-s3-browser', flowplayer::get_plugin_url().'/css/s3-browser.css', '', filemtime( dirname( __FILE__ ) . '/../css/s3-browser.css' ) );
 
     /**
      * Older FV Player Pro versions (Vimeo, DigitalOcean Spaces, PeerTube Private browsers)
@@ -77,14 +128,7 @@ abstract class FV_Player_Media_Browser {
       }
     }
 
-    // init_base() runs once for each media browser, replace the localized data instead of appending it again
-    wp_scripts()->add_data( 'flowplayer-browser-base', 'data', '' );
-
-    wp_localize_script( 'flowplayer-browser-base', 'fv_flowplayer_browser', array(
-        'ajaxurl' => flowplayer::get_plugin_url().'/controller/s3-ajax.php',
-        'nonces'  => self::$nonces,
-      )
-    );
+    self::localize_base();
 
     $this->init();
   }
@@ -94,6 +138,7 @@ abstract class FV_Player_Media_Browser {
   }
 
   function register() {
+    self::register_shared_hooks();
     add_action( $this->ajax_action_name, array($this, 'ajax_load_assets') );
   }
 
@@ -328,4 +373,8 @@ abstract class FV_Player_Media_Browser {
     wp_die();
   }
 
+}
+
+if ( function_exists( 'add_action' ) ) {
+  FV_Player_Media_Browser::register_shared_hooks();
 }

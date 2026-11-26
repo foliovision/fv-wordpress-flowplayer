@@ -102,6 +102,14 @@ jQuery(function() {
         return fv_flowplayer_media_browser_tabs.open_standalone( options );
       },
 
+      get_view_mode() {
+        return fv_flowplayer_media_browser_tabs.get_view_mode();
+      },
+
+      set_view_mode( mode, persist ) {
+        return fv_flowplayer_media_browser_tabs.set_view_mode( mode, persist );
+      },
+
     }
   })(jQuery);
 })
@@ -131,7 +139,13 @@ var
 function fv_flowplayer_media_browser_setColumns() {
   var
     $frame = fv_flowplayer_media_browser_tabs.get_frame_el(),
-    $browser = $frame.find('#__assets_browser'),
+    $browser = $frame.find('#__assets_browser');
+
+  if ( $browser.closest('.attachments-browser').hasClass('fv-view-mode-list') ) {
+    return;
+  }
+
+  var
     width = $browser.width(),
     idealColumnWidth = jQuery( window ).width() < 640 ? 135 : 150;
 
@@ -141,6 +155,131 @@ function fv_flowplayer_media_browser_setColumns() {
       .closest( '.media-frame-content' )
       .attr( 'data-columns', columns );
   }
+}
+
+function fv_flowplayer_browser_format_size( size ) {
+  if ( typeof size === 'undefined' || size === null || size === '' || size === 'undefined' ) {
+    return '';
+  }
+
+  var sizeStr = String( size ).trim(),
+    fSize = parseInt( sizeStr, 10 );
+
+  if ( isNaN( fSize ) || String( fSize ) !== sizeStr ) {
+    return sizeStr;
+  }
+
+  if ( fSize <= 0 ) {
+    return '';
+  }
+
+  var sizeSuffix = 'bytes';
+  if ( fSize > 10000 ) {
+    if ( fSize <= 999999 ) {
+      fSize /= 1000;
+      sizeSuffix = 'KB';
+    } else if ( fSize <= 999999999 ) {
+      fSize /= 1000000;
+      sizeSuffix = 'MB';
+    } else {
+      fSize /= 1000000000;
+      sizeSuffix = 'GB';
+    }
+  }
+
+  if ( parseFloat( fSize ) != parseInt( fSize, 10 ) ) {
+    fSize += '';
+    fSize = fSize.substring( 0, fSize.indexOf( '.' ) + 3 );
+  }
+
+  return fSize + ' ' + sizeSuffix;
+}
+
+function fv_flowplayer_browser_format_duration( duration ) {
+  var sec_num = parseInt( duration, 10 );
+  if ( ! sec_num || sec_num <= 0 ) {
+    return '';
+  }
+
+  var hours = Math.floor( sec_num / 3600 ),
+    minutes = Math.floor( ( sec_num % 3600 ) / 60 ),
+    seconds = Math.floor( sec_num % 60 );
+
+  if ( hours < 10 ) {
+    hours = '0' + hours;
+  }
+  if ( minutes < 10 ) {
+    minutes = '0' + minutes;
+  }
+  if ( seconds < 10 ) {
+    seconds = '0' + seconds;
+  }
+
+  return hours + ':' + minutes + ':' + seconds;
+}
+
+function fv_flowplayer_browser_get_kind( f ) {
+  if ( f.extra ) {
+    if ( f.extra.encoding_job_status == 'error' ) {
+      return { text: 'Error', className: 'fv-list-kind-error' };
+    }
+    if ( f.extra.percentage ) {
+      var label = f.extra.encoding_job_status == 'playable' ? 'Playable' : 'Processing';
+      return { text: label + ' ' + f.extra.percentage, className: 'fv-list-kind-status' };
+    }
+  }
+
+  var source = String( f.name || '' ),
+    match = source.match( /\.([a-z0-9]{2,5})$/i );
+
+  if ( ! match && f.link ) {
+    match = String( f.link ).split( '?' )[0].match( /\.([a-z0-9]{2,5})$/i );
+  }
+
+  if ( match ) {
+    var ext = match[1].toLowerCase();
+    var kindMap = {
+      mp4: 'MP4 video',
+      m4v: 'M4V video',
+      mov: 'QuickTime video',
+      webm: 'WebM video',
+      mkv: 'MKV video',
+      avi: 'AVI video',
+      flv: 'FLV video',
+      wmv: 'WMV video',
+      mpeg: 'MPEG video',
+      mpg: 'MPEG video',
+      m3u8: 'HLS stream',
+      mpd: 'DASH stream',
+      mp3: 'MP3 audio',
+      m4a: 'M4A audio',
+      ogg: 'OGG audio',
+      wav: 'WAV audio',
+      wma: 'WMA audio',
+      jpg: 'JPEG image',
+      jpeg: 'JPEG image',
+      png: 'PNG image',
+      gif: 'GIF image',
+      webp: 'WebP image',
+      svg: 'SVG image',
+      vtt: 'WebVTT subtitles',
+      srt: 'SRT subtitles',
+      pdf: 'PDF document',
+      zip: 'ZIP archive'
+    };
+    return { text: kindMap[ ext ] || ( ext.toUpperCase() + ' file' ), className: '' };
+  }
+
+  if ( f.extra && f.extra.mime ) {
+    if ( f.extra.mime.indexOf( 'audio' ) !== -1 ) {
+      return { text: 'Audio', className: '' };
+    }
+    if ( f.extra.mime.indexOf( 'video' ) !== -1 ) {
+      return { text: 'Video', className: '' };
+    }
+  }
+
+  return { text: 'Video', className: '' };
 }
 
 function fv_flowplayer_browser_add_load_more_button($fileListUl, loadMoreButtonAction) {
@@ -300,19 +439,85 @@ function fv_flowplayer_browser_browse(data, options) {
       fileList.empty().hide();
     }
 
+    var activeTabConfig = fv_flowplayer_media_browser_tabs.get_active_tab_config(),
+      listDetailsRenderer = ( options && typeof options.renderListDetails === 'function' )
+        ? options.renderListDetails
+        : ( activeTabConfig && typeof activeTabConfig.render_list_details === 'function' ? activeTabConfig.render_list_details : null ),
+      customColumns = ( options && Array.isArray( options.listColumns ) )
+        ? options.listColumns
+        : ( activeTabConfig && Array.isArray( activeTabConfig.list_columns ) ? activeTabConfig.list_columns : null ),
+      listColumns;
+
+    if ( options && options.append && Array.isArray( fileList.data( 'fvListColumns' ) ) ) {
+      listColumns = fileList.data( 'fvListColumns' );
+    } else if ( customColumns ) {
+      listColumns = customColumns;
+    } else {
+      var hasDuration = false,
+        hasSize = false;
+
+      fv_flowplayer_scannedFiles.forEach( function( f ) {
+        if ( fv_flowplayer_browser_format_duration( f.duration ) ) {
+          hasDuration = true;
+        }
+        if ( fv_flowplayer_browser_format_size( f.size ) ) {
+          hasSize = true;
+        }
+      } );
+
+      listColumns = [
+        { key: 'name', label: 'Name', track: 'minmax(200px, 1fr)' },
+        { key: 'date', label: 'Date Modified', track: '145px' }
+      ];
+      if ( hasDuration ) {
+        listColumns.push( { key: 'duration', label: 'Duration', track: '82px', align: 'right' } );
+      }
+      if ( hasSize || ! hasDuration ) {
+        listColumns.push( { key: 'size', label: 'Size', track: '86px', align: 'right' } );
+      }
+      listColumns.push( { key: 'kind', label: 'Kind', track: '120px' } );
+    }
+
+    fileList.data( 'fvListColumns', listColumns );
+    if ( fileList[0] ) {
+      var gridTracks = '28px ' + listColumns.map( function( col ) { return col.track; } ).join( ' ' );
+      fileList[0].style.setProperty( '--fv-list-columns', gridTracks );
+    }
+
+    if ( ( ! options || ! options.append ) && ( fv_flowplayer_scannedFolders.length || fv_flowplayer_scannedFiles.length || ( options && options.add_new_folder ) ) ) {
+      var $header = jQuery( '<li class="fv-list-header" aria-hidden="true"></li>' );
+      listColumns.forEach( function( col, index ) {
+        var $cell = jQuery( '<div class="fv-list-header-cell"></div>' )
+          .addClass( 'fv-list-col-' + col.key )
+          .text( col.label );
+        if ( index === 0 ) {
+          $cell.addClass( 'fv-list-header-primary' );
+        }
+        if ( col.align === 'right' ) {
+          $cell.addClass( 'is-right' );
+        }
+        $header.append( $cell );
+      } );
+      fileList.append( $header );
+    }
+
     if(options && options.add_new_folder) {
       fv_player_media_browser.set_current_term_id(options.current_term_id);
 
+      var newFolderLabel = '+ ' + (options.add_new_folder_text ? options.add_new_folder_text : 'Add new category');
       var new_folder = jQuery(
       '<li class="attachment new-folder">'
       + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
       + '<div class="thumbnail">'
       + '<span class="icon folder"></span>'
       + '<div class="filename">'
-      + '<div>+ '+ (options.add_new_folder_text ? options.add_new_folder_text : 'Add new category')+ '</div>'
+      + '<div>' + escapeHTML(newFolderLabel) + '</div>'
       + '</div>'
       + '</div>'
-      + '</div>').on('click', function() {
+      + '<div class="fv-list-details">'
+      + '<div class="fv-list-cell fv-list-col-name fv-list-span-all">' + escapeHTML(newFolderLabel) + '</div>'
+      + '</div>'
+      + '</div></li>').on('click', function() {
         var folder_name = prompt("Please enter folder name");
         if(folder_name != null && folder_name.length > 1 ) {
           addFolderAjax(jQuery(this), folder_name, options);
@@ -338,26 +543,93 @@ function fv_flowplayer_browser_browse(data, options) {
       });
 
       fv_flowplayer_scannedFolders.forEach(function(f) {
-        var name = escapeHTML(f.name).replace(/\/$/,'');
-        fileList.append( jQuery(
-          '<li class="folders attachment save-ready">'
-          + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
-          + '<div class="thumbnail">'
-          + '<a href="' + f.path + '" title="' + name + '" class="folders">'
-          + '<span class="icon folder"></span>'
-          + '<div class="filename">'
-          + '<div>' + name + '</div>'
-          + '</div>'
-          + '</a>'
-          + '</div>'
-          + '</div>'
-          + '</li>')
-        );
+        var name = escapeHTML(f.name).replace(/\/$/,''),
+          $folderLi = jQuery(
+            '<li class="folders attachment save-ready">'
+            + '<div class="attachment-preview js--select-attachment type-video subtype-mp4 landscape">'
+            + '<div class="thumbnail">'
+            + '<a href="' + f.path + '" title="' + name + '" class="folders">'
+            + '<span class="icon folder"></span>'
+            + '<div class="filename">'
+            + '<div>' + name + '</div>'
+            + '</div>'
+            + '</a>'
+            + '</div>'
+            + '</div>'
+            + '</li>'
+          ),
+          $folderDetails = jQuery( '<div class="fv-list-details"></div>' );
+
+        listColumns.forEach( function( col ) {
+          var $cell = jQuery( '<div class="fv-list-cell"></div>' ).addClass( 'fv-list-col-' + col.key );
+          if ( col.align === 'right' ) {
+            $cell.addClass( 'is-right' );
+          }
+          if ( col.key === 'name' ) {
+            var rawName = String( f.name || '' ).replace( /\/$/, '' );
+            $cell.text( rawName ).attr( 'title', rawName );
+          } else if ( col.key === 'kind' ) {
+            $cell.addClass( 'fv-list-muted' ).text( 'Folder' );
+          } else {
+            $cell.addClass( 'fv-list-muted' ).text( '--' );
+          }
+          $folderDetails.append( $cell );
+        } );
+
+        $folderLi.find( '.attachment-preview' ).append( $folderDetails );
+        fileList.append( $folderLi );
       });
     }
 
-    if(fv_flowplayer_scannedFiles.length) {
+    function buildDefaultListDetails( f ) {
+      var $details = jQuery( '<div class="fv-list-details"></div>' ),
+        formattedDuration = fv_flowplayer_browser_format_duration( f.duration ),
+        formattedSize = fv_flowplayer_browser_format_size( f.size ),
+        modified = ( typeof f.modified !== 'undefined' && f.modified !== null && f.modified !== '' && f.modified !== 'undefined' ) ? String( f.modified ) : '',
+        kind = fv_flowplayer_browser_get_kind( f ),
+        width = parseInt( f.width, 10 ),
+        height = parseInt( f.height, 10 ),
+        displayNote = ( f.extra && f.extra.displayData )
+          ? String( f.extra.displayData ).replace( /<br\s*\/?>/gi, ' — ' ).replace( /<[^>]+>/g, '' )
+          : '';
 
+      listColumns.forEach( function( col ) {
+        var $cell = jQuery( '<div class="fv-list-cell"></div>' ).addClass( 'fv-list-col-' + col.key );
+        if ( col.align === 'right' ) {
+          $cell.addClass( 'is-right' );
+        }
+
+        if ( col.key === 'name' ) {
+          $cell.text( f.name || '' ).attr( 'title', f.name || '' );
+        } else if ( col.key === 'date' ) {
+          $cell.addClass( 'fv-list-muted' ).text( modified || '--' );
+          if ( modified ) {
+            $cell.attr( 'title', modified );
+          }
+        } else if ( col.key === 'duration' ) {
+          $cell.addClass( 'fv-list-muted' ).text( formattedDuration || '--' );
+        } else if ( col.key === 'size' ) {
+          $cell.addClass( 'fv-list-muted' ).text( formattedSize || '--' );
+        } else if ( col.key === 'kind' ) {
+          var kindText = kind.text;
+          if ( ! kind.className && width > 0 && height > 0 ) {
+            kindText += ' (' + width + '×' + height + ')';
+          }
+          $cell.addClass( kind.className || 'fv-list-muted' ).text( kindText );
+          if ( displayNote ) {
+            $cell.attr( 'title', displayNote );
+          } else {
+            $cell.attr( 'title', kindText );
+          }
+        }
+
+        $details.append( $cell );
+      } );
+
+      return $details;
+    }
+
+    if(fv_flowplayer_scannedFiles.length) {
       fv_flowplayer_scannedFiles.forEach(function(f) {
         var
           name = escapeHTML(f.name),
@@ -402,6 +674,14 @@ function fv_flowplayer_browser_browse(data, options) {
           '<span class="media-modal-icon"></span>' +
           '<span class="screen-reader-text">Deselect</span>' +
           '</button>');
+
+        var $listDetails = listDetailsRenderer ? listDetailsRenderer( f, file ) : buildDefaultListDetails( f );
+        if ( $listDetails && $listDetails.length ) {
+          if ( ! $listDetails.hasClass( 'fv-list-details' ) ) {
+            $listDetails = jQuery( '<div class="fv-list-details"></div>' ).append( $listDetails );
+          }
+          file.find( '.attachment-preview' ).append( $listDetails );
+        }
 
         var $filenameData = file.find('.filename > div');
         $filenameData
@@ -498,14 +778,74 @@ function fv_flowplayer_browser_browse(data, options) {
  */
 var fv_flowplayer_media_browser_tabs = ( function( $ ) {
   var
-    // tabId => { text, loader, click_callback, priority, $el, standalone, render_sidebar, on_select, on_close, multiple }
+    // tabId => { text, loader, click_callback, priority, $el, standalone, render_sidebar, render_list_details, on_select, on_close, multiple }
     tabs = {},
     standalone_frames = {},
     tabs_count = 0,
     current_frame = false,
     RouterItem = false,
     suppress_last_tab_save = false,
-    restore_timer = null;
+    restore_timer = null,
+    view_mode_xhr = null;
+
+  function get_view_mode() {
+    return ( window.fv_flowplayer_browser && window.fv_flowplayer_browser.view_mode === 'list' ) ? 'list' : 'grid';
+  }
+
+  function apply_view_mode( mode ) {
+    var isList = mode === 'list',
+      $browsers = $( '.attachments-browser.fv-player-media-browser-content' );
+
+    $browsers
+      .toggleClass( 'fv-view-mode-list', isList )
+      .toggleClass( 'fv-view-mode-grid', ! isList );
+
+    $browsers.find( '.fv-view-switch-btn' ).each( function() {
+      var $btn = $( this ),
+        isActive = $btn.data( 'view-mode' ) === mode;
+      $btn
+        .toggleClass( 'is-active', isActive )
+        .attr( 'aria-pressed', isActive ? 'true' : 'false' );
+    } );
+
+    if ( ! isList ) {
+      fv_flowplayer_media_browser_setColumns();
+    }
+  }
+
+  function set_view_mode( mode, persist ) {
+    var normalized = mode === 'list' ? 'list' : 'grid';
+
+    if ( ! window.fv_flowplayer_browser ) {
+      window.fv_flowplayer_browser = {};
+    }
+    window.fv_flowplayer_browser.view_mode = normalized;
+
+    apply_view_mode( normalized );
+
+    if ( persist === false ) {
+      return normalized;
+    }
+
+    var wpAjaxUrl = window.fv_flowplayer_browser.wp_ajaxurl || window.ajaxurl,
+      nonce = window.fv_flowplayer_browser.view_mode_nonce;
+
+    if ( wpAjaxUrl && nonce ) {
+      if ( view_mode_xhr && view_mode_xhr.readyState !== 4 ) {
+        view_mode_xhr.abort();
+      }
+
+      view_mode_xhr = $.post( wpAjaxUrl, {
+        action: 'fv_player_media_browser_save_view_mode',
+        view_mode: normalized,
+        nonce: nonce
+      } ).always( function() {
+        view_mode_xhr = null;
+      } );
+    }
+
+    return normalized;
+  }
 
   /**
    * Media browsers which only provide video files (Bunny Stream, Coconut, Vimeo...)
@@ -1019,6 +1359,8 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
         click_callback: options.click_callback || null,
         standalone: true,
         render_sidebar: options.renderSidebar || null,
+        render_list_details: options.renderListDetails || null,
+        list_columns: options.listColumns || null,
         on_select: options.onSelect || null,
         on_close: options.onClose || null,
         multiple: !! options.multiple
@@ -1092,6 +1434,8 @@ var fv_flowplayer_media_browser_tabs = ( function( $ ) {
     get_active_tab_config: get_active_tab_config,
     is_fv_tab_active: is_fv_tab_active,
     set_choose_button_disabled: set_choose_button_disabled,
+    get_view_mode: get_view_mode,
+    set_view_mode: set_view_mode,
 
   };
 
@@ -1174,15 +1518,28 @@ function fv_flowplayer_media_browser_disable_drag_drop_worker( e ) {
 }
 
 function fv_flowplayer_media_browser_show_upload( id ) {
-  jQuery('.media-toolbar-secondary > .fv-player-upload_buttons').hide();
+  jQuery('.media-frame-toolbar .media-toolbar-secondary > .fv-player-upload_buttons').hide();
   if ( id ) {
-    jQuery('.media-toolbar-secondary > .fv-player-upload_buttons[data-tab-id="' + id + '"]').show();
+    jQuery('.media-frame-toolbar .media-toolbar-secondary > .fv-player-upload_buttons[data-tab-id="' + id + '"]').show();
   }
 }
 
 function renderBrowserPlaceholderHTML(options) {
   options = options || {};
-  var html = '<div class="attachments-browser fv-player-media-browser-content' + (options.noBreadcrumbs ? ' no-breadcrumbs' : '') + '"><div class="media-toolbar s3-media-toolbar">';
+  var viewMode = fv_flowplayer_media_browser_tabs.get_view_mode(),
+    isGrid = viewMode !== 'list',
+    html = '<div class="attachments-browser fv-player-media-browser-content fv-view-mode-' + viewMode + (options.noBreadcrumbs ? ' no-breadcrumbs' : '') + '"><div class="media-toolbar s3-media-toolbar">';
+
+  html += '<div class="fv-media-view-switch" role="group" aria-label="View mode">'
+    + '<button type="button" class="fv-view-switch-btn fv-view-grid' + (isGrid ? ' is-active' : '') + '" data-view-mode="grid" aria-pressed="' + (isGrid ? 'true' : 'false') + '" title="Grid view">'
+    + '<span class="dashicons dashicons-grid-view" aria-hidden="true"></span>'
+    + '<span class="screen-reader-text">Grid view</span>'
+    + '</button>'
+    + '<button type="button" class="fv-view-switch-btn fv-view-list' + (!isGrid ? ' is-active' : '') + '" data-view-mode="list" aria-pressed="' + (!isGrid ? 'true' : 'false') + '" title="List view">'
+    + '<span class="dashicons dashicons-list-view" aria-hidden="true"></span>'
+    + '<span class="screen-reader-text">List view</span>'
+    + '</button>'
+    + '</div>';
 
   if (options.dropdownItems) {
     html += '<div class="media-toolbar-secondary">';
@@ -1475,6 +1832,14 @@ jQuery( function($) {
   $( document ).on( "mousedown touchstart", ".media-modal-backdrop", confirm_uploader_close );
   $( document ).on( "mousedown touchstart", '.media-modal-close', confirm_uploader_close );
 
+  $( document ).on( "click", ".fv-player-media-browser-content .fv-view-switch-btn", function(event) {
+    event.preventDefault();
+    var mode = $( this ).data( 'view-mode' );
+    if ( mode ) {
+      fv_player_media_browser.set_view_mode( mode );
+    }
+  });
+
   $( document ).on( "click", "#overlay-loader-li", function() {
     // click the Load More button when the actual DIV is clicked, for accessibility
     jQuery(this).find('button').click();
@@ -1546,59 +1911,12 @@ jQuery( function($) {
             }
           } else {
             var
-              fSize = parseInt($filenameDiv.data('size')),
-              fSizeTextual = fSize != $filenameDiv.data('size'),
-              fDuration = parseInt($filenameDiv.data('duration')),
-              sizeSuffix = 'bytes',
+              rawSize = $filenameDiv.data('size'),
+              fSizeFormatted = fv_flowplayer_browser_format_size( rawSize ),
+              fSizeNum = parseInt( rawSize, 10 ),
+              fSizeTextual = isNaN( fSizeNum ) || String( fSizeNum ) !== String( rawSize ).trim(),
+              fDuration = fv_flowplayer_browser_format_duration( $filenameDiv.data('duration') ) || 'Processing Media...',
               fExtraDisplayData = extra.displayData;
-
-            if (!fSizeTextual) {
-              // if filesize is too small, show it in KBytes
-              if (fSize > -1) {
-                if (fSize > 10000) {
-                  if (fSize <= 999999) {
-                    fSize /= 100000;
-                    sizeSuffix = 'KB';
-                  } else if (fSize <= 999999999) {
-                    fSize /= 1000000;
-                    sizeSuffix = 'MB';
-                  } else {
-                    fSize /= 1000000000;
-                    sizeSuffix = 'GB';
-                  }
-                }
-
-                // "round" to 2 decimals
-                if (parseFloat(fSize) != parseInt(fSize)) {
-                  fSize += '';
-                  fSize = fSize.substring(0, fSize.indexOf('.') + 3);
-                }
-              }
-            } else {
-              // if there's a non-numeric filesize, just display that
-              fSize = $filenameDiv.data('size');
-            }
-
-            if (fDuration && fDuration > 0) {
-              var sec_num = parseInt(fDuration, 10); // don't forget the second param
-              var hours = Math.floor(sec_num / 3600);
-              var minutes = Math.floor((sec_num % 3600) / 60);
-              var seconds = Math.floor(sec_num % 60);
-
-              if (hours < 10) {
-                hours = "0" + hours;
-              }
-              if (minutes < 10) {
-                minutes = "0" + minutes;
-              }
-              if (seconds < 10) {
-                seconds = "0" + seconds;
-              }
-
-              fDuration = hours + ':' + minutes + ':' + seconds;
-            } else {
-              fDuration = 'Processing Media...';
-            }
 
             // load splash image
             var
@@ -1624,9 +1942,9 @@ jQuery( function($) {
               '\t\t\t</div>\n' +
               '\t\t\t<div class="details">\n' +
               '\t\t\t\t<div class="filename">' + $filenameDiv.text() + '</div>\n' +
-              '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSize) + '</div>\n' +
+              '\t\t\t\t<div class="uploaded">' + ($filenameDiv.data('modified') != 'undefined' ? $filenameDiv.data('modified') : fSizeFormatted) + '</div>\n' +
               '\n' +
-              '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSize > -1 ? fSize + ' ' + sizeSuffix : fDuration) : '') + '</div>\n' +
+              '\t\t\t\t<div class="file-size">' + (!fSizeTextual ? (fSizeFormatted ? fSizeFormatted : fDuration) : '') + '</div>\n' +
               (fExtraDisplayData ? '\t\t\t\t<div class="uploaded"><br /><strong><em>' + fExtraDisplayData + '</em></strong></div>\n' : '') +
               '\t\t\t</div>\n' +
               ( ( splashValue && isPicture ) ? '<div><i>Found matching splash screen image</i></div>' : '') +

@@ -106,6 +106,95 @@ jQuery( function( $ ) {
     return $details;
   }
 
+  var PLAYER_LIST_COLUMNS = [
+    { key: 'name',   label: 'Name',         track: 'minmax(180px, 1.2fr)' },
+    { key: 'videos', label: 'Videos',       track: 'minmax(140px, 1fr)' },
+    { key: 'embeds', label: 'Embedded on',  track: 'minmax(160px, 1.1fr)' },
+    { key: 'date',   label: 'Date Created', track: '125px', align: 'right' }
+  ];
+
+  function render_player_list_details( item ) {
+    var player = item && item.extra && item.extra.player;
+    if ( ! player ) {
+      return false;
+    }
+
+    var $details = $( '<div class="fv-list-details"></div>' ),
+      displayName = get_player_display_name( player ),
+      videoTitles = Array.isArray( player.video_titles ) ? player.video_titles : [],
+      embeds = player.embeds || {};
+
+    var nameText = '#' + player.id + ( displayName !== '#' + player.id ? ' ' + displayName : '' );
+    var $nameCell = $( '<div class="fv-list-cell fv-list-col-name"></div>' ).attr( 'title', nameText );
+    $nameCell.append( $( '<span class="fv-list-player-id"></span>' ).text( '#' + player.id ) );
+    if ( displayName !== '#' + player.id ) {
+      $nameCell.append( document.createTextNode( ' ' + displayName ) );
+    }
+    $details.append( $nameCell );
+
+    var videosText = '';
+    if ( videoTitles.length > 1 ) {
+      videosText = videoTitles.length + ' videos: ' + videoTitles.join( ', ' );
+    } else if ( videoTitles.length === 1 ) {
+      videosText = player.player_name ? videoTitles[0] : '1 video';
+    }
+    var $videosCell = $( '<div class="fv-list-cell fv-list-col-videos fv-list-muted"></div>' ).text( videosText || '--' );
+    if ( videoTitles.length ) {
+      $videosCell.attr( 'title', videoTitles.join( ', ' ) );
+    }
+    $details.append( $videosCell );
+
+    var embedShort = [],
+      embedFull = [];
+    $.each( embeds, function( k, v ) {
+      if ( ! v ) {
+        return;
+      }
+
+      var label = v.post_title || '',
+        type = v.post_type && v.post_type !== 'post' ? ' (' + v.post_type + ')' : '',
+        status = v.post_status && v.post_status !== 'publish' ? ' (' + v.post_status + ')' : '',
+        taxonomies = [];
+
+      if ( v.taxonomies ) {
+        $.each( v.taxonomies, function( taxonomy, taxonomy_details ) {
+          var terms = [];
+          $.each( taxonomy_details.terms || [], function( idx, term ) {
+            if ( term && term.name ) {
+              terms.push( term.name );
+            }
+          } );
+          if ( terms.length ) {
+            taxonomies.push( taxonomy_details.label + ': ' + terms.join( ', ' ) );
+          }
+        } );
+      }
+
+      var shortText = label + type + status;
+      var fullText = shortText + ( taxonomies.length ? ' [' + taxonomies.join( '; ' ) + ']' : '' );
+      if ( shortText ) {
+        embedShort.push( shortText );
+        embedFull.push( fullText );
+      }
+    } );
+
+    var $embedsCell = $( '<div class="fv-list-cell fv-list-col-embeds fv-list-muted"></div>' )
+      .text( embedShort.length ? embedShort.join( ', ' ) : '--' );
+    if ( embedFull.length ) {
+      $embedsCell.attr( 'title', embedFull.join( ', ' ) );
+    }
+    $details.append( $embedsCell );
+
+    var $dateCell = $( '<div class="fv-list-cell fv-list-col-date fv-list-muted is-right"></div>' )
+      .text( player.date_created || '--' );
+    if ( player.date_created ) {
+      $dateCell.attr( 'title', player.date_created );
+    }
+    $details.append( $dateCell );
+
+    return $details;
+  }
+
   function on_player_select( $selectedItems ) {
     var $selected = $selectedItems.first(),
       extra = $selected.find( '.filename div' ).data( 'extra' ),
@@ -222,6 +311,8 @@ jQuery( function( $ ) {
       multiple: false,
       loader: load_players,
       renderSidebar: render_player_sidebar,
+      renderListDetails: render_player_list_details,
+      listColumns: PLAYER_LIST_COLUMNS,
       onSelect: on_player_select,
       onClose: abort_request
     } );
