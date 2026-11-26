@@ -450,22 +450,44 @@ class FV_Player_Custom_Videos_Master {
     global $fv_fp;
     if( isset($fv_fp->conf['profile_videos_enable_bio']) && $fv_fp->conf['profile_videos_enable_bio'] == 'true' ) {    
       if( $profileuser->ID > 0 ) {
-        $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID ) );
-        ?>
-        <tr class="user-videos">
-          <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
-          <td>
-            <?php
-            
-            echo $objUploader->get_form( array( 'wrapper' => 'div' ) );
-            ?>
-            <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?> <abbr title="<?php _e( 'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-wordpress-flowplayer' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
-          </td>
-        </tr>
-        <?php
+        $meta        = '_fv_player_user_video';
+        $objUploader = new FV_Player_Custom_Videos( array( 'id' => $profileuser->ID, 'type' => 'user', 'meta' => $meta ) );
+
+        // Only show real FV Player Editor if it's the user himself.
+        // We limit this to avoid security issues when admins look at user profiles
+        if( get_current_user_id() == $profileuser->ID ) {
+          ?>
+          <tr class="user-videos">
+            <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
+            <td>
+              <?php echo $objUploader->get_form( array( 'wrapper' => 'div' ) ); ?>
+              <p class="description"><?php _e( 'You can put your Vimeo or YouTube links here.', 'fv-wordpress-flowplayer' ); ?> <abbr title="<?php _e( 'These show up as a part of the user bio. Licensed users get FV Player Pro which embeds these video types in FV Player interface without Vimeo or YouTube interface showing up.', 'fv-wordpress-flowplayer' ); ?>"><span class="dashicons dashicons-editor-help"></span></abbr></p>
+            </td>
+          </tr>
+          <?php
+        } else {
+          $videos = $objUploader->get_videos();
+          if( empty( $videos ) ) {
+            return $show_password_fields;
+          }
+          ?>
+          <tr class="user-videos">
+            <th><?php _e( 'Videos', 'fv-wordpress-flowplayer' ); ?></th>
+            <td>
+              <?php foreach( $videos AS $video ) : ?>
+                <p><input type="text" class="regular-text code" name="fv_player_videos[<?php echo esc_attr( $meta ); ?>][]" value="<?php echo esc_attr( $video ); ?>" /></p>
+              <?php endforeach; ?>
+              <input type="hidden" name="fv-player-custom-videos-entity-id[<?php echo esc_attr( $meta ); ?>]" value="<?php echo esc_attr( $profileuser->ID ); ?>" />
+              <input type="hidden" name="fv-player-custom-videos-entity-type[<?php echo esc_attr( $meta ); ?>]" value="user" />
+              <?php wp_nonce_field( 'fv-player-custom-videos-' . $meta . '-' . get_current_user_id(), 'fv-player-custom-videos-' . $meta . '-' . get_current_user_id() ); ?>
+              <p class="description"><?php _e( 'Since this is not your own profile, the FV Player shortvcodes are displayed in a plain text format and the FV Player Editor does not load.', 'fv-wordpress-flowplayer' ); ?></p>
+            </td>
+          </tr>
+          <?php
+        }
       }
     }
-    
+
     return $show_password_fields;
   }
   
