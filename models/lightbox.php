@@ -650,8 +650,11 @@ class FV_Player_lightbox {
 
   function fancybox_opts( $splash = false ) {
     $options = array('touch' => false);
-    if( !empty($splash) ) $options['thumb'] = $splash;
-    return " data-fancybox='gallery' data-options='".wp_json_encode($options)."'";
+    if ( ! empty( $splash ) ) {
+      $options['thumb'] = sanitize_url( $splash );
+    }
+
+    return " data-fancybox='gallery' data-options='" . esc_attr( flowplayer::json_encode( $options ) ) . "'";
   }
 
   /*
